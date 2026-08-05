@@ -1,0 +1,862 @@
+# Regula validation-readiness authoritative handover
+
+## 1. Objective and actual work
+
+Prepared, validated and adversarially reviewed a preparation-only owner decision
+pack for bounded external discovery and future independent technical evaluation.
+No external validation, contact, spending, real-data collection, public action,
+ownership action or immigration action occurred.
+
+## 2. Sandbox, approval, network and Git state
+
+The initial `.git` probe failed read-only. After explicit `ENABLE`, the exact
+escalated probe returned `git_dir_writable=yes`; initial HEAD `5256c33`, tree
+`6ed66c1`, clean. Network was restricted to read-only source retrieval. Final
+branch is `audit/regulatory-current-2026-08-04`; nothing was pushed.
+
+## 3. Initial repository and commercial baseline
+
+Frozen commercial product `94efa9e6`, protocol `5bd2112`: Candidates A and B
+0/40; transparent baselines 40/40; independently human-labelled repositories 0;
+demand unvalidated; technical evidence failed; comparative advantage not
+demonstrated.
+
+## 4. Current venture verdict
+
+`VENTURE_DECISION: STOP`; `PRODUCT_PILOT_STATUS: NOT_APPROVED`;
+`OWNER_RECOMMENDATION: HOLD_PENDING_READINESS`; `DEFAULT: HOLD`.
+
+## 5. Primary sources, dates and exact support
+
+The complete 23-source register is
+`docs/venture/validation-readiness-2026-08-05/SOURCES.md`. It records URLs,
+dates/versions, exact support used, limitations and decision effects. Key support:
+ICO requires a basis before processing and distinguishes participation consent
+from lawful basis; ESRC requires informed, voluntary, revisable consent; MRS
+separates research from selling; Companies House listed £100 online incorporation
+and £50 digital confirmation-statement fees on 2 July 2026; Innovator Founder
+rules updated 1 July 2026 require endorsement and a key day-to-day role. These are
+bounded supports, not case-specific legal conclusions.
+
+## 6. Sources unavailable or unresolved
+
+No required primary-source category was left to recollection. Case-specific legal
+interpretation, controller status, contracts, insurance and quotations remain
+unavailable because no adviser or provider was contacted.
+
+## 7. IP and account inventory
+
+The inventory covers code, rules, site, documents, research, benchmarks, brand,
+domains, package, datasets, reports, signing and third-party material plus GitHub,
+PyPI, DNS, hosting, analytics, email, social, CI, storage and finance systems.
+Control and transfer questions remain owner/adviser inputs; no secret was read.
+
+## 8. Founder-history and proposed-role boundary
+
+Kuziva originated and built the initial Regula project. Phuluso is assigned no
+retrospective contribution. Any future role is prospective, voluntary and
+evidenced only by work actually performed.
+
+## 9. Work-permission and professional-advice questions
+
+Permitted work, contracting, officer roles, ownership, compensation, IP,
+corporate/tax treatment, controller roles, lawful basis, DPIA, transfers,
+confidentiality, insurance and sector boundaries are
+`PROFESSIONAL_ADVICE_REQUIRED`. Eligibility was not assessed.
+
+## 10. Single discovery hypothesis
+
+> A small UK AI supplier is responding to a UK general insurer’s
+> production-onboarding evidence request for an AI-assisted claims-triage system.
+
+Status: `PREREGISTERED_NOT_EXECUTED` and unverified.
+
+## 11. Discovery protocol
+
+Uses most-recent qualifying transactions, role and coverage matrices, event
+evidence, neutral questions, contrary cases and safety stops. Access failure is a
+feasibility failure, not evidence that pain is absent. Discovery cannot produce
+paid validation.
+
+## 12. Consent and data-handling pack
+
+Draft participant, consent, confidentiality, recording, access, reuse,
+withdrawal, rights, incident, receipt, access-log and destruction controls exist.
+Lawful basis and storage are unset; pre-receipt material is no-click/no-clone;
+real collection remains disabled. Drafts are not legally approved.
+
+## 13. Manual-baseline protocol
+
+One frozen atomic buyer-requirement-to-response unit with fixed decomposition,
+denominator and precedence. Regula output is hidden. Independent reference labels
+support safety outcomes. The exploratory baseline remains useful without Regula.
+
+## 14. Independent technical-labelling protocol
+
+Prospective purposive corpus; frozen version and holdout; two independent blinded
+qualified human raters; raw disagreement, adjudication, abstention and
+`NOT_ASSESSABLE`; separate lexical and manual comparators; clustered reporting;
+no legal classification.
+
+## 15. Advice, permissions and cost register
+
+Nine advice categories and 17 owner permissions are enumerated. Every permission
+is `NOT AUTHORISED`. Official Companies House fees are separated from
+`QUOTE_REQUIRED` and `UNKNOWN` costs. No gross margin was invented.
+
+## 16. Go, hold or stop gate
+
+The current gate is HOLD. Discovery requires reviewed controller, basis, storage,
+consent/confidentiality, budget boundary and explicit owner approval. Later gates
+cannot inherit approval. Regula-assisted delivery and software build remain STOP.
+
+## 17. Fail-before result
+
+At HEAD `5256c33`, validator exit 1 reported 42 genuine missing-pack errors.
+
+## 18. Pack implementation and files changed
+
+Added the 29-file pack, validator, two focused tests, custom-runner wiring, N66
+ledger entry and mechanically required 2,692 count cascade. Updated the dated-count
+guard and current legacy-runner count. No file was deleted; no substantive public
+claim or pricing changed.
+
+## 19. Mutation and negative-control results
+
+Two focused tests pass. Fourteen mutations independently fail for removing STOP,
+approving the pilot, inserting validated demand, authorising an owner gate,
+unclassifying cost, claiming legal approval, exposing baseline output, weakening
+raters/adjudication/abstention, inserting personal data, changing founder history,
+removing a required file or disagreeing JSON.
+
+## 20. Adversarial-review findings and dispositions
+
+Legal review found eight issues: retention/cut-off mismatch, pre-receipt handling,
+rights procedure, metadata/backups, disclosure authority, unsupported six-year
+retention, transcription detail and aspirational storage. Experimental review
+found fourteen corrective issues covering access, arbitrary thresholds, terms,
+priming, payment evidence, unit/status rules, reference labels, reviewer
+independence, clarification, absence labels, comparators, representativeness,
+metric selection and circular buyer acceptance. All were accepted and corrected.
+One positive finding confirmed no hidden platform/demand/efficacy substitution.
+
+## 21. Implementation commit and tree
+
+Final implementation commit `fcebd501a1034fd5139bf337d9ba848faf0b97c4`;
+tree `563876fefcfd698bd5e64d4ac8bf87c9d5172f40`.
+
+## 22. Full-suite and gate outputs
+
+Custom runner: 1,378 passed, 0 failed, 4 skipped. Pytest: 2,658 passed,
+34 skipped in 1,605.20 seconds. Self-test 6/6. Doctor 9 pass, 3 info. Validator,
+14 mutations, ruff, HTML, security self-check, six fast gates and merge blocker
+passed. Claim diff: 38 files, 378 claims, 0 unsourced. Site integrity: 1,173
+internal references, 0 dead, two documented warnings.
+
+## 23. Failed, abandoned, blocked and unexpected work
+
+Restricted custom runner stalled and was interrupted at exit 130; unrestricted
+rerun passed. First `/tmp` full suite: 2,654 passed, 4 failed, 34 skipped. Two
+failures were MCP `/tmp` path rejection; two were count defects, corrected before
+the final clean permitted-path rerun. No external work was attempted.
+
+## 24. Shortcuts, assumptions, suppressions, pins, skips, exclusions or stubs
+
+No allowlist, quarantine, xfail, skip, dependency pin or swallowed exception was
+introduced. One named dated dossier was added to the count test's historical
+record exemptions so its true 2,690 measurement was not rewritten. Three commits
+were already consumed before the required evidence-only commit became possible;
+rewriting them was prohibited, so the eventual evidence commit is an explicit
+commit-count deviation. Configured CI has no formatter/type checker; release-only
+package build was not run.
+
+## 25. Final verdict fields
+
+```text
+REPOSITORY_STATE: REPRODUCED
+VENTURE_DECISION: STOP
+PRODUCT_PILOT_STATUS: NOT_APPROVED
+DISCOVERY_HYPOTHESIS: PREREGISTERED_NOT_EXECUTED
+IP_AND_ACCOUNT_INVENTORY: COMPLETE_WITH_UNKNOWNS
+WORK_PERMISSION_ANALYSIS: PROFESSIONAL_ADVICE_REQUIRED
+DATA_GOVERNANCE_PACK: READY_FOR_PROFESSIONAL_REVIEW
+REAL_DATA_COLLECTION: DISABLED
+MANUAL_BASELINE: PREREGISTERED_NOT_EXECUTED
+INDEPENDENT_TECHNICAL_LABELLING: PREREGISTERED_NOT_EXECUTED
+WILLINGNESS_TO_PAY: UNVALIDATED
+TECHNICAL_FIT: FAILED_UNTIL_NEW_EVIDENCE
+DIFFERENTIATION: NOT_DEMONSTRATED
+PROFESSIONAL_ADVICE: REQUIRED
+EXTERNAL_ACTION: NOT_AUTHORISED
+OWNER_RECOMMENDATION: HOLD_PENDING_READINESS
+DEFAULT: HOLD
+```
+
+## 26. Complete ledger, including every open and partial item
+
+The complete current ledger is reproduced verbatim below so no open or partial
+item is summarised away.
+
+# Open-items ledger
+
+**The single durable record of what is open.** Created 29 July 2026.
+
+Before this file existed, the only good ledger lived in a consolidated handover
+on the Windows filesystem, outside the repository, and was deleted when it was
+superseded. `OWNER_ACTIONS.md` carries owner-facing detail but uses its own
+numbering, which does not correspond to the decision numbers used in session
+records. This file is the continuity baseline. Reproduce it verbatim in every
+consolidated session record.
+
+**Rules for this file.**
+
+- Nothing drops off because it stopped being mentioned. An item leaves only
+  when it is closed with evidence, and the evidence is named here.
+- Every status names the commit or the command that establishes it.
+- Every figure states the commit **and the tree** it was measured in. Finding
+  N1 established that `--diff-base` figures were tree-dependent; they are not
+  any more, but the habit of stating the tree stays.
+- No relative day counts. "Four days from now" rots the moment the file is
+  read again. State the date.
+- No figure whose apparatus is gone. If a number cannot be re-derived by a
+  committed command, either re-derive it or replace it with the command.
+- **The `--diff-base` total has no fixed point and chasing it is the bug.**
+  This file and `docs/improvement/STATE.md` are inside the corpus the gate
+  measures, so every edit to them moves the number they record. Observed on
+  2026-07-29 across four commits: 278 at `b310821`, 281 at `3939949` after an
+  ADR landed, 278 again at `7b78f2e` after a STATE.md edit added file
+  references that sourced paragraphs. Each is correct at its commit. State the
+  commit, do not reconcile them, and do not re-edit the ledger to make the
+  latest figure match.
+- **Supersession is declared, not written in prose.** When a row establishes
+  that an earlier row's statement was wrong or retracted, the newer row carries
+  `SUPERSEDES:<id>` and the older row carries `SUPERSEDED-BY:<id>`, both ways,
+  and `tests/test_ledger_status.py` fails on any unpaired declaration. A
+  sentence like "which rows N15 and N18 supersede" is a statement about this
+  file and nothing can check it; that is how N13 carried a stale headline
+  through two sessions. **This marker is NOT for a figure that merely moved.**
+  Under the rule immediately above, a number that changed because the corpus
+  changed is correct at its own commit and is not superseded. Reserve the
+  marker for a statement that was WRONG or has been WITHDRAWN.
+- **A status may not name a commit that cannot establish it.** A docs-only
+  commit does not close a code defect. Six rows in section 1 named the commit
+  that RECORDED a finding as the commit that FIXED it; corrected 2026-07-30
+  against `git log -S`, see N22. No test enforces this, and why not is stated
+  in N22.
+
+---
+
+## 1. Findings
+
+| ID | What it is | First raised | Status |
+|---|---|---|---|
+| **F25** | `CITATION_WORDS` accepts ordinary prose (`source`, `see`, `ref`, `reference`) as provenance. Tested before the `file-ref` arm, and first match wins, so a real file citation is masked by the word next to it. **The ordering is the claim; the line numbers are not.** Recorded as 490/499, then as 544/553, and at 2026-07-30 they are 543 and 548. `scripts/f25_exposure.py` re-derives them from the source on every run so the record cannot go stale a third time. **SUPERSEDED-BY:N26** on its exposure figure. | 2026-07-28 16:09 (`0e1f509`) | **OPEN, and no longer unmeasured. See N26 for the figures and `scripts/f25_exposure.py --recover` for the apparatus.** The exposure figure **22 / 46** does not reproduce, and neither does the 29 / 53 offered against it; both are WITHDRAWN as unreproducible. The real exposure on the gate's own corpus is **91 suppressed findings** and **215 of 279 citation-word paragraphs with no other provenance**. Sharpest public instance: the words "Open Source" in `<title>` of `site/index.html` source that page's `13 frameworks` claim. Demonstrated a second time on 2026-07-29 when the first draft of `tests/test_tracked_citation.py` used "See ..." in a fixture sentence and passed for that wrong reason. |
+| **F29** | 387 does not reproduce, 386 does; the blog also says 389. | 2026-07-28 17:01 (`431a7d3`) | **SETTLED 2026-07-30 ON THE MEASUREMENT, after SEVEN deferrals, in PUSHED:4335831. BOTH FIGURES ARE CORRECT AND THE DISPUTE WAS NEVER ABOUT UNITS.** The unit is **tier regexes**: the sum of the `patterns` lists across the tier dictionaries in `scripts/risk_patterns.py`. Two trees both call themselves v1.7.0. The **`v1.7.0` tag is `7fa2088`, 16 April 2026, and counts 386.** **Commit `c6aa67a`, 23 April 2026, still carries version 1.7.0 and counts 387**, and it is the tree the 10-app re-scan actually ran on, per `benchmarks/results/blog_scan_2026_04/README.md`. So 387 never failed to reproduce; it was being sought in the wrong tree. **Measured at each tree by TWO INDEPENDENT METHODS that agree**, in detached worktrees removed afterwards: that tree's own `scripts/site_facts.py`, and a direct sum over the tier dictionaries that does not use `site_facts` at all. Full unit set at the tag: **52 / 386 / 182 / 17 / 38 / 10 / 4 / 4 / 18 / 659 / 446**. At 23 April: **52 / 387 / 182 / 17 / 38 / 10 / 4 / 4 / 18 / 660 / 447**. **389 is wrong and appears under NO unit at either tree**, so it was never a units mismatch. `409` likewise; its apparent presence in the v1.7.0 tree is a false match inside `arXiv:2409.11363`. **Reader-facing correction in PUSHED:4335831.** `site/blog/blog-scanning-10-ai-apps.html` said 387 at line 165 and 389 at line 408, contradicting itself on one page; 408 is corrected to 387, determinate because that page's own scan is attributed to `c6aa67a` by its benchmark README, and the stale open-question note at line 171 is replaced by the settled answer with both unit sets stated. **STILL OPEN, and deliberately not guessed at: the 5-frameworks post.** `site/blog/blog-scanning-5-frameworks.html` (154, 155, 242, 363) and `content/devto/scanning-5-frameworks.md` (3, 32, 93, 97) also publish 389, and its artefacts in `benchmarks/results/framework_scan_2026_04/` record `regula_version: 1.7.0` with **no date**, so they do not say which tree ran. 389 is wrong under both, but whether the replacement is 386 or 387 is not derivable from any committed artefact, and substituting either would be inventing a figure. **What would settle it:** any artefact recording the scan date or commit for the framework scan. **Cheapest if none exists:** state the version without a pattern count, true under both trees, as the 70% remediation did for a claim it could not source. Owner decision 4 is now answerable on the measurement and still needs a ruling on that last surface. |
+| **F30** | Allowlist entries suppress the whole paragraph, not the matched claim. `scan_file` tests each allowlist pattern against `claim_line`, `claim.snippet` **and `para`**, so one match exempts every claim in the paragraph. | 2026-07-28 17:01 (`431a7d3`) | **OPEN. Unacted across NINE sessions (the count as stated by the owner directive of 30 July; carried, not enumerable by command, the same limit recorded on decision 4), and with three measured instances.** 2026-07-29, on `site/regions/uae.html` the pattern `\bregula[- ]ai\b` matches the product name inside a terminal demo block and thereby exempts the whole `<pre>`. **2026-07-30, found while measuring N23: four quarantine entries fire on nothing because an allowlist pattern matched their whole paragraph first** (`0%` on `site/index.html`, `site/locales/de.html`, `site/locales/pt-br.html`, and `29%` on `site/guides/article-9-risk-management.html`). The allowlist is tested BEFORE the quarantine in `scan_file`, so paragraph-wide allowlisting silently shadows a narrower mechanism as well as the claims it was written for. This remains the strongest continuity finding in the ledger. |
+| F31 | Delta-log JSON Schema existed but nothing validated entries against it. | 2026-07-29 11:18 | **CLOSED** in `0990441`. Verified 2026-07-29: `tests/test_delta_log_schema.py` 14 passed, control plants the two real defects. |
+| F32 | `strip_noise` blanked command citations, so the gate erased the evidence form it recommends. | 2026-07-29 12:38 | **CLOSED** in `e2b238c`, regression pair hardened in `4aa0f8d`. Verified 2026-07-29 by reverting the hunk in a worktree: 3 failed / 6 passed reverted, 9 passed with the fix. |
+| **N1** | A citation resolved against the **working tree** (`(REPO_ROOT / ref).exists()`), so a gitignored file counted as provenance locally and vanished in CI. Commit `4aa0f8d` scored **276** unsourced in the main tree and **277** in a clean worktree. | 2026-07-29 (review) | **CLOSED** in `bebe255`. One predicate `ref_is_tracked()` serves all three call sites. Both trees report **281** at `3939949` (`python3 scripts/claim_auditor.py --diff-base main`, run in the main tree and in a clean worktree). Covered by `tests/test_tracked_citation.py`, 13 tests; two-way control, 5 fail with the fix reverted. |
+| **N2** | `docs/MODEL_CARD.md` published "13 domain-gated, 4 AI-gated, 3 pattern gaps, so 17 of 20 misses are gate behaviour", citing `benchmarks/synthetic/RECALL.json`. | 2026-07-29 (review) | **CONTENT CORRECTED 2026-07-29 in PUSHED:7b78f2e. THE STATUS THIS ENTRY USED TO CARRY WAS FALSE.** It read "commit HELD FOR APPROVAL, not pushed". `7b78f2e` is on the remote. It reached it as an ancestor of `f286562`, pushed at 2026-07-29 19:18:53 +0100, and `git reflog show --date=iso refs/remotes/origin/improvement/2026-08-programme` never lists `7b78f2e` as a tip, so it was never sent directly. **A push names a tip, not a set. The remote receives that tip and every one of its ancestors, so a hold is broken by pushing anything descended from the held commit, and an explicit refspec does not narrow that.** Established offline by `git merge-base --is-ancestor 7b78f2e refs/remotes/origin/improvement/2026-08-programme` (exit 0) and `git branch -r --contains 7b78f2e` (`origin/improvement/2026-08-programme`). Enforced from 2026-07-29 by `tests/test_ledger_status.py`, which rejects a prose-only remote-state claim and resolves every HELD:/PUSHED: marker against local remote-tracking refs. **The content correction itself stands, and is restated here unchanged:** the artefact carries per-fixture `missed` lists, so the split is derivable by set difference across the three scanner conditions rather than by subtracting fractions. Derived: **6 recovered by declaring domains, 7 more by an AI-library import, 7 never recovered**, so **13 of 20 are gate behaviour and 7 are pattern-side exposure, not 3**. Every component of the published split was wrong and it understated pattern-side weakness by more than double. `docs/MODEL_CARD.md` now states the derived figures and names its derivation; `tests/test_recall_decomposition.py` recomputes them from the artefact and fails if the prose disagrees. Control: restoring the old wording fails 3 of 5 tests. |
+| **N3** | No open-items ledger existed in the repository. | 2026-07-29 (review) | **CLOSED** by this file, `8c8f44c`. |
+| **N4** | A session record stated the 30 July standards enquiry window "has now passed" when it closed the following day. | 2026-07-29 (review) | **CLOSED as a record defect**; the repo copy in `OWNER_ACTIONS.md` 5a was always correct. **The underlying owner action remains open**: `prEN 18228` and `prEN 18282` closed **30 July 2026**. Whether it was met is unrecorded. |
+| **N5** | Withdrawn recall rows `14/30 = 47%` and `19/30 = 63%` sat unflagged at `STATE.md:884`. | 2026-07-29 (review) | **CLOSED 2026-07-29.** Both rows now carry `[NOT REPRODUCIBLE, see above]` and `[WITHDRAWN, see above]` inline, under a blockquote naming `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md:38-39` and `:189` and giving the reproducible figures. The decomposition beneath, which N2 inherited, is marked WITHDRAWN with the true split beside it. Rows kept rather than deleted because a superseded figure is part of the record. |
+| **N6** | `site/llms-full.txt` is on the published-surface manifest (`data/published_count_manifest.json`) yet the claim auditor never scans it: `.txt` is outside `SCANNED_SUFFIXES = {".md", ".markdown", ".html", ".htm"}`. A designated published surface is invisible to the gate that exists to police published surfaces. | 2026-07-29 | **OPEN.** Measurement rule 5: the gate tests something narrower than the standard. Belongs to the gate-scope repair. **Now surfaced by an instrument rather than only recorded here:** `scripts/f25_exposure.py` reports its manifest corpus as 9 files of 10 and names the tenth with the reason, and `tests/test_f25_exposure.py` fails if that notice disappears. A corpus that quietly loses a member reports less exposure and reads as better news. |
+| **N7** | `SHORT_DURATION` (`claim_auditor.py:111`) exempts any bare `N seconds/minutes/ms` as "UX copy, not statistical claims", and therefore exempts genuine published performance claims. Measured instances: `site/regions/uae.html:416` publishes "From pip install to a categorised, article-cited finding in under 10 seconds"; `docs/QUICKSTART.md:7` publishes "Regula tells you where you stand in 10 seconds". Neither is measured anywhere in the repo. | 2026-07-29 | **OPEN, owner ruling needed.** Is a published performance claim UX copy? Deliberately not patched: changing the exemption is a gate-scope decision. |
+| **N8** | Regulatory currency movement partly unapplied. `OMNIBUS_OJ_DATE` was correctly flipped to `2026-07-24` and `OMNIBUS_IN_FORCE_DATE` derives `2026-07-27`, but tracked files still carry the phrase "pending OJ publication". **14 tracked files contain it; 13 once `CHANGELOG.md` and `content/regulations/delta-log/` are excluded**, both of which legitimately record what was true on a past date. Count produced by the predicate: `git ls-files -z \| xargs -0 grep -ln "pending OJ publication" \| grep -vE "CHANGELOG\|delta-log" \| wc -l`. | 2026-07-29 | **OPEN, needs triage.** The script and test occurrences are conditional else-branches and are correct to keep. The reference data, the committed benchmark artefacts and the user-facing example are stale output and are not. A regulatory content sweep, not apparatus. |
+| **N9** | **Article 50 transparency duties for new systems apply from 2 August 2026**, unchanged by the Omnibus (`content/regulations/delta-log/entries/2026-07-24-oj-publication.json`, quoting the OJ text). No session in this programme surfaced this until 29 July 2026. | 2026-07-29 | **OPEN, live deadline: 2 August 2026.** Stated as a date, not a countdown, because a countdown rots. A day-count defect in the 29 July consolidated record said "three days" from 29 July; the correct interval is four days, and `git ls-files -z \| xargs -0 grep -n "three days"` confirms **no tracked file carries the wrong count** (the seven tracked hits all describe the genuine three-day OJ-to-in-force gap, 24 to 27 July). |
+| **N10** | `NUMERIC_CLAIM` misses published numeric claims. Originally recorded as a four-digit gap; **MEASURED 2026-07-29 to be broader than that**. The regex requires the unit word to be ADJACENT to the number, so `465 unique tests` is invisible exactly as `2465 tests` is, and digit count is not the cause. | 2026-07-29 | **OPEN, and worse than first recorded.** `ca.NUMERIC_CLAIM.findall('Expected: 2465 passed.')` returns `[]`. **All six occurrences of the canonical test count on `docs/TRUST.md`, a manifest published surface, are invisible to the gate**, including the comma-separated `2,465 unique tests`. Across the ten manifest surfaces a number-near-unit heuristic finds **37 phrases the gate does not detect on 9 of 10 surfaces**, including `419 risk patterns`, `13 compliance frameworks`, `257 hand-labelled findings` and `8 programming languages`; some entries in that list are artefacts of the heuristic rather than real claims, and the full list is in the 29 July consolidated record so a reader can judge. Widening the regex is gate-scope work and was not done. |
+| **N11** | The custom runner wiring rule in `.claude/rules/tests.md` says new test files must be wired into `tests/test_classification.py`. MEASURED 2026-07-29: **89 test files on disk, 22 wired, 67 not**, including `test_command_citation.py`, `test_delta_log_schema.py`, `test_tracked_citation.py` and `test_claim_diff.py`. The rule has not been followed for some time. | **2026-07-29 (this session)** | **OPEN.** Not fixed here: the existing filter excludes only pytest fixtures, so binding a parametrized test such as `test_bucket_predicate` would break the runner. Wiring the backlog needs the filter extended to parametrized tests, which is shared test infrastructure and a scope of its own. |
+| **Merge-base measurement** | For each finding `--diff-base main` reports at HEAD, does the same claim exist at the merge base? Decides whether an introduced-claim condition alone can unblock the merge. | 2026-07-29 (review) | **CLOSED, this session.** `python3 scripts/claim_diff.py --base main`, main tree. At `b310821`: 278 findings, 55 at merge base, 223 introduced. At `3939949`, the commit that landed this work: **281 findings, 55 at merge base, 226 introduced.** Buckets at `3939949`, total / at-base / introduced: `docs/improvement/` 203 / 0 / 203; `benchmarks/ + docs/benchmarks/` 67 / 55 / 12; `.claude/rules/` 8 / 0 / 8; `everything else` 3 / 0 / 3. **Answer: an introduced-claim condition alone would NOT unblock the merge.** It removes 55 and leaves 226. **The `everything else` 3 are `docs/adr/0001-claim-identity.md`** (two illustrative figures at L34, one superlative at L101). Writing the ADR about claim identity added three claims to the corpus that measures claims. That is the self-referential loop again, recorded rather than fixed: the bucket predicate was deliberately NOT amended to reclassify `docs/adr/` as a working document, because changing a predicate so that a file the author just created stops counting is the move this programme exists to catch. |
+| **N12** | **A published-surface gate condition would turn `main` red.** The condition ignores the diff by design, so on main's own push trigger it scans main's whole tracked corpus, not the branch diff. **SUPERSEDED-BY:N16** on its file count: this row originally said "in 29 files", which has no apparatus and does not reproduce. | **2026-07-29** | **OPEN, owner ruling needed, and it blocks owner decision 7.** MEASURED by `python3 scripts/merge_blockers.py --main-only` against a clean worktree of `main` at `6daacd2`: **168 published-surface findings across 138 tracked md/html files**, in **33 files** (corrected from 29, see N16), largest being `benchmarks/README.md` 28, `docs/benchmarks/PRECISION_RECALL_2026_04.md` 19, `docs/TRUST.md` 14, `benchmarks/CLEAR_CASE_CLUSTERS.md` 14, `references/tree_sitter_implementation_guide.md` 12, `docs/MODEL_CARD.md` 12. **Options, not chosen:** fix the 168 before enabling; scope the condition to the diff, which reopens the hole it exists to close; enable it warn-only on main and blocking on pull requests; or accept the 168 as a recorded baseline and fail only on increase. The owner rules. |
+| **N13** | **The residue under both gate conditions is 15 and is not all fixable.** **SUPERSEDED-BY:N15 SUPERSEDED-BY:N18. Do not quote this row's disposition figures.** The `6 fixable` below was over-counted by one (N15) and the residue has since been burned down and re-measured (N18). The `15` itself is not superseded: it is correct at `931dfa4` and moved because the corpus moved. | **2026-07-29** | **OPEN.** Enumerated by `python3 scripts/merge_blockers.py` at `931dfa4`, main tree: 281 total, 226 survive introduced-claim alone, 70 survive published-surface alone, **15 survive both**. Disposition produced by predicates in that script, not by hand: **6 fixable, 7 contested, 2 inherited** [SUPERSEDED, see N15 and N18]. The 2 inherited are N5's withdrawn rows, which must not be sourced. The 7 contested are gate limitations: five are the document disclaiming a figure (`NOT supported: any claim that ... 80% accurate`), one is `nothing else` inside "changing nothing else" in a controlled-experiment description, and three are illustrative figures inside `docs/adr/0001-claim-identity.md`. **A mergeable state is therefore NOT reachable by sourcing alone**: 6 of 15 can be fixed by adding provenance, and the other 9 need either a gate change or a ruling. |
+| **Gate scope repair** | `--diff-base` scans whole files rather than introduced claims. | 2026-07-28 | **OPEN. Not started in four consecutive sessions, but its design is now decided by measurement rather than argument.** Bucket figures re-derived at `3939949` in the main tree by `python3 scripts/claim_diff.py --base main`, produced by the same predicate that enumerates the set: **203 of 281 findings are `docs/improvement/`**, 67 are `benchmarks/ + docs/benchmarks/`, 8 are `.claude/rules/`, 3 are `docs/adr/`. The previous "201 of 277" mixed a bucket count taken at 276 in the pre-N1 main tree with a post-fix total, and is withdrawn. **What each candidate condition achieves, from the same run at `3939949`:** introduced-claim alone, 281 to **226** (removes 55, 19.6%); published-surface alone, 281 to **70**; both together, 281 to **15**. At `b310821` the same three figures were 223, 67 and 12; the difference is the three ADR findings. **Recommendation: implement both, and treat the published-surface condition as the load-bearing one.** The introduced-claim condition is worth having because it is what stops a one-line edit inheriting a document's whole backlog, but on this branch it is nearly inert, because the branch created the documents. |
+| **N14** | **The 168 is a statement about the product, not only about a gate.** `main` is the shipped, public state of this repository: it is what `origin/main` serves, what a reader clones, and what the website is built from. **168 numeric and superlative claims on its published surfaces carry no in-paragraph provenance.** MEASURED at f286562 in the main tree by `python3 scripts/merge_blockers.py --main-only`, against a clean worktree of `main` at `6daacd2`: 168 findings over 138 tracked md/html files, in 33 files, the itemisation reconciled against the total by the script. Concentration: `benchmarks/README.md` 28, `docs/benchmarks/PRECISION_RECALL_2026_04.md` 19, `docs/TRUST.md` 14, `benchmarks/CLEAR_CASE_CLUSTERS.md` 14, `docs/MODEL_CARD.md` 12, `references/tree_sitter_implementation_guide.md` 12; those six are **99 of 168**, and the four named in the session brief are **73 of 168**. | **2026-07-29 (this session)** | **OPEN, recorded so the ruling is made against the fact and not against a gate-configuration question.** No fix attempted and no plan proposed: the disposition is the owner's. Note what this figure is NOT. It is not a count of false claims; an unsourced claim may be perfectly true. It is a count of claims a reader cannot check from where they are standing. It also predates this branch entirely, so no work here caused it and no work here removes it. |
+| **N15** | **The residue disposition classified per finding while the remedy operates per paragraph, so `fixable` was over-counted.** `paragraph_has_source()` is evaluated once per paragraph and every claim inside inherits the verdict, so a citation cannot be aimed at one line. **SUPERSEDES:N13**, whose `6 fixable` is one too many. | **2026-07-29** | **CLOSED as a measurement defect, and the underlying document issue is OPEN.** MEASURED at f286562: `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md:37` (`33%`, reproducible, backed by `benchmarks/synthetic/RECALL.json`) shares paragraph 35-39 with `:38` and `:39`, both marked `[NOT REPRODUCIBLE]` and both classed `inherited`. Sourcing `:37` would therefore cite two withdrawn figures. Reclassified `blocked` by predicate in `scripts/merge_blockers.py`, not by hand, and guarded by `tests/test_merge_blockers.py` (content-addressed, so editing the document does not silently retarget the assertion; control: 1 test fails with the predicate disabled). **What remains open is the document:** the reproducible row can only be sourced once the withdrawn rows sit in a paragraph of their own, which is a presentation change and the owner's call. Found by attempting the fix, not by reading. |
+| **N16** | `scripts/merge_blockers.py` printed totals that nothing checked against the breakdowns printed beneath them. **SUPERSEDES:N12** on the "29 files" figure. | **2026-07-29** | **CLOSED** by `reconcile()`, which every printed total now passes through, checked against the same itemisation the reader is shown, including the `--json` path. Covered by `tests/test_merge_blockers.py`, **13 tests** at 2026-07-30 (10 when this row was written); control run both ways: 6 fail with the check neutered, all pass restored. **How many totals and how many reconciliations: see N21.** **The discrepancy that prompted it does not exist.** `--main-only` reports 168 and itemises 33 files summing to 168, at f286562 AND at `ec484b7`, the commit that introduced the script and recorded the figure. The "29 files" in N12 was recorded without an apparatus and cannot be re-derived, which is this file's own rule about figures whose apparatus is gone. Corrected against the tree. |
+| **N17** | **A second published test count existed that no gate covered.** `docs/TRUST.md` publishes how many functions the legacy `tests/test_classification.py` runner executes; `scripts/cascade_count.py` propagates only the pytest-collected count. **SUPERSEDED-BY:N27** on its closing note about the `N passed` figure: that figure is not a test count at all, so "not machine-checked" understated it. | **2026-07-29** | **CLOSED, and it was self-inflicted.** Wiring two new test files into the custom runner, which `.claude/rules/tests.md` requires, moved the runner from 963 functions to 978 while `docs/TRUST.md` carried 963 in **two** places (line 95 inside a reproduction instruction, line 381 in the summary table). Both corrected; verified by an actual run: `Running 978 tests... Results: 1386 passed, 0 failed, 0 skipped (978 test functions)`, rc=0. Guarded by `tests/test_published_count_manifest.py`, which recomputes both figures and covers both locations. Locations produced by `git ls-files \| xargs grep -n 963`, not by reading: the other tracked hits are `CHANGELOG.md`, `docs/improvement/*` and two code comments, all legitimately recording a past date, plus hash coincidences in `uv.lock` that must never be text-replaced. **The `N passed` figure is still not machine-checked**, because deriving it costs a twenty-minute run; it is re-derived by hand and that limitation is stated in the test. |
+| **N18** | **Item 2 result: the six fixable residue items, attempted.** **SUPERSEDES:N13** on the disposition: after this burn-down the residue is 10 with **0 fixable**. | **2026-07-29** | **FIVE SOURCED, ONE RECLASSIFIED, and the work is PUSHED:969f3a8.** That commit is off the remote and must stay off it; anything pushed with it as an ancestor publishes it, which is how the N2 hold failed. Sourced, all through the `file-ref` arm rather than `citation-word`: `RESULTS-synthetic-2026-07-28.md:58,59` to `benchmarks/headtohead/results/regula-synthetic-2026-07-28.json`, re-derived from that artefact before citing it; `RESULTS-synthetic-v2-2026-07-28.md:99` twice, to the same artefact and to `benchmarks/synthetic/RECALL.json`; `v2:181` to `docs/improvement/HOSTILE-REVIEW-DISPOSITIONS.md` objection 6, which sources the **attribution** only, since whether 134 is re-derivable from `measure_pattern_reach.py` was not checked and is not claimed. Reclassified `blocked`: `v2:37`, see N15. The two `inherited` rows were deliberately not sourced. **Residue MEASURED at 969f3a8 in the main tree by `python3 scripts/merge_blockers.py`: total 273, introduced-claim alone 218, published-surface alone 65, BOTH 10** (0 fixable, 1 blocked, 7 contested, 2 inherited), down from 15 at f286562. **A mergeable state is still not reachable by sourcing alone:** of the 10 remaining, 1 needs a presentation change and 9 need a gate change or a ruling. |
+| **N23** | **The quarantine holds 44 entries of which 21 suppress anything, and its own `_units` field had gone stale for the second time.** `_units` read "42 entries" and "45 suppressed occurrences over 42 unique pairs" while `_count` in the same file said 44, in a field whose own text records a previous correction of exactly this kind. **SUPERSEDED-BY:N31** on its 44-entry figure, which the category-A burn-down took to 29. **SUPERSEDED-BY:N32** on its per-entry cause split: the four entries this row calls allowlist-pre-empted do not reproduce as such. | **2026-07-30 (this session)** | **`_units` FIXED at root; the 23 silent entries are OPEN and the disposition is the owner's.** Re-measured in place, wrapping the real `is_quarantined` and delegating, over the 56 tracked `site/*.html` pages: **380 claims, 0 unsourced, 26 suppressed occurrences over 21 unique pairs**. So 23 of 44 entries fire on nothing. **Cause of each of the 23, reconciled against the total by predicate:** 15 the claim text is gone from the page entirely (the `20%`/`30%`/`40%`/`60%`/`80%` rows on `site/index.html`, `site/locales/de.html`, `site/locales/pt-br.html`); 3 present but blanked by `strip_noise` (`50%` on the same three pages); 4 pre-empted by an allowlist pattern matching the whole paragraph, **which is F30 measured on live data** (`0%` on the same three pages plus `29%` on `site/guides/article-9-risk-management.html`); 1 whose paragraph has since gained a source (`43%` on `site/sample-report.html`). **Removing all 23 is gate-neutral, verified rather than assumed:** with them removed, `python3 scripts/claim_auditor.py --diff-base main` produced byte-identical output and `site_integrity.py` stayed rc=0. **NOT DONE HERE.** Burn-down requires a per-item disposition, the file states its own priority order, and jumping it is not this session's call. `_units` no longer carries figures at all: it names `tests/test_claim_quarantine.py::test_quarantine_liveness_is_recomputed_not_asserted`, which recomputes both units on every run and asserts only the invariants. Deliberately NOT asserted there: that every entry fires, which would force the burn-down above, and that the site corpus is free of unsourced claims, which would be a new gate condition and out of scope. |
+| **N24** | **Owner decision 1 encoded.** The quarantine sensitivity-admissions mechanism was ratified with three conditions on 2026-07-28 and went unapplied for five sessions. | **2026-07-30 (this session)** | **CLOSED. Three conditions, three tests, three controls, each run both ways.** (1) *Every admission names the finding ID.* The old check accepted any non-empty `finding` field, which "the auditor got stricter" satisfies; it now must match `^[FN]\d+$` **and resolve to a row in this file**. Control: prose cause planted in the real data, test fails naming it. (2) *Admissions only for claims that pre-date the increase.* Each tranche now declares `instrument_commit` and every admitted claim must be present in its file at that commit's PARENT. `instrument_commit` is **`c7c0ae9`**, the commit that changed the instrument, NOT `b954ecf`, which only logged F21; naming the docs commit would have resolved pre-dating against the wrong tree, and that is N22 biting inside another mechanism. Control: a third admission whose text is new prose, with the ceiling and itemisation adjusted so only condition 2 could fire, fails naming the claim. (3) *The ceiling re-bases once, visibly, with the reason recorded, and shrinks from the new ceiling.* Each tranche declares one `rebase` object with `from`, `to` and `reason`; the chain must start at the base ceiling, step by exactly that tranche's live admission count, stay contiguous, and end at the ceiling the code allows. Control: ceiling raised 44 to 45 with the data untouched, test fails with "a ceiling that grows with no recorded re-base is not permitted". **A latent defect was fixed to make condition 3 satisfiable:** the old itemisation test required EVERY admission to be in `entries`, so burning one down failed the suite. An admission is now in `entries` if and only if it has not been burned down, and a `burned_down` object lowers the ceiling automatically. |
+| **N25** | **Owner decision 2 encoded, and the repo's own OJ record disagreed with itself.** The split ruling on Articles 11 and 12 went unapplied for five sessions. | **2026-07-30 (this session)** | **CLOSED, both halves, and a third defect found while doing it.** **Reject half, verified against the primary text before encoding:** Regulation (EU) 2026/1744 Article 1, point (10) reads "in Article 11(1), the second subparagraph is replaced by the following", and the replacement lets SMEs, start-ups and SMCs supply the Annex IV elements in a simplified manner, obliges the Commission to establish a simplified technical-documentation form, and requires notified bodies to accept it. Encoded on `references/framework_crosswalk.yaml` as `amended_by`, `amendment`, `amendment_source`, `amendment_verified`, and surfaced in `regula map-frameworks` text output through a generic amendment branch in `scripts/framework_mapper.py`, because data the formatter ignores still shows a reader the pre-Omnibus duty. **Ratify half:** `owasp_agentic` stays unmapped on Articles 11 and 12, with the reason now in the crosswalk rather than only here. **Article 12 is not amended at all**, established by enumerating the amending article's numbered points against the primary text: **40 points, 1 to 40 with none missing, of which 37 amend an existing article of Regulation (EU) 2024/1689 and 3 insert new ones** (point 6 inserts Article 4a, point 25 Article 60a, point 32 Article 75a and following). None touches Article 12; the sequence runs Article 10 at point (9), Article 11 at point (10), Article 17 at point (11). The first pass of that enumeration matched only the 37 and would have supported a bare "40 amending points" that was true by luck; the three inserting points were found by asking which numbers the pattern had missed. **Third defect:** `content/regulations/delta-log/entries/2026-07-24-oj-publication.json` listed `affected_articles` as 5, 6, 50, 113 while its own `verified_by` field named the amended Article 11(1). Corrected to include 11 and the four generated outputs regenerated by their committed scripts. Guarded by `tests/test_crosswalk_omnibus.py`, 10 tests; three controls run: removing the amendment fields fails 4 tests, adding an OWASP Agentic item fails naming the reversed ruling, reverting the formatter fails the reader-visibility test. |
+| **N26** | **F25 re-measured by a committed script. Neither figure on record reproduces, and the exposure is far larger than either.** **SUPERSEDES:F25** on its exposure figure. | **2026-07-30 (this session)** | **MEASURED. Owner decision 3 is now answerable.** `scripts/f25_exposure.py`, committed, with its six corpus definitions written down inside it and every total reconciled against its own itemisation. Exposure is decided by toggling ONE variable on the REAL function: `CITATION_WORDS` swapped for a pattern that cannot match, nothing else changed. **On the gate's own corpus (`diff-base`, 59 files) at `e8b5986` in the main working tree: 279 paragraphs are sourced by the citation-word arm, and for 215 of them the word is the ONLY provenance. In the gate's own unit, findings go from 273 to 364 with the arm off, so 91 findings across 20 files are currently suppressed by an ordinary English word.** Across all tracked scannable files: 512 citation-word paragraphs, 427 exposed, and 133 findings suppressed. **Neither 22 / 46 nor 29 / 53 is recoverable**, and no corpus matches EITHER SIDE of either figure; the twelve candidates are printed by `--recover`. Establishing that both prior figures are unreproducible is the result, and no third figure is offered as their successor. **F25 is NOT fixed:** re-ordering the arms is a gate-scope change and out of scope. Two defects were found in the apparatus while building it and both are recorded in the module: a first draft counted claim occurrences by applying the auditor's claim regexes to a paragraph directly, which counts matches the gate exempts, and was deleted rather than corrected in favour of running the real gate twice; and a finding key of (file, line, kind, snippet) reported **267** where the auditor's own list reported **273** over the same 59 files, because six claims repeat identically on one line. Guarded by `tests/test_f25_exposure.py`, 12 tests; controls: moving the citation-word arm after the file-ref arm fails the ordering test, and removing the occurrence ordinal reproduces the 267-versus-273 undercount. |
+| **N27** | **SUPERSEDES:N17** on its `N passed` note. **A figure published on `docs/TRUST.md` that looks like a test count is not one, and is invariant to adding tests.** The custom runner prints `Results: N passed, ...` where `N` is `helpers.passed`, incremented only by the `assert_true` / `assert_eq` / `assert_false` helpers in `tests/helpers.py`. A test written with a bare `assert` executes, passes, and contributes **nothing** to it. | **2026-07-30 (this session)** | **ANNOTATED on the surface, mechanism OPEN.** Found by predicting that the figure would move and watching it not. **Positive proof, three runs:** `Running 978 tests... Results: 1386 passed, 0 failed, 0 skipped (978 test functions)` on 2026-07-29, then `1010 test functions` and then `1011 test functions` on 2026-07-30, **`1386 passed` every time**, rc=0 every time. **33 functions were added across those runs and the figure did not change by one.** Cause confirmed by enumeration rather than inference: the five test files touched or added this session contain **0** calls to those helpers (`grep -cE "assert_true\(\|assert_eq\(\|assert_false\("` per file). `docs/TRUST.md` line 95 now states in the surface itself that `1386 passed` counts helper assertions and that the number to read is the function count in brackets. **Not fixed:** making the counter count tests means changing `tests/helpers.py` and the runner's summary, which alters a published figure's definition and is shared test infrastructure; it belongs with the N11 runner-wiring work, not to a session encoding owner decisions. This also explains, and partly supersedes, N17's note that the figure "is not machine-checked": the deeper problem is that it is not a test count, so checking it would have certified the wrong thing. |
+| **N28** | **The full suite is not deterministic: `tests/test_security_hardening.py::test_redos_ast_patterns` asserts on WALL CLOCK.** It times `pattern.search(input)` for eight compiled regexes against pathological inputs and fails any that exceeds **1.0 second**. A wall-clock threshold inside a sixteen-minute suite measures machine contention, not the regex. | **2026-07-30 (this session)** | **OPEN, not touched, and the reason for not touching it is the point.** OBSERVED: the suite ran `1 failed, 2527 passed in 956.70s`, rc=1, on `AssertionError: ReDoS in ast_engine: ['_RE_JAVA_METHOD_DEF: 1.64s on len=10008']`. **Diagnosed, not assumed.** The test passes in isolation in 0.13s and 5 consecutive isolated runs all exit 0. Measured directly, `_RE_JAVA_METHOD_DEF.search()` on both 10,008-character inputs in that set runs at a **median of 0.0095s and 0.0103s, roughly 100x inside the threshold**. A 1.64s reading is therefore a **~170x** wall-clock excursion under scheduling contention, not a regex on the edge of catastrophic backtracking, and nothing in this session touches `scripts/ast_engine.py` or any detection pattern. **Deliberately NOT fixed by raising the threshold, marking it flaky, or skipping it.** Every one of those is suppression to make a check pass, and this repository's own `docs/TRUST.md` already warns that "wall-clock is machine-dependent and is NOT a claim; it has varied by a factor of two on one laptop in a single day". Here it varied by two orders of magnitude. The durable fix is to assert on a deterministic proxy for backtracking, such as a step or comparison budget, rather than on elapsed time, and that is a change to a security test and its published meaning. **Consequence a reviewer must weigh: `full suite green` is a statement about one run, on one machine, at one load.** |
+| F21 | Self-citation via canonical URL. | 2026-07-28 09:48 | CLOSED in `c7c0ae9`, which added `page_identity`, `SELFREF_TAG` and `_is_self_url` to `scripts/claim_auditor.py`. **Attribution corrected 2026-07-30, see N22:** this row said `b954ecf`, a docs-only commit that RECORDED the finding. Not independently re-verified. |
+| F22 | The 0.5 magnitude floor. | 2026-07-28 16:09 | CLOSED in `c7c0ae9` (floor replaced by `STALE_CHECK_EXEMPTIONS`) with the regression pair in `88d45f7`. **Attribution corrected 2026-07-30, see N22:** this row said `0e1f509`, a docs-only commit. Not independently re-verified. |
+| F24 | Recall underivability. | 2026-07-28 16:09 | CLOSED in `bb98261`, which added `scripts/build_recall_artefact.py`, `benchmarks/synthetic/RECALL.json` and `tests/test_recall_artefact.py`. **Attribution corrected 2026-07-30, see N22.** Not independently re-verified. |
+| F26 | Branch red for six commits under a collect count. | 2026-07-28 16:09 | CLOSED in `bb98261`, which renamed the assertion to `test_synthetic_fixture_precision_recall_matches_artefact` and made it read its expectation from the artefact. **Attribution corrected 2026-07-30, see N22.** Not independently re-verified. |
+| F27 | F8 not supported by a like-for-like comparison. | 2026-07-28 16:09 | CLOSED in `bb98261`, which withdrew the two unreproducible figures in `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`. **Attribution corrected 2026-07-30, see N22.** Not independently re-verified. |
+| F28 | `cascade_count --check` was a blank gate. | 2026-07-28 16:09 | CLOSED in `f51af33`. **Attribution corrected 2026-07-30, see N22:** this row said `0e1f509`, a docs-only commit. Not independently re-verified. |
+| **N19** | **A current-state record said "Failing: nothing" while the merge blocker was red.** `python3 scripts/claim_auditor.py --diff-base main` exits **rc=1** and is not one of the six fast gates, so its red never appears in a gates block and a reader with no terminal cannot see it. | **2026-07-30 (this session)** | **CLOSED as a record defect; the underlying gate is still red and is recorded in section 6 of this file.** The 29 July consolidated record listed six fast gates rc=0, full suite green and "Failing: nothing" on the same page as a merge blocker exiting 1. Section 6 below now carries the failing gate with its figure, commit and tree, and is the place any future current-state statement belongs. |
+| **N20** | **Supersession between ledger rows was prose-only, so nothing could check that a figure was still current.** `tests/test_ledger_status.py` verified claims about commits and nothing verified currency. | **2026-07-30 (this session)** | **CLOSED.** Declared and bidirectional: the newer row carries `SUPERSEDES:<id>`, the older carries `SUPERSEDED-BY:<id>`, and `audit_supersession()` in `tests/test_ledger_status.py` fails on any unpaired declaration, any marker naming a row that does not exist, any self-reference and any duplicate row id. Six tests. **Control run both ways against the real file**, both directions, and against fixtures for the dangling, self-referential and many-to-one cases. Design reasoning, including why the marker is deliberately NOT applied to a figure that merely moved, is in the module docstring so a later session inherits the basis and not only the conclusion. |
+| **N21** | **Two record sections disagreed about `scripts/merge_blockers.py`: five printed totals versus eight reconciliations.** Neither said what it was counting, so the two read as a contradiction. | **2026-07-30 (this session)** | **CLOSED, and both figures are right about different things.** Derived from the code by `tests/test_merge_blockers.py`, not from either prose figure: **5 `reconcile()` call sites**, in 3 functions, read from the module's syntax tree (`report_main_only` 1, `reconcile_residue` 3 of which one is in a loop, `main` 1); **5 distinct totals printed to a reader**, parsed from the text the report functions emit (`total findings`, `survive introduced-claim alone`, `survive published-surface alone`, `survive BOTH`, `published-surface findings ON MAIN`); and **8 reconciliations executed across the module**, counted by wrapping the real `reconcile` and delegating to it: 6 on the residue path, 1 on the main-only path, 1 more on the `--main-only --json` branch. The gap between 5 and 8 is that `survive BOTH` is printed once and reconciled three ways, and that the JSON branch reconciles its total a second time. **The load-bearing assertion is neither count: it is that every total printed to a reader was reconciled.** Control: an extra unreconciled total planted in `report_residue` fails that assertion by name. |
+| **N29** | **`main`'s published-surface debt was measured with the citation-word arm ACTIVE, so 168 is a floor and not the debt.** A ratchet baselined on 168 would be baselined on a number the gate-scope repair is going to move, because narrowing `CITATION_WORDS` is part of that repair. This is the missing input to owner decision 7. | **2026-07-30 (this session)** | **MEASURED. `python3 scripts/merge_blockers.py --main-only --arm-delta`, a clean detached worktree of `main` at `6daacd2` (tree `b95876d`), scanned by HEAD's `scripts/claim_auditor.py` which was unmodified at `13ffc00`. ONE worktree, ONE auditor module, TWO scans, ONE variable toggled. Over the same 138 tracked md/html files: arm ON **168**, arm OFF **238**, **70 revealed**, and **0 findings stop being reported**, which is the direction check. Every one of those four totals is reconciled against its own by-file itemisation by the script before it prints. The arm-ON pass reproduces the pre-existing `--main-only` instrument exactly: 168 over 33 files. Prediction written before the run: 168 arm-on (right), 61 revealed (WRONG, the actual is 70; 61 is the figure for the BRANCH's published corpus, which is a different corpus). **What the four options in N12 imply at 238 rather than 168** is set out in section 7 below. Concentration of the 70: `site/blog/blog-scanning-10-ai-apps.html` 15, `site/blog/blog-scanning-5-frameworks.html` 14, `content/devto/scanning-5-frameworks.md` 8, `docs/TRUST.md` 6, `benchmarks/LABELLING_CRITERIA.md` 4, `docs/self-scan-results.md` 4. **Note what makes main's figure larger than the branch's for the same pages:** `main` has no `.claim-quarantine.json` at all (`git ls-tree main -- .claim-quarantine.json` is empty), so nothing on main is quarantined, and 15 tracked files under `site/` differ between `main` and this branch. |
+| **N30** | **The 26 findings the citation-word arm holds green on the site corpus had never been looked at, because the apparatus reported counts and not claims.** | **2026-07-30 (this session)** | **ENUMERATED AND CLASSIFIED. F25 is now a product finding, not only an apparatus one.** `python3 scripts/f25_exposure.py --corpus site --enumerate` at `13ffc00`, working tree carrying uncommitted edits to `scripts/f25_exposure.py` and `scripts/merge_blockers.py` only; `scripts/claim_auditor.py` and every scanned page were identical to `13ffc00`. **26 findings in 10 paragraphs across 7 files**, the enumeration produced by the same predicate that produces the count and joined to its paragraph on exact coordinates, never by containment. **Classification: 24 real claims needing provenance, 2 false positives of the claim regexes.** The two false positives are `site/sample-report.html:122`, a conditional sentence inside a terminal-output demo (`If confirmed high-risk (Article 6)`), and `site/blog/blog-aicdi-governance-gaps.html:244`, where `ATTRIBUTED_CLAIM` read the tool name `Write` in "blocks Bash/Write/Edit operations" as an attribution verb. **Nothing on a published surface was changed: that is content work and needs approval.** Three things the enumeration surfaced that a count could not. **(1)** The single most substantive is `site/blog/blog-static-analysis-ai-compliance.html:189`, "the roughly 70% of the EU AI Act that has no source-code footprint". It is the only occurrence of that figure on the page, the page has no methodology note, and it is held green by the word `source` inside "source-code footprint". **(2)** On `site/blog/blog-article-5-prohibited-practices.html:270` the arm matched `ref` inside the CSS class name `article-ref`, because `_citable_text` blanks only `link/meta/img/source/iframe/base/track/area/use` tags and a `<div>`'s attributes survive. A CSS class name is sourcing published prose. **(3)** On `site/regions/south-africa-ai-policy.html` the whole 37-line FAQ section is ONE paragraph, because the `<details>` blocks carry no blank lines between them, so `verified against` in the fourth answer sources the first, second and ninth as well; and the sentence it comes from says the claim "will be verified against the gazetted text when it publishes", which is a promise of FUTURE verification being read as provenance. **On the same corpus at `main`, `site/` carries 38 revealed findings over 8 files, not 26 over 7**, for the two reasons in N29. |
+| **N31** | **The burn-down protocol lowered the ceiling automatically only for sensitivity ADMISSIONS. For an ordinary backlog entry it did nothing, so fifteen entries could be removed and the ceiling would stay at 44, leaving fifteen slots a new entry could occupy without the ratchet firing.** **SUPERSEDES:N23** on its 44-entry figure. | **2026-07-30 (this session)** | **FOUND BY EXERCISING THE PROTOCOL, AND FIXED AT THE CLASS.** The brief asked for the fifteen category-A entries to be burned down "through the protocol condition 3 established, with its `burned_down` objects lowering the ceiling automatically", and to say plainly if the protocol did not behave as designed. **It did not.** `_burn_down_protocol` lived inside the F21 tranche and its instruction was "Lower `QUARANTINE_ADMITTED` in tests/test_claim_quarantine.py in the same commit", which is a manual edit and applies only to the two admitted entries. Neither `.claim-quarantine.json` nor `tests/test_claim_quarantine.py` had any mechanism for a base entry. **Extended rather than worked around:** the quarantine now carries a top-level `burned_down` list and a `_burn_down` protocol for base entries, and `quarantine_ceiling()` derives the ceiling as `QUARANTINE_BASE_CEILING + QUARANTINE_ADMITTED - len(burned_down)`. `QUARANTINE_BASE_CEILING` stays at 42 deliberately: it is what the declared re-base chain is anchored to, and rewriting it would falsify the historical record condition 3 checks. **Result: 44 entries to 29, ceiling 44 to 29, and the ratchet is now tight rather than carrying fifteen slots of slack.** Gate-neutrality verified rather than assumed: `python3 scripts/claim_auditor.py --diff-base main` produced BYTE-IDENTICAL output before and after (`diff` of the two captures is empty; `scanned 59 file(s), 978 claim(s), 274 unsourced`, rc=1 both times) and `python3 scripts/site_integrity.py` stayed rc=0. Four controls run, each restored after: adding one new entry fails the ratchet at 30 against 29; a burn-down record for text still on its page fails by name; stripping `silent_because` fails by name; a `silent_because` that measurement contradicts fails by name. |
+| **N32** | **`LEDGER.md` N23 attributed four silences to an allowlist match. The tree says the operative cause is that the paragraph is sourced, and the allowlist is a second blocker that never gets consulted.** **SUPERSEDES:N23** on its cause split. | **2026-07-30 (this session)** | **RE-MEASURED, AND THE DISAGREEMENT IS NOW RECORDED IN DATA RATHER THAN PROSE.** `scan_file` runs `if has_src: continue` BEFORE the allowlist loop, so a sourced paragraph short-circuits and the allowlist is never reached. Measured by `python3 scripts/quarantine_liveness.py`, which runs the REAL gate over the pages the quarantine names with one thing toggled at a time and never forks `scan_file`. **N23's split was 15 text-gone / 3 blanked / 4 allowlist-pre-empted / 1 paragraph-sourced. The measured split at `13ffc00` is 15 text-absent / 3 blanked-by-strip-noise / 5 paragraph-sourced / 0 allowlist-pre-empted.** Both records agree that 23 of 44 were silent and that 26 occurrences were suppressed over 21 unique pairs; they disagree only on which of two simultaneous blockers is operative. **Both statements about the data are true and the attribution was not:** all four of those paragraphs are BOTH sourced AND allowlist-matched, which is why the entries now carry `silent_because` (the blocker reached first) AND `also_blocked_by` (what stands behind it), both re-measured on every test run. My own prediction before running was N23's split, and it was wrong. **Two further facts fall out.** `site/index.html`'s `0%` is sourced by `citation-word` while `site/locales/de.html` and `site/locales/pt-br.html` reach the same verdict through `file-ref:tests/test_gap_demo.py`, so the three locale pages are not parity copies as far as provenance goes. And because `site/index.html`'s `0%` rests on a citation word, the F25 gate-scope repair could make that quarantine entry live again; F30 is not the only finding entangled with the quarantine. |
+| **N38** | **The "roughly 70% of the EU AI Act" claim has no source and no derivation, and it is on four reader-facing surfaces rather than one.** It is the premise of the product's positioning, not a figure inside a scan report. | **2026-07-30 (this session)** | **INVESTIGATED, CONCLUDED, AND NOT EDITED. Full record in `docs/adr/0002-the-seventy-percent-claim.md`.** Searched the repository (every `70%` occurrence, `docs/what-regula-does-not-do.md`, `references/article_obligations.yaml`, the crosswalk, and `git log -S` across all refs) and externally (four searches, including an exact-phrase search that returned **zero results**). The claim entered at `001b6c5` **with no source attached at introduction**; nothing was ever removed. The nearest repository basis is qualitative and covers seven articles. The nearest external work, Cappelli et al. on ScienceDirect, counts roughly 729 provisions and 862 obligations but does not apportion them between code-detectable and organisational. **Conclusion: no source or derivation exists.** Recommendation, labelled reasoned and not evidenced: weaken to the qualitative claim the repository can already support, with the case against recorded in the ADR. **Circularity risk, not hypothetical: Regula's own page already ranks on the first page for the query a person would use to check this claim**, so if the figure propagates Regula becomes its own citation. **This was already known and deferred:** `docs/improvement/STATE.md:1242` and `docs/improvement/HANDOVER.md:126` both record it as "a substantive modelling claim about the regulation's composition", assigned to "class 2" and marked NOT DONE. This row supersedes that deferral with an actual investigation. |
+| **N33** | **This branch added five findings to the merge blocker and nothing named them.** The blocker read 274 at `13ffc00` and 279 at `9e6b6de`. A session that adds to the blocker without naming what it added is the accounting failure this file exists to prevent, and until 2026-07-30 no committed command could answer it. | **2026-07-30 (this session)** | **NAMED, and the command is committed.** `python3 scripts/claim_diff.py --blocker-delta 13ffc00 9e6b6de`, which scans `--diff-base main` inside a clean detached worktree of each commit and diffs the two finding sets. It reproduces both totals exactly: 274 at `13ffc00` tree `9fd730a`, 279 at `9e6b6de` tree `8e9e483`, 59 scanned files at each. **All five are in `docs/improvement/LEDGER.md` and all five are mine, from the section 7 written last session: `70 findings` (L316), `6 files` (L326), `42%` (L327), `the only` (L336), `cheapest` (L337). Nothing was removed; the net is +5.** The `42%` is a rounding of 41.67%, the exact rise from 168 to 238. **Attribution is exact for four and declared ambiguous for one:** `the only` occurred once at `13ffc00` (L5) and twice at `9e6b6de` (L5 and L336), and identical claim text repeated in one file cannot be told apart across two commits without reading diff hunks, so the tool prints both sides rather than picking one and looking certain. **Control, run and agreeing:** `--carry-instrument` copies this tree's auditor, quarantine and allowlist into both worktrees, so the only variable is the scanned content. It returns the same five. The quarantine burn-down of 44 entries to 29 therefore contributed **0** to the movement, measured rather than assumed, and `git diff --stat 13ffc00 9e6b6de -- scripts/claim_auditor.py` is empty, so the detector never moved either. **This session will itself add findings by writing this row; that figure is in section 6.** |
+| **N34** | **`main`'s revealed site findings had never been enumerated, and the branch's enumeration could not reach them.** `f25_exposure.py` resolves every corpus against this branch's working tree; `merge_blockers.py` owns the clean worktree of `main`. Answering the same question in both places needed one predicate, not two. | **2026-07-30 (this session)** | **ENUMERATED, CLASSIFIED, AND THE APPARATUS IS NOW SHARED.** `scripts/gate_probe.py` is a new leaf module holding `reconcile`, `TotalMismatch`, the off-switch, the occurrence-keyed finding records, the paragraph classification and the per-finding enumeration. Everything in it takes the auditor MODULE and its ROOT as arguments and hardcodes neither, so `f25_exposure` passes `claim_auditor` and `REPO_ROOT` while `merge_blockers` passes the module loaded out of a worktree of `main`. `f25_exposure`, `merge_blockers` and `claim_diff` all import from it and re-export under their old names; `python3 -c "import ..."` confirms all three hold the SAME objects, not equal copies. **`python3 scripts/merge_blockers.py --main-only --arm-delta` at `main` `6daacd2`: 168 with the arm on, 238 with it off, 70 revealed, 0 lost, of which 38 are under `site/` over 8 files.** The refactor is behaviour-preserving: the branch's 26-line enumeration is byte-identical to the pre-refactor capture, and 168/238/70/0 are unchanged. **Classification, 36 real and 2 false positives**, on the standard the branch set (a false positive is revealed text that is not an assertion about the world): `site/sample-report.html:122`, a conditional sentence in a terminal demo, and `site/blog/blog-aicdi-governance-gaps.html:244`, where `ATTRIBUTED_CLAIM` read the tool name `Write` as an attribution verb. The classification is judgement and is labelled as such; the completeness of the set is machine-produced. **26 of the 38 also appear on the branch and 12 do not, computed as a multiset difference on content signature, and ALL TWELVE are claims the branch quarantine lists** (`27.8%` x2, `553 findings` x3, `56.6%` x2, `7.4%` x2 on `blog-scanning-10-ai-apps.html`, `562 findings` on `blog-scanning-5-frameworks.html`, `43%` on `eu-ai-act-recruitment-hiring.html` and on `sample-report.html`). `main` has no `.claim-quarantine.json` at all, so the branch's extra suppression is the whole of the difference. **Nothing on a published surface was changed.** |
+| **N35** | **A CSS class name sources published prose.** `_citable_text` blanks only the void tags in `NONCITATION_TAG` (`link\|meta\|img\|source\|iframe\|base\|track\|area\|use`), so a `<div class="article-ref">`'s attributes survive into the text the source test reads and `ref` matches. Same family as F21, where a page's own canonical URL sourced its claims. Demonstrated 2026-07-30 inside N30's status field rather than as a row of its own, which is one edit from being lost. | **2026-07-30 (this session, promoted from N30's status)** | **OPEN, FROZEN pending owner decision 7, and now MEASURED.** `python3 scripts/f25_exposure.py --corpus site --shape` at `9e6b6de`: **18 of the site corpus's 105 citation-word paragraphs are sourced ONLY by a citation word occurring inside an HTML attribute**, over 4 files, meaning nothing a reader can see supplied the provenance. Concentration: `site/blog/blog-risk-tiers-in-code.html` 10 and `site/blog/blog-article-5-prohibited-practices.html` 6, both `ref` from `class="article-ref"`, plus `source` on `site/assess/index.html` and `see` on `site/index.html:355-459`. **That last one matters beyond this row:** it is the paragraph whose source keeps the `0%` quarantine entry silent, so an attribute-only citation word is currently holding a quarantine entry down. Not fixed: narrowing what `_citable_text` blanks is gate-scope work. |
+| **N36** | **An HTML section with no blank lines is one paragraph.** `split_paragraphs` splits on blank lines, and `paragraph_has_source` is evaluated once per paragraph with every claim inside inheriting the verdict. A 37-line FAQ with nine answers is therefore a single unit of provenance, and one citation word in the fourth answer sources all nine. Demonstrated 2026-07-30 inside N30's status field rather than as a row of its own. | **2026-07-30 (this session, promoted from N30's status)** | **OPEN, FROZEN pending owner decision 7, and now MEASURED.** Same command as N35. Distribution over the site corpus's **1,906 paragraphs** at `9e6b6de`: median **2** lines, p90 **16**, p99 **43**, **max 105**. **305 paragraphs exceed 10 lines and 40 exceed 30 lines.** Thresholds are declared in `f25_exposure.PARAGRAPH_LENGTH_THRESHOLDS` rather than buried in a format string: 10 lines is the point past which a paragraph is no longer a unit a reader would recognise as one piece of prose, and 30 is the scale of a whole HTML section, which is the shape this finding is about. **Of the 26 findings the arm holds green on the branch's site corpus, 14 sit in a paragraph longer than 10 lines and 13 in one longer than 30.** So half the site's suppressed findings are being sourced by a word that may be a hundred lines away from them. Not fixed: changing how paragraphs are split changes every coordinate in the programme. |
+| **N37** | **A key that served two different questions produced a right count and a wrong attribution.** A first draft of `gate_probe` dropped the line number from the finding key so one key could serve both same-tree and cross-commit comparisons. | **2026-07-30 (this session)** | **CAUGHT BY THE JOIN GUARD BEFORE ANY FIGURE WAS PUBLISHED, and fixed.** Dropping the line makes the occurrence ordinal POSITIONALLY UNSTABLE: when the arm-off pass adds a finding EARLIER in a file, every later identical snippet shifts ordinal and the set difference returns the tail of the list rather than the findings actually revealed. MEASURED on `site/guides/eu-ai-act-recruitment-hiring.html` at `main`: `43%` yields one finding with the arm on (line 213) and two with it off (lines 210 and 213); the keyless difference resolved to line **213**, an unsourced paragraph, while the finding actually revealed is line **210**. `enumerate_revealed` raised `UnjoinedFinding` on 4 of 70 revealed findings and refused to print. **The count stayed right at 70 throughout and only the attribution was wrong**, which is why a count-only check would never have caught it. Fixed by giving the two questions two keys: `finding_key` includes the line and is for same-tree comparisons only, `content_signature` carries no coordinates and is the multiset element for cross-commit ones. Both are pinned by `tests/test_gate_probe.py`. |
+| **N22** | **Six ledger rows named the commit that RECORDED a finding as the commit that FIXED it.** F21 was attributed to `b954ecf` and F22, F24, F26, F27, F28 to `0e1f509`. Both are docs-only commits: `b954ecf` touches four files under `.claude/rules/` and `docs/improvement/`, `0e1f509` touches `docs/improvement/STATE.md` alone. A docs-only commit cannot close a code defect. | **2026-07-30 (this session)** | **CORRECTED above, by `git log -S` per finding, not by reading.** True commits: F21 and F22 `c7c0ae9` (F22's regression pair `88d45f7`), F24, F26 and F27 `bb98261`, F28 `f51af33`. **"Six" is produced by enumeration, not by reading.** Every row of section 1 whose status contains CLOSED was scanned for backticked commits and each commit's `git show --name-only` classified; at `e8b5986` that gives **55 table rows scanned and 7 rows naming a docs-only commit**: the six above, plus **N3**, whose closure commit `8c8f44c` touches only `docs/improvement/LEDGER.md` and `docs/improvement/OWNER_ACTIONS.md` and is CORRECT, because N3 is the finding that no ledger existed and creating this file closed it. **No mechanical check was added, and that seventh hit is why rather than a guess:** a predicate of the form "a closure commit must touch a non-docs path" fires correctly on six and wrongly on one, and telling a record-defect closure from a code-defect closure is a judgement no predicate makes. Adding a third marker family in the same session that introduces the supersession markers is also more apparatus than one review can absorb. **The 6-versus-1 split is measured; the decision not to build the predicate is reasoned, not evidenced.** The observation that would overturn it is a rule that separates the two kinds of closure without a false positive. Cheapest reversal: the corrections are prose and revert in one edit. |
+| **N39** | **Two arithmetic defects in the session 9 record, each contradicting evidence pasted beside it.** (a) The consolidated handover's header declared **4** commits and a finish at `41feb51`, while its own section 12.3 itemised **six** and its section 12.2 prose said six; its own pasted `git rev-parse` output showed `ef2b8de`. (b) A five-file test decomposition read `7 + 15 + 15 + 21 + 17` beside a pasted `72 passed`, which sums to **75**. | **2026-07-30 (this session)** | **BOTH DIAGNOSED AND RE-DERIVED FROM COMMANDS, and they are NOT the same defect.** (b) is arithmetic: running each file alone gives `test_gate_probe.py` 7, `test_f25_exposure.py` 15, `test_merge_blockers.py` 15, **`test_claim_diff.py` 18**, `test_claim_quarantine.py` 17, summing to 72 and matching the combined run. **The misattributed file is `tests/test_claim_diff.py`, published at 21 against a measured 18.** (a) is NOT arithmetic, and finding that out changed the fix: `git rev-list --count 9e6b6de..41feb51` is **4**, so the header was internally consistent with its own declared finish. **The declared finish was stale** because `190da47` and `ef2b8de` landed after the header was written and it was never re-derived; `git rev-list --count 9e6b6de..ef2b8de` is 6. An arithmetic check could never have caught (a). The two undocumented commits now have the per-commit diffstat every other commit received: **`190da47`, tree `9f16497`, `docs/adr/0002-the-seventy-percent-claim.md` only, 1 file changed, 6 insertions, 2 deletions**; **`ef2b8de`, tree `f9b12b6`, `docs/improvement/LEDGER.md` only, 1 file changed, 20 insertions, 9 deletions**. Both are docs-only and neither touches code. **(c) A THIRD defect was found while writing this row, and it was found by being caught: the session 9 handover published `ef2b8de`'s tree as f9b1262 (written here WITHOUT backticks, see below) at its line 1542, and `git rev-parse` on it returns `fatal: ambiguous argument`. It names no object in this repository.** The real short tree is `f9b12b6`; the published figure is a transposition of it. It was quoted forward into three places in this file before `tests/test_ledger_status.py::test_ledger_commit_claims_are_verified` refused it with "is written in the object form but names no commit or tree in this repository", and all three were corrected. **The bad string is deliberately written as plain text rather than in backticks, and that is not a dodge around the guard.** The guard's invariant is that a backticked hash in this file names a real object, so a reader can trust every one of them. A string being reported AS invalid is not a claim that it exists, and writing it in the object form would assert the opposite of what the sentence says. Nothing was allowlisted, excluded or weakened to accommodate it; the guard still checks every backticked hash in this file, and it is the reason defect (c) is in this row at all. **This is measurement rule 3 landing on the session that was auditing measurement rule 3:** a figure was copied from a record instead of re-derived, and the only reason it did not survive is that an existing guard tested the claim rather than the prose. It is also outside `check_decompositions.py`'s reach, because the handover's commit table states a tree without the word "tree" on the line, so the `commit-anchors` rule does not see it; the two instruments are complementary and neither is sufficient. **The handover carrying all three defects lives on the Windows filesystem and is not tracked**, so `git grep` for its figures returns nothing and rule 4b applies: it was never a repository surface. That is precisely why this row exists, and why the class is closed by an instrument that can be pointed at an untracked file before it ships. See N40. |
+| **N40** | **Nothing checked that a decomposition stated in prose agreed with the total pasted beside it.** Both N39 defects sat next to their own contradicting evidence through a full session and a review. | **2026-07-30 (this session)** | **CLOSED for the arithmetic shape by `scripts/check_decompositions.py`, with the negative result on the third shape recorded rather than retried.** Three rules, each measured against the real corpus before being kept: `sum-equals` finds **8** explicit `a + b + ... = T` statements in tracked `docs/**/*.md` and **all 8 are arithmetically correct**, so the rule is green on content rather than green because it is inert; `fence-total` finds **0** pairings in tracked docs and **fires on the real N39(b) defect**, naming both sums (`'7 + 15 + 15 + 21 + 17' sums to 75, '0 + 15 + 14 + 16 + 17' sums to 62` against a pasted total of 72); `commit-anchors` reconciles a declared commit count against `git rev-list --count` and, under `--require-head`, catches the stale finish that is N39(a). Pointed at the real session 9 handover the instrument reports **exactly the two N39 defects and nothing else**, rc=1. Control run both ways on a real tracked record, not a fixture: planting `= 260` as `= 261` at `docs/improvement/STATE.md:1892` gives `sum-equals ... sums to 260, stated total is 261, gap -1` with rc=1 and fails `test_the_tracked_corpus_is_clean_at_this_commit`; `git checkout --` restores it and both go green. The module carries its own control and exits **2** rather than 0 if a rule stops firing, because a permanently green check is a blank gate. `tests/test_check_decompositions.py`, 19 tests. **THE RECORDED NEGATIVE RESULT:** a fourth rule was prototyped that paired any `Label: N` declaration with a nearby itemisation by matching the label against section headings. Measured on the tracked corpus it produced **7 findings, all 7 false** (`"OSS corpus" 15 vs 8`, `"README" 161 vs 2` where 161 is a line number, `"NEXT" 1 vs 2`, `"Files scanned" 0 vs 1` which is pasted sample CLI output) and **0 true positives**: it did not even fire on N39(a). `Label: N` in this corpus is overwhelmingly not a count of an itemised set, and the pairing cannot be inferred from proximity or heading text. **Reasoned, not evidenced, on the general question:** the class is closeable only where the record states its anchors explicitly, which is why `commit-anchors` is narrow rather than general. Assumption it rests on: that records keep declaring start, finish and count, which is this programme's stable handover schema. The observation that would overturn it is a pairing rule that separates a count-of-a-set from a line number without a false positive on this corpus. Cheapest reversal: the rejected rule is absent, and `test_the_rule_set_does_not_include_the_rejected_heuristic` fails if it returns, so re-adding it forces a re-measurement rather than a silent regression. |
+| **N41** | **The N37 ordinal defect was fixed where it fired, and nothing had checked whether any other comparison in the programme had the same shape.** N37: a finding key that dropped the line produced a correct total of 70 with a wrong attribution, the difference resolving to line 213 while the finding revealed was at line 210. | **2026-07-30 (this session)** | **AUDITED BY PREDICATE, ONE MORE SITE FOUND DEFECTIVE AND FIXED, AND THE AUDIT IS NOW SELF-RENEWING.** Enumerated by AST walk over the scripts that import the claim apparatus, not by grep and not by memory: **8 apparatus scripts, 42 operation sites, 29 distinct (file, function, kind), 7 cross-state comparisons of finding/claim/fired sets, 1 defective.** Reconciled by `tests/test_setop_inventory.py::test_the_audit_reconciles_against_its_own_enumeration`, which computes every one of those figures rather than reading them. **The defective site is `claim_diff.classify_findings`.** Its key `claim_key` is `(file, normalised snippet)` with no line and no ordinal, so it CAN collide within one file, and it compared a **set**, which loses multiplicity rather than position. On the 210-versus-213 shape, base holding a claim once and head holding it twice, it reported **0 introduced where the truth is 1**: the occurrence the branch added was classified as inherited and vanished from the bucket the merge gate reads. Same root cause as N37, a key too coarse for the question, different symptom. **On the real tree the under-count is 0**, measured at `da728db` by re-deriving the base side as a multiset with the real extractor's own predicate: 280 findings, 209 distinct head keys, 49 keys with duplicates, 71 surplus occurrences, and **zero** keys where base > 0 and head > base. The prediction written before that measurement was 5 to 20 and it was **wrong**; the 49 duplicated keys all sit in files whose base has the claim zero times, so the shipped set test happened to be right. **The defect was LATENT, not active, and is fixed on the strength of being reachable.** `extract_claims` now returns a `Counter`; `classify_findings` takes a multiset and **refuses a set with a TypeError** rather than coercing it, because treating a set as one-of-each would be a different wrong answer. Where base > 0 and head > base the surplus is introduced, the tie-break is the tail in document order and is DECLARED rather than measured, and every finding in such a group carries `present_at_base_ambiguous: True`, matching the standard `blocker_delta` already set by refusing to pick. **Figures unchanged after the fix**, which is the point: `claim_diff --base main` at `da728db` gives 280 total, 55 at base, 225 introduced, itemised 206 + 7 + 8 + 4 = 225 and 206 + 62 + 8 + 4 = 280. **The six safe sites carry their reason in the code**, not in this row: `gate_probe.arm_delta` (line-bearing key, same-tree, cannot collide), `blocker_delta`'s union and multiset difference (coordinate-free key, cross-commit, collides by design and counts rather than picks), `quarantine_liveness.cause_of` and `also_blocked_by` (fired sets keyed identically to the quarantine entries, so the key IS the unit and there is no occurrence to misattribute; checked rather than inherited), and `f25_exposure._manifest_surfaces` (file paths, no multiplicity). **A count-only check cannot catch this class, so none was added:** the seven new tests in `tests/test_claim_diff.py` assert attribution and which occurrence carries it. Control: reverting `classify_findings` to the set-membership body fails 4 of them, including the 210/213 one; restored and all 25 pass. **The audit renews itself.** `tests/test_setop_inventory.py` re-runs the AST enumeration every test run and fails on any comparison site with no classification, so a new set difference cannot land unclassified; a planted site is detected, and a stale entry naming a site that no longer exists also fails. |
+| **N42** | **The 70% remediation had to be drafted on every surface, and TWO premises it rested on were wrong.** | **2026-07-30 (this session)** | **DRAFTED AND COMMITTED AS PUSHED:197eb99, CONDITIONAL ON A DECISION NOT YET CONFIRMED. See ADR 0002.** Options 1 (derive a figure) and 3 (remove the sentence) remain open; if either is chosen `PUSHED:197eb99` is discarded, costing one commit and no published change. **Premise 1 that was wrong: the surface count.** ADR 0002 and the session brief both said FOUR reader-facing surfaces. Re-derived before editing, the answer is **ten locations across six files**. The original predicate was produced by command, which is the rule, but was chosen by hand and matched only phrasings containing **70%**; the identical claim is also published as its complement, `roughly 30% of the EU AI Act`, at six locations the pattern never looked at. A predicate does not make an enumeration complete, a predicate that COVERS THE CLAIM does, and this is measurement rule 4c failing one step BEFORE the command. **Two of the six newly found are `docs/what-regula-does-not-do.md:6` and its verbatim mirror `site/llms-full.txt:291`, which is the sharpest finding here:** the document ADR 0002 names as the QUALITATIVE BASIS for removing an unsourced proportional figure was itself publishing one, `static code scanning may fundamentally address only about 30% of the EU AI Act`. The ADR's argument was circular and nobody had noticed. The ADR further asserted that `site/llms-full.txt` carried the qualitative statement **but not the figure**; it carried the figure. **Premise 2 that was wrong: the replacement wording.** The brief directed `a substantial majority of the Act's obligations are organisational`, citing that same table. Derived by parsing it: **10 articles Regula can address, 9 it cannot, 19 rows, and 8 of the 10 addressable are scaffold-only, reference-only or medium, leaving 2 of 19 as high-confidence code coverage.** Nine of nineteen is not a substantial majority of the table's own rows, and a 19-article coverage map cannot support a statement about the SHARE of a 113-article regulation whatever quantifier is chosen. Publishing it would have replaced an unsourced proportional claim with an unsourced proportional claim, which is the ADR's own argument against option 1. **Raised as a boundary before anything was written; the owner ruled to drop the proportion entirely and claim the KIND of obligation rather than its share.** **No locale variant carries the claim**, all six locale surfaces checked individually, and `site/locales/de.html:586` and `site/locales/pt-br.html:603` already carried the qualitative framing with no percentage, so the English pages were the outliers. **Consequence handled in the same commit:** removing both `30%` and `70%` from two pages orphaned **four LIVE quarantine entries** (`quarantine_liveness.py` at `da728db`: 29 entries, 21 live, 8 silent). Burned down through the file's own `_burn_down` protocol with disposition `corrected`; entries 29 to 25, `_count` 29 to 25, `burned_down` 15 to 19, ceiling falls by four automatically, and `tests/test_claim_quarantine.py` re-measures every record so a burn-down on a false premise fails the suite (17 passed). Removing an entry whose claim no longer exists makes the gate strictly stricter, so this is cleanup and not suppression. `site/guides/eu-ai-act-healthcare.html '70%'` untouched: an unrelated model-accuracy example. **KNOWN AND NOT FIXED:** `site/blog/blog-static-analysis-ai-compliance.html:189` is N30(1), held green by the word `source` inside `source-code footprint`, and the replacement keeps that phrase, so it stays held green by the same word. Gate-scope work, out of this session's scope. **The ADR's `15 files` figure was stated with no commit**; the tracked total is **16 at `da728db`**, and it moves because the records discussing the claim are inside the corpus, which is rule 24 above. Corrected to state the commit. |
+| **N43** | **The published gap-demo figures are not reproducible from the repository.** `data/gap_demo.json` (generated 2026-07-28T15:16:46Z, main tree) and the site panels `tests/test_gap_demo.py` binds to it publish overall **9** with Article 11 at **25**; every clean checkout reproduces **6** and **0**. | 2026-07-30 (directive session, item 2) | **DIAGNOSED WITH A ONE-VARIABLE CONTROL BOTH WAYS; READER-FACING CORRECTION OWNER-GATED.** `build_gap_demo.py --check` is rc=1 in clean detached worktrees at `7b154f8` (tree `689898bd`), `969f3a8` and `e8b5986`, and rc=0 in the main tree at `839b031`. Cause: the main tree's tracked fixture contains gitignored state, `tests/fixtures/sample_high_risk/.regula/registry/7093442f77de75f5.json` (dir dated 11 April) plus `garak.regula.yaml` (16 April, ignored BY NAME at `.gitignore:66`), and `scripts/compliance_check.py` credits any `.regula/*` match as the `regula_docs` component, one of four, 25 points. First hypothesis (the garak file) REFUTED by its own control: copied into a clean worktree, rc stayed 1. Second proven both ways in the `e8b5986` worktree via `cp -r`/`mv`, nothing deleted: **WITH `.regula/`: rc=0; WITHOUT: rc=1.** So the artefact the Class 1 remediation built embeds an input that exists only on this machine, the exact class its own docstring rejected the repo-self-scan for (rule 4b). NOT a regression at the held commits: the contamination predates them by months. **Not fixed here because the honest repair changes published percentages (9 to 6, 25 to 0) on reader-facing pages, excluded by this session's scope; boundary raised.** Durable fix when sanctioned: make `build_gap_demo.py` refuse untracked or ignored inputs inside the fixture it scans, remove or track the contaminating files, regenerate artefact and panels in the same change. Interim detection: both paths are in the tree-guard baseline (N45), so any further mutation of them is named at the next measurement. |
+| **N44** | **The twelve modified files of 30 July are ATTRIBUTED; cross-context sessions are the operating environment, not an anomaly.** | 2026-07-30 (directive session, item 1a) | **CLOSED on the second incident; the FIRST (the silent revert) remains untested.** The files were written by Claude session 70177dfc-58cd-4c7b-8c30-8f1d0522abf1 (a session id, not a git object, so deliberately not backticked; see N39c) running from the HOME-workspace project context (`~/.claude/projects/-home-mkuziva/`), 13:41:42Z to 17:48:31Z: 41 tool calls on the twelve files in the window, Edit timestamps matching file mtimes to the second (`references/annex_iv_template.md` edited 16:47:41Z, mtime 17:47:41.845 +0100), last session event matching the repo-root `.handover.md` stamp 18:48:31 to the second. The transcript parser was CONTROLLED first against this session's own transcript (4 known hits found). That session ran the suite three times; its leftover result file reads `2581 passed, 6 subtests passed in 774.86s (0:12:54)`; the "6 subtests" phrasing is the repo's gitignored `.venv` (pytest 9.1.1, matching CI's pin) against system pytest 8.4.2, whose summary prints no subtest clause. Its records live outside this repo because programme records key off the directory a session starts in; that is the mechanism, and another home-workspace session was OBSERVED LIVE during the directive session (transcript mtime 22:18). **The silent-revert incident's primary record was NOT FOUND**: searched the reflog (no operations in the window), LEDGER/STATE phrasings, the session 70177dfc transcript (44 watcher/inotify lines, all unrelated hook documentation), and every home transcript for "byte-identical to HEAD / reverted to HEAD / identical to the committed" (one hit, 18:25:42Z, StreetSignal's deliberate Cape-Town-Dash restore). Cause untested from inside this session; what would test it is the incident's source record or time window. The cross-context mechanism explaining it is **reasoned, not evidenced**. |
+| **N46** | **`7b154f8` and `969f3a8` are FULL-SUITE VERIFIED for the first time, seven sessions after landing.** Both were previously verified only by targeted tests and the six gates. | 2026-07-30 (directive session, item 2) | **VERIFIED IN CLEAN DETACHED WORKTREES, AND THE EVIDENCE SUPPORTS APPROVING `969f3a8`.** At `7b154f8`, tree `689898bd`: `1 failed, 2455 passed, 34 skipped in 1207.42s`; custom runner `1375 passed, 0 failed, 4 skipped (978 test functions)` rc=0; five of six fast gates rc=0. At `969f3a8`, tree `795977e6`: `1 failed, 2455 passed, 34 skipped in 1164.94s`; custom runner `1375 passed, 0 failed, 4 skipped (978 test functions)` rc=0; five of six fast gates rc=0. **The single failure is identical at both commits, `tests/test_gap_demo.py::TestArtefactIsProducedNotWritten::test_artefact_matches_a_fresh_run`, and it is N43**, the contamination that predates both by months; the held commit therefore changes NO test outcome relative to its own parent, which is the like-for-like comparison the approval needs. The sixth gate red at both is the same N43 cause. **The 34 skips are explained, not assumed:** re-run with `-rs`, 30 of them report `hooks/ not present (local dev file, not tracked in git)` across `test_hooks_audit.py` (27), `test_audit_scoping.py` (2) and `test_audit_surface_conformance.py` (1), which is a by-design absence in any clean worktree; the main tree, which has the untracked `hooks/`, reports 0 skipped. **Caveat carried into the approval:** approving `969f3a8` is orthogonal to N43, but N43's repair will later move the published gap-demo figures (9 to 6, Article 11 25 to 0), so approval is given knowing that correction is pending. |
+| **N47** | **My own stamp integration broke a rule the repository enforces, and the six fast gates could not see it.** `c812ceb` added `from tree_guard import stamp` to nine scripts; `build_gap_demo.py` and `site_facts.py` had no `sys.path.insert` because until then they imported no sibling. | 2026-07-30 (directive session) | **FIXED AT ROOT in `f4e98d7`; `c812ceb` IS A RED INTERMEDIATE COMMIT AND IS RECORDED AS SUCH.** Caught only by the full suite at HEAD `9224a42` (`1 failed, 2594 passed in 1475.56s`): `tests/test_source_of_truth.py::test_sibling_importers_have_path_insert` reported `Modules bare-import siblings without sys.path.insert self-protection: ['build_gap_demo.py', 'site_facts.py']`. All six fast gates were rc=0 across that same window, so this is measurement rule 5 in live form: the fast gates test something narrower than the rule set, and a green gates block is not a green tree. The rule broken is `.claude/rules/python-scripts.md`, which exists because `import classify_risk` from a clean interpreter failed until July 2026. Fixed by adding the self-protection to both files with the reason inline, not by exempting them. Controls: fail-before is the suite line above, pass-after is `8 passed` on `tests/test_source_of_truth.py`, and the behaviour the rule is actually about is proven by running both scripts from a foreign cwd (`cd /tmp && python3 /home/mkuziva/getregula/scripts/build_gap_demo.py --check` rc=0). **Lesson for the class, not the instance:** a change that touches every measurement script at once needs the full suite before it is called done, because the gates it stamps are exactly the instruments that cannot see it. |
+| **N48** | **The session's closing verification took three attempts, and the second was made worthless by my own mid-run commit.** | 2026-07-30 (directive session, close) | **CLEAN AT `346a494`, third attempt; the two earlier attempts are recorded rather than discarded.** Attempt 1, at `9224a42`: `1 failed, 2594 passed in 1475.56s`, the failure being N47. Attempt 2, launched at `f4e98d7` and CONTAMINATED when my commit `346a494` landed mid-run: suite `2595 passed in 1646.65s` rc=0 and runner `1386 passed, 0 failed, 0 skipped (1043 test functions)` rc=0, both green but describing a tree that changed underneath them, which under this programme's own rule describes no single commit. **Attempt 3, quiescent, commit and tree captured to a file BEFORE launch and nothing else touching the tree: `346a494`, tree `e246dadc3cb88ef2d843d61ad4e16523c6d99007`, `2595 passed in 1302.35s`, rc=0 from `$?` after redirection, zero `FAILED` lines, tree confirmed still `346a494` and clean afterwards.** Six fast gates rc=0 each at the same commit; `self-test` rc=0; `doctor` rc=0. **The mid-run mutation is N45's lesson recurring inside the session that recorded it, by the same author, roughly forty minutes later**, which is this row's real content: the rule was written, published, and then broken, so knowledge is demonstrably not the countermeasure. What would prevent it is a launch-time refusal to start a long run on a dirty tree and to commit while one is in flight, which is harness behaviour and runs into the same boundary as `tree_guard`'s WHO-half (N45). **Reasoned, not evidenced:** a repository-side approximation exists (a lockfile written by the runner, checked by a pre-commit hook) and is cheap to reverse, but building a mechanism at the close of a session to catch that session's own mistake is how unproven scaffolding enters a codebase, so it is deferred with the reasoning recorded. The observation that would overturn the deferral is a third occurrence. |
+| **N49** | **The N43 class is closed at the point of creation: a generator can no longer build a published artefact from inputs a clone does not have.** The instance (the wrong published figures) remains owner-gated and unchanged. | 2026-07-31 | **CLOSED FOR THE CLASS in PUSHED:30fd6e8, after an adversarial review falsified the first attempt.** `tree_guard.untracked_inputs(path, root=None)` returns every path under a target whose porcelain code is `??` or `!!`, using `--ignored=matching` (the load-bearing flag: a plain porcelain call reports NOTHING for a gitignored file, which is how a `.regula/registry/` directory fed the published gap-demo figures unnoticed) and `-z` (so names with spaces or non-ASCII bytes survive unescaped). `assert_inputs_tracked` raises `UntrackedInputError` naming them; both directory-scanning generators refuse on the write path and warn on `--check`. **Measured by enumeration over every tracked fixture-bearing directory, not by sampling: 3 contaminated paths across 2 directories.** `tests/fixtures/sample_high_risk/.regula/` and `.../garak.regula.yaml` are LIVE (scanned by `build_gap_demo.py`, reach the published figures); `tests/fixtures/sample_compliant/.regula-baseline.json` is LATENT (`grep -rn sample_compliant scripts/*.py` returns nothing). `benchmarks/synthetic/fixtures` is CLEAN, 38 tracked files. **The first version of this work was falsified by the adversarial reviewer and the falsification is the reason to trust the second.** Its wiring test asserted only that the string `assert_inputs_tracked` appeared in the generator source; the reviewer moved the guard to AFTER the write and every test stayed green while the contaminated artefact was rewritten. Replaced by a behavioural test that clones the repo, overlays the working-tree modules, plants the real contamination shape, runs the real entry point, and asserts rc!=0 AND that the artefact bytes are unchanged, paired with a clean-clone test so an unconditional refusal cannot pass both. The reviewer's mutation was re-applied afterwards and the new test caught it (`1 failed, 12 passed`; restored, `13 passed`). **Also fixed from that review:** the predicate wrongly reported modified, deleted and renamed TRACKED files, so an ordinary uncommitted edit blocked regeneration while advising "track it"; a nonexistent target returned `[]` instead of raising, which made a typo'd path a permanent pass (measurement rule 4); and the advisory git call could break the shipped package outside a git checkout. **The `--check` path WARNS rather than refusing, and that is a stated limit, not a suppression.** `--check` asks "does the committed artefact match a fresh run", and in a tree carrying this contamination the honest answer to THAT question is yes, because both sides are contaminated identically. Strengthening it would turn the gate red until the figures move, which is the owner decision. **The phrase "impossible to miss" is withdrawn:** the reviewer established that no CI job runs `--check` at all and that `tests/test_gap_demo.py` captures output while asserting only the return code, so the warning has no automated consumer. **What would close the instance:** owner sanction to remove the two contaminating paths, regenerate, and cascade 9 to 6 and Article 11 25 to 0 across `site/index.html` and both locale pages; the `--check` warning then becomes a refusal and this row closes. |
+| **N51** | **The same class is OPEN on the most-published number in the repository, the 83.5% precision figure, and closing it is an owner decision rather than a code change.** | 2026-07-31 (adversarial review) | **OPEN, ESCALATED, NOT ACTED ON.** `benchmarks/results/random_corpus/PRECISION.json` holds `overall_precision: 0.835`, published on README, `docs/TRUST.md`, `docs/MODEL_CARD.md` and the site. Its corpus is gitignored BY DESIGN: `.gitignore:130` excludes `benchmarks/results/random_corpus/*.json` and `:138` excludes `benchmarks/results/app_*.json`; 54 JSON files exist there against 4 tracked, and 19 against 7 tracked at `benchmarks/results/`. `benchmarks/label.py:86` globs that directory to write the tracked `benchmarks/results/PRECISION.json`, and `claim_auditor.py:886-887` reads both as the authority for which precision percentages may be published. So the statement this session's work rests on, "an artefact that backs a published number must be derivable from tracked content alone", is NOT true of the repository's headline figure. **Why it was not fixed here:** tracking that corpus means committing third-party source code with its own licence positions, and the `.gitignore` comment says it is regenerable via `rescan_corpus.py`, which may be a deliberate and defensible design. Both readings are open and only the owner can rule. **Also recorded here, same class, theoretical:** a tracked symlink pointing outside the repository defeats any git-based guard; none exists in either guarded fixture today. |
+| **N52** | **`site_facts.py` enumerates by working-tree glob while four sibling instruments enumerate by `git ls-files`, so an untracked test file is counted into every published test-count surface.** | 2026-07-31 (adversarial review) | **CLOSED 2026-07-31 (session B) in PUSHED:290e926, at the invariant rather than at the enumeration.** The fix is NOT to switch `site_facts` to `git ls-files`: the legitimate workflow is to add a test file, regenerate, cascade and commit all of it together, and an enumeration that ignored untracked files would silently publish a count that disagreed with the very suite the developer just ran. Instead the invariant is stated and enforced: **every key in `counts.tests.per_file` must name a file git tracks**, because `per_file` records exactly which files contributed. `site_facts.untracked_test_contributors(per_file, tracked=None)` is the predicate; `count_tests` WARNS at generation naming each stray file (a refusal there would block the legitimate workflow); and `tests/test_site_facts.py` enforces it AT REST, so a contaminated artefact cannot be committed. **Controls both ways, end to end, not on a fixture:** planting a real untracked `tests/test_planted_untracked_probe.py` produced the warning naming it and `untracked_test_contributors -> ['test_planted_untracked_probe.py']`; regenerating from that tree and running the at-rest test gave `FAILED ... test_untracked_contributors_defaults_to_asking_git`; removing the probe and restoring the artefact gave `10 passed` with `data/site_facts.json` byte-identical. **Four tests written before the implementation, all four failing with `AttributeError` beforehand.** Incidental repair: `subprocess` was imported inside `count_tests` and is now a module-level import, which is what the two functions that need it require. **What this does NOT close:** `total_collected` still comes from a working-tree `pytest --collect-only`, so a MODIFIED tracked test file changes the count without tripping this guard. That is a narrower hole (the content is in the repository, and the cascade gates compare published surfaces against the canonical), and it is recorded here rather than left implicit. **Three further holes in this guard, all found by the adversarial review of the closing diff and all OPEN, are recorded as N55 rather than hidden in this cell.** *Superseded original statement of the finding, retained because the row must show what was believed when it was raised, and marked so it cannot be read as current:* ~~"`scripts/site_facts.py:238` uses `tests_dir.glob(...)` and `:221` runs `pytest --collect-only` over the working tree ... Inert at every commit in practice ... Recorded rather than fixed because switching `site_facts` to `git ls-files` deserves its own measurement and its own commit."~~ Three corrections to that text: the line citations moved to `:268` and `:251` when the predicate was inserted above them; "inert at every commit in practice" is **wrong**, because the class fired on 2026-07-31 when a still-untracked `tests/test_tracked_inputs.py` was counted into the canonical artefact and cascaded to nine surfaces (correct only because the file happened to land in the same commit); and the closing sentence describes a fix that was deliberately NOT taken, for the reason given at the head of this cell. The sibling comparison stands: `claim_auditor.py`, `f25_exposure.py`, `merge_blockers.py` and `check_decompositions.py` all enumerate with `git ls-files`. So does the consequence the reviewer demonstrated: with the new test file absent, a tracked-content-only checkout does not merely count differently, it fails to collect (`2159 tests collected, 1 error`, `ModuleNotFoundError: No module named 'test_tracked_inputs'`), because tracked `tests/test_classification.py` imports it. |
+| **N53** | **A gitignored root policy file shadows the tracked one for both artefact generators, and no git-based guard on the fixture can see it.** | 2026-07-31 (adversarial review) | **OPEN, MEASURED INERT TODAY, RECORDED.** Both generators run the CLI with `cwd=REPO_ROOT`, and `scripts/policy_config.py:42-53` resolves `$REGULA_POLICY`, then `./regula-policy.yaml`, then `./configs/regula-policy.*`, then `$HOME/.regula/regula-policy.*`. A gitignored `regula-policy.yaml` exists at the repository root on this machine (`.gitignore:59`, confirmed by `git check-ignore -v`) and shadows the tracked `configs/regula-policy.yaml`. `assert_inputs_tracked(FIXTURE)` inspects only the fixture subtree and cannot see it. **One-variable control by the reviewer: parking the root policy and re-running both commands produced identical output apart from the assessment timestamp**, so this is a structural gap and NOT a live wrong number. `$HOME/.regula/` can never be covered by a git-based guard at all. The durable fix is to run artefact generators with an explicit pinned policy path rather than resolution-by-search, which is a design change beyond the unit this session closed. |
+| **N50** | **The mid-run editing defect occurred a THIRD time, in the session that recorded the second, and N48's own overturning criterion is therefore met.** | 2026-07-31 | **RECORDED, DEFERRAL OVERTURNED, GUARD NOT YET BUILT, AND THE REASON IS STATED.** The full suite launched at 01:19 at `cd6ff3c` was still running when `tests/test_tracked_inputs.py` was created, moving collection 2595 to 2603 underneath it; the run was stopped rather than allowed to finish, because a result describing a tree that changed underneath it describes no commit. It happened a FOURTH time in the same session, deliberately this time: a second clean run was stopped early once the adversarial review returned findings that required editing the tree, on the grounds that finishing a run whose result would be superseded is worse than stopping it. **N48 stated in advance: "The observation that would overturn the deferral is a third occurrence."** It has occurred, so the deferral is overturned by the criterion the ledger set rather than by a later opinion, and the next session inherits a decided question. **Deliberately not built here.** The obvious mechanism, a pre-commit refusal keyed on a runner lockfile, has a flaw a rushed implementation would ship: an orphaned lockfile from a killed run blocks every subsequent commit, which is worse and more confusing than the failure it prevents. It needs a PID-liveness check and an explicit override. Building that at the close of a session, to catch that session's own mistake, is the pattern N48 itself warns produces unproven scaffolding. **Reasoned, not evidenced:** a PID-liveness lockfile is the cheapest correct form and is trivially reversible (delete the file, drop the hook). The observation that would overturn THAT judgement is a further occurrence before the guard lands. |
+| **N54** | **The mid-run editing defect has now occurred FIVE times, and the fifth exposes it as structural rather than careless.** | 2026-07-31 (session B) | **RECORDED; the guard N50 defers is now the single highest-value process fix, and the cheaper mitigation is stated.** The step-1 baseline suite was still running when editing began, so it was stopped. **Why this one is not simple forgetfulness:** the operating directive requires a full-suite run during step-1 state re-establishment AND work in step 3, the suite takes 15 to 25 minutes, so a session following both literally must either idle for that duration or overlap them. **Reasoned, not evidenced:** the step-1 baseline suite carries little decision value in a session that will modify the tree, because the claim that matters is the FINAL suite on the committed state, which must run regardless; the decisive cheap step-1 check is the six fast gates plus the linter, which run in seconds. Assumption: no defect exists that the full suite catches while all six gates AND the final suite miss it. The observation that would overturn it is a session where the step-1 suite fails but the gates and the final suite pass. Cheapest reversal: reinstate the step-1 suite, since nothing depends on its absence. **This does not retire N50**; a lockfile guard with a PID-liveness check would have refused the edit and forced the choice explicitly, which is better than relying on either discipline or this reasoning. |
+| **N55** | **The N52 guard has three holes of its own, and one of them lets its enforcement test pass without ever consulting git.** | 2026-07-31 (session C, adversarial review of the N52 diff) | **OPEN, ALL THREE MEASURED, NONE FIXED IN THE COMMIT THAT RAISED THEM.** (a) **Vacuous pass, the serious one.** `untracked_test_contributors` swallows `OSError`/`CalledProcessError` and returns `[]`, which is the PASS value, so the at-rest test `test_untracked_contributors_defaults_to_asking_git` cannot distinguish "git says every contributor is tracked" from "git never ran". Measured in place with `REPO` repointed at a non-git directory: `REAL -> []`, `NON-GIT -> []`, `NON-GIT + BOGUS CONTRIBUTOR -> []` (silent), `IN REPO + BOGUS CONTRIBUTOR -> ['test_this_file_never_existed.py']`. This is measurement rule 4 ("a blank gate is not a green gate") violated by the single test carrying the entire guarantee. The swallow is justified in the docstring for the WARNING path, where `scripts/` ships as a PyPI package outside any checkout; that justification does not transfer to the ENFORCEMENT path. (b) **Non-recursive glob against a recursive collector.** `per_file` is built from `tests_dir.glob("test_*.py")` (`:268`, top level only) while `total_collected` comes from `pytest --collect-only tests/` (`:251`, recursive). Demonstrated on a scratch tree under this repo's own `python_files = ["test_*.py"]`: 3 collected, `per_file` sees `['test_top.py']`. So an untracked `tests/<subdir>/test_*.py` (or an untracked `tests/<subdir>/conftest.py`) inflates `total_collected`, cascades to the README badge, and produces NO `per_file` key, so the predicate cannot see it and the at-rest test stays green. (c) **One-directional.** The predicate iterates `per_file` keys, so a tracked test file DELETED from the working tree without `git rm` drops its key, lowers the count, and reports `[]`. "Every key names a tracked file" does not imply "every tracked file is a key", and only the second direction catches under-counting. **Also recorded, lower consequence:** the row's phrase "a contaminated artefact cannot be committed" is an overstatement and is withdrawn, because no git hook enforces it (`.git/hooks/` holds only samples) and CI runs pytest on `main` only (`.github/workflows/ci.yaml:2-6`), so nothing runs it on this branch; the three pre-existing tests that fake `subprocess.run` now also feed that fake to the new predicate, which parses `"2678 tests collected"` as a `git ls-files` result and declares all 101 tracked files untracked without failing anything; `claim_auditor.py --verify-facts` derives its canonical from a working-tree `sf.compute()`, the same limitation N49 recorded for `build_gap_demo --check`; the basename comparison is unsound by construction (a tracked `tests/fixtures/**/test_x.py` would mask an untracked top-level `test_x.py`), measured inert today because no tracked `test_*.py` exists outside the top level; and `claim_auditor.py:1197` carried a `"2354"` canonical hint key, 258 out of date. **That last sub-item is CLOSED in PUSHED:7dba517**, which replaced the literal with `str(facts["counts"]["tests"]["total_collected"])`; it is recorded here rather than left reading "still carries", because an adversarial review found that the closing commit mentioned it in neither its message nor N56, which is how an open item silently disappears. (a), (b) and (c) above remain OPEN: PUSHED:7dba517 did not touch `scripts/site_facts.py`. |
+| **N56** | **The landing page published a test count 258 short for three days while BOTH gates that exist to catch that reported green, and a second surface was 1,395 short and covered by no gate at all.** | 2026-07-31 (session C) | **CLOSED FOR THE CLASS in PUSHED:7dba517; every instance corrected.** `site/index.html` published `<strong ...>2,354</strong> tests` since `bb52488` (2026-07-28) through cascades to 2,595, 2,608 and 2,612; `site/locales/de.html` and `site/locales/pt-br.html` published `2.349`. All three are manifest surfaces. **Two INDEPENDENT blindnesses, either alone sufficient.** (1) Every `COUNT_TEMPLATES` entry joined number to unit word with `\s+`, and `</strong> ` is not whitespace, so nothing matched and `_stale_values` nominated nothing. (2) The candidate scanner `(?<![\w,.])(\d{1,3},\d{3}|\d{4})(?![\w,.])` cannot see dot-grouped `2.349` at all, so the two locale pages were unreachable by a second route; and `_swap` wrote `f"{new:,}"`, so even once detected a German page would have received an English-formatted number. **`claim_auditor --verify-facts` shared blindness (1)** through `(?:\s*|%20)`, while its own comment asserted it "matches the shape list scripts/cascade_count.py already uses ... so the two instruments agree". It now IMPORTS `cascade_count.GAP` and a test asserts identity, because repairing one instrument silently falsifies that comment otherwise. **The fix is a template widening, NOT a heuristic:** the gap accepts whitespace or complete HTML tags and nothing else, the unit word is still mandatory, and the two pre-existing controls (an unrelated number in the same sentence; years behind markup) pass before and after. **Control both ways on the real files:** re-planting `2,354</strong> tests` gives `--verify-facts` rc=1 naming `site/index.html:L346 ... (context: '2,354</strong> tests')` and `--check` rc=1 naming the surface; both were rc=0 on that identical state beforehand. **The larger instance was found by enumeration, not by reading (rule 4c):** `docs/architecture.md:53` published "45 test files, 1,223 tests", short by 1,395, absent from the manifest AND from `claim_auditor.VERIFY_FACTS_FILES` where `claim_auditor.py:1109-1114` had recorded it as a known gap parked behind 1.5c. Corrected to 101 / 2,622, both re-derived. `docs/CONTINUITY.md`'s "2,600+ tests" is left alone: it is still true and hard-coding a number into it would create maintenance where none is needed. **What actually closes the class is that the at-rest test no longer trusts either the tool or the manifest.** `TestEveryPublishedSurfaceCarriesTheCanonicalCount` enumerates tracked `.md/.html/.txt` via `git ls-files`, uses its own matcher rather than `COUNT_TEMPLATES`, names its exemptions (ledger, changelog, rules files and other verbatim records that must keep historically-true numbers), and is paired with a test asserting the enumeration actually reaches README, index.html, TRUST.md, de.html and architecture.md, so an exemption typo cannot make it pass by scanning nothing. **Widening reach surfaced two false positives and they were fixed, not allowlisted:** architecture.md's per-module "18 patterns" and "14 patterns" (both verified correct against `credential_check.SECRET_PATTERNS` and `gdpr_patterns.GDPR_PATTERNS`) were read as failed attempts at the repo-wide 419. `VERIFY_FACTS_FILES` entries may now be `(path, {facts})`; architecture.md is scoped to `{"tests"}`, held honest by a test requiring a scoped entry to still flag a planted stale value for a fact it declares and to ignore one it does not. **Withdrawn as a result of this row:** `docs/TRUST.md`'s standing sentence that every published number is reproducible from a checkout was, for three days, false of the landing page itself, and `test_repo_is_currently_in_sync` is now documented as insufficient on its own because it asks the tool whether the tool found drift. |
+| **N57** | **The adversarial review of N56 found eleven items; six were fixed in the same session, five are open and recorded here rather than absorbed.** | 2026-07-31 (session C, adversarial review) | **PARTIALLY CLOSED in PUSHED:d0ba6f0; five OPEN.** *Fixed and tested:* the entity/comment gap, the block-boundary crossing, `_swap`'s multi-substitution, the `(path, {facts})` scoping silently dropping `frameworks` coverage on `docs/architecture.md` (which publishes "13 frameworks" at :28 and :88, both matching the gate's own pattern, and is now scoped `{"tests", "frameworks"}`), the at-rest matcher's case-sensitivity and its blindness to the badge form `tests-NNNN%20passing`, and `claim_auditor._GAP_SOURCE`, which makes a failed import observable where value-equality alone could not distinguish "imported" from "fell back to an identical copy". *Also fixed, found by the repair itself rather than by the reviewer:* `tests/test_published_count_manifest.py` used a `(?<!\d)` lookbehind, so at one canonical value it failed naming `scripts/report.py` where every hit was the hex colour `#dc` plus four digits. That is the SAME defect `cascade_count._patterns` already carries a comment about; it is now `(?<!\w)`, with a both-ways control asserting a hex colour and a hash path do not match while a real published claim still does. **OPEN, 1:** `_stale_values` has an undisclosed 50% magnitude floor (`lo = int(new * 0.5)`), so the cascade tool structurally could not have seen `docs/architecture.md`'s 1,223 against a canonical of 2,618; that file was corrected by hand and is caught by the at-rest test and by claim_auditor, neither of which has a floor, so the class is not open, but the claim that manifesting the file brought it under the cascade tool is withdrawn. **OPEN, 2:** `.claim-allowlist` lines 36-40 are RANGES, not values (`\b2[,.]?3\d{2}\s+tests?` matches both `2,354 tests` and `2.349 tests`; `\b1[,.]?2\d{2}\s+tests?` matches `1,223 tests`), so a third instrument was silent on those exact strings by allowlist. It feeds the sourcing scan rather than `--verify-facts`, so it did not cause N56, but N56's phrase "both gates" undercounts the instruments involved. **OPEN, 3:** `claim_auditor --verify-facts` derives its canonical from a working-tree `sf.compute()`, so locally it compares a contaminated published number against an identically contaminated canonical; same limitation N49 recorded for `build_gap_demo --check`. **OPEN, 4:** the at-rest enumeration exempts `scripts/`, which swallows one real HTML file, `scripts/dashboard/index.html`; measured to carry no count-shaped claim today. **OPEN, 5:** `wrong_pat` in `claim_auditor` leaves a dotted literal unreplaced, so a stale dotted count is reported as "found 349" rather than "found 2,349". The gate fires correctly; only the message is wrong. |
+| **N58** | **The tracked handover still presented session 4 as “START HERE” after 62 later commits had landed.** `docs/improvement/HANDOVER.md` had not changed since `79debb9` on 2026-07-28, while the actual tip before this repair was `1f3da84` on 2026-07-31. Its opening Git state and verification figures were historical but unlabelled as such. | 2026-07-31 (continuity audit) | **CLOSED as a continuity defect.** The first screen now names this ledger as the single durable current record, directs chronological readers to the newest `STATE.md` checkpoints, and marks the remaining narrative as historical before its old “START HERE” section. `python3 -m pytest tests/test_handover_continuity.py -q` is the guard; the control failed before the notice because both required section markers were absent, then passed after it. The mutable historical counts were deliberately not rewritten: the ledger's fixed-point rule explains why copying them forward creates another stale snapshot. The new test is wired into the custom runner and the canonical published test count moved from 2,627 to 2,628 through `site_facts.py` followed by `cascade_count.py --apply`, including EN, DE and PT-BR surfaces. |
+| **N59** | **The optional governance-feed cache was fatal on a read-only filesystem.** `fetch_governance_news()` always called `_save_cache()`, including after all network sources failed, and `_save_cache()` let `OSError` escape. The required custom runner reproduced it in `test_smoke_feed`: the CLI returned exit 2 with `[Errno 30]` instead of a JSON envelope. | 2026-07-31 (continuity audit verification) | **CLOSED for cache filesystem errors.** `_load_cache()` now treats an unreadable cache like a miss and `_save_cache()` treats an unwritable cache as disabled; neither changes the feed result. The existing smoke test now plants a cache directory whose `mkdir()` raises `OSError`, so the filesystem branch executes on writable development machines too. `python3 -m pytest tests/test_classification.py -q -k smoke_feed` and `python3 -m pytest tests/test_reliability.py -q` pass, 1 and 11 tests respectively. The pre-fix full custom runner remains honestly red: 1,380 helper assertions passed, 3 failures, and 1,060 functions; the chained pytest, self-test and doctor commands did not run after that failure. |
+| **N60** | **The commercial-defensibility gate exposed a gap between a large green suite and claim-ready evidence.** Current PyPI is 1.7.4 while local source is 1.9.0; restricted verification fails one Git-worktree control, eight localhost timestamp tests and the home audit-path doctor check, while exact unrestricted controls pass; the merge blocker remains red; active public surfaces contradict the product's own legal limitations, regulatory status and security record. The first protocol draft also had tautological discovery, correlated samples presented as independent, unreachable comparators, non-equivalent outcome adapters and subjective gates. | 2026-07-31 to 2026-08-01 (commercial-defensibility session) | **EXECUTED; RESULT `STOP`.** Preregistered in `5bd2112`; pre-results verifier repair `84e0118`; post-result acquisition-blocker correction `056bcf2`, with the frozen exit-1 control retained. The corrected acquirer obtained 12/12 exact repositories and 12/12 licence records. Two fresh runs per synthetic tool were byte-identical after normalisation. Local 1.9.0: Candidate A TP 0, FP 0, FN 40, TN 40, recall **0/40**, descriptive Wilson 95% interval 0.000–0.0876; Candidate B identical. Transparent baseline A: TP 40, FP 4, FN 0, TN 36, precision **40/44**, recall **40/40**; baseline B: TP 40, FP 0, FN 0, TN 40, precision and recall **40/40**. These correlated constructed families are diagnostic, not external accuracy. Twelve-repository operations retained every outcome: local and public Regula each exited 0 on 9/12 and 1 on 3/12; their second-run stdout/stderr and exits matched 12/12. Two executable competitors exited 0 operationally on 12/12, but accuracy is UNTESTABLE without equivalent adapters or human repository labels. Candidate C remains MODEL-PROVISIONAL with 0/30 independently human-labelled scenarios. Local evidence-pack strict verification passed; public 1.7.4 strict verification failed exit 2 on its legacy manifest. Network behaviour remains UNVERIFIED because namespace denial was unavailable and the socket control broke `ssl` import before execution. Verdict: TECHNICAL_EVIDENCE FAILED; COMPARATIVE_ADVANTAGE NOT_DEMONSTRATED; PUBLIC_CLAIM_INTEGRITY FAIL; REGULATORY_CURRENCY PARTIAL; OPERATIONAL_READINESS FAIL; DEMAND_EVIDENCE UNVALIDATED; OVERALL_DECISION STOP. Final verification: custom runner 1,386/1,386 exit 0; pytest **2,633 passed, 6 failed, exit 1** because the 11 harness tests move live collection to 2,639 while public canonical claims remain 2,628; two of six fast gates fail on that mismatch, four pass; merge blocker remains exit 1; unrestricted doctor and self-test pass. The public-claim cascade is explicitly prohibited this session and no test was hidden to manufacture green. Results: `docs/commercial/COMMERCIAL_DEFENSIBILITY_REVIEW_2026-07-31.md` and `benchmarks/commercial_v1/results/summary.json`. Existing items **F25, F30, N35, N43, N50, N54, N53, N55, N57, N6, N7, N10, N11 and N12 were not closed by this bounded session and remain OPEN or PARTIALLY CLOSED exactly as their own rows state**; no absence from the review supersedes them. N43 and public-claim debt were independently corroborated. Exact next unit: correct the high-consequence public/PyPI claim classes in the dated register without changing benchmark results or detector rules, then independently label a future repository study before reconsidering a pilot. |
+| **N45** | **Working-tree drift is now detectable at every measurement point.** Built because of N44's mechanism and proven necessary twice in one evening. | 2026-07-30 (directive session, item 1b) | **BUILT, CONTROLLED BOTH WAYS, INTEGRATED in PUSHED:c812ceb.** `scripts/tree_guard.py`: `--record` baselines to gitignored `.claude/tree-state.json` (recording cannot dirty the measured tree; the baseline file is the one excluded path, a self-reference bug found on the real repo and fixed with the control re-run); `--check` exits 3 naming every drifted path; `stamp()` prints one stderr line from the nine measurement CLIs (claim_auditor, site_integrity, cascade_count, build_recall_artefact, build_gap_demo, check_selfref_sourcing, merge_blockers, f25_exposure, site_facts), silent with no baseline, never touching exit codes. Ignored files are content-hashed; ignored dirs hashed to a stated 200-file budget, presence-plus-count above (the `.venv` class), because N43 proved plain porcelain blind to the live class. `tests/test_tree_guard.py`, 10 tests in throwaway repos including the planted-change control both ways and the silent-revert-to-HEAD class; wired into the custom runner, selection 1,033 to 1,043 functions, cascade 2,585 to 2,595 in the same commit. **Its build caused, then named, a real incident**: creating the test file mid-run made the item-0 HEAD suite at `839b031` fail `test_stale_number_floor.py::TestEndToEndThroughVerifyFacts::test_the_real_repo_still_passes` (`1 failed, 2584 passed in 1291.04s`; live collection 2,595 against canonical 2,585, failure naming `site/llms-full.txt:L16`), which is the overlap rule firing through a second mechanism: a NEW file changes live collection even though running processes never re-read it. Diagnosed by running the single test on the quiescent tree, remediated by the cascade in PUSHED:c812ceb, single test and all six gates then green. First live catch on record: `site_facts` stamped `content changed again since record: evidence-pack-project-2026-07-30/manifest.json` during the cascade. **Limit stated plainly: it detects THAT and WHAT, never WHO; actor attribution needs a harness-level watcher, out of repository reach** (the stale-sentinel precedent). Residual hole carried from N39/N40, not new: `check_decompositions.py`'s `commit-anchors` rule only parses records whose schema states trees with the word "tree" on the line, so a schema-drifted record escapes it. |
+
+---
+
+## 2. Owner decisions
+
+"Ruled but unapplied" is called out explicitly: the owner has already answered
+these and the answer has not been encoded.
+
+| # | Decision | Raised | Status |
+|---|---|---|---|
+| 1 | Ratify or reject the quarantine sensitivity-admissions mechanism | 2026-07-28 | **RULED AND NOW ENCODED, 2026-07-30.** All three conditions exist as tests in `tests/test_claim_quarantine.py`, each with a control run both ways. See N24. Nothing in the ruling turned out to be underdetermined. |
+| 2 | Ratify or reject the F14 deviation on Articles 11 and 12 | 2026-07-28 | **RULED AND NOW ENCODED, 2026-07-30.** Reject half: the Article 11(1) Omnibus route verified against the primary text at EUR-Lex and added to `references/framework_crosswalk.yaml`. Ratify half: the `owasp_agentic` reason recorded in the crosswalk itself. See N25. |
+| 3 | Scope F25 and F30 | 2026-07-28 | **ANSWERABLE FOR THE FIRST TIME, and still OPEN because the scoping is the owner's.** The apparatus now exists and is committed: `python3 scripts/f25_exposure.py --recover`. **The number the ruling should use: 91 findings on the gate's own corpus are currently held green by an ordinary English word, and 215 of 279 citation-word-sourced paragraphs have no other provenance** (`e8b5986`, main working tree; see N26). **Neither 22 / 46 nor 29 / 53 reproduces under any of six corpus definitions in either of two units, and neither side of either figure matches.** Both are withdrawn as unreproducible. F30's half of this decision is untouched and F30 remains open; N23 now supplies a measured F30 instance on live data. **2026-07-30: the decision is no longer only about an instrument.** `--enumerate` now lists every revealed finding with the word that sourced it, and 24 of the 26 on the site corpus are real claims a reader cannot check. See N30. F25 is a product finding as well as a gate finding, and the scoping ruling changes what ships, not only what the gate counts. |
+| 4 | Rule on F29: 387 or 386, and does the blog's 389 get corrected | 2026-07-28 | **THE MEASUREMENT IS SETTLED 2026-07-30; ONE SURFACE STILL NEEDS A RULING.** 387 and 386 are BOTH correct, at two trees that both call themselves v1.7.0 (`7fa2088` 16 April gives 386, `c6aa67a` 23 April gives 387), so the question as posed had a false premise: it was never 387 OR 386. 389 is wrong under every unit at both trees. See F29 above and `PUSHED:4335831`. **What still needs the owner:** the 5-frameworks post publishes 389 and its artefacts do not record which tree ran, so the replacement is not derivable and nothing was changed there. **Previously recorded as deferred SEVEN times, not four.** This cell read "four times" while the F29 row in section 1 read "SEVEN sessions", so the file disagreed with itself about the same item; corrected 2026-07-30 to the F29 row's figure. **The figure is carried, not enumerated, and that is a real limit:** a session is not a git object, so no predicate can count deferrals the way `git ls-files` counts surfaces. It is the one count in this file that no command can re-derive. What would fix it: a deferral marker in this file incremented when an item is carried, which a test could then reconcile against the row's prose. Not built this session. |
+| 5 | Sign off the English provenance sentence for the DE and PT-BR panels | 2026-07-28 | **OPEN.** Untouched. |
+| 6 | Approve or reject the agentic AI draft before publication | 2026-07-29 | **OPEN, and one of its two obstacles is gone.** `content/blog/article-agentic-ai-annex-xiv.md`, tracked, `published: false`, still never human-reviewed, which is the part only the owner can clear. **The count has now been done literally, 2026-07-30:** the regulation was retrieved in full from `eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202601744`, tags stripped and the text searched case-insensitively; the string `agentic` occurs **exactly once**, in the Annex XIV code table at AIH 0401, and the sentence immediately after that table puts the codes to work scoping conformity-assessment-body designation. **Two summarising fetches of the same URL reported that the word does not appear at all**, because both truncated before the annexes; one stopped mid-sentence in Article 63. A truncated retrieval is not evidence of absence, which is why the count was redone with the whole document in hand. |
+| 7 | Whether `docs/improvement/` belongs in the CI claim gate | 2026-07-29 | **WITHDRAWN by the owner, and the merge-base measurement now forces it back open.** It was withdrawn on the grounds that the gate repair's design would answer it. The measurement says the design cannot avoid it: 203 of 281 findings are `docs/improvement/` and every one is branch-introduced, so no introduced-claim condition excludes them. Only a scope condition does, and that condition is decision 7 restated. **Recommend reopening.** **2026-07-30: the missing input is now measured.** Main's published-surface debt is 168 with the citation-word arm on and **238 with it off**; see N29 and section 7 below for what each of N12's four options implies at 238. |
+| 8 | How CI should ever run on this branch | 2026-07-29 | **OPEN, and now understood.** `.github/workflows/ci.yaml` triggers only on push and pull request to `main` and has no `workflow_dispatch`. The rationale for not adding one, supplied by the owner 29 July: GitHub requires a `workflow_dispatch` workflow to be present **on the default branch** before the event can be triggered, so adding the trigger on this branch cannot enable dispatch, and the earlier HTTP 422 was the API reading main's copy. Getting it onto main requires a pull request, which is an owner decision. **No further engineering attempts should be made from this branch.** |
+
+---
+
+## 3. Standing owner items
+
+DPVCG contribution post; recruit raters 2 and 3; Zenodo account and DOI
+decision; BSI ART/1 route; GSC re-auth (`invalid_grant`); private remote for
+`getregula-internal/`; the Phase 1.5b residuals; the **20 August 2026**
+`prEN 18229-1` enquiry window; **Article 50 for new systems, 2 August 2026**
+(N9).
+
+---
+
+## 4. Deferred sessions
+
+- **Session B**. **F29's unit reconciliation is DONE, 2026-07-30, and is no
+  longer Session B's**; see F29 in section 1 and `PUSHED:4335831`. What remains
+  of F29 is one reader-facing surface whose correct figure is not derivable
+  from any committed artefact, which is an owner ruling and not a session's
+  work. Still Session B's: the agentic draft humanising and validation,
+  deferred on the grounds that it is a content correction better verified by
+  the repaired gate than the current one.
+- **Session C**. Repository restructure to public-repo standard. Deferred as
+  the largest diff, and because it moves the paths every recorded measurement
+  is keyed to.
+
+---
+
+## 5. Programme phase status
+
+| Phase | Status |
+|---|---|
+| Phase 0 baseline | DONE |
+| Phase 1 code review | DONE |
+| Phase 1.5 apparatus repair | DONE |
+| Phase 1.5b claim provenance | DONE, partial |
+| Phase 1.5c | DONE |
+| Class 1 landing-page derivation | DONE, 1 of 3 items, two residuals |
+| Phase 2 | **FAILED validation, loop 1 of 3** |
+| Phase 4 | **FAILED hostile review, loop 2 of 3** |
+| Phase 1.7 | **DONE 2026-07-30** in PUSHED:4ee37b2 (deliverable `docs/improvement/SCAFFOLDING-AUDIT.md`; residuals listed in its section 7). Untracked scaffolding (CLAUDE.md, two skills, one charter) corrected in place; gitignored files cannot carry a commit hash and the audit records them. |
+| Phases 5 to 8 | NOT STARTED |
+
+Neither Phase 2 nor Phase 4 has passed its gate. The Phase 4 plan must not be
+executed.
+
+**`BASELINE.md` section 11: READ 2026-07-30, after five sessions of not being
+read.** The contradiction is real and it is narrower than "the file contradicts
+itself". Four statements bear on the Engineering-craft score and three of them
+say 88:
+
+- the table row says **"Hold at 90"** — the outlier;
+- the aggregate arithmetic on line 322 uses **13.2**, and 0.15 x 88 = 13.2;
+- the closing sentence on line 344 says **"Engineering craft moves 90 to 88"**,
+  and gives its reason;
+- `docs/improvement/PLAN-PHASE4-v2.md:291` and
+  `docs/improvement/HOSTILE-REVIEW-LOOP2.md:138` both fix craft at 88.
+
+Both readings are arithmetically sound, re-derived rather than quoted:
+craft 88 gives `9.5 + 8.0 + 13.2 + 10.8 + 8.5 + 0.8 + 1.5 = 52.3`, craft 90
+gives `... 13.5 ... = 52.6`. **Nothing in `BASELINE.md` was changed.** Section
+11 states in its own correction note that the discrepancy is "not silently
+resolved" and that the Phase 7 independent scorer arbitrates; resolving it here
+would override a recorded decision, which is not this session's to make. What
+is now on record is which statement is the outlier and by what weight.
+
+Two further facts about that row, both of which cut against quoting the
+aggregate at all: the craft row's evidence is **"2,849 tests MEASURED"**, a
+figure withdrawn by finding F1 as double-counted, and the current
+pytest-collected count is different again. **The aggregate rests on a withdrawn
+measurement whichever reading is taken.** Enumerated exposure:
+`git ls-files -z | xargs -0 grep -n "52\.3\|52\.6"` finds the figures in
+**eight tracked files, all under `docs/improvement/`**. No published surface
+quotes an aggregate, so there is no public exposure to correct.
+
+---
+
+## 6. Current state
+
+**This section exists because a current-state record said "Failing: nothing"
+on the same page as a merge blocker exiting 1.** See N19. Anything that fails
+belongs here with its figure, its commit and the tree it was measured in, and a
+gate that is not one of the six fast gates is not thereby a gate that passes.
+
+### Failing
+
+| What | Command | Result |
+|---|---|---|
+| **The merge blocker.** Unsourced numeric and superlative claims on the branch diff. | `python3 scripts/claim_auditor.py --diff-base main` | **rc=1, at six commits.** At `e8b5986`, main working tree: `scanned 59 file(s), 945 claim(s), 273 unsourced`. At `60fa775`, tree `46b7c3d`: `scanned 59 file(s), 976 claim(s), 274 unsourced`. At `13ffc00`, tree `9fd730a`, clean: `scanned 59 file(s), 978 claim(s), 274 unsourced`. At `057c009`, tree `218b4a1`, **with this file's edits still uncommitted in the working tree**: `scanned 59 file(s), 996 claim(s), 279 unsourced`. At `ef2b8de`, tree `f9b12b6`, clean: `scanned 60 file(s), 1016 claim(s), 280 unsourced`. At `197eb99`, tree `5147def`, **with this file's N42 edit uncommitted in the working tree**: `scanned 64 file(s), 1051 claim(s), 282 unsourced`. `--diff-base` selects files from the diff and reads their WORKING TREE contents, so a figure taken on a dirty tree measures the dirty tree, and that is stated rather than smoothed over. This is NOT one of the six fast gates, so its red does not appear in a gates block. |
+| **The residue under both candidate gate conditions.** | `python3 scripts/merge_blockers.py` | **10 survive both at every commit measured.** At `e8b5986`: 273 total, 218 introduced-claim alone, 65 published-surface alone. At `60fa775`: 274 / 219 / 65. At `057c009` with this file uncommitted: **279 total, 224 introduced-claim alone, 65 published-surface alone**. Disposition by predicate, unchanged throughout: 1 blocked, 7 contested, 2 inherited, **0 fixable**. |
+| **F30 now has a third measured instance.** The allowlist exempts the whole paragraph, and `site/index.html`'s `0%` quarantine entry is held silent by a paragraph whose only citation word sits inside an HTML attribute. | `python3 scripts/f25_exposure.py --corpus site --shape` | **18 of 105 citation-word paragraphs on the site corpus are sourced ONLY from inside an HTML attribute**, at `9e6b6de`. See N35. rc=0: a measurement, not a gate. |
+| **`main`'s published-surface debt is larger than the gate can see.** | `python3 scripts/merge_blockers.py --main-only --arm-delta` | **168 with the citation-word arm on, 238 with it off, 70 revealed, 0 lost**, at `main` `6daacd2`, tree `b95876d`, clean detached worktree, HEAD's auditor unmodified at `13ffc00`. rc=0: this is a measurement, not a gate. See N29 and section 7. |
+
+**What the 2026-07-30 apparatus session added to the blocker, named.** Produced
+by `python3 scripts/claim_diff.py --blocker-delta 9e6b6de 190da47`, whose
+apparatus is `scripts/claim_diff.py`: **1 finding, in
+`docs/adr/0002-the-seventy-percent-claim.md` at line 130, the snippet `70%`.**
+The code and the count cascade added **0**, measured separately as
+`--blocker-delta 9e6b6de fc27823`. It is the ADR naming the very figure it
+exists to investigate, which is the self-referential loop this file already
+records for `docs/adr/`: writing the analysis of a claim adds claims to the
+corpus that measures claims. Recorded rather than engineered away, per rule 24
+in `docs/improvement/LEDGER.md` above.
+
+**It was 3 before the ADR was corrected, and the correction was forced by a
+test.** At `4e1a33f` the ADR also carried `the only` and the bare precision
+figure; `tests/test_precision_provenance.py` failed the full suite because that
+figure was published on a surface not listed in its `KNOWN_SURFACES`, without
+N and the single-reviewer basis at the point of use. The fix at `190da47`
+removed the figure from the sentence rather than adding `docs/adr/` to that
+test's exclusions, because excluding a surface to make a check pass is
+prohibited outright. Removing it also took `the only` out of the blocker, since
+the rewritten paragraph now cites `tests/test_precision_provenance.py` and is
+sourced through the file-reference arm.
+
+**On 282 to 280, and why the total moved without the corpus growing.** The last
+stated total was **282** at `41feb51`, tree `e85452c`. The tip figure is **280**
+at `ef2b8de`, tree `f9b12b6`, on a clean tree. The difference is the two
+findings `190da47` removed from `docs/adr/0002-the-seventy-percent-claim.md`,
+the bare precision figure and `the only`, so the movement is fully attributed
+and neither figure is quoted forward from the other; each was re-derived from
+the command. **This is the first record of the tip figure at `ef2b8de`**, which
+had been measured nowhere: the prior sessions recorded 282 and then landed two
+commits without re-running the gate.
+
+**On the two figures 273.** The most recent prior record measured 273 at
+`969f3a8` (N18). `e8b5986` added one line to this file, which is inside the
+measured corpus, so the number was expected to move and **it did not**. The
+prediction was written down before the measurement and was wrong. The reason is
+mechanical and worth keeping: the line added was the N18 table row, which cites
+four tracked repository files, so every claim inside it is sourced through the
+`file-ref` arm and it contributed to `claim(s)` without contributing to
+`unsourced`. Both 273s are correct at their own commits and neither is quoted
+forward from the other; each was re-derived from the command.
+
+**On 273 to 274, and what the one added claim is.** `60fa775` added 152 lines
+to this file and moved `claim(s)` from 945 to 976 while `unsourced` moved by
+exactly one. Attributed by predicate, not by reading: `merge_blockers.py` puts
+the `docs/improvement/` bucket at 200 then 201, and scanning this file alone at
+each commit with the real auditor, the older version in a detached worktree with
+HEAD's auditor copied in, gives 1 finding then 2, with a single snippet added:
+**`2,849 tests`**. That is the withdrawn craft-row figure quoted in the
+`BASELINE.md` section 11 diagnosis above. **It is deliberately not sourced.**
+F1 withdrew 2,849 as double-counted, so a citation next to it would cite a
+withdrawn number, which is the `blocked` class N15 established. Writing the
+diagnosis of a withdrawn figure added a claim to the corpus that measures
+claims; that is the same self-referential loop the merge-base row recorded for
+`docs/adr/`, and it is recorded rather than engineered away, because engineering
+it away is chasing the number and rule 24 above forbids it.
+
+### 2026-07-30, evening session: the held tree landed, and Phase 1.7
+
+The 12 files the previous session left modified-but-uncommitted were
+verified and committed as six units: PUSHED:820562c (shared exit-code
+derivation, CLI and API), PUSHED:2d0cea6 (MCP shared path denylist plus the
+repair of regula_gap, which imported a function that does not exist),
+PUSHED:3f1a797 (bias endpoint scheme guard), PUSHED:7317689 (jsonschema test
+dependency declared), PUSHED:0b74db0 (indicator language on generated
+surfaces; the hardcoded 419 pattern-count fallback removed), PUSHED:82266e9
+(four regression tests plus the cascade 2,581 to 2,585 in the same
+commit). Fail-before controls ran in a detached worktree at `e14fdbe`
+OUTSIDE /tmp: 5 discriminating tests failed there, 104 passed in the fixed
+tree. A first control run inside /tmp was discarded, /tmp is itself in the
+MCP denylist, which confounded one test (measurement rule 2: two variables
+had changed).
+
+Full `pytest tests/ -q` at `e14fdbe` with the 12 files in the working
+tree: **2581 passed in 1036.31s**, rc=0 from `$?` after redirection, the
+sentinel file removed before launch. The published expectation is now
+2,585; the post-change full-suite and custom-runner runs are recorded
+below when they complete, per the standing caveat that verification runs
+post-date the commit they verify.
+
+Phase 1.7 landed in PUSHED:4ee37b2 (see section 5). Its audit found and
+fixed: a rules file and a skill still describing the Omnibus as pending
+publication against `scripts/omnibus.py:29`; /verify's false
+mirrors-CI-exactly claim (measurement rule 5 in the scaffolding itself);
+add-command.md naming the wrong module for command bodies; the
+releasing-regula skill instructing `git add -A` (forbidden by
+`.claude/rules/git.md`) and a static pyproject version line that does not
+exist. The em-dash rule was scoped to new prose with the verbatim-record
+exemption encoded; the measured footprint of existing em dashes (40
+tracked files with the entity form, 167 under site/ and scripts/ with the
+literal) is recorded in the audit, deferred, not swept.
+
+**Correction, directive session:** the phrase this entry first used here,
+"made self-verifiable", mischaracterised the header fix. `git show 4ee37b2`
+shows the hand counts ("7 files", "3 files") were the two findings; the
+amendment in `839b031` REMOVED those numeric claims and replaced them with
+the enumerated file names. No provenance was attached; there is no numeric
+claim left for the gate to see. That is rule 4c's remedy (the enumeration
+is the number's source), and the record should say removal-and-itemisation,
+not sourcing. At PUSHED:4ee37b2 with that amendment:
+`claim_auditor.py --diff-base main` rc=1, scanned 66 file(s), 1057
+claim(s), **282 unsourced**, of which SCAFFOLDING-AUDIT.md contributes 0;
+the residue is the pre-existing programme-document debt this file already
+records. Six fast gates rc=0 at PUSHED:82266e9 and again at PUSHED:4ee37b2.
+
+### Passing
+
+Six fast gates, each rc captured rather than read off a summary line, at
+`e8b5986`, again at `60fa775`, and again at `057c009`:
+`claim_auditor.py --verify-facts`, `site_integrity.py`,
+`cascade_count.py --check`, `build_recall_artefact.py --check`,
+`build_gap_demo.py --check`, `check_selfref_sourcing.py --control-only`. Also
+at `60fa775` and at `057c009`: `python3 -m scripts.cli self-test` 6/6 rc=0 and
+`python3 -m scripts.cli doctor` 8 passed / 4 info rc=0.
+
+**2026-07-30, later session: all six rc=0 at `f536dd0`, again at `99c7ef7` and
+again at `197eb99`**, each captured from `$?` after redirection rather than
+read off a summary line. **No commit in that session leaves a fast gate red**,
+because each of the two count cascades went in the SAME commit as the tests
+that moved the count. That is the lesson `5f4ae76` paid for; see section 6's
+"Not measured" list.
+
+**Two of the six went red during the 2026-07-30 session and were repaired at
+root rather than suppressed.** Adding seven tests moved the pytest-collected
+count from 2,529 to 2,536, which turned `claim_auditor.py --verify-facts`
+red with ten mismatches and made `cascade_count.py --check` refuse with
+`RefusedError: data/site_facts.json is stale`. The fix was to regenerate
+`data/site_facts.json` with `scripts/site_facts.py` and propagate with
+`scripts/cascade_count.py --apply`, then read the diff of all seven surfaces
+line by line, per measurement rule 4d. No threshold was raised and no check
+was skipped. `docs/TRUST.md` also carries the custom runner's own function
+count, which `cascade_count` does not propagate; it moved 1,011 to 1,015 and
+`tests/test_published_count_manifest.py` is what caught it.
+
+### Verification runs necessarily post-date the commit they verify
+
+A full-suite or full-runner result cannot be written into the commit it
+describes. Both are recorded in the consolidated session record for
+**2026-07-30**, with the command, the summary line and the captured exit code.
+What belongs here is the standing caveat, which N28 establishes: the suite
+contains a **wall-clock** assertion, so "full suite green" is a statement about
+one run on one machine at one load, not a property of the tree.
+
+### Not measured, and stated as such
+
+- Whether `134` is re-derivable from `docs/improvement/measure_pattern_reach.py`.
+- CI has never executed on this branch and still cannot; see owner decision 8.
+- F21, F22, F24, F26, F27, F28 remain closed and have never been independently
+  re-verified. Their closure commits were wrong until 2026-07-30 (N22).
+- **A long test run and a live editing session must not overlap, and on
+  2026-07-30 they did.** The custom runner was started at 08:44 and took
+  roughly 25 minutes; `docs/improvement/LEDGER.md` was edited while it ran.
+  `test_ledger_supersession_declarations_are_paired` read the file in the
+  window between the edit that added `SUPERSEDED-BY:N31` to N23 and the edit
+  that created row N31, and reported `1 failed`:
+  `EXCEPTION in test_ledger_supersession_declarations_are_paired: LEDGER.md
+  has half-declared supersessions`. **The failure is real output and it is not
+  a defect in the tree**; the same test passes in isolation before and after,
+  and the runner was re-run to completion on the quiescent committed tree. It
+  is recorded because "the suite was green" and "the suite was green on a tree
+  nobody was editing" are different claims, and only the second one means
+  anything.
+- **Commits `7b154f8` and `969f3a8` have never been full-suite verified.**
+  Carried forward from the 29 July session, which verified them by targeted
+  tests and all six gates and ran the full suite only at `f286562` and
+  `e8b5986`. Still true on 2026-07-30: this session did not run the suite at
+  either of them either. It matters more here than it would elsewhere, because
+  F26 recorded this branch running red for six commits under a collect count.
+  The changes between `7b154f8` and `e8b5986` are document prose plus one
+  ledger line, which is a reason the risk is low and not a reason it is zero.
+- The custom runner's `N passed` figure on `docs/TRUST.md` line 95 is not
+  machine-checked; only its function count is. Deriving it costs a full runner
+  execution, and it is re-derived by hand each time the runner is run to
+  completion.
+- **The stale-sentinel hazard, which until 2026-07-30 had no durable home
+  anywhere and survived only in session prose.** A long run is launched with
+  its result redirected to a file, and the exit code is read from that file
+  afterwards. If the file already existed from an earlier run, the reader gets
+  the earlier run's verdict and cannot tell. This is measurement rule 4 in its
+  sharpest form: an exit code read from a pre-existing file is not this run's
+  exit code. **A near-miss on exactly this occurred in the 2026-07-30 apparatus
+  session** and is recorded in that session's record as its most important
+  entry. The standing mitigation, which is procedure rather than apparatus:
+  `rm -f` the target before launching the run that writes it, and capture the
+  code from `$?` immediately after the redirection rather than from a summary
+  line or a file listing. **No mechanical check enforces this**, because the
+  hazard lives in the shell invocation and not in the tree, and nothing in the
+  repository can observe a command a session chose to run. Stated as a gap
+  rather than as a solved problem.
+- **`5f4ae76` is a red intermediate commit and remains one.** It landed the
+  shared probe, two commands and thirteen tests, which moved the pytest-collected
+  count and thereby turned `claim_auditor.py --verify-facts` and
+  `cascade_count.py --check` red at that commit. The cascade that repaired both
+  landed separately at `fc27823`. **A bisect that lands on `5f4ae76` sees two
+  fast gates red for a reason unrelated to whatever it is bisecting for.** It is
+  recorded rather than rewritten because history is immutable on this branch.
+  The lesson taken forward from 2026-07-30 onward: when adding tests moves the
+  published count, the cascade goes in the SAME commit as the tests, so no
+  commit exists in which the gates disagree with the tree.
+- `BASELINE.md` section 11 was READ this session; see section 5 above. The
+  52.3-versus-52.6 arbitration remains Phase 7's and is not a measurement gap.
+
+---
+
+## 7. Owner decision 7: the ratchet baseline at the corrected figure
+
+**The figure is 238.** MEASURED at `main` `6daacd2`, tree `b95876d`, in a clean
+detached worktree scanned by HEAD's auditor unmodified at `13ffc00`, by
+`python3 scripts/merge_blockers.py --main-only --arm-delta`: 168 published-
+surface findings with the citation-word arm as shipped, **238 with it off**, 70
+revealed, 0 lost. See N29.
+
+**Why 238 and not 168, stated as reasoning rather than as a preference.** A
+ratchet is a promise that the number can only fall. The gate-scope repair is
+already scheduled to narrow `CITATION_WORDS`, and narrowing it can only raise
+what the gate reports. A baseline of 168 therefore fails on the day the repair
+lands, with no claim added and no content changed, and the only ways out of
+that failure are to raise the baseline (which destroys the ratchet's meaning)
+or to delay the repair (which is the gate protecting itself). A baseline of 238
+is invariant to any narrowing of that arm, because 238 is what the gate reports
+with the arm gone entirely.
+
+**The cost of 238, stated plainly.** It is deliberately loose today by up to 70.
+Until the arm is narrowed, 70 findings could be introduced on main's published
+surfaces without the ratchet firing. That is the price of a baseline that does
+not have to be renegotiated, and it is a real cost, not a rounding error.
+
+**What each of N12's four options implies at 238.** Not a choice among them; the
+owner rules.
+
+| Option, as recorded in N12 | What it means at 238 rather than 168 |
+|---|---|
+| Fix the findings before enabling | The remediation is 238 items, not 168. Fixing only the 168 the gate shows today leaves 70 that go red the moment the arm narrows, so the work would be done twice. |
+| Scope the condition to the diff | Unchanged in principle: the arm question is orthogonal to whether the diff is consulted. In practice the 70 are concentrated in 6 files, two of which are the scan blog posts, so any future edit to those files inherits them. |
+| Warn-only on main, blocking on pull requests | The warning reads 168 today and 238 after the repair. A 42% rise with no content change will read as a regression to anyone who does not know why, so if this option is taken the warning must state which arm state produced it. |
+| Accept as a recorded baseline, fail only on increase | This is the option the figure matters most for, and it is the one 168 breaks. At 238 the ratchet survives the repair; at 168 it does not. |
+
+**What would overturn this.** If the gate-scope repair narrows
+`CITATION_WORDS` rather than removing it, the true post-repair figure is
+somewhere in 168 to 238 and 238 is loose by the difference. Re-running
+`--main-only --arm-delta` with the narrowed pattern substituted for `ARM_OFF`
+gives the exact number, and that is a one-line change to `merge_blockers.ARM_OFF`
+once the repair's pattern is decided. The recommendation to baseline at 238
+holds until then because it is the only figure that cannot be invalidated by
+the repair, and it is the cheapest to reverse: lowering a recorded baseline
+after a measurement is a one-line edit, whereas raising one after it has been
+published is the move this programme exists to catch.
+
+---
+
+## N61 — Commercial review used stale current-release identity
+
+**First raised:** 2026-08-01. **Status:** partially addressed.
+
+PyPI no-cache JSON, pip index, downloaded wheel METADATA, and tag mapping identify
+1.9.0 as current on 2026-08-01, contradicting commercial_v1's description of
+1.7.4 as current. Dated errata preserve the 1.7.4 frozen result as VERSION_BOUND.
+The structural prevention criterion remains open: release identity must be
+mechanically queried and retained in future protocols rather than inherited.
+
+## 2026-08-01 bounded claim-correction carry-forward
+
+F25, F30, N35, N43, N50, N54, N53, N55, N57, N6, N10, N11, N12 and N60 remain
+open or retain their previous recorded verdict; none was closed by weakening
+public wording. N7 was not examined as an independent acceptance unit. N61 is
+partially addressed as above. Public source correction is not evidence that
+detectors, benchmark reproducibility, merge policy, CI, or pilot readiness
+improved. commercial_v1 remains STOP and the product remains not approved for
+a customer pilot.
+
+## N62 — Delivery-derived public-surface inventory
+
+**First raised:** 2026-08-01. **Status:** implemented; discovered residual claim
+classes corrected, exact final verification pending.
+
+The former 22-path hand-curated contract could pass while tracked Pages routes,
+Action descriptors, registered CLI help, MCP `tools/list` descriptors, package
+metadata and README-reachable documents were absent. The authoritative
+inventory is now derived from the two GitHub Pages workflows, tracked `site/`
+artifact contents, `pyproject.toml`, README-relative link reachability,
+`action.yml`, the constructed `argparse` registry and the actual MCP `TOOLS`
+registry. `data/public_claim_surfaces.json` and the human report are generated;
+`data/public_surface_policy.json` contains only narrow, reasoned dispositions.
+Mutation controls cover new routes and outputs, linked docs, CLI, MCP, Action,
+package metadata, renames, policy integrity, Git/build failures and legitimate
+negatives. The resulting active-surface residual list is now empty after
+capability wording was narrowed to code-observable indicators, human review,
+variable runtime and scoped local-processing statements. F25, F30, N35, N43,
+N50/N54, N53, N55, N57, N6, N7, N10, N11, N12, N60 and N61 retain their prior
+status. commercial_v1 remains STOP and `PRODUCT_PILOT_STATUS` remains
+NOT_APPROVED.
+
+## N63 — Decision labels were downstream of three reproducibility defects
+
+**First raised:** 2026-08-01. **Status:** implementation complete; independent
+exact-commit verification pending.
+
+The decision labels were not themselves the defect. Three evidence mechanisms
+were: an ISO-8601 timezone offset was parsed as arithmetic; five numeric claims
+introduced by the evidence-only records lacked same-paragraph sources; and the
+gap-demo builder scanned ignored local files while claiming clone
+reproducibility. The decomposition parser now masks complete ISO timestamps and
+retains positive arithmetic controls. The evidence records link their durable
+sources and the claim-auditor count returned from 314 to the pre-existing 309.
+The gap-demo builder now materialises exactly `git ls-files` into a temporary
+snapshot and fails closed on Git, copy, command or parse failure. Mutation
+controls prove ignored input is absent and Git failure is not swallowed. The
+generated result is 6% overall with Article 11 at 0%, synchronized across EN,
+DE and PT-BR. N43 is deliberately carried forward unchanged until the required
+detached-worktree verification reproduces the repair. All previously named open
+items remain open. These corrections do not create human-labelled accuracy,
+competitor equivalence, demand or pilot evidence, so commercial_v1 remains STOP
+and `PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
+
+## N64 — Active-delivery claim enforcement and readiness decision
+
+**First raised:** 2026-08-03. **Status:** partially addressed; release remains
+blocked.
+
+The discovery inventory exposed a second-order enforcement defect: the normal
+diff audit could be green while claim-capable, actively delivered surfaces
+that were unchanged in the current diff still contained unsourced or stale
+claims. The auditor now consumes the generated delivery inventory and
+`--delivery-surfaces` fails closed on an unreadable or empty inventory. The
+full active delivery scan covers 96 text surfaces and currently reports 538
+claim candidates with no unsourced candidates; fact verification checks 148
+references across 17 files. Mutation tests cover the inventory hand-off and
+prevent a policy entry from turning an entire paragraph into an exemption.
+
+This does not make the repository release-ready. The independent merge-blocker
+analysis still reports 42 findings that survive both enforcement arms: 1
+blocked, 21 contested, 18 fixable and 2 inherited. Exact final full-suite and
+detached-worktree verification remain required. No deployment is authorised by
+this item. F25, F30, N35, N43, N50/N54, N53, N55, N57, N6, N7, N10, N11, N12,
+N60 and N61 retain their prior status. commercial_v1 remains STOP and
+`PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
+
+## N65 — Merge blocker used tracked-renderable as a publication proxy
+
+**First raised:** 2026-08-03. **Status:** implementation complete; exact final
+verification pending.
+
+The independent merge analysis continued to classify almost every tracked
+document outside `.claude/` and `docs/improvement/` as a published product
+surface after N62 introduced the authoritative delivery-derived inventory.
+That proxy mixed active product promises with retained benchmarks, ADRs and
+commercial evidence. The reported 42-item residue therefore comprised two
+different populations and could not support a single merge decision.
+
+`merge_blockers.is_published_surface` now derives its file set from generated
+records classified `active_product` and `claim_capable`, and fails closed when
+the inventory is missing, malformed or empty. The current run reports 474
+total claim findings, 463 introduced-only findings, zero active-delivery
+findings and zero surviving both conditions. The 42 previously reported items
+remain in retained evidence; they were not deleted, sourced indiscriminately
+or allowlisted. Focused gate, set-operation and mutation coverage reports 45
+passing tests. This changes the active claim-blocker measurement, not the
+commercial evidence: commercial_v1 remains STOP and
+`PRODUCT_PILOT_STATUS` remains NOT_APPROVED. Repository merge readiness remains
+pending until the complete test matrix and detached-worktree checks pass.
+
+## N66 — Validation-readiness decision pack remains externally disabled
+
+**First raised:** 2026-08-05. **Status:** preparation implemented; owner and
+professional prerequisites OPEN; external action NOT AUTHORISED.
+
+The preparation unit preserves `VENTURE_DECISION: STOP` and
+`PRODUCT_PILOT_STATUS: NOT_APPROVED`. Its exact unvalidated hypothesis is a small
+UK AI supplier responding to a UK general insurer's production-onboarding
+evidence request for an AI-assisted claims-triage system. Discovery, real data,
+manual baseline, independent labels, payment and external efficacy have not
+occurred.
+
+Owner inputs remain open for GitHub, PyPI, domain/DNS, analytics, email, social,
+release/signing, CI, research storage and company/finance control; no secret was
+read. Professional advice remains required for work permission, contracting,
+officer roles, ownership, compensation, pre-existing and future IP, corporate and
+tax treatment, controller/processor roles, lawful basis, DPIA, transfers,
+confidentiality, sector boundaries and insurance. Material costs are
+`QUOTE_REQUIRED` or `UNKNOWN`; no gross margin is calculated.
+
+Consent and data templates are drafts for review, not implemented governance or
+legal approval. Real data, recording, confidential documents, repositories,
+derived labels, reuse and publication remain disabled. The manual baseline and
+technical study are `PREREGISTERED_NOT_EXECUTED`; Regula is hidden from the
+baseline and technical labels require two independent blinded qualified human
+raters, raw disagreements, adjudication, abstention, `NOT_ASSESSABLE`, a frozen
+holdout and cluster-aware reporting.
+
+Acceptance for a future bounded-discovery decision requires reviewed controller,
+lawful-basis, storage, consent/confidentiality and zero-cost/budget boundaries plus
+explicit owner approval. It is falsified by a false founder premise, prohibited
+work, unsafe disclosure, unmanageable liability, inability to obtain independent
+review or evidence that the transaction is not recurring and costly. Current
+recommendation: `HOLD_PENDING_READINESS`; default `HOLD`. This item closes no
+pre-existing ledger item and authorises no contact, spend, role, ownership,
+immigration, public, release or deployment action.
+
+## 27. Exact owner decisions required
+
+No external decision is currently recommended. Before any future contact, the
+owner must decide controller, storage, zero-cost/budget boundary and separately
+authorise contact after professional review. Recording, documents, repositories,
+reuse, spending and publication require later separate decisions.
+
+## 28. Remaining uncertainty
+
+The hypothesis, buyer workflow, pain frequency/cost, budget, acceptance,
+willingness to pay, representative data access, technical efficacy,
+differentiation, liability and lawful processing remain unverified.
+
+## 29. Singular next unit
+
+Owner-only readiness review: resolve controller/storage and obtain qualified
+work-permission and data-protection advice. Do not contact participants yet.
+
+## 30. Ready-to-run successor prompt
+
+Work on `/home/mkuziva/getregula`. Read the validation-readiness pack and this
+handover. Preserve STOP, NOT_APPROVED and all external prohibitions. Perform only
+an owner-input reconciliation: collect no external data and contact nobody.
+Record the owner's evidenced account/controller/storage decisions and qualified
+advice actually obtained. Re-run the pack validator and gates. Recommend bounded
+discovery only if every prerequisite in `07-GO-HOLD-STOP-GATE.md` is genuinely
+satisfied; otherwise retain HOLD. Do not manufacture a lawful basis, founder
+contribution, cost, demand, efficacy or eligibility conclusion.
