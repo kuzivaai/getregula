@@ -16,14 +16,15 @@ not classify legal risk or compliance.
 
 Target population is permissioned repositories and associated technical
 artefacts for small UK suppliers whose AI-assisted claims-triage systems reached
-general-insurer production onboarding. Eligibility and population coverage must
-be established from discovery, not GitHub convenience. Mirrors, tutorials,
+general-insurer production onboarding. This is a purposive exploratory population;
+discovery must document the sampling frame, approach flow, exclusions and coverage
+limits rather than claim representativeness. Mirrors, tutorials,
 synthetic fixtures, Regula development examples and repositories seen during
 detector development are excluded from the prospective holdout.
 
 Unit: one frozen buyer-requirement × repository-evidence decision, clustered
 within repository and transaction. Required labels are `PRESENT_SUPPORTED`,
-`PRESENT_CONTRADICTORY`, `ABSENT_AFTER_REVIEW`, `NOT_ASSESSABLE`, `ABSTAIN` and
+`PRESENT_CONTRADICTORY`, `NOT_FOUND_IN_FROZEN_REVIEW_SCOPE`, `NOT_ASSESSABLE`, `ABSTAIN` and
 `OUT_OF_SCOPE`, each with file/line or artefact pointer, rationale, confidence and
 review time.
 
@@ -48,8 +49,9 @@ measure with uncertainty only after label prevalence is known. Retain raw
 disagreements. Adjudication is by a third qualified person or documented panel;
 the adjudicated label never replaces raw labels.
 
-Compare frozen Regula with a transparent lexical/manual baseline on identical
-units. Report per-tool confusion fractions, precision, recall, abstention,
+Compare frozen Regula separately with (1) a deterministic transparent lexical
+baseline and (2) the blinded manual workflow; do not combine them into one
+comparator. Report per-method confusion fractions, precision, recall, abstention,
 not-assessable rate, false-alert review time, evidence-pointer validity and failed
 runs. Report repository-level distributions and language/category strata; do not
 treat clustered units as independent. Use paired repository-level intervals or a
@@ -58,7 +60,10 @@ cluster-aware model only if data support it. Report null and adverse results.
 Previous thresholds are not reused because the buyer construct, unit and
 population differ from commercial_v1. Before outputs are opened, preregister a
 minimum safety condition of no higher unsupported-evidence rate than baseline and
-one primary benefit metric chosen from discovery. Without a defensible effect
+one primary benefit metric selected by a frozen rule tied to the discovery
+workflow: choose time saved only where both methods complete the same units;
+otherwise choose evidence-pointer validity. Record the selection before any
+comparison output is opened. Without a defensible effect
 size, the first study is exploratory and cannot prove external efficacy.
 
 ## Order

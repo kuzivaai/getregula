@@ -32,6 +32,7 @@ REQUIRED_FILES = (
     "templates/DOCUMENT-AND-REPOSITORY-PERMISSION.md",
     "templates/DATA-REUSE-PERMISSION.md",
     "templates/WITHDRAWAL-AND-DELETION.md",
+    "templates/RIGHTS-REQUEST.md",
     "templates/DATA-RECEIPT-REGISTER.md",
     "templates/ACCESS-LOG.md",
     "templates/INCIDENT-ESCALATION.md",
@@ -63,7 +64,7 @@ FORBIDDEN_CLAIMS = (
     (re.compile(r"\b(?:endorsement|eligibility)\s+(?:is\s+)?(?:likely|established|demonstrated|approved)\b", re.I), "endorsement or eligibility claim"),
     (re.compile(r"\bownership (?:was|has been) transferred\b", re.I), "ownership-transfer claim"),
     (re.compile(r"\bCollaborator (?:originated|built|created) (?:the initial )?(?:Regula|software|project)\b", re.I), "false founder-history claim"),
-    (re.compile(r"\blawful basis\s*:\s*(?!OWNER_INPUT_REQUIRED|ADVISER_INPUT_REQUIRED|UNRESOLVED)", re.I), "settled lawful-basis claim"),
+    (re.compile(r"\blawful basis\s*:\s*(?:consent|legitimate interests|contract|public task)\b", re.I), "settled lawful-basis claim"),
     (re.compile(r"\b(?:template|form)s?\s+(?:is\s+)?legally approved\b", re.I), "legally-approved template claim"),
 )
 
@@ -131,6 +132,29 @@ def validate(pack: Path, *, require_tracked: bool = True) -> list[str]:
     for pattern, label in required_controls.items():
         if not re.search(pattern, markdown, re.I):
             errors.append(f"missing control: {label}")
+
+    file_controls = {
+        "01-TRUTH-AND-DEPENDENCIES.md": (
+            (r"Kuziva originated and built the initial Regula project\.", "founder-history boundary"),
+            (r"PROPOSED_FUTURE_ROLE", "prospective-role classification"),
+        ),
+        "04-MANUAL-BASELINE-PROTOCOL.md": (
+            (r"Regula output is hidden", "manual-baseline blinding"),
+        ),
+        "05-INDEPENDENT-TECHNICAL-LABELLING-PROTOCOL.md": (
+            (r"two independent qualified human raters", "independent rater requirement"),
+            (r"blind to Regula and baseline output", "technical-label blinding"),
+            (r"raw\s+disagreements", "raw disagreement retention"),
+            (r"adjudication", "adjudication requirement"),
+            (r"NOT_ASSESSABLE", "not-assessable label"),
+            (r"ABSTAIN", "abstention label"),
+        ),
+    }
+    for relative, controls in file_controls.items():
+        text = documents.get(relative, "")
+        for pattern, label in controls:
+            if not re.search(pattern, text, re.I):
+                errors.append(f"{relative}: missing control: {label}")
 
     permissions = documents.get("06-ADVICE-PERMISSIONS-AND-COST-REGISTER.md", "")
     for line in permissions.splitlines():
