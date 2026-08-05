@@ -551,31 +551,37 @@ and `PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
 
 ## N64 — Active-delivery claim enforcement and readiness decision
 
-**First raised:** 2026-08-03. **Status:** partially addressed; release remains
-blocked.
+**First raised:** 2026-08-03. **Status:** partially addressed; N65's corrected
+claim gate is verified, but wider release readiness remains blocked.
 
 The discovery inventory exposed a second-order enforcement defect: the normal
 diff audit could be green while claim-capable, actively delivered surfaces
 that were unchanged in the current diff still contained unsourced or stale
 claims. The auditor now consumes the generated delivery inventory and
 `--delivery-surfaces` fails closed on an unreadable or empty inventory. The
-full active delivery scan covers 96 text surfaces and currently reports 538
-claim candidates with no unsourced candidates; fact verification checks 148
+prior implementation record reports an active-delivery scan of 96 text surfaces
+and 538 claim candidates with no unsourced candidates; its complete raw output
+was not retained in the validation-readiness log. Exact-tree fact verification checks 148
 references across 17 files. Mutation tests cover the inventory hand-off and
 prevent a policy entry from turning an entire paragraph into an exemption.
 
-This does not make the repository release-ready. The independent merge-blocker
-analysis still reports 42 findings that survive both enforcement arms: 1
-blocked, 21 contested, 18 fixable and 2 inherited. Exact final full-suite and
-detached-worktree verification remain required. No deployment is authorised by
-this item. F25, F30, N35, N43, N50/N54, N53, N55, N57, N6, N7, N10, N11, N12,
+This does not make the repository release-ready. The superseded
+tracked-renderable proxy reported 42 findings across a mixed population: 1
+blocked, 21 contested, 18 fixable and 2 inherited. N65 corrected that population.
+Exact verification at `f72f2f83` / tree `563876f` now records pytest 2,658 passed
+with 34 explained skips, the custom runner 1,378 passed with 4 explained skips,
+and the current diff audit scanning 38 files and 378 claim candidates with zero
+unsourced, exit 0. This does not settle the wider release blockers carried by
+this item. No deployment is authorised by this item. F25, F30, N35, N43,
+N50/N54, N53, N55, N57, N6, N7, N10, N11, N12,
 N60 and N61 retain their prior status. commercial_v1 remains STOP and
 `PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
 
 ## N65 — Merge blocker used tracked-renderable as a publication proxy
 
-**First raised:** 2026-08-03. **Status:** implementation complete; exact final
-verification pending.
+**First raised:** 2026-08-03. **Status:** implementation and exact verification
+complete for the corrected merge-claim predicate; wider release readiness is not
+inferred.
 
 The independent merge analysis continued to classify almost every tracked
 document outside `.claude/` and `docs/improvement/` as a published product
@@ -586,20 +592,26 @@ different populations and could not support a single merge decision.
 
 `merge_blockers.is_published_surface` now derives its file set from generated
 records classified `active_product` and `claim_capable`, and fails closed when
-the inventory is missing, malformed or empty. The current run reports 474
-total claim findings, 463 introduced-only findings, zero active-delivery
-findings and zero surviving both conditions. The 42 previously reported items
+the inventory is missing, malformed or empty. The prior implementation record
+reports 474 total claim findings, 463 introduced-only findings, zero active-
+delivery findings and zero surviving both conditions; its complete raw output
+was not retained in the validation-readiness log. The 42 previously reported items
 remain in retained evidence; they were not deleted, sourced indiscriminately
-or allowlisted. Focused gate, set-operation and mutation coverage reports 45
-passing tests. This changes the active claim-blocker measurement, not the
+or allowlisted. The prior record also reports 45 focused passing tests, but that
+complete raw output was not retained. This changes the active claim-blocker measurement, not the
 commercial evidence: commercial_v1 remains STOP and
-`PRODUCT_PILOT_STATUS` remains NOT_APPROVED. Repository merge readiness remains
-pending until the complete test matrix and detached-worktree checks pass.
+`PRODUCT_PILOT_STATUS` remains NOT_APPROVED. Exact detached verification at
+`f72f2f83` / tree `563876f` records pytest 2,658 passed with 34 skips, the custom
+runner 1,378 passed with 4 skips, all skips due to absent untracked local hook
+files, and `claim_auditor.py --diff-base main` scanning 38 files and 378 claim
+candidates with zero unsourced, exit 0. This closes N65's verification condition
+only. Repository release readiness and every other open item remain separate.
 
 ## N66 — Validation-readiness decision pack remains externally disabled
 
-**First raised:** 2026-08-05. **Status:** preparation implemented; owner and
-professional prerequisites OPEN; external action NOT AUTHORISED.
+**First raised:** 2026-08-05. **Status:** preparation implemented; its original
+H1 recommendation is superseded by N67; controls and professional prerequisites
+remain OPEN; external action NOT AUTHORISED.
 
 The preparation unit preserves `VENTURE_DECISION: STOP` and
 `PRODUCT_PILOT_STATUS: NOT_APPROVED`. Its exact unvalidated hypothesis is a small
@@ -624,11 +636,45 @@ baseline and technical labels require two independent blinded qualified human
 raters, raw disagreements, adjudication, abstention, `NOT_ASSESSABLE`, a frozen
 holdout and cluster-aware reporting.
 
-Acceptance for a future bounded-discovery decision requires reviewed controller,
+The preparation-stage recommendation was `HOLD_PENDING_READINESS`; N67's later
+public falsification abandons that exact H1 and recommends no spend. Acceptance
+for any future bounded-discovery decision still requires reviewed controller,
 lawful-basis, storage, consent/confidentiality and zero-cost/budget boundaries plus
 explicit owner approval. It is falsified by a false founder premise, prohibited
 work, unsafe disclosure, unmanageable liability, inability to obtain independent
-review or evidence that the transaction is not recurring and costly. Current
-recommendation: `HOLD_PENDING_READINESS`; default `HOLD`. This item closes no
+review or evidence that the transaction is not recurring and costly. The
+preparation-stage recommendation was `HOLD_PENDING_READINESS`, default `HOLD`;
+N67 now controls the exact H1 disposition as `ABANDON` and `DO_NOT_SPEND`, while
+external action remains `NOT AUTHORISED`. This item closes no
 pre-existing ledger item and authorises no contact, spend, role, ownership,
 immigration, public, release or deployment action.
+
+## N67 — Exact UK insurer claims-triage onboarding hypothesis lacks public transaction evidence
+
+**First raised:** 2026-08-05. **Status:** exact hypothesis ABANDONED as the
+governing beachhead; public result complete; external action remains NOT
+AUTHORISED.
+
+Thirteen preregistered public-search rounds found direct evidence that UK general
+insurers use AI in claims, operate supplier onboarding and assurance, and, in
+Admiral's case, apply due diligence specifically to AI suppliers. They did not
+find a public transaction artefact joining those facts to a small UK AI
+supplier's production onboarding for claims triage. No qualifying source
+established supplier rework, delay, rejection cost, budget ownership, buyer
+acceptance criteria or a material source-code evidence request. Rounds 11 through
+13 added no new qualifying decision category, satisfying the searched-source
+stopping rule without implying exhaustive market coverage.
+
+`PUBLIC_TRANSACTION_EVIDENCE: GENERAL_PROBLEM_ONLY`;
+`HYPOTHESIS_STATUS: ABANDON`; `ACCESS_FEASIBILITY: WEAK`;
+`WILLINGNESS_TO_PAY: UNVALIDATED`; `TECHNICAL_FIT:
+FAILED_UNTIL_NEW_EVIDENCE`; `DIFFERENTIATION: NOT_DEMONSTRATED`;
+`OWNER_SPEND_RECOMMENDATION: DO_NOT_SPEND`; `CONTACT_READINESS: HOLD`.
+No adjacent challenger was strong enough to select. Acceptance for reconsidering
+this exact hypothesis requires a permissioned recent transaction identifying the
+small supplier, UK general-insurer buyer, production claims-triage trigger,
+actual evidence request and accepting roles, measurable burden, a material
+technically observable subset, and a comparison route against the existing
+manual workflow. A generic questionnaire, use case or expression of interest is
+insufficient. This item changes neither N66's external controls nor any product,
+efficacy, claim-integrity, release, ownership or immigration item.
