@@ -1,0 +1,3471 @@
+{
+  "scanned": [
+    ".claude/commands/add-command.md",
+    ".claude/commands/add-pattern.md",
+    ".claude/commands/verify.md",
+    ".claude/rules/git.md",
+    ".claude/rules/measurement.md",
+    ".claude/rules/python-scripts.md",
+    ".claude/rules/quality-standards.md",
+    ".claude/rules/regulatory-content.md",
+    ".claude/rules/site-html.md",
+    ".claude/rules/tests.md",
+    "CHANGELOG.md",
+    "README.md",
+    "SECURITY.md",
+    "benchmarks/MULTI_ANNOTATOR_PROTOCOL.md",
+    "benchmarks/PAPER_OUTLINE.md",
+    "benchmarks/README.md",
+    "benchmarks/headtohead/PREREGISTRATION.md",
+    "benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md",
+    "benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md",
+    "benchmarks/results/blog_scan_2026_04/README.md",
+    "content/blog/article-agentic-ai-annex-xiv.md",
+    "content/regulations/delta-log/README.md",
+    "content/regulations/delta-log/SUMMARY.md",
+    "data/site_facts.md",
+    "docs/MODEL_CARD.md",
+    "docs/TRUST.md",
+    "docs/UX-REVIEW-2026-07.md",
+    "docs/adr/0001-claim-identity.md",
+    "docs/adr/0002-the-seventy-percent-claim.md",
+    "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+    "docs/dpvcg-contribution-draft.md",
+    "docs/examples/exec-summary-sample.html",
+    "docs/improvement/BASELINE.md",
+    "docs/improvement/CODE_REVIEW.md",
+    "docs/improvement/COMMIT_ERRATA.md",
+    "docs/improvement/DIRECTIVE-v3.md",
+    "docs/improvement/GATE-REVIEW.md",
+    "docs/improvement/HANDOVER.md",
+    "docs/improvement/HOSTILE-REVIEW-DISPOSITIONS.md",
+    "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+    "docs/improvement/LEDGER.md",
+    "docs/improvement/OWNER_ACTIONS.md",
+    "docs/improvement/PACK-1.5b.md",
+    "docs/improvement/PHASE0_VERIFICATION.md",
+    "docs/improvement/PLAN-PHASE4-v2.md",
+    "docs/improvement/PLAN-PHASE4.md",
+    "docs/improvement/PROGRAMME.md",
+    "docs/improvement/RESEARCH-CARDS.md",
+    "docs/improvement/STATE.md",
+    "site/about.html",
+    "site/blog/blog-omnibus-delay.html",
+    "site/blog/blog-scanning-10-ai-apps.html",
+    "site/examples/sample-exec-summary.html",
+    "site/guides/eu-ai-act-healthcare.html",
+    "site/index.html",
+    "site/locales/de.html",
+    "site/locales/pt-br.html",
+    "site/regions/colorado-ai-regulation.html",
+    "site/regions/south-korea-ai-regulation.html",
+    "site/regions/uae.html"
+  ],
+  "total_claims": 1016,
+  "total_findings": 280,
+  "files": [
+    {
+      "path": ".claude/commands/add-command.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/commands/add-pattern.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/commands/verify.md",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/git.md",
+      "claims": 1,
+      "findings": [
+        {
+          "claim": {
+            "file": ".claude/rules/git.md",
+            "line": 21,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 18,
+            "paragraph_end": 26
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": ".claude/rules/measurement.md",
+      "claims": 9,
+      "findings": [
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 26,
+            "kind": "numeric",
+            "snippet": "140 findings",
+            "paragraph_start": 24,
+            "paragraph_end": 27
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 38,
+            "kind": "numeric",
+            "snippet": "18.5%",
+            "paragraph_start": 36,
+            "paragraph_end": 39
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 72,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 71,
+            "paragraph_end": 75
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 120,
+            "kind": "superlative",
+            "snippet": "nothing else",
+            "paragraph_start": 115,
+            "paragraph_end": 120
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 128,
+            "kind": "attributed",
+            "snippet": "reported that a blog post'",
+            "paragraph_start": 128,
+            "paragraph_end": 133
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": ".claude/rules/python-scripts.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/quality-standards.md",
+      "claims": 3,
+      "findings": [
+        {
+          "claim": {
+            "file": ".claude/rules/quality-standards.md",
+            "line": 22,
+            "kind": "numeric",
+            "snippet": "15 files",
+            "paragraph_start": 19,
+            "paragraph_end": 22
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/quality-standards.md",
+            "line": 22,
+            "kind": "numeric",
+            "snippet": "15 files",
+            "paragraph_start": 19,
+            "paragraph_end": 22
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": ".claude/rules/regulatory-content.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/site-html.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/tests.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "CHANGELOG.md",
+      "claims": 3,
+      "findings": []
+    },
+    {
+      "path": "README.md",
+      "claims": 9,
+      "findings": []
+    },
+    {
+      "path": "SECURITY.md",
+      "claims": 9,
+      "findings": []
+    },
+    {
+      "path": "benchmarks/MULTI_ANNOTATOR_PROTOCOL.md",
+      "claims": 4,
+      "findings": []
+    },
+    {
+      "path": "benchmarks/PAPER_OUTLINE.md",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "benchmarks/README.md",
+      "claims": 37,
+      "findings": [
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 71,
+            "kind": "numeric",
+            "snippet": "15.2%",
+            "paragraph_start": 69,
+            "paragraph_end": 76
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 72,
+            "kind": "numeric",
+            "snippet": "40.0%",
+            "paragraph_start": 69,
+            "paragraph_end": 76
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 73,
+            "kind": "numeric",
+            "snippet": "33.3%",
+            "paragraph_start": 69,
+            "paragraph_end": 76
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 74,
+            "kind": "numeric",
+            "snippet": "94%",
+            "paragraph_start": 69,
+            "paragraph_end": 76
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 74,
+            "kind": "numeric",
+            "snippet": "14.9%",
+            "paragraph_start": 69,
+            "paragraph_end": 76
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 75,
+            "kind": "numeric",
+            "snippet": "0.0%",
+            "paragraph_start": 69,
+            "paragraph_end": 76
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 76,
+            "kind": "numeric",
+            "snippet": "0.0%",
+            "paragraph_start": 69,
+            "paragraph_end": 76
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 87,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 87,
+            "paragraph_end": 87
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 93,
+            "kind": "numeric",
+            "snippet": "201 findings",
+            "paragraph_start": 92,
+            "paragraph_end": 95
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 102,
+            "kind": "numeric",
+            "snippet": "100.0%",
+            "paragraph_start": 100,
+            "paragraph_end": 108
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 103,
+            "kind": "numeric",
+            "snippet": "87.5%",
+            "paragraph_start": 100,
+            "paragraph_end": 108
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 104,
+            "kind": "numeric",
+            "snippet": "85.4%",
+            "paragraph_start": 100,
+            "paragraph_end": 108
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 105,
+            "kind": "numeric",
+            "snippet": "82.9%",
+            "paragraph_start": 100,
+            "paragraph_end": 108
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 106,
+            "kind": "numeric",
+            "snippet": "100.0%",
+            "paragraph_start": 100,
+            "paragraph_end": 108
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 107,
+            "kind": "numeric",
+            "snippet": "33.3%",
+            "paragraph_start": 100,
+            "paragraph_end": 108
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 108,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 100,
+            "paragraph_end": 108
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 110,
+            "kind": "numeric",
+            "snippet": "70.0%",
+            "paragraph_start": 110,
+            "paragraph_end": 115
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 111,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 110,
+            "paragraph_end": 115
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 119,
+            "kind": "numeric",
+            "snippet": "33%",
+            "paragraph_start": 117,
+            "paragraph_end": 123
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 122,
+            "kind": "numeric",
+            "snippet": "80%",
+            "paragraph_start": 117,
+            "paragraph_end": 123
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 128,
+            "kind": "numeric",
+            "snippet": "7.0 pattern",
+            "paragraph_start": 128,
+            "paragraph_end": 128
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 135,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 130,
+            "paragraph_end": 136
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 139,
+            "kind": "numeric",
+            "snippet": "33.3%",
+            "paragraph_start": 138,
+            "paragraph_end": 143
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 140,
+            "kind": "numeric",
+            "snippet": "4%",
+            "paragraph_start": 138,
+            "paragraph_end": 143
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 140,
+            "kind": "numeric",
+            "snippet": "78%",
+            "paragraph_start": 138,
+            "paragraph_end": 143
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 143,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 138,
+            "paragraph_end": 143
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 158,
+            "kind": "numeric",
+            "snippet": "66.1%",
+            "paragraph_start": 156,
+            "paragraph_end": 159
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/README.md",
+            "line": 159,
+            "kind": "numeric",
+            "snippet": "15.2%",
+            "paragraph_start": 156,
+            "paragraph_end": 159
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "benchmarks/headtohead/PREREGISTRATION.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md",
+      "claims": 5,
+      "findings": [
+        {
+          "claim": {
+            "file": "benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md",
+            "line": 91,
+            "kind": "numeric",
+            "snippet": "80%",
+            "paragraph_start": 88,
+            "paragraph_end": 91
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/headtohead/RESULTS-synthetic-2026-07-28.md",
+            "line": 105,
+            "kind": "numeric",
+            "snippet": "80%",
+            "paragraph_start": 104,
+            "paragraph_end": 106
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md",
+      "claims": 19,
+      "findings": [
+        {
+          "claim": {
+            "file": "benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md",
+            "line": 37,
+            "kind": "numeric",
+            "snippet": "33%",
+            "paragraph_start": 35,
+            "paragraph_end": 39
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md",
+            "line": 38,
+            "kind": "numeric",
+            "snippet": "47%",
+            "paragraph_start": 35,
+            "paragraph_end": 39
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md",
+            "line": 39,
+            "kind": "numeric",
+            "snippet": "63%",
+            "paragraph_start": 35,
+            "paragraph_end": 39
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md",
+            "line": 144,
+            "kind": "superlative",
+            "snippet": "nothing else",
+            "paragraph_start": 143,
+            "paragraph_end": 145
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md",
+            "line": 200,
+            "kind": "numeric",
+            "snippet": "63%",
+            "paragraph_start": 199,
+            "paragraph_end": 201
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "benchmarks/results/blog_scan_2026_04/README.md",
+      "claims": 9,
+      "findings": [
+        {
+          "claim": {
+            "file": "benchmarks/results/blog_scan_2026_04/README.md",
+            "line": 52,
+            "kind": "numeric",
+            "snippet": "36.2%",
+            "paragraph_start": 50,
+            "paragraph_end": 57
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/results/blog_scan_2026_04/README.md",
+            "line": 53,
+            "kind": "numeric",
+            "snippet": "32.5%",
+            "paragraph_start": 50,
+            "paragraph_end": 57
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/results/blog_scan_2026_04/README.md",
+            "line": 54,
+            "kind": "numeric",
+            "snippet": "23.3%",
+            "paragraph_start": 50,
+            "paragraph_end": 57
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/results/blog_scan_2026_04/README.md",
+            "line": 55,
+            "kind": "numeric",
+            "snippet": "5.3%",
+            "paragraph_start": 50,
+            "paragraph_end": 57
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/results/blog_scan_2026_04/README.md",
+            "line": 56,
+            "kind": "numeric",
+            "snippet": "2.1%",
+            "paragraph_start": 50,
+            "paragraph_end": 57
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "benchmarks/results/blog_scan_2026_04/README.md",
+            "line": 57,
+            "kind": "numeric",
+            "snippet": "0.6%",
+            "paragraph_start": 50,
+            "paragraph_end": 57
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "content/blog/article-agentic-ai-annex-xiv.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "content/regulations/delta-log/README.md",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "content/regulations/delta-log/SUMMARY.md",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "data/site_facts.md",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "docs/MODEL_CARD.md",
+      "claims": 25,
+      "findings": []
+    },
+    {
+      "path": "docs/TRUST.md",
+      "claims": 36,
+      "findings": []
+    },
+    {
+      "path": "docs/UX-REVIEW-2026-07.md",
+      "claims": 3,
+      "findings": []
+    },
+    {
+      "path": "docs/adr/0001-claim-identity.md",
+      "claims": 12,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/adr/0001-claim-identity.md",
+            "line": 34,
+            "kind": "numeric",
+            "snippet": "42.0%",
+            "paragraph_start": 33,
+            "paragraph_end": 39
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/adr/0001-claim-identity.md",
+            "line": 34,
+            "kind": "numeric",
+            "snippet": "51%",
+            "paragraph_start": 33,
+            "paragraph_end": 39
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/adr/0001-claim-identity.md",
+            "line": 109,
+            "kind": "superlative",
+            "snippet": "Cheapest",
+            "paragraph_start": 109,
+            "paragraph_end": 111
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/adr/0002-the-seventy-percent-claim.md",
+      "claims": 9,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/adr/0002-the-seventy-percent-claim.md",
+            "line": 130,
+            "kind": "numeric",
+            "snippet": "70%",
+            "paragraph_start": 130,
+            "paragraph_end": 137
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+      "claims": 50,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 27,
+            "kind": "numeric",
+            "snippet": "100%",
+            "paragraph_start": 25,
+            "paragraph_end": 27
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 27,
+            "kind": "numeric",
+            "snippet": "100%",
+            "paragraph_start": 25,
+            "paragraph_end": 27
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 64,
+            "kind": "numeric",
+            "snippet": "15.2%",
+            "paragraph_start": 64,
+            "paragraph_end": 67
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 142,
+            "kind": "numeric",
+            "snippet": "30.0%",
+            "paragraph_start": 140,
+            "paragraph_end": 146
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 143,
+            "kind": "numeric",
+            "snippet": "22.6%",
+            "paragraph_start": 140,
+            "paragraph_end": 146
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 144,
+            "kind": "numeric",
+            "snippet": "19.2%",
+            "paragraph_start": 140,
+            "paragraph_end": 146
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 145,
+            "kind": "numeric",
+            "snippet": "3.9%",
+            "paragraph_start": 140,
+            "paragraph_end": 146
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 146,
+            "kind": "numeric",
+            "snippet": "0.0%",
+            "paragraph_start": 140,
+            "paragraph_end": 146
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 151,
+            "kind": "numeric",
+            "snippet": "30%",
+            "paragraph_start": 150,
+            "paragraph_end": 161
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 152,
+            "kind": "numeric",
+            "snippet": "15%",
+            "paragraph_start": 150,
+            "paragraph_end": 161
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 158,
+            "kind": "numeric",
+            "snippet": "15.2%",
+            "paragraph_start": 150,
+            "paragraph_end": 161
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 170,
+            "kind": "numeric",
+            "snippet": "25.0%",
+            "paragraph_start": 167,
+            "paragraph_end": 171
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 171,
+            "kind": "numeric",
+            "snippet": "14.9%",
+            "paragraph_start": 167,
+            "paragraph_end": 171
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 184,
+            "kind": "numeric",
+            "snippet": "15.2%",
+            "paragraph_start": 182,
+            "paragraph_end": 185
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 199,
+            "kind": "numeric",
+            "snippet": "0%",
+            "paragraph_start": 199,
+            "paragraph_end": 202
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 199,
+            "kind": "numeric",
+            "snippet": "0%",
+            "paragraph_start": 199,
+            "paragraph_end": 202
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 233,
+            "kind": "numeric",
+            "snippet": "15.2%",
+            "paragraph_start": 231,
+            "paragraph_end": 236
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 234,
+            "kind": "numeric",
+            "snippet": "21.5%",
+            "paragraph_start": 231,
+            "paragraph_end": 236
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 235,
+            "kind": "numeric",
+            "snippet": "26.5%",
+            "paragraph_start": 231,
+            "paragraph_end": 236
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 236,
+            "kind": "numeric",
+            "snippet": "36.0%",
+            "paragraph_start": 231,
+            "paragraph_end": 236
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "line": 239,
+            "kind": "numeric",
+            "snippet": "36.0%",
+            "paragraph_start": 238,
+            "paragraph_end": 245
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/dpvcg-contribution-draft.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "docs/examples/exec-summary-sample.html",
+      "claims": 2,
+      "findings": []
+    },
+    {
+      "path": "docs/improvement/BASELINE.md",
+      "claims": 57,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 22,
+            "kind": "numeric",
+            "snippet": "2,821 tests",
+            "paragraph_start": 22,
+            "paragraph_end": 23
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 23,
+            "kind": "numeric",
+            "snippet": "28 tests",
+            "paragraph_start": 22,
+            "paragraph_end": 23
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 22,
+            "kind": "attributed",
+            "snippet": "said 2",
+            "paragraph_start": 22,
+            "paragraph_end": 23
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 25,
+            "kind": "numeric",
+            "snippet": "18.5%",
+            "paragraph_start": 25,
+            "paragraph_end": 29
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 194,
+            "kind": "numeric",
+            "snippet": "57.3%",
+            "paragraph_start": 193,
+            "paragraph_end": 196
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 196,
+            "kind": "numeric",
+            "snippet": "45%",
+            "paragraph_start": 193,
+            "paragraph_end": 196
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 204,
+            "kind": "numeric",
+            "snippet": "91.2%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 205,
+            "kind": "numeric",
+            "snippet": "87.9%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 206,
+            "kind": "numeric",
+            "snippet": "86.8%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 207,
+            "kind": "numeric",
+            "snippet": "86.7%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 208,
+            "kind": "numeric",
+            "snippet": "83.2%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 209,
+            "kind": "numeric",
+            "snippet": "76.5%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 210,
+            "kind": "numeric",
+            "snippet": "75.2%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 211,
+            "kind": "numeric",
+            "snippet": "73.5%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 212,
+            "kind": "numeric",
+            "snippet": "73.2%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 213,
+            "kind": "numeric",
+            "snippet": "63.8%",
+            "paragraph_start": 202,
+            "paragraph_end": 213
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 220,
+            "kind": "numeric",
+            "snippet": "0.0%",
+            "paragraph_start": 218,
+            "paragraph_end": 226
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 221,
+            "kind": "numeric",
+            "snippet": "0.0%",
+            "paragraph_start": 218,
+            "paragraph_end": 226
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 222,
+            "kind": "numeric",
+            "snippet": "0.0%",
+            "paragraph_start": 218,
+            "paragraph_end": 226
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 223,
+            "kind": "numeric",
+            "snippet": "57.7%",
+            "paragraph_start": 218,
+            "paragraph_end": 226
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 224,
+            "kind": "numeric",
+            "snippet": "58.2%",
+            "paragraph_start": 218,
+            "paragraph_end": 226
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 225,
+            "kind": "numeric",
+            "snippet": "78.9%",
+            "paragraph_start": 218,
+            "paragraph_end": 226
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 226,
+            "kind": "numeric",
+            "snippet": "81.1%",
+            "paragraph_start": 218,
+            "paragraph_end": 226
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 252,
+            "kind": "numeric",
+            "snippet": "0%",
+            "paragraph_start": 252,
+            "paragraph_end": 258
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 260,
+            "kind": "numeric",
+            "snippet": "57.3%",
+            "paragraph_start": 260,
+            "paragraph_end": 264
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/BASELINE.md",
+            "line": 345,
+            "kind": "numeric",
+            "snippet": "46.8%",
+            "paragraph_start": 344,
+            "paragraph_end": 346
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/CODE_REVIEW.md",
+      "claims": 27,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 21,
+            "kind": "attributed",
+            "snippet": "reports             n=6",
+            "paragraph_start": 21,
+            "paragraph_end": 24
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 61,
+            "kind": "attributed",
+            "snippet": "write better regexes\"",
+            "paragraph_start": 60,
+            "paragraph_end": 61
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 204,
+            "kind": "numeric",
+            "snippet": "46.8%",
+            "paragraph_start": 204,
+            "paragraph_end": 204
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 209,
+            "kind": "numeric",
+            "snippet": "103 files",
+            "paragraph_start": 206,
+            "paragraph_end": 210
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 216,
+            "kind": "numeric",
+            "snippet": "46.8%",
+            "paragraph_start": 212,
+            "paragraph_end": 216
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 228,
+            "kind": "numeric",
+            "snippet": "2,849 tests",
+            "paragraph_start": 222,
+            "paragraph_end": 229
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 366,
+            "kind": "numeric",
+            "snippet": "136 files",
+            "paragraph_start": 358,
+            "paragraph_end": 375
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 366,
+            "kind": "attributed",
+            "snippet": "reported 1",
+            "paragraph_start": 358,
+            "paragraph_end": 375
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 367,
+            "kind": "attributed",
+            "snippet": "reported 2",
+            "paragraph_start": 358,
+            "paragraph_end": 375
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 429,
+            "kind": "numeric",
+            "snippet": "18.5%",
+            "paragraph_start": 429,
+            "paragraph_end": 429
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 466,
+            "kind": "numeric",
+            "snippet": "190 lines",
+            "paragraph_start": 464,
+            "paragraph_end": 471
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 466,
+            "kind": "numeric",
+            "snippet": "11.6%",
+            "paragraph_start": 464,
+            "paragraph_end": 471
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 464,
+            "kind": "superlative",
+            "snippet": "unique",
+            "paragraph_start": 464,
+            "paragraph_end": 471
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 496,
+            "kind": "numeric",
+            "snippet": "50%",
+            "paragraph_start": 489,
+            "paragraph_end": 498
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/CODE_REVIEW.md",
+            "line": 506,
+            "kind": "attributed",
+            "snippet": "claimed a 2",
+            "paragraph_start": 506,
+            "paragraph_end": 521
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/COMMIT_ERRATA.md",
+      "claims": 2,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/COMMIT_ERRATA.md",
+            "line": 80,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 79,
+            "paragraph_end": 80
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/DIRECTIVE-v3.md",
+      "claims": 11,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/DIRECTIVE-v3.md",
+            "line": 66,
+            "kind": "numeric",
+            "snippet": "53%",
+            "paragraph_start": 66,
+            "paragraph_end": 66
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/DIRECTIVE-v3.md",
+            "line": 119,
+            "kind": "superlative",
+            "snippet": "cheapest",
+            "paragraph_start": 118,
+            "paragraph_end": 120
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/GATE-REVIEW.md",
+      "claims": 9,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/GATE-REVIEW.md",
+            "line": 159,
+            "kind": "attributed",
+            "snippet": "wrote \"",
+            "paragraph_start": 157,
+            "paragraph_end": 161
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/GATE-REVIEW.md",
+            "line": 248,
+            "kind": "attributed",
+            "snippet": "told me the \"",
+            "paragraph_start": 248,
+            "paragraph_end": 254
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/HANDOVER.md",
+      "claims": 21,
+      "findings": []
+    },
+    {
+      "path": "docs/improvement/HOSTILE-REVIEW-DISPOSITIONS.md",
+      "claims": 11,
+      "findings": []
+    },
+    {
+      "path": "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+      "claims": 11,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+            "line": 43,
+            "kind": "numeric",
+            "snippet": "33%",
+            "paragraph_start": 36,
+            "paragraph_end": 53
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+            "line": 48,
+            "kind": "numeric",
+            "snippet": "33%",
+            "paragraph_start": 36,
+            "paragraph_end": 53
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+            "line": 45,
+            "kind": "superlative",
+            "snippet": "The only",
+            "paragraph_start": 36,
+            "paragraph_end": 53
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+            "line": 59,
+            "kind": "numeric",
+            "snippet": "50%",
+            "paragraph_start": 59,
+            "paragraph_end": 64
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+            "line": 61,
+            "kind": "numeric",
+            "snippet": "2%",
+            "paragraph_start": 59,
+            "paragraph_end": 64
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+            "line": 61,
+            "kind": "attributed",
+            "snippet": "said 1",
+            "paragraph_start": 59,
+            "paragraph_end": 64
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+            "line": 79,
+            "kind": "attributed",
+            "snippet": "wrote \"",
+            "paragraph_start": 77,
+            "paragraph_end": 79
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/HOSTILE-REVIEW-LOOP2.md",
+            "line": 135,
+            "kind": "numeric",
+            "snippet": "50%",
+            "paragraph_start": 135,
+            "paragraph_end": 146
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/LEDGER.md",
+      "claims": 85,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 5,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 5,
+            "paragraph_end": 10
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 186,
+            "kind": "numeric",
+            "snippet": "2,849 tests",
+            "paragraph_start": 185,
+            "paragraph_end": 192
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 345,
+            "kind": "numeric",
+            "snippet": "70 findings",
+            "paragraph_start": 344,
+            "paragraph_end": 347
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 355,
+            "kind": "numeric",
+            "snippet": "6 files",
+            "paragraph_start": 352,
+            "paragraph_end": 357
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 356,
+            "kind": "numeric",
+            "snippet": "42%",
+            "paragraph_start": 352,
+            "paragraph_end": 357
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 365,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 359,
+            "paragraph_end": 368
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 366,
+            "kind": "superlative",
+            "snippet": "cheapest",
+            "paragraph_start": 359,
+            "paragraph_end": 368
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/OWNER_ACTIONS.md",
+      "claims": 6,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/OWNER_ACTIONS.md",
+            "line": 10,
+            "kind": "superlative",
+            "snippet": "Nothing else",
+            "paragraph_start": 3,
+            "paragraph_end": 10
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/OWNER_ACTIONS.md",
+            "line": 94,
+            "kind": "superlative",
+            "snippet": "cheapest",
+            "paragraph_start": 94,
+            "paragraph_end": 95
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/OWNER_ACTIONS.md",
+            "line": 211,
+            "kind": "numeric",
+            "snippet": "156 files",
+            "paragraph_start": 209,
+            "paragraph_end": 215
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/PACK-1.5b.md",
+      "claims": 81,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 32,
+            "kind": "attributed",
+            "snippet": "said: \"",
+            "paragraph_start": 32,
+            "paragraph_end": 37
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 41,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 41,
+            "paragraph_end": 41
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 76,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 75,
+            "paragraph_end": 76
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 97,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 97,
+            "paragraph_end": 97
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 209,
+            "kind": "numeric",
+            "snippet": "30%",
+            "paragraph_start": 207,
+            "paragraph_end": 211
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 244,
+            "kind": "numeric",
+            "snippet": "9%",
+            "paragraph_start": 242,
+            "paragraph_end": 249
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 255,
+            "kind": "numeric",
+            "snippet": "9%",
+            "paragraph_start": 255,
+            "paragraph_end": 260
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 281,
+            "kind": "numeric",
+            "snippet": "41%",
+            "paragraph_start": 281,
+            "paragraph_end": 281
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 281,
+            "kind": "numeric",
+            "snippet": "57%",
+            "paragraph_start": 281,
+            "paragraph_end": 281
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 281,
+            "kind": "numeric",
+            "snippet": "65%",
+            "paragraph_start": 281,
+            "paragraph_end": 281
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 281,
+            "kind": "numeric",
+            "snippet": "72%",
+            "paragraph_start": 281,
+            "paragraph_end": 281
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 284,
+            "kind": "numeric",
+            "snippet": "65%",
+            "paragraph_start": 283,
+            "paragraph_end": 286
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 285,
+            "kind": "numeric",
+            "snippet": "72%",
+            "paragraph_start": 283,
+            "paragraph_end": 286
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 286,
+            "kind": "numeric",
+            "snippet": "562 findings",
+            "paragraph_start": 283,
+            "paragraph_end": 286
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 289,
+            "kind": "numeric",
+            "snippet": "5 files",
+            "paragraph_start": 288,
+            "paragraph_end": 289
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 293,
+            "kind": "numeric",
+            "snippet": "65%",
+            "paragraph_start": 291,
+            "paragraph_end": 298
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 294,
+            "kind": "numeric",
+            "snippet": "60%",
+            "paragraph_start": 291,
+            "paragraph_end": 298
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 295,
+            "kind": "numeric",
+            "snippet": "57%",
+            "paragraph_start": 291,
+            "paragraph_end": 298
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 296,
+            "kind": "numeric",
+            "snippet": "72%",
+            "paragraph_start": 291,
+            "paragraph_end": 298
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 297,
+            "kind": "numeric",
+            "snippet": "47%",
+            "paragraph_start": 291,
+            "paragraph_end": 298
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 300,
+            "kind": "numeric",
+            "snippet": "65%",
+            "paragraph_start": 300,
+            "paragraph_end": 300
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 300,
+            "kind": "numeric",
+            "snippet": "72%",
+            "paragraph_start": 300,
+            "paragraph_end": 300
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 300,
+            "kind": "numeric",
+            "snippet": "57%",
+            "paragraph_start": 300,
+            "paragraph_end": 300
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 306,
+            "kind": "numeric",
+            "snippet": "41%",
+            "paragraph_start": 306,
+            "paragraph_end": 310
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 308,
+            "kind": "numeric",
+            "snippet": "41%",
+            "paragraph_start": 306,
+            "paragraph_end": 310
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 308,
+            "kind": "numeric",
+            "snippet": "41%",
+            "paragraph_start": 306,
+            "paragraph_end": 310
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 312,
+            "kind": "numeric",
+            "snippet": "56.6%",
+            "paragraph_start": 312,
+            "paragraph_end": 312
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 312,
+            "kind": "numeric",
+            "snippet": "27.8%",
+            "paragraph_start": 312,
+            "paragraph_end": 312
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 312,
+            "kind": "numeric",
+            "snippet": "7.4%",
+            "paragraph_start": 312,
+            "paragraph_end": 312
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 312,
+            "kind": "numeric",
+            "snippet": "5.6%",
+            "paragraph_start": 312,
+            "paragraph_end": 312
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 325,
+            "kind": "numeric",
+            "snippet": "56.6%",
+            "paragraph_start": 322,
+            "paragraph_end": 327
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 325,
+            "kind": "numeric",
+            "snippet": "32.5%",
+            "paragraph_start": 322,
+            "paragraph_end": 327
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 326,
+            "kind": "numeric",
+            "snippet": "27.8%",
+            "paragraph_start": 322,
+            "paragraph_end": 327
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 326,
+            "kind": "numeric",
+            "snippet": "23.3%",
+            "paragraph_start": 322,
+            "paragraph_end": 327
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 327,
+            "kind": "numeric",
+            "snippet": "7.4%",
+            "paragraph_start": 322,
+            "paragraph_end": 327
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 327,
+            "kind": "numeric",
+            "snippet": "33.8%",
+            "paragraph_start": 322,
+            "paragraph_end": 327
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 351,
+            "kind": "numeric",
+            "snippet": "32.5%",
+            "paragraph_start": 347,
+            "paragraph_end": 355
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 351,
+            "kind": "numeric",
+            "snippet": "23.3%",
+            "paragraph_start": 347,
+            "paragraph_end": 355
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 351,
+            "kind": "numeric",
+            "snippet": "33.8%",
+            "paragraph_start": 347,
+            "paragraph_end": 355
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 418,
+            "kind": "numeric",
+            "snippet": "43%",
+            "paragraph_start": 418,
+            "paragraph_end": 418
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 418,
+            "kind": "numeric",
+            "snippet": "29%",
+            "paragraph_start": 418,
+            "paragraph_end": 418
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 418,
+            "kind": "numeric",
+            "snippet": "29%",
+            "paragraph_start": 418,
+            "paragraph_end": 418
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 418,
+            "kind": "numeric",
+            "snippet": "43%",
+            "paragraph_start": 418,
+            "paragraph_end": 418
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 432,
+            "kind": "numeric",
+            "snippet": "95%",
+            "paragraph_start": 431,
+            "paragraph_end": 433
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 432,
+            "kind": "numeric",
+            "snippet": "70%",
+            "paragraph_start": 431,
+            "paragraph_end": 433
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 439,
+            "kind": "numeric",
+            "snippet": "95%",
+            "paragraph_start": 438,
+            "paragraph_end": 440
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 439,
+            "kind": "numeric",
+            "snippet": "70%",
+            "paragraph_start": 438,
+            "paragraph_end": 440
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 550,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 549,
+            "paragraph_end": 555
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 566,
+            "kind": "numeric",
+            "snippet": "41%",
+            "paragraph_start": 565,
+            "paragraph_end": 568
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PACK-1.5b.md",
+            "line": 615,
+            "kind": "numeric",
+            "snippet": "50%",
+            "paragraph_start": 615,
+            "paragraph_end": 617
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/PHASE0_VERIFICATION.md",
+      "claims": 58,
+      "findings": []
+    },
+    {
+      "path": "docs/improvement/PLAN-PHASE4-v2.md",
+      "claims": 29,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 16,
+            "kind": "numeric",
+            "snippet": "33%",
+            "paragraph_start": 11,
+            "paragraph_end": 18
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 44,
+            "kind": "numeric",
+            "snippet": "70%",
+            "paragraph_start": 37,
+            "paragraph_end": 45
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 51,
+            "kind": "numeric",
+            "snippet": "2%",
+            "paragraph_start": 47,
+            "paragraph_end": 62
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 52,
+            "kind": "attributed",
+            "snippet": "said 1",
+            "paragraph_start": 47,
+            "paragraph_end": 62
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 118,
+            "kind": "numeric",
+            "snippet": "119 files",
+            "paragraph_start": 118,
+            "paragraph_end": 120
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 138,
+            "kind": "numeric",
+            "snippet": "17 files",
+            "paragraph_start": 136,
+            "paragraph_end": 138
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 168,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 168,
+            "paragraph_end": 168
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 217,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 217,
+            "paragraph_end": 218
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 231,
+            "kind": "attributed",
+            "snippet": "confirmed, return to Phase 3",
+            "paragraph_start": 231,
+            "paragraph_end": 231
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 263,
+            "kind": "numeric",
+            "snippet": "25%",
+            "paragraph_start": 261,
+            "paragraph_end": 269
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 264,
+            "kind": "numeric",
+            "snippet": "20%",
+            "paragraph_start": 261,
+            "paragraph_end": 269
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 265,
+            "kind": "numeric",
+            "snippet": "15%",
+            "paragraph_start": 261,
+            "paragraph_end": 269
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 266,
+            "kind": "numeric",
+            "snippet": "15%",
+            "paragraph_start": 261,
+            "paragraph_end": 269
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 267,
+            "kind": "numeric",
+            "snippet": "10%",
+            "paragraph_start": 261,
+            "paragraph_end": 269
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 268,
+            "kind": "numeric",
+            "snippet": "10%",
+            "paragraph_start": 261,
+            "paragraph_end": 269
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 269,
+            "kind": "numeric",
+            "snippet": "5%",
+            "paragraph_start": 261,
+            "paragraph_end": 269
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 297,
+            "kind": "numeric",
+            "snippet": "33%",
+            "paragraph_start": 274,
+            "paragraph_end": 302
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 301,
+            "kind": "superlative",
+            "snippet": "better than",
+            "paragraph_start": 274,
+            "paragraph_end": 302
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4-v2.md",
+            "line": 278,
+            "kind": "attributed",
+            "snippet": "wrote \"",
+            "paragraph_start": 274,
+            "paragraph_end": 302
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/PLAN-PHASE4.md",
+      "claims": 23,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 81,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 81,
+            "paragraph_end": 83
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 101,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 89,
+            "paragraph_end": 102
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 112,
+            "kind": "numeric",
+            "snippet": "183 patterns",
+            "paragraph_start": 104,
+            "paragraph_end": 114
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 105,
+            "kind": "attributed",
+            "snippet": "reports **0",
+            "paragraph_start": 104,
+            "paragraph_end": 114
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 121,
+            "kind": "numeric",
+            "snippet": "12.7%",
+            "paragraph_start": 116,
+            "paragraph_end": 128
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 122,
+            "kind": "numeric",
+            "snippet": "70.9%",
+            "paragraph_start": 116,
+            "paragraph_end": 128
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 123,
+            "kind": "numeric",
+            "snippet": "90.5%",
+            "paragraph_start": 116,
+            "paragraph_end": 128
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 156,
+            "kind": "numeric",
+            "snippet": "50%",
+            "paragraph_start": 146,
+            "paragraph_end": 159
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 158,
+            "kind": "numeric",
+            "snippet": "88.6%",
+            "paragraph_start": 146,
+            "paragraph_end": 159
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 158,
+            "kind": "numeric",
+            "snippet": "98%",
+            "paragraph_start": 146,
+            "paragraph_end": 159
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 159,
+            "kind": "numeric",
+            "snippet": "43.7%",
+            "paragraph_start": 146,
+            "paragraph_end": 159
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 198,
+            "kind": "numeric",
+            "snippet": "25%",
+            "paragraph_start": 196,
+            "paragraph_end": 204
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 198,
+            "kind": "numeric",
+            "snippet": "183 patterns",
+            "paragraph_start": 196,
+            "paragraph_end": 204
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 199,
+            "kind": "numeric",
+            "snippet": "20%",
+            "paragraph_start": 196,
+            "paragraph_end": 204
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 200,
+            "kind": "numeric",
+            "snippet": "15%",
+            "paragraph_start": 196,
+            "paragraph_end": 204
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 201,
+            "kind": "numeric",
+            "snippet": "15%",
+            "paragraph_start": 196,
+            "paragraph_end": 204
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 202,
+            "kind": "numeric",
+            "snippet": "10%",
+            "paragraph_start": 196,
+            "paragraph_end": 204
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 203,
+            "kind": "numeric",
+            "snippet": "10%",
+            "paragraph_start": 196,
+            "paragraph_end": 204
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 204,
+            "kind": "numeric",
+            "snippet": "5%",
+            "paragraph_start": 196,
+            "paragraph_end": 204
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/PLAN-PHASE4.md",
+            "line": 235,
+            "kind": "numeric",
+            "snippet": "183 patterns",
+            "paragraph_start": 230,
+            "paragraph_end": 236
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/PROGRAMME.md",
+      "claims": 15,
+      "findings": []
+    },
+    {
+      "path": "docs/improvement/RESEARCH-CARDS.md",
+      "claims": 36,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/RESEARCH-CARDS.md",
+            "line": 149,
+            "kind": "numeric",
+            "snippet": "88.6%",
+            "paragraph_start": 137,
+            "paragraph_end": 151
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/RESEARCH-CARDS.md",
+            "line": 140,
+            "kind": "attributed",
+            "snippet": "said all six operate where \"",
+            "paragraph_start": 137,
+            "paragraph_end": 151
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/RESEARCH-CARDS.md",
+            "line": 156,
+            "kind": "superlative",
+            "snippet": "better than",
+            "paragraph_start": 153,
+            "paragraph_end": 157
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/RESEARCH-CARDS.md",
+            "line": 168,
+            "kind": "numeric",
+            "snippet": "88.6%",
+            "paragraph_start": 167,
+            "paragraph_end": 170
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/RESEARCH-CARDS.md",
+            "line": 168,
+            "kind": "numeric",
+            "snippet": "98%",
+            "paragraph_start": 167,
+            "paragraph_end": 170
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/RESEARCH-CARDS.md",
+            "line": 168,
+            "kind": "numeric",
+            "snippet": "43.7%",
+            "paragraph_start": 167,
+            "paragraph_end": 170
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/RESEARCH-CARDS.md",
+            "line": 274,
+            "kind": "attributed",
+            "snippet": "reported values would fail a 0",
+            "paragraph_start": 269,
+            "paragraph_end": 275
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/RESEARCH-CARDS.md",
+            "line": 327,
+            "kind": "numeric",
+            "snippet": "2 case",
+            "paragraph_start": 326,
+            "paragraph_end": 330
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/RESEARCH-CARDS.md",
+            "line": 342,
+            "kind": "attributed",
+            "snippet": "Stated rather than glossed, per \"",
+            "paragraph_start": 342,
+            "paragraph_end": 342
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/STATE.md",
+      "claims": 130,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 92,
+            "kind": "numeric",
+            "snippet": "3 line",
+            "paragraph_start": 81,
+            "paragraph_end": 94
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 108,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 102,
+            "paragraph_end": 114
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 130,
+            "kind": "numeric",
+            "snippet": "8 Test",
+            "paragraph_start": 129,
+            "paragraph_end": 132
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 139,
+            "kind": "numeric",
+            "snippet": "1 findings",
+            "paragraph_start": 139,
+            "paragraph_end": 139
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 141,
+            "kind": "numeric",
+            "snippet": "1 findings",
+            "paragraph_start": 141,
+            "paragraph_end": 141
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 234,
+            "kind": "numeric",
+            "snippet": "27%",
+            "paragraph_start": 233,
+            "paragraph_end": 238
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 275,
+            "kind": "numeric",
+            "snippet": "3 line",
+            "paragraph_start": 273,
+            "paragraph_end": 279
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 293,
+            "kind": "superlative",
+            "snippet": "unique",
+            "paragraph_start": 291,
+            "paragraph_end": 296
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 294,
+            "kind": "superlative",
+            "snippet": "unique",
+            "paragraph_start": 291,
+            "paragraph_end": 296
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 294,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 291,
+            "paragraph_end": 296
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 312,
+            "kind": "attributed",
+            "snippet": "reported that the CSS fence removed \"",
+            "paragraph_start": 311,
+            "paragraph_end": 314
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 332,
+            "kind": "superlative",
+            "snippet": "unique",
+            "paragraph_start": 328,
+            "paragraph_end": 333
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 345,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 343,
+            "paragraph_end": 355
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 357,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 357,
+            "paragraph_end": 362
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 432,
+            "kind": "numeric",
+            "snippet": "61 findings",
+            "paragraph_start": 431,
+            "paragraph_end": 433
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 449,
+            "kind": "numeric",
+            "snippet": "123 findings",
+            "paragraph_start": 445,
+            "paragraph_end": 450
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 465,
+            "kind": "superlative",
+            "snippet": "nothing else",
+            "paragraph_start": 464,
+            "paragraph_end": 468
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 466,
+            "kind": "superlative",
+            "snippet": "unique",
+            "paragraph_start": 464,
+            "paragraph_end": 468
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 593,
+            "kind": "numeric",
+            "snippet": "12 frameworks",
+            "paragraph_start": 592,
+            "paragraph_end": 595
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 637,
+            "kind": "superlative",
+            "snippet": "unique",
+            "paragraph_start": 635,
+            "paragraph_end": 638
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 686,
+            "kind": "attributed",
+            "snippet": "said the 4",
+            "paragraph_start": 684,
+            "paragraph_end": 688
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 688,
+            "kind": "attributed",
+            "snippet": "said **4",
+            "paragraph_start": 684,
+            "paragraph_end": 688
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 708,
+            "kind": "superlative",
+            "snippet": "unique",
+            "paragraph_start": 708,
+            "paragraph_end": 709
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 927,
+            "kind": "numeric",
+            "snippet": "50%",
+            "paragraph_start": 925,
+            "paragraph_end": 934
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1159,
+            "kind": "numeric",
+            "snippet": "33.3%",
+            "paragraph_start": 1157,
+            "paragraph_end": 1162
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1160,
+            "kind": "numeric",
+            "snippet": "53.3%",
+            "paragraph_start": 1157,
+            "paragraph_end": 1162
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1161,
+            "kind": "numeric",
+            "snippet": "76.7%",
+            "paragraph_start": 1157,
+            "paragraph_end": 1162
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1162,
+            "kind": "numeric",
+            "snippet": "53.3%",
+            "paragraph_start": 1157,
+            "paragraph_end": 1162
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1216,
+            "kind": "attributed",
+            "snippet": "reports this batch as \"",
+            "paragraph_start": 1215,
+            "paragraph_end": 1216
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1236,
+            "kind": "numeric",
+            "snippet": "8 files",
+            "paragraph_start": 1236,
+            "paragraph_end": 1237
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1246,
+            "kind": "attributed",
+            "snippet": "reports class 1",
+            "paragraph_start": 1245,
+            "paragraph_end": 1246
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1276,
+            "kind": "numeric",
+            "snippet": "100%",
+            "paragraph_start": 1276,
+            "paragraph_end": 1281
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1283,
+            "kind": "numeric",
+            "snippet": "9%",
+            "paragraph_start": 1283,
+            "paragraph_end": 1284
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1500,
+            "kind": "attributed",
+            "snippet": "reported closing **3",
+            "paragraph_start": 1500,
+            "paragraph_end": 1501
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1548,
+            "kind": "numeric",
+            "snippet": "46%",
+            "paragraph_start": 1543,
+            "paragraph_end": 1548
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1826,
+            "kind": "numeric",
+            "snippet": "57 files",
+            "paragraph_start": 1825,
+            "paragraph_end": 1828
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1827,
+            "kind": "numeric",
+            "snippet": "20 files",
+            "paragraph_start": 1825,
+            "paragraph_end": 1828
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1827,
+            "kind": "attributed",
+            "snippet": "reports **2",
+            "paragraph_start": 1825,
+            "paragraph_end": 1828
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1836,
+            "kind": "numeric",
+            "snippet": "72%",
+            "paragraph_start": 1836,
+            "paragraph_end": 1839
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1871,
+            "kind": "numeric",
+            "snippet": "57 files",
+            "paragraph_start": 1870,
+            "paragraph_end": 1872
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1871,
+            "kind": "numeric",
+            "snippet": "20\nfiles",
+            "paragraph_start": 1870,
+            "paragraph_end": 1872
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1883,
+            "kind": "numeric",
+            "snippet": "42 findings",
+            "paragraph_start": 1881,
+            "paragraph_end": 1884
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1922,
+            "kind": "numeric",
+            "snippet": "3 tests",
+            "paragraph_start": 1922,
+            "paragraph_end": 1925
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/STATE.md",
+            "line": 1974,
+            "kind": "attributed",
+            "snippet": "reported 2",
+            "paragraph_start": 1974,
+            "paragraph_end": 1980
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "site/about.html",
+      "claims": 5,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-omnibus-delay.html",
+      "claims": 4,
+      "findings": []
+    },
+    {
+      "path": "site/blog/blog-scanning-10-ai-apps.html",
+      "claims": 31,
+      "findings": []
+    },
+    {
+      "path": "site/examples/sample-exec-summary.html",
+      "claims": 2,
+      "findings": []
+    },
+    {
+      "path": "site/guides/eu-ai-act-healthcare.html",
+      "claims": 2,
+      "findings": []
+    },
+    {
+      "path": "site/index.html",
+      "claims": 36,
+      "findings": []
+    },
+    {
+      "path": "site/locales/de.html",
+      "claims": 29,
+      "findings": []
+    },
+    {
+      "path": "site/locales/pt-br.html",
+      "claims": 28,
+      "findings": []
+    },
+    {
+      "path": "site/regions/colorado-ai-regulation.html",
+      "claims": 7,
+      "findings": []
+    },
+    {
+      "path": "site/regions/south-korea-ai-regulation.html",
+      "claims": 3,
+      "findings": []
+    },
+    {
+      "path": "site/regions/uae.html",
+      "claims": 7,
+      "findings": []
+    }
+  ]
+}

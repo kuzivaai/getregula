@@ -1,0 +1,152 @@
+{
+  "scanned": [
+    "README.md",
+    "SECURITY.md",
+    "data/site_facts.md",
+    "docs/MODEL_CARD.md",
+    "docs/TRUST.md",
+    "docs/adr/0002-the-seventy-percent-claim.md",
+    "docs/improvement/LEDGER.md",
+    "site/about.html",
+    "site/regions/uae.html"
+  ],
+  "total_claims": 186,
+  "total_findings": 8,
+  "files": [
+    {
+      "path": "README.md",
+      "claims": 9,
+      "findings": []
+    },
+    {
+      "path": "SECURITY.md",
+      "claims": 9,
+      "findings": []
+    },
+    {
+      "path": "data/site_facts.md",
+      "claims": 1,
+      "findings": []
+    },
+    {
+      "path": "docs/MODEL_CARD.md",
+      "claims": 25,
+      "findings": []
+    },
+    {
+      "path": "docs/TRUST.md",
+      "claims": 36,
+      "findings": []
+    },
+    {
+      "path": "docs/adr/0002-the-seventy-percent-claim.md",
+      "claims": 9,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/adr/0002-the-seventy-percent-claim.md",
+            "line": 130,
+            "kind": "numeric",
+            "snippet": "70%",
+            "paragraph_start": 130,
+            "paragraph_end": 137
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "docs/improvement/LEDGER.md",
+      "claims": 85,
+      "findings": [
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 5,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 5,
+            "paragraph_end": 10
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 186,
+            "kind": "numeric",
+            "snippet": "2,849 tests",
+            "paragraph_start": 185,
+            "paragraph_end": 192
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 345,
+            "kind": "numeric",
+            "snippet": "70 findings",
+            "paragraph_start": 344,
+            "paragraph_end": 347
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 355,
+            "kind": "numeric",
+            "snippet": "6 files",
+            "paragraph_start": 352,
+            "paragraph_end": 357
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 356,
+            "kind": "numeric",
+            "snippet": "42%",
+            "paragraph_start": 352,
+            "paragraph_end": 357
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 365,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 359,
+            "paragraph_end": 368
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": "docs/improvement/LEDGER.md",
+            "line": 366,
+            "kind": "superlative",
+            "snippet": "cheapest",
+            "paragraph_start": 359,
+            "paragraph_end": 368
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": "site/about.html",
+      "claims": 5,
+      "findings": []
+    },
+    {
+      "path": "site/regions/uae.html",
+      "claims": 7,
+      "findings": []
+    }
+  ]
+}

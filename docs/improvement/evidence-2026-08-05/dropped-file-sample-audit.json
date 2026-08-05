@@ -1,0 +1,912 @@
+tree-guard: TREE CHANGED since baseline 2026-07-30T22:45:18.947267+00:00:
+tree-guard:   HEAD moved d5f6d0f -> 27aefd7
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-10T12-14-07-388Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-10T12-14-48-086Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-10T12-15-36-779Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T07-54-43-100Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T07-54-43-551Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T07-54-45-201Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T07-54-45-553Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T07-54-46-722Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T07-54-47-009Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T07-55-14-885Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T07-55-28-858Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T08-19-20-524Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-16T08-19-23-201Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-17T06-18-00-765Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-17T06-18-01-000Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-17T06-18-30-465Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-17T06-18-32-763Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-17T06-18-33-920Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-18T22-20-12-118Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-18T22-20-12-641Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-18T22-21-35-699Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-18T22-40-46-287Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-18T22-46-21-258Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-18T22-46-24-872Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-24-19-896Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-24-20-260Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-24-30-572Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-25-03-822Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-25-04-106Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-25-04-289Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-25-05-552Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-47-16-954Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-49-04-182Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-49-08-597Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/console-2026-07-20T06-50-17-020Z.log
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-13-02-722Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-13-02-797Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-13-37-323Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-13-44-497Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-13-46-628Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-14-08-003Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-14-08-163Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-14-22-188Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-14-22-280Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-14-48-701Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-14-48-822Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-15-20-350Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-15-22-463Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-15-39-082Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-15-39-336Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-15-56-537Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-15-56-670Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-16-19-481Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-16-22-532Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-10T12-17-25-976Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-16T07-54-43-486Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-16T07-54-45-487Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-16T07-54-46-949Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-16T07-55-15-146Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-16T07-55-29-084Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-16T08-19-20-785Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-16T08-19-23-464Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-17T06-18-00-965Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-17T06-18-30-565Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-17T06-18-31-686Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-17T06-18-32-841Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-18T22-20-12-305Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-18T22-21-35-888Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-18T22-40-46-626Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-18T22-46-21-399Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-24-20-200Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-25-04-053Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-25-04-242Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-25-04-434Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-25-05-658Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-47-17-530Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-47-37-735Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-48-24-980Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-49-04-312Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-49-08-684Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .playwright-cli/page-2026-07-20T06-50-17-584Z.yml
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/10060530066913676843
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/10288967754928098818
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/1062959321936563370
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/10682181070463058704
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/10975585647256133724
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/11248352602224924173
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/1141437365791308822
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/11535127536693357146
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/11627417047363554554
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/11656578670900320949
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/1177916081738019672
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/12117695073368083818
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/12185616074612056005
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/12327869989846289908
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/12509413967127385282
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/12678664956100010584
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/12680368827053363219
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/12721647714237491997
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/12998679185779951236
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/13359478430938736963
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/13374316855513984473
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/13402565982592032791
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/13484584576669405868
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/13934329905766932625
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14119146789961193007
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14236911508772218206
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14242818881845187756
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14312863034831352441
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14445803355040041070
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14456024132233837155
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14524215636481096941
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14598430838779402040
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14742171529521460699
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/1475420656038811049
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/14822436699309884481
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/15073101386765111732
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/15118110071901061939
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/15455021840237970527
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/15821951049318055345
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/15857467540530299390
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/16374213220153077883
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/16495709892262913540
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/16515286662469573153
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/16556721652630733948
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/16759996890714964480
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/17498189843125760543
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/17569817446572468085
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/17782022611696870821
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/17937576021711127322
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/17966397915973335548
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/18057661873868753599
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/18244623185857116438
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/1938674062034232501
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/2062826022172623335
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/2737602287794513763
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/2992974549050601250
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/339817266268791649
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/3614020819875675325
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/3846944800769298756
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/4245798094273911952
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/4798616508748937009
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/5020900684261911019
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/5105287937893990553
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/5346726449490190912
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/5361434495073173672
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/5473761695116906488
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/5939274859232502563
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6019243210323724210
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6061531345416435896
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6129123475089029028
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/622055815074279103
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6309026210631202743
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6744457395501996450
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6750397649425066874
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6851488678233090709
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6870706806841642915
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6877058894746434361
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/6938854268439649072
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/7286780586613459894
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/7773430148698074079
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/7814232156828563520
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/8071206663921278552
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/8309477949188516385
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/8458847643990882456
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/8614344456978418839
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/8890319054942393369
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/8958513815527453212
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/9054647964243579189
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/9226984356755708620
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/9604961994856187666
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/9675118094967931783
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/9769007785485964783
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/985326426925707105
+tree-guard:   no longer modified (committed, restored or deleted): .ruff_cache/0.15.10/9958882783994011779
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/FETCH.md
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/__init__.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/advisories/pypi/litellm/x_REGULA-2026-001.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/annex_iv_template.md
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/annex_viii_sections.json
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/article_obligations.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/en18228_mapping.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/en18282_mapping.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/eu_ai_act_articles_9_15.md
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/framework_crosswalk.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/gpai_code_of_practice.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/gpai_obligations.md
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/gpai_signatories.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/harmonised_standards.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/iso_42001_mapping.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/jurisdictions/colorado.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/jurisdictions/eu_ai_act.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/jurisdictions/south_korea.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/mitre_atlas.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/owasp_agentic_top10.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/owasp_llm_top10.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/risk_indicators.yaml
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/references/tree_sitter_implementation_guide.md
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/__init__.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/__main__.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/adoption_pulse.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/agent_monitor.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/ai_code_governance.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/aibom.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/api_server.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/assess.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/ast_analysis.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/ast_context.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/ast_engine.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/baseline.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/benchmark.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/bias_bbq.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/bias_data/bbq_sample.json
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/bias_eval.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/bias_report.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/bias_stats.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/build_delta_dataset.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/build_delta_log.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/build_regulations.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/ci_heal.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/claim_auditor.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/classify_risk.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_admin.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_analysis.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_compliance.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_evidence.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_governance.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_infra.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_monitor.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_report.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_scan.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cli_util.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/code_analysis.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/compliance_check.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/config_validator.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/conform.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/constants.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/credential_check.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/cross_file_flow.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/custom_rules.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/degradation.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/demo_screenshots.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/demos/__init__.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/demos/cv_screening_app.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/dependency_scan.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/dev_sentiment.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/discover_ai_systems.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/doc_audit.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/doctor.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/domain_scoring.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/dpv_data/dpv_aiact_terms.json
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/dpv_export.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/eli_data/eli_ontology_terms.json
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/engagement.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/envelope.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/errors.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/evidence_pack.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/exec_summary.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/exempt_check.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/explain.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/explain_articles.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/extract_patterns.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/feed.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/findings_view.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/framework_mapper.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/gdpr_patterns.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/gdpr_scan.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/generate_documentation.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/gpai_check.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/gsc_fetch.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/guardrail_scanner.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/handoff.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/i18n.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/indexnow.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/init_wizard.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/install.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/log_event.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/make_og_uae.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/mcp_server.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/metrics.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/minify_css.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/model_inventory.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/monitor.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/notebook.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/omnibus.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/pdf_export.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/planning_consistency.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/policy_config.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/project_fingerprint.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/questionnaire.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/quickstart.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/refresh_dpv_vocab.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/refresh_eli_vocab.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/register.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/regulation_map.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/regwatch.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/release_gate.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/remediation.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/remediation_plan.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/report.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/risk_decisions.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/risk_patterns.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/risk_types.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/roadmap.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/sbom.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/scan_benchmarks.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/scan_cache.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/scan_safety.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/security_self_check.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/self_test.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/session.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/signing.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/site_facts.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/site_integrity.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/telemetry.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/term_style.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/timeline.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/timestamp.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/transparency.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/update_sitemap.py
+tree-guard:   no longer modified (committed, restored or deleted): build/lib/scripts/verify_seo.py
+tree-guard:   no longer modified (committed, restored or deleted): dist/regula_ai-1.9.0-py3-none-any.whl
+tree-guard:   no longer modified (committed, restored or deleted): dist/regula_ai-1.9.0.tar.gz
+tree-guard:   no longer modified (committed, restored or deleted): regula_ai.egg-info/PKG-INFO
+tree-guard:   no longer modified (committed, restored or deleted): regula_ai.egg-info/SOURCES.txt
+tree-guard:   no longer modified (committed, restored or deleted): regula_ai.egg-info/dependency_links.txt
+tree-guard:   no longer modified (committed, restored or deleted): regula_ai.egg-info/entry_points.txt
+tree-guard:   no longer modified (committed, restored or deleted): regula_ai.egg-info/requires.txt
+tree-guard:   no longer modified (committed, restored or deleted): regula_ai.egg-info/top_level.txt
+tree-guard:   no longer modified (committed, restored or deleted): vscode-extension/node_modules/
+tree-guard:   no longer modified (committed, restored or deleted): vscode-extension/out/extension.js
+tree-guard:   no longer modified (committed, restored or deleted): vscode-extension/regula-ai-act-0.1.0.vsix
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-03T19-42-13-454Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-03T22-32-35-815Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-03T22-34-25-833Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-03T22-35-53-989Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-04T06-44-06-549Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-04T10-38-06-569Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-04T13-29-41-259Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-04T13-30-27-385Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-04T15-43-21-019Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-04T15-49-47-206Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-04T15-50-54-507Z.log
+tree-guard:   newly changed since record: .playwright-cli/console-2026-08-04T15-51-21-437Z.log
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T19-16-41-244Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T19-42-14-041Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T20-44-44-042Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T20-52-15-025Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T20-52-21-926Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T22-32-36-581Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T22-34-25-953Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T22-34-33-912Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T22-35-54-139Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T22-35-57-380Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T22-36-01-630Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-03T22-36-03-813Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T00-25-20-314Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T00-25-29-436Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T00-25-32-587Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T00-25-44-585Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T00-25-46-707Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T00-36-48-567Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T00-36-53-448Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T06-44-06-746Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T06-44-16-177Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T10-38-06-696Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T10-38-45-085Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T10-46-24-204Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T10-46-35-655Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T12-46-35-694Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T12-47-03-487Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T13-29-41-561Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T13-29-45-852Z.png
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T13-30-17-398Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T13-30-19-871Z.png
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T13-30-27-464Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T13-30-37-948Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T13-30-56-512Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-43-21-177Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-43-32-063Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-47-17-423Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-47-26-974Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-49-19-357Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-49-47-311Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-49-56-645Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-50-06-399Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-50-22-250Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-50-54-666Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-51-16-023Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T15-51-21-535Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T19-41-56-918Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T19-42-06-077Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T19-42-19-842Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T19-42-28-445Z.yml
+tree-guard:   newly changed since record: .playwright-cli/page-2026-08-04T19-42-35-113Z.yml
+tree-guard:   newly changed since record: .ruff_cache/0.15.10/10604560080730696393
+tree-guard:   newly changed since record: .ruff_cache/0.15.10/11175327649498179300
+tree-guard:   newly changed since record: .ruff_cache/0.15.10/11757134448808378205
+tree-guard:   newly changed since record: .ruff_cache/0.15.10/13942005965317286490
+tree-guard:   newly changed since record: .ruff_cache/0.15.10/14495429833973550865
+tree-guard:   newly changed since record: .ruff_cache/0.15.10/5481592546823079323
+tree-guard:   newly changed since record: .ruff_cache/0.15.10/6548782023920219155
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/acquire.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/build_annotation_pack.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/build_corpus.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/gate.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/install_tools.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/network_probe.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/normalise.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/operations.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/run.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/score.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/select_repositories.cpython-312.pyc
+tree-guard:   newly changed since record: benchmarks/commercial_v1/__pycache__/verify.cpython-312.pyc
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/00-assessment-summary.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/01-risk-classification/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/01-risk-classification/findings.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/02-risk-management-art9/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/02-risk-management-art9/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/03-data-governance-art10/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/03-data-governance-art10/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/04-technical-documentation-art11/annex-iv-draft.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/04-technical-documentation-art11/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/04-technical-documentation-art11/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/05-record-keeping-art12/audit-trail.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/05-record-keeping-art12/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/05-record-keeping-art12/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/06-transparency-art13/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/06-transparency-art13/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/07-human-oversight-art14/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/07-human-oversight-art14/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/07-human-oversight-art14/oversight-analysis.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/08-accuracy-robustness-art15/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/08-accuracy-robustness-art15/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/08-accuracy-robustness-art15/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/09-supply-chain/dependency-report.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/09-supply-chain/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/10-declaration-of-conformity/declaration-template.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/11-remediation/remediation-plan.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/README.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-07-31/manifest.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/00-assessment-summary.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/01-risk-classification/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/01-risk-classification/findings.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/02-risk-management-art9/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/02-risk-management-art9/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/03-data-governance-art10/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/03-data-governance-art10/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/04-technical-documentation-art11/annex-iv-draft.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/04-technical-documentation-art11/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/04-technical-documentation-art11/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/05-record-keeping-art12/audit-trail.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/05-record-keeping-art12/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/05-record-keeping-art12/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/06-transparency-art13/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/06-transparency-art13/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/07-human-oversight-art14/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/07-human-oversight-art14/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/07-human-oversight-art14/oversight-analysis.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/08-accuracy-robustness-art15/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/08-accuracy-robustness-art15/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/08-accuracy-robustness-art15/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/09-supply-chain/dependency-report.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/09-supply-chain/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/10-declaration-of-conformity/declaration-template.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/11-remediation/remediation-plan.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/README.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-01/manifest.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/00-assessment-summary.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/01-risk-classification/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/01-risk-classification/findings.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/02-risk-management-art9/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/02-risk-management-art9/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/03-data-governance-art10/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/03-data-governance-art10/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/04-technical-documentation-art11/annex-iv-draft.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/04-technical-documentation-art11/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/04-technical-documentation-art11/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/05-record-keeping-art12/audit-trail.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/05-record-keeping-art12/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/05-record-keeping-art12/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/06-transparency-art13/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/06-transparency-art13/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/07-human-oversight-art14/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/07-human-oversight-art14/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/07-human-oversight-art14/oversight-analysis.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/08-accuracy-robustness-art15/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/08-accuracy-robustness-art15/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/08-accuracy-robustness-art15/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/09-supply-chain/dependency-report.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/09-supply-chain/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/10-declaration-of-conformity/declaration-template.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/11-remediation/remediation-plan.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/README.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-03/manifest.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/00-assessment-summary.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/01-risk-classification/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/01-risk-classification/findings.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/02-risk-management-art9/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/02-risk-management-art9/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/03-data-governance-art10/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/03-data-governance-art10/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/04-technical-documentation-art11/annex-iv-draft.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/04-technical-documentation-art11/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/04-technical-documentation-art11/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/05-record-keeping-art12/audit-trail.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/05-record-keeping-art12/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/05-record-keeping-art12/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/06-transparency-art13/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/06-transparency-art13/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/07-human-oversight-art14/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/07-human-oversight-art14/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/07-human-oversight-art14/oversight-analysis.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/08-accuracy-robustness-art15/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/08-accuracy-robustness-art15/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/08-accuracy-robustness-art15/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/09-supply-chain/dependency-report.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/09-supply-chain/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/10-declaration-of-conformity/declaration-template.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/11-remediation/remediation-plan.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/README.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-04/manifest.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/00-assessment-summary.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/01-risk-classification/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/01-risk-classification/findings.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/02-risk-management-art9/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/02-risk-management-art9/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/03-data-governance-art10/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/03-data-governance-art10/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/04-technical-documentation-art11/annex-iv-draft.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/04-technical-documentation-art11/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/04-technical-documentation-art11/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/05-record-keeping-art12/audit-trail.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/05-record-keeping-art12/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/05-record-keeping-art12/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/06-transparency-art13/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/06-transparency-art13/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/07-human-oversight-art14/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/07-human-oversight-art14/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/07-human-oversight-art14/oversight-analysis.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/08-accuracy-robustness-art15/coverage.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/08-accuracy-robustness-art15/evidence.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/08-accuracy-robustness-art15/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/09-supply-chain/dependency-report.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/09-supply-chain/sbom.json
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/10-declaration-of-conformity/declaration-template.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/11-remediation/remediation-plan.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/README.md
+tree-guard:   newly changed since record: conformity-evidence-project-2026-08-05/manifest.json
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/688d1a7-claim-auditor.json
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/688d1a7-claim-auditor.json.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/688d1a7-claim-auditor.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/688d1a7-claim-auditor.txt.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/688d1a7-merge-blockers.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/688d1a7-merge-blockers.txt.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/688d1a7-scanned-files.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/dropped-file-sample-audit.json
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor-historical-main.json
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor-historical-main.json.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor-historical-main.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor-historical-main.txt.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor-recorded-base.json
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor-recorded-base.json.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor-recorded-base.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor-recorded-base.txt.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-claim-auditor.txt.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-diff-files-recorded-base.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-dropped-vs-4626545.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/e9c1e03-scanned-files.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/4626545-added-vs-e9c1e03.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/4626545-claim-auditor.json
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/4626545-claim-auditor.json.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/4626545-claim-auditor.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/4626545-claim-auditor.txt.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/4626545-merge-blockers.txt
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/4626545-merge-blockers.txt.exit
+tree-guard:   newly changed since record: docs/improvement/evidence-2026-08-05/4626545-scanned-files.txt
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/00-summary.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/01-scan-results.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/02-gap-assessment.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/03-annex-iv-draft.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/04-dependency-report.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/05-audit-trail.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/06-remediation-plan.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/07-risk-decisions.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/README.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-07-31/manifest.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/00-summary.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/01-scan-results.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/02-gap-assessment.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/03-annex-iv-draft.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/04-dependency-report.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/05-audit-trail.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/06-remediation-plan.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/07-risk-decisions.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/README.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-01/manifest.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/00-summary.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/01-scan-results.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/02-gap-assessment.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/03-annex-iv-draft.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/04-dependency-report.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/05-audit-trail.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/06-remediation-plan.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/07-risk-decisions.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/README.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-03/manifest.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/00-summary.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/01-scan-results.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/02-gap-assessment.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/03-annex-iv-draft.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/04-dependency-report.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/05-audit-trail.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/06-remediation-plan.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/07-risk-decisions.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/README.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-04/manifest.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/00-summary.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/01-scan-results.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/02-gap-assessment.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/03-annex-iv-draft.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/04-dependency-report.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/05-audit-trail.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/06-remediation-plan.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/07-risk-decisions.json
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/README.md
+tree-guard:   newly changed since record: evidence-pack-project-2026-08-05/manifest.json
+tree-guard:   newly changed since record: scripts/__pycache__/build_gap_demo.cpython-312.pyc
+tree-guard:   newly changed since record: scripts/__pycache__/build_recall_artefact.cpython-312.pyc
+tree-guard:   newly changed since record: scripts/__pycache__/commercial_acquire_runtime.cpython-312.pyc
+tree-guard:   newly changed since record: scripts/__pycache__/count_record_policy.cpython-312.pyc
+tree-guard:   newly changed since record: scripts/__pycache__/public_surface_inventory.cpython-312.pyc
+tree-guard:   newly changed since record: scripts/__pycache__/validate_validation_readiness.cpython-312.pyc
+tree-guard:   content changed again since record: .handover.md
+tree-guard:   content changed again since record: .pytest_cache/v/cache/lastfailed
+tree-guard:   content changed again since record: .pytest_cache/v/cache/nodeids
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/12157329268326334863
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/12887264394569640538
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/15109502327779083974
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/15312485216152109148
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/15965316490206987096
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/16851900890884870201
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/17351095329733857431
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/1932783278862069705
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/2365246935310357698
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/2916096708638692640
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/3155727760561208347
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/4285149414886197758
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/5704246755681146481
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/7684695631548650602
+tree-guard:   content changed again since record: .ruff_cache/0.15.10/9695373623381316487
+tree-guard:   content changed again since record: AI_GOVERNANCE.md
+tree-guard:   content changed again since record: MODEL_CARD.md
+tree-guard:   content changed again since record: benchmarks/__pycache__/annotation_stats.cpython-312.pyc
+tree-guard:   content changed again since record: benchmarks/__pycache__/dedup_check.cpython-312.pyc
+tree-guard:   content changed again since record: benchmarks/__pycache__/temporal_split.cpython-312.pyc
+tree-guard:   content changed again since record: benchmarks/headtohead/__pycache__/adapters.cpython-312.pyc
+tree-guard:   content changed again since record: benchmarks/headtohead/__pycache__/scoring.cpython-312.pyc
+tree-guard:   content changed again since record: conformity-evidence-project-2026-07-30/00-assessment-summary.json
+tree-guard:   content changed again since record: conformity-evidence-project-2026-07-30/04-technical-documentation-art11/annex-iv-draft.md
+tree-guard:   content changed again since record: conformity-evidence-project-2026-07-30/05-record-keeping-art12/audit-trail.json
+tree-guard:   content changed again since record: conformity-evidence-project-2026-07-30/08-accuracy-robustness-art15/sbom.json
+tree-guard:   content changed again since record: conformity-evidence-project-2026-07-30/09-supply-chain/dependency-report.json
+tree-guard:   content changed again since record: conformity-evidence-project-2026-07-30/09-supply-chain/sbom.json
+tree-guard:   content changed again since record: conformity-evidence-project-2026-07-30/11-remediation/remediation-plan.md
+tree-guard:   content changed again since record: conformity-evidence-project-2026-07-30/manifest.json
+tree-guard:   content changed again since record: content/regulations/__pycache__/brazil.cpython-312.pyc
+tree-guard:   content changed again since record: content/regulations/__pycache__/colorado.cpython-312.pyc
+tree-guard:   content changed again since record: content/regulations/__pycache__/south-africa.cpython-312.pyc
+tree-guard:   content changed again since record: content/regulations/__pycache__/south-korea.cpython-312.pyc
+tree-guard:   content changed again since record: content/regulations/__pycache__/united-kingdom.cpython-312.pyc
+tree-guard:   content changed again since record: evidence-pack-project-2026-07-30/00-summary.md
+tree-guard:   content changed again since record: evidence-pack-project-2026-07-30/02-gap-assessment.json
+tree-guard:   content changed again since record: evidence-pack-project-2026-07-30/03-annex-iv-draft.md
+tree-guard:   content changed again since record: evidence-pack-project-2026-07-30/04-dependency-report.json
+tree-guard:   content changed again since record: evidence-pack-project-2026-07-30/05-audit-trail.json
+tree-guard:   content changed again since record: evidence-pack-project-2026-07-30/06-remediation-plan.md
+tree-guard:   content changed again since record: evidence-pack-project-2026-07-30/07-risk-decisions.json
+tree-guard:   content changed again since record: evidence-pack-project-2026-07-30/manifest.json
+tree-guard:   content changed again since record: scripts/__pycache__/api_server.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/assess.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/build_delta_dataset.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/cascade_count.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/check_decompositions.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/claim_auditor.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/claim_diff.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/classify_risk.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/cli.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/cli_analysis.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/cli_compliance.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/cli_scan.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/config_validator.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/dpv_export.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/exec_summary.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/explain_articles.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/f25_exposure.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/feed.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/findings_view.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/framework_mapper.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/gate_probe.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/generate_documentation.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/mcp_server.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/merge_blockers.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/pdf_export.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/quarantine_liveness.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/register.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/remediation.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/report.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/risk_patterns.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/site_facts.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/telemetry.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/timeline.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/tree_guard.cpython-312.pyc
+tree-guard:   content changed again since record: scripts/__pycache__/update_sitemap.cpython-312.pyc
+tree-guard:   content changed again since record: tests/__pycache__/
+{
+  "scanned": [
+    ".claude/commands/add-command.md",
+    ".claude/commands/add-pattern.md",
+    ".claude/commands/verify.md",
+    ".claude/rules/git.md",
+    ".claude/rules/measurement.md",
+    ".claude/rules/python-scripts.md",
+    ".claude/rules/quality-standards.md",
+    ".claude/rules/regulatory-content.md",
+    ".claude/rules/site-html.md",
+    ".claude/rules/tests.md",
+    "CHANGELOG.md",
+    "benchmarks/MULTI_ANNOTATOR_PROTOCOL.md"
+  ],
+  "total_claims": 20,
+  "total_findings": 10,
+  "files": [
+    {
+      "path": ".claude/commands/add-command.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/commands/add-pattern.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/commands/verify.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/git.md",
+      "claims": 1,
+      "findings": [
+        {
+          "claim": {
+            "file": ".claude/rules/git.md",
+            "line": 21,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 18,
+            "paragraph_end": 26
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": ".claude/rules/measurement.md",
+      "claims": 9,
+      "findings": [
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 28,
+            "kind": "numeric",
+            "snippet": "140 findings",
+            "paragraph_start": 26,
+            "paragraph_end": 29
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 40,
+            "kind": "numeric",
+            "snippet": "18.5%",
+            "paragraph_start": 38,
+            "paragraph_end": 41
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 74,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 73,
+            "paragraph_end": 77
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 122,
+            "kind": "superlative",
+            "snippet": "nothing else",
+            "paragraph_start": 117,
+            "paragraph_end": 122
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 130,
+            "kind": "attributed",
+            "snippet": "reported that a blog post'",
+            "paragraph_start": 130,
+            "paragraph_end": 135
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 146,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 146,
+            "paragraph_end": 153
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": ".claude/rules/python-scripts.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/quality-standards.md",
+      "claims": 3,
+      "findings": [
+        {
+          "claim": {
+            "file": ".claude/rules/quality-standards.md",
+            "line": 13,
+            "kind": "attributed",
+            "snippet": "write a sync check that compares the test'",
+            "paragraph_start": 12,
+            "paragraph_end": 15
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/quality-standards.md",
+            "line": 22,
+            "kind": "numeric",
+            "snippet": "15 files",
+            "paragraph_start": 19,
+            "paragraph_end": 22
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/quality-standards.md",
+            "line": 22,
+            "kind": "numeric",
+            "snippet": "15 files",
+            "paragraph_start": 19,
+            "paragraph_end": 22
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": ".claude/rules/regulatory-content.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/site-html.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/tests.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "CHANGELOG.md",
+      "claims": 3,
+      "findings": []
+    },
+    {
+      "path": "benchmarks/MULTI_ANNOTATOR_PROTOCOL.md",
+      "claims": 4,
+      "findings": []
+    }
+  ]
+}

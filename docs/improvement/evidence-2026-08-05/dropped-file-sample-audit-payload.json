@@ -1,0 +1,193 @@
+{
+  "scanned": [
+    ".claude/commands/add-command.md",
+    ".claude/commands/add-pattern.md",
+    ".claude/commands/verify.md",
+    ".claude/rules/git.md",
+    ".claude/rules/measurement.md",
+    ".claude/rules/python-scripts.md",
+    ".claude/rules/quality-standards.md",
+    ".claude/rules/regulatory-content.md",
+    ".claude/rules/site-html.md",
+    ".claude/rules/tests.md",
+    "CHANGELOG.md",
+    "benchmarks/MULTI_ANNOTATOR_PROTOCOL.md"
+  ],
+  "total_claims": 20,
+  "total_findings": 10,
+  "files": [
+    {
+      "path": ".claude/commands/add-command.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/commands/add-pattern.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/commands/verify.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/git.md",
+      "claims": 1,
+      "findings": [
+        {
+          "claim": {
+            "file": ".claude/rules/git.md",
+            "line": 21,
+            "kind": "superlative",
+            "snippet": "the only",
+            "paragraph_start": 18,
+            "paragraph_end": 26
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": ".claude/rules/measurement.md",
+      "claims": 9,
+      "findings": [
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 28,
+            "kind": "numeric",
+            "snippet": "140 findings",
+            "paragraph_start": 26,
+            "paragraph_end": 29
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 40,
+            "kind": "numeric",
+            "snippet": "18.5%",
+            "paragraph_start": 38,
+            "paragraph_end": 41
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 74,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 73,
+            "paragraph_end": 77
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 122,
+            "kind": "superlative",
+            "snippet": "nothing else",
+            "paragraph_start": 117,
+            "paragraph_end": 122
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 130,
+            "kind": "attributed",
+            "snippet": "reported that a blog post'",
+            "paragraph_start": 130,
+            "paragraph_end": 135
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/measurement.md",
+            "line": 146,
+            "kind": "numeric",
+            "snippet": "83.5%",
+            "paragraph_start": 146,
+            "paragraph_end": 153
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": ".claude/rules/python-scripts.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/quality-standards.md",
+      "claims": 3,
+      "findings": [
+        {
+          "claim": {
+            "file": ".claude/rules/quality-standards.md",
+            "line": 13,
+            "kind": "attributed",
+            "snippet": "write a sync check that compares the test'",
+            "paragraph_start": 12,
+            "paragraph_end": 15
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/quality-standards.md",
+            "line": 22,
+            "kind": "numeric",
+            "snippet": "15 files",
+            "paragraph_start": 19,
+            "paragraph_end": 22
+          },
+          "reason": "no-source"
+        },
+        {
+          "claim": {
+            "file": ".claude/rules/quality-standards.md",
+            "line": 22,
+            "kind": "numeric",
+            "snippet": "15 files",
+            "paragraph_start": 19,
+            "paragraph_end": 22
+          },
+          "reason": "no-source"
+        }
+      ]
+    },
+    {
+      "path": ".claude/rules/regulatory-content.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/site-html.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": ".claude/rules/tests.md",
+      "claims": 0,
+      "findings": []
+    },
+    {
+      "path": "CHANGELOG.md",
+      "claims": 3,
+      "findings": []
+    },
+    {
+      "path": "benchmarks/MULTI_ANNOTATOR_PROTOCOL.md",
+      "claims": 4,
+      "findings": []
+    }
+  ]
+}
