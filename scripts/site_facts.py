@@ -204,34 +204,81 @@ def count_languages() -> int:
     return 8  # Python, JS, TS, Java, Go, Rust, C, C++
 
 
+class GitDiscoveryError(RuntimeError):
+    """Git could not answer which test files are tracked.
+
+    N55(a): the predicates below used to swallow this and return [], which
+    is the PASS value, so the at-rest enforcement test could not distinguish
+    "git says every contributor is tracked" from "git never ran". A failed
+    discovery must be its own outcome, never an empty clean answer.
+    """
+
+
+def _tracked_test_paths() -> set[str]:
+    """Repo-relative posix paths of every tracked `.py` file under tests/.
+
+    The one shared enumeration primitive for both provenance directions.
+    Raises GitDiscoveryError on any failure: an empty set is a real answer
+    ("git tracks nothing under tests/"); an exception is not an answer and
+    must not be coerced into one (measurement rule 4).
+    """
+    try:
+        proc = subprocess.run(
+            ["git", "ls-files", "-z", "--", "tests"],
+            cwd=str(REPO), capture_output=True, text=True, check=False,
+        )
+    except OSError as exc:
+        raise GitDiscoveryError(f"git ls-files did not run: {exc}") from exc
+    if proc.returncode != 0:
+        detail = (proc.stderr or "").strip() or "no detail"
+        raise GitDiscoveryError(
+            f"git ls-files failed with exit {proc.returncode}: {detail}")
+    return {name for name in proc.stdout.split("\0") if name.endswith(".py")}
+
+
 def untracked_test_contributors(per_file, tracked=None) -> list[str]:
-    """Return the test-file names in `per_file` that git does not track.
+    """Return the test files in `per_file` that git does not track.
 
     Every file that contributes to a published count must be in the
     repository, or the count does not reproduce from a checkout. `per_file`
-    is keyed by basename, which is what the artefact records, so the
-    comparison is made on basenames.
+    is keyed by repo-relative posix path (e.g. `tests/test_x.py`), and the
+    comparison is made on full paths: N55 recorded that a basename
+    comparison is unsound by construction, because a tracked nested file
+    would mask an untracked top-level file of the same name.
 
-    `tracked` is injectable for testing. Left None, it asks git. A git
-    failure returns an empty set rather than raising, because this predicate
-    feeds a warning inside a generator that must keep working outside a git
-    checkout (`scripts/` ships as the PyPI package); the invariant is
-    enforced at rest by tests/test_site_facts.py, which does run in a
-    checkout.
+    `tracked` is injectable for testing. Left None, it asks git, and a git
+    failure RAISES GitDiscoveryError rather than returning the PASS value
+    (N55a). The generation-time caller catches that error explicitly and
+    says so; the at-rest enforcement in tests/test_site_facts.py runs in a
+    checkout and now fails closed.
     """
     if tracked is None:
-        try:
-            out = subprocess.run(
-                ["git", "ls-files", "-z", "--", "tests"],
-                cwd=str(REPO), capture_output=True, text=True, check=True,
-            ).stdout
-            tracked = {
-                name.rsplit("/", 1)[-1]
-                for name in out.split("\0") if name.endswith(".py")
-            }
-        except (OSError, subprocess.CalledProcessError):
-            return []
+        tracked = _tracked_test_paths()
     return sorted(name for name in per_file if name not in tracked)
+
+
+def missing_tracked_contributors(per_file, tracked=None) -> list[str]:
+    """Return tracked test files that did not contribute to the count.
+
+    The reverse direction (N55c): `untracked_test_contributors` looks from
+    the inventory towards git, so a tracked test file DELETED from the
+    working tree without `git rm` simply loses its `per_file` key and the
+    published count drops silently. This predicate looks from git towards
+    the inventory. Only files matching the collector's `python_files`
+    pattern (`test_*.py`) are demanded; `conftest.py`, helpers and fixture
+    sources are tracked but are not contributors.
+
+    A rename that has not been staged appears as one entry here plus one
+    entry in the untracked list; git holds no evidence linking the two until
+    the rename is staged, so the two reports are deliberately not merged
+    into an inferred rename.
+    """
+    if tracked is None:
+        tracked = _tracked_test_paths()
+    return sorted(
+        name for name in tracked
+        if name.rsplit("/", 1)[-1].startswith("test_")
+        and name not in per_file)
 
 
 def count_tests() -> dict:
@@ -264,14 +311,21 @@ def count_tests() -> dict:
         )
     total_collected = int(match.group(1))
 
+    # N55(b): rglob, not glob. `total_collected` above comes from RECURSIVE
+    # pytest collection (pyproject sets python_files = test_*.py and no
+    # norecursedirs under tests/), so the contributor inventory must walk the
+    # same population or a nested test file inflates the count with no
+    # per_file key for the provenance predicates to see. Keys are
+    # repo-relative posix paths because basenames cannot be compared soundly
+    # against tracked paths (see untracked_test_contributors).
     per_file: dict[str, int] = {}
-    for path in sorted(tests_dir.glob("test_*.py")):
+    for path in sorted(tests_dir.rglob("test_*.py")):
         text = path.read_text(encoding="utf-8")
-        per_file[path.name] = len(
+        per_file[path.relative_to(REPO).as_posix()] = len(
             re.findall(r"^def (test_\w+)", text, re.MULTILINE)
         )
 
-    # N52. Both counts above read the WORKING TREE: the glob walks it, and
+    # N52. Both counts above read the WORKING TREE: the walk reads it, and
     # `pytest --collect-only` collects from it. An untracked test file is
     # therefore counted into figures that cascade to nine published surfaces,
     # and a clean checkout of the same commit collects a different number.
@@ -279,8 +333,19 @@ def count_tests() -> dict:
     # regenerate, cascade and commit all of it together, and refusing here
     # would block exactly that. The invariant is enforced at rest instead, by
     # tests/test_site_facts.py, which fails if a COMMITTED artefact names a
-    # contributor git does not track.
-    stray = untracked_test_contributors(per_file)
+    # contributor git does not track, or omits a tracked test file (N55c).
+    try:
+        stray = untracked_test_contributors(per_file)
+        missing = missing_tracked_contributors(per_file)
+    except GitDiscoveryError as exc:
+        # Outside a git checkout (scripts/ ships as the PyPI package) the
+        # provenance question is unanswerable at generation time. Say so
+        # rather than skipping silently; the invariant is enforced at rest
+        # by tests/test_site_facts.py, which runs in a checkout and now
+        # fails closed on the same error (N55a).
+        print(f"note: test-file tracking check skipped: {exc}",
+              file=sys.stderr)
+        stray, missing = [], []
     if stray:
         print(
             "WARNING: the test count below includes files that are not "
@@ -288,6 +353,16 @@ def count_tests() -> dict:
             + "\n".join(f"  {name}" for name in stray)
             + "\nCommit them in the same commit as the count cascade, or "
               "remove them before regenerating.",
+            file=sys.stderr,
+        )
+    if missing:
+        print(
+            "WARNING: tracked test files did not contribute to the count "
+            "below, so a clean checkout would run a larger suite than "
+            "published (deleted without `git rm`?):\n"
+            + "\n".join(f"  {name}" for name in missing)
+            + "\nA rename that is not yet staged appears here AND in the "
+              "untracked list; git cannot link the two until it is staged.",
             file=sys.stderr,
         )
 
