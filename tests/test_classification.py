@@ -3448,11 +3448,28 @@ def test_ci_flag_info_tier_exits_0():
 # ── CLI Subcommand Smoke Tests ──────────────────────────────────────
 
 
-def _run_cli(*args):
-    """Helper: run CLI command and return subprocess result."""
+def _run_cli(*args, env=None):
+    """Helper: run CLI command and return subprocess result.
+
+    `env` overlays the parent environment rather than replacing it, so a
+    caller can isolate one variable (a cache directory, say) without having to
+    reconstruct PATH and friends.
+
+    The 30 second bound is a HANG GUARD, not a performance assertion, and it
+    is only honest to call it that while every command run through here is
+    hermetic and completes in about a second. The feed smoke test used to
+    break that property by fetching live sources; see test_smoke_feed and
+    ledger row N75.
+    """
+    import os
     import subprocess
+    run_env = None
+    if env:
+        run_env = dict(os.environ)
+        run_env.update(env)
     return subprocess.run(["python3", "scripts/cli.py"] + list(args),
-                          capture_output=True, text=True, timeout=30)
+                          capture_output=True, text=True, timeout=30,
+                          env=run_env)
 
 
 def _assert_json_envelope(stdout, command_name):
@@ -3497,7 +3514,35 @@ def test_smoke_status():
 
 
 def test_smoke_feed():
-    """Smoke test: regula feed --format json runs and exits 0."""
+    """Smoke test: regula feed --format json runs and exits 0.
+
+    HERMETIC BY CONSTRUCTION, 2026-08-06, ledger row N75.
+
+    This test used to let the CLI fetch live governance sources, so its 30
+    second subprocess bound measured remote latency and local contention
+    rather than anything about the code. It failed TWICE on 2026-08-06, in the
+    custom runner and again in the full suite, while the same command
+    completed in 3.08s with a cold cache and 0.08s warm, and the test passed
+    three times out of three in isolation. Same class as N28 and N73.
+
+    The bound is not widened, which N28 rules out as suppression. The network
+    is removed from the test instead. A fresh cache is seeded in an isolated
+    REGULA_CACHE_DIR, so fetch_governance_news() returns from cache and no
+    socket is opened. A smoke test that depends on a live third party measures
+    that third party; hermeticity is the standard practice and is what makes
+    the result mean something.
+
+    POSITIVE PROOF the hermetic path executed (measurement rule 4): the
+    seeded sentinel article must come back in the envelope. Without that
+    assertion a silent fall-through to the network would still pass, which is
+    precisely the vacuity shape N73 removed from the self-scan test.
+
+    N59's read-only-cache branch is still exercised, in-process, before the
+    seeding.
+    """
+    import json as _json
+    import tempfile
+    from datetime import datetime, timezone
     from unittest.mock import patch
     import feed
 
@@ -3508,11 +3553,33 @@ def test_smoke_feed():
     with patch.object(feed, "CACHE_DIR", ReadOnlyCacheDir()):
         feed._save_cache([])
 
-    r = _run_cli("feed", "--format", "json")
+    sentinel = "REGULA-HERMETIC-FEED-SENTINEL"
+    with tempfile.TemporaryDirectory(prefix="regula-feed-cache-") as tmp:
+        cache = Path(tmp) / "feed_cache.json"
+        cache.write_text(_json.dumps({
+            "cached_at": datetime.now(timezone.utc).isoformat(),
+            "articles": [{
+                "title": sentinel,
+                "link": "https://example.invalid/sentinel",
+                "description": "Seeded so the smoke test never opens a socket.",
+                "date": datetime.now(timezone.utc).isoformat(),
+                "source": "test-fixture",
+            }],
+        }), encoding="utf-8")
+
+        r = _run_cli("feed", "--format", "json",
+                     env={"REGULA_CACHE_DIR": tmp})
+
     assert_eq(r.returncode, 0, f"feed exit {r.returncode}: {r.stderr[:200]}")
     data = _assert_json_envelope(r.stdout, "feed")
     assert_true("data" in data, "feed: missing data field")
-    print("\u2713 Smoke: feed --format json exits 0 with envelope")
+    titles = [a.get("title") for a in data["data"] if isinstance(a, dict)]
+    assert_true(
+        sentinel in titles,
+        "the seeded cache article did not come back, so the command did not "
+        "read the isolated cache and this test is still network-dependent; "
+        f"got {titles[:3]}")
+    print("\u2713 Smoke: feed --format json exits 0 with envelope (hermetic)")
 
 
 def test_smoke_questionnaire():
