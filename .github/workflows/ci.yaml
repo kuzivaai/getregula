@@ -152,3 +152,20 @@ jobs:
           path: './site'
       - uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
         id: deployment
+        with:
+          # MEASURED 2026-08-06. The action's default status-poll budget is
+          # 600000ms. The deploy job for 0c0ade7 started 14:26:15Z and the
+          # action gave up at 14:36:28Z, 10m13s later, reporting failure. The
+          # site's own `last-modified` header is 14:37:50Z: the deployment
+          # SUCCEEDED 82 seconds after the action stopped waiting. So the job
+          # was reporting a false negative and turning main's CI red on every
+          # push while publishing correctly.
+          #
+          # This is NOT the N28 wall-clock class and must not be read as it.
+          # N28 forbids widening a threshold that asserts something about THIS
+          # repository's code. This is a client-side poll budget for an
+          # asynchronous operation on someone else's infrastructure, where the
+          # only thing the number expresses is how long we are willing to wait
+          # for GitHub. Nothing about the site is asserted by it.
+          timeout: 1200000
+

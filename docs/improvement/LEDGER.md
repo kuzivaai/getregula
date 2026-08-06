@@ -1072,7 +1072,48 @@ enumerated here and is left open rather than assumed away.
 
 ## N77. The corrected counts reached main but not the live site
 
-**First raised:** 2026-08-06. **Status:** OPEN, infrastructure-side, escalated.
+**First raised:** 2026-08-06. **Status:** RESOLVED 2026-08-06. The live site
+now serves the current count and matches the repository. **The final
+diagnosis corrects the two earlier ones in this row, both of which are kept
+below because a row that hides its wrong turns teaches nothing.**
+
+**What was actually happening.** `actions/deploy-pages` polls for deployment
+status with a default budget of 600000ms. The deploy job for `0c0ade7`
+started at 14:26:15Z and the action gave up at 14:36:28Z, 10m13s later,
+reporting failure. The site's own `last-modified` header is **14:37:50Z**:
+the deployment SUCCEEDED 82 seconds after the action stopped waiting.
+Verified end to end: `curl -sI https://getregula.com/` returns
+`server: GitHub.com` from the GitHub Pages address range, the page carries
+the current count, and `llms-full.txt` carries the matching badge.
+
+So every 'failure' was a FALSE NEGATIVE. Deployments were completing and the
+workflow was reporting red, which also turned main's CI red on every push.
+The `due to in progress deployment` 400s follow from the same cause: each
+retry collided with a deployment that was still genuinely processing, and my
+retries made the queue worse rather than better.
+
+**Two fixes, both landed.** The poll budget on both deploy steps is raised to
+1200000ms, which is a client-side willingness-to-wait for someone else's
+asynchronous infrastructure and is **NOT** the N28 wall-clock class: N28
+forbids widening a threshold that asserts something about this repository's
+code, and this number asserts nothing about the site. Separately, two
+workflows were racing to deploy the same Pages site, `pages.yml` on push and
+`ci.yaml`'s own `deploy` job, sharing the `pages` concurrency group with
+CONTRADICTORY `cancel-in-progress` values, and starting one second apart on
+the push of `fc0038e`. `pages.yml` is now workflow_dispatch only, leaving one
+automatic deployer, and deliberately the test-gated one.
+
+**Corrected twice, and both wrong turns are recorded.** First hypothesis: SHA
+collision, that repeated deployments of one commit cancel each other and a new
+commit would deploy cleanly. Refuted by deploying a new commit. Second
+reading: an unclearable stuck deployment needing GitHub Support, recorded as
+an owner action. Also wrong, and it would have sent the owner to support for
+a problem the repository could fix. What settled it was reading the site's
+`last-modified` header instead of trusting the workflow's own verdict, which
+is measurement rule 4 in its plainest form: the gate said failed, the world
+said published, and only one of them had been checked.
+
+*Original status when raised:* OPEN, infrastructure-side, escalated.
 
 `main` was fast-forwarded to `fc0038e` with all 24 CI checks passing, so
 README, the canonical artefact and every site page in the repository now agree
