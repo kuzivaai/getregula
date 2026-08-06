@@ -9,6 +9,7 @@ that, the tool is a promise rather than a mechanism.
 Stdlib only.
 """
 
+import json
 import re
 import subprocess
 import sys
@@ -274,7 +275,14 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
     # `TESTS`, `Testes`, or the "automated tests" phrasing claim_auditor
     # supports. For the badge that left coverage resting on exactly the two
     # things this class exists not to trust: the tool and the manifest.
-    UNIT = r"(?:tests|testes|pytest-collected|passing|automated\s+tests)"
+    # `collected` is listed bare as well as inside `pytest-collected`.
+    # MEASURED 2026-08-06: without it, `tests-2683%20collected` on README.md:10
+    # matched nothing here while `tests-2683%20passing` and `2683 tests` both
+    # matched, so the matcher was live and blind at the same time. Alternation
+    # is positional, so the longer `pytest-collected` still wins where it
+    # applies and no existing match changes meaning.
+    UNIT = (r"(?:tests|testes|pytest-collected|collected|passing"
+            r"|automated\s+tests)")
     SEP = r"(?:\s|%20|&nbsp;|&\#160;|<!--.*?-->|</?[a-zA-Z][^>]*>)*"
 
     # Historical and verbatim records. A changelog entry, a ledger row and a
@@ -291,12 +299,34 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
         "scripts/",              # docstrings citing the incidents by number
     )
 
+    @staticmethod
+    def _centrally_classified_records():
+        """Exact dated records, from N70's central registry, not a local list.
+
+        A prefix tuple and a hash-pinned registry are two notions of "this is
+        an immutable dated record", and two lists drift. N56 is the precedent:
+        claim_auditor kept its own copy of the gap regex and now IMPORTS
+        cascade_count.GAP for exactly this reason.
+
+        The registry is the stronger of the two by construction: it pins an
+        exact path, a capture date that must appear in that path, the evidence
+        commit and the blob's SHA-256, so a rename, an edit or a fabricated
+        entry fails closed. A file still cannot classify itself.
+        """
+        policy = json.loads(
+            (cc.REPO / "data/count_record_classes.json").read_text(
+                encoding="utf-8"))
+        return {r["path"] for r in policy.get("records", [])}
+
     def _tracked_surfaces(self):
+        classified = self._centrally_classified_records()
         out = subprocess.run(
             ["git", "ls-files", "-z"], cwd=str(cc.REPO),
             capture_output=True, text=True, check=True).stdout
         for rel in out.split("\0"):
             if not rel or rel.startswith(self.EXEMPT_PREFIXES):
+                continue
+            if rel in classified:
                 continue
             if rel.endswith((".md", ".html", ".txt")):
                 yield rel
@@ -319,6 +349,108 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
             f"disagree: {wrong}. Add the file to the manifest and re-run "
             f"`python3 scripts/cascade_count.py --apply`, or correct it by "
             f"hand if the shape is not one the cascade tool may touch.")
+
+    # ANY shields.io badge carrying a count-shaped number next to a count
+    # unit word, whatever the word and whatever the separator. Deliberately
+    # independent of both COUNT_TEMPLATES and UNIT: those two are lists
+    # someone has to remember to extend, and this check exists precisely for
+    # the case where nobody did.
+    BADGE_COUNT = re.compile(
+        r"img\.shields\.io/badge/[^)\"'\s]*?"
+        r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{4})(?![\w,.])"
+        r"(?:%20|[-_])"
+        r"(tests|testes|pytest-collected|collected|passing)",
+        re.IGNORECASE)
+
+    def test_no_badge_publishes_a_stale_count(self):
+        """A badge is a published claim and its unit word is not fixed.
+
+        MEASURED 2026-08-06: README.md:10 published `tests-2683%20collected`
+        while site/llms-full.txt:16 published `tests-2716%20passing`. One
+        quantity, two unit words, and only the second was covered by anything.
+        Accepting any unit word is the point: a third spelling fails here
+        rather than publishing silently, and the failure message says to add
+        the template rather than to widen this check.
+        """
+        canonical = cc.canonical_count()
+        wrong = []
+        for rel in self._tracked_surfaces():
+            flat = (cc.REPO / rel).read_text(
+                encoding="utf-8", errors="replace")
+            for m in self.BADGE_COUNT.finditer(flat):
+                value = int(m.group(1).replace(",", "").replace(".", ""))
+                if value != canonical:
+                    wrong.append(
+                        f"{rel}: badge publishes {m.group(1)} {m.group(2)}")
+        self.assertEqual(
+            wrong, [],
+            f"canonical is {canonical:,} but these badges disagree: {wrong}. "
+            f"If the cascade tool did not fix it, its badge form is missing "
+            f"from cascade_count.COUNT_TEMPLATES; add the form there rather "
+            f"than editing the badge by hand.")
+
+    def test_the_badge_scan_reaches_a_real_badge(self):
+        """POSITIVE PROOF (measurement rule 4).
+
+        A badge check that matches nothing passes for the wrong reason, and
+        this repository has shipped exactly that failure before.
+        """
+        seen = [rel for rel in self._tracked_surfaces()
+                if self.BADGE_COUNT.search(
+                    (cc.REPO / rel).read_text(
+                        encoding="utf-8", errors="replace"))]
+        self.assertTrue(
+            seen, "the badge matcher found no count badge anywhere, so the "
+                  "check above passed by scanning nothing")
+        for required in ("README.md", "site/llms-full.txt"):
+            self.assertIn(
+                required, seen,
+                f"{required} carries a count badge that the matcher missed")
+
+    def test_non_count_badges_are_not_read_as_counts(self):
+        """THE CONTROL. Breadth must not become a heuristic.
+
+        These are the real non-count badges in this repository. The citations
+        badge is the sharp one: it carries `arXiv.2211.02701`, which is
+        digit-rich and must not be read as a test count.
+        """
+        for url in (
+                "https://img.shields.io/badge/python-3.10+-blue.svg",
+                "https://img.shields.io/badge/License-Apache_2.0-blue.svg",
+                "https://img.shields.io/badge/license-Apache%202.0-green.svg",
+                "https://img.shields.io/badge/accessibility%20target-"
+                "WCAG%202.2%20AA-blue.svg",
+                "https://img.shields.io/badge/docker-pull-green.svg"
+                "?logo=docker&logoColor=white",
+                "https://img.shields.io/badge/dynamic/json?label=citations"
+                "&query=%24.citationCount&url=https%3A%2F%2Fapi."
+                "semanticscholar.org%2Fgraph%2Fv1%2Fpaper%2FDOI%3A10.48550"
+                "%2FarXiv.2211.02701%3Ffields%3DcitationCount"):
+            self.assertEqual(
+                self.BADGE_COUNT.findall(url), [],
+                f"a non-count badge was read as a published count: {url}")
+
+    def test_central_records_cannot_exempt_a_live_surface(self):
+        """THE ANTI-SUPPRESSION CONTROL for honouring the registry here.
+
+        Consulting a registry to skip files is one edit away from being a
+        silencer, so the invariant is asserted at the point of use rather
+        than trusted from the other instrument: no manifest published surface
+        may ever appear in the dated-record set. `validate_record_policy`
+        already refuses such an entry, and this fails in the file that would
+        benefit from the loophole if that ever stops being true.
+        """
+        classified = self._centrally_classified_records()
+        self.assertTrue(
+            classified,
+            "the dated-record registry read as empty, so the exemption path "
+            "is untested and a future record would be skipped silently")
+        live = set(cc.manifest_surfaces())
+        self.assertEqual(
+            sorted(classified & live), [],
+            "a published surface is registered as an immutable dated record, "
+            "which would let a live stale count be classified instead of "
+            "corrected")
 
     def test_the_two_instruments_share_one_gap_definition(self):
         """cascade_count and claim_auditor must agree on what separates a
