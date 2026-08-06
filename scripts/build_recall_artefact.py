@@ -40,6 +40,7 @@ Stdlib only.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -83,8 +84,13 @@ def _run_cli(target: Path, domains: list[str] | None) -> dict[str, list[dict]]:
            "--format", "json"]
     if domains:
         cmd += ["--domain", ",".join(domains)]
+    # N53: pin the tracked policy through the highest-precedence route so a
+    # gitignored root regula-policy.yaml cannot shadow it (policy resolution
+    # searches cwd before configs/, and cwd here is REPO_ROOT).
+    env = dict(os.environ,
+               REGULA_POLICY=str(REPO_ROOT / "configs" / "regula-policy.yaml"))
     proc = subprocess.run(cmd, capture_output=True, text=True,
-                          cwd=str(REPO_ROOT), timeout=1800)
+                          cwd=str(REPO_ROOT), env=env, timeout=1800)
     if not proc.stdout.strip():
         raise RuntimeError(
             f"regula produced no output (rc={proc.returncode}): "

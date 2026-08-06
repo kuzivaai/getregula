@@ -64,6 +64,7 @@ Stdlib only.
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -96,7 +97,16 @@ NOTE_BLOCK = re.compile(
 
 
 def _run(args: list[str]) -> str:
+    # N53: policy_config resolves $REGULA_POLICY, then ./regula-policy.yaml,
+    # then ./configs/. With cwd=REPO_ROOT a gitignored root policy file
+    # shadows the tracked configs/regula-policy.yaml, and no git-based guard
+    # on the fixture can see it. Pinning the tracked policy through the
+    # highest-precedence route makes the generator's input explicit instead
+    # of resolved-by-search.
+    env = dict(os.environ,
+               REGULA_POLICY=str(REPO_ROOT / "configs" / "regula-policy.yaml"))
     proc = subprocess.run([sys.executable, *args], cwd=str(REPO_ROOT),
+                          env=env,
                           capture_output=True, text=True, timeout=1800)
     if proc.returncode not in (0, 1):
         raise RuntimeError(f"{args} failed rc={proc.returncode}: "
