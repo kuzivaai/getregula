@@ -115,9 +115,14 @@ def validate_record_policy(policy: dict, files: dict[str, str | bytes],
 def count_pattern(count: int) -> re.Pattern:
     grouped = f"{count:,}"
     variants = {str(count), grouped, grouped.replace(",", ".")}
+    # (?<!\w) and (?!\w), not (?<!\d)/(?!\d): a digit run embedded in a
+    # longer alphanumeric token (hex colour, hash, stable_id) is not a claim
+    # rendering. The leading side was fixed for `#dcNNNN` (2026-07-31); the
+    # trailing side for a stable_id of the form `cli:NNNNfb52...` where the
+    # canonical count landed at the start of a hex run (2026-08-07).
     return re.compile(
         r"(?<!\w)(" + "|".join(re.escape(v) for v in sorted(variants))
-        + r")(?!\d)")
+        + r")(?!\w)")
 
 
 def classify_count_occurrences(count: int, files: dict[str, str | bytes],
