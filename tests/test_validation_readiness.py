@@ -4,10 +4,21 @@ from __future__ import annotations
 
 import json
 import shutil
+import sys
 import tempfile
 from pathlib import Path
 
-from scripts.validate_validation_readiness import DEFAULT_PACK, validate
+# Bare import, per .claude/rules/python-scripts.md. The package-qualified form
+# `from scripts.validate_validation_readiness import ...` resolved on the
+# author's machine ONLY because an editable install of regula-ai puts a path
+# hook on sys.path mapping the name `scripts` to this working copy
+# (`__editable___regula_ai_1_7_0_finder.MAPPING`). A clean checkout has no such
+# mapping, so CI failed with `ModuleNotFoundError: No module named 'scripts'`
+# on Python 3.10, 3.11, 3.12 and 3.13 the first time a pull request ever ran on
+# this branch. That is the N1 class: provenance that exists only locally.
+sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
+
+from validate_validation_readiness import DEFAULT_PACK, validate  # noqa: E402
 
 
 def _mutate(relative: str, old: str, new: str, expected: str) -> None:
