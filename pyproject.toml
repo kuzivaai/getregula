@@ -58,8 +58,17 @@ web = ["flask~=3.1"]
 # (2019). `asn1crypto` is pure-Python with no native deps and powers the
 # TimeStampToken parser at verify time; the stdlib-only DER encoder still
 # handles the request path.
-signing = ["cryptography>=41,<50", "asn1crypto>=1.5.1,<2"]
-all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=41,<50", "asn1crypto>=1.5.1,<2"]
+#
+# Ceiling raised from <50 to <51 on 2026-08-06 so that cryptography 50.0.0 is
+# admitted. pip-audit over all nine extras groups resolved the old range to
+# 49.0.0 and reported PYSEC-2026-3552 / CVE-2026-69247, a Bleichenbacher
+# oracle in PKCS#7 EnvelopedData, fixed in 50.0.0 and excluded by this
+# extra's own ceiling. Recorded as permitted-version hygiene, NOT as an
+# active-exposure fix: Regula calls ed25519, x509 and hashes only, and never
+# the PKCS#7 EnvelopedData path (grep-verified). The bound stays bounded
+# rather than becoming open-ended, which keeps it a `bounded-range` pin.
+signing = ["cryptography>=41,<51", "asn1crypto>=1.5.1,<2"]
+all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=41,<51", "asn1crypto>=1.5.1,<2"]
 
 [project.urls]
 Homepage = "https://getregula.com"
