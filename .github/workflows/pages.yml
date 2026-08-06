@@ -52,3 +52,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
+        with:
+          # Same 1200000ms poll budget as ci.yaml's deploy job, and the same
+          # reason: measured on 2026-08-06 a deployment completed 82 seconds
+          # after the 600000ms default gave up. See the note in ci.yaml.
+          timeout: 1200000
