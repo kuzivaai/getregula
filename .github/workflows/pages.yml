@@ -1,10 +1,26 @@
 name: Deploy to GitHub Pages
 
+# MANUAL ONLY since 2026-08-06. This workflow used to trigger on push to main
+# for `site/**`, and ci.yaml carries its OWN `deploy` job doing the same thing
+# on every push to main. Both create a GitHub Pages deployment for the same
+# commit, and both take the `pages` concurrency group with CONTRADICTORY
+# semantics: this file said `cancel-in-progress: false`, ci.yaml's job says
+# `true`.
+#
+# MEASURED 2026-08-06: on the push of fc0038e the two runs started one second
+# apart (13:10:08 and 13:10:09) and raced. Every Pages deployment afterwards
+# failed, first with `Timeout reached` while stuck in `deployment_queued` and
+# then with `Deployment request failed ... due to in progress deployment.
+# Please cancel fc0038e... first`, for six attempts across two commits. The
+# cancel endpoint returned 204 and the deployment reported
+# `deployment_cancelled` while the create path still refused, which is the
+# shape of a backend left inconsistent by two writers.
+#
+# One automatic deployer only. ci.yaml's job is kept as the automatic one
+# because it is gated on `needs: test`, so a red suite cannot publish; this
+# workflow had no such gate. Retained here as workflow_dispatch so a manual
+# redeploy is still possible without re-adding the race.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'site/**'
   workflow_dispatch:
 
 permissions:
