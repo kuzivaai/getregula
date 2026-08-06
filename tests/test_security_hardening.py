@@ -36,35 +36,47 @@ PATHOLOGICAL_INPUTS = [
 ]
 
 
+def _cpu_seconds(fn):
+    """CPU seconds this process spent executing fn().
+
+    The meter is time.process_time(), NOT time.time(). Ledger rows N28, N73
+    and N75 each record a wall-clock assertion flipping under machine
+    contention (N28's instance: a 1.64s wall reading on a regex whose
+    measured median is 0.0095s, a ~170x excursion the regex did not cause).
+    Scheduler wait inflates wall clock but accrues almost no process CPU
+    time, so a CPU budget is a property of the computation rather than of
+    the machine's load. test_redos_meter_is_cpu_time_not_wall_clock proves
+    both directions: sleep accrues ~0, catastrophic backtracking accrues
+    real CPU. Residual limit, stated: CPU time still scales with single-core
+    speed, so thresholds keep two orders of magnitude of headroom over the
+    measured baselines.
+    """
+    start = time.process_time()
+    fn()
+    return time.process_time() - start
+
+
 def _check_pattern_redos(label, pattern, inputs, flags=re.IGNORECASE,
                          threshold=10.0):
     """Test a single regex pattern against pathological inputs. Returns True if safe.
 
-    The threshold (default 10s) is tuned to catch catastrophic backtracking
-    (exponential blowup → minutes on 10K-char input) while accepting linear-
-    time patterns that are simply slow on long single-line inputs (~3-5s in
-    WSL2).  Genuine ReDoS on 10K chars takes >100s; 10s is a safe boundary.
-
-    Uses a two-pass approach for determinism: if first pass exceeds threshold,
-    retry once to filter resource-contention false positives.
+    The threshold (default 10 CPU seconds) is tuned to catch catastrophic
+    backtracking (exponential blowup → minutes of CPU on 10K-char input)
+    while accepting linear-time patterns that are simply slow on long
+    single-line inputs. Genuine ReDoS on 10K chars burns >100 CPU seconds;
+    10 is a safe boundary. The meter is CPU time (see _cpu_seconds), so the
+    retry-once contention filter an earlier version carried is gone: the
+    false-positive class it filtered cannot occur on a CPU meter.
     """
     for inp in inputs:
-        start = time.time()
-        try:
-            re.search(pattern, inp, flags)
-        except re.error:
-            pass  # Invalid regex is not ReDoS
-        elapsed = time.time() - start
-        if elapsed > threshold:
-            # Retry once to filter contention spikes
-            start2 = time.time()
+        def _search():
             try:
                 re.search(pattern, inp, flags)
             except re.error:
-                pass
-            elapsed2 = time.time() - start2
-            if elapsed2 > threshold:
-                return False, f"{label}: {elapsed2:.2f}s on len={len(inp)}"
+                pass  # Invalid regex is not ReDoS
+        spent = _cpu_seconds(_search)
+        if spent > threshold:
+            return False, f"{label}: {spent:.2f} CPU s on len={len(inp)}"
     return True, None
 
 
@@ -137,10 +149,8 @@ def test_redos_dependency_patterns():
     ]
 
     for inp in dep_inputs:
-        start = time.time()
-        _REQ_SPEC_RE.match(inp)
-        elapsed = time.time() - start
-        assert_true(elapsed < 1.0, f"ReDoS in _REQ_SPEC_RE: {elapsed:.2f}s")
+        spent = _cpu_seconds(lambda: _REQ_SPEC_RE.match(inp))
+        assert_true(spent < 1.0, f"ReDoS in _REQ_SPEC_RE: {spent:.2f} CPU s")
     print("✓ ReDoS: dependency_scan patterns safe")
 
 
@@ -175,14 +185,44 @@ def test_redos_ast_patterns():
     issues = []
     for name, pattern in patterns.items():
         for inp in ast_inputs:
-            start = time.time()
-            pattern.search(inp)
-            elapsed = time.time() - start
-            if elapsed > 1.0:
-                issues.append(f"{name}: {elapsed:.2f}s on len={len(inp)}")
+            spent = _cpu_seconds(lambda: pattern.search(inp))
+            if spent > 1.0:
+                issues.append(f"{name}: {spent:.2f} CPU s on len={len(inp)}")
 
     assert_eq(len(issues), 0, f"ReDoS in ast_engine: {issues}")
     print(f"✓ ReDoS: all {len(patterns)} ast_engine patterns safe")
+
+
+def test_redos_meter_is_cpu_time_not_wall_clock():
+    """CONTROL for the ReDoS meter, both directions.
+
+    The N28 defect was a wall-clock assertion flipping under scheduler
+    contention: wall time grew ~170x while the regex did no extra work.
+    This control proves the replacement meter cannot fail that way and can
+    still fail the way it must:
+
+    1. Wall time without CPU work (the contention shape) accrues ~nothing,
+       so machine load alone can never trip a ReDoS assertion again.
+    2. Genuine catastrophic backtracking accrues real CPU time, so the
+       meter still detects the thing the tests exist to detect. Pattern
+       (a+)+b against 'a'*20 + '!' backtracks ~2^20 states, measured at
+       roughly 0.2 CPU s at calibration; the assertion bound is 0.05 so a
+       4x faster machine still passes.
+    """
+    slept = _cpu_seconds(lambda: time.sleep(0.2))
+    assert_true(
+        slept < 0.05,
+        f"meter charged {slept:.4f} CPU s for a 0.2s sleep; it is reading "
+        f"wall clock, which is the N28 defect reintroduced")
+
+    catastrophic = re.compile(r"(a+)+b")
+    burned = _cpu_seconds(lambda: catastrophic.search("a" * 20 + "!"))
+    assert_true(
+        burned > 0.05,
+        f"meter charged only {burned:.4f} CPU s for ~2^20 backtracking "
+        f"states; a meter that cannot see catastrophic backtracking makes "
+        f"every ReDoS test above vacuous")
+    print("✓ ReDoS meter: CPU-time based; blind to sleep, sees backtracking")
 
 
 # ══════════════════════════════════════════════════════════════════════
