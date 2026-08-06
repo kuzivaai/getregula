@@ -354,33 +354,100 @@ def test_no_os_system():
 # ══════════════════════════════════════════════════════════════════════
 
 def test_regula_self_scan_clean():
-    """Regula self-scan produces no BLOCK or WARN findings."""
+    """Regula self-scan produces no BLOCK or WARN findings.
+
+    LOAD-INVARIANT BY CONSTRUCTION. Until 2026-08-06 this test passed
+    `timeout=60` to the subprocess, which let a wall clock decide the verdict.
+    MEASURED that day, same tree and same command, three runs: 61.02s at load
+    average 10.10, then 25.25s, then 22.60s at 4.75, every run reporting 99%
+    CPU. A 2.7x excursion against a 60s bound whose baseline is roughly 23s,
+    so the suite went red under contention from two unrelated 12-hour jobs
+    while the identical tree had passed hours earlier. That is N28's class in
+    a second test, which N28 does not name.
+
+    N28's recorded fix is a deterministic proxy rather than elapsed time, and
+    it rules out raising the threshold, marking the test flaky and skipping
+    it, because each of those is suppression. The proxy here is the scan's own
+    OUTCOME plus its INTEGRITY. No elapsed time is asserted anywhere.
+
+    The integrity half is load-bearing, not decoration. Every outcome
+    assertion below has the form "no findings of category X", so a scan that
+    failed to run, or ran against the wrong path, returns an empty list and
+    passes all of them vacuously. That is measurement rule 4: an absent signal
+    is not a passing signal. The replaced version had exactly that hole twice
+    over, because its `except json.JSONDecodeError` branch fell back to a bare
+    returncode check when the output was not a scan result at all.
+
+    STATED LIMIT: no timeout remains, so a genuinely hung scanner hangs this
+    test rather than failing it, and this repository configures no global
+    pytest timeout. That is deliberate. Any wall-clock bound near the real
+    runtime reintroduces the defect being removed, and a hung scanner is a
+    real defect that should stop the suite rather than be recorded as a
+    threshold breach.
+    """
+    import json
     import subprocess
 
+    from constants import VERSION
+
+    repo = Path(__file__).parent.parent
     r = subprocess.run(
-        [sys.executable, "scripts/cli.py", "check", "scripts/", "--format", "json"],
-        capture_output=True, text=True, timeout=60,
-        cwd=str(Path(__file__).parent.parent),
+        [sys.executable, "scripts/cli.py", "check", "scripts/",
+         "--format", "json"],
+        capture_output=True, text=True, cwd=str(repo),
     )
-    import json
+
+    # INTEGRITY: positive proof this scan executed over the intended inputs.
     try:
         output = json.loads(r.stdout)
-        findings = output.get("data", [])
-        active = [f for f in findings if not f.get("suppressed")]
-        prohibited = [f for f in active if f.get("tier") == "prohibited"]
-        high_risk = [f for f in active if f.get("tier") == "high_risk"]
-        credentials = [f for f in active if f.get("tier") == "credential_exposure"]
+    except json.JSONDecodeError as exc:
+        raise AssertionError(
+            f"the self-scan produced no parseable JSON envelope, so it did "
+            f"not run to completion (rc={r.returncode}): {exc}. "
+            f"stderr={r.stderr[:400]!r}") from exc
 
-        # explain_articles.py describes prohibited practices by design — exclude it
-        prohibited = [f for f in prohibited if "explain_articles" not in f.get("file", "")]
-        assert_eq(len(prohibited), 0, "no prohibited findings in own code (excluding explain_articles.py)")
-        assert_eq(len(credentials), 0, "no credential findings in own code")
-        # High-risk findings in a governance tool's own code would be false positives
-        # risk_patterns.py and regulation modules contain high-risk keywords by design
-        high_risk = [f for f in high_risk if not any(x in f.get("file", "") for x in ("risk_patterns", "content/regulations", "explain_articles", "cli.py", "cli_scan", "cli_compliance", "cli_governance", "report.py", "remediation"))]
-        assert_eq(len(high_risk), 0, "no high-risk findings in own code (excluding pattern/regulation/CLI definitions)")
-    except json.JSONDecodeError:
-        assert_true(r.returncode == 0, "self-scan exited cleanly")
+    assert_eq(output.get("command"), "check",
+              "envelope is not a check result, so the scan did not run")
+    assert_eq(output.get("regula_version"), VERSION,
+              "envelope came from a different Regula version than the tree "
+              "under test")
+    findings = output.get("data")
+    assert_true(isinstance(findings, list),
+                "envelope carries no findings list, so there is nothing to "
+                "assert about and the outcome checks would be vacuous")
+    assert_true(
+        len(findings) > 0,
+        "the self-scan returned zero findings over scripts/, so every "
+        "category assertion below would pass for the wrong reason; the scan "
+        "did not reach the intended tree")
+    # The `file` field carries a basename, not a path, so the check is that
+    # every referenced name resolves to a real file inside the scanned tree.
+    # Established by running it: an earlier draft asserted the string
+    # "scripts" appeared in each value and failed against `assess.py`.
+    referenced = {f.get("file", "") for f in findings if f.get("file")}
+    in_tree = {p.name for p in (repo / "scripts").rglob("*.py")}
+    assert_true(bool(referenced),
+                "no finding names a file, so the scan cannot be shown to "
+                "have read anything")
+    assert_eq(
+        sorted(referenced - in_tree), [],
+        "findings name files that do not exist under scripts/, so the scan "
+        "ran somewhere other than the intended tree")
+
+    # OUTCOME: unchanged in meaning from the version this replaces.
+    active = [f for f in findings if not f.get("suppressed")]
+    prohibited = [f for f in active if f.get("tier") == "prohibited"]
+    high_risk = [f for f in active if f.get("tier") == "high_risk"]
+    credentials = [f for f in active if f.get("tier") == "credential_exposure"]
+
+    # explain_articles.py describes prohibited practices by design, exclude it
+    prohibited = [f for f in prohibited if "explain_articles" not in f.get("file", "")]
+    assert_eq(len(prohibited), 0, "no prohibited findings in own code (excluding explain_articles.py)")
+    assert_eq(len(credentials), 0, "no credential findings in own code")
+    # High-risk findings in a governance tool's own code would be false positives
+    # risk_patterns.py and regulation modules contain high-risk keywords by design
+    high_risk = [f for f in high_risk if not any(x in f.get("file", "") for x in ("risk_patterns", "content/regulations", "explain_articles", "cli.py", "cli_scan", "cli_compliance", "cli_governance", "report.py", "remediation"))]
+    assert_eq(len(high_risk), 0, "no high-risk findings in own code (excluding pattern/regulation/CLI definitions)")
 
     print("✓ Self-scan: Regula's own code is clean")
 
