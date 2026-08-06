@@ -322,13 +322,20 @@ def _stale_values(text: str, new: int) -> set:
     landing pages was not merely unmatched by the templates, it was never
     nominated as a candidate at all, so both blindnesses had to be closed
     to make either page reachable.
+
+    There is deliberately NO magnitude window. An earlier version silently
+    skipped candidates outside [0.5x, 2x] of canonical, which structurally
+    hid `docs/architecture.md`'s stale "1,223 tests" against a canonical of
+    2,618 (ledger row N57, sub-item 1). Membership in a COUNT_TEMPLATES
+    shape is the only filter: a number that renders in a sanctioned count
+    shape and differs from canonical is stale whatever its magnitude, and
+    a magnitude the templates never match cannot be nominated anyway.
     """
     out = set()
-    lo, hi = int(new * 0.5), int(new * 2)
     for m in re.finditer(
             r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{4})(?![\w,.])", text):
         val = int(m.group(1).replace(",", "").replace(".", ""))
-        if val == new or not (lo <= val <= hi):
+        if val == new:
             continue
         for rx in _count_regexes(val):
             if rx.search(text):

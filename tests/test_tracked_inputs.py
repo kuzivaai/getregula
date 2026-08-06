@@ -260,6 +260,64 @@ def test_generator_writes_normally_when_inputs_are_clean():
         assert "REFUSED" not in proc.stderr
 
 
+def test_generators_pin_the_tracked_policy_path():
+    """N53: policy resolution searches $REGULA_POLICY, then the cwd root,
+    then cwd configs/. Both artefact generators run the CLI with
+    cwd=REPO_ROOT, so a gitignored root regula-policy.yaml silently
+    shadowed the tracked configs/regula-policy.yaml, and a git-based guard
+    on the fixture subtree could never see it (measured inert on 2026-07-31
+    by a one-variable control, structurally open until now). The generators
+    must pin the tracked policy through the highest-precedence route.
+
+    The stub replaces each module's `subprocess` BINDING, never the shared
+    subprocess module, so nothing leaks.
+    """
+    from types import SimpleNamespace
+
+    import build_gap_demo
+    import build_recall_artefact
+
+    tracked = subprocess.run(
+        ["git", "ls-files", "--", "configs/regula-policy.yaml"],
+        cwd=str(Path(__file__).resolve().parent.parent),
+        capture_output=True, text=True, check=True).stdout.strip()
+    assert tracked == "configs/regula-policy.yaml", (
+        "the pinned policy path is not tracked; pinning an untracked file "
+        "would recreate the N43 class at the policy layer")
+
+    class _Stop(Exception):
+        pass
+
+    for mod, call in (
+        (build_gap_demo, lambda: build_gap_demo._run(["probe"])),
+        (build_recall_artefact,
+         lambda: build_recall_artefact._run_cli(Path("probe"), None)),
+    ):
+        captured = {}
+
+        def fake_run(*args, **kwargs):
+            captured["env"] = kwargs.get("env")
+            raise _Stop()
+
+        original = mod.subprocess
+        mod.subprocess = SimpleNamespace(run=fake_run)
+        try:
+            try:
+                call()
+            except _Stop:
+                pass
+            env = captured.get("env")
+            assert env is not None, (
+                f"{mod.__name__} invokes the CLI with no env override, so "
+                f"policy resolution is back to search order (N53)")
+            pin = env.get("REGULA_POLICY", "")
+            assert pin.endswith("configs/regula-policy.yaml"), (
+                f"{mod.__name__} pins REGULA_POLICY to {pin!r}, not the "
+                f"tracked configs/regula-policy.yaml")
+        finally:
+            mod.subprocess = original
+
+
 if __name__ == "__main__":
     tests = [
         test_clean_fixture_reports_nothing,
@@ -275,6 +333,7 @@ if __name__ == "__main__":
         test_awkward_filenames_are_reported_unescaped,
         test_generator_ignores_untracked_inputs_by_construction,
         test_generator_writes_normally_when_inputs_are_clean,
+        test_generators_pin_the_tracked_policy_path,
     ]
     failed = 0
     for t in tests:

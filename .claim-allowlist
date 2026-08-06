@@ -32,12 +32,26 @@
 \b61\s+commands?
 \bregula[- ]ai\b
 \bv1\.6
-# tests: pytest discovers 2,461 tests
-\b2[,.]?4\d{2}\s+tests?
-\b2[,.]?3\d{2}\s+tests?
-\b1[,.]?1\d{2}\s+tests?
-\b1[,.]?2\d{2}\s+tests?
-\b1[,.]?0\d{2}\s+tests?
+# tests: exact historical count values only, never ranges. N57 sub-item 2:
+# the previous five entries here matched RANGES (\b2[,.]?4\d{2}\s+tests?
+# exempts every value 2,400-2,499), so a brand-new stale count landing in a
+# covered decade was silently exempted by an instrument nobody thought was
+# involved. Each value below was enumerated from the tracked scanned corpus
+# on 2026-08-06; the \b1[,.]?1\d{2} range matched nothing anywhere and was
+# deleted rather than converted. Add future values one at a time, exactly.
+\b2465\s+tests?
+\b2[,.]?353\s+tests?
+\b2[,.]?354\s+tests?
+\b2[,.]?390\s+tests?
+\b2[,.]?349\s+tests?
+\b1[,.]?223\s+tests?
+\b1[,.]?090\s+tests?
+\b1[,.]?097\s+tests?
+\b1010\s+tests?
+\b1011\s+tests?
+\b1043\s+tests?
+\b1071\s+tests?
+\b1095\s+tests?
 \b941\s+tests?
 \b893\s+test\s+functions?
 # ---- Common EU AI Act numeric references (verified from regulation text)

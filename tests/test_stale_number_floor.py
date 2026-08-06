@@ -233,6 +233,43 @@ class TestEndToEndThroughVerifyFacts(unittest.TestCase):
             "stale number surfaced (fix it) or the replacement over-fires "
             "(narrow it) - do not lower the bar to make this pass.")
 
+    def test_dotted_stale_count_is_reported_with_its_whole_number(self):
+        """N57 sub-item 5. A stale dot-grouped count ("2.349 Tests" on the
+        locale pages) used to be reported as "found 349": the dotted
+        rendering of the canonical survived inside wrong_pat unreplaced, and
+        the number capture stopped at the dot. The gate fired correctly and
+        the message lied about what it found. The message must carry the
+        whole grouped number.
+        """
+        import contextlib
+        import io
+        import tempfile
+        with tempfile.TemporaryDirectory(dir=str(REPO_ROOT)) as td:
+            planted = Path(td) / "PLANTED_DOTTED.md"
+            planted.write_text(
+                "# Fixture\n\nDie Suite hat 2.349 Tests bestanden.\n",
+                encoding="utf-8")
+            rel = str(planted.relative_to(REPO_ROOT))
+            original = list(ca.VERIFY_FACTS_FILES)
+            buf = io.StringIO()
+            try:
+                ca.VERIFY_FACTS_FILES.append(rel)
+                with contextlib.redirect_stdout(buf):
+                    rc = ca.verify_facts()
+            finally:
+                ca.VERIFY_FACTS_FILES[:] = original
+        out = buf.getvalue()
+        self.assertEqual(rc, 1, "a planted dotted stale count did not red "
+                                "the gate at all")
+        self.assertIn(
+            "found 2.349", out,
+            "the mismatch message does not carry the whole dotted number; "
+            f"the N57-5 truncation is back. Message was:\n{out}")
+        self.assertNotIn(
+            "found 349", out,
+            "the message still reports the truncated fragment 349. "
+            f"Message was:\n{out}")
+
 
 if __name__ == "__main__":
     unittest.main()
