@@ -111,7 +111,24 @@ _HTML_COMMENT = r"<!--.*?-->"
 GAP = rf"(?:[ \t]|{_INLINE_TAG}|{_SPACE_ENTITY}|{_HTML_COMMENT})+"
 
 COUNT_TEMPLATES = [
+    # Shields.io badge forms, one per unit word, named explicitly.
+    #
+    # MEASURED 2026-08-06. Only the `passing` form existed, and README.md:10
+    # publishes the same quantity as `tests-2683%20collected`. Nothing matched
+    # it, so `--apply` never rewrote it and `--check` reported "all manifest
+    # surfaces already carry the canonical value" while README.md, manifest
+    # surface number one, was 33 short on this branch and the same literal on
+    # `main` was 7 short of main's own canonical. README.md:278 carries
+    # `| 2,716 |` and satisfies the check, so one file both satisfied and
+    # violated at once: measurement rule 5 in live form.
+    #
+    # The writer stays explicit and the reader goes general, deliberately.
+    # A tool that WRITES must only ever match shapes someone named, which is
+    # this module's founding rule. Catching an unnamed badge word is the job
+    # of the at-rest check in tests/test_cascade_count.py, which reads only
+    # and fails loudly telling you to add the template here.
     r"tests-{n}%20passing",
+    r"tests-{n}%20collected",
     r"{n}{g}passing",
     r"{n}{g}pytest-collected",
     r"{n}{g}unique tests",

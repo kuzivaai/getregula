@@ -57,6 +57,14 @@
       "evidence_commit": "b20842650b90a95e5163b4a3bcaa6f0cfa5ad06e",
       "immutable_sha256": "d5f1b68b0b2f2e3dfd69aa20f42f10626c9a1a848558c3fa77b9d209eabeb409",
       "rationale": "Dated reconciliation preserving exact-commit totals rather than a current published count."
+    },
+    {
+      "path": "docs/venture/REGULA_VENTURE_SOURCE_REGISTER_2026-08-04.md",
+      "record_class": "dated_evidence",
+      "recorded_at": "2026-08-04",
+      "evidence_commit": "5256c33bdbf91a7c2a2326d9e662172ec573ccd1",
+      "immutable_sha256": "4667b74f0a022f74997913554b00c825ce261049c25bc99bf646e2493f8ddc76",
+      "rationale": "Dated source register whose row R02 records what data/site_facts.json reported when the register was generated on 2026-08-04, phrased as '2,690 collected tests'. Surfaced on 2026-08-06 when the at-rest matcher gained the bare 'collected' unit word; it had been invisible to every instrument until then, not exempted by any of them. Rewriting the figure would falsify a source register, so it is classified rather than corrected."
     }
   ]
 }
