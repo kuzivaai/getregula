@@ -96,28 +96,26 @@ Regula Scan: /home/you/getregula/examples/cv-screening-app
 regula plan --project examples/cv-screening-app
 ```
 
-Expected output (abbreviated — full plan is 9 tasks; verified against
-Regula v1.7.6 on 2026-07-20):
+Expected output (abbreviated — full plan is 8 tasks; verified against
+Regula v1.9.0 on 2026-08-06):
 
 ```
 # Remediation Plan — cv-screening-app
-Generated: 2026-07-16T…
-Tasks: 9
+Generated: 2026-08-06T…
+Tasks: 8
 
 ## Priority: HIGH
 
-TASK-001 [HIGH] Article 12 — Record-Keeping
-  Article: 12
-  Action: Address compliance gaps for Article 12 (Record-Keeping):
-            - No logging framework detected in code files
-            - No structured or auditable logging format detected
-  Effort: ~5-11h
-  Deadline: 2 August 2026 (Omnibus: 2 December 2027 for Annex III,
-            EP approved 16 Jun 2026, Council approved 29 Jun 2026;
-            pending OJ publication)
+TASK-001 [HIGH] Article 17 — Quality Management System
+  Article: 17
+  Action: Address compliance gaps for Article 17 (Quality Management System):
+            - No quality policy or quality objectives found
+  Effort: ~4-8h
+  Deadline: 2 December 2027 for Annex III (Omnibus published in OJ
+            2026-07-24, in force from 2026-07-27)
   Status: [ ] Not Started
 
-TASK-002 [HIGH] Article 17 — Quality Management System
+TASK-002 [HIGH] Article 12 — Record-Keeping
   …
 
 TASK-003 [HIGH] Article 13 — Transparency
