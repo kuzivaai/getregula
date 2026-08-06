@@ -1089,15 +1089,45 @@ every time. The first failed with `Timeout reached, aborting!` after sitting in
 `gh api repos/kuzivaai/getregula/pages` reports `status=null`, where a healthy
 Pages site reports `built`.
 
-**Hypothesis, stated as a hypothesis:** the Pages deployment ID is the commit
-SHA itself (`Created deployment for fc0038e..., ID: fc0038e...`), so repeated
-deployments of one SHA may cancel one another, and a deployment of a NEW commit
-may succeed where a fourth retry of the same one will not. That is testable by
-the next commit to `main` and is not offered as established.
+**ROOT CAUSE ESTABLISHED, and it refutes the first hypothesis.** The first
+guess was that repeated deployments of one SHA cancel each other and that a new
+commit would deploy cleanly. Deploying a NEW commit produced the real error and
+disproved it:
+
+```
+HttpError: Deployment request failed for 5cb8a15... due to in progress
+deployment. Please cancel fc0038e... first or wait for it to complete.
+```
+
+A deployment for `fc0038e` is stuck in-progress server-side and blocks every
+subsequent deployment of any commit. **The stuck deployment cannot be cleared
+from here.** `POST /repos/kuzivaai/getregula/pages/deployments/fc0038e.../cancel`
+returns `HTTP 204 No Content` and
+`GET .../pages/deployments/fc0038e...` then reports
+`{"status":"deployment_cancelled"}`, yet a fresh create still fails with the
+same 400 naming that same deployment as in progress. The Pages record says
+cancelled and the Pages create path says in progress, which is an inconsistent
+state inside GitHub rather than anything this repository controls.
+
+Six deployment attempts across two commits, two cancels, a four minute wait and
+a final retry: all failed identically. `Upload artifact` succeeded every time.
+GitHub's status API reported Actions and Pages `operational` with no unresolved
+incidents throughout, so this is not a declared outage and will not appear on a
+status page.
 
 **Deliberately not worked around.** Nothing in the repository is wrong: the
 artifact uploads cleanly and the content is correct. Changing repository
 content to coax a deployment would be treating a publishing-platform failure as
-a content defect. **What the reader must not conclude:** that the published
-figures are now correct everywhere. They are correct in the repository and on
-`main`, and stale on the live site until a deployment succeeds.
+a content defect. Retrying further would be thrashing: six attempts with the
+same diagnosed cause is enough to call it.
+
+**OWNER ACTION, and it is the only route left.** Clearing a stuck GitHub Pages
+deployment that the cancel endpoint reports as already cancelled needs either
+GitHub Support, or a repository-admin action in Settings such as re-selecting
+the Pages source, or simply time for the stuck state to expire. None of those
+is available to a session working through the API with this token.
+
+**What the reader must not conclude:** that the published figures are now
+correct everywhere. They are correct in the repository and on `main`, and the
+live site is STALE until a deployment succeeds. Anyone quoting the site's
+figures in the interim is quoting the previous count.
