@@ -9,6 +9,7 @@ disagree. These tests make the drift itself a test failure.
 """
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -72,6 +73,86 @@ def test_sibling_importers_have_path_insert():
         "Modules bare-import siblings without sys.path.insert "
         f"self-protection: {offenders}"
     )
+
+
+def test_no_tracked_python_imports_the_scripts_package():
+    """No tracked Python may use the package-qualified `scripts.` import form.
+
+    MEASURED 2026-08-06. `tests/test_validation_readiness.py:10` carried
+    `from scripts.validate_validation_readiness import ...` since `ddbea55`
+    and passed on the author's machine for every one of those commits, because
+    an editable install of regula-ai puts a path hook on sys.path mapping the
+    name `scripts` to the working copy (the finder's MAPPING contains
+    `'scripts': '<repo>/scripts'`). A clean checkout has no such mapping. The
+    first pull request ever opened from this branch failed on Python 3.10,
+    3.11, 3.12 and 3.13 with `ModuleNotFoundError: No module named 'scripts'`.
+
+    This is the N1 class: provenance that resolves locally and vanishes
+    elsewhere. `.claude/rules/python-scripts.md` already required bare
+    imports; nothing enforced it, so the rule held only as long as everyone
+    remembered it. This test is the enforcement.
+
+    The corpus is `git ls-files`, so untracked scratch is out of scope
+    (rule 4b), and the whole repository is swept rather than `tests/` alone,
+    because the same editable mapping also exposes `hooks` and `references`.
+    """
+    out = subprocess.run(
+        ["git", "ls-files", "-z", "*.py"], cwd=str(SCRIPTS_DIR.parent),
+        capture_output=True, text=True, check=True).stdout
+    # The three names the editable finder maps. Importing any of them in the
+    # package-qualified form works only where that install exists.
+    mapped = r"(?:scripts|hooks|references)"
+    bad = re.compile(
+        rf"^\s*(?:from\s+{mapped}(?:\.\w+)*\s+import\b"
+        rf"|import\s+{mapped}(?:\.\w+)+)", re.M)
+    offenders = []
+    for rel in out.split("\0"):
+        if not rel:
+            continue
+        text = (SCRIPTS_DIR.parent / rel).read_text(
+            encoding="utf-8", errors="replace")
+        for m in bad.finditer(text):
+            line = text[:m.start()].count("\n") + 1
+            offenders.append(f"{rel}:{line}: {m.group(0).strip()}")
+    assert not offenders, (
+        "package-qualified imports of an editable-install-mapped package "
+        f"found; these resolve only where regula-ai is installed editable and "
+        f"fail in a clean checkout: {offenders}. Use a bare import with the "
+        f"sys.path.insert self-protection that "
+        f".claude/rules/python-scripts.md requires.")
+
+
+def test_the_scripts_package_import_scan_is_not_vacuous():
+    """POSITIVE PROOF (measurement rule 4).
+
+    A sweep that reaches no files, or a regex that matches nothing, passes for
+    the wrong reason. Both halves are checked: the corpus is non-empty and
+    reaches a known file, and the pattern still fires on the exact string that
+    broke CI.
+    """
+    out = subprocess.run(
+        ["git", "ls-files", "-z", "*.py"], cwd=str(SCRIPTS_DIR.parent),
+        capture_output=True, text=True, check=True).stdout
+    files = [r for r in out.split("\0") if r]
+    assert len(files) > 50, f"the sweep reached only {len(files)} files"
+    assert "tests/test_validation_readiness.py" in files, (
+        "the sweep does not reach the file whose import broke CI")
+
+    mapped = r"(?:scripts|hooks|references)"
+    bad = re.compile(
+        rf"^\s*(?:from\s+{mapped}(?:\.\w+)*\s+import\b"
+        rf"|import\s+{mapped}(?:\.\w+)+)", re.M)
+    assert bad.search(
+        "from scripts.validate_validation_readiness import DEFAULT_PACK"), (
+        "the pattern no longer matches the exact import that broke CI")
+    assert bad.search("import scripts.classify_risk"), (
+        "the pattern misses the `import scripts.x` form")
+    # Controls: the sanctioned bare form and unrelated names must NOT match.
+    for ok in ("from validate_validation_readiness import DEFAULT_PACK",
+               "import json",
+               "from pathlib import Path",
+               "from scripts_helper import thing"):
+        assert not bad.search(ok), f"false positive on a legal import: {ok!r}"
 
 
 def test_envelope_single_source_of_truth():
