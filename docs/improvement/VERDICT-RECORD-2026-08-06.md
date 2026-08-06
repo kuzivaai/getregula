@@ -93,3 +93,45 @@ whether the detector finds real governance risk, and this cycle produced no
 evidence on that question. The three commits it does contain are a published
 count guard, a test determinism conversion and a packaging ceiling. None of
 them is a product improvement.
+
+---
+
+## Addendum, same day: the branch merged to main
+
+The record above was written at `6be925e`, before the branch was pushed. What
+followed changes three of its fields and is appended rather than rewritten,
+because a dated record that is edited to look prescient is worthless.
+
+**MERGE_READINESS moves from a local measurement to a completed merge.** The
+branch was pushed, PR #44 opened, and CI executed on this branch's content for
+the FIRST time ever (owner decision 8). It failed 5 of 24 checks. Both causes
+are recorded as N76: a sitemap the local gate set could not see, and a
+package-qualified import that resolved only through an editable install. Both
+were fixed, the second at the class. CI then reported **24 pass, 0 fail, 4
+skipping**, and `main` was advanced to `fc0038e` by **fast-forward**, so no
+merge commit exists and the property the merge gate required is intact.
+
+To make that fast-forward possible, `origin/main` was first merged INTO the
+branch. `main` had advanced on 4 August via a merge of this branch's own
+earlier tip, so it was no longer an ancestor. That merge is content-neutral and
+its only purpose was to restore the ancestry the gate depends on. Rebasing was
+excluded by the immutable-history rule.
+
+**REPOSITORY_SUITE re-measured at the merged tree.** Full pytest passed with
+zero failures and zero skips, exit 0, on its FIRST attempt, and the custom
+runner reported 0 failed and 0 skipped across 1,097 test functions, exit 0,
+matching `docs/TRUST.md`. Both figures are deliberately not written here; this
+file sits inside the corpus the published-count guard scans. The first-attempt
+pass is itself the result: the two preceding cycles each needed a second
+attempt because a wall-clock test failed under load, and N75's hermetic
+conversion removed that.
+
+**A new field, and it is not green.** `LIVE_SITE_PUBLICATION: FAILED`. The
+corrected counts are in the repository and on `main`; they are NOT on
+`https://getregula.com/`, because four `Deploy to GitHub Pages` attempts all
+failed at the deploy step while the artifact uploaded cleanly. Recorded as N77
+with the measurements. **Nothing in this record should be read as saying the
+published figures are now correct everywhere.**
+
+N60 remains unmoved. Nothing in this cycle touched detection, and no gate
+result here is evidence of product efficacy.

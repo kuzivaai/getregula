@@ -924,8 +924,12 @@ no detection pattern, threshold or flag was touched.
 
 ## N74. The cryptography ceiling forbade its own fix, on two lines
 
-**First raised:** 2026-08-06. **Status:** CLOSED in `6be925e` for
-`pyproject.toml`. The same bound is OPEN in CI and in `uv.lock`.
+**First raised:** 2026-08-06. **Status:** FULLY CLOSED. `6be925e` closed
+`pyproject.toml`; `53042f9` closed the three CI workflow lines; `fc0038e`
+relocked `uv.lock`. Enumerated afterwards by command: no
+`cryptography ... <50` remains in any tracked file outside
+`docs/improvement/` and `CHANGELOG.md`, both of which are historical
+records that must keep what was true when written.
 
 pip-audit over all nine extras groups resolves `cryptography>=41,<50` to 49.0.0
 and reports PYSEC-2026-3552 / CVE-2026-69247, a Bleichenbacher oracle in PKCS#7
@@ -960,8 +964,30 @@ consumes `uv.lock`.
 
 ## N75. A third wall-clock test, found by the verification that followed the second
 
-**First raised:** 2026-08-06. **Status:** OPEN, diagnosed, NOT fixed. Outside
-the K11 ruling, which names one test.
+**First raised:** 2026-08-06. **Status:** CLOSED 2026-08-06 in `e8ff491`,
+after its own overturning criterion was met. The criterion was "a second
+observed failure of this test"; it failed twice in one cycle, in the step-4
+custom runner and again in the final full suite. The deferral was therefore
+overturned by the criterion the ledger set in advance rather than by a later
+opinion, which is the mechanism N48 and N50 established.
+
+**Fix, following N73's pattern and not widening the bound:** the network is
+removed from the test. A fresh cache is seeded in an isolated
+`REGULA_CACHE_DIR`, so `fetch_governance_news()` returns from cache and no
+socket is opened. `_run_cli` gained an optional `env` overlay to support it.
+A smoke test that depends on a live third party measures that third party.
+**Positive proof the hermetic path executes:** the seeded sentinel article
+must come back in the envelope, so a silent fall-through to the network
+fails rather than passes. **Control both ways:** seeded cache returns
+exactly 1 article with the sentinel present; an empty cache directory
+returns 6 live articles with the sentinel absent. Converted test timed at
+0.55s, 0.30s and 0.32s. The full suite then passed at the canonical count with zero
+failures on its FIRST attempt, where the two preceding cycles each needed a
+second. The figure is deliberately not written here: this file is inside the
+corpus the published-count guard scans.
+
+*Original status, retained because the row must show what was believed when
+it was raised:* OPEN, diagnosed, NOT fixed, outside the K11 ruling.
 
 The custom runner's first attempt in this cycle's step-4 verification exited 1
 on `test_smoke_feed`: `Command '['python3', 'scripts/cli.py', 'feed',
@@ -992,3 +1018,86 @@ explicitly reported condition rather than as a timing failure. **What would
 overturn the decision to defer:** a second observed failure of this test, or
 any use of the custom runner's exit code as a merge or release gate, since a
 network-dependent wall clock must not be able to block a merge.
+
+## N76. The first pull request this branch ever opened found two defects no local gate could see
+
+**First raised:** 2026-08-06. **Status:** BOTH CLOSED in `fba5625`; the class
+half is closed by a new guard.
+
+Owner decision 8 recorded that CI had never executed on this branch and could
+not. Opening PR #44 executed it for the first time, and 5 of 24 checks failed.
+Neither failure was reachable from the local gate set, which is the finding.
+
+**(a) `site/sitemap.xml`, mine.** The `Claim auditor` job runs
+`update_sitemap.py` then `git diff --exit-code site/sitemap.xml`. Commit
+`3b7a25b` changed five files under `site/`, moving four `lastmod` values, so
+the committed sitemap no longer matched a fresh run. `3b7a25b` was incomplete
+by this repository's own standard: a sitemap is a generated artefact of a site
+change exactly as the count cascade is, and belongs in the same commit.
+**`update_sitemap.py` is not one of the six fast gates**, so no local check
+could see it. That is measurement rule 5 landing on the gate SET rather than on
+a single instrument, and it is the more dangerous form, because a complete set
+of green gates is what a session reads as "the tree is trustworthy".
+
+**(b) `from scripts.` imports, pre-existing and not mine.**
+`tests/test_validation_readiness.py:10` carried
+`from scripts.validate_validation_readiness import ...` since `263a6cf` and
+passed here on every commit since. All four Python versions failed in CI with
+`ModuleNotFoundError: No module named 'scripts'`.
+
+**Cause, established rather than guessed:** an editable install of regula-ai
+puts a path hook on `sys.path` whose MAPPING is
+`{'hooks': ..., 'references': ..., 'scripts': '<repo>/scripts'}`. The name
+`scripts` is importable as a package on this machine and nowhere else. This is
+the N1 class exactly: provenance that resolves locally and vanishes in a clean
+checkout. Proven by stripping the hook from `sys.path` and reproducing both the
+failure and, after the fix, the success.
+
+**Closed at the class.** `.claude/rules/python-scripts.md` has always required
+bare imports and nothing enforced it, so the rule held only while everyone
+remembered it. `tests/test_source_of_truth.py` now carries
+`test_no_tracked_python_imports_the_scripts_package`, sweeping tracked `*.py`
+via `git ls-files` for the package-qualified form of all three mapped names,
+paired with `test_the_scripts_package_import_scan_is_not_vacuous`, which proves
+the corpus is non-empty and reaches the offending file, that the pattern still
+fires on the exact string that broke CI and on the `import scripts.x` form, and
+that four legal imports do not match. Enumerated by command: the form appeared
+exactly once in the whole tracked tree. Fail-before: restoring the original
+import turns the guard red.
+
+**Standing lesson:** a gate set is itself a claim about coverage, and this one
+was narrower than the CI it is supposed to anticipate. `update_sitemap.py` is
+the known instance; whether other CI steps have no local counterpart is NOT
+enumerated here and is left open rather than assumed away.
+
+## N77. The corrected counts reached main but not the live site
+
+**First raised:** 2026-08-06. **Status:** OPEN, infrastructure-side, escalated.
+
+`main` was fast-forwarded to `fc0038e` with all 24 CI checks passing, so
+README, the canonical artefact and every site page in the repository now agree
+at the current count. **The live site does not.** `https://getregula.com/`
+still served the previous count when checked after the merge, because the
+`Deploy to GitHub Pages` workflow failed.
+
+**Measured, not assumed.** Four deployment attempts for commit `fc0038e`, all
+failing at the `Deploy to GitHub Pages` step while `Upload artifact` succeeded
+every time. The first failed with `Timeout reached, aborting!` after sitting in
+`deployment_queued`; the rest failed within seconds with
+`Deployment cancelled.`. GitHub's own status API reported Actions and Pages
+`operational` with no unresolved incidents, so this is not a declared outage.
+`gh api repos/kuzivaai/getregula/pages` reports `status=null`, where a healthy
+Pages site reports `built`.
+
+**Hypothesis, stated as a hypothesis:** the Pages deployment ID is the commit
+SHA itself (`Created deployment for fc0038e..., ID: fc0038e...`), so repeated
+deployments of one SHA may cancel one another, and a deployment of a NEW commit
+may succeed where a fourth retry of the same one will not. That is testable by
+the next commit to `main` and is not offered as established.
+
+**Deliberately not worked around.** Nothing in the repository is wrong: the
+artifact uploads cleanly and the content is correct. Changing repository
+content to coax a deployment would be treating a publishing-platform failure as
+a content defect. **What the reader must not conclude:** that the published
+figures are now correct everywhere. They are correct in the repository and on
+`main`, and stale on the live site until a deployment succeeds.
