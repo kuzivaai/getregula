@@ -53,7 +53,7 @@
         }
       ],
       "regula:generatorVersion": "1.9.0",
-      "regula:eventCount": 12,
+      "regula:eventCount": 13,
       "regula:vocabularyNote": "The DPVCG EU-AIAct vocabulary (a W3C Community Group report, not a ratified W3C Standard) is referenced because Regula's scan-result export emits its concepts. Per-event DPV concepts are not asserted: the vocabulary currently has no regulatory-change-event concepts. Regula proposes adding them upstream (DPVCG issue #229)."
     },
     {
@@ -394,6 +394,33 @@
       },
       "regula:verifiedBy": "Corroborated 2026-07-29 across three independent sources: SGS (accredited certification body) announcing publication; Adam Leon Smith (named CEN-CENELEC JTC 21 participant) publishing \"EN 18286:2026 is finally published, the first AI Act standard to reach that milestone\"; and the Cloud Security Alliance research note of 28 April 2026 for the underlying legal point that presumption of conformity arises only on OJ citation. NOT verified at a CEN-CENELEC primary page: the official AI topic page carries no standard-level status, and the JTC 21 tracker consulted is a June 2026 snapshot that itself instructs readers to check the live work programme. The OJ-citation negative is therefore an absence-of-evidence finding, not a positive confirmation, and should be re-checked before any surface relies on it.",
       "regula:mechanicalChange": "references/harmonised_standards.yaml qms-art17 moved from status in_progress to published, published_ref set to EN 18286:2026 with published_date 2026-07-12, while oj_reference stays null and confers_presumption stays false. The blog paragraph asserting the standards were not expected before Q4 2026 was corrected, and the generated documentation checklist row was corrected on both counts (it said awaiting publication, and gave the enquiry as closing October 2026 when it closed January 2026)."
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-07-20-art50-final-guidelines",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-07-20-art50-final-guidelines",
+      "dct:date": {
+        "@value": "2026-07-20",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "commission-guidance",
+      "dct:description": "The Commission published the final version of its Guidelines on transparency obligations for providers and deployers of AI systems on 20 July 2026, under the Article 96(1)(d) empowerment to issue guidance on the practical implementation of Article 50. The draft was published 8 May 2026 and its consultation closed 3 June 2026. The final guidelines arrived thirteen days before the Article 50 obligations for new systems started to apply on 2 August 2026. They cover interactive systems, generative systems and deepfakes, and sit alongside the voluntary Code of Practice on marking and labelling of AI-generated content of 10 June 2026. CRITICAL DISTINCTION: these are guidance, not binding law. They aid consistent application but do not amend Article 50, and following them is not a presumption of conformity.",
+      "dct:source": {
+        "@id": "https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems"
+      },
+      "regula:sourceTitle": "Guidelines on transparency obligations for providers and deployers of AI systems (European Commission, 20 July 2026)",
+      "regula:affectedArticles": [
+        "50",
+        "96"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-08-06",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Direct retrieval of the Commission's own library page (digital-strategy.ec.europa.eu) on 2026-08-06, which carries the 20 July 2026 publication date and the guidelines document. Corroborated by Bird & Bird and Reed Smith client briefings describing the final guidelines' adoption. The Article 96(1)(d) empowerment wording was verified against the Article 96 text as mirrored at artificialintelligenceact.eu on 2026-08-06.",
+      "regula:mechanicalChange": "scripts/timeline.py gained a 2026-07-20 timeline row for the final guidelines and its module docstring moved the Article 50 guidelines status from draft-with-open-consultation to final-published; the docstring's Article 6 guidelines line was corrected to the 19 May 2026 draft with the targeted consultation closed 23 July 2026. site/blog/blog-art50-code-of-practice.html gained a dated editor's note linking the final guidelines. No detection pattern changed."
     },
     {
       "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-07-24-oj-publication",
