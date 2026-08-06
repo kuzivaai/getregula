@@ -1173,3 +1173,55 @@ is available to a session working through the API with this token.
 correct everywhere. They are correct in the repository and on `main`, and the
 live site is STALE until a deployment succeeds. Anyone quoting the site's
 figures in the interim is quoting the previous count.
+
+## N78. The count-literal scan matched inside a hex identifier, and the runner count drifted, both caught by the tip verification
+
+**First raised:** 2026-08-07. **Status:** CLOSED 2026-08-07 (fix commit
+follows this branch's tip `21bae57`; final full-suite evidence recorded on
+this row when the tip re-run completes).
+
+**Fail-before.** The full suite at `21bae57` (tree `53f7e29`, quiescent
+throughout, post-run tree identical) reported 2 failed, 2727 passed. Both
+failures were in `tests/test_published_count_manifest.py` and both were the
+apparatus catching real defects introduced or exposed by this branch:
+
+1. `test_count_literal_appears_nowhere_outside_the_manifest` named exactly
+   `data/public_claim_surfaces.json`. The only hit is inside
+   `"stable_id": "cli:2729fb52a8321880"`: the new canonical count 2,729
+   landed at the START of a hex run. `count_pattern`'s trailing lookahead
+   was `(?!\d)`, so hex letters could follow the count. This is the exact
+   mirror of the 2026-07-31 leading-side collision (`#dcNNNN`), which was
+   fixed with `(?<!\w)` while the trailing side kept the narrower guard.
+   A digit run embedded in a longer alphanumeric token is not a claim
+   rendering (measurement rule 4d).
+2. `test_trust_publishes_the_custom_runners_own_function_count`: wiring
+   `tests/test_tracked_inputs.py`'s new test into the manual runner (as
+   `.claude/rules/tests.md` requires) moved the runner's selection from
+   1,097 to 1,098 functions while `docs/TRUST.md` still published 1,097 in
+   both guarded locations. `cascade_count.py` propagates only the
+   pytest-collected count; this figure's only guard is the failing test,
+   which is why it fails in the full suite and not in the fast gates.
+
+**Fix.** `(?!\d)` becomes `(?!\w)` in both copies of the pattern
+(`scripts/count_record_policy.py::count_pattern` and the test module's
+`_count_pattern`, kept in sync), with the 2026-08-07 collision recorded in
+the docstring. The both-ways control
+`test_a_hex_colour_is_not_a_published_count` gains the trailing-side case
+(count followed by hex letters must not match) alongside its existing
+positive control (a real table-cell claim must still match).
+`docs/TRUST.md` corrected to 1,098 at both locations; 440 in-file
+unchanged; both figures re-derived with the guard's own predicate, not
+edited from memory. Collection is unchanged (an existing test was
+extended, none added), so no count cascade is required.
+
+**Pass-after.** `tests/test_published_count_manifest.py` 21 passed, exit 0.
+Direction control, both ways: the old pattern finds `2729` inside
+`cli:2729fb52a8321880` and the new pattern finds nothing there, while the
+new pattern still matches `| 2,729 |`, `2,729 tests` and the dotted
+`2.729` rendering.
+
+**Residual limitation.** The runner-function count in `docs/TRUST.md`
+remains hand-carried: its only guard is the full-suite test, so drift is
+caught at the next complete run, not at commit time. Extending
+`cascade_count.py` to propagate it is possible but was not done here; the
+guard's own docstring records the same trade-off.
