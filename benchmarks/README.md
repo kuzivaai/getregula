@@ -139,10 +139,27 @@ tier-level conclusion. See [`METHODOLOGY.json`](results/random_corpus/METHODOLOG
 A full rescan of the random corpus with current patterns is needed to verify
 whether the post-v1.7.0 improvements affect the 83.5% headline.
 
-**Methodology details:** `benchmarks/results/random_corpus/METHODOLOGY.json`
-contains the exact GitHub API queries, random seed, and selected repos.
+**Methodology details and reproducibility, stated exactly.**
+`benchmarks/results/random_corpus/METHODOLOGY.json` contains the exact
+GitHub API queries, random seed and selected repos, and
 `benchmarks/results/random_corpus/BLIND_LABELS.json` contains all 201
-labels with notes. Fully reproducible.
+blind labels with notes. Those artefacts are tracked, and the arithmetic
+inside `PRECISION.json` re-derives from its own tier table. **The 83.5%
+figure itself is a dated measurement, not a re-runnable benchmark.** The
+per-repository scan outputs that determined which 115 of the 201
+labelled findings form the production subset are deliberately untracked
+(they embed third-party code excerpts), and `rescan_corpus.py` clones
+each repository's current head rather than a pinned commit, so
+re-running it scans today's corpus state, not the 25 April 2026 state
+the labels were made against. Neither the subset membership nor the
+corpus snapshot is reconstructible from a clone. The tracked labels
+alone do not reproduce the figure: computed 6 August 2026 from
+`BLIND_LABELS.json`, precision over all 201 labels is 51.2% and over a
+path-heuristic production subset (139 entries) is 69.8%; both use
+different denominators from the published 115 and are stated to show the
+subset is not derivable, not as competing headlines. Any future
+re-measurement should pin corpus commits and record subset membership in
+tracked content so this paragraph can be retired.
 
 ## Precision — Development Corpora (internal reference)
 

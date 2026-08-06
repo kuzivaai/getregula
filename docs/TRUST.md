@@ -61,7 +61,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,723 unique tests (2,723 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
+| 2,725 unique tests (2,725 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -88,16 +88,16 @@ your lawyer's job, not Regula's.
 > is pending and tracked as ledger row N43 in
 > [`docs/improvement/LEDGER.md`](improvement/LEDGER.md).
 
-### 3.1 Internal test suite — 2,723 [unique](../tests/) / 2,723 pytest-collected, all green
+### 3.1 Internal test suite — 2,725 [unique](../tests/) / 2,725 pytest-collected, all green
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ -q
-# Expected: 2723 passed. Wall-clock is machine-dependent and is NOT a claim;
+# Expected: 2725 passed. Wall-clock is machine-dependent and is NOT a claim;
 # it has varied by a factor of two on one laptop in a single day. Quote the
 # count, never the duration.
-# 2,723 unique tests (sort -u of test IDs equals collected count).
+# 2,725 unique tests (sort -u of test IDs equals collected count).
 ```
 
 Regula also ships a legacy auto-discovery runner for the classification
@@ -205,6 +205,12 @@ python3 benchmarks/label.py score --corpus random
 # Expected: 83.5% precision (N=115)
 # Labelled by a single reviewer; no inter-rater agreement measurement
 # exists. See benchmarks/README.md.
+# NOTE: this command re-displays the tracked scored artefact
+# (benchmarks/results/random_corpus/PRECISION.json); it does not
+# re-derive the figure. The per-repo scans behind the 115-entry subset
+# are untracked and the corpus clones were unpinned, so 83.5% is a
+# dated April 2026 measurement. See "Methodology details and
+# reproducibility" in benchmarks/README.md.
 
 # Full development corpus (library + application projects, all code):
 python3 benchmarks/label.py score
@@ -395,7 +401,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,723 unique tests, 2,723 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,097 functions, 440 defined in-file) |
+| Test suite | `tests/` (2,725 unique tests, 2,725 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,097 functions, 440 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit hook source | `hooks/pre_tool_use.py` |
@@ -733,7 +739,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,723 unique tests (2,723 pytest-collected) |
+| Test suite | `tests/` | 2,725 unique tests (2,725 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |
