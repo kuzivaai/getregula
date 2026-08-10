@@ -67,8 +67,8 @@ web = ["flask~=3.1"]
 # active-exposure fix: Regula calls ed25519, x509 and hashes only, and never
 # the PKCS#7 EnvelopedData path (grep-verified). The bound stays bounded
 # rather than becoming open-ended, which keeps it a `bounded-range` pin.
-signing = ["cryptography>=41,<51", "asn1crypto>=1.5.1,<2"]
-all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=41,<51", "asn1crypto>=1.5.1,<2"]
+signing = ["cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
+all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
 
 [project.urls]
 Homepage = "https://getregula.com"
