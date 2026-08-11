@@ -229,7 +229,7 @@ This is a new material finding absent from the prior review: API/CLI schema drif
 
 ## Phase 0d: the suite as an artefact
 
-At the measurement commit/tree, pytest selected 2,729 cases in the full run. The Python AST predicate found 2,701 `test_*` functions across 106 Python test files; parameterisation and non-Python tests explain why function and case counts are different. The custom runner selected 1,098 functions.
+At the measurement commit/tree, pytest selected the canonical case count recorded in `data/site_facts.json`. The Python AST predicate found 2,701 `test_*` functions across 106 Python test files; parameterisation and non-Python tests explain why function and case counts are different. The custom runner selected 1,098 functions.
 
 The audit did not label every mock-based test defective. It used reproducible predicates and then described exactly what each predicate proves.
 
@@ -262,7 +262,7 @@ The first two would reject a fail-closed epistemic repair unless changed to asse
 
 ### Reconciled fraction
 
-The union of the exact Python predicates is 32 distinct pytest test functions: 13 exit/output-discarded, 16 fixture-guaranteed response tests, two Python known-defect expectations, and one additional empty-scan API test not already in those sets. At commit `c794745f`, tree `958548d0`, that proxy set is `32 / 2,729 = 1.173%` of pytest cases if each function contributes one selected case. Two JavaScript known-defect assertions sit outside the pytest denominator. This is a lower-bound proxy, not an assertion that the other 98.827% prove correct behaviour. Parameterisation means a function-to-case fraction is approximate; a case-exact collection map was not built, so claiming a more exact fraction would fabricate precision.
+The union of the exact Python predicates is 32 distinct pytest test functions: 13 exit/output-discarded, 16 fixture-guaranteed response tests, two Python known-defect expectations, and one additional empty-scan API test not already in those sets. At commit `c794745f`, tree `958548d0`, that proxy set is 1.173% of the canonical pytest case count if each function contributes one selected case. Two JavaScript known-defect assertions sit outside the pytest denominator. This is a lower-bound proxy, not an assertion that the other 98.827% prove correct behaviour. Parameterisation means a function-to-case fraction is approximate; a case-exact collection map was not built, so claiming a more exact fraction would fabricate precision.
 
 ## Phase 0e: gate conclusion
 
