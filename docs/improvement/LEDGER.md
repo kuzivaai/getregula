@@ -1225,3 +1225,216 @@ remains hand-carried: its only guard is the full-suite test, so drift is
 caught at the next complete run, not at commit time. Extending
 `cascade_count.py` to propagate it is possible but was not done here; the
 guard's own docstring records the same trade-off.
+
+## 2026-08-11 audit, root-cause, and remediation-design checkpoint
+
+All repository measurements in N79 to N89 were made at commit
+`c794745ffdc078c3736b4c3f45b8572d111b8804`, tree
+`958548d019b029c96f55c53fb912e5fdcbd32d89`, unless a later documentation
+commit is explicitly named. The consolidated verbatim evidence and the full
+analysis are in `docs/improvement/AUDIT-ROOT-CAUSE-REMEDIATION-2026-08-11.md`
+and the dated Downloads handover produced from this checkpoint.
+
+### N79. Unresolved browser answers can reach a handable regulatory artefact
+
+**First raised:** 2026-08-11. **Status:** OPEN, containment designed, no public
+surface changed in Phases 0 to 2.
+
+**Demonstrated.** A real-browser all-unknown EU assessment returned high risk,
+score 91, Articles 9 to 15, fixed readiness percentages, and implementation
+hour ranges. `exportJSON()` wrote a 2,127-byte file that retained every answer
+as `unknown`; the page invites sharing with compliance, development, and legal
+teams. The exact browser commands, snapshot, and exported file are evidence
+`14-browser-all-unsure.yml` and `15-browser-all-unsure-export.json` in the
+consolidated handover.
+
+**Current status:** live harm is not contained. The next authorised scope
+should fail closed across CLI, REST, EN, DE, and PT-BR together. A browser-only
+change was rejected because it would leave the generator active on other entry
+points.
+
+### N80. The epistemic defect is not confined to the questionnaire
+
+**First raised:** 2026-08-11. **Status:** OPEN, generator G1 confirmed by
+prediction at 3/5 strict hits.
+
+**Demonstrated.** Empty classifier input returns `not_ai`, action `allow`,
+categorical confidence `high`, and numeric confidence 0. A constructed
+153-byte TensorFlow hiring project produces no `check` findings and a `gap`
+result with `highest_risk: not_ai` while assessing Articles 9 to 17. All-unknown
+Korea emits Article 31 action language; all-unknown Colorado emits a definitive
+not-covered result.
+
+**Generator:** no canonical epistemic decision contract distinguishes no,
+unknown, not applicable, not detected, and invalid. The rejected alternative
+is changing questionnaire weights because that repairs one instance and none
+of the predicted scanner, gap, jurisdiction, or artefact defects.
+
+### N81. Decision engines are copied and contractually divergent
+
+**First raised:** 2026-08-11. **Status:** OPEN, generator G2 confirmed by
+prediction at 2/3 strict hits.
+
+**Demonstrated.** The code predicate enumerated separate Python questionnaire,
+classifier, scanner, and gap engines; a JavaScript scanner; and copied browser
+jurisdiction scorers. String-normalised scorers currently match across EN, DE,
+and PT-BR, so the predicted current locale scoring drift was falsified. The
+export schema prediction landed: PT-BR adds `locale`, while EN and DE do not.
+Python and browser questionnaire contracts and scoring also differ.
+
+**Design decision:** one versioned declarative decision model, locale-only
+string dictionaries, and cross-runtime conformance vectors. The rejected
+alternative is manual copy synchronisation because it does not make semantic
+equivalence executable.
+
+### N82. Adapter boundaries do not fail closed
+
+**First raised:** 2026-08-11. **Status:** OPEN, generator G3 confirmed by
+prediction at 4/4 hits.
+
+**Demonstrated.** Array and string REST roots close the connection with
+`AttributeError`; the CLI accepts or crashes on different questionnaire roots;
+browser share decoding pads missing/invalid values to unknown; MCP can return
+execution errors as successful text; and the VS Code extension maps valid JSON
+with an unexpected shape to an empty finding list. Some editor parse failures
+delete existing diagnostics.
+
+**Design decision:** versioned JSON Schema and OpenAPI contracts, runtime
+validation before dispatch, typed errors, and an explicit stale/error editor
+state that preserves prior diagnostics. The rejected alternative is adding an
+`isinstance` check to each observed REST handler because other boundaries
+would remain unsafe.
+
+### N83. Assurance targets agreement with current artefacts more often than validity
+
+**First raised:** 2026-08-11. **Status:** OPEN, generator G4 confirmed by
+prediction at 5/5 hits.
+
+**Demonstrated.** A source predicate enumerated 13 tests that assert an exit or
+result code while discarding captured output. A refined predicate enumerated
+16 API tests whose response assertion is independent of the real decision
+engine because that engine is replaced by `MagicMock(return_value=...)`. Four
+API tests replace `scan_files` with an empty result. Four expectations encode
+current known-defect behaviour, including both all-unknown questionnaire
+cases, the health contract divergence, and a menu test that requires the code
+shape implicated in the observed Escape defect. The exact Python proxy union
+is 32 distinct functions, `32 / 2,729 = 1.173%` of the selected pytest cases
+under the stated one-function/one-case approximation; two JavaScript
+assertions are outside that denominator.
+
+All six fast gates returned zero while the browser unknown-export defect was
+live and full pytest had one independent repository failure. Each named gate's
+specific missed counterexample is recorded in the audit.
+
+**Design decision:** property, mutation, differential, and semantic-scenario
+tests with gate names limited to their predicates. The rejected alternative is
+more snapshots of current output.
+
+### N84. Product surface exceeds validated evidence
+
+**First raised:** 2026-08-11. **Status:** OPEN, generator G5 confirmed by
+prediction at 3/3 hits.
+
+**Demonstrated.** The VS Code extension is outside any located workflow and its
+test/type-check commands return RC 2; PyPI still serves version 1.9.0 uploaded
+2026-07-27 while the measured tree is 201 commits after tag `v1.9.0`; and an
+all-unknown browser decision is exportable. The existing model card records
+weak classifier recall and a 0/40 constructed evidence-discovery result.
+
+**Design decision:** capability tiers of verified evidence locator,
+experimental decision aid, and visibly withdrawn/disabled. The rejected
+alternative is retaining every surface with stronger disclaimers because
+disclaimers do not prevent a definitive machine output or false-clean state.
+
+### N85. The binding constraint is an absent executable meaning contract
+
+**First raised:** 2026-08-11. **Status:** OPEN, confirmed by path enumeration;
+remediation architecture designed.
+
+**Interpreted.** The single binding constraint is the absence of a canonical,
+executable contract for what a regulatory output means and which evidence must
+exist before it may be emitted. It would be falsified by finding an enforced
+contract that distinguishes unknown/no/not-applicable, defines obligation
+preconditions, and covers every traced adapter. The direct-call and entry-point
+predicate found none.
+
+**Design decision:** a fact-state model with provenance, named legal
+predicates, traceable obligation edges, and a tagged result union of
+`indication`, `insufficient_information`, and `outside_scope_candidate`.
+Uncalibrated numeric confidence is removed from decision meaning. The rejected
+alternative is threshold tuning.
+
+### N86. N78 is not closed on the current tree
+
+**First raised:** 2026-08-11. **Status:** OPEN, confirmed defect; deliberately
+not repaired opportunistically during diagnosis/design.
+
+**Demonstrated.** The sandboxed full suite reported 2,720 passed, one failed,
+and eight errors. An unsandboxed isolated control made all 23 timestamp tests
+pass in 6.70 seconds. The isolated published-count test still failed in 0.34
+seconds because `docs/improvement/LEDGER.md` contains the bare canonical count
+inside N78's own direction-control prose. N78 declares the collision class
+closed, so its evidence reintroduced the forbidden occurrence.
+
+**Rejected alternatives:** allowlisting the ledger, classifying it as an
+immutable dated record, or weakening the regex. Each would violate the
+no-suppression instruction or conceal a current-carrier defect. The smallest
+future repair is to render the illustrative number in a non-current-claim form
+while preserving the historical explanation, then run fail-before/pass-after
+controls. It was not selected as Phase 3 because it is not the highest-
+consequence containment item.
+
+### N87. Current standards status must separate publication from OJ citation
+
+**First raised:** 2026-08-11. **Status:** OPEN monitoring item; current research
+checkpoint recorded.
+
+**Demonstrated from primary sources retrieved 2026-08-11.** BSI reports BS EN
+18286:2026 published on 2026-07-24. The Commission says delivered standards
+are assessed before possible Official Journal citation, and the AI Act Service
+Desk states that OJ citation is what confers presumption of conformity. Exact
+EUR-Lex searches found no relevant EN 18286 citation result, so citation is
+unverified rather than asserted absent. The BSI/CEN project page records
+`prEN 18229-1` as a draft with estimated publication in 2027; national enquiry
+deadlines differed across national pages.
+
+**Design decision:** a dated status registry with separate draft, publication,
+Commission-assessment, and OJ-citation fields. The rejected alternative is
+treating an EN publication announcement as legal presumption of conformity.
+
+### N88. Remediation sequence and repository/external boundary
+
+**First raised:** 2026-08-11. **Status:** DESIGNED, not executed.
+
+**Containment:** fail closed on unresolved questionnaire facts and exports
+across all entry points; preserve editor diagnostics as stale on scan failure;
+disable unconditional readiness, effort, and obligation presentation.
+
+**Before release:** implement the epistemic kernel, schemas, cross-runtime
+model, semantic assurance, public-claim corrections, extension CI, installed-
+artefact release verification/provenance, SARIF validation, and accessible
+navigation.
+
+**External validation:** representative corpus labelling, selective-risk and
+false-alert measurement, user/comprehension testing, screen-reader study,
+legal predicate review, and standards/OJ monitoring. These cannot be closed by
+repository engineering alone.
+
+The rigorous design was chosen over the lighter alternative. Its cost is a
+smaller temporarily enabled product and a high migration burden. Its falsifier
+is representative evidence that the existing additive model has better
+selective risk at equal coverage while preserving traceable necessary
+predicates.
+
+### N89. Phase 3 was not reached
+
+**First raised:** 2026-08-11. **Status:** CLOSED as a session-scope decision;
+containment remains OPEN under N79 and N88.
+
+Phases 0 to 2 filled the session. No product code, public surface, release,
+deployment, external contact, test weakening, allowlist, quarantine,
+suppression, pin, skip, stub, or TODO was introduced. The proposed Phase 3
+item changes every questionnaire entry point and may require narrow wiring in
+the protected `scripts/cli.py` module. It needs an explicit ruling and a scope
+that can preserve the fail-before control and run the pass-after control across
+CLI, REST, EN, DE, and PT-BR.
