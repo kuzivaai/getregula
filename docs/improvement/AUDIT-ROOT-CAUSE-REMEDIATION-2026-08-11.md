@@ -445,13 +445,13 @@ The official latest OpenAPI page retrieved during this session identifies OpenAP
 
 ### Property and mutation testing
 
-Hypothesis describes property-based testing over generated examples with automatic simplification of failing cases. Source: <https://github.com/HypothesisWorks/hypothesis/>. Jia and Harman's 2011 survey describes mutation testing as seeding systematic faults to assess whether tests distinguish them. Source: <https://www0.cs.ucl.ac.uk/staff/M.Harman/mutation_testing_repository/JiaHarman11.pdf>.
+Hypothesis describes property-based testing over generated examples with automatic simplification of failing cases. Source: <https://hypothesis.readthedocs.io/en/latest/>. Jia and Harman's 2011 survey describes mutation testing as seeding systematic faults to assess whether tests distinguish them. Source metadata: <https://doi.org/10.1109/TSE.2010.62>.
 
 **Design implication, interpreted:** generate fact-state combinations and mutate every applicability/obligation edge. A test suite should fail when `unknown` becomes `no`, a necessary predicate is removed, an article edge changes, or an adapter returns an unvalidated shape. Hypothesis would be a test-only dependency and therefore needs an explicit project ruling because the core is stdlib-only.
 
 ### Static-analysis efficacy reporting
 
-NIST SAMATE's Static Analysis Tool Exposition materials describe evaluating which weaknesses tools find and analysing false positives, while warning that exposition results do not support broad tool ranking. Source: <https://samate.nist.gov/SATE.html>.
+NIST SAMATE's Static Analysis Tool Exposition materials describe evaluating which weaknesses tools find and analysing false positives, while warning that exposition results do not support broad tool ranking. Source: <https://www.nist.gov/itl/ssd/software-quality-group/samate/static-analysis-tool-exposition-sate>.
 
 No single current primary standard was found that mandates one universal metric set combining static-analysis efficacy, abstention quality, and user false-alert burden. Searches covered NIST SAMATE/SATE and SARIF. Therefore the following is **reasoned, not evidenced as a normative convention**: report labelled-corpus recall and precision by class, false alerts per thousand scanned lines/files, no-finding audit rate, determinate coverage, selective risk among determinate outputs, and skipped/unreadable input rates. It would be overturned by an applicable normative metric standard for this tool class.
 
