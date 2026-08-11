@@ -1318,8 +1318,8 @@ API tests replace `scan_files` with an empty result. Four expectations encode
 current known-defect behaviour, including both all-unknown questionnaire
 cases, the health contract divergence, and a menu test that requires the code
 shape implicated in the observed Escape defect. The exact Python proxy union
-is 32 distinct functions, `32 / 2,729 = 1.173%` of the selected pytest cases
-under the stated one-function/one-case approximation; two JavaScript
+is 32 distinct functions, 1.173% of the canonical pytest case count under the
+stated one-function/one-case approximation; two JavaScript
 assertions are outside that denominator.
 
 All six fast gates returned zero while the browser unknown-export defect was
