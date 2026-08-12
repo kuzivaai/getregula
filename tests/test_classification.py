@@ -5495,15 +5495,27 @@ def test_evidence_pack_contains_required_files():
 
 
 def test_evidence_pack_summary_contains_risk_tier():
-    """Executive summary must state the highest risk tier found."""
+    """Executive summary must gate risk claims when facts are unresolved."""
     import tempfile
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
         result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
         pack_dir = Path(tmpdir) / result["pack_dirname"]
         summary = (pack_dir / "00-summary.md").read_text(encoding="utf-8")
-        assert_true("risk" in summary.lower(), "summary should mention risk classification")
-    print("✓ Evidence pack: summary contains risk tier")
+        assert_true("insufficient_information" in summary,
+                    "summary should state the tagged unresolved result")
+        reliance_text = "No legal classification, article duty, readiness percentage, or effort estimate"
+        assert_true(reliance_text in summary,
+                    "summary should state what is withheld before detector observations")
+        assert_true(summary.index(reliance_text) <
+                    summary.index("Detector observations"),
+                    "reliance gate should precede detector observations")
+        resolvable = (pack_dir / "06-resolvable-facts.md").read_text(encoding="utf-8")
+        assert_true("Facts required before a determination" in resolvable,
+                    "pack should contain the actionable fact list")
+        assert_true("Overall score" not in summary,
+                    "summary must not emit an overall score from unresolved facts")
+    print("✓ Evidence pack: unresolved facts gate risk claims")
 
 
 def test_evidence_pack_cli_integration():
@@ -6160,7 +6172,9 @@ def test_default_scope_does_not_translate_exclusions_into_no_ai():
 
     rc, stdout, stderr = run_cli("check", "examples/customer-chatbot")
     assert rc == 0, f"expected rc=0, got {rc}\nstderr={stderr}"
-    assert "NO ACTIVE PRODUCTION-SCOPE INDICATORS" in stdout
+    assert "Decision: insufficient_information" in stdout
+    assert "Facts needed to resolve the next decision" in stdout
+    assert "NO ACTIVE PRODUCTION-SCOPE PATTERNS" in stdout
     assert "Run with --scope all" in stdout
     assert "No AI components" not in stdout
     assert "likely does not apply" not in stdout
@@ -6199,37 +6213,35 @@ def test_cli_assessment_outputs_candidates_not_determinations():
 
 
 def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
-    expectations = {
-        "index.html": (
-            "Possible Article 5 indicators",
-            "Candidate high-risk indicators",
-            "Candidate Article 50 indicators",
-            "in force from 27 July 2026",
-        ),
-        "de.html": (
-            "Mögliche Indikatoren nach Artikel 5",
-            "Mögliche Hochrisiko-Indikatoren",
-            "Mögliche Indikatoren nach Artikel 50",
-            "seit 27. Juli 2026 geltenden",
-        ),
-        "pt-br.html": (
-            "Possíveis indicadores do Artigo 5",
-            "Possíveis indicadores de alto risco",
-            "Possíveis indicadores do Artigo 50",
-            "em vigor desde 27 de julho de 2026",
-        ),
-    }
+    """Locale pages consume one decision source and locale-only UI copy."""
+    filenames = ("index.html", "de.html", "pt-br.html")
     assess_dir = Path(__file__).resolve().parents[1] / "site" / "assess"
-    for filename, required in expectations.items():
+    for filename in filenames:
         text = (assess_dir / filename).read_text(encoding="utf-8")
-        for phrase in required:
-            assert phrase in text, f"{filename} missing {phrase!r}"
+        for source in (
+            '<script src="decision-model.js"></script>',
+            '<script src="decision-kernel.js"></script>',
+            '<script src="decision-adapters.js"></script>',
+            '<script src="decision-ui.js"></script>',
+        ):
+            assert source in text, f"{filename} missing shared source {source!r}"
         assert (
             'const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;' in text
         ), f"{filename} must make the advertised letter shortcuts case-insensitive"
 
+    shared_ui = (assess_dir / "decision-ui.js").read_text(encoding="utf-8")
+    for phrase in (
+        "Prohibited-practice candidate",
+        "Kandidat für eine verbotene Praktik",
+        "Candidato a prática proibida",
+        "The supplied facts do not support a determination.",
+        "Die vorgelegten Tatsachen tragen keine Feststellung.",
+        "Os fatos fornecidos não sustentam uma determinação.",
+    ):
+        assert phrase in shared_ui, f"shared locale copy missing {phrase!r}"
+
     all_locales = "\n".join(
-        (assess_dir / name).read_text(encoding="utf-8") for name in expectations
+        (assess_dir / name).read_text(encoding="utf-8") for name in filenames
     )
     for stale in (
         "Prohibited practice detected",
@@ -6525,7 +6537,7 @@ def test_deadline_agent_autonomy():
     print("✓ deadline: agent_autonomy → omnibus 2027-12-02")
 
 def test_deadline_in_json_output():
-    """JSON output from check includes deadline fields."""
+    """JSON check output gates deadlines until applicability is resolved."""
     import subprocess as sp
     result = sp.run(
         [sys.executable, "-m", "scripts.cli", "check", "--format", "json", "scripts/"],
@@ -6534,10 +6546,17 @@ def test_deadline_in_json_output():
     if result.returncode == 0:
         import json as _json
         data = _json.loads(result.stdout)
-        findings = data.get("data", [])
-        has_deadline = any(f.get("deadline") is not None for f in findings)
-        assert_eq(has_deadline, True, "JSON output has deadline fields")
-        print("✓ deadline: present in JSON check output")
+        payload = data.get("data", {})
+        decision = payload.get("decision", {})
+        assert_eq(decision.get("result_type"), "insufficient_information",
+                  "unsourced scan has tagged unresolved result")
+        assert_eq("deadline" in decision, False,
+                  "unresolved decision has no unconditional deadline")
+        assert_eq("obligations" in decision, False,
+                  "unresolved decision has no unconditional obligations")
+        assert_true(len(decision.get("unresolved_predicates", [])) > 0,
+                    "unresolved decision enumerates facts to collect")
+        print("✓ deadline: unresolved JSON check output emits no deadline")
     else:
         print("✓ deadline: JSON output test skipped (non-zero exit)")
         pass  # Don't fail if check returns non-zero (may have findings)
@@ -6611,7 +6630,7 @@ def test_deadline_credential_exposure():
 
 
 def test_conform_end_to_end():
-    """generate_conformity_pack produces correct folder structure and manifest."""
+    """Unresolved conformity packs fail closed and remain actionable."""
     import tempfile
     import shutil
     from conform import generate_conformity_pack
@@ -6623,22 +6642,32 @@ def test_conform_end_to_end():
     try:
         result = generate_conformity_pack(tmpproject, output_dir=tmpdir, project_name="test-conform")
         pack_path = Path(result["pack_path"])
-        # Check folder structure
+        # An unsourced detector observation is not a legal applicability fact.
         assert_eq((pack_path / "00-assessment-summary.json").exists(), True, "summary exists")
-        assert_eq((pack_path / "01-risk-classification" / "findings.json").exists(), True, "findings exists")
-        assert_eq((pack_path / "07-human-oversight-art14" / "coverage.json").exists(), True, "art14 coverage exists")
+        assert_eq((pack_path / "04-resolvable-facts.md").exists(), True, "resolvable facts exist")
+        assert_eq((pack_path / "01-risk-classification" / "findings.json").exists(), False,
+                  "unresolved pack has no risk determination")
+        assert_eq((pack_path / "07-human-oversight-art14" / "coverage.json").exists(), False,
+                  "unresolved pack has no Article 14 duty")
         assert_eq((pack_path / "manifest.json").exists(), True, "manifest exists")
-        # Check manifest has file entries
+        # The manifest itemises every emitted file and reconciles with disk.
         import json as _json
         manifest = _json.load(open(pack_path / "manifest.json"))
-        assert_eq(len(manifest["files"]) > 10, True, "manifest has files")
-        # Check summary has expected keys
+        assert_eq(len(manifest["files"]) > 0, True, "manifest has files")
+        for record in manifest["files"]:
+            assert_eq((pack_path / record["filename"]).exists(), True,
+                      f"manifest file exists: {record['filename']}")
+        # The summary carries the decision and no unsupported claim fields.
         summary = _json.load(open(pack_path / "00-assessment-summary.json"))
-        assert_eq("overall_readiness" in summary, True, "summary has readiness")
-        assert_eq("articles" in summary, True, "summary has articles")
-        assert_eq("deadline" in summary, True, "summary has deadline")
-        assert_eq("earliest_enforceable" in summary["deadline"], True, "deadline derived from findings")
-        print("✓ conform: end-to-end pack structure verified")
+        assert_eq(summary["decision"]["result_type"], "insufficient_information",
+                  "summary is explicitly unresolved")
+        assert_eq(summary["article_duties_attached"], [], "summary has no article duties")
+        assert_eq(summary["readiness_assessment"], None, "summary has no readiness assessment")
+        assert_eq("overall_readiness" in summary, False, "summary has no readiness percentage")
+        assert_eq("deadline" in summary, False, "summary has no deadline")
+        assert_true(len(summary["decision"]["unresolved_predicates"]) > 0,
+                    "summary enumerates facts that would resolve the decision")
+        print("✓ conform: unresolved pack fails closed and remains actionable")
     finally:
         shutil.rmtree(tmpdir)
         shutil.rmtree(tmpproject)
