@@ -371,8 +371,9 @@ their absence does not prove that one does not apply.
             timestamp=timestamp,
             tsa_url=tsa_url,
         )
+    manifest_json = json.dumps(manifest, indent=2)
     (pack_dir / "manifest.json").write_text(
-        json.dumps(manifest, indent=2), encoding="utf-8", newline="\n"
+        manifest_json, encoding="utf-8", newline="\n"
     )
     return {
         "pack_dirname": pack_name,

@@ -109,6 +109,25 @@ class TestNoDoubleCollection(unittest.TestCase):
                 f"the runner alias {probe!r}, re-introducing the "
                 f"double-count")
 
+    def test_custom_runner_expands_parametrized_kernel_controls(self):
+        """Parametrized tests must run as cases, not as missing-arg calls."""
+        import test_classification as suite
+
+        aliases = [
+            value for name, value in vars(suite).items()
+            if name.startswith(
+                suite.RUNNER_ALIAS_PREFIX
+                + "test_empty_input_is_insufficient_in_every_jurisdiction_"
+            )
+        ]
+        self.assertEqual(len(aliases), 3)
+        self.assertEqual(
+            {alias.__name__.rsplit("[", 1)[-1] for alias in aliases},
+            {"0]", "1]", "2]"},
+        )
+        for alias in aliases:
+            alias()
+
 
 class TestPublishedCountMatchesCollection(unittest.TestCase):
     """The published number must be the measured number, with no bespoke maths."""

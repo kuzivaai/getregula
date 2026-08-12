@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-12T13:55:43.027945+00:00",
+  "generated_at": "2026-08-12T19:14:38.010776+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,7 +27,7 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2776,
+      "total_collected": 2777,
       "total_functions": 2009,
       "per_file": {
         "tests/test_agent_governance.py": 28,

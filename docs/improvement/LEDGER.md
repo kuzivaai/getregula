@@ -1562,8 +1562,8 @@ require new obligation-variant and role-conversion predicates, respectively.
 
 ### N94. Epistemic decision kernel
 
-**First raised:** 2026-08-11 as G1/R1. **Status:** IMPLEMENTED in the dirty
-worktree, verification not final.
+**First raised:** 2026-08-11 as G1/R1. **Status:** IMPLEMENTED and committed;
+whole-tree verification is not final.
 
 **Demonstrated by implementation.** `scripts/decision_kernel.py` and
 `references/decision_model.v1.json` implement versioned facts with yes, no,
@@ -1583,7 +1583,8 @@ matches to facts, which would recreate the absence/no defect.
 ### N95. Semantic, property, mutation, and cross-runtime assurance
 
 **First raised:** 2026-08-11 as B5 to B7, C3, and G4. **Status:** IMPLEMENTED;
-full-suite and final-commit gates remain OPEN.
+focused controls are green, while full-suite and final-commit gates remain
+OPEN.
 
 **Demonstrated.** Stdlib-generated substitution properties enforce that
 replacing a resolved fact with unknown cannot increase determinacy or create an
@@ -1679,3 +1680,81 @@ collection, suppression, allowlist, quarantine, pin, skip, or stub was made.
 Standing verdicts remain unchanged: PRODUCT_BUILD STOP, VENTURE_DECISION STOP,
 STAGE_A_PACK HOLD, EXTERNAL_CONTACT NOT_AUTHORISED, REAL_DATA_COLLECTION
 DISABLED, and PILOT NOT_APPROVED.
+
+### N100. Custom runner parameter expansion and stale invariant expectations
+
+**First raised:** 2026-08-12 during final verification. **Status:** REPAIRED;
+final whole-run verification remains pending.
+
+The clean custom run at commit `ec296d326a6d65238da5dd74ae5f1c3f1502bad8`
+returned 1 after 78 minutes. Five in-file expectations still demanded a risk
+classification, article duty, readiness percentage, or deadline from input
+without sourced applicability facts. They were rewritten, not deleted, to
+positively assert `insufficient_information`, the ordered resolvable-facts
+list, absence of unsupported claims, and the shared browser decision source.
+Focused evidence after the rewrite was 3 passing tests, then 1 browser test,
+then the real evidence-pack test:
+
+```text
+3 passed in 226.83s (0:03:46)
+1 passed in 187.46s (0:03:07)
+1 passed in 189.69s (0:03:09)
+```
+
+The next clean custom run at commit
+`17edd3eca524e137ce0d1493ca95e7bbb33da4a4` returned 1 and exposed a separate
+runner defect: pytest-parametrized kernel controls were invoked with missing
+arguments. The importer now derives every simple parameter case from the
+pytest mark and binds a zero-argument runner case. It does not skip or list the
+cases by hand. The predicate enumerates 1,157 custom-runner callables, including
+24 parameter-expanded cases and 442 functions defined in the custom-runner
+file. The default-argument handling retains 41 `unittest.mock.patch` decorated
+tests that the first repair draft would incorrectly have omitted.
+
+```text
+custom_runner_callable_count 1157
+param_expanded_count 24
+patched_alias_passed test_empty_text
+```
+
+The N11 module-wiring backlog remains open. Repository enumeration reports 107
+sibling test modules, 40 wired, 67 missing, zero extra, reconciled. This repair
+closes the parametrization blocker named in N11 but does not falsely close the
+unwired-module backlog.
+
+### N101. Generated inventory and count reconciliation after kernel wiring
+
+**First raised:** 2026-08-12 during final verification. **Status:** CURRENT in
+the working tree; commit and final gates pending.
+
+The public-surface prediction was that only metadata would drift. Measurement
+falsified it in part: four shared browser decision assets are newly deployed
+non-claim assets. The derived inventory moved from 780 to 784 records, website
+records from 84 to 88, and non-claim assets from 23 to 27. Claim-capable
+product records did not increase. The same generator refreshed the three MCP
+schemas to their evidence-aware descriptions. After `--write`, the check and
+five focused inventory/claim controls passed:
+
+```text
+5 passed in 5.66s
+```
+
+The test-count prediction was a one-case increase and a one-function increase.
+Measurement established the predicted one-case increase, while the raw
+function count remained 2,009. The second figure did not move because the new
+collection-integrity control is a unittest method, while that raw metric counts
+top-level functions. The exact current case count is generated in
+`data/site_facts.json`; it is not copied into this ledger because that would
+create an unauthorised mutable count carrier. `cascade_count.py --apply`
+updated the 11 manifest-governed surfaces, and `--check` returned 0 with the
+canonical value matching every governed surface.
+
+The tree-guard warnings printed during this measurement refer to its stale
+2026-07-30 baseline and are not treated as a clean-tree result. The baseline
+was not rewritten or suppressed.
+
+The review also found that three count surfaces described the collected count
+as passing or all green. Their only generator is `pytest --collect-only`, which
+cannot establish either claim. README, TRUST, and the full-text site mirror now
+label the figure as collected and identify full execution as a separate check.
+This is a G4 correction: agreement with a generated count is not validity.
