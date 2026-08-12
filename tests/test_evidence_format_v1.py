@@ -153,7 +153,7 @@ def test_verify_non_strict_warns_on_v0_pack_but_succeeds(tmp_path):
 def test_verify_catches_modified_file(tmp_path):
     """Tampering with any pack file MUST cause verify to return MODIFIED + exit 1."""
     pack_dir, _ = _generate_pack(tmp_path)
-    target = pack_dir / "01-risk-classification" / "findings.json"
+    target = pack_dir / "01-detector-observations" / "findings.json"
     target.write_text(target.read_text() + "\n# sneaky edit\n", encoding="utf-8")
 
     result = _run("verify", str(pack_dir))
@@ -190,7 +190,7 @@ def test_verify_rejects_traversal_and_absolute_manifest_paths(tmp_path):
 def test_verify_catches_missing_file(tmp_path):
     """Deleting a pack file MUST cause verify to return MISSING + exit 1."""
     pack_dir, _ = _generate_pack(tmp_path)
-    target = pack_dir / "01-risk-classification" / "findings.json"
+    target = pack_dir / "01-detector-observations" / "findings.json"
     target.unlink()
 
     result = _run("verify", str(pack_dir))

@@ -1438,3 +1438,244 @@ item changes every questionnaire entry point and may require narrow wiring in
 the protected `scripts/cli.py` module. It needs an explicit ruling and a scope
 that can preserve the fail-before control and run the pass-after control across
 CLI, REST, EN, DE, and PT-BR.
+
+## 2026-08-12 epistemic-kernel implementation checkpoint
+
+Measurements in N90 to N99 were made in the dirty worktree based on commit
+`404a7a5129342234974bbeeeef7005faded8c464`, base tree
+`cab51f015c33bcf38305c4665a103ed9abbb8bf1`. They are not final-commit
+verification. The final commit and tree must replace this checkpoint after the
+implementation is committed.
+
+### N90. Third-party evidence and conformity handoff
+
+**First raised:** 2026-08-11 as audit open question A1. **Status:** CLOSED for
+the no-sourced-facts experiment; resolved-input recipient comprehension remains
+an external validation item.
+
+**Prediction before measurement:** the conformity pack would be at least as
+consequential as the browser export because its name and article layout invite
+regulatory reliance. The evidence pack would qualify itself, but the
+qualification might appear after decision-like content.
+
+**Demonstrated, prediction comparison:** before remediation, the real
+generators placed unresolved detector-derived article and readiness content in
+handable regulatory artefacts, so the conformity path was worse than predicted
+and was ranked with the browser containment. After remediation, a real run on
+`tests/fixtures/sample_high_risk` with no sourced decision facts produced an
+evidence pack whose first substantive section reports
+`insufficient_information` and a conformity pack whose README begins with a
+reliance gate. The evidence gap file had zero article observations and no
+overall score. The conformity summary had zero attached article duties,
+`readiness_assessment: null`, and no overall-readiness field. Both put the
+qualification before supporting material and provide a resolvable-facts file.
+
+**Command:** a temporary-directory invocation of
+`generate_evidence_pack(...)` and `generate_conformity_pack(...)`, followed by
+reading the emitted summaries and JSON. The focused test control was:
+
+```text
+python3 -m pytest tests/test_evidence_pack_unit.py tests/test_evidence_format_v1.py tests/test_conform.py -q
+........................................................................ [ 31%]
+........................................................................ [ 63%]
+........................................................................ [ 95%]
+...........                                                              [100%]
+227 passed in 8.54s
+```
+
+No human comprehension study was performed. Calling the ordering understandable
+to recipients would be Asserted, not Demonstrated.
+
+### N91. VS Code extension host boundary
+
+**First raised:** 2026-08-11 as A2 and N82/N84. **Status:** CLOSED for the
+observed valid-but-unexpected envelope and parse-failure paths at commit
+`404a7a5129342234974bbeeeef7005faded8c464`; inclusion in repository CI remains
+OPEN.
+
+**Demonstrated.** The test-runner TypeScript configuration was corrected first.
+An actual VS Code extension host drove both registered commands against a
+fixture. A valid JSON envelope with an unexpected data shape no longer erased
+existing diagnostics; the extension preserved them as stale and exposed an
+error. Parse and command failures do the same. The implementation and extension
+host control are committed in `404a7a5` and held unpushed.
+
+### N92. Obligation and entry-point surface
+
+**First raised:** 2026-08-11 as A3. **Status:** CLOSED for the current
+worktree predicate; must be regenerated at the final commit.
+
+**Prediction before remeasurement:** direct Python calls would exceed the
+audit's earlier figure after adding kernel builders and adapters, while the
+registered CLI, REST, MCP, and editor counts would remain stable. The old seven
+browser-function premise could decrease when copied scorers were removed.
+
+**Demonstrated, prediction comparison:** all three predictions held. The
+predicate reported 87 Python direct calls, 64 CLI bindings, 7 REST routes, 3
+MCP tools, 2 VS Code commands, and 6 browser decision functions. It also
+reported 60 canonical regulatory edges, itemised as 26 indications and 34
+obligations, split Colorado 7, EU 34, Korea 19. Detector reference edges were
+439 and browser question references were 144. Every reported set reconciled
+its predicate count with its itemisation.
+
+```text
+python3 scripts/enumerate_decision_surface.py > /tmp/regula-decision-surface-20260812.json
+commit=404a7a5129342234974bbeeeef7005faded8c464
+base_tree=cab51f015c33bcf38305c4665a103ed9abbb8bf1
+entry:browser_decision_function_definitions=6;items=6;reconciled=true
+entry:cli_handler_bindings=64;items=64;reconciled=true
+entry:mcp_tool_names=3;items=3;reconciled=true
+entry:python_direct_calls=87;items=87;reconciled=true
+entry:rest_routes=7;items=7;reconciled=true
+entry:vscode_command_registrations=2;items=2;reconciled=true
+surface:regulatory_edges=60;items=60;reconciled=true
+surface:detector_reference_edges=439;items=439;reconciled=true
+surface:browser_question_references=144;items=144;reconciled=true
+regulatory_by_output={"indication": 26, "obligation": 34}
+regulatory_by_jurisdiction={"co": 7, "eu": 34, "kr": 19}
+```
+
+The prompt's earlier 57-direct-call and seven-browser-function premises are
+therefore falsified for this moved tree.
+
+### N93. Primary-law basis and model correction
+
+**First raised:** 2026-08-11 as A4. **Status:** PARTIAL. All 60 emitted edges
+have a recorded official source and condition basis; delegated Korean threshold
+values and two model variants remain unresolved.
+
+**Demonstrated.** Official EU, Korean, and Colorado sources retrieved on
+2026-08-12 are itemised in
+`docs/improvement/DECISION-KERNEL-PRIMARY-LAW-2026-08-12.md`. Regulation (EU)
+2026/1744 applicability dates are recorded separately from the base Act.
+Official text falsified decision model `2026-08-12.3`: Articles 9 to 15 are
+provider assurance duties through Article 16(a), while Article 26 assigns
+different deployer duties. Model `2026-08-12.4` requires the relevant role and
+adds the core Article 26 edges.
+
+**Unresolved:** numeric Korea Article 32 training-compute and Article 36
+user/sales thresholds, detailed decree exceptions, the EU Article 50(4)
+artistic-work disclosure-manner variant, and derived EU Article 25 role
+conversion. The observation that would close the Korean items is the applicable
+official decree or notice text with its effective version. The two EU items
+require new obligation-variant and role-conversion predicates, respectively.
+
+### N94. Epistemic decision kernel
+
+**First raised:** 2026-08-11 as G1/R1. **Status:** IMPLEMENTED in the dirty
+worktree, verification not final.
+
+**Demonstrated by implementation.** `scripts/decision_kernel.py` and
+`references/decision_model.v1.json` implement versioned facts with yes, no,
+unknown, and not-applicable states; provenance, jurisdiction, and timestamp;
+distinct absence and explicit unknown; multiple sourced values; contradiction;
+named traceable predicates; and tagged indication, insufficient-information,
+and outside-scope-candidate results. Evidence completeness, rule resolution,
+matched evidence, unresolved predicates, and probability-calibration
+unavailability are separate fields. No additive score participates in legal
+decision meaning.
+
+**Design decision:** the declarative expression vocabulary is `all`, `any`,
+fact comparison, and named-rule reference. No procedural escape hatch was
+needed for the current edges. The rejected alternative was converting detector
+matches to facts, which would recreate the absence/no defect.
+
+### N95. Semantic, property, mutation, and cross-runtime assurance
+
+**First raised:** 2026-08-11 as B5 to B7, C3, and G4. **Status:** IMPLEMENTED;
+full-suite and final-commit gates remain OPEN.
+
+**Demonstrated.** Stdlib-generated substitution properties enforce that
+replacing a resolved fact with unknown cannot increase determinacy or create an
+obligation. Scenarios cover empty, all unknown, partial, contradictory,
+outside-jurisdiction, not applicable, invalid, and branch/edge conditions in
+all modeled jurisdictions. The conformance corpus has 150 vectors: Colorado
+20, EU 94, Korea 36. The mutation runner generated and killed all 126 mutants,
+split into 80 predicate mutants and 46 obligation-edge mutants, with zero
+survivors. Browser conformance passed all 150 vectors against model
+`2026-08-12.4`. No external property or mutation dependency was added.
+
+```text
+python3 -m pytest tests/test_decision_kernel.py tests/test_decision_conformance.py -q
+........................................                                 [100%]
+40 passed in 4.53s
+```
+
+The defect-encoding unknown expectations were rewritten, not deleted, and are
+wired into the custom runner. A new generated-document invariant is also wired
+through `tests/test_documentation.py`.
+
+### N96. Adapter and browser wiring
+
+**First raised:** 2026-08-11 as C1 to C4 and G2/G3. **Status:** PARTIAL.
+
+**Demonstrated by implementation and focused tests.** Questionnaire, check,
+classify, gap, comply, plan, roadmap, seven REST routes, three MCP tools, both
+editor commands, and the EN, DE, and PT-BR browser assess pages use or expose
+the canonical decision contract. Browser decision logic consumes one generated
+model and one shared kernel; locale files retain questions and translated
+presentation. Detector outputs are named detector class, detector priority,
+and suggested provisions. Evidence and conformity packs fail closed without
+sourced facts. An empty classifier no longer emits categorical legal confidence
+and a `not_ai` detector result cannot create Articles 9 to 17 obligations.
+
+**Open protected boundary:** bare `regula` still runs `_run_bare_scan()` in the
+protected `scripts/cli.py` monolith and emits a compliance percentage, highest
+risk tier, and decision-like next steps without kernel facts. The command on
+the high-risk fixture emitted `Compliance score: 9/100` and `Highest risk tier:
+not_ai`. `AGENTS.md` forbids changing or refactoring the monolith without an
+explicit ruling. No edit was made. C1 and B5 cannot be reported complete until
+the user authorises a narrow change to `_run_bare_scan()` or the project owner
+provides another compliant route.
+
+### N97. Documentation and public-surface truth
+
+**First raised:** 2026-08-11 as C5 and G5. **Status:** PARTIAL, held unpushed.
+
+**Demonstrated.** EN, DE, and PT-BR terminal demos are generated from real
+check, plan, gap, and comply commands and show insufficient information.
+Public descriptions no longer promise readiness percentages or effort from
+unresolved input. Generated Annex IV, model-card, QMS, and conformity drafts
+begin with a reliance gate. A real Annex control exposed two later
+unconditional Article 12 and 14 sentences; the transformer and recipient-file
+test were tightened so those are now conditional.
+
+```text
+python3 -m pytest tests/test_documentation.py -q
+.................                                                        [100%]
+17 passed in 2.28s
+```
+
+Human usability and comprehension remain untested and must not be called
+user-ready.
+
+### N98. Generator status after this work
+
+**First raised:** 2026-08-11. **Status:** G1 substantially implemented but not
+closed at the protected bare CLI; G2 closed for the three browser locale
+decision engines and made detectable through conformance; G3 closed for the
+measured REST, MCP, browser, and editor decision adapters; G4 remains a
+co-binding constraint because legacy generators and tests outside the migrated
+surface still score evidence completeness as compliance; G5 remains OPEN
+pending full surface reconciliation, CI inclusion, and external validation.
+
+The audit premise that G1 alone was binding is falsified. G1 and G4 are
+co-binding: a correct kernel cannot make legacy readiness and documentation
+scorers valid if they remain callable as legal conclusions.
+
+### N99. Verification and release state
+
+**First raised:** 2026-08-12. **Status:** OPEN.
+
+An earlier full-suite diagnostic on the pre-`2026-08-12.4` dirty worktree ran
+for 53 minutes 51 seconds and was interrupted after reporting nine failures and
+724 passes. Eight known failures were subsequently corrected; the published
+count/cascade failure requires the new test files to be committed before the
+count can be regenerated without hand-building it. This is not a green full
+suite and is not presented as one.
+
+No push, tag, release, publication, deployment, external contact, real-data
+collection, suppression, allowlist, quarantine, pin, skip, or stub was made.
+Standing verdicts remain unchanged: PRODUCT_BUILD STOP, VENTURE_DECISION STOP,
+STAGE_A_PACK HOLD, EXTERNAL_CONTACT NOT_AUTHORISED, REAL_DATA_COLLECTION
+DISABLED, and PILOT NOT_APPROVED.

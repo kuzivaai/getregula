@@ -408,7 +408,10 @@ def test_cli_skip_tests_flag():
     )
     assert_eq(result.returncode in (0, 1), True, f"--skip-tests should not cause error (exit 2), got: {result.returncode} {result.stderr[:200]}")
     data = json.loads(result.stdout)
-    test_files = [f for f in data.get("data", []) if "test" in f.get("file", "").lower()]
+    test_files = [
+        f for f in data["data"]["detector_findings"]
+        if f.get("file", "").replace("\\", "/").startswith("tests/")
+    ]
     assert_eq(len(test_files), 0, "no test files should appear with --skip-tests")
     print("\u2713 CLI: --skip-tests flag works")
 
@@ -423,7 +426,10 @@ def test_cli_min_tier_flag():
     )
     assert_eq(result.returncode in (0, 1), True, f"--min-tier should not cause error (exit 2), got: {result.returncode} {result.stderr[:200]}")
     data = json.loads(result.stdout)
-    minimal = [f for f in data.get("data", []) if f.get("tier") == "minimal_risk"]
+    minimal = [
+        f for f in data["data"]["detector_findings"]
+        if f.get("detector_class") == "minimal_risk"
+    ]
     assert_eq(len(minimal), 0, "minimal_risk should be filtered with --min-tier=limited_risk")
     print("\u2713 CLI: --min-tier flag works")
 
@@ -589,7 +595,10 @@ def test_cli_combined_skip_tests_and_min_tier():
     )
     assert_eq(result.returncode in (0, 1), True, f"combined flags should not error (exit 2), got: {result.returncode} {result.stderr[:200]}")
     data = json.loads(result.stdout)
-    tiers = {f.get("tier") for f in data.get("data", [])}
+    tiers = {
+        f.get("detector_class")
+        for f in data["data"]["detector_findings"]
+    }
     assert_true("minimal_risk" not in tiers, f"minimal_risk should be filtered, got: {tiers}")
 
 

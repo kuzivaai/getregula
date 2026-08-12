@@ -152,26 +152,34 @@ def cmd_bias(args) -> None:
 def cmd_questionnaire(args) -> None:
     """Context-driven risk assessment questionnaire."""
     from cli import json_output
-    from questionnaire import generate_questionnaire, evaluate_questionnaire, format_questionnaire_cli
+    from questionnaire import (
+        evaluate_questionnaire,
+        format_decision_result_cli,
+        format_questionnaire_cli,
+        generate_questionnaire,
+    )
     if args.evaluate:
         try:
-            if Path(args.evaluate).exists():
-                answers = json.loads(Path(args.evaluate).read_text())
-            else:
+            candidate = args.evaluate.lstrip()
+            if candidate.startswith(("{", "[")):
                 answers = json.loads(args.evaluate)
+            else:
+                answers = json.loads(Path(args.evaluate).read_text())
         except (json.JSONDecodeError, OSError) as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
-        result = evaluate_questionnaire(answers)
+        if (
+            isinstance(answers, dict)
+            and {"jurisdiction", "facts"}.issubset(answers)
+        ):
+            from decision_adapters import evaluate_payload
+            result = evaluate_payload(answers)
+        else:
+            result = evaluate_questionnaire(answers)
         if args.format == "json":
-            import json as _json
-            try:
-                data = _json.loads(result.to_json())
-            except (ValueError, TypeError, AttributeError):
-                data = result.to_json()
-            json_output("questionnaire", data)
+            json_output("questionnaire", result)
             return
-        print(result.message)
+        print(format_decision_result_cli(result))
     else:
         q = generate_questionnaire()
         if args.format == "json":
@@ -184,6 +192,11 @@ def cmd_docs(args) -> None:
     """Generate documentation scaffolds."""
     from generate_documentation import scan_project, generate_annex_iv, generate_qms_scaffold, generate_model_card
     from classify_risk import RiskTier
+    from decision_adapters import (
+        empty_decision,
+        format_decision_text,
+        unresolved_documentation_draft,
+    )
 
     project_path = str(Path(args.project).resolve())
     project_name = args.name or Path(project_path).name
@@ -196,8 +209,13 @@ def cmd_docs(args) -> None:
     highest = findings["highest_risk"]
     if isinstance(highest, RiskTier):
         highest = highest.value
-    print(f"Found {ai_count} AI-related files, {model_count} model files")
-    print(f"Highest risk tier: {highest.upper().replace('_', '-')}")
+    decision = empty_decision("eu", "cli:docs")
+    print(format_decision_text(decision))
+    print(
+        f"Detector observations: {ai_count} AI-related files, "
+        f"{model_count} model files; detector class "
+        f"{highest.upper().replace('_', '-')}"
+    )
 
     # "docs" is the argparse default sentinel, not a user choice. Resolve it
     # against the PROJECT, not the CWD — otherwise running the docs command
@@ -216,6 +234,8 @@ def cmd_docs(args) -> None:
     if fmt == "pdf":
         from pdf_export import generate_annex_iv_html, render_to_pdf
         html = generate_annex_iv_html(project_path, system_name=project_name)
+        gate = unresolved_documentation_draft("", project_path=project_path)
+        html = html.replace("<body>", f"<body><pre>{gate}</pre>", 1)
         pdf_bytes = render_to_pdf(html, fallback_to_html=True)
         out_path = Path(args.output) if getattr(args, "output", None) and args.output != "docs" else Path(project_path) / "annex_iv.pdf"
         if pdf_bytes[:4] == b'%PDF':
@@ -229,12 +249,14 @@ def cmd_docs(args) -> None:
     elif fmt == "conformity-declaration":
         from generate_documentation import generate_conformity_declaration
         doc = generate_conformity_declaration(project_path, system_name=project_name)
+        doc = unresolved_documentation_draft(doc, project_path=project_path)
         out_path = Path(project_path) / "declaration_of_conformity.md"
         out_path.write_text(doc, encoding="utf-8")
         print(f"Declaration of Conformity scaffold written to: {out_path}")
         print("IMPORTANT: This document requires legal review and authorised signature before use.")
     elif fmt == "model-card":
         card = generate_model_card(findings, project_name, project_path)
+        card = unresolved_documentation_draft(card, project_path=project_path)
         card_file = output_dir / f"{project_name}_model_card.md"
         card_file.write_text(card, encoding="utf-8")
         print(f"Model card written to {card_file}")
@@ -242,6 +264,7 @@ def cmd_docs(args) -> None:
         # Annex IV
         output_file = output_dir / f"{project_name}_annex_iv.md"
         doc = generate_annex_iv(findings, project_name, project_path)
+        doc = unresolved_documentation_draft(doc, project_path=project_path)
         output_file.write_text(doc, encoding="utf-8")
         print(f"Annex IV documentation written to {output_file}")
 
@@ -255,6 +278,9 @@ def cmd_docs(args) -> None:
         if args.qms or getattr(args, "all", False):
             qms_file = output_dir / f"{project_name}_qms.md"
             qms_doc = generate_qms_scaffold(findings, project_name, project_path)
+            qms_doc = unresolved_documentation_draft(
+                qms_doc, project_path=project_path
+            )
             qms_file.write_text(qms_doc, encoding="utf-8")
             print(f"QMS scaffold written to {qms_file}")
 

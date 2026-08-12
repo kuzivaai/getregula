@@ -36,6 +36,7 @@ from urllib.parse import urlparse
 sys.path.insert(0, str(Path(__file__).parent))
 
 from constants import VERSION
+from decision_kernel import DecisionInputError
 
 # Maximum request body size: 10 MB
 MAX_REQUEST_SIZE = 10 * 1024 * 1024
@@ -259,6 +260,7 @@ class RegulaHandler(BaseHTTPRequestHandler):
         skip_tests = bool(body.get("skip_tests", False))
 
         try:
+            from decision_adapters import detector_findings, empty_decision, evaluate_payload
             from report import scan_files
             findings = scan_files(
                 str(target),
@@ -280,8 +282,23 @@ class RegulaHandler(BaseHTTPRequestHandler):
             _exit_code = compute_exit_code(findings, strict=bool(strict))
 
 
-            envelope = _build_envelope("check", findings, _exit_code)
+            decision_request = body.get("decision_request")
+            decision = (
+                evaluate_payload(decision_request)
+                if decision_request is not None
+                else empty_decision("eu", "rest:/v1/check")
+            )
+            envelope = _build_envelope(
+                "check",
+                {
+                    "detector_findings": detector_findings(findings),
+                    "decision": decision,
+                },
+                _exit_code,
+            )
             self._send_json(200, envelope)
+        except DecisionInputError as e:
+            self._send_error(400, str(e))
         except Exception:
             sys.stderr.write(f"Error in /v1/check: {traceback.format_exc()}\n")
             self._send_error(500, "Scan failed. Check server logs for details.")
@@ -309,14 +326,30 @@ class RegulaHandler(BaseHTTPRequestHandler):
             return
 
         try:
+            from decision_adapters import detector_finding, empty_decision, evaluate_payload
             from classify_risk import classify
             result = classify(text)
             
             # DEF-008: Populate correct exit_code in envelope
             _exit_code = 1 if result.tier.value == "prohibited" else 0
             
-            envelope = _build_envelope("classify", result.to_dict(), _exit_code)
+            decision_request = body.get("decision_request")
+            decision = (
+                evaluate_payload(decision_request)
+                if decision_request is not None
+                else empty_decision("eu", "rest:/v1/classify")
+            )
+            envelope = _build_envelope(
+                "classify",
+                {
+                    "detector_observation": detector_finding(result.to_dict()),
+                    "decision": decision,
+                },
+                _exit_code,
+            )
             self._send_json(200, envelope)
+        except DecisionInputError as e:
+            self._send_error(400, str(e))
         except Exception:
             sys.stderr.write(f"Error in /v1/classify: {traceback.format_exc()}\n")
             self._send_error(500, "Classification failed. Check server logs for details.")
@@ -358,16 +391,24 @@ class RegulaHandler(BaseHTTPRequestHandler):
                 return
 
         try:
+            from decision_adapters import empty_decision, evaluate_payload, resolved_gap_evidence
             from compliance_check import assess_compliance
             assessment = assess_compliance(str(target), articles=articles)
-            
-            # DEF-008: Populate correct exit_code in envelope
-            _exit_code = 0
-            if strict and assessment.get("overall_score", 100) < 50:
-                _exit_code = 1
-                
-            envelope = _build_envelope("gap", assessment, _exit_code)
+
+            decision_request = body.get("decision_request")
+            decision = (
+                evaluate_payload(decision_request)
+                if decision_request is not None
+                else empty_decision("eu", "rest:/v1/gap")
+            )
+            evidence = resolved_gap_evidence(assessment, decision)
+            _exit_code = 1 if strict and decision["result_type"] != "indication" else 0
+            envelope = _build_envelope(
+                "gap", {"decision": decision, "evidence": evidence}, _exit_code
+            )
             self._send_json(200, envelope)
+        except DecisionInputError as e:
+            self._send_error(400, str(e))
         except Exception:
             sys.stderr.write(f"Error in /v1/gap: {traceback.format_exc()}\n")
             self._send_error(500, "Gap analysis failed. Check server logs for details.")
@@ -392,22 +433,33 @@ class RegulaHandler(BaseHTTPRequestHandler):
             return
 
         answers = body.get("answers")
-        if not answers or not isinstance(answers, dict):
-            self._send_error(400, "Missing or invalid field: answers (must be a dict of question_id -> yes/no/unsure)")
+        if answers is None or not isinstance(answers, dict):
+            self._send_error(
+                400,
+                "Missing or invalid field: answers "
+                "(must be a dict of question_id -> yes/no/unsure/not_applicable)",
+            )
             return
 
         # Validate answer values
-        valid_answers = {"yes", "no", "unsure"}
+        valid_answers = {"yes", "no", "unsure", "not_applicable"}
         for qid, answer in answers.items():
             if answer not in valid_answers:
-                self._send_error(400, f"Invalid answer for '{qid}': {answer!r} (must be yes/no/unsure)")
+                self._send_error(400, f"Invalid answer for '{qid}': {answer!r} (must be yes/no/unsure/not_applicable)")
                 return
 
         try:
-            from questionnaire import evaluate_questionnaire
-            result = evaluate_questionnaire(answers)
-            envelope = _build_envelope("questionnaire/evaluate", result.to_dict())
+            decision_request = body.get("decision_request")
+            if decision_request is not None:
+                from decision_adapters import evaluate_payload
+                result = evaluate_payload(decision_request)
+            else:
+                from questionnaire import evaluate_questionnaire
+                result = evaluate_questionnaire(answers)
+            envelope = _build_envelope("questionnaire/evaluate", result)
             self._send_json(200, envelope)
+        except DecisionInputError as e:
+            self._send_error(400, str(e))
         except Exception:
             sys.stderr.write(f"Error in /v1/questionnaire/evaluate: {traceback.format_exc()}\n")
             self._send_error(500, "Questionnaire evaluation failed. Check server logs for details.")

@@ -347,91 +347,63 @@
             </div>
             <div class="term-body">
                 <div class="term-panel active" id="tab-check" role="tabpanel" aria-labelledby="tab-check-label">
-                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check . --explain</span>
+                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check tests/fixtures/sample_high_risk --explain</span>
 
-<span class="t-h">Classification: HIGH-RISK</span>
-  Annex III, Category 5
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-12.4
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
 
-<span class="t-y">WHY:</span>
-  scoring.py:23 : essential_services
-    <span class="t-m">Code: score = model.predict(applicant)</span>
-    Legal basis: Annex III : Articles 9-15
-    False positive if: not a credit decision
-
-<span class="t-h">ROLE:</span> DEPLOYER (confidence: high)
-  <span class="t-m">- OpenAI API usage detected</span>
-
-<span class="t-y">OBLIGATIONS:</span>
-  <span class="t-c">[HIGH]</span> Art. 9  Risk management   : 40-60h
-  <span class="t-c">[HIGH]</span> Art. 14 Human oversight  : 16-24h
-  Total: 160-324h | Deadline: <span class="t-y">Dec 2027</span>
-  <span class="t-m">&#9888; Omnibus agreed 7 May 2026, EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in OJ 2026-07-24, in force from 2026-07-27</span></pre>
+Detector observations are reported separately and do not create obligations.</pre>
+                    <p class="term-provenance">Entscheidungsauszug aus echter Ausgabe. Gebunden an data/gap_demo.json und tests/test_gap_demo.py .</p>
                 </div>
                 <div class="term-panel" id="tab-plan" role="tabpanel" aria-labelledby="tab-plan-label">
-                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula plan .</span>
+                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula plan --project tests/fixtures/sample_high_risk</span>
 
-<span class="t-h">COMPLIANCE PLAN  &middot;  HIGH-RISK (Annex III, Category 5)</span>
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-12.4
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
 
-Priority 1 : Risk Management System (Art. 9)
-  Effort: 40&ndash;60h
-  <span class="t-r">&times;</span> No risk assessment file found
-  <span class="t-r">&times;</span> No model evaluation documented
-
-Priority 2 : Human Oversight (Art. 14)
-  Effort: 16&ndash;24h
-  <span class="t-r">&times;</span> No review-before-action pattern detected
-  <span class="t-r">&times;</span> No override mechanism found
-
-Priority 3 : Technical Documentation (Art. 11)
-  Effort: 8&ndash;12h
-  <span class="t-g">&#10003;</span> Annex IV template: regula docs .
-
-Total: 64&ndash;96h estimated effort</pre>
+No obligation plan or effort estimate was emitted because applicability is unresolved.</pre>
+                    <p class="term-provenance">Echte Ausgabe, kein Mock-up. Gebunden an data/gap_demo.json und tests/test_gap_demo.py .</p>
                 </div>
                 <div class="term-panel" id="tab-gap" role="tabpanel" aria-labelledby="tab-gap-label">
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula gap tests/fixtures/sample_high_risk</span>
 
-<span class="t-h">EU AI Act Compliance Gap Assessment: sample_high_risk</span>
-Highest risk tier: not_ai
-Overall score:     6%
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-12.4
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
 
-  NOTE: This score measures the PRESENCE of compliance
-  documentation and infrastructure : it does not assess code
-  risk and cannot offset scan findings. A project can score
-  100% here and still fail `regula check` on prohibited or
-  high-risk patterns. Run both; they answer different questions.
-
-Article 9   Risk Management                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 10  Data Governance                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 11  Technical Documentation             [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 12  Record-Keeping                      [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 13  Transparency                        [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 14  Human Oversight                     [<span class="t-y"> 45%</span>] <span class="t-y">PARTIAL</span>
-Article 15  Accuracy, Robustness, Cybersecurity [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 17  Quality Management System           [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-
-Run: <span class="t-b">regula plan tests/fixtures/sample_high_risk</span> for a prioritised fix list</pre>
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</pre>
                     <p class="term-provenance">&#8594; tests/test_gap_demo.py &middot; tests/fixtures/sample_high_risk</p>
                 </div>
                 <div class="term-panel" id="tab-comply" role="tabpanel" aria-labelledby="tab-comply-label">
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
 
-<span class="t-h">EU AI Act Compliance Checklist: sample_high_risk</span>
-  Overall compliance score: 6/100
-  Highest risk tier:        not_ai (showing all articles per --all flag)
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-12.4
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
 
-  [<span class="t-r">&times;</span>] Article 9   Risk Management                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 10  Data Governance                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 11  Technical Documentation               <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 12  Record-Keeping                        <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 13  Transparency                          <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 14  Human Oversight                      <span class="t-y">45%</span> <span class="t-y">NEEDS WORK</span>
-  [<span class="t-r">&times;</span>] Article 15  Accuracy, Robustness, Cybersecurity   <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 17  Quality Management System             <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-
-  0/8 high-risk obligations have strong evidence
-
-Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</pre>
                     <p class="term-provenance">&#8594; tests/test_gap_demo.py &middot; tests/fixtures/sample_high_risk</p>
                 </div>
             </div>
@@ -589,7 +561,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card">
             <div class="tag tag-blue">Konformit&auml;tsl&uuml;cken</div>
             <h3>Was fehlt in Ihrer Codebasis?</h3>
-            <p>Risikomanagement, Daten-Governance, Protokollierung, Transparenz, menschliche Aufsicht, Genauigkeit. Pro Artikel bewertet mit Aufwandssch&auml;tzungen.</p>
+            <p>Trennt Codebeobachtungen von rechtlichen Entscheidungen. Bei ungekl&auml;rter Anwendbarkeit nennt das Tool die als N&auml;chstes ben&ouml;tigten Fakten statt Artikelbewertungen oder Aufwandssch&auml;tzungen auszugeben.</p>
             <code style="font-size:11px;color:#9898b4;">regula gap .</code>
         </div>
         <div class="card-base art-card">
@@ -617,7 +589,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card">
             <div class="tag tag-purple">Nachweise</div>
             <h3>Konformit&auml;tsbewertungspaket</h3>
-            <p>Artikel-43-Nachweise: 26 Dateien zugeordnet zu Artikeln 9&ndash;15, artikelweise Bereitschaftsbewertungen, SHA-256-Integrit&auml;ts-Hashes.</p>
+            <p>Vom Pr&uuml;fer vervollst&auml;ndigbares Nachweispaket mit Nutzungsschranke, Liste ungekl&auml;rter Fakten und SHA-256-Integrit&auml;ts-Hashes. Artikelpflichten werden erst nach gekl&auml;rter Anwendbarkeit zugeordnet.</p>
             <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
         </div>
         <div class="card-base art-card">

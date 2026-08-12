@@ -13,16 +13,25 @@ const findingEnvelope = JSON.stringify({
 	command: 'check',
 	timestamp: '2026-08-12T00:00:00Z',
 	exit_code: 0,
-	data: [{
-		file: 'model.py',
-		line: 1,
-		tier: 'high_risk',
-		category: 'test_finding',
-		description: 'Extension host diagnostic fixture',
-		articles: ['Article 9'],
-		confidence_score: 70,
-		suppressed: false,
-	}],
+	data: {
+		detector_findings: [{
+			file: 'model.py',
+			line: 1,
+			detector_class: 'high_risk',
+			category: 'test_finding',
+			description: 'Extension host diagnostic fixture',
+			suggested_provisions: ['Article 9'],
+			detector_priority: 70,
+			suppressed: false,
+		}],
+		decision: {
+			result_type: 'insufficient_information',
+			model_version: '2026-08-12.3',
+			jurisdiction: 'eu',
+			rule_resolution: 'unresolved',
+			unresolved_predicates: [{ fact_id: 'jurisdiction_in_scope' }],
+		},
+	},
 });
 
 const unexpectedEnvelope = JSON.stringify({

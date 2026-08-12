@@ -122,179 +122,35 @@ def _check_article_50(project_path: str) -> list:
 
 
 def cmd_comply(args) -> None:
-    """EU AI Act obligation checklist with status.
-
-    Scopes obligations to the detected risk tier:
-    - High-risk/prohibited: Articles 9-15 + Article 50 (where applicable)
-    - Limited-risk: Article 50 transparency obligations only
-    - No elevated tier detected: no tier-specific checklist is inferred; Articles
-      4 and 5 and other context-dependent duties may still apply
-    Use --all to show the full Articles 9-15 assessment regardless of tier.
-    """
-    from cli import json_output, _is_tty
-    from compliance_check import assess_compliance, ARTICLE_TITLES
+    """Report evidence only for obligations resolved by the decision kernel."""
+    from cli import json_output
+    from compliance_check import assess_compliance
 
     project = str(Path(getattr(args, "project", ".")).resolve())
-    project_name = Path(project).name
-    show_all = getattr(args, "all", False)
-
     # If --article specified, show deep-dive for that article
     article_filter = getattr(args, "article", None)
     articles = [article_filter] if article_filter else None
 
     assessment = assess_compliance(project, articles=articles)
-    highest_risk = assessment.get("highest_risk", "unknown")
+    from decision_adapters import (
+        empty_decision,
+        format_decision_text,
+        resolved_gap_evidence,
+    )
+    decision = empty_decision("eu", "cli:comply")
+    evidence = resolved_gap_evidence(assessment, decision)
 
     if getattr(args, "format", "text") == "json":
-        # Enrich JSON with Article 50 checks and tier scoping
-        assessment["article_50_checks"] = _check_article_50(project)
-        assessment["scoped_to_tier"] = highest_risk
-        json_output("comply", assessment)
+        json_output("comply", {"decision": decision, "evidence": evidence})
         return
 
-    # Status symbols and labels
-    _STATUS = {
-        "strong": ("\u2713", "PASS"),
-        "moderate": ("~", "PARTIAL"),
-        "partial": ("\u2717", "NEEDS WORK"),
-        "not_found": ("\u2717", "NOT FOUND"),
-    }
-
-    print(f"\nEU AI Act Compliance Checklist: {project_name}")
-    print(f"{'=' * 60}")
-
-    # --- MINIMAL RISK ---
-    if highest_risk in ("minimal_risk", "not_ai") and not show_all:
-        print(f"  Highest risk tier: {highest_risk}")
-        print("\n  No elevated risk-tier indicators were detected.")
-        print("  This is not a legal classification. Article 4, Article 5,")
-        print("  and other context-dependent duties may still apply.")
-        print(f"\n{'=' * 60}")
-        print("\n  Next steps:")
-        print(f"    1. regula assess{'':<25s}Verify this classification with guided questions")
-        print(f"    2. regula comply --all{'':<19s}Show full Articles 9-15 assessment anyway")
-        print()
-        return
-
-    # --- LIMITED RISK ---
-    if highest_risk == "limited_risk" and not show_all:
-        print("  Highest risk tier: limited_risk")
-        print("  Applicable:        Article 50 (Transparency)")
-        print()
-
-        art50_checks = _check_article_50(project)
-        pass_count = sum(1 for c in art50_checks if c["status"] == "found")
-        total = len(art50_checks)
-
-        for c in art50_checks:
-            symbol = "\u2713" if c["status"] == "found" else "\u2717"
-            label = "FOUND" if c["status"] == "found" else "NOT FOUND"
-            print(f"  [{symbol}] Art. {c['article']:<6s} {c['title']:<35s} {label}")
-            print(f"          {c['obligation']}")
-
-        print(f"\n{'=' * 60}")
-        print(f"  {pass_count}/{total} transparency obligations have evidence")
-        if pass_count < total:
-            print(f"  {total - pass_count} obligation(s) need attention")
-
-        print("\n  Note: Articles 9-15 do NOT apply to limited-risk systems.")
-        print("  They apply only to high-risk systems (Annex III / Article 6).")
-
-        if _is_tty():
-            print("\n  Next steps:")
-            print(f"    1. regula check .{'':<24s}See detailed scan findings")
-            print(f"    2. regula comply --all{'':<19s}Show Articles 9-15 assessment (informational)")
-            print(f"    3. regula assess{'':<25s}Verify risk tier with guided questions")
-        print()
-        return
-
-    # --- HIGH RISK / PROHIBITED (or --all) ---
-    tier_label = highest_risk
-    if show_all and highest_risk in ("limited_risk", "minimal_risk", "not_ai"):
-        tier_label = f"{highest_risk} (showing all articles per --all flag)"
-
-    print(f"  Overall compliance score: {assessment['overall_score']}/100")
-    print(f"  Highest risk tier:        {tier_label}")
-    print()
-
-    # Articles 9-15 checklist
-    pass_count = 0
-    needs_work = []
-    for article_num in sorted(assessment["articles"].keys(), key=int):
-        result = assessment["articles"][article_num]
-        status = result["status"]
-        symbol, label = _STATUS.get(status, ("?", status.upper()))
-        score = result["score"]
-
-        if status == "strong":
-            pass_count += 1
-        else:
-            needs_work.append(article_num)
-
-        print(f"  [{symbol}] Article {article_num:<3s} {result['title']:<35s} {score:>3d}% {label}")
-
-        # Deep-dive mode: show evidence and gaps for requested article
-        if article_filter:
-            if result["evidence"]:
-                print("      Evidence found:")
-                for ev in result["evidence"]:
-                    print(f"        \u2713 {ev}")
-            if result["gaps"]:
-                print("      Gaps to address:")
-                for gap in result["gaps"]:
-                    print(f"        \u2717 {gap}")
-            print()
-
-    # Also show Article 50 checks for high-risk (they apply alongside Art 9-15)
-    art50_checks = _check_article_50(project)
-    if art50_checks:
-        print()
-        for c in art50_checks:
-            symbol = "\u2713" if c["status"] == "found" else "\u2717"
-            label = "FOUND" if c["status"] == "found" else "NOT FOUND"
-            print(f"  [{symbol}] Art. {c['article']:<6s} {c['title']:<35s} {label}")
-
-    total = len(assessment["articles"])
-    print(f"\n{'=' * 60}")
-    print(f"  {pass_count}/{total} high-risk obligations have strong evidence")
-
-    if needs_work and not article_filter:
-        print(f"  {len(needs_work)} obligation(s) need attention: Articles {', '.join(needs_work)}")
-
-    if show_all and highest_risk not in ("high_risk", "prohibited"):
-        print(f"\n  Note: This project is classified as {highest_risk}.")
-        print("  Articles 9-15 are shown for informational purposes (--all flag).")
-        print("  They are legally required only for high-risk systems.")
-
-    # Contextual next steps
-    if _is_tty():
-        steps = []
-        if needs_work and not article_filter:
-            weakest = min(needs_work, key=lambda a: assessment["articles"][a]["score"])
-            steps.append(
-                f"regula comply --article {weakest}{'':<20s}Deep-dive into Article {weakest} ({ARTICLE_TITLES.get(weakest, '')})"
-            )
-        if assessment["overall_score"] < 80:
-            steps.append(
-                f"regula plan --project .{'':<22s}Prioritised remediation plan"
-            )
-        if assessment["overall_score"] >= 50:
-            steps.append(
-                f"regula evidence-pack --project .{'':<13s}Generate a reviewer-completable evidence scaffold"
-            )
-        if highest_risk in ("high_risk", "prohibited"):
-            steps.append(
-                f"regula conform --project .{'':<19s}Generate conformity assessment evidence"
-            )
-        if not steps:
-            steps.append(
-                f"regula evidence-pack --project .{'':<13s}Generate a reviewer-completable evidence scaffold"
-            )
-
-        print("\n  Next steps:")
-        for i, step in enumerate(steps[:4], 1):
-            print(f"    {i}. {step}")
-    print()
+    print(format_decision_text(decision))
+    print("\nEvidence scan:")
+    print(evidence["note"])
+    print(
+        f"Article observations emitted: {len(evidence['article_observations'])}; "
+        f"held pending applicability: {evidence['not_assessed_article_count']}"
+    )
 
 
 def cmd_compliance(args) -> None:
@@ -392,7 +248,7 @@ def cmd_conform(args) -> None:
         else:
             print(f"Simplified Annex IV written to: {result['pack_path']}")
             print(f"Form: {result['summary']['form']}")
-            print(f"Status: {result['summary']['overall_readiness']}")
+            print(f"Status: {result['summary']['document_status']}")
             print(
                 "Note: this is an interim format under Article 11(1) second subparagraph. "
                 "Replace with the official Commission SME template when published."
@@ -482,13 +338,14 @@ def cmd_conform(args) -> None:
     else:
         pack_path = result["pack_path"]
         file_count = len(result["manifest"]["files"])
-        readiness = result["summary"]["overall_readiness"]
         manifest = result["manifest"]
         fmt_version = manifest.get("format_version", "1.0")
         print(f"Conformity evidence pack written to: {pack_path}")
         print(f"Format: regula.evidence.v1 (format_version {fmt_version})")
         print(f"Contains {file_count} files with SHA-256 integrity hashes.")
-        print(f"Overall readiness: {readiness}")
+        decision = result["summary"].get("decision", {})
+        print(f"Decision: {decision.get('result_type', 'unresolved')}")
+        print("No readiness percentage or article duty is emitted without resolved applicability.")
         if "signing" in manifest:
             print(f"Signed: Ed25519 signature embedded (verify with "
                   f"`regula verify {pack_path}`).")
@@ -509,10 +366,13 @@ def cmd_gap(args) -> None:
     if args.project != ".":
         _validate_path(args.project)
     from compliance_check import assess_compliance, format_gap_text
+    from decision_adapters import empty_decision, format_decision_text, resolved_gap_evidence
     articles = [args.article] if args.article else None
     fw_arg = getattr(args, "framework", None)
     frameworks = [f.strip() for f in fw_arg.split(",")] if fw_arg else None
     assessment = assess_compliance(args.project, articles=articles, frameworks=frameworks)
+    decision = empty_decision("eu", "cli:gap")
+    evidence = resolved_gap_evidence(assessment, decision)
     # Stamp the pattern version so auditors can reproduce the assessment
     # against the exact same ruleset later (C3: --pattern-version).
     pv = getattr(args, "pattern_version", None)
@@ -524,11 +384,21 @@ def cmd_gap(args) -> None:
     # (DEF-008 class: json_output("gap", ...) previously always hardcoded
     # envelope exit_code=0, contradicting the real process exit code under
     # --strict with a low overall_score).
-    _gap_exit = 1 if (args.strict and assessment.get("overall_score", 0) < 50) else 0
+    _gap_exit = 1 if (args.strict and decision["result_type"] != "indication") else 0
     if args.format == "json":
-        json_output("gap", assessment, exit_code=_gap_exit)
+        json_output(
+            "gap",
+            {"decision": decision, "evidence": evidence},
+            exit_code=_gap_exit,
+        )
     else:
-        print(format_gap_text(assessment))
+        print(format_decision_text(decision))
+        print("\nEvidence scan:")
+        print(evidence["note"])
+        print(
+            f"Article observations emitted: {len(evidence['article_observations'])}; "
+            f"held pending applicability: {evidence['not_assessed_article_count']}"
+        )
         if pv:
             print(f"\n[stamped against pattern version: {pv}]")
     if _gap_exit:
@@ -573,18 +443,14 @@ def cmd_gpai_check(args) -> None:
 
 
 def cmd_plan(args) -> None:
-    """Generate prioritised remediation plan."""
+    """Emit a plan only after the kernel resolves applicable obligations."""
     from cli import json_output, _validate_path
 
     if args.project != ".":
         _validate_path(args.project)
     project_path = str(Path(args.project).resolve())
-    project_name = args.name or Path(project_path).name
-
-    from report import scan_files
-    from compliance_check import assess_compliance
-    from remediation_plan import generate_plan, format_plan_text, format_plan_status
-    from remediation_plan import load_plan_status, mark_task_done
+    from decision_adapters import empty_decision, format_decision_text
+    from remediation_plan import mark_task_done
 
     if args.done:
         status = mark_task_done(project_path, args.done)
@@ -592,30 +458,14 @@ def cmd_plan(args) -> None:
         return
 
     if args.status:
-        print(f"Scanning {project_path}...", file=sys.stderr)
-        findings = scan_files(project_path)
-        gap = assess_compliance(project_path)
-        plan = generate_plan(findings, gap, project_name=project_name)
-        status = load_plan_status(project_path)
-        print(format_plan_status(plan, status))
-        return
+        print("Existing plan status cannot be interpreted until applicability is resolved.")
 
-    print(f"Scanning {project_path}...", file=sys.stderr)
-    findings = scan_files(project_path)
-    gap = assess_compliance(project_path)
-    plan = generate_plan(findings, gap, project_name=project_name)
-
+    decision = empty_decision("eu", "cli:plan")
     if args.format == "json":
-        json_output("plan", plan)
+        json_output("plan", {"decision": decision, "plan": None})
     else:
-        output = format_plan_text(plan)
-        if args.output:
-            out_path = Path(args.output)
-            out_path.parent.mkdir(parents=True, exist_ok=True)
-            out_path.write_text(output, encoding="utf-8")
-            print(f"Plan written to {out_path}", file=sys.stderr)
-        else:
-            print(output)
+        print(format_decision_text(decision))
+        print("\nNo obligation plan or effort estimate was emitted because applicability is unresolved.")
 
 
 def cmd_assess(args) -> None:
@@ -674,31 +524,16 @@ def cmd_baseline(args) -> None:
 
 
 def cmd_roadmap(args) -> None:
-    """Generate compliance roadmap with week-by-week plan."""
+    """Emit a roadmap only after the kernel resolves applicable obligations."""
     from cli import json_output, _validate_path
-    from compliance_check import assess_compliance
-    from roadmap import generate_roadmap, format_roadmap_text
+    from decision_adapters import empty_decision, format_decision_text
 
     if args.project != ".":
         _validate_path(args.project)
-    project_path = str(Path(args.project).resolve())
-
-    print("Scanning project...", file=sys.stderr)
-    gap = assess_compliance(project_path)
-    target = getattr(args, "target_date", None)
-    if not target:
-        # Currently binding Annex III deadline, single-sourced for the OJ flip
-        from omnibus import ANNEX_III_PROSE, ORIGINAL_PROSE, OMNIBUS_ENACTED
-        target = ANNEX_III_PROSE if OMNIBUS_ENACTED else ORIGINAL_PROSE
-
-    roadmap = generate_roadmap(
-        gap,
-        target_date=target,
-        project_name=Path(project_path).name,
-    )
+    decision = empty_decision("eu", "cli:roadmap")
 
     if args.format == "json":
-        json_output("roadmap", roadmap)
+        json_output("roadmap", {"decision": decision, "roadmap": None})
     else:
-        actionable = getattr(args, "actionable", True)
-        print(format_roadmap_text(roadmap, actionable=actionable))
+        print(format_decision_text(decision))
+        print("\nNo deadline, obligation roadmap, or effort estimate was emitted because applicability is unresolved.")
