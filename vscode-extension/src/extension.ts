@@ -70,8 +70,9 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand('regula.scanFile', () => {
             const editor = vscode.window.activeTextEditor;
             if (editor) {
-                scanFile(editor.document.uri);
+                return scanFile(editor.document.uri);
             }
+            return undefined;
         })
     );
 
@@ -80,8 +81,9 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand('regula.scanWorkspace', () => {
             const folders = vscode.workspace.workspaceFolders;
             if (folders && folders.length > 0) {
-                scanWorkspace(folders[0].uri);
+                return scanWorkspace(folders[0].uri);
             }
+            return undefined;
         })
     );
 
@@ -122,15 +124,51 @@ interface Finding {
  * Handle both shapes defensively.
  */
 function extractFindings(stdout: string): Finding[] {
-    const result = JSON.parse(stdout);
-    const data = result?.data;
+    const result: unknown = JSON.parse(stdout);
+    if (!result || typeof result !== 'object' || Array.isArray(result)) {
+        throw new Error('Regula CLI response must be an object envelope');
+    }
+    const envelope = result as Record<string, unknown>;
+    if (typeof envelope.format_version !== 'string' || envelope.command !== 'check') {
+        throw new Error('Regula CLI response has an unsupported envelope');
+    }
+    const data = envelope.data;
     if (Array.isArray(data)) {
-        return data;
+        return validateFindings(data);
     }
-    if (data && Array.isArray(data.findings)) {
-        return data.findings;
+    if (data && typeof data === 'object' && Array.isArray((data as Record<string, unknown>).findings)) {
+        return validateFindings((data as Record<string, unknown>).findings as unknown[]);
     }
-    return [];
+    throw new Error('Regula CLI response does not contain a findings array');
+}
+
+function validateFindings(values: unknown[]): Finding[] {
+    for (const [index, value] of values.entries()) {
+        if (!value || typeof value !== 'object' || Array.isArray(value)) {
+            throw new Error(`Regula finding ${index} must be an object`);
+        }
+        const finding = value as Record<string, unknown>;
+        if (
+            typeof finding.file !== 'string' ||
+            typeof finding.line !== 'number' ||
+            typeof finding.tier !== 'string' ||
+            typeof finding.category !== 'string' ||
+            typeof finding.description !== 'string' ||
+            typeof finding.confidence_score !== 'number' ||
+            typeof finding.suppressed !== 'boolean'
+        ) {
+            throw new Error(`Regula finding ${index} has an unsupported shape`);
+        }
+    }
+    return values as Finding[];
+}
+
+function showScanFailure(scope: 'file' | 'workspace'): void {
+    statusBar.text = '$(error) Regula: scan failed';
+    statusBar.tooltip = 'The last scan failed. Existing diagnostics may be stale.';
+    void vscode.window.showErrorMessage(
+        `Regula: ${scope} scan failed. Existing diagnostics were preserved and may be stale.`
+    );
 }
 
 const TIER_ORDER: Record<string, number> = {
@@ -195,11 +233,10 @@ async function scanFile(uri: vscode.Uri): Promise<void> {
                 updateFindingsTree(uri, findings);
                 updateStatusBarCount();
             } catch {
-                diagnosticCollection.delete(uri);
-                updateStatusBarCount();
+                showScanFailure('file');
             }
         } else {
-            updateStatusBarCount();
+            showScanFailure('file');
         }
     }
 
@@ -253,13 +290,13 @@ async function scanWorkspace(uri: vscode.Uri): Promise<void> {
                 }
                 const stdout = getStdout(err);
                 if (!stdout) {
-                    updateStatusBarCount();
+                    showScanFailure('workspace');
                     return;
                 }
                 try {
                     findings = extractFindings(stdout);
                 } catch {
-                    updateStatusBarCount();
+                    showScanFailure('workspace');
                     return;
                 }
             }
