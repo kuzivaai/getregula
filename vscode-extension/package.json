@@ -1,7 +1,7 @@
 {
   "name": "regula-ai-act",
-  "displayName": "Regula — EU AI Act Compliance",
-  "description": "EU AI Act compliance scanning for code. Scans on save, shows risk tier inline. Zero data transmission — your code never leaves your machine.",
+  "displayName": "Regula: EU AI Act Review",
+  "description": "Local code-pattern scanning with an evidence-aware regulatory decision response. Your code stays on your machine.",
   "version": "0.1.0",
   "publisher": "kuzivaai",
   "repository": {
@@ -54,7 +54,7 @@
             "limited_risk",
             "minimal_risk"
           ],
-          "description": "Minimum risk tier to display"
+          "description": "Minimum detector class to display"
         },
         "regula.scope": {
           "type": "string",
@@ -167,7 +167,7 @@
           {
             "id": "regula.understandFindings",
             "title": "Understand your findings",
-            "description": "Findings appear in the **Problems** panel and as inline decorations.\n\n- **Error** = Prohibited (Article 5)\n- **Warning** = High-risk (Annex III)\n- **Info** = Limited-risk (Article 50)\n- **Hint** = Minimal-risk\n\nClick any finding code to see the EU AI Act article reference.",
+            "description": "Detector observations appear in the **Problems** panel and as inline decorations. Severity prioritises review; it is not a legal classification or correctness probability. Open a finding to inspect its suggested provision, then resolve the facts reported by the decision kernel.",
             "media": {
               "markdown": "media/findings.md"
             },

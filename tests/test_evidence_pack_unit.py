@@ -129,7 +129,7 @@ class TestWriteAndRecord:
 
 
 class TestGenerateSummary:
-    """Tests for executive summary generation."""
+    """The handoff summary must fail closed when no facts were supplied."""
 
     def _make_findings(self, prohibited=0, high_risk=0, limited=0, minimal=0):
         findings = []
@@ -143,125 +143,91 @@ class TestGenerateSummary:
             findings.append({"tier": "minimal_risk"})
         return findings
 
-    def _make_gap(self, score=75, highest="high_risk", articles=None):
-        return {
-            "overall_score": score,
-            "highest_risk": highest,
-            "articles": articles or {},
-        }
-
-    def _make_plan(self, tasks=None):
-        if tasks is None:
-            tasks = [
-                {"effort_hours": [2, 4], "priority": "P0"},
-                {"effort_hours": [1, 3], "priority": "P1"},
-            ]
-        return {
-            "total_tasks": len(tasks),
-            "tasks": tasks,
-        }
+    def _decision(self):
+        from decision_adapters import empty_decision
+        return empty_decision("eu", "test:evidence-summary")
 
     def test_contains_project_name(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        summary = _generate_summary("my-project", now, [], self._make_gap(), self._make_plan([]))
+        summary = _generate_summary("my-project", now, [], self._decision())
         assert "my-project" in summary
 
     def test_contains_version(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        summary = _generate_summary("proj", now, [], self._make_gap(), self._make_plan([]))
+        summary = _generate_summary("proj", now, [], self._decision())
         assert f"v{VERSION}" in summary
 
     def test_contains_date(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        summary = _generate_summary("proj", now, [], self._make_gap(), self._make_plan([]))
+        summary = _generate_summary("proj", now, [], self._decision())
         assert "2026-05-01 12:00 UTC" in summary
 
     def test_risk_counts(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
         findings = self._make_findings(prohibited=2, high_risk=5, limited=3)
-        summary = _generate_summary("proj", now, findings, self._make_gap(), self._make_plan([]))
-        assert "| Prohibited findings | 2 |" in summary
-        assert "| High-risk findings | 5 |" in summary
-        assert "| Limited-risk findings | 3 |" in summary
-        assert "| Total findings | 10 |" in summary
+        summary = _generate_summary("proj", now, findings, self._decision())
+        assert "| Article 5 pattern observations | 2 |" in summary
+        assert "| Annex III pattern observations | 5 |" in summary
+        assert "| Article 50 pattern observations | 3 |" in summary
+        assert "| Total detector observations | 10 |" in summary
 
     def test_compliance_score(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        gap = self._make_gap(score=42)
-        summary = _generate_summary("proj", now, [], gap, self._make_plan([]))
-        assert "42%" in summary
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "readiness percentage" in summary
+        assert "42%" not in summary
 
     def test_highest_risk_tier_formatting(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        gap = self._make_gap(highest="high_risk")
-        summary = _generate_summary("proj", now, [], gap, self._make_plan([]))
-        assert "HIGH-RISK" in summary
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "Highest risk tier" not in summary
+        assert "insufficient_information" in summary
 
     def test_article_table(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        articles = {
-            "9": {"title": "Risk Management", "score": 60, "status": "partial"},
-            "11": {"title": "Technical Documentation", "score": 80, "status": "partial"},
-        }
-        gap = self._make_gap(articles=articles)
-        summary = _generate_summary("proj", now, [], gap, self._make_plan([]))
-        assert "| Article 9 | Risk Management | 60% | PARTIAL |" in summary
-        assert "| Article 11 | Technical Documentation | 80% | PARTIAL |" in summary
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "| Article | Requirement | Score | Status |" not in summary
+        assert "article duty" in summary
 
     def test_effort_estimate(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        tasks = [
-            {"effort_hours": [2, 4], "priority": "P0"},
-            {"effort_hours": [3, 6], "priority": "P1"},
-        ]
-        plan = self._make_plan(tasks)
-        summary = _generate_summary("proj", now, [], self._make_gap(), plan)
-        assert "~5-10 hours" in summary
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "effort estimate" in summary
+        assert "hours" not in summary
 
     def test_total_tasks(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        tasks = [{"effort_hours": [1, 2]} for _ in range(7)]
-        plan = self._make_plan(tasks)
-        summary = _generate_summary("proj", now, [], self._make_gap(), plan)
-        assert "**Total tasks:** 7" in summary
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "**Total tasks:**" not in summary
 
     def test_deadline_present(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        summary = _generate_summary("proj", now, [], self._make_gap(), self._make_plan([]))
-        # Omnibus enacted (OJ 24 Jul 2026): the summary carries the deferred
-        # Annex III deadline as the applicable one.
-        assert "2 December 2027" in summary
-        assert "in force from 2026-07-27" in summary
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "Primary deadline" not in summary
+        assert "before relying" in summary
 
     def test_disclaimer_present(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        summary = _generate_summary("proj", now, [], self._make_gap(), self._make_plan([]))
-        assert "not a legal" in summary.lower() or "not a legal determination" in summary.lower()
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "no legal classification" in summary.lower()
 
     def test_zero_findings(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        summary = _generate_summary("proj", now, [], self._make_gap(), self._make_plan([]))
-        assert "| Prohibited findings | 0 |" in summary
-        assert "| Total findings | 0 |" in summary
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "| Article 5 pattern observations | 0 |" in summary
+        assert "| Total detector observations | 0 |" in summary
 
     def test_effort_with_no_tasks(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        plan = self._make_plan([])
-        summary = _generate_summary("proj", now, [], self._make_gap(), plan)
-        assert "~0-0 hours" in summary
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "~0-0 hours" not in summary
 
     def test_tasks_without_effort_hours_ignored(self):
         """Tasks that lack effort_hours (or have non-list) should not crash."""
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
-        tasks = [
-            {"effort_hours": [2, 4]},
-            {"priority": "P1"},  # no effort_hours
-            {"effort_hours": "unknown"},  # non-list
-        ]
-        plan = {"total_tasks": 3, "tasks": tasks}
-        summary = _generate_summary("proj", now, [], self._make_gap(), plan)
-        # Only the first task contributes
-        assert "~2-4 hours" in summary
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "~2-4 hours" not in summary
+        assert "06-resolvable-facts.md" in summary
 
 
 # ── _generate_readme ─────────────────────────────────────────────────
@@ -294,7 +260,7 @@ class TestGenerateReadme:
 
     def test_contains_usage_guidance_developers(self):
         readme = _generate_readme("proj", "2026-05-01")
-        assert "06-remediation-plan.md" in readme
+        assert "06-resolvable-facts.md" in readme
 
     def test_disclaimer(self):
         readme = _generate_readme("proj", "2026-05-01")
@@ -675,7 +641,7 @@ class TestGenerateEvidencePack:
             "03-annex-iv-draft.md",
             "04-dependency-report.json",
             "05-audit-trail.json",
-            "06-remediation-plan.md",
+            "06-resolvable-facts.md",
             "07-risk-decisions.json",
             "README.md",
             "manifest.json",
@@ -694,7 +660,9 @@ class TestGenerateEvidencePack:
         result, _ = self._run_with_mocks(tmp_path, project_name="test-proj")
         pack_path = Path(result["pack_path"])
         data = json.loads((pack_path / "02-gap-assessment.json").read_text(encoding="utf-8"))
-        assert data["overall_score"] == 55
+        assert data["decision"]["result_type"] == "insufficient_information"
+        assert data["evidence"]["article_observations"] == {}
+        assert "overall_score" not in data
 
     def test_annex_iv_content(self, tmp_path):
         result, _ = self._run_with_mocks(tmp_path, project_name="test-proj")
@@ -705,8 +673,9 @@ class TestGenerateEvidencePack:
     def test_remediation_plan_content(self, tmp_path):
         result, _ = self._run_with_mocks(tmp_path, project_name="test-proj")
         pack_path = Path(result["pack_path"])
-        content = (pack_path / "06-remediation-plan.md").read_text(encoding="utf-8")
-        assert "Remediation Plan" in content
+        content = (pack_path / "06-resolvable-facts.md").read_text(encoding="utf-8")
+        assert "Facts required" in content
+        assert "provenance" in content
 
     def test_risk_decisions_structure(self, tmp_path):
         result, _ = self._run_with_mocks(tmp_path, project_name="test-proj")

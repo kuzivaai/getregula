@@ -491,7 +491,11 @@ def test_classify_success():
         )
     assert status == 200
     assert body["command"] == "classify"
-    assert body["data"]["tier"] == "minimal_risk"
+    observation = body["data"]["detector_observation"]
+    assert observation["detector_class"] == "minimal_risk"
+    assert "tier" not in observation
+    assert "confidence" not in observation
+    assert body["data"]["decision"]["result_type"] == "insufficient_information"
     assert body["format_version"] == "1.0"
     assert body["regula_version"] == VERSION
 
@@ -520,7 +524,8 @@ def test_classify_prohibited_exit_code_in_envelope():
             json_body={"input": "social credit scoring system for citizens"},
         )
     assert status == 200
-    assert body["data"]["tier"] == "prohibited"
+    assert body["data"]["detector_observation"]["detector_class"] == "prohibited"
+    assert body["data"]["decision"]["result_type"] == "insufficient_information"
     assert body["exit_code"] == 1, (
         "envelope exit_code must be 1 for a prohibited classification, "
         f"got {body['exit_code']}"
@@ -657,7 +662,7 @@ def test_check_success():
     assert status == 200
     assert body["command"] == "check"
     # Findings should be sorted by file, then line, then pattern
-    data = body["data"]
+    data = body["data"]["detector_findings"]
     assert len(data) == 3
     assert data[0]["file"] == "a.py"
     assert data[0]["line"] == 3
@@ -878,7 +883,8 @@ def test_gap_success():
             )
     assert status == 200
     assert body["command"] == "gap"
-    assert body["data"]["status"] == "compliant"
+    assert body["data"]["decision"]["result_type"] == "insufficient_information"
+    assert body["data"]["evidence"]["article_observations"] == {}
 
     # Verify articles were passed through
     call_kwargs = mock_module.assess_compliance.call_args
@@ -1003,13 +1009,13 @@ def test_questionnaire_evaluate_invalid_answer_value():
 
 
 def test_questionnaire_evaluate_valid_answers():
-    """All three valid answer values (yes, no, unsure) are accepted."""
+    """All four fact states are accepted and the tagged result is preserved."""
     import types
 
-    mock_result = MagicMock()
-    mock_result.to_dict.return_value = {
-        "tier": "minimal_risk",
-        "confidence": "medium",
+    mock_result = {
+        "result_type": "insufficient_information",
+        "model_version": "test-model",
+        "unresolved_predicates": [{"fact_id": "is_ai_system"}],
     }
 
     mock_module = types.ModuleType("questionnaire")
@@ -1018,11 +1024,16 @@ def test_questionnaire_evaluate_valid_answers():
     with patch.dict("sys.modules", {"questionnaire": mock_module}):
         status, body = _dispatch_request(
             "POST", "/v1/questionnaire/evaluate",
-            json_body={"answers": {"q1": "yes", "q2": "no", "q3": "unsure"}},
+            json_body={"answers": {
+                "deployment_eu": "yes",
+                "is_ai_system": "no",
+                "role_provider": "unsure",
+                "role_deployer": "not_applicable",
+            }},
         )
     assert status == 200
     assert body["command"] == "questionnaire/evaluate"
-    assert body["data"]["tier"] == "minimal_risk"
+    assert body["data"] == mock_result
 
 
 def test_questionnaire_evaluate_internal_error():
@@ -1216,11 +1227,15 @@ def test_classify_empty_string_input():
 
 
 def test_questionnaire_evaluate_empty_answers_dict():
-    """POST /v1/questionnaire/evaluate with empty dict answers returns 400."""
+    """Empty answers remain absent and produce a resolvable-facts response."""
     status, body = _dispatch_request("POST", "/v1/questionnaire/evaluate",
                                      json_body={"answers": {}})
-    assert status == 400
-    assert "answers" in body["error"]
+    assert status == 200
+    assert body["data"]["result_type"] == "insufficient_information"
+    assert body["data"]["unresolved_predicates"]
+    assert all(item["reason"] == "absent"
+               for item in body["data"]["unresolved_predicates"])
+    assert "obligations" not in body["data"]
 
 
 def test_check_path_is_file():
@@ -1300,7 +1315,7 @@ def test_check_findings_sorted_deterministically():
             )
 
     assert status == 200
-    data = body["data"]
+    data = body["data"]["detector_findings"]
     assert len(data) == 5
     # Should be sorted: a.py:1:x, a.py:5:a, a.py:5:b, b.py:3:y, c.py:1:z
     assert data[0] == {"file": "a.py", "line": 1, "pattern": "x_pattern"}

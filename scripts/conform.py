@@ -195,8 +195,7 @@ def generate_sme_simplified_pack(
     persist a manifest.json that a signature could cover.
 
     Returns a dict matching the shape `cmd_conform` expects, with
-    summary["overall_readiness"] reflecting the simplified form's
-    readiness rather than the full Article 9-15 gap score.
+    summary["document_status"] reflecting the simplified form's status.
     """
     from generate_documentation import scan_project, generate_sme_simplified_annex_iv
 
@@ -246,13 +245,138 @@ def generate_sme_simplified_pack(
         "generated_at": now.isoformat(),
         "project": name,
         "form": "sme_simplified_annex_iv",
-        "overall_readiness": "interim — Commission template pending",
+        "document_status": "interim; Commission template pending",
         "output_file": str(out_path),
     }
 
     return {
         "pack_dirname": out_path.name,
         "pack_path": str(out_path),
+        "manifest": manifest,
+        "summary": summary,
+    }
+
+
+def _generate_unresolved_conformity_pack(
+    *, pack_dir, pack_name, project, name, now, date_str, findings, gap,
+    annex_iv, decision, sign, signing_key_path, timestamp, tsa_url,
+):
+    """Generate a review pack without attaching unresolved article duties."""
+    from decision_adapters import detector_findings, resolved_gap_evidence
+
+    records = []
+    detector_dir = pack_dir / "01-detector-observations"
+    evidence_dir = pack_dir / "02-unassigned-evidence"
+    docs_dir = pack_dir / "03-documentation-draft"
+
+    _write_and_record(
+        detector_dir / "findings.json",
+        json.dumps(detector_findings(findings), indent=2, default=str),
+        records,
+        pack_dir,
+    )
+    _write_and_record(
+        evidence_dir / "evidence.json",
+        json.dumps(resolved_gap_evidence(gap, decision), indent=2, default=str),
+        records,
+        pack_dir,
+    )
+    _write_and_record(docs_dir / "annex-iv-draft.md", annex_iv, records, pack_dir)
+
+    try:
+        from log_event import collect_audit_trail
+        audit_data = collect_audit_trail(str(project))
+    except ImportError:
+        audit_data = None
+    except (OSError, ValueError) as exc:
+        print(f"Note: audit trail not available: {exc}", file=sys.stderr)
+        audit_data = None
+    if audit_data is not None:
+        _write_and_record(
+            evidence_dir / "audit-trail.json",
+            json.dumps(audit_data, indent=2, default=str),
+            records,
+            pack_dir,
+        )
+
+    unresolved = decision.get("unresolved_predicates", [])
+    facts = [
+        "# Facts required before conformity duties can be mapped",
+        "",
+        "The decision kernel did not resolve applicability. Supply every answer with provenance and a timestamp.",
+        "",
+    ]
+    for index, item in enumerate(unresolved, 1):
+        facts.append(f"{index}. `{item['fact_id']}`: {item['question']}")
+    facts.extend(["", "Do not infer legal facts from detector observations.", ""])
+    _write_and_record(
+        pack_dir / "04-resolvable-facts.md", "\n".join(facts), records, pack_dir
+    )
+
+    summary = {
+        "regula_version": VERSION,
+        "generated_at": now.isoformat(),
+        "project": name,
+        "pack_purpose": "qualified_review_handoff",
+        "decision": decision,
+        "detector_observation_count": len(findings),
+        "readiness_assessment": None,
+        "article_duties_attached": [],
+        "reliance_warning": (
+            "Applicability is unresolved. No conformity article duty, "
+            "readiness percentage, declaration, deadline, or effort estimate "
+            "is emitted. Resolve 04-resolvable-facts.md before reliance."
+        ),
+    }
+    _write_and_record(
+        pack_dir / "00-assessment-summary.json",
+        json.dumps(summary, indent=2),
+        records,
+        pack_dir,
+    )
+    readme = f"""# Conformity Review Handoff: {name}
+
+Generated {date_str} by Regula v{VERSION}.
+
+## Reliance gate
+
+Applicability is unresolved. This pack does not classify the subject, attach
+Articles 9 to 15, measure readiness, or constitute a declaration of conformity.
+Read `00-assessment-summary.json` and resolve every item in
+`04-resolvable-facts.md` before relying on the supporting material.
+
+The detector findings and documentation draft are observations for qualified
+review. Their presence does not prove that a legal obligation applies, and
+their absence does not prove that one does not apply.
+"""
+    _write_and_record(pack_dir / "README.md", readme, records, pack_dir)
+
+    manifest = {
+        "format": "regula.evidence.v1",
+        "format_version": "1.1" if (sign or timestamp) else "1.0",
+        "schema_uri": "https://getregula.com/spec/regula.manifest.v1.schema.json",
+        "regula_version": VERSION,
+        "generated_at": now.isoformat(),
+        "project": name,
+        "project_directory": project.name,
+        "hash_algorithm": "sha256",
+        "files": records,
+    }
+    if sign:
+        from signing import apply_manifest_security
+        apply_manifest_security(
+            manifest,
+            sign=sign,
+            signing_key_path=signing_key_path,
+            timestamp=timestamp,
+            tsa_url=tsa_url,
+        )
+    (pack_dir / "manifest.json").write_text(
+        json.dumps(manifest, indent=2), encoding="utf-8", newline="\n"
+    )
+    return {
+        "pack_dirname": pack_name,
+        "pack_path": str(pack_dir),
         "manifest": manifest,
         "summary": summary,
     }
@@ -268,6 +392,7 @@ def generate_conformity_pack(
     signing_key_path=None,
     timestamp: bool = False,
     tsa_url: str = None,
+    decision_request: dict = None,
 ) -> dict:
     """Generate a conformity assessment evidence pack mapped by article.
 
@@ -320,6 +445,34 @@ def generate_conformity_pack(
     gap = assess_compliance(str(project))
     doc_findings = scan_project(str(project))
     annex_iv = generate_annex_iv(doc_findings, name, str(project))
+    from decision_adapters import (
+        empty_decision,
+        evaluate_payload,
+        unresolved_documentation_draft,
+    )
+    decision = (
+        evaluate_payload(decision_request)
+        if decision_request is not None
+        else empty_decision("eu", "conformity-pack:no-declared-facts")
+    )
+    if decision["result_type"] != "indication":
+        annex_iv = unresolved_documentation_draft(annex_iv, str(project))
+        return _generate_unresolved_conformity_pack(
+            pack_dir=pack_dir,
+            pack_name=pack_name,
+            project=project,
+            name=name,
+            now=now,
+            date_str=date_str,
+            findings=findings,
+            gap=gap,
+            annex_iv=annex_iv,
+            decision=decision,
+            sign=sign,
+            signing_key_path=signing_key_path,
+            timestamp=timestamp,
+            tsa_url=tsa_url,
+        )
     plan = generate_plan(findings, gap, project_name=name)
     plan_text = format_plan_text(plan)
 

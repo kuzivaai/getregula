@@ -49,6 +49,9 @@ import test_public_claim_integrity as _test_public_claim_integrity  # noqa: F401
 import test_public_surface_inventory as _test_public_surface_inventory  # noqa: F401
 import test_gap_demo as _test_gap_demo  # noqa: F401
 import test_validation_readiness as _test_validation_readiness  # noqa: F401
+import test_decision_kernel as _test_decision_kernel  # noqa: F401
+import test_decision_conformance as _test_decision_conformance  # noqa: F401
+import test_documentation as _test_documentation  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -71,7 +74,7 @@ import inspect as _inspect
 RUNNER_ALIAS_PREFIX = "_runner_test_"
 
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -85,7 +88,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
         if _params & _PYTEST_FIXTURES:
             continue
         globals()[RUNNER_ALIAS_PREFIX + _name] = _fn
-del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness
+del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
@@ -1113,53 +1116,77 @@ def test_inline_suppression():
 # ── New Feature Tests ───────────────────────────────────────────────
 
 def test_questionnaire_generation():
-    """Questionnaire generates 8 questions derived from Article 6"""
+    """Questionnaire exposes decision facts rather than score weights."""
     from questionnaire import generate_questionnaire
     q = generate_questionnaire()
     assert_eq(q["type"], "risk_assessment_questionnaire", "questionnaire type")
-    assert_eq(len(q["questions"]), 8, "8 questions")
+    assert_eq(len(q["questions"]), 11, "11 questions")
     ids = {qu["id"] for qu in q["questions"]}
-    assert_true("autonomous_decisions" in ids, "has autonomous_decisions question")
+    assert_true("is_ai_system" in ids, "has AI-system scope question")
     assert_true("affected_domain" in ids, "has affected_domain question")
-    print("✓ Questionnaire: generates 8 Article 6-derived questions")
+    assert_true(all("weight" not in qu for qu in q["questions"]), "no score weights")
+    print("✓ Questionnaire: generates 11 mapped decision-fact questions")
 
 
 def test_questionnaire_evaluation_high_risk():
-    """High-risk answers produce high-risk classification"""
+    """Resolved Article 6 facts produce a traced indication and duties."""
     from questionnaire import evaluate_questionnaire
     answers = {
-        "autonomous_decisions": "yes",
+        "deployment_eu": "yes",
+        "is_ai_system": "yes",
+        "role_provider": "yes",
+        "role_deployer": "no",
         "affected_domain": "yes",
         "significant_harm": "yes",
+        "profiling": "no",
         "narrow_procedural": "no",
         "improves_human_activity": "no",
-        "public_facing": "no",
-        "biometric_data": "yes",
-        "deployment_eu": "yes",
+        "pattern_detection": "no",
+        "preparatory_task": "no",
     }
     result = evaluate_questionnaire(answers)
-    assert_eq(result.tier, RiskTier.HIGH_RISK, "high-risk answers → HIGH_RISK")
-    assert_true(result.confidence_score >= 70, f"score >= 70 (got {result.confidence_score})")
-    print("✓ Questionnaire: high-risk answers produce HIGH_RISK")
+    assert_eq(result["result_type"], "indication", "resolved facts → indication")
+    predicates = {item["predicate_id"] for item in result["indications"]}
+    assert_true("eu_high_risk_annex_iii" in predicates, "Article 6 path satisfied")
+    duties = {item["obligation_id"] for item in result["obligations"]}
+    assert_true("eu_requirement_9" in duties, "Article 9 duty has predicate path")
+    assert_true("confidence_score" not in result, "no correctness probability")
+    print("✓ Questionnaire: resolved Article 6 facts produce traced indication")
 
 
 def test_questionnaire_evaluation_minimal_risk():
-    """Low-risk answers produce minimal-risk classification"""
+    """Out-of-scope facts produce an evidenced outside-scope candidate."""
     from questionnaire import evaluate_questionnaire
     answers = {
-        "autonomous_decisions": "no",
-        "affected_domain": "no",
-        "significant_harm": "no",
-        "narrow_procedural": "yes",
-        "improves_human_activity": "yes",
-        "public_facing": "yes",
-        "biometric_data": "no",
         "deployment_eu": "no",
+        "is_ai_system": "yes",
     }
     result = evaluate_questionnaire(answers)
-    assert_eq(result.tier, RiskTier.MINIMAL_RISK, "low-risk answers → MINIMAL_RISK")
-    assert_true(result.confidence_score < 40, f"score < 40 (got {result.confidence_score})")
-    print("✓ Questionnaire: low-risk answers produce MINIMAL_RISK")
+    assert_eq(result["result_type"], "outside_scope_candidate", "scope false")
+    assert_eq("obligations" in result, False, "outside scope has no duties")
+    print("✓ Questionnaire: evidenced scope exclusion produces outside-scope candidate")
+
+
+def test_questionnaire_all_unsure_requires_resolvable_facts():
+    """All unsure cannot create a tier, duty, percentage, or effort estimate."""
+    from questionnaire import QUESTIONS, evaluate_questionnaire
+    result = evaluate_questionnaire({question["id"]: "unsure" for question in QUESTIONS})
+    assert_eq(result["result_type"], "insufficient_information", "unsure is unresolved")
+    assert_true(bool(result["unresolved_predicates"]), "questions identify blockers")
+    assert_eq("obligations" in result, False, "no duties from unknown facts")
+    assert_eq("confidence_score" in result, False, "no numeric confidence")
+    print("✓ Questionnaire: all unsure returns resolvable facts, not a tier")
+
+
+def test_questionnaire_missing_answers_remain_absent():
+    """Missing answers remain absent rather than defaulting to unsure or no."""
+    from questionnaire import evaluate_questionnaire
+    result = evaluate_questionnaire({})
+    assert_eq(result["result_type"], "insufficient_information", "missing unresolved")
+    assert_true(all(item["reason"] == "absent"
+                    for item in result["unresolved_predicates"]), "absence preserved")
+    assert_eq("obligations" in result, False, "no duties from absent facts")
+    print("✓ Questionnaire: missing answers remain absent and block determination")
 
 
 def test_session_aggregation():
@@ -2397,8 +2424,13 @@ def test_integration_full_check_cli():
     try:
         envelope = json.loads(result.stdout)
         assert_true(isinstance(envelope, dict) and "data" in envelope, "CLI outputs JSON envelope")
-        findings = envelope["data"]
+        findings = envelope["data"]["detector_findings"]
         assert_true(isinstance(findings, list), "CLI envelope data is a list")
+        assert_eq(
+            envelope["data"]["decision"]["result_type"],
+            "insufficient_information",
+            "CLI scan does not convert detector observations into legal facts",
+        )
         assert_true(len(findings) > 0, "CLI finds issues in high-risk project")
     except json.JSONDecodeError:
         assert_true(False, f"CLI output is not valid JSON: {result.stdout[:200]}")
@@ -5408,7 +5440,7 @@ def test_plan_skips_strong_articles():
 
 
 def test_plan_cli_integration():
-    """CLI plan command runs without error."""
+    """CLI plan with no sourced facts returns a resolvable kernel result."""
     import subprocess
     result = subprocess.run(
         [sys.executable, "-m", "scripts.cli", "plan", "--project", ".", "--format", "json"],
@@ -5417,7 +5449,17 @@ def test_plan_cli_integration():
     assert_eq(result.returncode, 0, f"plan command should exit 0, got {result.returncode}: {result.stderr}")
     data = json.loads(result.stdout)
     assert_true("data" in data, "JSON output should have 'data' key")
-    assert_true("tasks" in data["data"], "plan data should contain 'tasks'")
+    plan_data = data["data"]
+    assert_eq(plan_data["plan"], None, "unresolved input must not emit a plan")
+    assert_eq(
+        plan_data["decision"]["result_type"],
+        "insufficient_information",
+        "plan must expose the unresolved decision",
+    )
+    assert_true(
+        len(plan_data["decision"]["unresolved_predicates"]) > 0,
+        "plan must enumerate facts that can resolve the decision",
+    )
     print("✓ Plan: CLI integration")
 
 

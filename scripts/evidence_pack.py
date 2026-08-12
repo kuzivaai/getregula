@@ -3,8 +3,8 @@
 """
 Regula Evidence Pack Generator
 
-Produces a structured folder containing every artifact a consultant or
-auditor needs to assess EU AI Act compliance readiness.
+Produces a structured folder of detector observations, declared facts, and
+supporting material for qualified regulatory review.
 
 Each file is independently useful. The manifest provides tamper-evidence
 via SHA-256 content hashes.
@@ -111,23 +111,33 @@ def _generate_pack_contents(
     from report import scan_files
     from compliance_check import assess_compliance
     from generate_documentation import scan_project, generate_annex_iv
-    from remediation_plan import generate_plan, format_plan_text
+    from decision_adapters import (
+        detector_findings,
+        empty_decision,
+        resolved_gap_evidence,
+        unresolved_documentation_draft,
+    )
 
     file_records = []
 
     # --- 01: Scan results ---
     findings = scan_files(str(project))
-    scan_json = json.dumps(findings, indent=2, default=str)
+    decision = empty_decision("eu", "evidence-pack:no-declared-facts")
+    scan_json = json.dumps(detector_findings(findings), indent=2, default=str)
     _write_and_record(pack_dir, "01-scan-results.json", scan_json, file_records)
 
     # --- 02: Gap assessment ---
     gap = assess_compliance(str(project))
-    gap_json = json.dumps(gap, indent=2, default=str)
+    gap_json = json.dumps({
+        "decision": decision,
+        "evidence": resolved_gap_evidence(gap, decision),
+    }, indent=2, default=str)
     _write_and_record(pack_dir, "02-gap-assessment.json", gap_json, file_records)
 
     # --- 03: Annex IV documentation ---
     doc_findings = scan_project(str(project))
     annex_iv = generate_annex_iv(doc_findings, name, str(project))
+    annex_iv = unresolved_documentation_draft(annex_iv, str(project))
     _write_and_record(pack_dir, "03-annex-iv-draft.md", annex_iv, file_records)
 
     # --- 04: Dependency report ---
@@ -151,10 +161,9 @@ def _generate_pack_contents(
     except (ImportError, OSError, ValueError):
         pass  # optional section; skip if module missing or data error
 
-    # --- 06: Remediation plan ---
-    plan = generate_plan(findings, gap, project_name=name)
-    plan_text = format_plan_text(plan)
-    _write_and_record(pack_dir, "06-remediation-plan.md", plan_text, file_records)
+    # --- 06: Facts required for a determination ---
+    facts_text = _generate_resolvable_facts(decision)
+    _write_and_record(pack_dir, "06-resolvable-facts.md", facts_text, file_records)
 
     # --- 07: Risk decisions (ISO 42001 6.1.4, EU AI Act Article 11) ---
     all_decisions = [
@@ -208,7 +217,10 @@ def _generate_pack_contents(
     # findings already scanned above — no second scan. Aligned to the DPVCG
     # EU-AIAct vocabulary (a W3C Community Group report, not a ratified
     # standard); risk indication, not classification.
-    include_dpv = bool(kwargs.get("include_dpv"))
+    include_dpv = (
+        bool(kwargs.get("include_dpv"))
+        and decision["result_type"] == "indication"
+    )
     if include_dpv:
         try:
             from dpv_export import build_dpv_jsonld, format_dpv_jsonld
@@ -229,7 +241,7 @@ def _generate_pack_contents(
             include_dpv = False  # section absent; README must not advertise it
 
     # --- 00: Executive summary (written last, uses data from above) ---
-    summary = _generate_summary(name, now, findings, gap, plan)
+    summary = _generate_summary(name, now, findings, decision)
     _write_and_record(pack_dir, "00-summary.md", summary, file_records)
 
     # --- README ---
@@ -301,87 +313,77 @@ def _write_and_record(pack_dir: Path, filename: str, content: str, records: list
     })
 
 
-def _generate_summary(name, now, findings, gap, plan):
-    """Generate the executive summary document."""
-    highest = gap.get("highest_risk", "unknown")
-    overall_score = gap.get("overall_score", 0)
+def _generate_summary(name, now, findings, decision):
+    """Put the reliance qualification before every supporting artefact."""
     total_findings = len(findings)
     prohibited_count = sum(1 for f in findings if f.get("tier") == "prohibited")
     high_risk_count = sum(1 for f in findings if f.get("tier") == "high_risk")
     limited_count = sum(1 for f in findings if f.get("tier") == "limited_risk")
+    unresolved_count = len(decision.get("unresolved_predicates", []))
 
-    articles = gap.get("articles", {})
-    article_lines = []
-    for num in sorted(articles.keys(), key=lambda x: int(x)):
-        data = articles[num]
-        article_lines.append(
-            f"| Article {num} | {data['title']} | {data['score']}% | {data['status'].upper()} |"
-        )
-
-    plan_total = plan.get("total_tasks", 0)
-    effort_low = sum(
-        t["effort_hours"][0] for t in plan.get("tasks", [])
-        if isinstance(t.get("effort_hours"), (list, tuple))
-    )
-    effort_high = sum(
-        t["effort_hours"][1] for t in plan.get("tasks", [])
-        if isinstance(t.get("effort_hours"), (list, tuple))
-    )
-
-    from omnibus import annex_iii_deadline_line
-    omnibus_primary_deadline = annex_iii_deadline_line()
-
-    return f"""# Evidence Pack — Executive Summary
+    return f"""# Evidence Pack: Review Handoff
 
 **Project:** {name}
 **Generated:** {now.strftime("%Y-%m-%d %H:%M UTC")}
 **Tool:** Regula v{VERSION}
 
----
+## Decision status
 
-## Risk Classification
+**Kernel result:** `{decision['result_type']}`
+**Model:** `{decision['model_version']}`
+**Rule resolution:** `{decision['rule_resolution']}`
+**Unresolved facts:** {unresolved_count}
 
-**Highest risk tier found:** {highest.upper().replace('_', '-')}
+No legal classification, article duty, readiness percentage, or effort estimate
+is emitted because the generator received no sourced decision facts. Resolve
+the questions in `06-resolvable-facts.md` before relying on an applicability
+conclusion.
+
+## Detector observations
 
 | Category | Count |
 |----------|-------|
-| Prohibited findings | {prohibited_count} |
-| High-risk findings | {high_risk_count} |
-| Limited-risk findings | {limited_count} |
-| Total findings | {total_findings} |
+| Article 5 pattern observations | {prohibited_count} |
+| Annex III pattern observations | {high_risk_count} |
+| Article 50 pattern observations | {limited_count} |
+| Total detector observations | {total_findings} |
 
-## Compliance Gap Assessment
-
-**Overall compliance score:** {overall_score}%
-
-| Article | Requirement | Score | Status |
-|---------|-------------|-------|--------|
-{chr(10).join(article_lines)}
-
-## Remediation Summary
-
-**Total tasks:** {plan_total}
-**Estimated effort:** ~{effort_low}-{effort_high} hours
-**Primary deadline:** {omnibus_primary_deadline}
-
-## Pack Contents
+## Pack contents
 
 | File | Description |
 |------|-------------|
-| 00-summary.md | This document |
-| 01-scan-results.json | All scan findings with file locations and risk tiers |
-| 02-gap-assessment.json | Per-article compliance gap scores and evidence |
-| 03-annex-iv-draft.md | Auto-generated Annex IV technical documentation |
-| 04-dependency-report.json | AI dependency pinning scores and supply chain analysis |
-| 05-audit-trail.json | Hash-chained audit events for this project only (project-scoped) with integrity verification |
-| 06-remediation-plan.md | Prioritised action items with effort estimates |
-| manifest.json | SHA-256 hashes of all files for tamper detection |
+| 00-summary.md | This reliance gate and handoff summary |
+| 01-scan-results.json | Code detector observations, not legal facts |
+| 02-gap-assessment.json | Kernel decision plus evidence held pending applicability |
+| 03-annex-iv-draft.md | Unverified documentation draft |
+| 04-dependency-report.json | Supply-chain observations |
+| 05-audit-trail.json | Project-scoped audit events and integrity observations |
+| 06-resolvable-facts.md | Sourced facts needed for a determination |
+| manifest.json | SHA-256 hashes of pack files |
 
----
-
-_This evidence pack is generated by automated analysis and is not a legal
-determination. All findings should be reviewed by qualified personnel._
+Stop here before relying on the remaining content. Automated observations do
+not establish applicability or compliance. Qualified review must resolve the
+listed facts and verify every supporting artefact.
 """
+
+
+def _generate_resolvable_facts(decision):
+    lines = [
+        "# Facts required before a determination",
+        "",
+        "The generator received no sourced decision facts. Each answer must include provenance and a timestamp.",
+        "",
+    ]
+    for index, item in enumerate(decision.get("unresolved_predicates", []), 1):
+        lines.append(f"{index}. `{item['fact_id']}`: {item['question']}")
+        paths = "; ".join(
+            f"{path['predicate_id']} ({path['provision']})"
+            for path in item.get("would_resolve", [])
+        )
+        if paths:
+            lines.append(f"   Resolves: {paths}")
+    lines.extend(["", "Do not infer an answer from the absence of a detector finding.", ""])
+    return "\n".join(lines)
 
 
 def _generate_readme(name, date_str, include_dpv=False):
@@ -406,18 +408,23 @@ Generated on {date_str} by Regula v{VERSION}.
 
 ## How to use this pack
 
-This folder contains the core artifacts for a compliance readiness review
-of the AI system "{name}" under the EU AI Act (Regulation 2024/1689).
+This folder contains detector observations and supporting material for review.
+It does not establish that the subject is an AI system, that the EU AI Act
+applies, or that any article duty attaches.
+
+**Reliance gate:** Read `00-summary.md` and `06-resolvable-facts.md` before any
+other artefact. Do not rely on templates or observations until those facts are
+resolved with provenance.
 
 **For consultants / auditors:**
 1. Start with `00-summary.md` for an overview
-2. Review `02-gap-assessment.json` for per-article compliance scores
+2. Review `02-gap-assessment.json` for the kernel decision and held evidence
 3. Review `03-annex-iv-draft.md` for technical documentation status
-4. Check `06-remediation-plan.md` for outstanding tasks
+4. Resolve `06-resolvable-facts.md` with sourced evidence
 
 **For developers:**
-1. Read `06-remediation-plan.md` and work through tasks in order
-2. Re-run `regula evidence-pack` after completing tasks to update scores
+1. Resolve the facts in `06-resolvable-facts.md`
+2. Re-run the decision assessment with sourced values
 {dpv_line}
 
 ## Integrity verification
