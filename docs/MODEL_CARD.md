@@ -211,10 +211,11 @@ Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scri
 
 ### Continuous validation
 
-- 2,729 pytest-collected tests, produced by collection rather than
-  hand-maintained (measured 2026-07-30). See
+- 2,776 pytest-collected tests, produced by collection rather than
+  hand-maintained (measured 2026-08-12). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
-- 45 CLI integration tests (`tests/test_cli_integration.py`)
+- 48 CLI integration tests (`tests/test_cli_integration.py`), enumerated by
+  `data/site_facts.json`.
 - 6 self-test assertions (`regula self-test`)
 - 12 health checks (`regula doctor`)
 - CI runs on every push across Python 3.10, 3.11, 3.12, 3.13
