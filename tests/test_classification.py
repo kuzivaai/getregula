@@ -62,6 +62,7 @@ from helpers import assert_eq, assert_true, assert_false
 # pytest discovers them natively from tests/test_register.py and runs them
 # with proper fixture injection.
 import inspect as _inspect
+import itertools as _itertools
 
 # Aliases are bound under this prefix, NOT under "test_", because pytest
 # collects every module-level name matching python_functions
@@ -74,6 +75,19 @@ import inspect as _inspect
 RUNNER_ALIAS_PREFIX = "_runner_test_"
 
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
+
+
+def _bind_runner_case(target, kwargs, case_id):
+    """Return a zero-argument callable for one pytest parameter case."""
+    def runner_case():
+        return target(**kwargs)
+
+    runner_case.__module__ = target.__module__
+    runner_case.__name__ = f"{target.__name__}[{case_id}]"
+    runner_case.__qualname__ = runner_case.__name__
+    return runner_case
+
+
 for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
@@ -81,14 +95,57 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
         _fn = getattr(_mod, _name)
         if not callable(_fn):
             continue
+        _signature = None
         try:
-            _params = set(_inspect.signature(_fn).parameters)
+            _signature = _inspect.signature(_fn)
+            _params = set(_signature.parameters)
+            _required_params = {
+                name for name, parameter in _signature.parameters.items()
+                if parameter.default is _inspect.Parameter.empty
+                and parameter.kind not in {
+                    _inspect.Parameter.VAR_POSITIONAL,
+                    _inspect.Parameter.VAR_KEYWORD,
+                }
+            }
         except (TypeError, ValueError):
             _params = set()
+            _required_params = set()
         if _params & _PYTEST_FIXTURES:
             continue
-        globals()[RUNNER_ALIAS_PREFIX + _name] = _fn
-del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation
+        _param_marks = [
+            mark for mark in getattr(_fn, "pytestmark", [])
+            if mark.name == "parametrize"
+        ]
+        if not _param_marks:
+            if not _required_params or getattr(_fn, "patchings", None):
+                globals()[RUNNER_ALIAS_PREFIX + _name] = _fn
+            continue
+        _case_groups = []
+        for _mark in _param_marks:
+            _argnames = _mark.args[0]
+            if isinstance(_argnames, str):
+                _argnames = tuple(
+                    item.strip() for item in _argnames.split(",") if item.strip()
+                )
+            else:
+                _argnames = tuple(_argnames)
+            _cases = []
+            for _values in _mark.args[1]:
+                if hasattr(_values, "values"):
+                    _values = _values.values
+                if len(_argnames) == 1 and not isinstance(_values, (tuple, list)):
+                    _values = (_values,)
+                _cases.append(dict(zip(_argnames, _values)))
+            _case_groups.append(_cases)
+        for _case_index, _selected in enumerate(_itertools.product(*_case_groups)):
+            _kwargs = {}
+            for _case in _selected:
+                _kwargs.update(_case)
+            if not _required_params.issubset(_kwargs):
+                continue
+            _alias = f"{RUNNER_ALIAS_PREFIX}{_name}_{_case_index}"
+            globals()[_alias] = _bind_runner_case(_fn, _kwargs, _case_index)
+del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:

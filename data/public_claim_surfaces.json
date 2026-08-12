@@ -7183,7 +7183,7 @@
       "content_kind": "mcp-tool-descriptor",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "{\"description\": \"Scan a project directory for code indicators relevant to EU AI Act review. Detects prohibited practices (Article 5), high-risk patterns (Annex III), limited-risk systems (Article 50), credential exposure, and agent autonomy signals. Returns findings with tier (BLOCK/WARN/INFO), confidence, and remediation guidance.\", \"inputSchema\": {\"properties\": {\"min_tier\": {\"description\": \"Only return findings at or above this risk tier.\", \"enum\": [\"minimal_risk\", \"limited_risk\", \"high_risk\", \"prohibited\"], \"type\": \"string\"}, \"path\": {\"description\": \"Absolute or relative path to the project directory to scan. Defaults to current directory.\", \"type\": \"string\"}, \"skip_tests\": {\"description\": \"Exclude test files from findings.\", \"type\": \"boolean\"}}, \"required\": [], \"type\": \"object\"}}"
+      "reason": "{\"description\": \"Scan a project directory for code indicators relevant to EU AI Act review. Detects prohibited practices (Article 5), high-risk patterns (Annex III), limited-risk systems (Article 50), credential exposure, and agent autonomy signals. Returns detector observations separately from an evidence-aware legal decision.\", \"inputSchema\": {\"properties\": {\"decision_request\": {\"description\": \"Canonical versioned fact request for the decision kernel.\", \"type\": \"object\"}, \"min_tier\": {\"description\": \"Only return findings at or above this risk tier.\", \"enum\": [\"minimal_risk\", \"limited_risk\", \"high_risk\", \"prohibited\"], \"type\": \"string\"}, \"path\": {\"description\": \"Absolute or relative path to the project directory to scan. Defaults to current directory.\", \"type\": \"string\"}, \"skip_tests\": {\"description\": \"Exclude test files from findings.\", \"type\": \"boolean\"}}, \"required\": [], \"type\": \"object\"}}"
     },
     {
       "stable_id": "mcp:c283e59ed6693730",
@@ -7194,7 +7194,7 @@
       "content_kind": "mcp-tool-descriptor",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "{\"description\": \"Return a provisional, pattern-based risk indication for code or text; this is not a legal classification of an AI system. Returns: PROHIBITED (Article 5), HIGH-RISK (Annex III), LIMITED-RISK (Article 50), or MINIMAL-RISK, with confidence score and applicable articles.\", \"inputSchema\": {\"properties\": {\"input\": {\"description\": \"Code snippet or description to classify.\", \"type\": \"string\"}}, \"required\": [\"input\"], \"type\": \"object\"}}"
+      "reason": "{\"description\": \"Return a provisional, pattern-based risk indication for code or text; this is not a legal classification of an AI system. Returns detector observations separately from an evidence-aware legal decision.\", \"inputSchema\": {\"properties\": {\"decision_request\": {\"description\": \"Canonical versioned fact request for the decision kernel.\", \"type\": \"object\"}, \"input\": {\"description\": \"Code snippet or description to classify.\", \"type\": \"string\"}}, \"required\": [\"input\"], \"type\": \"object\"}}"
     },
     {
       "stable_id": "mcp:410cecad29448282",
@@ -7205,7 +7205,7 @@
       "content_kind": "mcp-tool-descriptor",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "{\"description\": \"Assess the presence of project evidence relevant to Articles 9-15 of the EU AI Act. Returns a readiness score (0-100) per article with observed evidence and gaps; the score does not determine compliance. Article 9: Risk Management, 10: Data Governance, 11: Technical Docs, 12: Record-Keeping, 13: Transparency, 14: Human Oversight, 15: Accuracy/Security.\", \"inputSchema\": {\"properties\": {\"article\": {\"description\": \"Specific article to assess (9-15). If omitted, assesses all.\", \"maximum\": 15, \"minimum\": 9, \"type\": \"integer\"}, \"path\": {\"description\": \"Absolute or relative path to the project directory.\", \"type\": \"string\"}}, \"required\": [], \"type\": \"object\"}}"
+      "reason": "{\"description\": \"Assess the presence of project evidence relevant to Articles 9-15 of the EU AI Act. Returns observed evidence only for duties resolved by the decision kernel. Article 9: Risk Management, 10: Data Governance, 11: Technical Docs, 12: Record-Keeping, 13: Transparency, 14: Human Oversight, 15: Accuracy/Security.\", \"inputSchema\": {\"properties\": {\"article\": {\"description\": \"Specific article to assess (9-15). If omitted, assesses all.\", \"maximum\": 15, \"minimum\": 9, \"type\": \"integer\"}, \"decision_request\": {\"description\": \"Canonical versioned fact request for the decision kernel.\", \"type\": \"object\"}, \"path\": {\"description\": \"Absolute or relative path to the project directory.\", \"type\": \"string\"}}, \"required\": [], \"type\": \"object\"}}"
     },
     {
       "stable_id": "package:c169b1e084c02b09",
@@ -7723,6 +7723,50 @@
       "claim_capable": true,
       "classification": "active_product",
       "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:b2782ec58ca98ba7",
+      "channel": "website",
+      "source": "site/assess/decision-adapters.js",
+      "destination": "/assess/decision-adapters.js",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "asset",
+      "claim_capable": false,
+      "classification": "non_claim_asset",
+      "reason": "deployed non-claim asset"
+    },
+    {
+      "stable_id": "website:10afc12fcf006084",
+      "channel": "website",
+      "source": "site/assess/decision-kernel.js",
+      "destination": "/assess/decision-kernel.js",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "asset",
+      "claim_capable": false,
+      "classification": "non_claim_asset",
+      "reason": "deployed non-claim asset"
+    },
+    {
+      "stable_id": "website:e10448c9edbbed53",
+      "channel": "website",
+      "source": "site/assess/decision-model.js",
+      "destination": "/assess/decision-model.js",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "asset",
+      "claim_capable": false,
+      "classification": "non_claim_asset",
+      "reason": "deployed non-claim asset"
+    },
+    {
+      "stable_id": "website:2e5faacce0bd0247",
+      "channel": "website",
+      "source": "site/assess/decision-ui.js",
+      "destination": "/assess/decision-ui.js",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "asset",
+      "claim_capable": false,
+      "classification": "non_claim_asset",
+      "reason": "deployed non-claim asset"
     },
     {
       "stable_id": "website:6abbf90bcf9e5ebc",
@@ -8590,13 +8634,13 @@
       "mcp": 3,
       "package": 2,
       "repository_docs": 39,
-      "website": 84
+      "website": 88
     },
     "classification": {
       "active_product": 755,
       "historical_record": 1,
       "internal_record": 1,
-      "non_claim_asset": 23
+      "non_claim_asset": 27
     }
   },
   "exclusions": [
