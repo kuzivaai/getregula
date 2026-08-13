@@ -1,0 +1,5 @@
+[build]
+  # The repository root contains the Python package; the static website lives
+  # under site/. Without this, Netlify deploy previews report success while
+  # serving a 404 because there is no root index.html.
+  publish = "site"
