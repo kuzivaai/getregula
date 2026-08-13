@@ -71,12 +71,19 @@ def _count_pattern(count: int):
     claim, and allowlisting the file would have blinded the guard to every
     real claim in it. The colliding value is deliberately not written into
     this file, for the same reason the note inside the test gives.
+
+    `(?!\\w)`, not `(?!\\d)`, for the symmetric reason. MEASURED
+    2026-08-07: at one canonical value the scan failed naming
+    data/public_claim_surfaces.json, where the only hit was inside a
+    stable_id of the form `cli:NNNNfb52a8321880`: the count at the START
+    of a hex run, which the leading lookbehind cannot see. Excluding only
+    a trailing digit let hex letters follow the count.
     """
     grouped = f"{count:,}"
     variants = {str(count), grouped, grouped.replace(",", ".")}
     return re.compile(
         r"(?<!\w)(" + "|".join(re.escape(v) for v in sorted(variants))
-        + r")(?!\d)")
+        + r")(?!\w)")
 
 class TestPublishedCountManifest(unittest.TestCase):
     def _policy(self, *historical):
@@ -260,6 +267,11 @@ class TestPublishedCountManifest(unittest.TestCase):
         self.assertEqual(
             rx.findall(f"sha256:ee{count}d8330ed8de1"), [],
             "the count matched inside a hash path (the 28 July near-miss)")
+        self.assertEqual(
+            rx.findall(f'"stable_id": "cli:{count}fb52a8321880"'), [],
+            "the count matched at the START of a hex run (the 7 August "
+            "public_claim_surfaces.json collision); the trailing lookahead "
+            "must exclude any word character, not just a digit")
         self.assertEqual(
             rx.findall(f"| {count:,} |"), [f"{count:,}"],
             "the narrowed lookbehind stopped seeing a real published claim, "

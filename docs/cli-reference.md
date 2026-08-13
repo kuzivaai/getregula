@@ -33,7 +33,7 @@ regula risks --project .
 
 # Week-by-week compliance roadmap
 regula roadmap --project .
-regula roadmap --project . --target-date 2026-08-02
+regula roadmap --project . --target-date 2027-12-02
 regula roadmap --project . --format json
 
 # Generate reports
@@ -216,7 +216,7 @@ The command produces a documented self-assessment with the conditions met, the r
 
 ### GPAI Code of Practice Check (Article 53 + Article 55)
 
-Maps a GPAI provider codebase to the three chapters of the EU AI Act GPAI Code of Practice (final 10 July 2025, endorsed 1 August 2025, obligations in force since 2 August 2025, enforcement actions from 2 August 2026). Regulation (EU) 2026/1744 changed specified AI Act provisions; confirm the GPAI scope and transition rules against the enacted text:
+Maps a GPAI provider codebase to the three chapters of the EU AI Act GPAI Code of Practice (final 10 July 2025, endorsed 1 August 2025, obligations in force since 2 August 2025, enforcement actions possible since 2 August 2026). Regulation (EU) 2026/1744 changed specified AI Act provisions; confirm the GPAI scope and transition rules against the enacted text:
 
 - **Chapter 1 — Transparency** (all GPAI providers, Art 53(1)(a)(b)(d)): model documentation, downstream-provider information, training-content summary
 - **Chapter 2 — Copyright** (all GPAI providers, Art 53(1)(c)): written copyright policy, text-and-data mining opt-out compliance (robots.txt / TDMRep)
@@ -374,7 +374,7 @@ Generates a deadline-aware, week-by-week action plan from a gap assessment. Orga
 ```bash
 regula roadmap --project .                     # Text roadmap
 regula roadmap --project . --format json       # Machine-readable output
-regula roadmap --project . --target-date 2026-08-02  # Explicit deadline
+regula roadmap --project . --target-date 2027-12-02  # Explicit deadline (Annex III date)
 ```
 
 ### Session Risk Aggregation

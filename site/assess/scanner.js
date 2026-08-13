@@ -1671,16 +1671,15 @@ function checkProhibited(text, stripped) {
   if (matches.length === 0) return null;
   const primary = matches[0];
   return {
-    tier: 'prohibited',
-    confidence: matches.length >= 2 ? 'high' : 'medium',
+    detector_class: 'article_5_pattern',
     indicators_matched: matches.map(m => m.indicator),
-    applicable_articles: [primary.article],
-    category: 'Prohibited (Article 5)',
+    suggested_provisions: [primary.article],
+    category: 'Article 5 code pattern',
     description: primary.description,
-    action: 'block',
-    message: 'PROHIBITED: ' + primary.description,
+    review_priority: 'critical',
+    message: 'Article 5 pattern for review: ' + primary.description,
     exceptions: primary.exceptions || null,
-    confidence_score: _confScore('prohibited', matches.length, isAiRelated(text)),
+    detector_priority: _confScore('prohibited', matches.length, isAiRelated(text)),
     match_lines: _collectLines(matches),
   };
 }
@@ -1692,15 +1691,14 @@ function checkHighRisk(text, stripped) {
   for (const m of matches) { if (m.articles) m.articles.forEach(a => arts.add(a)); }
   const primary = matches[0];
   return {
-    tier: 'high_risk',
-    confidence: matches.length >= 2 ? 'high' : 'medium',
+    detector_class: 'annex_iii_pattern',
     indicators_matched: matches.map(m => m.indicator),
-    applicable_articles: _sortArticles(arts),
+    suggested_provisions: _sortArticles(arts),
     category: primary.category,
     description: primary.description,
-    action: 'allow_with_requirements',
-    message: 'HIGH-RISK: ' + primary.description + ' - Articles ' + _sortArticles(arts).join(', '),
-    confidence_score: _confScore('high_risk', matches.length, true),
+    review_priority: 'high',
+    message: 'Annex III pattern for review: ' + primary.description + ' - provisions ' + _sortArticles(arts).join(', '),
+    detector_priority: _confScore('high_risk', matches.length, true),
     match_lines: _collectLines(matches),
   };
 }
@@ -1710,15 +1708,14 @@ function checkLimitedRisk(text, stripped) {
   if (matches.length === 0) return null;
   const primary = matches[0];
   return {
-    tier: 'limited_risk',
-    confidence: matches.length >= 2 ? 'high' : 'medium',
+    detector_class: 'article_50_pattern',
     indicators_matched: matches.map(m => m.indicator),
-    applicable_articles: ['50'],
-    category: 'Limited Risk (Article 50)',
+    suggested_provisions: ['50'],
+    category: 'Article 50 code pattern',
     description: primary.description,
-    action: 'allow_with_transparency',
-    message: 'LIMITED-RISK: ' + primary.description,
-    confidence_score: _confScore('limited_risk', matches.length, true),
+    review_priority: 'medium',
+    message: 'Article 50 pattern for review: ' + primary.description,
+    detector_priority: _confScore('limited_risk', matches.length, true),
     match_lines: _collectLines(matches),
   };
 }
@@ -1838,10 +1835,10 @@ function classifyCode(text, language) {
   // 2. AI check
   if (!isAiRelated(text)) {
     return {
-      tier: 'not_ai', confidence: 'high',
-      indicators_matched: [], applicable_articles: [],
-      action: 'allow', message: 'No AI indicators detected.',
-      confidence_score: 0, match_lines: [],
+      detector_class: 'no_ai_pattern',
+      indicators_matched: [], suggested_provisions: [],
+      review_priority: 'low', message: 'No code-observable AI indicators detected.',
+      detector_priority: 0, match_lines: [],
     };
   }
 
@@ -1855,11 +1852,11 @@ function classifyCode(text, language) {
 
   // 5. Minimal-risk
   return {
-    tier: 'minimal_risk', confidence: 'medium',
-    indicators_matched: [], applicable_articles: [],
-    action: 'allow',
-    message: 'No elevated risk-tier indicators detected. This is not a legal classification; Article 4, Article 5, and other context-dependent duties may still apply.',
-    confidence_score: _confScore('minimal_risk', 0, true),
+    detector_class: 'no_elevated_pattern',
+    indicators_matched: [], suggested_provisions: [],
+    review_priority: 'low',
+    message: 'No elevated code-observable pattern detected. This does not determine legal scope or duties.',
+    detector_priority: _confScore('minimal_risk', 0, true),
     match_lines: [],
   };
 }
@@ -1873,9 +1870,9 @@ function scanCode(text, filename) {
   const language = detectLanguage(text, filename);
   const classification = classifyCode(text, language);
   const security = checkAiSecurity(text);
-  const observations = (classification.tier === 'high_risk')
+  const observations = (classification.detector_class === 'annex_iii_pattern')
     ? generateObservations(text) : [];
-  const bias = (classification.tier !== 'not_ai')
+  const bias = (classification.detector_class !== 'no_ai_pattern')
     ? checkBiasRisk(text) : [];
   const training = isTrainingActivity(text);
 

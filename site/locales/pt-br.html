@@ -295,7 +295,7 @@
 <nav class="nav" id="nav" aria-label="Navegacao principal">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/pt-br.html" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -333,7 +333,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.722</strong> testes
+                <strong style="color:var(--text);">2.781</strong> testes
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> vulnerabilidades inesperadas
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero depend&ecirc;ncias
                 <span class="sp-sep" aria-hidden="true">&middot;</span> seu c&oacute;digo nunca sai da sua m&aacute;quina
@@ -356,91 +356,63 @@
             </div>
             <div class="term-body">
                 <div class="term-panel active" id="tab-check" role="tabpanel" aria-labelledby="tab-check-label">
-                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check . --explain</span>
+                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check tests/fixtures/sample_high_risk --explain</span>
 
-<span class="t-h">Classification: HIGH-RISK</span>
-  Annex III, Category 5
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-12.4
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
 
-<span class="t-y">WHY:</span>
-  scoring.py:23 : essential_services
-    <span class="t-m">Code: score = model.predict(applicant)</span>
-    Legal basis: Annex III : Articles 9-15
-    False positive if: not a credit decision
-
-<span class="t-h">ROLE:</span> DEPLOYER (confidence: high)
-  <span class="t-m">- OpenAI API usage detected</span>
-
-<span class="t-y">OBLIGATIONS:</span>
-  <span class="t-c">[HIGH]</span> Art. 9  Risk management   : 40-60h
-  <span class="t-c">[HIGH]</span> Art. 14 Human oversight  : 16-24h
-  Total: 160-324h | Deadline: <span class="t-y">Dec 2027</span>
-  <span class="t-m">&#9888; Omnibus agreed 7 May 2026, EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in OJ 2026-07-24, in force from 2026-07-27</span></pre>
+Detector observations are reported separately and do not create obligations.</pre>
+                    <p class="term-provenance">Trecho de decisão de saída real. Vinculado a data/gap_demo.json e tests/test_gap_demo.py .</p>
                 </div>
                 <div class="term-panel" id="tab-plan" role="tabpanel" aria-labelledby="tab-plan-label">
-                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula plan .</span>
+                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula plan --project tests/fixtures/sample_high_risk</span>
 
-<span class="t-h">COMPLIANCE PLAN  &middot;  HIGH-RISK (Annex III, Category 5)</span>
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-12.4
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
 
-Priority 1 : Risk Management System (Art. 9)
-  Effort: 40&ndash;60h
-  <span class="t-r">&times;</span> No risk assessment file found
-  <span class="t-r">&times;</span> No model evaluation documented
-
-Priority 2 : Human Oversight (Art. 14)
-  Effort: 16&ndash;24h
-  <span class="t-r">&times;</span> No review-before-action pattern detected
-  <span class="t-r">&times;</span> No override mechanism found
-
-Priority 3 : Technical Documentation (Art. 11)
-  Effort: 8&ndash;12h
-  <span class="t-g">&#10003;</span> Annex IV template: regula docs .
-
-Total: 64&ndash;96h estimated effort</pre>
+No obligation plan or effort estimate was emitted because applicability is unresolved.</pre>
+                    <p class="term-provenance">Saída real, não um mock-up. Vinculado a data/gap_demo.json e tests/test_gap_demo.py .</p>
                 </div>
                 <div class="term-panel" id="tab-gap" role="tabpanel" aria-labelledby="tab-gap-label">
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula gap tests/fixtures/sample_high_risk</span>
 
-<span class="t-h">EU AI Act Compliance Gap Assessment: sample_high_risk</span>
-Highest risk tier: not_ai
-Overall score:     6%
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-12.4
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
 
-  NOTE: This score measures the PRESENCE of compliance
-  documentation and infrastructure : it does not assess code
-  risk and cannot offset scan findings. A project can score
-  100% here and still fail `regula check` on prohibited or
-  high-risk patterns. Run both; they answer different questions.
-
-Article 9   Risk Management                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 10  Data Governance                     [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 11  Technical Documentation             [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 12  Record-Keeping                      [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 13  Transparency                        [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 14  Human Oversight                     [<span class="t-y"> 45%</span>] <span class="t-y">PARTIAL</span>
-Article 15  Accuracy, Robustness, Cybersecurity [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-Article 17  Quality Management System           [<span class="t-r">  0%</span>] <span class="t-r">NOT FOUND</span>
-
-Run: <span class="t-b">regula plan tests/fixtures/sample_high_risk</span> for a prioritised fix list</pre>
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</pre>
                     <p class="term-provenance">&#8594; tests/test_gap_demo.py &middot; tests/fixtures/sample_high_risk</p>
                 </div>
                 <div class="term-panel" id="tab-comply" role="tabpanel" aria-labelledby="tab-comply-label">
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
 
-<span class="t-h">EU AI Act Compliance Checklist: sample_high_risk</span>
-  Overall compliance score: 6/100
-  Highest risk tier:        not_ai (showing all articles per --all flag)
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-12.4
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
 
-  [<span class="t-r">&times;</span>] Article 9   Risk Management                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 10  Data Governance                       <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 11  Technical Documentation               <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 12  Record-Keeping                        <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 13  Transparency                          <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 14  Human Oversight                      <span class="t-y">45%</span> <span class="t-y">NEEDS WORK</span>
-  [<span class="t-r">&times;</span>] Article 15  Accuracy, Robustness, Cybersecurity   <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-  [<span class="t-r">&times;</span>] Article 17  Quality Management System             <span class="t-r">0%</span> <span class="t-r">NOT FOUND</span>
-
-  0/8 high-risk obligations have strong evidence
-
-Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</pre>
                     <p class="term-provenance">&#8594; tests/test_gap_demo.py &middot; tests/fixtures/sample_high_risk</p>
                 </div>
             </div>
@@ -467,8 +439,8 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
     <div class="audience-grid">
         <div class="audience-card audience-biz">
             <div class="audience-label">Se voce dirige o negocio</div>
-            <h3>Voce conhece sua exposicao legal?</h3>
-            <p>Se sua equipe constroi ou usa IA, a Lei de IA da UE pode se aplicar, mesmo fora da UE. A maioria das ferramentas se enquadra em risco limitado ou minimo. Usa Claude Code ou Cursor? Cole <code>regula assess</code> no seu chat. Tem um desenvolvedor? Envie esta pagina.</p>
+            <h3>Comece pelo contexto de uso</h3>
+            <p>Se sua equipe desenvolve ou usa IA, jurisdi&ccedil;&atilde;o, finalidade pretendida, papel e contexto de implanta&ccedil;&atilde;o determinam quais regras podem se aplicar. Registre esse contexto em <code>regula assess</code> e encaminhe o resultado aos respons&aacute;veis t&eacute;cnicos e jur&iacute;dicos adequados.</p>
             <button type="button" class="audience-fwd" onclick="copyPageUrl(this)">
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Copiar link para enviar ao seu desenvolvedor</span>
@@ -480,8 +452,8 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="audience-card audience-dev">
             <div class="audience-label">Se voce escreve o codigo</div>
-            <h3>Usuarios na UE? A Lei de IA se aplica a voce.</h3>
-            <p>O Artigo 2 e extraterritorial. A maioria dos chatbots e ferramentas de produtividade sao risco limitado: uma divulgacao de transparencia, nada mais. Escaneie para confirmar.</p>
+            <h3>Revise os padr&otilde;es encontrados no c&oacute;digo</h3>
+            <p>O Artigo 2 inclui situa&ccedil;&otilde;es em que a Lei se aplica fora da UE, mas aplicabilidade e classifica&ccedil;&atilde;o de risco n&atilde;o podem ser determinadas apenas pelo c&oacute;digo-fonte. Use o scan para localizar evid&ecirc;ncias e perguntas para revis&atilde;o contextual.</p>
             <ul>
                 <li>Funciona com codigo gerado por IA (Cursor, Lovable, Bolt, Claude Code)</li>
                 <li>Gera documentacao Anexo IV a partir do seu codigo real</li>
@@ -491,8 +463,8 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         </div>
         <div class="audience-card audience-audit">
             <div class="audience-label">Se voce audita conformidade</div>
-            <h3>Evidencia verificavel, nao autoatestacao.</h3>
-            <p>O Regula gera pacotes de evidencias assinados e com marca temporal, com manifestos de integridade SHA-256. Cada descoberta e rastreavel ate um arquivo e linha. Verifique a cadeia voce mesmo. <a href="/sample-report.html" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'sample-report'}})">Ver um relatorio de exemplo &rarr;</a></p>
+            <h3>Estruturas de evid&ecirc;ncia revis&aacute;veis</h3>
+            <p>O Regula pode gerar estruturas de pacotes de evid&ecirc;ncia com manifestos SHA-256; comandos opcionais acrescentam assinaturas ou marcas temporais quando seus pr&eacute;-requisitos est&atilde;o configurados. Os pacotes exigem preenchimento humano e n&atilde;o demonstram sufici&ecirc;ncia jur&iacute;dica. <a href="/sample-report.html" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'sample-report'}})">Ver um relat&oacute;rio de exemplo &rarr;</a> &middot; <a href="/pricing.html">Perguntas gratuitas e consultoria planejada &rarr;</a></p>
             <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula conform --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula conform --sign .</span>
@@ -506,7 +478,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
 <!-- O QUE A REGULA MOSTRA -->
 <div class="sec reveal" id="tiers">
     <h2 class="sec-head">O que a Regula mostra</h2>
-    <p class="sec-sub">A Lei de IA da UE classifica cada sistema de IA em um nivel de risco. O Regula escaneia seu codigo, mostra qual nivel se aplica e da a lista de correcoes.</p>
+    <p class="sec-sub">A Lei de IA da UE usa regras baseadas em risco cuja aplica&ccedil;&atilde;o depende da finalidade pretendida e do contexto de uso. O Regula apresenta indicadores candidatos e disposi&ccedil;&otilde;es relacionadas para revis&atilde;o humana; ele n&atilde;o decide a categoria jur&iacute;dica.</p>
     <div class="tiers">
         <div class="tier tier-r">
             <div class="tier-badge">Proibido</div>
@@ -606,7 +578,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card">
             <div class="tag tag-blue">Lacunas</div>
             <h3>O que esta faltando?</h3>
-            <p>Gestao de riscos, governanca de dados, logging, transparencia, supervisao humana, precisao. Pontuacao por artigo com estimativas de esforco.</p>
+            <p>Separa observacoes de codigo de decisoes juridicas. Quando a aplicabilidade nao esta resolvida, informa os fatos necessarios em seguida sem emitir pontuacoes por artigo ou estimativas de esforco.</p>
             <code style="font-size:11px;color:#9898b4;">regula gap .</code>
         </div>
         <div class="card-base art-card">
@@ -634,7 +606,7 @@ Run: <span class="t-b">regula comply --article 9</span> for deep-dive</pre>
         <div class="card-base art-card">
             <div class="tag tag-purple">Evidencias</div>
             <h3>Pacote de avaliacao de conformidade</h3>
-            <p>Evidencias Art. 43: 26 arquivos mapeados para Artigos 9&ndash;15, pontuacoes de prontidao por artigo, hashes de integridade SHA-256.</p>
+            <p>Pacote de evidencias completavel pelo revisor, com gate de confianca, lista de fatos nao resolvidos e hashes de integridade SHA-256. Os deveres de artigos so sao anexados depois que o kernel resolve a aplicabilidade.</p>
             <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
         </div>
         <div class="card-base art-card">

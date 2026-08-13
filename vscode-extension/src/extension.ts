@@ -70,8 +70,9 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand('regula.scanFile', () => {
             const editor = vscode.window.activeTextEditor;
             if (editor) {
-                scanFile(editor.document.uri);
+                return scanFile(editor.document.uri);
             }
+            return undefined;
         })
     );
 
@@ -80,8 +81,9 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand('regula.scanWorkspace', () => {
             const folders = vscode.workspace.workspaceFolders;
             if (folders && folders.length > 0) {
-                scanWorkspace(folders[0].uri);
+                return scanWorkspace(folders[0].uri);
             }
+            return undefined;
         })
     );
 
@@ -103,15 +105,27 @@ export function activate(context: vscode.ExtensionContext): void {
 interface Finding {
     file: string;
     line: number;
-    tier: string;
+    detector_class: string;
     category: string;
     description: string;
-    articles?: string[];
-    confidence_score: number;
+    suggested_provisions?: string[];
+    detector_priority: number;
     suppressed: boolean;
     open_question?: boolean;
     lifecycle_phases?: string[];
     provenance?: string;
+}
+
+interface DecisionResult {
+    result_type: 'indication' | 'insufficient_information' | 'outside_scope_candidate';
+    model_version: string;
+    jurisdiction: string;
+    rule_resolution: string;
+}
+
+interface ScanResponse {
+    findings: Finding[];
+    decision: DecisionResult;
 }
 
 /**
@@ -121,16 +135,74 @@ interface Finding {
  * With --explain: envelope.data is { findings: [...], explanations: [...] }.
  * Handle both shapes defensively.
  */
-function extractFindings(stdout: string): Finding[] {
-    const result = JSON.parse(stdout);
-    const data = result?.data;
-    if (Array.isArray(data)) {
-        return data;
+function extractScanResponse(stdout: string): ScanResponse {
+    const result: unknown = JSON.parse(stdout);
+    if (!result || typeof result !== 'object' || Array.isArray(result)) {
+        throw new Error('Regula CLI response must be an object envelope');
     }
-    if (data && Array.isArray(data.findings)) {
-        return data.findings;
+    const envelope = result as Record<string, unknown>;
+    if (typeof envelope.format_version !== 'string' || envelope.command !== 'check') {
+        throw new Error('Regula CLI response has an unsupported envelope');
     }
-    return [];
+    const data = envelope.data;
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
+        const record = data as Record<string, unknown>;
+        const decision = validateDecision(record.decision);
+        if (Array.isArray(record.detector_findings)) {
+            return {
+                findings: validateFindings(record.detector_findings),
+                decision,
+            };
+        }
+    }
+    throw new Error('Regula CLI response does not contain detector findings and a decision');
+}
+
+function validateDecision(value: unknown): DecisionResult {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+        throw new Error('Regula CLI response does not contain a decision object');
+    }
+    const decision = value as Record<string, unknown>;
+    const validTypes = ['indication', 'insufficient_information', 'outside_scope_candidate'];
+    if (
+        typeof decision.result_type !== 'string' ||
+        !validTypes.includes(decision.result_type) ||
+        typeof decision.model_version !== 'string' ||
+        typeof decision.jurisdiction !== 'string' ||
+        typeof decision.rule_resolution !== 'string'
+    ) {
+        throw new Error('Regula CLI decision has an unsupported shape');
+    }
+    return decision as unknown as DecisionResult;
+}
+
+function validateFindings(values: unknown[]): Finding[] {
+    for (const [index, value] of values.entries()) {
+        if (!value || typeof value !== 'object' || Array.isArray(value)) {
+            throw new Error(`Regula finding ${index} must be an object`);
+        }
+        const finding = value as Record<string, unknown>;
+        if (
+            typeof finding.file !== 'string' ||
+            typeof finding.line !== 'number' ||
+            typeof finding.detector_class !== 'string' ||
+            typeof finding.category !== 'string' ||
+            typeof finding.description !== 'string' ||
+            typeof finding.detector_priority !== 'number' ||
+            typeof finding.suppressed !== 'boolean'
+        ) {
+            throw new Error(`Regula finding ${index} has an unsupported shape`);
+        }
+    }
+    return values as Finding[];
+}
+
+function showScanFailure(scope: 'file' | 'workspace'): void {
+    statusBar.text = '$(error) Regula: scan failed';
+    statusBar.tooltip = 'The last scan failed. Existing diagnostics may be stale.';
+    void vscode.window.showErrorMessage(
+        `Regula: ${scope} scan failed. Existing diagnostics were preserved and may be stale.`
+    );
 }
 
 const TIER_ORDER: Record<string, number> = {
@@ -174,10 +246,11 @@ async function scanFile(uri: vscode.Uri): Promise<void> {
             maxBuffer: 5 * 1024 * 1024,
         });
 
-        const findings = extractFindings(stdout);
+        const response = extractScanResponse(stdout);
+        const findings = response.findings;
         updateDiagnostics(uri, findings);
         updateFindingsTree(uri, findings);
-        updateStatusBarCount();
+        updateStatusBarCount(response.decision);
     } catch (err: unknown) {
         if (isEnoent(err)) {
             statusBar.text = '$(shield) Regula: CLI not found';
@@ -190,16 +263,16 @@ async function scanFile(uri: vscode.Uri): Promise<void> {
         const stdout = getStdout(err);
         if (stdout) {
             try {
-                const findings = extractFindings(stdout);
+                const response = extractScanResponse(stdout);
+                const findings = response.findings;
                 updateDiagnostics(uri, findings);
                 updateFindingsTree(uri, findings);
-                updateStatusBarCount();
+                updateStatusBarCount(response.decision);
             } catch {
-                diagnosticCollection.delete(uri);
-                updateStatusBarCount();
+                showScanFailure('file');
             }
         } else {
-            updateStatusBarCount();
+            showScanFailure('file');
         }
     }
 
@@ -235,14 +308,14 @@ async function scanWorkspace(uri: vscode.Uri): Promise<void> {
             statusBar.text = '$(sync~spin) Regula: scanning workspace...';
             progress.report({ message: 'Analysing files...' });
 
-            let findings: Finding[];
+            let response: ScanResponse;
 
             try {
                 const { stdout } = await execFileAsync(executable, args, {
                     timeout: 120000,
                     maxBuffer: 10 * 1024 * 1024,
                 });
-                findings = extractFindings(stdout);
+                response = extractScanResponse(stdout);
             } catch (err: unknown) {
                 if (isEnoent(err)) {
                     statusBar.text = '$(shield) Regula: CLI not found';
@@ -253,17 +326,18 @@ async function scanWorkspace(uri: vscode.Uri): Promise<void> {
                 }
                 const stdout = getStdout(err);
                 if (!stdout) {
-                    updateStatusBarCount();
+                    showScanFailure('workspace');
                     return;
                 }
                 try {
-                    findings = extractFindings(stdout);
+                    response = extractScanResponse(stdout);
                 } catch {
-                    updateStatusBarCount();
+                    showScanFailure('workspace');
                     return;
                 }
             }
 
+            const findings = response.findings;
             // Group findings by file
             const byFile = new Map<string, Finding[]>();
             for (const f of findings) {
@@ -286,7 +360,7 @@ async function scanWorkspace(uri: vscode.Uri): Promise<void> {
                 updateFindingsTree(fullPath, fileFindings);
             }
 
-            updateStatusBarCount();
+            updateStatusBarCount(response.decision);
 
             const elapsed = Date.now() - startTime;
             const totalFindings = findings.filter(f => !f.suppressed).length;
@@ -315,16 +389,16 @@ function updateDiagnostics(uri: vscode.Uri, findings: Finding[]): void {
 
     for (const f of findings) {
         if (f.suppressed) continue;
-        const level = TIER_ORDER[f.tier] || 1;
+        const level = TIER_ORDER[f.detector_class] || 1;
         if (level < minLevel) continue;
 
         const line = Math.max(0, (f.line || 1) - 1);
         const range = new vscode.Range(line, 0, line, 200);
 
-        const severity = tierToSeverity(f.tier);
+        const severity = tierToSeverity(f.detector_class);
 
         const lifecycle = f.lifecycle_phases?.[0] || 'develop';
-        const articles = f.articles?.join(', ') || '';
+        const articles = f.suggested_provisions?.join(', ') || '';
         const message = `${f.description}${articles ? ` (${articles})` : ''} [${lifecycle}]`;
 
         const diagnostic = new vscode.Diagnostic(range, message, severity);
@@ -339,12 +413,18 @@ function updateDiagnostics(uri: vscode.Uri, findings: Finding[]): void {
     diagnosticCollection.set(uri, diagnostics);
 }
 
-function updateStatusBarCount(): void {
+function updateStatusBarCount(decision?: DecisionResult): void {
     let totalFindings = 0;
     diagnosticCollection.forEach((_uri, diagnostics) => {
         totalFindings += diagnostics.length;
     });
     statusBar.text = `$(shield) Regula: ${totalFindings} finding(s)`;
+    if (decision) {
+        statusBar.tooltip = (
+            `Detector findings: ${totalFindings}. Legal decision: ${decision.result_type}. ` +
+            `Model ${decision.model_version}; ${decision.rule_resolution} rule resolution.`
+        );
+    }
     vscode.commands.executeCommand('setContext', 'regula.hasFindings', totalFindings > 0);
 }
 
@@ -354,7 +434,7 @@ function updateFindingsTree(uri: vscode.Uri, findings: Finding[]): void {
         const config = vscode.workspace.getConfiguration('regula');
         const minTier = config.get<string>('minTier', 'limited_risk');
         const minLevel = TIER_ORDER[minTier] || 2;
-        const level = TIER_ORDER[f.tier] || 1;
+        const level = TIER_ORDER[f.detector_class] || 1;
         return level >= minLevel;
     });
     findingsTreeProvider.setFindings(uri, visible);
@@ -411,11 +491,11 @@ class FindingsTreeProvider implements vscode.TreeDataProvider<TreeNode> {
 
         // FindingItemNode
         const f = element.finding;
-        const tierIcon = tierToThemeIcon(f.tier);
+        const tierIcon = tierToThemeIcon(f.detector_class);
         const label = `${f.category}: ${f.description}`;
         const item = new vscode.TreeItem(label, vscode.TreeItemCollapsibleState.None);
         item.iconPath = tierIcon;
-        item.tooltip = `${f.tier} — ${f.description}${f.articles ? ` (${f.articles.join(', ')})` : ''}`;
+        item.tooltip = `${f.detector_class}: ${f.description}${f.suggested_provisions ? ` (${f.suggested_provisions.join(', ')})` : ''}`;
         item.description = `line ${f.line || 1}`;
 
         // Click to navigate to the finding location

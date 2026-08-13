@@ -45,7 +45,7 @@ def test_mcp_tools_list():
 # ── Classify Tool ──────────────────────────────────────────────────
 
 def test_mcp_regula_classify():
-    """tools/call with regula_classify returns a classification result."""
+    """Classify separates detector output from the kernel decision."""
     resp = handle_request({
         "jsonrpc": "2.0", "id": 3, "method": "tools/call",
         "params": {
@@ -58,9 +58,13 @@ def test_mcp_regula_classify():
     content = result["content"]
     assert_true(len(content) > 0, "content is non-empty")
     assert_eq(content[0]["type"], "text", "content type is text")
-    text = content[0]["text"]
-    assert_in("Tier:", text, "output contains Tier")
-    assert_in("Confidence:", text, "output contains Confidence")
+    structured = result["structuredContent"]
+    assert_eq(structured["decision"]["result_type"], "insufficient_information",
+              "undeclared legal facts remain unresolved")
+    observation = structured["detector_observation"]
+    assert_true("detector_class" in observation, "detector class is explicit")
+    assert_true("tier" not in observation, "no legal-looking tier is emitted")
+    assert_true("confidence" not in observation, "no decision confidence is emitted")
 
 
 # ── Check Tool ─────────────────────────────────────────────────────
@@ -77,10 +81,10 @@ def test_mcp_regula_check():
     })
     assert_eq(resp["id"], 4, "response id")
     result = resp["result"]
-    text = result["content"][0]["text"]
-    # sample_prohibited fixture should produce findings
-    assert_true(len(text) > 0, "check output is non-empty")
-    assert_in("Regula scan:", text, "output contains scan header")
+    structured = result["structuredContent"]
+    assert_true(bool(structured["detector_findings"]), "fixture produces detector findings")
+    assert_eq(structured["decision"]["result_type"], "insufficient_information",
+              "scan patterns do not become legal facts")
 
 
 # ── Gap Tool ───────────────────────────────────────────────────────
@@ -99,10 +103,11 @@ def test_mcp_regula_gap_returns_assessment():
     })
     assert_eq(resp["id"], 7, "response id")
     assert_true("result" in resp, "gap call returns a result, not a JSON-RPC error")
-    text = resp["result"]["content"][0]["text"]
-    assert_in("Compliance gap assessment", text, "gap output header")
-    assert_true(not text.startswith("Error"), "gap output is not an error string")
-    assert_in("risk indication", text, "indicator disclaimer present")
+    structured = resp["result"]["structuredContent"]
+    assert_eq(structured["decision"]["result_type"], "insufficient_information",
+              "gap scan does not decide applicability")
+    assert_eq(structured["evidence"]["article_observations"], {},
+              "unresolved applicability emits no article assessment")
 
 
 def test_mcp_regula_gap_blocked_path_refused():

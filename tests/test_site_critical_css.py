@@ -141,6 +141,18 @@ def test_minified_css_in_sync_with_source():
         )
 
 
+def test_mobile_stats_allow_long_locale_labels_to_reflow():
+    """Long translated labels must not widen mobile grid or tier rows."""
+    css = (SITE / "assets" / "site.css").read_text(encoding="utf-8")
+    stat_item = css.split(".stat-item {", 1)[1].split("}", 1)[0]
+    stat_label = css.split(".stat-label {", 1)[1].split("}", 1)[0]
+    tier_examples = css.split(".tier-examples {", 1)[1].split("}", 1)[0]
+    assert "min-width: 0" in stat_item
+    assert "overflow-wrap: anywhere" in stat_label
+    assert "min-width: 0" in tier_examples
+    assert "overflow-wrap: anywhere" in tier_examples
+
+
 def test_minifier_preserves_hazardous_constructs():
     """Correctness guard for minify() itself (10 Jul 2026 audit).
 

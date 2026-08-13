@@ -244,6 +244,45 @@ class TestPrecisionProvenance(unittest.TestCase):
             f"{DISCLOSURE} no longer discloses the single-reviewer basis; "
             f"every provenance route in this test depends on it")
 
+    def test_the_disclosure_file_states_non_reproducibility(self):
+        """N51: the figure's inputs are not fully tracked and the corpus
+        clones were unpinned, so 83.5% cannot be re-derived from a clone.
+        The canonical disclosure surface must say so, and must never again
+        claim full reproducibility. Every point of use routes here, so this
+        one file carries the qualification for all fourteen locations."""
+        text = (REPO / DISCLOSURE).read_text(encoding="utf-8")
+        self.assertIn(
+            "dated measurement", text,
+            f"{DISCLOSURE} no longer states that the headline precision is "
+            f"a dated measurement; the N51 qualification has been lost")
+        self.assertIn(
+            "not a re-runnable benchmark", text,
+            f"{DISCLOSURE} no longer states that the headline precision is "
+            f"not a re-runnable benchmark; the N51 qualification has been "
+            f"lost")
+        self.assertNotIn(
+            "Fully reproducible", text,
+            f"{DISCLOSURE} claims full reproducibility again. That claim "
+            f"was established false on 2026-08-06: the 115-entry production "
+            f"subset membership is untracked and rescan_corpus.py clones "
+            f"unpinned heads, so the April 2026 corpus state is gone")
+
+    def test_the_non_reproducibility_check_can_fail(self):
+        """CONTROL. The check above is three string assertions; prove each
+        arm flags the text it exists to flag, so a green run means the
+        document really carries the qualification."""
+        old_text = (
+            "**Methodology details:** METHODOLOGY.json contains the exact "
+            "queries. BLIND_LABELS.json contains all 201 labels with "
+            "notes. Fully reproducible.")
+        self.assertIn("Fully reproducible", old_text,
+                      "control failed: the planted pre-N51 text no longer "
+                      "contains the phrase this guard exists to reject")
+        self.assertNotIn("dated measurement", old_text,
+                         "control failed: the planted pre-N51 text would "
+                         "satisfy the qualification arm, so the guard "
+                         "proves nothing")
+
     def test_version_attribution_matches_the_artefact(self):
         """F20: the artefact says v1.7.0. Published surfaces must not claim a
         different version for the same measurement."""

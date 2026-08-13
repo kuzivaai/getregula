@@ -10,7 +10,7 @@ Regula's detection engine is a static analysis system that reports source-code i
 |---|---|
 | Name | Regula Detection Engine |
 | Version | 1.9.0 (this doc updated 2026-07-27) |
-| Type | Rule-based static analysis (regex + AST pattern matching) |
+| Type | Rule-based detector plus a separate evidence-gated legal decision kernel |
 | Training data | None — not a machine learning model |
 | Detection patterns | 419 tiered risk regexes across 57 categories (10 prohibited + 18 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Includes housing (Colorado SB 26-189), transportation (Korea AI Basic Act Art 33), and emotion inference split categories. Regenerate with `python3 scripts/site_facts.py`. |
 | Languages supported | Python, JavaScript, TypeScript, Java, Go, Rust, C, C++ |
@@ -21,7 +21,11 @@ Regula's detection engine is a static analysis system that reports source-code i
 
 ## Intended Use
 
-**Primary use case:** Combine code scanning with governance questionnaires to assess compliance across 3 jurisdictions: EU AI Act (Regulation (EU) 2024/1689), South Korea AI Basic Act (Act No. 20676), and Colorado SB 26-189. Scan source code for risk patterns, run structured self-assessments for organisational obligations code cannot verify (Articles 9, 17, 27, 72), and generate compliance documentation scaffolds.
+**Primary use case:** Find code patterns that merit regulatory review, then
+evaluate separately sourced deployment and operator facts through the decision
+kernel for the EU AI Act, South Korea AI Basic Act, and Colorado SB26-189.
+Generated compliance documents are unverified scaffolds until the kernel has a
+resolved evidence path for the relevant obligation.
 
 **Intended users:**
 
@@ -35,6 +39,57 @@ Regula's detection engine is a static analysis system that reports source-code i
 ---
 
 ## Known Limitations
+
+### Decision meaning and evidence contract
+
+Decision model `2026-08-12.4` is stored in
+`references/decision_model.v1.json`. A decision-critical fact has one or more
+sourced values, each with `yes`, `no`, `unknown`, or `not_applicable` state,
+provenance, jurisdiction, and timestamp. Absence, explicit unknown, no, and
+not applicable remain distinct. Conflicting sourced values remain
+contradictory rather than being averaged.
+
+The kernel emits a tagged result:
+
+- `indication` means every necessary classification predicate has a sourced
+  satisfied path. An obligation is attached only when its own role and rule
+  edges are also resolved.
+- `insufficient_information` lists the unresolved facts, the predicates each
+  fact would resolve, and their provisions. The list is ordered by resolution
+  count.
+- `outside_scope_candidate` requires a resolved false scope path or resolved
+  false paths through all applicable named rules. Missing facts cannot create
+  this result.
+
+`evidence_completeness` and `rule_resolution` report different properties.
+Detector priority is a ranking of findings, not a probability that a legal
+classification is correct. No correctness probability is emitted because the
+project has no representative labelled legal-outcome corpus with which to
+calibrate one.
+
+The Python and browser runtimes consume the same declarative model. A generated
+conformance corpus exercises Python, REST, browser, MCP, and editor adapters.
+Mutation controls alter each predicate and obligation edge and require a
+semantic vector to fail.
+
+The primary-law basis, applicability dates, and unresolved decree conditions
+are recorded in
+`docs/improvement/DECISION-KERNEL-PRIMARY-LAW-2026-08-12.md`.
+
+Current limitations of the decision model are material:
+
+- code-detector matches are observations and are never promoted to legal facts;
+- the Article 50(4) artistic-work fact changes disclosure manner, which the
+  current obligation schema does not yet express;
+- EU Article 25 role conversion must currently arrive as sourced
+  `role_provider=yes`, rather than being derived by a dedicated predicate;
+- Korea Article 32 and Article 36 decree thresholds remain sourced input facts
+  because this review did not establish their numeric values from the official
+  delegated instruments;
+- combined Colorado exclusion facts place the enumeration burden on the fact
+  provider; and
+- application dates are reported on indications and obligations, but the
+  kernel does not claim implementation readiness or calculate a deadline.
 
 ### Detection methodology
 
@@ -156,10 +211,11 @@ Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scri
 
 ### Continuous validation
 
-- 2,722 pytest-collected tests, produced by collection rather than
-  hand-maintained (measured 2026-07-30). See
+- 2,781 pytest-collected tests, produced by collection rather than
+  hand-maintained (measured 2026-08-13). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
-- 45 CLI integration tests (`tests/test_cli_integration.py`)
+- 48 CLI integration tests (`tests/test_cli_integration.py`), enumerated by
+  `data/site_facts.json`.
 - 6 self-test assertions (`regula self-test`)
 - 12 health checks (`regula doctor`)
 - CI runs on every push across Python 3.10, 3.11, 3.12, 3.13
@@ -172,4 +228,4 @@ This model card describes Regula v1.9.0. If the detection patterns, classificati
 
 ---
 
-*Last updated: 22 July 2026.*
+*Last updated: 12 August 2026.*

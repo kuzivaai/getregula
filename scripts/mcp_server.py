@@ -46,6 +46,7 @@ _BLOCKED_PREFIXES = [
 ]
 
 from constants import VERSION
+from decision_kernel import DecisionInputError
 
 PROTOCOL_VERSION = "2024-11-05"
 SERVER_INFO = {"name": "regula", "version": VERSION}
@@ -57,7 +58,7 @@ TOOLS = [
             "Scan a project directory for code indicators relevant to EU AI Act review. "
             "Detects prohibited practices (Article 5), high-risk patterns (Annex III), "
             "limited-risk systems (Article 50), credential exposure, and agent autonomy signals. "
-            "Returns findings with tier (BLOCK/WARN/INFO), confidence, and remediation guidance."
+            "Returns detector observations separately from an evidence-aware legal decision."
         ),
         "inputSchema": {
             "type": "object",
@@ -75,6 +76,10 @@ TOOLS = [
                     "type": "boolean",
                     "description": "Exclude test files from findings.",
                 },
+                "decision_request": {
+                    "type": "object",
+                    "description": "Canonical versioned fact request for the decision kernel.",
+                },
             },
             "required": [],
         },
@@ -84,8 +89,7 @@ TOOLS = [
         "description": (
             "Return a provisional, pattern-based risk indication for code or text; "
             "this is not a legal classification of an AI system. "
-            "Returns: PROHIBITED (Article 5), HIGH-RISK (Annex III), LIMITED-RISK (Article 50), "
-            "or MINIMAL-RISK, with confidence score and applicable articles."
+            "Returns detector observations separately from an evidence-aware legal decision."
         ),
         "inputSchema": {
             "type": "object",
@@ -93,7 +97,11 @@ TOOLS = [
                 "input": {
                     "type": "string",
                     "description": "Code snippet or description to classify.",
-                }
+                },
+                "decision_request": {
+                    "type": "object",
+                    "description": "Canonical versioned fact request for the decision kernel.",
+                },
             },
             "required": ["input"],
         },
@@ -102,8 +110,7 @@ TOOLS = [
         "name": "regula_gap",
         "description": (
             "Assess the presence of project evidence relevant to Articles 9-15 of the EU AI Act. "
-            "Returns a readiness score (0-100) per article with observed evidence and gaps; "
-            "the score does not determine compliance. "
+            "Returns observed evidence only for duties resolved by the decision kernel. "
             "Article 9: Risk Management, 10: Data Governance, 11: Technical Docs, "
             "12: Record-Keeping, 13: Transparency, 14: Human Oversight, 15: Accuracy/Security."
         ),
@@ -119,6 +126,10 @@ TOOLS = [
                     "minimum": 9,
                     "maximum": 15,
                     "description": "Specific article to assess (9-15). If omitted, assesses all.",
+                },
+                "decision_request": {
+                    "type": "object",
+                    "description": "Canonical versioned fact request for the decision kernel.",
                 },
             },
             "required": [],
@@ -158,6 +169,7 @@ def _validate_scan_path(path: str) -> str | None:
 
 def _call_regula_check(arguments: dict) -> str:
     """Invoke regula check and return text output."""
+    from decision_adapters import detector_findings, empty_decision, evaluate_payload
     from report import scan_files
 
     path = arguments.get("path", ".")
@@ -173,43 +185,31 @@ def _call_regula_check(arguments: dict) -> str:
     except Exception as e:
         return f"Error scanning {path}: {e}"
 
-    if not findings:
-        return f"No findings for {path} — no AI indicators detected above {min_tier or 'minimal_risk'} tier."
-
-    lines = [f"Regula scan: {path}", f"Found {len(findings)} finding(s)\n"]
-    for f in findings:
-        tier = f.get("tier", "unknown").upper()
-        conf = f.get("confidence", 0)
-        file_ = f.get("file", "")
-        line_ = f.get("line", "")
-        desc = f.get("description", "")
-        lines.append(f"[{tier}] {conf}% {file_}:{line_} — {desc}")
-        if f.get("remediation"):
-            lines.append(f"  Fix: {f['remediation']}")
-    return "\n".join(lines)
+    request = arguments.get("decision_request")
+    decision = evaluate_payload(request) if request is not None else empty_decision(
+        "eu", "mcp:regula_check"
+    )
+    return {"detector_findings": detector_findings(findings), "decision": decision}
 
 
 def _call_regula_classify(arguments: dict) -> str:
     """Invoke regula classify and return text output."""
     from classify_risk import classify
+    from decision_adapters import detector_finding, empty_decision, evaluate_payload
 
     text = arguments.get("input", "")
     if not text:
         return "Error: 'input' is required"
 
     result = classify(text)
-    tier = result.tier.value if hasattr(result.tier, "value") else str(result.tier)
-    parts = [
-        f"Tier: {tier.upper()}",
-        f"Confidence: {result.confidence}%",
-    ]
-    if result.applicable_articles:
-        parts.append(f"Articles: {', '.join(result.applicable_articles)}")
-    if result.description:
-        parts.append(f"Description: {result.description}")
-    if result.indicators_matched:
-        parts.append(f"Indicators: {', '.join(result.indicators_matched[:3])}")
-    return "\n".join(parts)
+    request = arguments.get("decision_request")
+    decision = evaluate_payload(request) if request is not None else empty_decision(
+        "eu", "mcp:regula_classify"
+    )
+    return {
+        "detector_observation": detector_finding(result.to_dict()),
+        "decision": decision,
+    }
 
 
 def _call_regula_gap(arguments: dict) -> str:
@@ -222,6 +222,7 @@ def _call_regula_gap(arguments: dict) -> str:
     articles under an "articles" key and stores `score` as a string.
     """
     from compliance_check import assess_compliance
+    from decision_adapters import empty_decision, evaluate_payload, resolved_gap_evidence
 
     path = arguments.get("path", ".")
     article = arguments.get("article")
@@ -236,38 +237,11 @@ def _call_regula_gap(arguments: dict) -> str:
     except Exception as e:
         return f"Error running gap assessment on {path}: {e}"
 
-    articles = assessment.get("articles", {}) or {}
-    overall = assessment.get("overall_score")
-    lines = [f"Compliance gap assessment: {path}"]
-    if overall is not None:
-        lines.append(f"Overall score: {overall}")
-    lines.append("")
-
-    if not articles:
-        lines.append("No articles assessed.")
-        return "\n".join(lines)
-
-    def _sort_key(item):
-        try:
-            return (0, int(item[0]))
-        except (TypeError, ValueError):
-            return (1, 0)
-
-    for art_num, art_data in sorted(articles.items(), key=_sort_key):
-        try:
-            score = int(art_data.get("score", 0))
-        except (TypeError, ValueError):
-            score = 0
-        name = art_data.get("title", art_num)
-        status = "STRONG" if score >= 80 else "ADEQUATE" if score >= 50 else "WEAK"
-        lines.append(f"Article {art_num:<4} {name:<30} [{score:3d}%] {status}")
-        for gap in (art_data.get("gaps") or [])[:2]:
-            lines.append(f"  Gap: {gap}")
-
-    lines.append("")
-    lines.append("Gap assessment output is a risk indication, not a conformity "
-                 "assessment or legal determination.")
-    return "\n".join(lines)
+    request = arguments.get("decision_request")
+    decision = evaluate_payload(request) if request is not None else empty_decision(
+        "eu", "mcp:regula_gap"
+    )
+    return {"decision": decision, "evidence": resolved_gap_evidence(assessment, decision)}
 
 
 def handle_request(request: Dict[str, Any]) -> Dict[str, Any]:
@@ -308,9 +282,16 @@ def handle_request(request: Dict[str, Any]) -> Dict[str, Any]:
                 text = _call_regula_gap(arguments)
             else:
                 return err(-32601, f"Unknown tool: {name}")
+        except DecisionInputError as e:
+            return err(-32602, str(e))
         except Exception as e:
             return err(-32603, f"Tool execution error: {e}")
 
+        if isinstance(text, dict):
+            return ok({
+                "content": [{"type": "text", "text": json.dumps(text, sort_keys=True)}],
+                "structuredContent": text,
+            })
         return ok({"content": [{"type": "text", "text": text}]})
 
     elif method == "ping":

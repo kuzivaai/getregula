@@ -15,7 +15,7 @@ deadlines:
   high_risk_annex_iii: "2027-12-02"
   high_risk_annex_i: "2028-08-02"
   default: "2027-12-02"
-  omnibus_note: "Annex III deadline deferred by Omnibus (EP approved 16 Jun, Council approved 29 Jun 2026; pending OJ publication)"
+  omnibus_note: "Annex III deadline deferred by the Omnibus (Regulation (EU) 2026/1744, OJ 24 Jul 2026, in force since 27 Jul 2026)"
 
 risk_tiers:
   - prohibited
