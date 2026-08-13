@@ -27,7 +27,7 @@ jobs:
       - name: Custom test runner (manual list — asserts every test is registered)
         run: python3 tests/test_classification.py
       - name: pytest discovery (catches anything not in the manual list)
-        run: pytest tests/ -q
+        run: pytest tests/ -q --durations=50 --durations-min=0.1
       - name: Built-in self-test
         run: python3 -m scripts.cli self-test
       - name: Doctor health checks
@@ -168,4 +168,3 @@ jobs:
           # only thing the number expresses is how long we are willing to wait
           # for GitHub. Nothing about the site is asserted by it.
           timeout: 1200000
-

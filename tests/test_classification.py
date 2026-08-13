@@ -53,9 +53,14 @@ import test_decision_kernel as _test_decision_kernel  # noqa: F401
 import test_decision_conformance as _test_decision_conformance  # noqa: F401
 import test_documentation as _test_documentation  # noqa: F401
 import test_recall_artefact as _test_recall_artefact  # noqa: F401
+import test_bare_scan_decision as _test_bare_scan_decision  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+_CLI_PATH = _REPO_ROOT / "scripts" / "cli.py"
+_SMALL_PROJECT = Path(__file__).resolve().parent / "fixtures" / "sample_high_risk"
 
 # Bring register tests into this module's globals so the custom runner picks
 # them up via globals() walk. Skip tests that require pytest fixtures
@@ -110,7 +115,7 @@ def _bind_runner_case(target, kwargs, case_id):
     return runner_case
 
 
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -167,7 +172,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
                 continue
             _alias = f"{RUNNER_ALIAS_PREFIX}{_name}_{_case_index}"
             globals()[_alias] = _bind_runner_case(_fn, _kwargs, _case_index)
-del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation
+del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
@@ -3355,7 +3360,12 @@ def test_cli_exit_codes():
     import subprocess
     # Bare `regula` runs an auto-scan of the current directory.
     # Exit code: 0 if no BLOCK findings, 1 if BLOCK findings present.
-    r = subprocess.run(["python3", "scripts/cli.py"], capture_output=True, text=True)
+    r = subprocess.run(
+        ["python3", str(_CLI_PATH)],
+        capture_output=True,
+        text=True,
+        cwd=str(_SMALL_PROJECT),
+    )
     assert_true(r.returncode in (0, 1), "No-args should run auto-scan (exit 0 or 1)")
     assert_true("Regula" in r.stdout, "No-args should produce scan output")
     r = subprocess.run(["python3", "scripts/cli.py", "check", "/nonexistent/path"],
@@ -3443,7 +3453,8 @@ def test_init_dry_run():
 def test_json_output_envelope():
     """Test --format json output has standard envelope with format_version."""
     import subprocess
-    r = subprocess.run(["python3", "scripts/cli.py", "check", "--format", "json", "."],
+    r = subprocess.run(["python3", "scripts/cli.py", "check", "--format", "json",
+                        str(_SMALL_PROJECT)],
                        capture_output=True, text=True)
     assert_true(r.returncode in (0, 1), "Unexpected exit code")
     data = json.loads(r.stdout)
@@ -5020,7 +5031,7 @@ def test_docs_include_data_flow():
     import sys
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from generate_documentation import generate_annex_iv, scan_project
-    project_path = str(Path(__file__).parent.parent)
+    project_path = str(_SMALL_PROJECT)
     findings = scan_project(project_path)
     project_name = Path(project_path).name
     result = generate_annex_iv(findings, project_name, project_path)
@@ -5037,7 +5048,7 @@ def test_docs_include_data_flow():
 def test_docs_auto_populated_sections():
     """Annex IV output contains auto-populated markers and guided templates."""
     from generate_documentation import generate_annex_iv, scan_project
-    project_path = str(Path(__file__).parent.parent)
+    project_path = str(_SMALL_PROJECT)
     findings = scan_project(project_path)
     doc = generate_annex_iv(findings, "test-project", project_path)
     # Should have auto-detected markers
@@ -5053,7 +5064,7 @@ def test_docs_auto_populated_sections():
 def test_docs_completion_report():
     """Completion report shows section-level status after generation."""
     from generate_documentation import generate_annex_iv, generate_completion_report, scan_project
-    project_path = str(Path(__file__).parent.parent)
+    project_path = str(_SMALL_PROJECT)
     findings = scan_project(project_path)
     generate_annex_iv(findings, "test-project", project_path)
     report = generate_completion_report("test-project")
@@ -5551,7 +5562,9 @@ def test_evidence_pack_generates_manifest():
     import tempfile
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
+        result = generate_evidence_pack(
+            str(_SMALL_PROJECT), output_dir=tmpdir, project_name="test-pack"
+        )
         assert_true("manifest" in result, "result should contain manifest")
         assert_true("files" in result["manifest"], "manifest should list files")
         assert_true(len(result["manifest"]["files"]) >= 3, "pack should have at least 3 files")
@@ -5565,7 +5578,9 @@ def test_evidence_pack_contains_required_files():
     import tempfile
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
+        result = generate_evidence_pack(
+            str(_SMALL_PROJECT), output_dir=tmpdir, project_name="test-pack"
+        )
         filenames = [f["filename"] for f in result["manifest"]["files"]]
         required = ["00-summary.md", "01-scan-results.json", "02-gap-assessment.json", "03-annex-iv-draft.md"]
         for req in required:
@@ -5578,7 +5593,9 @@ def test_evidence_pack_summary_contains_risk_tier():
     import tempfile
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
+        result = generate_evidence_pack(
+            str(_SMALL_PROJECT), output_dir=tmpdir, project_name="test-pack"
+        )
         pack_dir = Path(tmpdir) / result["pack_dirname"]
         summary = (pack_dir / "00-summary.md").read_text(encoding="utf-8")
         assert_true("insufficient_information" in summary,
@@ -5604,7 +5621,7 @@ def test_evidence_pack_cli_integration():
     with tempfile.TemporaryDirectory() as tmpdir:
         result = subprocess.run(
             [sys.executable, "-m", "scripts.cli", "evidence-pack",
-             "--project", ".", "--output", tmpdir, "--format", "json"],
+             "--project", str(_SMALL_PROJECT), "--output", tmpdir, "--format", "json"],
             capture_output=True, text=True, cwd=str(Path(__file__).parent.parent),
         )
         assert_eq(result.returncode, 0, f"evidence-pack should exit 0: {result.stderr}")
@@ -5620,7 +5637,9 @@ def test_evidence_pack_sha256_integrity():
     import hashlib
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-sha")
+        result = generate_evidence_pack(
+            str(_SMALL_PROJECT), output_dir=tmpdir, project_name="test-sha"
+        )
         pack_dir = Path(tmpdir) / result["pack_dirname"]
         for file_record in result["manifest"]["files"]:
             filepath = pack_dir / file_record["filename"]
@@ -5686,8 +5705,9 @@ def test_disclose_cli_integration():
 def test_annex_iv_has_all_nine_sections():
     """Generated Annex IV doc must contain headings for all 9 mandatory sections."""
     from generate_documentation import scan_project, generate_annex_iv
-    findings = scan_project(".")
-    doc = generate_annex_iv(findings, "test-project", ".")
+    project_path = str(_SMALL_PROJECT)
+    findings = scan_project(project_path)
+    doc = generate_annex_iv(findings, "test-project", project_path)
     required_sections = [
         "## 1. General Description",
         "## 2. Detailed Description",
@@ -5707,8 +5727,9 @@ def test_annex_iv_has_all_nine_sections():
 def test_annex_iv_standards_from_policy():
     """Section 7 should detect frameworks from regula-policy.yaml."""
     from generate_documentation import scan_project, generate_annex_iv
-    findings = scan_project(".")
-    doc = generate_annex_iv(findings, "test-project", ".")
+    project_path = str(_SMALL_PROJECT)
+    findings = scan_project(project_path)
+    doc = generate_annex_iv(findings, "test-project", project_path)
     assert_true("eu_ai_act" in doc or "EU AI Act" in doc, "Section 7 should reference declared framework")
     print("✓ Annex IV: standards from policy")
 
@@ -5716,8 +5737,9 @@ def test_annex_iv_standards_from_policy():
 def test_annex_iv_completion_covers_new_sections():
     """Completion report must include new sections 4-9."""
     from generate_documentation import scan_project, generate_annex_iv, generate_completion_report
-    findings = scan_project(".")
-    generate_annex_iv(findings, "test-project", ".")
+    project_path = str(_SMALL_PROJECT)
+    findings = scan_project(project_path)
+    generate_annex_iv(findings, "test-project", project_path)
     report = generate_completion_report("test-project")
     for section_name in ["Performance Metrics", "Risk Management", "Harmonised Standards", "Lifecycle Changes", "Post-Market Monitoring"]:
         assert_true(section_name in report, f"Completion report should include '{section_name}'")
@@ -5960,7 +5982,7 @@ def test_smoke_inventory():
     """regula inventory exits 0 and produces output."""
     import subprocess
     result = subprocess.run(
-        ["python3", "scripts/cli.py", "inventory", ".", "--format", "table"],
+        ["python3", "scripts/cli.py", "inventory", str(_SMALL_PROJECT), "--format", "table"],
         capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
     )
     assert result.returncode == 0, f"inventory failed: {result.stderr}"
@@ -6095,7 +6117,7 @@ def test_smoke_check_html():
     import subprocess
     import sys
     result = subprocess.run(
-        [sys.executable, "scripts/cli.py", "check", ".", "--format", "html"],
+        [sys.executable, "scripts/cli.py", "check", str(_SMALL_PROJECT), "--format", "html"],
         capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
     )
     assert result.returncode in (0, 1), f"check --format html crashed: {result.stderr}"
@@ -6115,7 +6137,8 @@ def test_smoke_check_html_output_file():
         tmp_path = tmp.name
     try:
         result = subprocess.run(
-            [sys.executable, "scripts/cli.py", "check", ".", "--format", "html", "-o", tmp_path],
+            [sys.executable, "scripts/cli.py", "check", str(_SMALL_PROJECT),
+             "--format", "html", "-o", tmp_path],
             capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
         )
         assert result.returncode in (0, 1), f"check --format html -o failed: {result.stderr}"
@@ -6309,6 +6332,9 @@ def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
         ), f"{filename} must make the advertised letter shortcuts case-insensitive"
 
     shared_ui = (assess_dir / "decision-ui.js").read_text(encoding="utf-8")
+    assert 'querySelector(".result-tier")' in shared_ui
+    assert "resultTier.tabIndex = -1" in shared_ui
+    assert "resultTier.focus()" in shared_ui
     for phrase in (
         "Prohibited-practice candidate",
         "Kandidat für eine verbotene Praktik",

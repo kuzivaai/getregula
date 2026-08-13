@@ -96,7 +96,7 @@ def test_public_entry_points_do_not_use_em_dashes():
         assert "—" not in text and "&mdash;" not in text.lower(), rel
 
 
-def test_mobile_navigation_toggle_remains_pointer_accessible():
+def test_mobile_navigation_supports_pointer_and_escape_close():
     paths = (
         "site/index.html",
         "site/locales/de.html",
@@ -109,6 +109,9 @@ def test_mobile_navigation_toggle_remains_pointer_accessible():
         text = (REPO / rel).read_text(encoding="utf-8", errors="replace")
         assert ".showModal()" not in text, rel
         assert ".show()" in text, rel
+        assert "event.key==='Escape'" in text, rel
+        assert "event.preventDefault();this.close()" in text, rel
+        assert "b.focus()" in text, rel
 
 
 def test_package_description_source_is_readme():
