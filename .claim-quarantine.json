@@ -88,7 +88,7 @@
     {
       "file": "site/index.html",
       "claim": "0%",
-      "silent_because": "paragraph-sourced",
+      "silent_because": "blanked-by-strip-noise",
       "also_blocked_by": []
     },
     {
@@ -100,7 +100,7 @@
     {
       "file": "site/locales/de.html",
       "claim": "0%",
-      "silent_because": "paragraph-sourced",
+      "silent_because": "blanked-by-strip-noise",
       "also_blocked_by": []
     },
     {
@@ -112,7 +112,7 @@
     {
       "file": "site/locales/pt-br.html",
       "claim": "0%",
-      "silent_because": "paragraph-sourced",
+      "silent_because": "blanked-by-strip-noise",
       "also_blocked_by": []
     },
     {

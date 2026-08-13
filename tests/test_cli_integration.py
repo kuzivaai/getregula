@@ -407,9 +407,19 @@ def test_doctor():
     assert "passed" in out.lower() or "pass" in out.lower()
 
 
-def test_sbom():
-    rc, out, err = run_cli("sbom")
+def test_sbom(tmp_path):
+    """SBOM smoke test proves a real dependency reaches CycloneDX output."""
+    (tmp_path / "requirements.txt").write_text("requests==2.32.0\n")
+    rc, out, err = run_cli("sbom", "--project", str(tmp_path))
     assert rc == 0
+    bom = json.loads(out)
+    assert bom["bomFormat"] == "CycloneDX"
+    assert bom["specVersion"] == "1.7"
+    assert any(
+        component.get("name") == "requests"
+        and component.get("version") == "2.32.0"
+        for component in bom["components"]
+    )
 
 
 def test_dpv():

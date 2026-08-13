@@ -140,6 +140,7 @@ COUNT_TEMPLATES = [
     # NOT a bare "{n} passed": the custom runner publishes "1386 passed",
     # a different quantity. Caught by this module's own sync test.
     r"Expected:\s*{n}\s+passed",
+    r"Expected:\s*{n}\s+collected",
     r"{n}\s+pytest\b",
     r'"total_collected"\s*:\s*{n}',
     r"total_collected\s*=\s*{n}",

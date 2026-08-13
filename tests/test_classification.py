@@ -52,6 +52,7 @@ import test_validation_readiness as _test_validation_readiness  # noqa: F401
 import test_decision_kernel as _test_decision_kernel  # noqa: F401
 import test_decision_conformance as _test_decision_conformance  # noqa: F401
 import test_documentation as _test_documentation  # noqa: F401
+import test_recall_artefact as _test_recall_artefact  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -73,6 +74,27 @@ import itertools as _itertools
 # discovery stays automatic and no manual list is reintroduced.
 # Guarded by tests/test_collection_integrity.py.
 RUNNER_ALIAS_PREFIX = "_runner_test_"
+
+# The recall regression controls are unittest methods rather than module-level
+# functions, so the generic alias loop below cannot see them. Bind the two new
+# schema controls explicitly under the runner-only prefix. Pytest continues to
+# collect their home methods exactly once.
+_recall_schema_case = (
+    _test_recall_artefact.TestTheArtefactIsProducedNotWritten(
+        "test_canonical_check_envelope_supplies_detector_findings"
+    )
+)
+globals()[RUNNER_ALIAS_PREFIX + "recall_canonical_check_envelope"] = (
+    _recall_schema_case.test_canonical_check_envelope_supplies_detector_findings
+)
+_recall_unknown_case = (
+    _test_recall_artefact.TestTheArtefactIsProducedNotWritten(
+        "test_unexpected_check_envelope_cannot_become_zero_recall"
+    )
+)
+globals()[RUNNER_ALIAS_PREFIX + "recall_unknown_check_envelope"] = (
+    _recall_unknown_case.test_unexpected_check_envelope_cannot_become_zero_recall
+)
 
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
 
