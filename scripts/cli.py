@@ -136,6 +136,7 @@ def _run_bare_scan() -> None:
     import time
     from report import scan_files
     from findings_view import partition_findings
+    from decision_adapters import empty_decision, format_decision_text
 
     project = str(Path(".").resolve())
     project_name = Path(project).name
@@ -149,16 +150,10 @@ def _run_bare_scan() -> None:
     infos = view["info"]
     prohibited = view["prohibited"]
 
-    # Quick gap score (best-effort, don't fail the whole command)
-    gap_score = None
-    highest_risk = None
-    try:
-        from compliance_check import assess_compliance
-        assessment = assess_compliance(project)
-        gap_score = assessment.get("overall_score", 0)
-        highest_risk = assessment.get("highest_risk", "unknown")
-    except (ImportError, OSError, KeyError, ValueError, TypeError) as e:
-        print(f"  Warning: gap assessment unavailable ({type(e).__name__})", file=sys.stderr)
+    # Static detector observations are not legal facts. With no declared facts,
+    # the canonical kernel must return an actionable unresolved result rather
+    # than allowing the legacy gap engine to manufacture a tier or percentage.
+    decision = empty_decision("eu", "cli:bare")
 
     elapsed = time.time() - start
 
@@ -173,20 +168,9 @@ def _run_bare_scan() -> None:
     print(f"  {'BLOCK findings:':<24}{len(blocks)}")
     print(f"  {'WARN findings:':<24}{len(warns)}")
     print(f"  {'INFO findings:':<24}{len(infos)}")
-    if gap_score is not None:
-        print(f"  {'Compliance score:':<24}{gap_score}/100")
-    if highest_risk and highest_risk != "unknown":
-        print(f"  {'Highest risk tier:':<24}{highest_risk}")
     print(f"  {'Scan time:':<24}{elapsed:.1f}s")
-    # A high score or not_ai tier next to BLOCK findings reads as a
-    # contradiction unless the relationship is stated: the score reflects
-    # applicable obligations for the project's classification, while the
-    # finding counts are raw pattern hits (often tests or fixtures).
-    if blocks and (highest_risk == "not_ai" or gap_score == 100):
-        print("\n  Note: the score reflects obligations applicable to this "
-              "project's classification;\n  the findings above are raw "
-              "pattern hits (often in tests or fixtures).\n  Run 'regula "
-              "check .' to see each finding in context.")
+    print("\n  Detector findings locate code for review. They do not establish "
+          "legal applicability.")
 
     # Top findings (up to 3)
     # Deduplicate by file+description for concise output
@@ -204,21 +188,18 @@ def _run_bare_scan() -> None:
         for f in top:
             score = f.get("confidence_score", 0)
             tier = f.get("_finding_tier", "info").upper()
-            print(f"    [{tier}] [{score:3d}] {f.get('file', '?')}")
+            print(f"    [{tier}] [priority {score:3d}] {f.get('file', '?')}")
             desc = f.get("description", "")
             if desc:
                 print(f"          {desc}")
 
     print(f"{'=' * 60}")
+    print("\n" + format_decision_text(decision))
 
     # Contextual next steps based on findings
     steps = []
     if blocks:
         steps.append(f"regula check .{'':<30s}Review {len(blocks)} BLOCK finding(s) in detail")
-    if gap_score is not None and gap_score < 50:
-        steps.append(f"regula comply{'':<31s}See your EU AI Act obligation checklist")
-    elif gap_score is not None:
-        steps.append(f"regula comply{'':<31s}Check obligations you still need to address")
     if warns:
         steps.append(f"regula plan --project .{'':<22s}Get a prioritised remediation plan")
     if not blocks and not warns:

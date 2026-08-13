@@ -390,6 +390,42 @@ def test_docs_empty_project_graceful():
     print("\u2713 Docs: empty project generates scaffold gracefully")
 
 
+def test_docs_unresolved_input_emits_no_unconditional_article_duty():
+    """Recipient-visible scaffold must keep detector hints conditional."""
+    with tempfile.TemporaryDirectory() as tmp:
+        out_dir = Path(tmp) / "out"
+        r = _run_docs(
+            "tests/fixtures/sample_high_risk/", "--output", str(out_dir)
+        )
+        assert_eq(r.returncode, 0, f"docs exit 0: {r.stderr[:200]}")
+        annex_files = list(out_dir.glob("*annex*"))
+        assert_true(len(annex_files) == 1, "one Annex IV scaffold should be written")
+        content = annex_files[0].read_text(encoding="utf-8")
+        assert_true(
+            content.startswith("> **RELIANCE GATE:**"),
+            "reliance qualification must precede every recipient-visible section",
+        )
+        assert_true(
+            "**Decision status:** INSUFFICIENT INFORMATION" in content,
+            "the scaffold must expose the kernel decision",
+        )
+        for forbidden in (
+            "Review Article 14 requirements.",
+            "Article 12 requires automatic recording of events.",
+            "Articles 9-15 obligations apply.",
+            "Transparency obligations apply under Article 50.",
+        ):
+            assert_true(
+                forbidden not in content,
+                f"unresolved scaffold must not contain unconditional duty: {forbidden}",
+            )
+        assert_true(
+            "Suggested Provisions" in content,
+            "article-like detector output must be labelled as a suggestion",
+        )
+    print("\u2713 Docs: unresolved scaffold emits no unconditional article duty")
+
+
 # ── Runner ──────────────────────────────────────────────────────────
 
 
@@ -411,6 +447,7 @@ if __name__ == "__main__":
         test_docs_nested_in_tests_dir_not_blank,
         test_docs_version_string_is_current,
         test_docs_empty_project_graceful,
+        test_docs_unresolved_input_emits_no_unconditional_article_duty,
     ]
 
     print(f"Running {len(tests)} documentation tests...\n")

@@ -75,13 +75,31 @@ class TestCascadeRefusal(unittest.TestCase):
             cc.assert_permitted(rel)
 
     def test_stale_value_detection_is_bounded(self):
-        """A wide net is how a size field gets rewritten. Only 4-digit values
-        within 20% of canonical count as stale."""
+        """A wide net is how a size field gets rewritten. The protections
+        are the candidate SHAPE (4-digit or grouped thousands, non-word
+        boundaries) and the COUNT_TEMPLATES unit requirement. There is no
+        magnitude window any more; see the next test for why."""
         new = 2354
         text = "tests 2353 passing and size 222353"
         stale = cc._stale_values(text, new)
         self.assertIn(2353, stale, "a real stale count was not detected")
         self.assertNotIn(222353, stale, "6-digit value treated as a count")
+
+    def test_out_of_band_stale_counts_are_nominated(self):
+        """N57 sub-item 1. An undisclosed [0.5x, 2x] window meant the tool
+        structurally could not see docs/architecture.md's "1,223 tests"
+        against a canonical of 2,618; that file was corrected by hand and
+        only the at-rest test and claim_auditor, which have no floor, could
+        have caught a recurrence. The window is gone: magnitude must never
+        decide staleness, only shape and unit."""
+        below_half = cc._stale_values("45 test files, 1,223 tests", 2618)
+        self.assertIn(1223, below_half,
+                      "a stale count below half of canonical was skipped; "
+                      "the N57-1 magnitude floor is back")
+        above_double = cc._stale_values("we ship 6,000 tests", 2618)
+        self.assertIn(6000, above_double,
+                      "a stale count above double canonical was skipped; "
+                      "the N57-1 magnitude ceiling is back")
 
     def test_years_in_band_are_not_rewritten(self):
         """THE SECOND CONTROL. With canonical 2,354 the +/-20% band spans
@@ -132,6 +150,10 @@ class TestCountsAreSeenInsidePublishedMarkup(unittest.TestCase):
             cc._stale_values(text, 2612), {2354},
             "a count separated from its unit word by inline markup was not "
             "seen; this is how site/index.html published 2,354 for 3 days")
+        self.assertEqual(
+            cc._stale_values("# Expected: 2354 collected", 2622), {2354},
+            "a reproduction command's stale expected collection count was "
+            "hidden by a current count elsewhere in the same file")
 
     def test_dot_grouped_count_is_detected(self):
         """de-DE and pt-BR group thousands with a full stop."""

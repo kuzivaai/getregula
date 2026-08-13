@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 # regula-ignore
-"""Produce the landing page's terminal demo from real command output.
+"""Produce the landing page's decision demos from real command output.
 
-CLASS 1. `site/index.html` showed a `regula gap .` block behind a `$`
-prompt, with per-article percentages 20/40/60/80/0/30/50 and a headline
-"Overall compliance score: 42/100" in the adjacent `regula comply` panel.
-No scan produced any of those numbers. A visitor reads a `$` prompt as real
-output; that is what makes it a claim rather than a mock-up.
+The former gap, comply, check, and plan panels presented detector-derived
+risk tiers, article duties, readiness percentages, deadlines, and effort
+estimates as command output. The decision kernel cannot emit those claims
+without sourced applicability facts. This script runs all four commands
+against a tracked-only snapshot of a committed fixture and records their
+honest resolvable-facts responses in `data/gap_demo.json`.
 
-This script is the only writer of `data/gap_demo.json`. It runs both
-commands against a tracked-only snapshot of a COMMITTED fixture and records
-what they actually print.
-`tests/test_gap_demo.py` re-runs them and fails on any disagreement, and
-also fails if the site shows a percentage the artefact does not contain.
+`tests/test_gap_demo.py` re-runs the commands, checks the artefact, and binds
+the published panels to these outputs. A `$` prompt is treated as a claim
+about real command behaviour, not as decorative copy.
 
 WHY THIS FIXTURE
 ----------------
@@ -22,7 +21,7 @@ scanned as the page depicts it, with no flags.
 
 Choosing a tracked target is not sufficient when ignored content can sit
 inside its directory. The builder therefore asks Git for the fixture's
-tracked files, copies only those files to a temporary snapshot, and runs both
+tracked files, copies only those files to a temporary snapshot, and runs all four
 commands there. Git failure, an empty tracked population, a copy failure, or
 a command/build failure is fatal. Local ignored state is never an input.
 
@@ -35,24 +34,9 @@ Two candidates were rejected for reasons independent of their scores:
 - A purpose-built fixture would be the shop window chosen by its author,
   which is the metric gaming PROGRAMME.md principle 3 forbids.
 
-The tracked fixture scores 6% in both this working tree and a clean clone.
-That unflattering result is not why it was chosen and is not a reason to
-change it.
-
-WHAT THE REAL OUTPUT CHANGES ON THE PAGE
-----------------------------------------
-1. The numbers get worse: 20/40/60/80/0/30/50 becomes 0/0/0/0/0/45/0/0,
-   and 42/100 becomes 6/100.
-2. The real command emits a NOTE the mock-up omitted entirely, saying the
-   score measures presence of documentation and cannot offset scan
-   findings. That NOTE is the denominator disclosure, and its absence was
-   the actual defect.
-3. The real output has 8 articles, not 7: it includes Article 17.
-4. `regula comply` without `--all` prints no article table at all on this
-   fixture, because the project classifies as not_ai. The site's comply
-   panel was not a stale rendering of a real command; it depicted output
-   the command does not produce. The panel now shows `--all`, which is the
-   documented flag for exactly this case, and says so.
+The result is intentionally independent of detector ranking: unresolved
+scope facts yield `insufficient_information`, zero attached article
+observations, and a ranked list of facts the user can resolve next.
 
 Usage:
     python3 scripts/build_gap_demo.py           # write the artefact
@@ -64,6 +48,7 @@ Stdlib only.
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -82,21 +67,29 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 FIXTURE = "tests/fixtures/sample_high_risk"
 ARTEFACT = REPO_ROOT / "data/gap_demo.json"
 
-# "Article 9   Risk Management   [  0%] NOT FOUND"  (gap)
-GAP_ROW = re.compile(
-    r"^Article\s+(\d+)\s+(.+?)\s+\[\s*(\d+)%\]\s+(.+?)\s*$", re.MULTILINE)
-# "  [x] Article 9   Risk Management     0% NOT FOUND"  (comply --all)
-COMPLY_ROW = re.compile(
-    r"^\s*\[.\]\s+Article\s+(\d+)\s+(.+?)\s+(\d+)%\s+(.+?)\s*$", re.MULTILINE)
-GAP_SCORE = re.compile(r"^Overall score:\s+(\d+)%", re.MULTILINE)
-COMPLY_SCORE = re.compile(r"Overall compliance score:\s+(\d+)/100")
-NOTE_BLOCK = re.compile(
-    r"^\s*NOTE: This score measures.*?questions\.$",
-    re.MULTILINE | re.DOTALL)
+RESULT_TYPE = re.compile(r"^Decision:\s+(\S+)", re.MULTILINE)
+MODEL_VERSION = re.compile(r"^Model:\s+(\S+)", re.MULTILINE)
+RULE_RESOLUTION = re.compile(r"^Rule resolution:\s+(\S+)", re.MULTILINE)
+UNRESOLVED_COUNT = re.compile(
+    r"^Facts needed to resolve the next decision:\s+(\d+)", re.MULTILINE)
+FACT_ID = re.compile(r"^\s+-\s+([a-z0-9_]+):", re.MULTILINE)
+ARTICLE_COUNTS = re.compile(
+    r"^Article observations emitted:\s+(\d+); held pending applicability:\s+(\d+)",
+    re.MULTILINE,
+)
 
 
 def _run(args: list[str]) -> str:
+    # N53: policy_config resolves $REGULA_POLICY, then ./regula-policy.yaml,
+    # then ./configs/. With cwd=REPO_ROOT a gitignored root policy file
+    # shadows the tracked configs/regula-policy.yaml, and no git-based guard
+    # on the fixture can see it. Pinning the tracked policy through the
+    # highest-precedence route makes the generator's input explicit instead
+    # of resolved-by-search.
+    env = dict(os.environ,
+               REGULA_POLICY=str(REPO_ROOT / "configs" / "regula-policy.yaml"))
     proc = subprocess.run([sys.executable, *args], cwd=str(REPO_ROOT),
+                          env=env,
                           capture_output=True, text=True, timeout=1800)
     if proc.returncode not in (0, 1):
         raise RuntimeError(f"{args} failed rc={proc.returncode}: "
@@ -138,39 +131,58 @@ def _tracked_fixture_snapshot():
         yield snapshot
 
 
-def _rows(pattern: re.Pattern[str], text: str) -> list[dict]:
-    return [{"article": m.group(1), "title": m.group(2).strip(),
-             "percent": int(m.group(3)), "status": m.group(4).strip()}
-            for m in pattern.finditer(text)]
+def _decision_output(text: str, require_article_counts: bool = False) -> dict:
+    matches = {
+        "result_type": RESULT_TYPE.search(text),
+        "model_version": MODEL_VERSION.search(text),
+        "rule_resolution": RULE_RESOLUTION.search(text),
+        "unresolved_count": UNRESOLVED_COUNT.search(text),
+    }
+    article_counts = ARTICLE_COUNTS.search(text)
+    if require_article_counts:
+        matches["article_counts"] = article_counts
+    missing = [name for name, match in matches.items() if match is None]
+    if missing:
+        raise RuntimeError(
+            "could not parse real decision output fields: " + ", ".join(missing)
+        )
+    output = {
+        "result_type": matches["result_type"].group(1),
+        "model_version": matches["model_version"].group(1),
+        "rule_resolution": matches["rule_resolution"].group(1),
+        "unresolved_count": int(matches["unresolved_count"].group(1)),
+        "unresolved_fact_ids": FACT_ID.findall(text),
+    }
+    if article_counts:
+        output["article_observations_emitted"] = int(article_counts.group(1))
+        output["article_observations_held"] = int(article_counts.group(2))
+    return output
 
 
 def build() -> dict:
     with _tracked_fixture_snapshot() as snapshot:
+        check_out = _run([
+            "-m", "scripts.cli", "check", str(snapshot), "--explain"
+        ])
+        plan_out = _run([
+            "-m", "scripts.cli", "plan", "--project", str(snapshot)
+        ])
         gap_out = _run(["-m", "scripts.cli", "gap", str(snapshot)])
         comply_out = _run(
             ["-m", "scripts.cli", "comply", str(snapshot), "--all"]
         )
 
-    note = NOTE_BLOCK.search(gap_out)
-    gap_rows = _rows(GAP_ROW, gap_out)
-    comply_rows = _rows(COMPLY_ROW, comply_out)
-    gap_score = GAP_SCORE.search(gap_out)
-    comply_score = COMPLY_SCORE.search(comply_out)
-
-    for name, value in (("gap rows", gap_rows), ("comply rows", comply_rows),
-                        ("gap score", gap_score),
-                        ("comply score", comply_score), ("NOTE", note)):
-        if not value:
-            raise RuntimeError(
-                f"could not parse {name} from real output. The commands "
-                f"changed shape; fix this parser rather than the site.")
+    check = _decision_output(check_out)
+    plan = _decision_output(plan_out)
+    gap = _decision_output(gap_out, require_article_counts=True)
+    comply = _decision_output(comply_out, require_article_counts=True)
 
     return {
         "_what_this_is": (
             "The landing page's terminal demo, parsed from real command "
             "output against a committed fixture. Produced by "
             "scripts/build_gap_demo.py. Never hand-edited: "
-            "tests/test_gap_demo.py re-runs both commands and fails on "
+            "tests/test_gap_demo.py re-runs all four commands and fails on "
             "disagreement, and fails if the site shows a percentage this "
             "file does not contain."),
         "_why_it_exists": (
@@ -178,16 +190,21 @@ def build() -> dict:
             "prompt. A visitor reads that as a real scan."),
         "fixture": FIXTURE,
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "check": {
+            "command": "regula check " + FIXTURE + " --explain",
+            **check,
+        },
+        "plan": {
+            "command": "regula plan --project " + FIXTURE,
+            **plan,
+        },
         "gap": {
             "command": "regula gap " + FIXTURE,
-            "overall_percent": int(gap_score.group(1)),
-            "note": " ".join(note.group(0).split()),
-            "rows": gap_rows,
+            **gap,
         },
         "comply": {
             "command": "regula comply " + FIXTURE + " --all",
-            "overall_score": int(comply_score.group(1)),
-            "rows": comply_rows,
+            **comply,
         },
     }
 
@@ -216,10 +233,12 @@ def main(argv: list[str]) -> int:
     ARTEFACT.write_text(json.dumps(fresh, indent=2, sort_keys=True) + "\n",
                         encoding="utf-8")
     print(f"wrote {ARTEFACT.relative_to(REPO_ROOT)}")
-    print(f"  gap    overall {fresh['gap']['overall_percent']}%  "
-          f"{len(fresh['gap']['rows'])} article rows")
-    print(f"  comply overall {fresh['comply']['overall_score']}/100  "
-          f"{len(fresh['comply']['rows'])} article rows")
+    print(f"  gap    {fresh['gap']['result_type']}  "
+          f"{fresh['gap']['article_observations_emitted']} article observations")
+    print(f"  comply {fresh['comply']['result_type']}  "
+          f"{fresh['comply']['article_observations_emitted']} article observations")
+    print(f"  check  {fresh['check']['result_type']}")
+    print(f"  plan   {fresh['plan']['result_type']}")
     return 0
 
 

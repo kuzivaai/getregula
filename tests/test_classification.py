@@ -49,9 +49,18 @@ import test_public_claim_integrity as _test_public_claim_integrity  # noqa: F401
 import test_public_surface_inventory as _test_public_surface_inventory  # noqa: F401
 import test_gap_demo as _test_gap_demo  # noqa: F401
 import test_validation_readiness as _test_validation_readiness  # noqa: F401
+import test_decision_kernel as _test_decision_kernel  # noqa: F401
+import test_decision_conformance as _test_decision_conformance  # noqa: F401
+import test_documentation as _test_documentation  # noqa: F401
+import test_recall_artefact as _test_recall_artefact  # noqa: F401
+import test_bare_scan_decision as _test_bare_scan_decision  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
+
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+_CLI_PATH = _REPO_ROOT / "scripts" / "cli.py"
+_SMALL_PROJECT = Path(__file__).resolve().parent / "fixtures" / "sample_high_risk"
 
 # Bring register tests into this module's globals so the custom runner picks
 # them up via globals() walk. Skip tests that require pytest fixtures
@@ -59,6 +68,7 @@ from helpers import assert_eq, assert_true, assert_false
 # pytest discovers them natively from tests/test_register.py and runs them
 # with proper fixture injection.
 import inspect as _inspect
+import itertools as _itertools
 
 # Aliases are bound under this prefix, NOT under "test_", because pytest
 # collects every module-level name matching python_functions
@@ -70,22 +80,99 @@ import inspect as _inspect
 # Guarded by tests/test_collection_integrity.py.
 RUNNER_ALIAS_PREFIX = "_runner_test_"
 
+# The recall regression controls are unittest methods rather than module-level
+# functions, so the generic alias loop below cannot see them. Bind the two new
+# schema controls explicitly under the runner-only prefix. Pytest continues to
+# collect their home methods exactly once.
+_recall_schema_case = (
+    _test_recall_artefact.TestTheArtefactIsProducedNotWritten(
+        "test_canonical_check_envelope_supplies_detector_findings"
+    )
+)
+globals()[RUNNER_ALIAS_PREFIX + "recall_canonical_check_envelope"] = (
+    _recall_schema_case.test_canonical_check_envelope_supplies_detector_findings
+)
+_recall_unknown_case = (
+    _test_recall_artefact.TestTheArtefactIsProducedNotWritten(
+        "test_unexpected_check_envelope_cannot_become_zero_recall"
+    )
+)
+globals()[RUNNER_ALIAS_PREFIX + "recall_unknown_check_envelope"] = (
+    _recall_unknown_case.test_unexpected_check_envelope_cannot_become_zero_recall
+)
+
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness):
+
+
+def _bind_runner_case(target, kwargs, case_id):
+    """Return a zero-argument callable for one pytest parameter case."""
+    def runner_case():
+        return target(**kwargs)
+
+    runner_case.__module__ = target.__module__
+    runner_case.__name__ = f"{target.__name__}[{case_id}]"
+    runner_case.__qualname__ = runner_case.__name__
+    return runner_case
+
+
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
         _fn = getattr(_mod, _name)
         if not callable(_fn):
             continue
+        _signature = None
         try:
-            _params = set(_inspect.signature(_fn).parameters)
+            _signature = _inspect.signature(_fn)
+            _params = set(_signature.parameters)
+            _required_params = {
+                name for name, parameter in _signature.parameters.items()
+                if parameter.default is _inspect.Parameter.empty
+                and parameter.kind not in {
+                    _inspect.Parameter.VAR_POSITIONAL,
+                    _inspect.Parameter.VAR_KEYWORD,
+                }
+            }
         except (TypeError, ValueError):
             _params = set()
+            _required_params = set()
         if _params & _PYTEST_FIXTURES:
             continue
-        globals()[RUNNER_ALIAS_PREFIX + _name] = _fn
-del _inspect, _mod, _name, _fn, _params, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness
+        _param_marks = [
+            mark for mark in getattr(_fn, "pytestmark", [])
+            if mark.name == "parametrize"
+        ]
+        if not _param_marks:
+            if not _required_params or getattr(_fn, "patchings", None):
+                globals()[RUNNER_ALIAS_PREFIX + _name] = _fn
+            continue
+        _case_groups = []
+        for _mark in _param_marks:
+            _argnames = _mark.args[0]
+            if isinstance(_argnames, str):
+                _argnames = tuple(
+                    item.strip() for item in _argnames.split(",") if item.strip()
+                )
+            else:
+                _argnames = tuple(_argnames)
+            _cases = []
+            for _values in _mark.args[1]:
+                if hasattr(_values, "values"):
+                    _values = _values.values
+                if len(_argnames) == 1 and not isinstance(_values, (tuple, list)):
+                    _values = (_values,)
+                _cases.append(dict(zip(_argnames, _values)))
+            _case_groups.append(_cases)
+        for _case_index, _selected in enumerate(_itertools.product(*_case_groups)):
+            _kwargs = {}
+            for _case in _selected:
+                _kwargs.update(_case)
+            if not _required_params.issubset(_kwargs):
+                continue
+            _alias = f"{RUNNER_ALIAS_PREFIX}{_name}_{_case_index}"
+            globals()[_alias] = _bind_runner_case(_fn, _kwargs, _case_index)
+del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
@@ -1113,53 +1200,77 @@ def test_inline_suppression():
 # ── New Feature Tests ───────────────────────────────────────────────
 
 def test_questionnaire_generation():
-    """Questionnaire generates 8 questions derived from Article 6"""
+    """Questionnaire exposes decision facts rather than score weights."""
     from questionnaire import generate_questionnaire
     q = generate_questionnaire()
     assert_eq(q["type"], "risk_assessment_questionnaire", "questionnaire type")
-    assert_eq(len(q["questions"]), 8, "8 questions")
+    assert_eq(len(q["questions"]), 11, "11 questions")
     ids = {qu["id"] for qu in q["questions"]}
-    assert_true("autonomous_decisions" in ids, "has autonomous_decisions question")
+    assert_true("is_ai_system" in ids, "has AI-system scope question")
     assert_true("affected_domain" in ids, "has affected_domain question")
-    print("✓ Questionnaire: generates 8 Article 6-derived questions")
+    assert_true(all("weight" not in qu for qu in q["questions"]), "no score weights")
+    print("✓ Questionnaire: generates 11 mapped decision-fact questions")
 
 
 def test_questionnaire_evaluation_high_risk():
-    """High-risk answers produce high-risk classification"""
+    """Resolved Article 6 facts produce a traced indication and duties."""
     from questionnaire import evaluate_questionnaire
     answers = {
-        "autonomous_decisions": "yes",
+        "deployment_eu": "yes",
+        "is_ai_system": "yes",
+        "role_provider": "yes",
+        "role_deployer": "no",
         "affected_domain": "yes",
         "significant_harm": "yes",
+        "profiling": "no",
         "narrow_procedural": "no",
         "improves_human_activity": "no",
-        "public_facing": "no",
-        "biometric_data": "yes",
-        "deployment_eu": "yes",
+        "pattern_detection": "no",
+        "preparatory_task": "no",
     }
     result = evaluate_questionnaire(answers)
-    assert_eq(result.tier, RiskTier.HIGH_RISK, "high-risk answers → HIGH_RISK")
-    assert_true(result.confidence_score >= 70, f"score >= 70 (got {result.confidence_score})")
-    print("✓ Questionnaire: high-risk answers produce HIGH_RISK")
+    assert_eq(result["result_type"], "indication", "resolved facts → indication")
+    predicates = {item["predicate_id"] for item in result["indications"]}
+    assert_true("eu_high_risk_annex_iii" in predicates, "Article 6 path satisfied")
+    duties = {item["obligation_id"] for item in result["obligations"]}
+    assert_true("eu_requirement_9" in duties, "Article 9 duty has predicate path")
+    assert_true("confidence_score" not in result, "no correctness probability")
+    print("✓ Questionnaire: resolved Article 6 facts produce traced indication")
 
 
 def test_questionnaire_evaluation_minimal_risk():
-    """Low-risk answers produce minimal-risk classification"""
+    """Out-of-scope facts produce an evidenced outside-scope candidate."""
     from questionnaire import evaluate_questionnaire
     answers = {
-        "autonomous_decisions": "no",
-        "affected_domain": "no",
-        "significant_harm": "no",
-        "narrow_procedural": "yes",
-        "improves_human_activity": "yes",
-        "public_facing": "yes",
-        "biometric_data": "no",
         "deployment_eu": "no",
+        "is_ai_system": "yes",
     }
     result = evaluate_questionnaire(answers)
-    assert_eq(result.tier, RiskTier.MINIMAL_RISK, "low-risk answers → MINIMAL_RISK")
-    assert_true(result.confidence_score < 40, f"score < 40 (got {result.confidence_score})")
-    print("✓ Questionnaire: low-risk answers produce MINIMAL_RISK")
+    assert_eq(result["result_type"], "outside_scope_candidate", "scope false")
+    assert_eq("obligations" in result, False, "outside scope has no duties")
+    print("✓ Questionnaire: evidenced scope exclusion produces outside-scope candidate")
+
+
+def test_questionnaire_all_unsure_requires_resolvable_facts():
+    """All unsure cannot create a tier, duty, percentage, or effort estimate."""
+    from questionnaire import QUESTIONS, evaluate_questionnaire
+    result = evaluate_questionnaire({question["id"]: "unsure" for question in QUESTIONS})
+    assert_eq(result["result_type"], "insufficient_information", "unsure is unresolved")
+    assert_true(bool(result["unresolved_predicates"]), "questions identify blockers")
+    assert_eq("obligations" in result, False, "no duties from unknown facts")
+    assert_eq("confidence_score" in result, False, "no numeric confidence")
+    print("✓ Questionnaire: all unsure returns resolvable facts, not a tier")
+
+
+def test_questionnaire_missing_answers_remain_absent():
+    """Missing answers remain absent rather than defaulting to unsure or no."""
+    from questionnaire import evaluate_questionnaire
+    result = evaluate_questionnaire({})
+    assert_eq(result["result_type"], "insufficient_information", "missing unresolved")
+    assert_true(all(item["reason"] == "absent"
+                    for item in result["unresolved_predicates"]), "absence preserved")
+    assert_eq("obligations" in result, False, "no duties from absent facts")
+    print("✓ Questionnaire: missing answers remain absent and block determination")
 
 
 def test_session_aggregation():
@@ -2397,8 +2508,13 @@ def test_integration_full_check_cli():
     try:
         envelope = json.loads(result.stdout)
         assert_true(isinstance(envelope, dict) and "data" in envelope, "CLI outputs JSON envelope")
-        findings = envelope["data"]
+        findings = envelope["data"]["detector_findings"]
         assert_true(isinstance(findings, list), "CLI envelope data is a list")
+        assert_eq(
+            envelope["data"]["decision"]["result_type"],
+            "insufficient_information",
+            "CLI scan does not convert detector observations into legal facts",
+        )
         assert_true(len(findings) > 0, "CLI finds issues in high-risk project")
     except json.JSONDecodeError:
         assert_true(False, f"CLI output is not valid JSON: {result.stdout[:200]}")
@@ -3244,7 +3360,12 @@ def test_cli_exit_codes():
     import subprocess
     # Bare `regula` runs an auto-scan of the current directory.
     # Exit code: 0 if no BLOCK findings, 1 if BLOCK findings present.
-    r = subprocess.run(["python3", "scripts/cli.py"], capture_output=True, text=True)
+    r = subprocess.run(
+        ["python3", str(_CLI_PATH)],
+        capture_output=True,
+        text=True,
+        cwd=str(_SMALL_PROJECT),
+    )
     assert_true(r.returncode in (0, 1), "No-args should run auto-scan (exit 0 or 1)")
     assert_true("Regula" in r.stdout, "No-args should produce scan output")
     r = subprocess.run(["python3", "scripts/cli.py", "check", "/nonexistent/path"],
@@ -3332,7 +3453,8 @@ def test_init_dry_run():
 def test_json_output_envelope():
     """Test --format json output has standard envelope with format_version."""
     import subprocess
-    r = subprocess.run(["python3", "scripts/cli.py", "check", "--format", "json", "."],
+    r = subprocess.run(["python3", "scripts/cli.py", "check", "--format", "json",
+                        str(_SMALL_PROJECT)],
                        capture_output=True, text=True)
     assert_true(r.returncode in (0, 1), "Unexpected exit code")
     data = json.loads(r.stdout)
@@ -4909,7 +5031,7 @@ def test_docs_include_data_flow():
     import sys
     sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
     from generate_documentation import generate_annex_iv, scan_project
-    project_path = str(Path(__file__).parent.parent)
+    project_path = str(_SMALL_PROJECT)
     findings = scan_project(project_path)
     project_name = Path(project_path).name
     result = generate_annex_iv(findings, project_name, project_path)
@@ -4926,7 +5048,7 @@ def test_docs_include_data_flow():
 def test_docs_auto_populated_sections():
     """Annex IV output contains auto-populated markers and guided templates."""
     from generate_documentation import generate_annex_iv, scan_project
-    project_path = str(Path(__file__).parent.parent)
+    project_path = str(_SMALL_PROJECT)
     findings = scan_project(project_path)
     doc = generate_annex_iv(findings, "test-project", project_path)
     # Should have auto-detected markers
@@ -4942,7 +5064,7 @@ def test_docs_auto_populated_sections():
 def test_docs_completion_report():
     """Completion report shows section-level status after generation."""
     from generate_documentation import generate_annex_iv, generate_completion_report, scan_project
-    project_path = str(Path(__file__).parent.parent)
+    project_path = str(_SMALL_PROJECT)
     findings = scan_project(project_path)
     generate_annex_iv(findings, "test-project", project_path)
     report = generate_completion_report("test-project")
@@ -5408,7 +5530,7 @@ def test_plan_skips_strong_articles():
 
 
 def test_plan_cli_integration():
-    """CLI plan command runs without error."""
+    """CLI plan with no sourced facts returns a resolvable kernel result."""
     import subprocess
     result = subprocess.run(
         [sys.executable, "-m", "scripts.cli", "plan", "--project", ".", "--format", "json"],
@@ -5417,7 +5539,17 @@ def test_plan_cli_integration():
     assert_eq(result.returncode, 0, f"plan command should exit 0, got {result.returncode}: {result.stderr}")
     data = json.loads(result.stdout)
     assert_true("data" in data, "JSON output should have 'data' key")
-    assert_true("tasks" in data["data"], "plan data should contain 'tasks'")
+    plan_data = data["data"]
+    assert_eq(plan_data["plan"], None, "unresolved input must not emit a plan")
+    assert_eq(
+        plan_data["decision"]["result_type"],
+        "insufficient_information",
+        "plan must expose the unresolved decision",
+    )
+    assert_true(
+        len(plan_data["decision"]["unresolved_predicates"]) > 0,
+        "plan must enumerate facts that can resolve the decision",
+    )
     print("✓ Plan: CLI integration")
 
 
@@ -5430,7 +5562,9 @@ def test_evidence_pack_generates_manifest():
     import tempfile
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
+        result = generate_evidence_pack(
+            str(_SMALL_PROJECT), output_dir=tmpdir, project_name="test-pack"
+        )
         assert_true("manifest" in result, "result should contain manifest")
         assert_true("files" in result["manifest"], "manifest should list files")
         assert_true(len(result["manifest"]["files"]) >= 3, "pack should have at least 3 files")
@@ -5444,7 +5578,9 @@ def test_evidence_pack_contains_required_files():
     import tempfile
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
+        result = generate_evidence_pack(
+            str(_SMALL_PROJECT), output_dir=tmpdir, project_name="test-pack"
+        )
         filenames = [f["filename"] for f in result["manifest"]["files"]]
         required = ["00-summary.md", "01-scan-results.json", "02-gap-assessment.json", "03-annex-iv-draft.md"]
         for req in required:
@@ -5453,15 +5589,29 @@ def test_evidence_pack_contains_required_files():
 
 
 def test_evidence_pack_summary_contains_risk_tier():
-    """Executive summary must state the highest risk tier found."""
+    """Executive summary must gate risk claims when facts are unresolved."""
     import tempfile
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-pack")
+        result = generate_evidence_pack(
+            str(_SMALL_PROJECT), output_dir=tmpdir, project_name="test-pack"
+        )
         pack_dir = Path(tmpdir) / result["pack_dirname"]
         summary = (pack_dir / "00-summary.md").read_text(encoding="utf-8")
-        assert_true("risk" in summary.lower(), "summary should mention risk classification")
-    print("✓ Evidence pack: summary contains risk tier")
+        assert_true("insufficient_information" in summary,
+                    "summary should state the tagged unresolved result")
+        reliance_text = "No legal classification, article duty, readiness percentage, or effort estimate"
+        assert_true(reliance_text in summary,
+                    "summary should state what is withheld before detector observations")
+        assert_true(summary.index(reliance_text) <
+                    summary.index("Detector observations"),
+                    "reliance gate should precede detector observations")
+        resolvable = (pack_dir / "06-resolvable-facts.md").read_text(encoding="utf-8")
+        assert_true("Facts required before a determination" in resolvable,
+                    "pack should contain the actionable fact list")
+        assert_true("Overall score" not in summary,
+                    "summary must not emit an overall score from unresolved facts")
+    print("✓ Evidence pack: unresolved facts gate risk claims")
 
 
 def test_evidence_pack_cli_integration():
@@ -5471,7 +5621,7 @@ def test_evidence_pack_cli_integration():
     with tempfile.TemporaryDirectory() as tmpdir:
         result = subprocess.run(
             [sys.executable, "-m", "scripts.cli", "evidence-pack",
-             "--project", ".", "--output", tmpdir, "--format", "json"],
+             "--project", str(_SMALL_PROJECT), "--output", tmpdir, "--format", "json"],
             capture_output=True, text=True, cwd=str(Path(__file__).parent.parent),
         )
         assert_eq(result.returncode, 0, f"evidence-pack should exit 0: {result.stderr}")
@@ -5487,7 +5637,9 @@ def test_evidence_pack_sha256_integrity():
     import hashlib
     from evidence_pack import generate_evidence_pack
     with tempfile.TemporaryDirectory() as tmpdir:
-        result = generate_evidence_pack(".", output_dir=tmpdir, project_name="test-sha")
+        result = generate_evidence_pack(
+            str(_SMALL_PROJECT), output_dir=tmpdir, project_name="test-sha"
+        )
         pack_dir = Path(tmpdir) / result["pack_dirname"]
         for file_record in result["manifest"]["files"]:
             filepath = pack_dir / file_record["filename"]
@@ -5553,8 +5705,9 @@ def test_disclose_cli_integration():
 def test_annex_iv_has_all_nine_sections():
     """Generated Annex IV doc must contain headings for all 9 mandatory sections."""
     from generate_documentation import scan_project, generate_annex_iv
-    findings = scan_project(".")
-    doc = generate_annex_iv(findings, "test-project", ".")
+    project_path = str(_SMALL_PROJECT)
+    findings = scan_project(project_path)
+    doc = generate_annex_iv(findings, "test-project", project_path)
     required_sections = [
         "## 1. General Description",
         "## 2. Detailed Description",
@@ -5574,8 +5727,9 @@ def test_annex_iv_has_all_nine_sections():
 def test_annex_iv_standards_from_policy():
     """Section 7 should detect frameworks from regula-policy.yaml."""
     from generate_documentation import scan_project, generate_annex_iv
-    findings = scan_project(".")
-    doc = generate_annex_iv(findings, "test-project", ".")
+    project_path = str(_SMALL_PROJECT)
+    findings = scan_project(project_path)
+    doc = generate_annex_iv(findings, "test-project", project_path)
     assert_true("eu_ai_act" in doc or "EU AI Act" in doc, "Section 7 should reference declared framework")
     print("✓ Annex IV: standards from policy")
 
@@ -5583,8 +5737,9 @@ def test_annex_iv_standards_from_policy():
 def test_annex_iv_completion_covers_new_sections():
     """Completion report must include new sections 4-9."""
     from generate_documentation import scan_project, generate_annex_iv, generate_completion_report
-    findings = scan_project(".")
-    generate_annex_iv(findings, "test-project", ".")
+    project_path = str(_SMALL_PROJECT)
+    findings = scan_project(project_path)
+    generate_annex_iv(findings, "test-project", project_path)
     report = generate_completion_report("test-project")
     for section_name in ["Performance Metrics", "Risk Management", "Harmonised Standards", "Lifecycle Changes", "Post-Market Monitoring"]:
         assert_true(section_name in report, f"Completion report should include '{section_name}'")
@@ -5827,7 +5982,7 @@ def test_smoke_inventory():
     """regula inventory exits 0 and produces output."""
     import subprocess
     result = subprocess.run(
-        ["python3", "scripts/cli.py", "inventory", ".", "--format", "table"],
+        ["python3", "scripts/cli.py", "inventory", str(_SMALL_PROJECT), "--format", "table"],
         capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
     )
     assert result.returncode == 0, f"inventory failed: {result.stderr}"
@@ -5962,7 +6117,7 @@ def test_smoke_check_html():
     import subprocess
     import sys
     result = subprocess.run(
-        [sys.executable, "scripts/cli.py", "check", ".", "--format", "html"],
+        [sys.executable, "scripts/cli.py", "check", str(_SMALL_PROJECT), "--format", "html"],
         capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
     )
     assert result.returncode in (0, 1), f"check --format html crashed: {result.stderr}"
@@ -5982,7 +6137,8 @@ def test_smoke_check_html_output_file():
         tmp_path = tmp.name
     try:
         result = subprocess.run(
-            [sys.executable, "scripts/cli.py", "check", ".", "--format", "html", "-o", tmp_path],
+            [sys.executable, "scripts/cli.py", "check", str(_SMALL_PROJECT),
+             "--format", "html", "-o", tmp_path],
             capture_output=True, text=True, cwd=str(Path(__file__).parent.parent)
         )
         assert result.returncode in (0, 1), f"check --format html -o failed: {result.stderr}"
@@ -6118,7 +6274,9 @@ def test_default_scope_does_not_translate_exclusions_into_no_ai():
 
     rc, stdout, stderr = run_cli("check", "examples/customer-chatbot")
     assert rc == 0, f"expected rc=0, got {rc}\nstderr={stderr}"
-    assert "NO ACTIVE PRODUCTION-SCOPE INDICATORS" in stdout
+    assert "Decision: insufficient_information" in stdout
+    assert "Facts needed to resolve the next decision" in stdout
+    assert "NO ACTIVE PRODUCTION-SCOPE PATTERNS" in stdout
     assert "Run with --scope all" in stdout
     assert "No AI components" not in stdout
     assert "likely does not apply" not in stdout
@@ -6157,37 +6315,38 @@ def test_cli_assessment_outputs_candidates_not_determinations():
 
 
 def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
-    expectations = {
-        "index.html": (
-            "Possible Article 5 indicators",
-            "Candidate high-risk indicators",
-            "Candidate Article 50 indicators",
-            "in force from 27 July 2026",
-        ),
-        "de.html": (
-            "Mögliche Indikatoren nach Artikel 5",
-            "Mögliche Hochrisiko-Indikatoren",
-            "Mögliche Indikatoren nach Artikel 50",
-            "seit 27. Juli 2026 geltenden",
-        ),
-        "pt-br.html": (
-            "Possíveis indicadores do Artigo 5",
-            "Possíveis indicadores de alto risco",
-            "Possíveis indicadores do Artigo 50",
-            "em vigor desde 27 de julho de 2026",
-        ),
-    }
+    """Locale pages consume one decision source and locale-only UI copy."""
+    filenames = ("index.html", "de.html", "pt-br.html")
     assess_dir = Path(__file__).resolve().parents[1] / "site" / "assess"
-    for filename, required in expectations.items():
+    for filename in filenames:
         text = (assess_dir / filename).read_text(encoding="utf-8")
-        for phrase in required:
-            assert phrase in text, f"{filename} missing {phrase!r}"
+        for source in (
+            '<script src="decision-model.js"></script>',
+            '<script src="decision-kernel.js"></script>',
+            '<script src="decision-adapters.js"></script>',
+            '<script src="decision-ui.js"></script>',
+        ):
+            assert source in text, f"{filename} missing shared source {source!r}"
         assert (
             'const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;' in text
         ), f"{filename} must make the advertised letter shortcuts case-insensitive"
 
+    shared_ui = (assess_dir / "decision-ui.js").read_text(encoding="utf-8")
+    assert 'querySelector(".result-tier")' in shared_ui
+    assert "resultTier.tabIndex = -1" in shared_ui
+    assert "resultTier.focus()" in shared_ui
+    for phrase in (
+        "Prohibited-practice candidate",
+        "Kandidat für eine verbotene Praktik",
+        "Candidato a prática proibida",
+        "The supplied facts do not support a determination.",
+        "Die vorgelegten Tatsachen tragen keine Feststellung.",
+        "Os fatos fornecidos não sustentam uma determinação.",
+    ):
+        assert phrase in shared_ui, f"shared locale copy missing {phrase!r}"
+
     all_locales = "\n".join(
-        (assess_dir / name).read_text(encoding="utf-8") for name in expectations
+        (assess_dir / name).read_text(encoding="utf-8") for name in filenames
     )
     for stale in (
         "Prohibited practice detected",
@@ -6483,7 +6642,7 @@ def test_deadline_agent_autonomy():
     print("✓ deadline: agent_autonomy → omnibus 2027-12-02")
 
 def test_deadline_in_json_output():
-    """JSON output from check includes deadline fields."""
+    """JSON check output gates deadlines until applicability is resolved."""
     import subprocess as sp
     result = sp.run(
         [sys.executable, "-m", "scripts.cli", "check", "--format", "json", "scripts/"],
@@ -6492,10 +6651,17 @@ def test_deadline_in_json_output():
     if result.returncode == 0:
         import json as _json
         data = _json.loads(result.stdout)
-        findings = data.get("data", [])
-        has_deadline = any(f.get("deadline") is not None for f in findings)
-        assert_eq(has_deadline, True, "JSON output has deadline fields")
-        print("✓ deadline: present in JSON check output")
+        payload = data.get("data", {})
+        decision = payload.get("decision", {})
+        assert_eq(decision.get("result_type"), "insufficient_information",
+                  "unsourced scan has tagged unresolved result")
+        assert_eq("deadline" in decision, False,
+                  "unresolved decision has no unconditional deadline")
+        assert_eq("obligations" in decision, False,
+                  "unresolved decision has no unconditional obligations")
+        assert_true(len(decision.get("unresolved_predicates", [])) > 0,
+                    "unresolved decision enumerates facts to collect")
+        print("✓ deadline: unresolved JSON check output emits no deadline")
     else:
         print("✓ deadline: JSON output test skipped (non-zero exit)")
         pass  # Don't fail if check returns non-zero (may have findings)
@@ -6569,7 +6735,7 @@ def test_deadline_credential_exposure():
 
 
 def test_conform_end_to_end():
-    """generate_conformity_pack produces correct folder structure and manifest."""
+    """Unresolved conformity packs fail closed and remain actionable."""
     import tempfile
     import shutil
     from conform import generate_conformity_pack
@@ -6581,22 +6747,32 @@ def test_conform_end_to_end():
     try:
         result = generate_conformity_pack(tmpproject, output_dir=tmpdir, project_name="test-conform")
         pack_path = Path(result["pack_path"])
-        # Check folder structure
+        # An unsourced detector observation is not a legal applicability fact.
         assert_eq((pack_path / "00-assessment-summary.json").exists(), True, "summary exists")
-        assert_eq((pack_path / "01-risk-classification" / "findings.json").exists(), True, "findings exists")
-        assert_eq((pack_path / "07-human-oversight-art14" / "coverage.json").exists(), True, "art14 coverage exists")
+        assert_eq((pack_path / "04-resolvable-facts.md").exists(), True, "resolvable facts exist")
+        assert_eq((pack_path / "01-risk-classification" / "findings.json").exists(), False,
+                  "unresolved pack has no risk determination")
+        assert_eq((pack_path / "07-human-oversight-art14" / "coverage.json").exists(), False,
+                  "unresolved pack has no Article 14 duty")
         assert_eq((pack_path / "manifest.json").exists(), True, "manifest exists")
-        # Check manifest has file entries
+        # The manifest itemises every emitted file and reconciles with disk.
         import json as _json
         manifest = _json.load(open(pack_path / "manifest.json"))
-        assert_eq(len(manifest["files"]) > 10, True, "manifest has files")
-        # Check summary has expected keys
+        assert_eq(len(manifest["files"]) > 0, True, "manifest has files")
+        for record in manifest["files"]:
+            assert_eq((pack_path / record["filename"]).exists(), True,
+                      f"manifest file exists: {record['filename']}")
+        # The summary carries the decision and no unsupported claim fields.
         summary = _json.load(open(pack_path / "00-assessment-summary.json"))
-        assert_eq("overall_readiness" in summary, True, "summary has readiness")
-        assert_eq("articles" in summary, True, "summary has articles")
-        assert_eq("deadline" in summary, True, "summary has deadline")
-        assert_eq("earliest_enforceable" in summary["deadline"], True, "deadline derived from findings")
-        print("✓ conform: end-to-end pack structure verified")
+        assert_eq(summary["decision"]["result_type"], "insufficient_information",
+                  "summary is explicitly unresolved")
+        assert_eq(summary["article_duties_attached"], [], "summary has no article duties")
+        assert_eq(summary["readiness_assessment"], None, "summary has no readiness assessment")
+        assert_eq("overall_readiness" in summary, False, "summary has no readiness percentage")
+        assert_eq("deadline" in summary, False, "summary has no deadline")
+        assert_true(len(summary["decision"]["unresolved_predicates"]) > 0,
+                    "summary enumerates facts that would resolve the decision")
+        print("✓ conform: unresolved pack fails closed and remains actionable")
     finally:
         shutil.rmtree(tmpdir)
         shutil.rmtree(tmpproject)

@@ -124,7 +124,7 @@ def _emit_github_annotations(args, display_view) -> None:
             msg = finding.get("description") or finding.get("message") or ""
             score = finding.get("confidence_score")
             if score is not None:
-                msg = f"{msg} (confidence: {score})"
+                msg = f"{msg} (detector priority: {score})"
             msg = _gha_escape(msg)
             # stdout, not stderr — GitHub Actions parses workflow commands
             # from either stream, but stdout is the documented default.
@@ -257,10 +257,16 @@ def cmd_check(args) -> None:
     from cli import (
         json_output, _validate_path, _get_changed_files,
         _resolve_jurisdictions, _enrich_findings_with_jurisdictions,
-        _enrich_findings_with_domain_obligations,
         _print_remediation,
     )
     from report import scan_files
+    from decision_adapters import (
+        detector_explanation,
+        detector_findings,
+        empty_decision,
+        format_decision_text,
+        format_detector_explanation,
+    )
 
     # F2: --manifest is only honoured for scan-output formats. Warn loudly if
     # combined with a mode that exits early and cannot produce one, so a CI
@@ -287,6 +293,8 @@ def cmd_check(args) -> None:
         min_tier=getattr(args, "min_tier", "") or "",
         declared_domains=declared_domains,
     )
+    decision = empty_decision("eu", "cli:check")
+    jurisdiction_decisions = {"eu": decision}
     # Capture scan statistics immediately (side-channel on the function).
     # Used to record honest scanned/skipped counts in the completion
     # manifest so a PARTIAL scan cannot masquerade as clean (review F1).
@@ -337,7 +345,21 @@ def cmd_check(args) -> None:
         jurisdiction_pairs = _resolve_jurisdictions(args.jurisdictions)
         if jurisdiction_pairs:
             _enrich_findings_with_jurisdictions(findings, jurisdiction_pairs)
-            _enrich_findings_with_domain_obligations(findings, jurisdiction_pairs)
+            kernel_jurisdictions = {
+                "eu": "eu",
+                "kr": "kr",
+                "korea": "kr",
+                "south-korea": "kr",
+                "co": "co",
+                "colorado": "co",
+            }
+            for short_name, _framework in jurisdiction_pairs:
+                kernel_jurisdiction = kernel_jurisdictions.get(short_name)
+                if kernel_jurisdiction and kernel_jurisdiction not in jurisdiction_decisions:
+                    jurisdiction_decisions[kernel_jurisdiction] = empty_decision(
+                        kernel_jurisdiction,
+                        f"cli:check:{kernel_jurisdiction}",
+                    )
 
     # Partition findings via the pure function in findings_view.
     # This used to be 16 inlined lines mutating the input list; the
@@ -441,23 +463,35 @@ def cmd_check(args) -> None:
                     continue  # file unreadable; skip
                 lang = _detect_lang_json(full_path.name) or "python"
                 result = explain_classification(content, filepath=f["file"], language=lang)
-                explained.append({
-                    "file": f["file"],
-                    "classification": result["classification"].to_dict(),
-                    "pattern_matches": result["pattern_matches"],
-                    "provider_deployer": result["provider_deployer"],
-                    "obligation_roadmap": result["obligation_roadmap"],
-                    "total_effort_hours": result["total_effort_hours"],
-                })
+                explained.append(detector_explanation(result, f["file"]))
             # Sort findings for deterministic output
             findings.sort(key=lambda f: (f.get('file', ''), f.get('line', 0), f.get('pattern', '')))
             det = getattr(args, 'deterministic', False)
-            json_output("check", {"findings": findings, "explanations": explained}, exit_code=_exit_code, deterministic=det)
+            json_output(
+                "check",
+                {
+                    "detector_findings": detector_findings(findings),
+                    "detector_explanations": explained,
+                    "decision": decision,
+                    "jurisdiction_decisions": jurisdiction_decisions,
+                },
+                exit_code=_exit_code,
+                deterministic=det,
+            )
         else:
             # Sort findings for deterministic output
             findings.sort(key=lambda f: (f.get('file', ''), f.get('line', 0), f.get('pattern', '')))
             det = getattr(args, 'deterministic', False)
-            json_output("check", findings, exit_code=_exit_code, deterministic=det)
+            json_output(
+                "check",
+                {
+                    "detector_findings": detector_findings(findings),
+                    "decision": decision,
+                    "jurisdiction_decisions": jurisdiction_decisions,
+                },
+                exit_code=_exit_code,
+                deterministic=det,
+            )
     elif args.format == "sarif":
         from report import generate_sarif
         name = args.name or Path(project).name
@@ -478,26 +512,25 @@ def cmd_check(args) -> None:
         print(f"\n{t('scan_header', path=project)}")
         print(f"{'=' * 60}")
 
-        # === First-run verdict: answer "Am I affected?" ===
-        # Placed at the TOP so it's the first thing users see.
-        # Indication framing, not legal determination: Regula reports
-        # pattern-based indicators; Article 6 classification depends on
-        # intended purpose and context (positioning rule — the tool must
-        # never present itself as issuing a legal classification).
+        # Detector observations cannot supply intended purpose, operator role,
+        # territorial scope, or the other facts required for a legal result.
+        for jurisdiction_decision in jurisdiction_decisions.values():
+            print("\n" + format_decision_text(jurisdiction_decision))
+        print("\nDetector observations (not legal facts):")
         if prohibited:
-            verdict_tier = "PROHIBITED"
-            verdict_desc = "Your project contains indicators of AI practices prohibited under EU AI Act Article 5."
-            verdict_action = "Review these findings — confirmed prohibited practices must be removed before deployment in the EU."
+            verdict_tier = "ARTICLE 5 PATTERNS"
+            verdict_desc = "The scanner found code patterns associated with Article 5 review."
+            verdict_action = "Resolve the facts listed above before making an applicability determination."
             verdict_color = red
         elif high_risk or credentials:
-            verdict_tier = "HIGH-RISK"
-            verdict_desc = "Your project shows indicators of high-risk AI under EU AI Act Annex III."
-            verdict_action = "If confirmed high-risk (Article 6), Articles 9-15 obligations apply before the enforcement deadline."
+            verdict_tier = "ANNEX III OR SECURITY PATTERNS"
+            verdict_desc = "The scanner found patterns relevant to Annex III or security review."
+            verdict_action = "Resolve the facts listed above before attaching Article 9 to 15 duties."
             verdict_color = yellow
         elif limited:
-            verdict_tier = "LIMITED-RISK"
-            verdict_desc = "Your project has indicators of limited-risk AI components (Article 50 transparency)."
-            verdict_action = "If confirmed, Article 50 requires disclosing AI usage to users."
+            verdict_tier = "ARTICLE 50 PATTERNS"
+            verdict_desc = "The scanner found patterns relevant to Article 50 review."
+            verdict_action = "Resolve the facts listed above before attaching a transparency duty."
             verdict_color = blue
         elif active:
             verdict_tier = "NO ELEVATED RISK-TIER INDICATORS"
@@ -514,7 +547,7 @@ def cmd_check(args) -> None:
             _pre_stats = getattr(scan_files, "last_stats", {}) or {}
             _pre_gated = _pre_stats.get("domain_gated_count", 0)
             if _scope_excluded:
-                verdict_tier = "NO ACTIVE PRODUCTION-SCOPE INDICATORS"
+                verdict_tier = "NO ACTIVE PRODUCTION-SCOPE PATTERNS"
                 verdict_desc = (
                     f"No active findings remain in production scope. "
                     f"{len(_scope_excluded)} finding(s) from non-production "
@@ -525,7 +558,7 @@ def cmd_check(args) -> None:
                     "Run with --scope all to review the excluded findings."
                 )
             elif _pre_gated > 0:
-                verdict_tier = "NO ACTIVE FINDINGS"
+                verdict_tier = "NO ACTIVE DETECTOR FINDINGS"
                 _pre_cats = ", ".join(_pre_stats.get("domain_gated_categories", []))
                 verdict_desc = (
                     f"No active findings. {_pre_gated} high-risk finding(s) "
@@ -533,12 +566,12 @@ def cmd_check(args) -> None:
                 )
                 verdict_action = f"Use --domain <domain> to activate ({_pre_cats})."
             else:
-                verdict_tier = "NO AI DETECTED"
-                verdict_desc = "No AI components or risk indicators found in your project."
-                verdict_action = "The EU AI Act likely does not apply to this project."
+                verdict_tier = "NO DETECTOR PATTERNS"
+                verdict_desc = "The scanner found no code patterns in the scanned files."
+                verdict_action = "This does not establish that the subject is not an AI system or outside scope."
             verdict_color = lambda x: x  # identity function — no color applied
 
-        print(f"\n  {verdict_color('Verdict')}: {verdict_color(verdict_tier)}")
+        print(f"\n  {verdict_color('Detector summary')}: {verdict_color(verdict_tier)}")
         print(f"  {verdict_desc}")
         print(f"  {verdict_action}")
 
@@ -685,43 +718,13 @@ def cmd_check(args) -> None:
             print(f"\n  Questions for human review ({len(open_qs)}):")
             for f in open_qs[:10]:
                 print(f"    ? {f['file']}:{f.get('line', '?')} — {f.get('category', 'Unknown')}")
-                print(f"      {f.get('description', '')} (confidence: {f.get('confidence_score', 0)}%)")
+                print(f"      {f.get('description', '')} (detector priority: {f.get('confidence_score', 0)})")
             if len(open_qs) > 10:
                 print(f"    ... and {len(open_qs) - 10} more (use --format json to see all)")
 
-        # Multi-jurisdiction domain obligations summary
         if jurisdiction_pairs:
-            _any_domain_obs = any(f.get("domain_obligations") for f in findings)
-            if _any_domain_obs:
-                print(f"\n  {'─' * 56}")
-                print(f"  {yellow('MULTI-JURISDICTION OBLIGATIONS')}:")
-                # Collect unique (jurisdiction, domain, obligations) across all findings
-                _seen_jur_domains = set()
-                for f in findings:
-                    for jur_name, jur_data in (f.get("domain_obligations") or {}).items():
-                        for cd in jur_data.get("covered_domains", []):
-                            key = (jur_name, cd["domain"])
-                            if key in _seen_jur_domains:
-                                continue
-                            _seen_jur_domains.add(key)
-                # Print per-jurisdiction summary
-                for short_name, _fw_key in jurisdiction_pairs:
-                    _jur_domains = [(j, d) for j, d in _seen_jur_domains if j == short_name]
-                    if not _jur_domains:
-                        continue
-                    # Get summary from first finding that has this jurisdiction
-                    _jur_info = None
-                    for f in findings:
-                        _jur_info = (f.get("domain_obligations") or {}).get(short_name)
-                        if _jur_info:
-                            break
-                    if not _jur_info:
-                        continue
-                    print(f"\n    {_jur_info['jurisdiction']} ({_jur_info['law']})")
-                    print(f"    Status: {_jur_info['status']} | Penalties: {_jur_info['penalty_range']}")
-                    for cd in _jur_info.get("covered_domains", []):
-                        print(f"      • {cd['domain']}: {cd['risk_level']} — "
-                              f"{len(cd['obligations'])} obligations (Articles {', '.join(cd['articles'])})")
+            print("\n  Jurisdiction labels on detector findings are review suggestions.")
+            print("  They do not create duties; the kernel decisions above control applicability.")
 
         print(f"{'=' * 60}")
         print(f"  {t('confidence_note')}")
@@ -751,7 +754,7 @@ def cmd_check(args) -> None:
 
     # Explain mode: show detailed reasoning for each file
     if getattr(args, "explain", False) and args.format == "text":
-        from explain import explain_classification, format_explanation
+        from explain import explain_classification
         from ast_engine import detect_language as _detect_lang
 
         # Collect unique files with non-trivial findings
@@ -776,7 +779,9 @@ def cmd_check(args) -> None:
                 lang = _detect_lang(full_path.name) or "python"
                 result = explain_classification(content, filepath=rel_path, language=lang)
                 print(f"\n--- {rel_path} ---")
-                print(format_explanation(result, filepath=rel_path))
+                print(format_detector_explanation(
+                    detector_explanation(result, rel_path)
+                ))
                 print()
 
     # GitHub Actions workflow-command annotations. Emits inline PR comments
@@ -832,6 +837,7 @@ def cmd_classify(args) -> None:
     """Classify a text input."""
     from cli import json_output, _validate_path
     from classify_risk import classify
+    from decision_adapters import detector_finding, empty_decision, format_decision_text
 
     if args.file:
         _validate_path(args.file)
@@ -845,6 +851,7 @@ def cmd_classify(args) -> None:
         sys.exit(1)
 
     result = classify(text)
+    decision = empty_decision("eu", "cli:classify")
 
     # Compute the verdict exit code ONCE so json and text modes agree (DEF-008
     # class: previously the json branch returned with a hardcoded envelope
@@ -859,9 +866,18 @@ def cmd_classify(args) -> None:
             data = _json.loads(result.to_json())
         except (ValueError, TypeError, AttributeError):
             data = result.to_json()
-        json_output("classify", data, exit_code=_classify_exit)
+        json_output(
+            "classify",
+            {
+                "detector_observation": detector_finding(data),
+                "decision": decision,
+            },
+            exit_code=_classify_exit,
+        )
         sys.exit(_classify_exit)
     else:
+        print(format_decision_text(decision))
+        print("\nDetector observation (not a legal classification):")
         print(result.message)
         if result.exceptions:
             print(f"  Exceptions: {result.exceptions}")

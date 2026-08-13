@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Critical inline CSS + non-render-blocking stylesheets — same pattern as
+    <!-- Critical inline CSS + non-render-blocking stylesheets; same pattern as
          blog posts. Inline critical CSS establishes dark theme immediately;
          color-scheme: dark hints the canvas colour; stylesheets load via
          media="print" + onload swap so they don't block first paint. -->
@@ -22,26 +22,26 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>Evidence Packs &mdash; Signed AI Act Reports | Regula</title>
-    <meta name="description" content="Signed, timestamped compliance reports you can hand to an auditor. The Regula CLI is free forever; paid evidence-pack tiers are planned and not yet purchasable.">
+    <title>Free Assessment &amp; Planned Consultant Review | Regula</title>
+    <meta name="description" content="Use Regula's questions and code indicators for free. Consultant-supported evidence review is planned but is not yet bookable or purchasable.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/pricing.html">
-    <meta property="og:title" content="Evidence Packs — Signed EU AI Act Compliance Reports | Regula">
-    <meta property="og:description" content="Signed, timestamped compliance reports you can hand to an auditor. The CLI is free forever; paid tiers are planned and not yet purchasable.">
+    <meta property="og:title" content="Free Assessment &amp; Planned Consultant Review | Regula">
+    <meta property="og:description" content="Questions and code indicators are free. Paid consultant-supported evidence review is planned but not yet available.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:image:alt" content="Regula: EU AI Act compliance tool for code">
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Evidence Packs — Signed EU AI Act Compliance Reports | Regula">
-    <meta name="twitter:description" content="Signed, timestamped compliance reports you can hand to an auditor. The CLI is free forever; paid tiers are planned and not yet purchasable.">
+    <meta name="twitter:title" content="Free Assessment &amp; Planned Consultant Review | Regula">
+    <meta name="twitter:description" content="Questions and code indicators are free. Paid consultant-supported evidence review is planned but not yet available.">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
-      "name": "Evidence Packs — Signed EU AI Act Compliance Reports",
+      "name": "Free Assessment and Planned Consultant Review",
       "url": "https://getregula.com/pricing.html",
-      "description": "Signed, timestamped compliance reports you can hand to an auditor. The Regula CLI is free forever; paid evidence-pack tiers are planned and not yet purchasable.",
+      "description": "Regula's questions and code indicators are free. Consultant-supported evidence review is planned but is not yet bookable or purchasable.",
       "isPartOf": {"@type": "WebSite", "name": "Regula", "url": "https://getregula.com/"},
       "breadcrumb": {
         "@type": "BreadcrumbList",
@@ -182,6 +182,11 @@
             background: var(--accent-soft);
             color: #bae6fd;
             border: 1px solid rgba(59,130,246,0.2);
+            cursor: pointer;
+        }
+        .pricing-card .cta-btn.free:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
         }
         .pricing-card .cta-btn.coming {
             background: var(--bg-elev);
@@ -217,6 +222,45 @@
         .trust-note strong {
             color: var(--text-2);
         }
+
+        .service-boundary {
+            max-width: 960px;
+            margin: 0 auto var(--s12);
+            padding: 0 var(--s6);
+        }
+        .service-boundary h2 {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            margin-bottom: var(--s4);
+        }
+        .service-boundary > p {
+            color: var(--text-2);
+            max-width: 720px;
+            line-height: 1.7;
+            margin-bottom: var(--s6);
+        }
+        .boundary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--s6);
+        }
+        .boundary-panel {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: var(--s6);
+        }
+        .boundary-panel h3 {
+            font-family: var(--font-serif);
+            font-size: 20px;
+            margin-bottom: var(--s3);
+        }
+        .boundary-panel ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text-2);
+        }
+        .boundary-panel li { margin-bottom: var(--s2); }
 
         .pricing-faq {
             max-width: 640px;
@@ -262,6 +306,7 @@
             .pricing-hero {
                 margin: var(--s10) auto var(--s8);
             }
+            .boundary-grid { grid-template-columns: 1fr; }
         }
     </style>
     <!-- Privacy-friendly analytics by Plausible -->
@@ -277,8 +322,8 @@
 
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -295,92 +340,113 @@
 <main id="main">
 
 <div class="pricing-hero">
-    <h1>Evidence packs for your auditor</h1>
-    <p class="subtitle">Regula is free. The CLI stays free forever. Evidence packs are signed, timestamped compliance reports you can hand to an auditor, a customer, or a regulator.</p>
+    <h1>Questions are free. Human review is the paid service.</h1>
+    <p class="subtitle">Use Regula to identify code indicators and the facts you still need. A planned consultant review will help teams interpret that evidence and turn it into an accountable action plan. It is not yet bookable.</p>
 </div>
 
 <div class="pricing-cards">
 
     <!-- Free tier -->
     <div class="pricing-card">
-        <h3>Free</h3>
+        <h3>Self-assessment</h3>
         <div class="price">EUR 0</div>
-        <div class="price-note">Free forever</div>
+        <div class="price-note">Free and available now</div>
         <ul>
-            <li>Risk classification across 419 patterns</li>
-            <li>Gap analysis against EU AI Act articles</li>
-            <li>Remediation plan with effort estimates</li>
+            <li>Browser questions with an unresolved-facts path</li>
+            <li>Local code indicators for human review</li>
+            <li>Evidence and documentation scaffolds</li>
             <li>JSON and text output</li>
-            <li>Annex IV documentation scaffold</li>
+            <li>No legal determination or professional advice</li>
         </ul>
-        <code style="margin-bottom: var(--s5); display: block;">regula check . && regula gap .</code>
-        <span class="cta-btn free">Current behaviour</span>
+        <code style="margin-bottom: var(--s5); display: block;">regula check .</code>
+        <a class="cta-btn free" href="/assess/">Start free assessment</a>
     </div>
 
     <!-- Starter tier -->
     <div class="pricing-card featured">
-        <h3>Starter</h3>
-        <div class="price">EUR 49</div>
-        <div class="price-note">One-time per evidence pack</div>
+        <h3>Consultant review</h3>
+        <div class="price">Price TBC</div>
+        <div class="price-note">Planned one-off review; not yet bookable</div>
         <ul>
-            <li>Everything in Free</li>
-            <li>Ed25519-signed evidence pack</li>
-            <li>SHA-256 integrity manifest</li>
-            <li>Annex IV documentation scaffold</li>
-            <li>Compliance score with per-article breakdown</li>
-            <li>Reviewer-completable PDF-printable scaffold</li>
+            <li>One live session with an AI governance consultant</li>
+            <li>Fact and scope review before interpretation</li>
+            <li>Walkthrough of code indicators and evidence gaps</li>
+            <li>Prioritised action brief with named open questions</li>
+            <li>Clear referral boundary for qualified legal advice</li>
         </ul>
-        <code style="margin-bottom: var(--s5); display: block;">regula conform --sign .</code>
-        <span class="cta-btn coming">Coming soon</span>
+        <span class="cta-btn coming" aria-disabled="true">Payment gate not active</span>
     </div>
 
     <!-- Professional tier -->
     <div class="pricing-card">
-        <h3>Professional</h3>
-        <div class="price">EUR 149</div>
-        <div class="price-note">One-time per evidence pack</div>
+        <h3>Organisation review</h3>
+        <div class="price">Scoped quote</div>
+        <div class="price-note">Planned engagement; not yet available</div>
         <ul>
-            <li>Everything in Starter</li>
-            <li>Conformity assessment pack</li>
-            <li>Declaration of Conformity template</li>
-            <li>Prioritised remediation plan</li>
-            <li>CycloneDX AI SBOM</li>
-            <li>RFC 3161 timestamp</li>
+            <li>Everything in Consultant review</li>
+            <li>Multi-system or multi-team evidence review</li>
+            <li>Decision and evidence register workshop</li>
+            <li>Governance ownership and remediation planning</li>
+            <li>Re-scan and review cadence design</li>
         </ul>
-        <code style="margin-bottom: var(--s5); display: block;">regula conform --sign --timestamp .</code>
-        <span class="cta-btn coming">Coming soon</span>
+        <span class="cta-btn coming" aria-disabled="true">Scoping not yet open</span>
     </div>
 
 </div>
 
 <div class="trust-note" style="background:rgba(245,158,11,0.08);border-left:3px solid #f59e0b;padding:16px 20px;margin:0 0 24px;border-radius:0 8px 8px 0;">
-    <p><strong>Paid tiers are not yet available.</strong> No payment is currently processed and no purchase is possible. The pricing shown is indicative of the planned model. The free CLI and all its commands remain fully available.</p>
+    <p><strong>Paid support is not yet available.</strong> No payment is currently processed, no booking is accepted, and no consultant has been assigned through this site. Disabled labels are intentional: they prevent a visitor mistaking a roadmap item for a purchasable service.</p>
 </div>
 <div class="trust-note">
-    <p><strong>The core scanner processes files locally and does not upload them.</strong> Evidence packs are generated locally. Optional integrations and the platform running Regula may have their own data handling, which you should review separately.</p>
+    <p><strong>The core scanner processes files locally and does not upload them.</strong> A future consultant engagement will need a separately agreed evidence-sharing method, scope, privacy notice, retention rule, cancellation terms, and professional boundary before payment is enabled.</p>
 </div>
+
+<section class="service-boundary" aria-labelledby="service-boundary-title">
+    <h2 id="service-boundary-title">What stays free, and what paid support adds</h2>
+    <p>The payment boundary is expert time and accountability, not access to basic safety information. Regula will continue to show what it observed, what remains unknown, and why it cannot make a determination.</p>
+    <div class="boundary-grid">
+        <div class="boundary-panel">
+            <h3>Free product</h3>
+            <ul>
+                <li>Questions, code indicators, and unresolved facts</li>
+                <li>Transparent rule and evidence paths</li>
+                <li>Local generation of reviewer-completable scaffolds</li>
+                <li>Clear limitations and referral cues</li>
+            </ul>
+        </div>
+        <div class="boundary-panel">
+            <h3>Paid human work</h3>
+            <ul>
+                <li>Context gathering and evidence-quality review</li>
+                <li>Interpretation by a named consultant within a stated scope</li>
+                <li>Prioritisation, workshop time, and documented follow-up</li>
+                <li>Escalation to qualified legal or specialist advice where needed</li>
+            </ul>
+        </div>
+    </div>
+</section>
 
 <div class="pricing-faq">
     <h2>Questions</h2>
 
     <details>
-        <summary>Will the free tier ever become paid?</summary>
-        <p>No. The CLI is the distribution channel. Every command that exists today stays free forever. Evidence packs are a paid deliverable on top of the free tool.</p>
+        <summary>What remains free?</summary>
+        <p>The browser questions, local scanner, observed indicators, unresolved facts, and existing CLI commands remain free. Paid support adds human review and a scoped service; it does not hide the tool's evidence or limitations.</p>
     </details>
 
     <details>
-        <summary>What do I actually get?</summary>
-        <p>A ZIP bundle containing JSON scan results, gap analysis, Annex IV documentation, remediation plan, and a SHA-256 integrity manifest. Starter packs are Ed25519-signed. Professional packs add a conformity assessment pack, Declaration of Conformity template, and a CycloneDX SBOM.</p>
+        <summary>What would a consultant review provide?</summary>
+        <p>The proposed service includes a scoped evidence review, one live walkthrough, a prioritised action brief, and a written list of facts or specialist decisions still required. The exact service, consultant, duration, price, and terms will be published before booking opens.</p>
     </details>
 
     <details>
-        <summary>Is this a subscription?</summary>
-        <p>No. Each payment generates one evidence pack for one project at a point in time. Run it again next quarter if your codebase has changed.</p>
+        <summary>Can I pay or book now?</summary>
+        <p>No. There is no live checkout or booking flow. Payment will not be enabled until fulfillment, availability, privacy, tax, cancellation, refund, and professional-boundary controls are ready and tested.</p>
     </details>
 
     <details>
-        <summary>Can my auditor verify the pack?</summary>
-        <p>Yes. Each bundle includes a standalone <code>verify.py</code> script that checks SHA-256 hashes of every file against the manifest. Signed packs also include an Ed25519 signature your auditor can verify independently.</p>
+        <summary>Will the consultant give legal advice?</summary>
+        <p>Not unless the named consultant is separately qualified and engaged to do so. AI governance support can help organise facts, evidence, and actions, but legal conclusions must be referred to an appropriately qualified professional.</p>
     </details>
 </div>
 

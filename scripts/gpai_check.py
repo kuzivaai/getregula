@@ -6,7 +6,8 @@ Regula GPAI Code of Practice Check
 Static-analysis check that maps a GPAI (General-Purpose AI) provider codebase
 to the three chapters of the EU AI Act GPAI Code of Practice (final version
 published 10 July 2025, endorsed by the Commission and AI Board 1 August 2025,
-obligations in force since 2 August 2025, enforcement actions from 2 August 2026).
+obligations in force since 2 August 2025, enforcement actions possible since
+2 August 2026).
 
 Chapters:
     1. Transparency             — all GPAI providers (Article 53)

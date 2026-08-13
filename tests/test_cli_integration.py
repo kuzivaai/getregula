@@ -178,7 +178,11 @@ def test_classify_json_exit_code_matches_process_exit_code():
     assert payload["exit_code"] == 1, (
         f"envelope exit_code must match process exit code; got {payload['exit_code']}"
     )
-    assert payload["data"]["tier"] == "prohibited"
+    data = payload["data"]
+    assert data["detector_observation"]["detector_class"] == "prohibited"
+    assert "tier" not in data["detector_observation"]
+    assert data["decision"]["result_type"] == "insufficient_information"
+    assert data["decision"]["rule_resolution"] == "unresolved"
 
 
 def test_classify_json_exit_code_zero_on_benign_input():
@@ -190,6 +194,48 @@ def test_classify_json_exit_code_zero_on_benign_input():
     assert rc == 0, f"expected rc=0 for benign input, got {rc}: {err[:200]}"
     payload = json.loads(out)
     assert payload["exit_code"] == 0
+
+
+def test_check_explain_keeps_detector_detail_separate_from_decision():
+    """Explain mode must not restore copied obligations or effort estimates."""
+    import tempfile
+    from pathlib import Path as _Path
+    with tempfile.TemporaryDirectory() as d:
+        (_Path(d) / "screen.py").write_text(
+            "from sklearn.linear_model import LogisticRegression\n"
+            "def credit_score_decision(applicant):\n"
+            "    return model.predict(applicant)\n",
+            encoding="utf-8",
+        )
+        rc, out, err = run_cli(
+            "check", d, "--explain", "--format", "json", "--no-skip-tests"
+        )
+    assert rc in (0, 1), err[:200]
+    data = json.loads(out)["data"]
+    assert data["decision"]["result_type"] == "insufficient_information"
+    assert data["detector_explanations"], "fixture must exercise explain output"
+    for finding in data["detector_findings"]:
+        assert "deadline" not in finding
+        assert "deadline_note" not in finding
+        assert "observations" not in finding
+        for context in finding.get("detector_context", []):
+            assert "requires" not in context["detector_observation"].lower()
+    for explanation in data["detector_explanations"]:
+        assert "obligation_roadmap" not in explanation
+        assert "total_effort_hours" not in explanation
+        assert "classification" not in explanation
+        assert "classification_observation" in explanation
+
+
+def test_plan_and_roadmap_withhold_claims_when_facts_are_absent():
+    """The public planning adapters enforce the no-unresolved-claim invariant."""
+    for command, output_key in (("plan", "plan"), ("roadmap", "roadmap")):
+        rc, out, err = run_cli(command, "--project", ".", "--format", "json")
+        assert rc == 0, f"{command} failed: {err[:200]}"
+        data = json.loads(out)["data"]
+        assert data[output_key] is None
+        assert data["decision"]["result_type"] == "insufficient_information"
+        assert data["decision"]["unresolved_predicates"]
 
 
 def test_gap_strict_json_exit_code_matches_process_exit_code():
@@ -361,9 +407,19 @@ def test_doctor():
     assert "passed" in out.lower() or "pass" in out.lower()
 
 
-def test_sbom():
-    rc, out, err = run_cli("sbom")
+def test_sbom(tmp_path):
+    """SBOM smoke test proves a real dependency reaches CycloneDX output."""
+    (tmp_path / "requirements.txt").write_text("requests==2.32.0\n")
+    rc, out, err = run_cli("sbom", "--project", str(tmp_path))
     assert rc == 0
+    bom = json.loads(out)
+    assert bom["bomFormat"] == "CycloneDX"
+    assert bom["specVersion"] == "1.7"
+    assert any(
+        component.get("name") == "requests"
+        and component.get("version") == "2.32.0"
+        for component in bom["components"]
+    )
 
 
 def test_dpv():

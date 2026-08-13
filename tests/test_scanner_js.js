@@ -70,8 +70,8 @@ const prohibitedFixtures = [
 for (const fixture of prohibitedFixtures) {
   const code = loadFixture(fixture);
   const result = classifyCode(code, 'python');
-  assertEq(result.tier, 'prohibited', `${fixture} → prohibited`);
-  console.log(`  ${result.tier === 'prohibited' ? 'PASS' : 'FAIL'}  ${fixture} → ${result.tier}`);
+  assertEq(result.detector_class, 'article_5_pattern', `${fixture} → article_5_pattern`);
+  console.log(`  ${result.detector_class === 'article_5_pattern' ? 'PASS' : 'FAIL'}  ${fixture} → ${result.detector_class}`);
 }
 
 // High-risk fixtures
@@ -86,34 +86,34 @@ const highRiskFixtures = [
 for (const fixture of highRiskFixtures) {
   const code = loadFixture(fixture);
   const result = classifyCode(code, 'python');
-  assertEq(result.tier, 'high_risk', `${fixture} → high_risk`);
-  console.log(`  ${result.tier === 'high_risk' ? 'PASS' : 'FAIL'}  ${fixture} → ${result.tier}`);
+  assertEq(result.detector_class, 'annex_iii_pattern', `${fixture} → annex_iii_pattern`);
+  console.log(`  ${result.detector_class === 'annex_iii_pattern' ? 'PASS' : 'FAIL'}  ${fixture} → ${result.detector_class}`);
 }
 
-// Negative: chatbot → limited_risk
+// Negative: chatbot → article_50_pattern
 {
   const code = loadFixture('negative_chatbot.py');
   const result = classifyCode(code, 'python');
-  assertEq(result.tier, 'limited_risk', 'negative_chatbot.py → limited_risk');
-  console.log(`  ${result.tier === 'limited_risk' ? 'PASS' : 'FAIL'}  negative_chatbot.py → ${result.tier}`);
+  assertEq(result.detector_class, 'article_50_pattern', 'negative_chatbot.py → article_50_pattern');
+  console.log(`  ${result.detector_class === 'article_50_pattern' ? 'PASS' : 'FAIL'}  negative_chatbot.py → ${result.detector_class}`);
 }
 
-// Negative: minimal_ai → minimal_risk or limited_risk
+// Negative: minimal_ai → no_elevated_pattern or article_50_pattern
 {
   const code = loadFixture('negative_minimal_ai.py');
   const result = classifyCode(code, 'python');
-  assertIn(result.tier, ['minimal_risk', 'limited_risk'], 'negative_minimal_ai.py → minimal/limited');
-  console.log(`  ${['minimal_risk', 'limited_risk'].includes(result.tier) ? 'PASS' : 'FAIL'}  negative_minimal_ai.py → ${result.tier}`);
+  assertIn(result.detector_class, ['no_elevated_pattern', 'article_50_pattern'], 'negative_minimal_ai.py → minimal/limited');
+  console.log(`  ${['no_elevated_pattern', 'article_50_pattern'].includes(result.detector_class) ? 'PASS' : 'FAIL'}  negative_minimal_ai.py → ${result.detector_class}`);
 }
 
-// Negative: pure utility → not prohibited or high_risk (fixture allows not_ai or minimal_risk)
+// Negative: pure utility → not article_5_pattern or annex_iii_pattern (fixture allows no_ai_pattern or no_elevated_pattern)
 {
   const code = loadFixture('negative_pure_utility.py');
   const result = classifyCode(code, 'python');
-  assertIn(result.tier, ['not_ai', 'minimal_risk'], 'negative_pure_utility.py → not_ai/minimal');
-  assert(result.tier !== 'prohibited', 'negative_pure_utility.py not prohibited');
-  assert(result.tier !== 'high_risk', 'negative_pure_utility.py not high_risk');
-  console.log(`  ${!['prohibited', 'high_risk'].includes(result.tier) ? 'PASS' : 'FAIL'}  negative_pure_utility.py → ${result.tier}`);
+  assertIn(result.detector_class, ['no_ai_pattern', 'no_elevated_pattern'], 'negative_pure_utility.py → no_ai_pattern/minimal');
+  assert(result.detector_class !== 'article_5_pattern', 'negative_pure_utility.py not article_5_pattern');
+  assert(result.detector_class !== 'annex_iii_pattern', 'negative_pure_utility.py not annex_iii_pattern');
+  console.log(`  ${!['article_5_pattern', 'annex_iii_pattern'].includes(result.detector_class) ? 'PASS' : 'FAIL'}  negative_pure_utility.py → ${result.detector_class}`);
 }
 
 // =====================================================================
@@ -125,7 +125,7 @@ console.log('\n── scanCode() integration tests ──\n');
 {
   const code = loadFixture('prohibited_art5_1c.py');
   const result = scanCode(code, 'scoring.py');
-  assertEq(result.classification.tier, 'prohibited', 'scanCode prohibited returns correct tier');
+  assertEq(result.classification.detector_class, 'article_5_pattern', 'scanCode article_5_pattern returns correct tier');
   assert(Array.isArray(result.security), 'scanCode returns security array');
   assert(typeof result.is_training === 'boolean', 'scanCode returns is_training boolean');
   assert(typeof result.language === 'string', 'scanCode returns language string');
@@ -135,7 +135,7 @@ console.log('\n── scanCode() integration tests ──\n');
 {
   const code = loadFixture('highrisk_biometrics.py');
   const result = scanCode(code, 'biometrics.py');
-  assertEq(result.classification.tier, 'high_risk', 'scanCode high-risk returns correct tier');
+  assertEq(result.classification.detector_class, 'annex_iii_pattern', 'scanCode high-risk returns correct tier');
   assert(Array.isArray(result.observations), 'scanCode high-risk includes observations');
   assert(Array.isArray(result.bias), 'scanCode high-risk includes bias');
   console.log('  PASS  scanCode() high-risk includes observations + bias');
@@ -144,9 +144,9 @@ console.log('\n── scanCode() integration tests ──\n');
 {
   const code = loadFixture('negative_pure_utility.py');
   const result = scanCode(code, 'utils.py');
-  assertIn(result.classification.tier, ['not_ai', 'minimal_risk'], 'scanCode utility returns not_ai/minimal');
-  assert(result.classification.tier !== 'prohibited', 'scanCode utility not prohibited');
-  assert(result.classification.tier !== 'high_risk', 'scanCode utility not high_risk');
+  assertIn(result.classification.detector_class, ['no_ai_pattern', 'no_elevated_pattern'], 'scanCode utility returns no_ai_pattern/minimal');
+  assert(result.classification.detector_class !== 'article_5_pattern', 'scanCode utility not article_5_pattern');
+  assert(result.classification.detector_class !== 'annex_iii_pattern', 'scanCode utility not annex_iii_pattern');
   console.log('  PASS  scanCode() utility code returns safe tier');
 }
 
@@ -215,14 +215,26 @@ console.log('\n── Edge case tests ──\n');
 
 {
   const result = classifyCode('', 'python');
-  assertEq(result.tier, 'not_ai', 'empty string → not_ai');
-  console.log('  PASS  empty input returns not_ai');
+  assertEq(result.detector_class, 'no_ai_pattern', 'empty string → no_ai_pattern');
+  assertEq(result.detector_priority, 0, 'empty input detector priority is zero');
+  assert(!Object.prototype.hasOwnProperty.call(result, 'tier'), 'empty input emits no tier');
+  assert(!Object.prototype.hasOwnProperty.call(result, 'confidence'), 'empty input emits no confidence label');
+  assert(!Object.prototype.hasOwnProperty.call(result, 'confidence_score'), 'empty input emits no confidence score');
+  console.log('  PASS  empty input returns no_ai_pattern');
+}
+
+{
+  const result = classifyCode('import torch\nmodel.predict(candidate)', 'python');
+  assert(typeof result.detector_priority === 'number', 'detector priority is numeric');
+  assert(!Object.prototype.hasOwnProperty.call(result, 'tier'), 'detector emits no legal tier field');
+  assert(!Object.prototype.hasOwnProperty.call(result, 'applicable_articles'), 'detector emits suggestions, not applicable articles');
+  assert(Array.isArray(result.suggested_provisions), 'detector provides provisions for review');
 }
 
 {
   const result = classifyCode('# just a comment\n# nothing here', 'python');
-  assertEq(result.tier, 'not_ai', 'comments-only → not_ai');
-  console.log('  PASS  comments-only input returns not_ai');
+  assertEq(result.detector_class, 'no_ai_pattern', 'comments-only → no_ai_pattern');
+  console.log('  PASS  comments-only input returns no_ai_pattern');
 }
 
 {
@@ -278,8 +290,8 @@ console.log('\n── Multi-language tests ──\n');
     '}',
   ].join('\n');
   const result = classifyCode(jsCode, 'javascript');
-  assertEq(result.tier, 'high_risk', 'JS employment screening → high_risk');
-  console.log(`  ${result.tier === 'high_risk' ? 'PASS' : 'FAIL'}  JavaScript employment screening → ${result.tier}`);
+  assertEq(result.detector_class, 'annex_iii_pattern', 'JS employment screening → annex_iii_pattern');
+  console.log(`  ${result.detector_class === 'annex_iii_pattern' ? 'PASS' : 'FAIL'}  JavaScript employment screening → ${result.detector_class}`);
 }
 
 {
@@ -297,8 +309,8 @@ console.log('\n── Multi-language tests ──\n');
     '}',
   ].join('\n');
   const result = classifyCode(goCode, 'go');
-  assertIn(result.tier, ['limited_risk', 'minimal_risk'], 'Go chatbot → limited/minimal');
-  console.log(`  ${['limited_risk', 'minimal_risk'].includes(result.tier) ? 'PASS' : 'FAIL'}  Go chatbot → ${result.tier}`);
+  assertIn(result.detector_class, ['article_50_pattern', 'no_elevated_pattern'], 'Go chatbot → limited/minimal');
+  console.log(`  ${['article_50_pattern', 'no_elevated_pattern'].includes(result.detector_class) ? 'PASS' : 'FAIL'}  Go chatbot → ${result.detector_class}`);
 }
 
 // =====================================================================

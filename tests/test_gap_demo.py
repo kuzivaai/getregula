@@ -1,21 +1,17 @@
 # regula-ignore
 """Class 1 - the landing page's terminal demo must be real output.
 
-`site/index.html` showed a `regula gap .` block behind a `$` prompt with
-per-article percentages 20/40/60/80/0/30/50, and an adjacent `regula
-comply` panel headlining "Overall compliance score: 42/100". No scan
-produced any of those numbers. Behind a `$` prompt, invented output is a
-claim about what the tool prints.
+The landing page previously presented detector-derived tiers, duties,
+readiness percentages, deadlines, and effort estimates behind `$` prompts.
+The four current panels must instead match real unresolved decision output.
 
 `data/gap_demo.json` is produced by `scripts/build_gap_demo.py` from real
 runs against the committed fixture `tests/fixtures/sample_high_risk`. This
 file binds the site to it on both sides:
 
 - the artefact must match a fresh run, so it cannot be hand-edited
-- every percentage the artefact records must appear in each locale's panel
-- no OTHER percentage may appear in a panel, which is the half that
-  actually catches drift: without it, a stale number could sit alongside
-  a correct one and every "is it present" assertion would still pass
+- every decision field the artefact records must appear in each locale's panel
+- no readiness percentage may appear while applicability is unresolved
 
 All three locales carry the same block because command output is English
 in all three.
@@ -49,6 +45,18 @@ COMPLY_PANEL = re.compile(
     r'<pre tabindex="0"><span class="t-p">\$</span> '
     r'<span class="t-c">regula comply [^<]*</span>.*?</pre>', re.DOTALL)
 PERCENT = re.compile(r"(\d{1,3})%")
+CHECK_PANEL = re.compile(
+    r'<pre tabindex="0"><span class="t-p">\$</span> '
+    r'<span class="t-c">regula check [^<]*</span>.*?</pre>', re.DOTALL)
+PLAN_PANEL = re.compile(
+    r'<pre tabindex="0"><span class="t-p">\$</span> '
+    r'<span class="t-c">regula plan [^<]*</span>.*?</pre>', re.DOTALL)
+PANELS = {
+    "check": CHECK_PANEL,
+    "plan": PLAN_PANEL,
+    "gap": GAP_PANEL,
+    "comply": COMPLY_PANEL,
+}
 
 
 def _artefact() -> dict:
@@ -83,12 +91,12 @@ class TestArtefactIsProducedNotWritten(unittest.TestCase):
             out, f"{fixture} is not tracked, so no clone reproduces the "
                  f"numbers this page publishes")
 
-    def test_the_note_is_carried(self):
-        """The NOTE is the denominator disclosure and its absence from the
-        page was the actual defect."""
-        note = _artefact()["gap"]["note"]
-        self.assertIn("PRESENCE", note)
-        self.assertIn("cannot offset scan findings", note)
+    def test_unresolved_output_carries_resolvable_facts(self):
+        gap = _artefact()["gap"]
+        self.assertEqual(gap["result_type"], "insufficient_information")
+        self.assertEqual(gap["article_observations_emitted"], 0)
+        self.assertGreater(gap["article_observations_held"], 0)
+        self.assertEqual(gap["unresolved_count"], len(gap["unresolved_fact_ids"]))
 
 
 def test_untracked_or_ignored_content_is_not_an_input():
@@ -118,40 +126,36 @@ def test_git_failure_is_fatal():
 
 
 class TestEveryLocalePanelMatchesTheArtefact(unittest.TestCase):
-    def test_gap_panel_percentages_match_exactly(self):
-        art = _artefact()["gap"]
-        expected = sorted(
-            [art["overall_percent"]] + [r["percent"] for r in art["rows"]]
-            + [100])   # the NOTE's "score 100% here and still fail"
+    def test_gap_panel_contains_no_unresolved_readiness_percentage(self):
         for page in LOCALE_PAGES:
             found = sorted(int(p) for p in PERCENT.findall(_panel(page, GAP_PANEL)))
-            self.assertEqual(
-                found, expected,
-                f"{page}: gap panel percentages {found} do not match the "
-                f"artefact {expected}. Re-run scripts/build_gap_demo.py and "
-                f"update the page. Do not edit the numbers by hand.")
+            self.assertEqual(found, [], f"{page}: unresolved gap panel has percentages {found}")
 
-    def test_comply_panel_percentages_match_exactly(self):
-        art = _artefact()["comply"]
-        expected = sorted(r["percent"] for r in art["rows"])
+    def test_comply_panel_contains_no_unresolved_readiness_percentage(self):
         for page in LOCALE_PAGES:
             found = sorted(int(p) for p in PERCENT.findall(
                 _panel(page, COMPLY_PANEL)))
-            self.assertEqual(
-                found, expected,
-                f"{page}: comply panel percentages {found} do not match the "
-                f"artefact {expected}")
+            self.assertEqual(found, [], f"{page}: unresolved comply panel has percentages {found}")
 
-    def test_every_article_row_is_present_in_every_locale(self):
-        art = _artefact()["gap"]
+    def test_every_decision_field_is_present_in_every_locale(self):
+        artefact = _artefact()
+        for command, pattern in PANELS.items():
+            art = artefact[command]
+            for page in LOCALE_PAGES:
+                panel = _panel(page, pattern)
+                self.assertIn(art["result_type"], panel)
+                self.assertIn(art["model_version"], panel)
+                self.assertIn(art["rule_resolution"], panel)
+                for fact_id in art["unresolved_fact_ids"]:
+                    self.assertIn(fact_id, panel)
+
+    def test_check_and_plan_panels_do_not_emit_unresolved_claims(self):
+        forbidden = ("Classification: HIGH-RISK", "OBLIGATIONS:", "Effort:", "Deadline:")
         for page in LOCALE_PAGES:
-            panel = _panel(page, GAP_PANEL)
-            for row in art["rows"]:
-                self.assertIn(
-                    f"Article {row['article']}", panel,
-                    f"{page}: Article {row['article']} missing from the gap "
-                    f"panel. The real output has "
-                    f"{len(art['rows'])} articles.")
+            for pattern in (CHECK_PANEL, PLAN_PANEL):
+                panel = _panel(page, pattern)
+                for phrase in forbidden:
+                    self.assertNotIn(phrase, panel)
 
     def test_the_panel_names_the_fixture_it_scanned(self):
         """A `$` prompt with no target is what made the old block read as a

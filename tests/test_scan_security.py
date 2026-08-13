@@ -265,12 +265,15 @@ def test_regula_gap_does_not_crash_on_pathological_file():
             "regula gap must not silently swallow the crash and print a "
             "generic internal-error message instead of a real report"
         )
-        # A genuine gap-analysis report contains this heading regardless of
-        # project content; its presence proves the command actually ran to
-        # completion rather than failing silently.
-        assert "Summary:" in proc.stdout or "Gap:" in proc.stdout, (
+        # The evidence-gated result is the genuine report for an input that
+        # supplies no sourced applicability facts. Its tagged decision and
+        # actionable fact list prove the command completed instead of
+        # failing silently or manufacturing article gaps.
+        assert "Decision: insufficient_information" in proc.stdout, (
             f"expected a real gap-analysis report, got: {proc.stdout[:300]!r}"
         )
+        assert "Facts needed to resolve the next decision" in proc.stdout
+        assert "Overall readiness" not in proc.stdout
 
 
 def test_analyse_project_oversight_does_not_crash():

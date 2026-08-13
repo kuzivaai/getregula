@@ -1393,22 +1393,32 @@ def verify_facts() -> int:
             if not re.search(pat, text, re.IGNORECASE):
                 # Canonical number not found in expected context — check if
                 # a WRONG number is present instead
-                # Safely construct wrong_pat by replacing {actual_str} and {int(actual_str):,} with a generic number matcher
-                wrong_pat = pat.replace(actual_str, r"\d+(?:,\d+)*")
-                if f"{int(actual_str):,}" != actual_str:
-                    wrong_pat = wrong_pat.replace(f"{int(actual_str):,}", r"\d+(?:,\d+)*")
+                # Safely construct wrong_pat by replacing EVERY sanctioned
+                # rendering of the canonical number (plain, comma-grouped,
+                # dot-grouped) with a generic number matcher. N57 sub-item 5:
+                # an earlier version replaced only the plain and comma forms,
+                # so the dotted literal from the locale alternative survived
+                # inside wrong_pat and a stale "2.349" was reported as
+                # "found 349". The gate fired correctly; the message lied
+                # about what it found.
+                _num = r"\d+(?:[.,]\d+)*"
+                wrong_pat = pat.replace(actual_str, _num)
+                for _alt in (f"{int(actual_str):,}", _dotted(int(actual_str))):
+                    if _alt != actual_str:
+                        wrong_pat = wrong_pat.replace(_alt, _num)
                 wrong_matches = list(re.finditer(wrong_pat, text, re.IGNORECASE))
                 for wm in wrong_matches:
-                    # Capture the WHOLE number including thousands separators.
-                    # A bare \d+ stops at the comma, so "2,778" was read as
-                    # "2" — which then fell under the 50%% floor below and was
-                    # silently skipped. That single bug let every comma-
-                    # formatted stale count ("2,778 tests") pass unflagged
-                    # across README, TRUST.md, MODEL_CARD and the site pages.
-                    # Strip separators before int().
-                    found_num = re.search(r"\d[\d,]*\d|\d", wm.group(0))
-                    if found_num and found_num.group(0).replace(",", "") != actual_str:
-                        found_val = int(found_num.group(0).replace(",", ""))
+                    # Capture the WHOLE number including thousands separators
+                    # in either grouping style. A bare \d+ stops at the comma,
+                    # so "2,778" was read as "2" — which then fell under the
+                    # 50%% floor below and was silently skipped. That single
+                    # bug let every comma-formatted stale count ("2,778
+                    # tests") pass unflagged across README, TRUST.md,
+                    # MODEL_CARD and the site pages. Strip separators before
+                    # int().
+                    found_num = re.search(r"\d[\d.,]*\d|\d", wm.group(0))
+                    if found_num and found_num.group(0).replace(",", "").replace(".", "") != actual_str:
+                        found_val = int(found_num.group(0).replace(",", "").replace(".", ""))
                         flag, _why = stale_number_verdict(
                             fact_name=fact_name,
                             actual_val=int(actual_str),

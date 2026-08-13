@@ -96,9 +96,59 @@ class (e), with no committee membership and no fee.**
 
 | Draft | Subject | Public enquiry closes |
 |---|---|---|
-| `prEN 18228` | AI Risk Management (Article 9) | **30 July 2026** |
-| `prEN 18282` | Cybersecurity Specifications for AI Systems | **30 July 2026** |
+| `prEN 18228` | AI Risk Management (Article 9) | **30 July 2026** (now passed; whether it was met is unrecorded, see N4) |
+| `prEN 18282` | Cybersecurity Specifications for AI Systems | **30 July 2026** (now passed; whether it was met is unrecorded, see N4) |
 | `prEN 18229-1` | Trustworthiness Framework, Part 1: Logging (Arts. 12, 13, 14) | **20 August 2026** |
+
+**prEN 18229-1 corroboration strengthened, 6 August 2026.** The genorma
+standards tracker lists the draft at stage 40.20 with the enquiry ballot
+initiated **28 May 2026 for 12 weeks**, which lands exactly on
+**20 August 2026**, independently agreeing with the owner-supplied
+jtc21.eu date. Still verified-secondary: no CEN-CENELEC primary page was
+reachable, and the AI Standards Hub entry consulted was stale (last
+updated 27 April 2026, still saying pre-draft). Confirm with BSI before
+relying on it; the window does not reopen.
+
+**Draft comment themes for prEN 18229-1, prepared 6 August 2026.**
+Candidate themes only, grounded in this repository's documented
+implementation experience. **The draft text has not been read** (enquiry
+drafts are accessed through the national portal), so before submitting:
+read the draft first and DROP any theme it already addresses. Comments
+should be practitioner-neutral; do not mention or promote Regula.
+
+1. *Separate machine-checkable requirements from process requirements
+   (Article 12).* An implementer of static tooling can verify that log
+   emission points, structured formats and retention configuration exist;
+   it cannot verify that logged events serve Article 12(2)'s purposes.
+   If the standard distinguishes requirements whose conformity is
+   mechanically assessable from those needing process evidence,
+   conformity assessment can be partially automated and SMEs can
+   self-check the mechanical half cheaply.
+2. *A normative minimum event taxonomy.* Article 12(2) states purposes
+   (risk identification, substantial modification, Article 79 market
+   surveillance). Purpose-level requirements are unassessable without a
+   stated minimum event set. A normative minimal taxonomy, format-neutral
+   rather than prescribing a logging stack, would make both
+   implementation and assessment concrete.
+3. *Oversight-to-function traceability (Article 14).* In real codebases
+   oversight measures live far from the AI function they gate (approval
+   gates in different modules from model calls). A requirement that
+   documentation link each oversight measure to the specific AI function
+   it controls would make oversight auditable rather than asserted.
+4. *Machine-readable transparency artefacts (Article 13).* Encouraging a
+   machine-readable structure for instructions-for-use content would let
+   deployers ingest provider transparency material into their own
+   governance tooling instead of re-keying it.
+5. *Proportionality alignment with the Omnibus.* Regulation (EU)
+   2026/1744 point (10) gives SMEs, start-ups and SMCs a simplified
+   technical-documentation route under Article 11(1). Part 1's logging
+   and oversight evidence expectations should state how they compose with
+   that simplified route, so the standard does not reintroduce the burden
+   the amendment removed.
+
+Route: BSI Standards Development Portal (free account), or the
+commenting template to `admin.start@bsigroup.com`, before 20 August
+2026. Submission is an owner action; nothing has been sent.
 
 **Corroboration chain, stated at its real strength.** Four independent
 signals agree, and **no CEN-CENELEC primary page was reachable**:

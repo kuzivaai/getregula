@@ -22,7 +22,7 @@ _STRINGS = {
         "block_tier": "BLOCK tier:",
         "warn_tier": "WARN tier:",
         "info_tier": "INFO tier:",
-        "confidence_note": "Confidence scores: 0-100 (higher = more indicators matched)",
+        "confidence_note": "Detector priority: 0-100 (higher = more code patterns matched; not a correctness probability)",
         "tier_note": "Tiers: BLOCK (>=80 or prohibited), WARN (50-79), INFO (<50)",
         "suppress_note": "Suppress findings: add '# regula-ignore' to file",
 
@@ -70,7 +70,7 @@ _STRINGS = {
         "block_tier": "Nível BLOQUEAR:",
         "warn_tier": "Nível ALERTA:",
         "info_tier": "Nível INFO:",
-        "confidence_note": "Pontuação de confiança: 0-100 (maior = mais indicadores encontrados)",
+        "confidence_note": "Prioridade do detector: 0-100 (maior = mais padrões de código encontrados; não é probabilidade de correção)",
         "tier_note": "Níveis: BLOQUEAR (>=80 ou proibido), ALERTA (50-79), INFO (<50)",
         "suppress_note": "Suprimir resultados: adicione '# regula-ignore' ao arquivo",
 
@@ -118,7 +118,7 @@ _STRINGS = {
         "block_tier": "Stufe BLOCKIEREN:",
         "warn_tier": "Stufe WARNUNG:",
         "info_tier": "Stufe INFO:",
-        "confidence_note": "Konfidenzwerte: 0-100 (höher = mehr Indikatoren gefunden)",
+        "confidence_note": "Detektorpriorität: 0-100 (höher = mehr Codemuster gefunden; keine Korrektheitswahrscheinlichkeit)",
         "tier_note": "Stufen: BLOCKIEREN (>=80 oder verboten), WARNUNG (50-79), INFO (<50)",
         "suppress_note": "Ergebnisse unterdrücken: '# regula-ignore' zur Datei hinzufügen",
 

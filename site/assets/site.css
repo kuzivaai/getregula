@@ -550,7 +550,13 @@ button.install-box {
 .tier-a .tier-badge { background: rgba(245,158,11,0.20); color: #fbbf24; }
 .tier-y .tier-badge { background: rgba(234,179,8,0.20); color: #facc15; }
 .tier-g .tier-badge { background: rgba(16,185,129,0.20); color: #34d399; }
-.tier-examples { font-size: var(--fs-sm); color: var(--text-dim); flex: 1; }
+.tier-examples {
+    font-size: var(--fs-sm);
+    color: var(--text-dim);
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
 .tier-hint {
     font-family: var(--font-mono);
     font-size: var(--fs-xs);
@@ -1011,6 +1017,7 @@ footer {
     padding: 28px 24px;
     text-align: center;
     border-right: 1px solid var(--border);
+    min-width: 0;
 }
 .stat-item:last-child { border-right: none; }
 .stat-num {
@@ -1022,7 +1029,12 @@ footer {
     margin-bottom: 8px;
     letter-spacing: -0.03em;
 }
-.stat-label { font-size: var(--fs-sm); color: var(--text-dim); line-height: 1.4; }
+.stat-label {
+    font-size: var(--fs-sm);
+    color: var(--text-dim);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
 
 /* ===== AUDIENCE ===== */
 .audience-grid {

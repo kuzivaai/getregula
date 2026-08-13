@@ -34,10 +34,41 @@ from conform import (
     _make_coverage,
     _sha256,
     _write_and_record,
-    generate_conformity_pack,
+    generate_conformity_pack as _generate_conformity_pack,
     generate_sme_simplified_pack,
 )
 from constants import VERSION
+
+
+def _resolved_decision_request():
+    def value(fact_id, state):
+        return {
+            "values": [{
+                "state": state,
+                "provenance": {
+                    "source_type": "test_fixture",
+                    "source_ref": f"test-conform:{fact_id}",
+                },
+                "jurisdiction": "eu",
+                "timestamp": "2026-08-12T12:00:00+00:00",
+            }]
+        }
+    return {
+        "model_version": "2026-08-12.4",
+        "jurisdiction": "eu",
+        "facts": {
+            "jurisdiction_in_scope": value("jurisdiction_in_scope", "yes"),
+            "is_ai_system": value("is_ai_system", "yes"),
+            "eu_annex_iii_use": value("eu_annex_iii_use", "yes"),
+            "eu_profiling": value("eu_profiling", "yes"),
+        },
+    }
+
+
+def generate_conformity_pack(*args, **kwargs):
+    """Exercise the legacy article layout only with resolved applicability."""
+    kwargs.setdefault("decision_request", _resolved_decision_request())
+    return _generate_conformity_pack(*args, **kwargs)
 
 
 # ---------------------------------------------------------------------------
@@ -443,7 +474,7 @@ def _patch_conform_dependencies():
 
 @pytest.fixture
 def mock_conform_deps():
-    """Fixture that patches all lazy imports in conform.generate_conformity_pack.
+    """Patch lazy imports and select the resolved-applicability branch.
 
     We patch the import mechanism itself (builtins.__import__) so that when
     conform.py does `from report import scan_files` etc., it gets our mocks.
@@ -476,7 +507,18 @@ def mock_conform_deps():
             raise ImportError(f"Mocked: {name} not available")
         return real_import(name, *args, **kwargs)
 
-    with patch.object(builtins, "__import__", side_effect=mock_import):
+    import decision_adapters
+    resolved = {
+        "result_type": "indication",
+        "model_version": "test-resolved-model",
+        "jurisdiction": "eu",
+        "rule_resolution": "resolved",
+        "matched_evidence": [{"fact_id": "test", "values": []}],
+        "indications": [{"classification": "high_risk_candidate"}],
+        "obligations": [{"provision": "Regulation (EU) 2024/1689, Article 9"}],
+    }
+    with patch.object(builtins, "__import__", side_effect=mock_import), \
+         patch.object(decision_adapters, "empty_decision", return_value=resolved):
         yield mock_modules
 
 
@@ -487,6 +529,22 @@ def project_dir(tmp_path):
     proj.mkdir()
     (proj / "model.py").write_text("import tensorflow as tf\n")
     return proj
+
+
+def test_default_pack_holds_article_duties_until_facts_resolve(tmp_path, project_dir):
+    result = _generate_conformity_pack(
+        str(project_dir),
+        output_dir=str(tmp_path / "unresolved-output"),
+        project_name="unresolved-test",
+    )
+    summary = result["summary"]
+    assert summary["decision"]["result_type"] == "insufficient_information"
+    assert summary["article_duties_attached"] == []
+    assert summary["readiness_assessment"] is None
+    assert "overall_readiness" not in summary
+    pack = Path(result["pack_path"])
+    assert (pack / "04-resolvable-facts.md").is_file()
+    assert not (pack / "02-risk-management-art9").exists()
 
 
 class TestGenerateConformityPack:
@@ -1559,7 +1617,8 @@ class TestSmeSimplifiedPack:
             output_dir=str(tmp_path / "output"),
             project_name="sme-test",
         )
-        assert "interim" in result["summary"]["overall_readiness"]
+        assert "interim" in result["summary"]["document_status"]
+        assert "overall_readiness" not in result["summary"]
 
     def test_summary_has_regula_version(self, tmp_path, project_dir, mock_sme_deps):
         result = generate_sme_simplified_pack(

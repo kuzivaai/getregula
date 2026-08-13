@@ -6,7 +6,7 @@ Regula Timeline — EU AI Act Enforcement Dates
 Displays current enforcement dates, including the Digital Omnibus
 (Regulation (EU) 2026/1744, OJ 24 July 2026, in force from 27 July 2026).
 
-Updated: 26 July 2026.
+Updated: 6 August 2026.
 
 Regulatory baseline (verified sources):
 - Regulation (EU) 2024/1689 (eur-lex.europa.eu/eli/reg/2024/1689/oj)
@@ -20,9 +20,13 @@ Regulatory baseline (verified sources):
 - Bird & Bird, Travers Smith, Inside Privacy, White & Case (May 2026)
 - Code of Practice on AI content marking — final, 10 June 2026
   (digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content)
-- Art 50 transparency guidelines — draft, consultation closed 3 June 2026
-- Art 6 high-risk classification guidelines — draft, consultation open
-  until 23 June 2026
+- Art 50 transparency guidelines: FINAL published 20 July 2026
+  (digital-strategy.ec.europa.eu/en/library/guidelines-transparency-
+   obligations-providers-and-deployers-ai-systems); draft was 8 May 2026,
+  consultation closed 3 June 2026
+- Art 6 high-risk classification guidelines: draft 19 May 2026; targeted
+  consultation closed 23 July 2026; final adoption expected before end of
+  2026
 """
 
 import json
@@ -118,6 +122,22 @@ TIMELINE = [
             "marking and Article 50(4) deepfake labelling. Open for "
             "signatories. Compliance with Art 50 obligations applies from "
             "2 August 2026."
+        ),
+    },
+    {
+        "date": "2026-07-20",
+        "event": "Commission final Article 50 transparency guidelines published",
+        "status": "effective",
+        "source": (
+            "European Commission, Guidelines on transparency obligations for "
+            "providers and deployers of AI systems, 20 July 2026"
+        ),
+        "note": (
+            "Final guidelines under Article 96, published ahead of the "
+            "2 August 2026 application date. Guidance, not binding law: they "
+            "aid consistent application of Article 50 but do not replace the "
+            "enacted text. Complement the voluntary content-marking Code of "
+            "Practice of 10 June 2026."
         ),
     },
     {

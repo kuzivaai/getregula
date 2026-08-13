@@ -56,6 +56,11 @@ def test_active_surfaces_do_not_publish_prohibited_claims():
     # The negative controls below prove this is green because the copy was
     # corrected, not because the guards became inert.
     assert violations() == []
+    pricing = (REPO / "site/pricing.html").read_text(encoding="utf-8")
+    assert "Payment gate not active" in pricing
+    assert "Start free assessment" in pricing
+    assert "EUR 49" not in pricing and "EUR 149" not in pricing
+    assert "Compliance score with per-article breakdown" not in pricing
 
 
 def test_required_limitation_concepts_are_translated():
@@ -90,13 +95,14 @@ def test_public_entry_points_do_not_use_em_dashes():
         "site/assess/de.html",
         "site/assess/pt-br.html",
         "site/about.html",
+        "site/pricing.html",
     )
     for rel in paths:
         text = (REPO / rel).read_text(encoding="utf-8", errors="replace")
         assert "—" not in text and "&mdash;" not in text.lower(), rel
 
 
-def test_mobile_navigation_toggle_remains_pointer_accessible():
+def test_mobile_navigation_supports_pointer_and_escape_close():
     paths = (
         "site/index.html",
         "site/locales/de.html",
@@ -104,11 +110,15 @@ def test_mobile_navigation_toggle_remains_pointer_accessible():
         "site/assess/index.html",
         "site/assess/de.html",
         "site/assess/pt-br.html",
+        "site/pricing.html",
     )
     for rel in paths:
         text = (REPO / rel).read_text(encoding="utf-8", errors="replace")
         assert ".showModal()" not in text, rel
         assert ".show()" in text, rel
+        assert "event.key==='Escape'" in text, rel
+        assert "event.preventDefault();this.close()" in text, rel
+        assert "b.focus()" in text, rel
 
 
 def test_package_description_source_is_readme():

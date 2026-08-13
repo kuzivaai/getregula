@@ -35,6 +35,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 import claim_auditor as ca  # noqa: E402
+import build_recall_artefact as recall_builder  # noqa: E402
 
 ARTEFACT = REPO_ROOT / "benchmarks/synthetic/RECALL.json"
 
@@ -123,6 +124,24 @@ class TestWithdrawnLabelIsNotABypass(unittest.TestCase):
 
 
 class TestTheArtefactIsProducedNotWritten(unittest.TestCase):
+    def test_canonical_check_envelope_supplies_detector_findings(self):
+        findings = [{"file": "sample.py", "detector_class": "high_risk"}]
+        envelope = {
+            "data": {
+                "detector_findings": findings,
+                "decision": {"result_type": "insufficient_information"},
+            }
+        }
+        self.assertEqual(
+            recall_builder._extract_detector_findings(envelope), findings)
+        self.assertEqual(recall_builder._highest_tier(findings), "high_risk")
+
+    def test_unexpected_check_envelope_cannot_become_zero_recall(self):
+        with self.assertRaisesRegex(RuntimeError, "no detector_findings list"):
+            recall_builder._extract_detector_findings({
+                "data": {"decision": {"result_type": "insufficient_information"}}
+            })
+
     def test_committed_artefact_matches_a_fresh_run(self):
         """The strong guarantee: the file cannot be edited by hand."""
         proc = subprocess.run(

@@ -1,9 +1,10 @@
 {
-  "generated_at": "2026-08-04T14:40:29.966744+00:00",
-  "total_entries": 12,
+  "generated_at": "2026-08-06T18:55:55.800651+00:00",
+  "total_entries": 13,
   "latest_date": "2026-07-29",
   "types": [
     "amendment-proposal",
+    "commission-guidance",
     "council-position",
     "harmonised-standard",
     "parliament-position",
@@ -38,6 +39,19 @@
       "confidence": "verified-primary",
       "source_url": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
       "file": "entries/2026-07-24-oj-publication.json"
+    },
+    {
+      "id": "2026-07-20-art50-final-guidelines",
+      "date": "2026-07-20",
+      "type": "commission-guidance",
+      "affected_articles": [
+        "50",
+        "96"
+      ],
+      "summary": "The Commission published the final version of its Guidelines on transparency obligations for providers and deployers of AI systems on 20 July 2026, under the Article 96(1)(d) empowerment to issue guid",
+      "confidence": "verified-primary",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems",
+      "file": "entries/2026-07-20-art50-final-guidelines.json"
     },
     {
       "id": "2026-07-12-en-18286-published",

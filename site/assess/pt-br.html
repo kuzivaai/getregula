@@ -363,7 +363,7 @@
 <nav class="nav" id="nav" aria-label="Navegação principal">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" class="active">Assess</a>
         <a href="/guides/">Guides</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
@@ -428,7 +428,7 @@
       <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Voltar</button>
       <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled title="Selecione uma resposta para continuar">Próxima</button>
     </div>
-    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;" aria-hidden="true">Teclado: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">S</kbd> sim &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> não &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">I</kbd> incerto &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> próxima</div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;" aria-hidden="true">Teclado: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">S</kbd> sim &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> não &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">I</kbd> incerto &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">A</kbd> não se aplica &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> próxima</div>
   </div>
 
   <!-- CODE SCANNER -->
@@ -529,6 +529,10 @@
 </footer>
 
 <script src="scanner.js"></script>
+<script src="decision-model.js"></script>
+<script src="decision-kernel.js"></script>
+<script src="decision-adapters.js"></script>
+<script src="decision-ui.js"></script>
 <script>
 // =====================================================================
 // Regula Web Assessment :  ported from scripts/questionnaire.py
@@ -543,9 +547,9 @@
 let activeJurisdiction = "eu";
 
 const JURISDICTION_INFO = {
-  eu: { name: "Lei de IA da UE", law: "Regulamento (UE) 2024/1689", status: "Em vigor (aplicação faseada)", questionCount: 15 },
-  kr: { name: "Lei Básica de IA da Coreia do Sul", law: "Lei Nº 20676", status: "Em vigor (período de carência até 2026)", questionCount: 9 },
-  co: { name: "Colorado SB 26-189", law: "C.R.S. Título 6, Artigo 1, Parte 17", status: "Promulgada, vigência em 1º de janeiro de 2027", questionCount: 8 },
+  eu: { name: "Lei de IA da UE", law: "Regulamento (UE) 2024/1689", status: "Em vigor (aplicação faseada)", questionCount: 18 },
+  kr: { name: "Lei Básica de IA da Coreia do Sul", law: "Lei Nº 20676", status: "Em vigor", questionCount: 16 },
+  co: { name: "Colorado SB 26-189", law: "C.R.S. Título 6, Artigo 1, Parte 17", status: "Promulgada, vigência em 1º de janeiro de 2027", questionCount: 14 },
 };
 
 function selectJurisdiction(jur) {
@@ -577,144 +581,123 @@ const QUESTIONS_KR = [
     text: "Este sistema afeta usuários na Coreia do Sul?",
     help: "A Lei Básica de IA se aplica a sistemas de IA operados na Coreia do Sul ou que afetam pessoas na Coreia do Sul (Artigo 4).",
     article: "Artigo 4",
-    weight: { yes: 10, no: -10, unsure: 5 },
-    signal: "jurisdiction"
   },
+  { id: "kr_is_ai_system", text: "O objeto atende à definição de sistema de IA da Lei Básica de IA?", help: "O Artigo 2 define um sistema de IA. Um padrão de código ou rótulo de produto, sozinho, não comprova esse fato.", article: "Artigo 2" },
+  { id: "kr_operator", text: "A organização é desenvolvedora de IA ou operadora comercial que usa IA nos termos da lei?", help: "As definições de operador do Artigo 2 fazem parte do escopo da lei.", article: "Artigo 2" },
+  { id: "kr_provides", text: "A operadora fornece IA ou produto ou serviço que usa IA?", help: "Os Artigos 31 a 34 se vinculam à operadora do produto ou serviço relevante.", article: "Artigos 31 a 34" },
   {
     id: "kr_high_impact_domain",
     text: "Este sistema opera em algum destes domínios: identificação biométrica, investigação criminal, avaliação educacional, emprego/contratação, avaliação de crédito, saúde, infraestrutura de energia/água/nuclear, serviços governamentais que afetam benefícios ou impostos, ou operações de transporte?",
     help: "O Artigo 33 define IA de alto impacto como sistemas que operam em domínios que afetam a vida, segurança física ou direitos fundamentais. Esses domínios acionam obrigações adicionais sob o Artigo 34.",
     article: "Artigo 33",
-    weight: { yes: 25, no: -15, unsure: 10 },
-    signal: "high_impact"
   },
   {
     id: "kr_high_performance",
-    text: "Este sistema foi treinado com 10^26 FLOPs ou mais de computação?",
-    help: "O Artigo 32 define sistemas de IA de alto desempenho pelo poder computacional de treinamento. Sistemas acima deste limiar têm obrigações adicionais de segurança, incluindo avaliação e relato de incidentes.",
+    text: "A computação cumulativa de treinamento atinge o limiar prescrito por Decreto Presidencial para o Artigo 32?",
+    help: "O Artigo 32 delega o limiar ao Decreto Presidencial. Não responda com base em um valor não verificado citado por esta ferramenta.",
     article: "Artigo 32",
-    weight: { yes: 20, no: -5, unsure: 5 },
-    signal: "high_performance"
   },
+  { id: "kr_significant_impact", text: "É provável que o sistema tenha impacto significativo ou represente risco à vida, à segurança física ou aos direitos fundamentais?", help: "O Artigo 2(4) exige tanto uma área listada quanto impacto ou risco significativo.", article: "Artigo 2(4)" },
   {
     id: "kr_transparency",
     text: "Os usuários são notificados de que estão interagindo com um sistema de IA?",
     help: "O Artigo 31 exige que os operadores de IA notifiquem os usuários de que estão interagindo com IA. Isso se aplica a todos os sistemas de IA, não apenas aos de alto impacto.",
     article: "Artigo 31",
-    weight: { yes: -5, no: 10, unsure: 5 },
-    signal: "transparency"
   },
   {
     id: "kr_generative",
     text: "Este sistema gera conteúdo (texto, imagens, áudio ou vídeo)?",
     help: "O Artigo 31 exige que os outputs de IA generativa sejam rotulados como conteúdo gerado por IA.",
     article: "Artigo 31",
-    weight: { yes: 10, no: -5, unsure: 5 },
-    signal: "transparency"
   },
+  { id: "kr_virtual_media", text: "O sistema fornece som, imagem ou vídeo virtual difícil de distinguir do real?", help: "O Artigo 31(3) contém dever específico de aviso claro ou rotulagem.", article: "Artigo 31(3)" },
+  { id: "kr_foreign_operator", text: "A operadora não possui endereço nem escritório comercial na Coreia do Sul?", help: "A condição de operadora estrangeira é necessária para o Artigo 36.", article: "Artigo 36" },
+  { id: "kr_agent_threshold", text: "A operadora atinge o limiar de usuários, vendas ou outro prescrito por Decreto Presidencial para representante doméstico?", help: "O Artigo 36 delega o limiar de porte ao Decreto Presidencial.", article: "Artigo 36" },
   {
     id: "kr_explanation",
     text: "Pessoas afetadas podem solicitar uma explicação sobre decisões de IA que as afetam?",
     help: "O Artigo 34 exige que operadores de IA de alto impacto forneçam explicações para resultados gerados por IA dentro dos limites técnicos, incluindo critérios-chave de decisão e uma visão geral dos dados de treinamento.",
     article: "Artigo 34",
-    weight: { yes: -5, no: 10, unsure: 5 },
-    signal: "gap_assessment"
   },
   {
     id: "kr_risk_management",
     text: "Existe um plano documentado de gestão de riscos para este sistema de IA?",
     help: "O Artigo 34 exige que operadores de IA de alto impacto estabeleçam planos de gestão de riscos cobrindo documentação, supervisão humana e monitoramento contínuo.",
     article: "Artigo 34",
-    weight: { yes: -5, no: 5, unsure: 0 },
-    signal: "gap_assessment"
   },
   {
     id: "kr_human_oversight",
     text: "Existe supervisão humana para decisões tomadas por este sistema de IA?",
     help: "O Artigo 34 exige medidas de supervisão humana para sistemas de IA de alto impacto.",
     article: "Artigo 34",
-    weight: { yes: -5, no: 10, unsure: 5 },
-    signal: "gap_assessment"
   },
   {
     id: "kr_representative",
     text: "Se você é um operador estrangeiro: você tem um representante doméstico na Coreia do Sul?",
     help: "O Artigo 36 exige que operadores estrangeiros de IA que atendam a certos limiares nomeiem um representante doméstico na Coreia do Sul.",
     article: "Artigo 36",
-    weight: { yes: -5, no: 5, unsure: 0 },
-    signal: "gap_assessment"
   },
 ];
-const DISPLAY_ORDER_KR = [0,1,2,3,4,5,6,7,8];
+const DISPLAY_ORDER_KR = QUESTIONS_KR.map((_, index) => index);
 
 // Colorado questions (mapped from colorado-mapping.md research)
 const QUESTIONS_CO = [
   {
     id: "co_scope",
-    text: "Este sistema processa dados pessoais de residentes do Colorado?",
-    help: "O Colorado SB 26-189 se aplica a desenvolvedores e implantadores de tecnologia automatizada de tomada de decisão (TATD) que processa dados pessoais de residentes do Colorado.",
+    text: "A organização e o uso estão no escopo territorial do Colorado SB 26-189?",
+    help: "Resolva o escopo territorial e do operador separadamente do processamento de dados pessoais.",
     article: "Seção 6-1-1701",
-    weight: { yes: 10, no: -10, unsure: 5 },
-    signal: "jurisdiction"
   },
+  { id: "co_is_ai_system", text: "O objeto atende à definição promulgada de tecnologia automatizada de tomada de decisão regulada?", help: "Um padrão de código ou rótulo de produto, sozinho, não comprova essa definição.", article: "Seção 6-1-1701" },
+  { id: "co_doing_business", text: "O desenvolvedor ou implantador relevante realiza negócios no Colorado?", help: "Realizar negócios no Colorado é uma condição de escopo da lei promulgada.", article: "Seção 6-1-1701" },
+  { id: "co_personal_data", text: "A tecnologia processa dados pessoais relativos a uma pessoa?", help: "Esse é um elemento necessário da TATD abrangida.", article: "Seção 6-1-1701" },
   {
     id: "co_decisions",
     text: "Este sistema toma ou influencia materialmente decisões sobre indivíduos?",
     help: "A lei se aplica a TATD que toma ou é um fator material em decisões consequenciais. Usos incidentais ou triviais são excluídos.",
     article: "Seção 6-1-1701",
-    weight: { yes: 25, no: -15, unsure: 10 },
-    signal: "covered"
   },
   {
     id: "co_domain",
     text: "Ele opera em um domínio abrangido: emprego, educação, financeiro/crédito, habitação, seguros, saúde ou serviços governamentais essenciais?",
     help: "O Colorado abrange 7 domínios específicos onde decisões automatizadas sobre indivíduos acionam obrigações de divulgação.",
     article: "Seção 6-1-1701",
-    weight: { yes: 25, no: -15, unsure: 10 },
-    signal: "covered"
   },
   {
     id: "co_material",
     text: "O output da IA é um fator não trivial no resultado da decisão?",
     help: "O sistema deve influenciar materialmente a decisão. Se o output da IA é incidental ou trivial para o resultado, pode não ser abrangido.",
     article: "Seção 6-1-1701",
-    weight: { yes: 15, no: -10, unsure: 5 },
-    signal: "covered"
   },
+  { id: "co_excluded", text: "A tecnologia está em uma exclusão legal de TATD abrangida?", help: "Confirme a exclusão exata antes de responder sim.", article: "Seção 6-1-1701" },
+  { id: "co_other_law_exemption", text: "Aplica-se uma isenção específica porque uma obrigação jurídica alternativa identificada é cumprida?", help: "Regulação geral em outro campo, sozinha, não basta.", article: "Seção 6-1-1701" },
   {
     id: "co_role",
     text: "Você é o desenvolvedor (construiu/treinou o sistema) ou implantador (usa o sistema para tomar decisões)?",
     help: "O Colorado atribui diferentes obrigações a desenvolvedores e implantadores. Desenvolvedores devem fornecer documentação; implantadores devem fornecer avisos ao consumidor e lidar com resultados adversos.",
     article: "Seções 6-1-1702 a 6-1-1705",
-    weight: { yes: 5, no: 5, unsure: 5 },
-    signal: "gap_assessment"
   },
   {
     id: "co_pre_notice",
     text: "Um aviso prévio é fornecido aos consumidores antes de a TATD ser usada?",
     help: "A Seção 6-1-1704 exige que implantadores forneçam aviso claro aos consumidores antes de usar TATD para tomar uma decisão consequencial.",
     article: "Seção 6-1-1704",
-    weight: { yes: -5, no: 10, unsure: 5 },
-    signal: "gap_assessment"
   },
   {
     id: "co_adverse",
     text: "Existe um processo para divulgar resultados adversos aos consumidores dentro de 30 dias?",
     help: "A Seção 6-1-1704 exige que implantadores notifiquem consumidores dentro de 30 dias de uma decisão consequencial adversa, incluindo uma descrição da decisão, o papel da TATD e os direitos do consumidor.",
     article: "Seção 6-1-1704",
-    weight: { yes: -5, no: 10, unsure: 5 },
-    signal: "gap_assessment"
   },
+  { id: "co_adverse_outcome", text: "A decisão consequencial abrangida resultou em desfecho adverso para o consumidor?", help: "A divulgação posterior e os direitos de revisão exigem um desfecho adverso.", article: "Seções 6-1-1704 a 6-1-1705" },
   {
     id: "co_consumer_rights",
     text: "Os consumidores podem solicitar acesso aos seus dados, correção e revisão humana significativa?",
     help: "A Seção 6-1-1705 concede aos consumidores o direito de acessar dados usados na decisão, solicitar correção e obter revisão humana significativa de decisões adversas.",
     article: "Seção 6-1-1705",
-    weight: { yes: -5, no: 10, unsure: 5 },
-    signal: "gap_assessment"
   },
 ];
-const DISPLAY_ORDER_CO = [0,1,2,3,4,5,6,7];
+const DISPLAY_ORDER_CO = QUESTIONS_CO.map((_, index) => index);
 
 // QUESTIONS array: positions 0-11 are the original 12 questions (stable for URL encoding).
 // Positions 12-14 are new questions appended to preserve backward compatibility.
@@ -726,96 +709,75 @@ const QUESTIONS = [
     text: "Este sistema será implantado na UE ou afetará pessoas na UE?",
     help: "A Lei de IA da UE se aplica a sistemas de IA colocados no mercado da UE ou cujo output é usado na UE, independentemente de onde o fornecedor está sediado (Artigo 2).",
     article: "Artigo 2",
-    weight: { yes: 10, no: -10, unsure: 5 },
-    signal: "jurisdiction"
   },
+  { id: "is_ai_system", text: "O objeto atende à definição de sistema de IA da Lei de IA da UE?", help: "Resolva isso pelo Artigo 3(1). Um padrão de código, sozinho, não comprova a definição jurídica.", article: "Artigo 3(1)" },
+  { id: "role_provider", text: "A organização atua como fornecedora deste sistema?", help: "Obrigações específicas da fornecedora exigem que essa função esteja estabelecida.", article: "Artigos 3 e 17" },
+  { id: "role_deployer", text: "A organização usa ou implanta o sistema sob sua autoridade?", help: "Obrigações específicas da implantadora exigem que essa função esteja estabelecida.", article: "Artigo 3" },
   {
     id: "affected_domain",
     text: "Este sistema opera em algum destes domínios: identificação biométrica, infraestrutura crítica, educação, emprego/contratação, serviços essenciais (crédito, seguros, saúde, benefícios sociais), aplicação da lei, migração/controle de fronteiras, justiça/processos democráticos?",
     help: "A Lei de IA da UE identifica setores específicos onde a IA apresenta riscos elevados aos direitos fundamentais. Estes estão listados no Anexo III do regulamento. Sistemas de IA nesses domínios podem ser classificados como alto risco, o que aciona requisitos adicionais.",
     article: "Artigo 6(2), Anexo III",
-    weight: { yes: 25, no: -15, unsure: 10 },
-    signal: "high_risk"
   },
   {
     id: "autonomous_decisions",
     text: "Este sistema toma ou influencia materialmente decisões sobre indivíduos sem que um humano revise cada decisão?",
     help: "O Artigo 14 exige supervisão humana para sistemas de alto risco. Sistemas onde humanos revisam cada output antes da ação podem ter menor risco.",
     article: "Artigo 14",
-    weight: { yes: 30, no: -20, unsure: 10 },
-    signal: "high_risk"
   },
   {
     id: "significant_harm",
     text: "Erros ou falhas neste sistema poderiam causar danos significativos à saúde, segurança ou direitos fundamentais de alguém (ex.: direito à não discriminação, privacidade, julgamento justo, educação)?",
     help: "Operar em um domínio regulado por si só não é suficiente para classificação como alto risco. O sistema também deve representar um risco significativo de dano. Esta pergunta ajuda a distinguir sistemas que simplesmente operam em um setor regulado daqueles que poderiam afetar materialmente a vida das pessoas.",
     article: "Artigo 6(2)",
-    weight: { yes: 25, no: -15, unsure: 10 },
-    signal: "high_risk"
   },
   {
     id: "biometric_data",
     text: "Este sistema processa dados biométricos (rosto, impressão digital, voz, modo de andar)?",
     help: "O processamento de dados biométricos pode variar de alto risco (se usado para identificação ou categorização) a proibido (se usado para vigilância em tempo real em espaços públicos). A classificação depende de como você usa os dados, não apenas do fato de processá-los.",
     article: "Anexo III(1), Artigo 5",
-    weight: { yes: 20, no: -5, unsure: 10 },
-    signal: "high_risk"
   },
   {
     id: "social_scoring",
     text: "Este sistema avalia ou pontua indivíduos com base em seu comportamento social, traços de personalidade ou características previstas?",
     help: "A pontuação social por autoridades públicas é proibida pelo Artigo 5(1)(c). Pontuação social privada que leva a tratamento prejudicial também pode ser abrangida.",
     article: "Artigo 5(1)(c)",
-    weight: { yes: 35, no: -5, unsure: 10 },
-    signal: "prohibited"
   },
   {
     id: "emotion_recognition",
     text: "Este sistema infere emoções a partir de dados biométricos em um ambiente de trabalho ou educacional?",
     help: "O Artigo 5(1)(f) proíbe o reconhecimento de emoções em locais de trabalho e instituições educacionais, com exceções restritas para fins médicos ou de segurança.",
     article: "Artigo 5(1)(f)",
-    weight: { yes: 35, no: -5, unsure: 10 },
-    signal: "prohibited"
   },
   {
     id: "public_facing",
     text: "Indivíduos poderiam interagir com este sistema sem saber que ele é movido a IA?",
     help: "O Artigo 50 contém diferentes deveres de transparência, com responsáveis, condições e exceções próprios. A falta de aviso é um indicador para análise, não prova de que todos os deveres do Artigo 50 se aplicam.",
     article: "Artigo 50",
-    weight: { yes: 15, no: -5, unsure: 5 },
-    signal: "transparency"
   },
   {
     id: "narrow_procedural",
     text: "Este sistema realiza APENAS tarefas procedimentais restritas (ex.: converter dados entre formatos, classificar documentos por metadados, comparar registros contra um modelo fixo)?",
     help: "O Artigo 6(3)(a) isenta sistemas de IA que realizam tarefas procedimentais restritas da classificação de alto risco, mesmo que operem em um domínio do Anexo III. A tarefa deve ser puramente procedimental, sem tomada de decisão sobre indivíduos.",
     article: "Artigo 6(3)(a)",
-    weight: { yes: -25, no: 10, unsure: 0 },
-    signal: "exemption"
   },
   {
     id: "improves_human_activity",
     text: "Este sistema APENAS melhora o resultado de uma atividade humana previamente concluída (ex.: correção gramatical de texto escrito por humano, melhoria de foto tirada por humano, formatação automática de documento criado por humano)?",
     help: "O Artigo 6(3)(b) isenta sistemas de IA que melhoram atividades humanas previamente concluídas. A atividade humana deve estar completa antes que a IA atue sobre ela :  a IA aprimora, não cria.",
     article: "Artigo 6(3)(b)",
-    weight: { yes: -20, no: 5, unsure: 0 },
-    signal: "exemption"
   },
   {
     id: "risk_documentation",
     text: "Sua organização mantém um registro de riscos ou documentação de gestão de riscos para este sistema de IA?",
     help: "O Artigo 9 exige um sistema de gestão de riscos documentado e continuamente atualizado. Esta pergunta ajuda a avaliar sua postura atual de conformidade.",
     article: "Artigo 9",
-    weight: { yes: -5, no: 5, unsure: 0 },
-    signal: "gap_assessment"
   },
   {
     id: "logging_active",
     text: "Este sistema registra automaticamente suas operações (entradas, saídas, decisões, timestamps)?",
     help: "O Artigo 12 exige o registro automático de eventos durante a operação do sistema de IA para permitir rastreabilidade.",
     article: "Artigo 12",
-    weight: { yes: -5, no: 5, unsure: 0 },
-    signal: "gap_assessment"
   },
   // --- New questions (positions 12-14, appended to preserve URL encoding) ---
   {
@@ -823,24 +785,18 @@ const QUESTIONS = [
     text: "Este sistema cria perfis de indivíduos com base em seus dados pessoais (ex.: rastreamento de desempenho, análise de comportamento, modelagem de preferências, pontuação de risco baseada em características pessoais)?",
     help: "Se um sistema perfila pessoas naturais conforme definido no Artigo 4(4) do RGPD, as isenções do Artigo 6(3) NÃO podem se aplicar :  o sistema é automaticamente de alto risco, independentemente de quão restrita ou procedimental seja sua função. Perfilamento significa qualquer processamento automatizado de dados pessoais para avaliar aspectos pessoais.",
     article: "Article 6(3), GDPR Article 4(4)",
-    weight: { yes: 15, no: 0, unsure: 5 },
-    signal: "profiling"
   },
   {
     id: "pattern_detection",
     text: "Este sistema detecta padrões para revisão humana SEM substituir a avaliação própria do humano (ex.: sinalizando anomalias para um analista, destacando correspondências potenciais para um revisor)?",
     help: "O Artigo 6(3)(c) isenta sistemas de IA que detectam padrões ou desvios de padrões anteriores sem substituir a avaliação humana. O humano deve fazer a determinação final, não a IA.",
     article: "Artigo 6(3)(c)",
-    weight: { yes: -20, no: 5, unsure: 0 },
-    signal: "exemption"
   },
   {
     id: "preparatory_task",
     text: "Este sistema realiza APENAS tarefas preparatórias para um avaliador humano (ex.: pré-classificar candidaturas, extrair pontos de dados centrais para revisão, gerar resumos para tomadores de decisão humanos)?",
     help: "O Artigo 6(3)(d) isenta sistemas de IA que realizam tarefas preparatórias para avaliações que serão realizadas por uma pessoa natural. O avaliador humano ainda deve tomar a decisão substantiva.",
     article: "Artigo 6(3)(d)",
-    weight: { yes: -20, no: 5, unsure: 0 },
-    signal: "exemption"
   }
 ];
 
@@ -848,95 +804,11 @@ const QUESTIONS = [
 // Profiling (Q12 in array) is shown before exemptions (Q8-9) so users
 // understand the gate before answering exemption questions.
 // Array indices into QUESTIONS:
-const DISPLAY_ORDER = [0,1,2,3,4,5,6,7, 12, 8,9,13,14, 10,11];
+const DISPLAY_ORDER = QUESTIONS.map((_, index) => index);
 
-// Article obligations for high-risk systems
-const OBLIGATIONS = [
-  {
-    article: 9, name: "Sistema de gestão de riscos",
-    desc: "Estabelecer, implementar, documentar e manter um sistema contínuo de gestão de riscos cobrindo todo o ciclo de vida da IA. Identificar e analisar riscos conhecidos e previsíveis. Adotar medidas de mitigação apropriadas. Comunicar riscos residuais aos implantadores (Artigo 9(5)).",
-    plain: "Você precisa de um documento vivo que liste o que pode dar errado com seu sistema de IA, o que você fez em relação a cada risco e quais riscos permanecem. Ele deve ser mantido atualizado.",
-    effort: "40-80 horas (equipe)",
-    deadline: "2 dez 2027 (Omnibus; PE 16 jun, Conselho 29 jun 2026)"
-  },
-  {
-    article: 10, name: "Governança de dados",
-    desc: "Conjuntos de dados de treinamento, validação e teste devem atender a critérios de qualidade. Documentar processos de coleta de dados, identificar lacunas e vieses, e garantir que os dados sejam representativos do contexto de implantação pretendido.",
-    plain: "Você precisa documentar de onde vieram seus dados de treinamento, verificar se há viés e mostrar que eles representam as pessoas que seu sistema vai afetar.",
-    effort: "20-60 horas (equipe)",
-    deadline: "2 dez 2027"
-  },
-  {
-    article: 11, name: "Documentação técnica",
-    desc: "Preparar documentação técnica seguindo o Anexo IV antes que o sistema seja colocado no mercado. Inclui descrição do sistema, especificação de design, metodologia de desenvolvimento, procedimentos de monitoramento e teste.",
-    plain: "Você precisa de um dossiê técnico descrevendo como o sistema funciona, como foi construído, como foi testado e como é monitorado. Pense nele como um manual de instruções para um regulador.",
-    effort: "30-80 horas (equipe)",
-    deadline: "2 dez 2027"
-  },
-  {
-    article: 12, name: "Manutenção de registros",
-    desc: "Projetar o sistema para registrar automaticamente eventos (logs) durante a operação. Os logs devem permitir a rastreabilidade do funcionamento do sistema e possibilitar o monitoramento pós-mercado.",
-    plain: "O sistema deve manter um diário automático do que faz: o que entrou, o que saiu e quando. Se algo der errado, você precisa conseguir rastrear o histórico nos logs.",
-    effort: "10-30 horas (equipe)",
-    deadline: "2 dez 2027"
-  },
-  {
-    article: 13, name: "Transparência",
-    desc: "Projetar para transparência: os implantadores devem ser capazes de compreender as capacidades, limitações e finalidade pretendida do sistema. Fornecer instruções de uso.",
-    plain: "Qualquer pessoa que use ou implante seu sistema deve entender o que ele pode fazer, o que não pode fazer e como usá-lo corretamente. Sem caixas-pretas.",
-    effort: "15-40 horas (equipe)",
-    deadline: "2 dez 2027"
-  },
-  {
-    article: 14, name: "Supervisão humana",
-    desc: "Projetar com medidas adequadas de supervisão humana. Humanos devem ser capazes de compreender, monitorar, anular e parar o sistema. Garantir que a supervisão seja efetiva, não nominal.",
-    plain: "Um humano deve ser capaz de entender o que o sistema está fazendo, intervir quando ele errar e desligá-lo se necessário. Uma caixa de seleção dizendo 'humano revisou' não é suficiente.",
-    effort: "15-50 horas (equipe)",
-    deadline: "2 dez 2027"
-  },
-  {
-    article: 15, name: "Precisão, robustez, cibersegurança",
-    desc: "Alcançar níveis adequados de precisão, robustez e cibersegurança ao longo de todo o ciclo de vida. Resiliência contra erros, ataques e tentativas de exploração de vulnerabilidades.",
-    plain: "O sistema deve funcionar de forma confiável, lidar com entradas inesperadas sem falhar perigosamente e estar protegido contra ataques. Isso é contínuo, não uma verificação única.",
-    effort: "20-60 horas (equipe)",
-    deadline: "2 dez 2027"
-  }
-];
+// Applicability and obligations come exclusively from the canonical decision model.
 
-const LIMITED_RISK_OBLIGATIONS = [
-  {
-    article: 50, name: "Obrigações de transparência",
-    desc: "Informar os usuários que estão interagindo com um sistema de IA. Rotular conteúdo gerado por IA (texto, áudio, imagem, vídeo) como gerado artificialmente. Marcar deepfakes e conteúdo sintético.",
-    plain: "Se alguém está conversando com sua IA, avise. Se sua IA cria conteúdo, rotule como gerado por IA. Sem fingir ser humano.",
-    effort: "5-15 horas (equipe)",
-    deadline: "2 ago 2026 (novos sistemas); 2 dez 2026 (existentes, marca d'água)"
-  }
-];
-
-// Korea obligations
-const OBLIGATIONS_KR = [
-  { article: 34, name: "Plano de gestão de riscos", desc: "Operadores de IA de alto impacto devem estabelecer e manter um plano de gestão de riscos cobrindo o ciclo de vida do sistema de IA.", plain: "Você precisa de um plano documentado para identificar e gerenciar riscos do seu sistema de IA. Esta é uma obrigação de esforço ('empenhar-se').", effort: "20-40 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
-  { article: 34, name: "Documentação e manutenção de registros", desc: "Manter documentação do design, desenvolvimento e processos operacionais do sistema de IA.", plain: "Mantenha registros de como o sistema foi construído, quais dados ele usa e como toma decisões.", effort: "15-30 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
-  { article: 34, name: "Supervisão humana", desc: "Implementar medidas de supervisão humana para sistemas de IA de alto impacto.", plain: "Um humano deve ser capaz de monitorar e intervir nas decisões do sistema de IA.", effort: "10-30 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
-  { article: 34, name: "Explicabilidade de decisões de IA", desc: "Operadores devem fornecer explicações para resultados gerados por IA dentro dos limites técnicos, incluindo critérios-chave de decisão e uma visão geral dos dados de treinamento (Artigo 34).", plain: "Quando sua IA toma uma decisão sobre alguém, você deve ser capaz de explicar por quê :  incluindo os fatores que impulsionaram a decisão e os dados com os quais o sistema foi treinado.", effort: "10-25 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
-  { article: 31, name: "Notificação de transparência", desc: "Os usuários devem ser notificados quando interagem com IA. Conteúdo de IA generativa deve ser rotulado.", plain: "Informe as pessoas que estão interagindo com IA e rotule conteúdo gerado por IA como tal.", effort: "5-15 horas (equipe)", deadline: "Em vigor (período de carência até 2026)" },
-];
-
-const KR_TRANSPARENCY_OBLIGATIONS = [
-  { article: 31, name: "Notificação de interação com IA", desc: "Os usuários devem ser informados de que estão interagindo com um sistema de IA.", plain: "Se alguém conversa com sua IA, informe que é IA.", effort: "5-10 horas (equipe)", deadline: "Em vigor" },
-  { article: 31, name: "Rotulagem de conteúdo generativo", desc: "Conteúdo gerado por IA (texto, imagem, áudio, vídeo) deve ser rotulado como tal.", plain: "Rotule conteúdo criado por IA para que as pessoas saibam que não foi feito por um humano.", effort: "5-10 horas (equipe)", deadline: "Em vigor" },
-];
-
-// Colorado obligations
-const OBLIGATIONS_CO = [
-  { article: "6-1-1702", name: "Documentação do desenvolvedor", desc: "Desenvolvedores devem fornecer aos implantadores documentação cobrindo usos pretendidos, categorias de dados de treinamento, limitações conhecidas e instruções de uso.", plain: "Se você construiu a IA, deve dar aos usuários uma descrição clara do que ela faz, quais dados a treinaram e o que ela não pode fazer.", effort: "15-30 horas (equipe)", deadline: "1º de janeiro de 2027" },
-  { article: "6-1-1703", name: "Retenção de registros (3 anos)", desc: "Tanto desenvolvedores quanto implantadores devem reter registros relacionados à TATD por pelo menos 3 anos.", plain: "Mantenha registros de como o sistema foi usado e quaisquer decisões que influenciou por pelo menos 3 anos.", effort: "5-10 horas (equipe)", deadline: "1º de janeiro de 2027" },
-  { article: "6-1-1704", name: "Aviso prévio ao consumidor", desc: "Implantadores devem fornecer aviso claro aos consumidores antes de usar TATD para tomar uma decisão consequencial.", plain: "Antes de a IA tomar uma decisão sobre alguém, informe que ela será usada.", effort: "5-15 horas (equipe)", deadline: "1º de janeiro de 2027" },
-  { article: "6-1-1704", name: "Divulgação pós-adversa (30 dias)", desc: "Dentro de 30 dias de uma decisão adversa, implantadores devem divulgar a decisão, o papel da TATD e os direitos do consumidor.", plain: "Se a IA contribui para uma decisão negativa sobre alguém, você tem 30 dias para informar o que aconteceu, que a IA esteve envolvida e quais direitos a pessoa tem.", effort: "10-20 horas (equipe)", deadline: "1º de janeiro de 2027" },
-  { article: "6-1-1705", name: "Direitos do consumidor", desc: "Consumidores podem solicitar acesso aos seus dados, correção de erros e revisão humana significativa de decisões adversas.", plain: "Pessoas afetadas por decisões de IA podem pedir para ver seus dados, corrigir erros e ter uma revisão humana da decisão.", effort: "15-30 horas (equipe)", deadline: "1º de janeiro de 2027" },
-];
-
-// Helper: get active questions/order/obligations for current jurisdiction
+// Helper: get active questions and order for current jurisdiction
 function getActiveQuestions() {
   if (activeJurisdiction === "kr") return QUESTIONS_KR;
   if (activeJurisdiction === "co") return QUESTIONS_CO;
@@ -1018,6 +890,7 @@ function renderQuestion() {
         <button type="button" class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)" aria-pressed="${existing === 'yes'}">Sim</button>
         <button type="button" class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)" aria-pressed="${existing === 'no'}">Não</button>
         <button type="button" class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)" aria-pressed="${existing === 'unsure'}">Não tenho certeza</button>
+        <button type="button" class="ans-btn ${existing === 'not_applicable' ? 'selected-unsure' : ''}" onclick="answer('not_applicable', this)" aria-pressed="${existing === 'not_applicable'}">Não se aplica</button>
       </div>
     </div>
   `;
@@ -1089,180 +962,7 @@ function prevQuestion() {
 // =====================================================================
 
 function calculateResults() {
-  if (activeJurisdiction === "kr") return calculateResultsKR();
-  if (activeJurisdiction === "co") return calculateResultsCO();
-  return calculateResultsEU();
-}
-
-function calculateResultsEU() {
-  let adjustment = 0;
-  let prohibitedSignals = [];
-  let highRiskSignals = [];
-  let transparencySignals = [];
-  let exemptionSignals = [];
-  let gapSignals = {};
-
-  for (const q of QUESTIONS) {
-    const a = answers[q.id] || "unsure";
-    adjustment += q.weight[a] || 0;
-
-    if (q.signal === "prohibited" && a === "yes") prohibitedSignals.push(q.id);
-    if (q.signal === "high_risk" && a === "yes") highRiskSignals.push(q.id);
-    if (q.signal === "transparency" && a === "yes") transparencySignals.push(q.id);
-    if (q.signal === "exemption" && a === "yes") exemptionSignals.push(q.id);
-    if (q.signal === "gap_assessment") gapSignals[q.id] = a;
-  }
-
-  // Article 6(3) profiling gate: if the system profiles individuals,
-  // exemptions cannot apply (hard carve-out in second subparagraph)
-  const profilingAnswer = answers.profiling || "unsure";
-  if (profilingAnswer === "yes") {
-    exemptionSignals = [];  // nullify any claimed exemptions
-  }
-
-  // Score: map adjustment to 0-100
-  const score = Math.max(0, Math.min(100, 50 + Math.round(adjustment * 0.55)));
-
-  // Determine tier
-  let tier, tierName, tierDesc, tierClass, obligations;
-
-  if (prohibitedSignals.length > 0) {
-    tier = "prohibited";
-    tierName = "Possíveis indicadores do Artigo 5";
-    tierDesc = "Suas respostas podem descrever uma prática proibida pelo Artigo 5. Uma análise qualificada deve confirmar os fatos, o escopo jurídico e qualquer exceção. As proibições se aplicam desde 2 de fevereiro de 2025. O Artigo 99 estabelece multas máximas de 35 milhões de euros ou 7% do faturamento global, com limites separados para PMEs e aplicação conforme o caso.";
-    tierClass = "tier-prohibited";
-    obligations = [];
-  } else if (score >= 65 && exemptionSignals.length === 0) {
-    tier = "high_risk";
-    tierName = "Possíveis indicadores de alto risco";
-    tierDesc = "Suas respostas colocam o sistema em uma área de uso do Anexo III. A confirmação do alto risco exige análise da finalidade prevista e do Artigo 6, incluindo qualquer exclusão aplicável. Se confirmado, os requisitos abrangem gestão de riscos, governança de dados, documentação, registros, transparência, supervisão humana e cibersegurança. O prazo do Anexo III é 2 de dezembro de 2027 conforme o Digital Omnibus, publicado em 24 de julho de 2026 e em vigor desde 27 de julho de 2026.";
-    tierClass = "tier-high";
-    obligations = OBLIGATIONS;
-  } else if (score >= 65 && exemptionSignals.length > 0) {
-    tier = "high_risk_exempt";
-    tierName = "Potencialmente isento de alto risco";
-    tierDesc = "Seu sistema opera em um domínio regulado, mas pode se qualificar para uma isenção porque realiza tarefas procedimentais restritas ou melhora atividades humanas previamente concluídas. Documente por que a isenção se aplica, incluindo o que o sistema faz e não faz. Se a isenção não se sustentar, os requisitos completos de alto risco se aplicam.";
-    tierClass = "tier-limited";
-    obligations = OBLIGATIONS;
-  } else if (score >= 35 || transparencySignals.length > 0) {
-    tier = "limited_risk";
-    tierName = "Possíveis indicadores do Artigo 50";
-    tierDesc = "Suas respostas indicam um uso que pode acionar deveres de transparência do Artigo 50. Confirme o sistema exato e o contexto de implantação antes de tratar um dever listado como aplicável.";
-    tierClass = "tier-limited";
-    obligations = LIMITED_RISK_OBLIGATIONS;
-  } else {
-    tier = "minimal_risk";
-    tierName = "Nenhum indicador específico de nível de risco";
-    tierDesc = "Estas respostas não acionaram os caminhos do Artigo 5, Anexo III ou Artigo 50. Isto não é uma classificação jurídica e não testa todas as obrigações da Lei de IA. Reavalie se a finalidade prevista, os usuários ou a implantação mudarem.";
-    tierClass = "tier-minimal";
-    obligations = [];
-  }
-
-  // Gap scoring based on governance questions
-  const gapScores = {
-    9: gapSignals.risk_documentation === "yes" ? 60 : (gapSignals.risk_documentation === "unsure" ? 30 : 10),
-    10: 20, // Can't assess data governance from questionnaire alone
-    11: 15, // Can't assess technical docs from questionnaire alone
-    12: gapSignals.logging_active === "yes" ? 65 : (gapSignals.logging_active === "unsure" ? 30 : 10),
-    13: answers.public_facing === "no" ? 50 : 15,
-    14: answers.autonomous_decisions === "no" ? 70 : 25,
-    15: 30 // Can't assess robustness from questionnaire alone
-  };
-
-  return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals, highRiskSignals, exemptionSignals };
-}
-
-function calculateResultsKR() {
-  let adjustment = 0;
-  let highImpactSignals = [];
-  let highPerformanceSignals = [];
-  let transparencySignals = [];
-  let gapSignals = {};
-
-  for (const q of QUESTIONS_KR) {
-    const a = answers[q.id] || "unsure";
-    adjustment += q.weight[a] || 0;
-    if (q.signal === "high_impact" && a === "yes") highImpactSignals.push(q.id);
-    if (q.signal === "high_performance" && a === "yes") highPerformanceSignals.push(q.id);
-    if (q.signal === "transparency" && (a === "no" || a === "yes")) transparencySignals.push(q.id);
-    if (q.signal === "gap_assessment") gapSignals[q.id] = a;
-  }
-
-  const score = Math.max(0, Math.min(100, 50 + Math.round(adjustment * 0.55)));
-  let tier, tierName, tierDesc, tierClass, obligations;
-
-  if (highImpactSignals.length > 0 && score >= 50) {
-    tier = "high_impact";
-    tierName = "Sistema de IA de alto impacto";
-    tierDesc = "Seu sistema opera em um domínio classificado como alto impacto pelo Artigo 33. Você deve cumprir obrigações de gestão de riscos, documentação, supervisão humana, transparência e explicabilidade sob os Artigos 31 e 34. Nota: a Coreia está em período de carência até 2026 :  a aplicação é diferida exceto para danos graves. Penalidades: até KRW 30 milhões (~USD 20.700) ou 3 anos de prisão.";
-    tierClass = "tier-high";
-    obligations = OBLIGATIONS_KR;
-  } else if (highPerformanceSignals.length > 0) {
-    tier = "high_performance";
-    tierName = "Sistema de IA de alto desempenho";
-    tierDesc = "Seu sistema excede o limiar de 10^26 FLOPs sob o Artigo 32 e tem obrigações adicionais de segurança, incluindo avaliação e relato de incidentes.";
-    tierClass = "tier-high";
-    obligations = OBLIGATIONS_KR;
-  } else if (transparencySignals.length > 0) {
-    tier = "general";
-    tierName = "Sistema de IA geral";
-    tierDesc = "Seu sistema não é classificado como alto impacto, mas obrigações de transparência sob o Artigo 31 se aplicam. Os usuários devem ser notificados quando interagem com IA, e conteúdo gerado por IA deve ser rotulado.";
-    tierClass = "tier-limited";
-    obligations = KR_TRANSPARENCY_OBLIGATIONS;
-  } else {
-    tier = "general";
-    tierName = "Sistema de IA geral";
-    tierDesc = "Nenhuma obrigação específica de alto impacto ou alto desempenho se aplica sob a Lei Básica de IA da Coreia. Obrigações gerais de boas práticas se aplicam a todos os operadores de IA.";
-    tierClass = "tier-minimal";
-    obligations = [];
-  }
-
-  const gapScores = {
-    34: gapSignals.kr_risk_management === "yes" ? 60 : (gapSignals.kr_risk_management === "unsure" ? 30 : 10),
-    "34_explain": gapSignals.kr_explanation === "yes" ? 60 : (gapSignals.kr_explanation === "unsure" ? 30 : 10),
-    31: answers.kr_transparency === "yes" ? 70 : 15,
-  };
-
-  return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals: [], highRiskSignals: highImpactSignals, exemptionSignals: [] };
-}
-
-function calculateResultsCO() {
-  let adjustment = 0;
-  let coveredSignals = [];
-  let gapSignals = {};
-
-  for (const q of QUESTIONS_CO) {
-    const a = answers[q.id] || "unsure";
-    adjustment += q.weight[a] || 0;
-    if (q.signal === "covered" && a === "yes") coveredSignals.push(q.id);
-    if (q.signal === "gap_assessment") gapSignals[q.id] = a;
-  }
-
-  const score = Math.max(0, Math.min(100, 50 + Math.round(adjustment * 0.55)));
-  let tier, tierName, tierDesc, tierClass, obligations;
-
-  if (coveredSignals.length >= 2 && score >= 50) {
-    tier = "covered";
-    tierName = "TATD abrangida";
-    tierDesc = "Seu sistema parece ser uma tecnologia automatizada de tomada de decisão (TATD) abrangida pelo Colorado SB 26-189. Obrigações de desenvolvedor e implantador se aplicam, incluindo documentação, avisos ao consumidor, divulgação pós-adversa e direitos do consumidor. Vigência em 1º de janeiro de 2027 com período de correção de 60 dias. Penalidades de até $20.000 por violação, aplicadas pelo Procurador-Geral do Colorado.";
-    tierClass = "tier-high";
-    obligations = OBLIGATIONS_CO;
-  } else {
-    tier = "not_covered";
-    tierName = "TATD não abrangida";
-    tierDesc = "Seu sistema não parece atender à definição de TATD abrangida pelo Colorado SB 26-189. Esta lei se aplica apenas a sistemas de IA que processam dados pessoais e tomam ou influenciam materialmente decisões consequenciais em domínios específicos.";
-    tierClass = "tier-minimal";
-    obligations = [];
-  }
-
-  const gapScores = {
-    "6-1-1702": 20,
-    "6-1-1703": 20,
-    "6-1-1704": gapSignals.co_pre_notice === "yes" ? 60 : (gapSignals.co_pre_notice === "unsure" ? 30 : 10),
-    "6-1-1705": gapSignals.co_consumer_rights === "yes" ? 60 : (gapSignals.co_consumer_rights === "unsure" ? 30 : 10),
-  };
-
-  return { tier, tierName, tierDesc, tierClass, obligations, score, gapScores, prohibitedSignals: [], highRiskSignals: coveredSignals, exemptionSignals: [] };
+  return RegulaDecisionAdapters.evaluateQuestionnaireDecision(activeJurisdiction, answers);
 }
 
 // =====================================================================
@@ -1272,140 +972,16 @@ function calculateResultsCO() {
 function showResults() {
   document.getElementById("questionnaireSection").style.display = "none";
   const results = calculateResults();
-  const section = document.getElementById("resultsSection");
-  section.classList.add("active");
-
-  // Tier card
-  document.getElementById("tierResult").innerHTML = `
-    <div class="result-tier ${results.tierClass}">
-      <div class="tier-label">INDICAÇÃO DO QUESTIONÁRIO</div>
-      <div class="tier-name">${results.tierName}</div>
-      <div class="tier-desc">${results.tierDesc}</div>
-      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">Sinal do questionário: ${results.score}/100 (não é probabilidade jurídica nem risco validado)</div>
-    </div>
-  `;
-
-  // Obligations
-  if (results.obligations.length > 0) {
-    let oblHtml = `<h2 style="margin-bottom:12px;">Normas a revisar se a classificação indicada for confirmada</h2><div class="obligations">`;
-    for (const o of results.obligations) {
-      const gapScore = results.gapScores[o.article] || 0;
-      const gapColor = gapScore >= 50 ? "var(--green)" : gapScore >= 30 ? "var(--amber)" : "var(--red)";
-      const gapLabel = gapScore >= 50 ? "PARCIAL" : gapScore >= 30 ? "BAIXO" : "LACUNA";
-      oblHtml += `
-        <div class="obl-card">
-          <div class="obl-header">
-            <div class="obl-title">Artigo ${o.article}: ${o.name}</div>
-            <div class="obl-deadline">${o.deadline}</div>
-          </div>
-          <div class="obl-desc">${o.desc}</div>
-          ${o.plain ? `<div style="margin-top:8px;padding:8px 12px;background:rgba(59,130,246,0.06);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;font-size:0.85rem;color:var(--text-dim);line-height:1.5;"><strong>Em linguagem simples:</strong> ${o.plain}${activeJurisdiction === "eu" ? ` <a href="https://artificialintelligenceact.eu/article/${o.article}/" target="_blank" rel="noopener" style="color:var(--accent);font-size:0.75rem;white-space:nowrap;">[Ler Artigo ${o.article}]</a>` : ` <span style="font-size:0.75rem;color:var(--text-muted);">[Artigo ${o.article}]</span>`}</div>` : ""}
-          ${["high_risk", "high_risk_exempt", "high_impact", "high_performance", "covered"].includes(results.tier) ? `
-            <div class="gap-bar-wrap">
-              <span style="font-size:0.75rem;color:var(--text-muted);min-width:80px;">Prontidão:</span>
-              <div class="gap-bar"><div class="gap-fill" style="width:${gapScore}%;background:${gapColor};"></div></div>
-              <div class="gap-score" style="color:${gapColor};">${gapScore}% ${gapLabel}</div>
-            </div>
-          ` : ""}
-          <div class="obl-effort">Esforço estimado: ${o.effort}</div>
-        </div>
-      `;
-    }
-    oblHtml += `</div>`;
-    if (["high_risk", "high_risk_exempt", "high_impact", "high_performance", "covered"].includes(results.tier)) {
-      oblHtml += `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:8px;">Pontua\u00e7\u00f5es de lacuna s\u00e3o estimativas baseadas nas suas respostas. Sua equipe de desenvolvimento pode obter pontua\u00e7\u00e3o precisa executando <code style="background:var(--bg);padding:2px 6px;border-radius:3px;">regula gap --project .</code> no c\u00f3digo-fonte.</p>`;
-    }
-    document.getElementById("obligationsList").innerHTML = oblHtml;
-  } else {
-    document.getElementById("obligationsList").innerHTML = "";
-  }
-
-  // Next steps
-  let stepsHtml = `<div class="next-steps"><h2>Próximos passos</h2>`;
-  const steps = getNextSteps(results);
-  steps.forEach((s, i) => {
-    stepsHtml += `
-      <div class="step-item">
-        <div class="step-num">${i + 1}</div>
-        <div class="step-text"><strong>${s.title}</strong><span>${s.desc}</span></div>
-      </div>
-    `;
+  document.getElementById("resultsSection").classList.add("active");
+  RegulaDecisionUI.renderQuestionnaireResult(results, {
+    locale: document.documentElement.lang,
+    questions: getActiveQuestions(),
+    tierElement: document.getElementById("tierResult"),
+    detailsElement: document.getElementById("obligationsList"),
+    nextElement: document.getElementById("nextStepsSection"),
   });
-  stepsHtml += `</div>`;
-  document.getElementById("nextStepsSection").innerHTML = stepsHtml;
-
-  // Scroll to top
   window.scrollTo({ top: 0, behavior: "smooth" });
-
-  // Analytics
-  if (window.plausible) plausible("Assessment Complete", { props: { tier: results.tier, score: results.score, jurisdiction: activeJurisdiction } });
-}
-
-function getNextSteps(results) {
-  if (activeJurisdiction === "kr") return getNextStepsKR(results);
-  if (activeJurisdiction === "co") return getNextStepsCO(results);
-  if (results.tier === "prohibited") {
-    return [
-      { title: "Obtenha aconselhamento jurídico imediatamente", desc: "As proibições do Artigo 5 preveem a faixa de penalidade mais alta. Um advogado qualificado precisa avaliar se seu sistema está dentro do escopo ou se qualifica para uma exceção." },
-      { title: "Compartilhe esta avaliação com seu consultor jurídico", desc: "Baixe o JSON ou imprima esta página como PDF. Sua equipe jurídica precisa revisar a proibição específica sinalizada e orientar se uma exceção se aplica." },
-      { title: "Documente sua avaliação", desc: "Independentemente de prosseguir, modificar ou remover a prática, documente o raciocínio. As autoridades regulatórias vão querer ver que você considerou a proibição." },
-      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem executar a CLI do Regula (<code>pipx install regula-ai</code>, depois <code>regula check .</code>) para coletar indicadores separados no código para revisão contextual. Os achados da CLI não explicam nem determinam este resultado do questionário." }
-    ];
-  }
-  if (results.tier === "high_risk" || results.tier === "high_risk_exempt") {
-    return [
-      { title: "Compartilhe esta avaliação com sua equipe", desc: "Use o link compartilhável ou imprima esta página como PDF. Um responsável pela conformidade, um desenvolvedor e um contato jurídico devem ver estes resultados." },
-      { title: "Comece pelas maiores lacunas", desc: "Foque nas obrigações onde sua pontuação de prontidão é mais baixa. Documentação técnica (Artigo 11) e governança de dados (Artigo 10) são tipicamente as maiores lacunas." },
-      { title: "Documente o sistema de gestão de riscos", desc: "O Artigo 9 exige um registro de riscos mantido continuamente. Crie um documento vivo que cubra riscos identificados, medidas de mitigação e riscos residuais. Atualize-o quando o sistema mudar." },
-      { title: "Configure logging", desc: "O Artigo 12 exige registro automático das operações do sistema. Trabalhe com sua equipe de desenvolvimento para adicionar logging estruturado ao redor das chamadas de inferência de IA." },
-      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem obter pontuação de lacuna artigo por artigo contra o código-fonte real executando a CLI do Regula: <code>pipx install regula-ai</code>, depois <code>regula gap --project .</code>" }
-    ];
-  }
-  if (results.tier === "limited_risk") {
-    return [
-      { title: "Adicione avisos de transparência", desc: "O Artigo 50 exige que os usuários saibam quando interagem com IA ou consomem conteúdo gerado por IA. Trabalhe com sua equipe de produto para adicionar divulgação clara na interface do usuário." },
-      { title: "Rotule conteúdo gerado por IA", desc: "Se seu sistema gera texto, imagens, áudio ou vídeo, marque o output como gerado por IA. Isso se aplica tanto a rótulos visíveis ao usuário quanto a metadados legíveis por máquina." },
-      { title: "Compartilhe com sua equipe", desc: "Baixe ou imprima esta avaliação e compartilhe com suas equipes de produto e jurídica para coordenar a implementação de transparência." },
-      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem analisar o código-fonte para indicadores de risco adicionais usando a CLI do Regula: <code>pipx install regula-ai</code>, depois <code>regula check .</code>" }
-    ];
-  }
-  return [
-    { title: "Nenhuma obrigação específica se aplica", desc: "Seu sistema parece ser de risco mínimo sob a Lei de IA da UE. Considere seguir códigos de conduta voluntários (Artigo 95) como boa prática." },
-    { title: "Reavalie se o escopo mudar", desc: "Se você adicionar novas funcionalidades :  especialmente em áreas como emprego, saúde, crédito, aplicação da lei ou infraestrutura crítica :  execute esta avaliação novamente. A classificação de risco depende da finalidade pretendida, que pode mudar." }
-  ];
-}
-
-function getNextStepsKR(results) {
-  if (results.tier === "high_impact" || results.tier === "high_performance") {
-    return [
-      { title: "Compartilhe esta avaliação com sua equipe", desc: "Use o link compartilhável ou imprima esta página como PDF. Um responsável pela conformidade e um contato jurídico devem revisar estes resultados." },
-      { title: "Prepare um plano de gestão de riscos", desc: "O Artigo 34 exige um plano documentado de gestão de riscos. Esta é uma obrigação de esforço ('empenhar-se'), mas conformidade documentada é fortemente recomendada." },
-      { title: "Implemente a capacidade de explicabilidade", desc: "O Artigo 34 exige que operadores forneçam explicações para resultados gerados por IA dentro dos limites técnicos. Garanta que seu sistema possa explicar seus critérios-chave de decisão." },
-      { title: "Nota: período de carência até 2026", desc: "O MSIT está diferindo a aplicação até 2026, exceto para danos graves. Use este tempo para construir conformidade, não para atrasar." },
-      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem analisar o código-fonte usando a CLI do Regula: <code>pipx install regula-ai</code>, depois <code>regula check . --jurisdictions korea</code>" }
-    ];
-  }
-  return [
-    { title: "Adicione avisos de transparência", desc: "O Artigo 31 exige que os usuários saibam que estão interagindo com IA. Rotule conteúdo gerado por IA adequadamente." },
-    { title: "Reavalie se o escopo mudar", desc: "Se seu sistema começar a operar em um domínio de alto impacto, execute esta avaliação novamente." }
-  ];
-}
-
-function getNextStepsCO(results) {
-  if (results.tier === "covered") {
-    return [
-      { title: "Compartilhe esta avaliação com sua equipe", desc: "Tanto desenvolvedores quanto implantadores têm obrigações. Certifique-se de que ambos os lados da relação entendam o que é exigido." },
-      { title: "Implemente o aviso prévio ao consumidor", desc: "A Seção 6-1-1704 exige aviso claro aos consumidores antes de a TATD ser usada para decisões consequenciais." },
-      { title: "Construa o processo de divulgação pós-adversa", desc: "Dentro de 30 dias de uma decisão adversa, os consumidores devem ser notificados da decisão, do papel da TATD e de seus direitos." },
-      { title: "Garanta mecanismos de direitos do consumidor", desc: "A Seção 6-1-1705 exige capacidades de acesso, correção e revisão humana." },
-      { title: "Nota: vigência em 1º de janeiro de 2027", desc: "A lei inclui um período de correção de 60 dias (expira em 2030). Use o prazo para construir conformidade." },
-      { title: "Para sua equipe de desenvolvimento", desc: "Seus desenvolvedores podem analisar o código-fonte usando a CLI do Regula: <code>pipx install regula-ai</code>, depois <code>regula check . --jurisdictions colorado</code>" }
-    ];
-  }
-  return [
-    { title: "Nenhuma obrigação específica se aplica", desc: "Seu sistema não parece ser TATD abrangida pelo Colorado SB 26-189." },
-    { title: "Reavalie se o escopo mudar", desc: "Se seu sistema começar a tomar decisões consequenciais sobre indivíduos em domínios abrangidos, execute esta avaliação novamente." }
-  ];
+  if (window.plausible) plausible("Assessment Complete", { props: { result_type: results.result_type, jurisdiction: activeJurisdiction } });
 }
 
 // =====================================================================
@@ -1413,36 +989,11 @@ function getNextStepsCO(results) {
 // =====================================================================
 
 function encodeAnswers() {
-  const activeQ = getActiveQuestions();
-  const parts = activeQ.map(q => {
-    const a = answers[q.id];
-    return a === "yes" ? "y" : a === "no" ? "n" : "u";
-  });
-  if (activeJurisdiction === "eu") return "2" + parts.join("");  // v2: Q8 polarity reversed
-  return parts.join("");
+  return RegulaDecisionAdapters.encodeAnswers(activeJurisdiction, answers, getActiveQuestions());
 }
 
 function decodeAnswers(code) {
-  let version = 1;
-  let raw = code;
-  if (code.charAt(0) === "2") {
-    version = 2;
-    raw = code.slice(1);
-  }
-  const activeQ = getActiveQuestions();
-  // Accept URLs from older versions with fewer questions (pad with "u" for unsure)
-  if (raw.length > activeQ.length) return null;
-  while (raw.length < activeQ.length) raw += "u";
-  const decoded = {};
-  activeQ.forEach((q, i) => {
-    let c = raw[i];
-    // v1 URLs had Q8 (public_facing, index 7) with opposite polarity :  EU only
-    if (version === 1 && i === 7 && activeJurisdiction === "eu") {
-      c = c === "y" ? "n" : c === "n" ? "y" : c;
-    }
-    decoded[q.id] = c === "y" ? "yes" : c === "n" ? "no" : "unsure";
-  });
-  return decoded;
+  return RegulaDecisionAdapters.decodeAnswers(activeJurisdiction, code, getActiveQuestions());
 }
 
 function copyShareLink() {
@@ -1459,32 +1010,10 @@ function copyShareLink() {
 
 function exportJSON() {
   if (window.plausible) plausible("Assess Export", { props: { type: "json" } });
-  const results = calculateResults();
-  const data = {
-    tool: "Regula Web Assessment",
-    version: "1.1",
-    locale: "pt-BR",
-    jurisdiction: activeJurisdiction,
-    jurisdiction_name: JURISDICTION_INFO[activeJurisdiction].name,
-    date: new Date().toISOString(),
-    disclaimer: "Isto não é aconselhamento jurídico. Avaliação baseada em respostas autorreportadas.",
-    tier: results.tier,
-    tier_name: results.tierName,
-    score: results.score,
+  RegulaDecisionUI.exportResult(calculateResults(), {
+    locale: document.documentElement.lang,
     answers: answers,
-    obligations: results.obligations.map(o => ({
-      article: o.article,
-      name: o.name,
-      deadline: o.deadline,
-      estimated_effort: o.effort,
-      gap_score: results.gapScores[o.article] || null
-    }))
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "regula-avaliacao-" + new Date().toISOString().slice(0, 10) + ".json";
-  a.click();
+  });
 }
 
 function resetAssessment() {
@@ -1561,6 +1090,9 @@ document.addEventListener("keydown", function(e) {
   } else if (key === "3" || key === "u" || key === "i") {
     const btns = document.querySelectorAll(".ans-btn");
     if (btns.length >= 3) { btns[2].click(); btns[2].focus(); }
+  } else if (key === "4" || key === "a") {
+    const btns = document.querySelectorAll(".ans-btn");
+    if (btns.length >= 4) { btns[3].click(); btns[3].focus(); }
   }
 });
 
@@ -1602,6 +1134,9 @@ function runScan() {
   // Run scan asynchronously to allow UI to update
   setTimeout(function() {
     scanResult = scanCode(code, filename);
+    scanResult.decision = RegulaDecisionAdapters.evaluateQuestionnaireDecision(
+      activeJurisdiction, {}
+    );
 
     // Override language if user selected one
     if (langSelect) {
@@ -1615,7 +1150,7 @@ function runScan() {
     document.getElementById("scanBtn").disabled = false;
 
     if (window.plausible) plausible("Scan Complete", {
-      props: { tier: scanResult.classification.tier, language: scanResult.language }
+      props: { detector_class: scanResult.classification.detector_class, result_type: scanResult.decision.result_type, language: scanResult.language }
     });
   }, 50);
 }
@@ -1623,7 +1158,7 @@ function runScan() {
 function renderScanResults(result) {
   const c = result.classification;
   const container = document.getElementById("scanResults");
-  let html = "";
+  let html = '<div id="scanDecisionSummary"></div><div id="scanDecisionDetails"></div><div id="scanDecisionNext"></div>';
 
   // Jurisdiction-scope notice: the code scanner currently ships EU AI Act
   // patterns only. Don't silently return an EU verdict when a user picked
@@ -1635,28 +1170,28 @@ function renderScanResults(result) {
 
   // Tier card (reuse existing styles)
   const tierStyles = {
-    prohibited: "tier-prohibited",
-    high_risk: "tier-high",
-    limited_risk: "tier-limited",
-    minimal_risk: "tier-minimal",
-    not_ai: "tier-minimal",
+    article_5_pattern: "tier-prohibited",
+    annex_iii_pattern: "tier-high",
+    article_50_pattern: "tier-limited",
+    no_elevated_pattern: "tier-minimal",
+    no_ai_pattern: "tier-minimal",
   };
   const tierNames = {
-    prohibited: "Possíveis indicadores do Artigo 5",
-    high_risk: "Possíveis indicadores de alto risco",
-    limited_risk: "Possíveis indicadores do Artigo 50",
-    minimal_risk: "Nenhum indicador específico de nível de risco",
-    not_ai: "Nenhum indicador de IA detectado",
+    article_5_pattern: "Indicadores de código do Artigo 5",
+    annex_iii_pattern: "Indicadores de código do Anexo III",
+    article_50_pattern: "Indicadores de código do Artigo 50",
+    no_elevated_pattern: "Nenhum indicador elevado de código",
+    no_ai_pattern: "Nenhum indicador de IA detectado",
   };
 
   html += `
-    <div class="result-tier ${tierStyles[c.tier] || 'tier-minimal'}">
+    <div class="result-tier ${tierStyles[c.detector_class] || 'tier-minimal'}">
       <div class="tier-label">RESULTADO DA ANÁLISE DE CÓDIGO</div>
-      <div class="tier-name">${tierNames[c.tier] || c.tier}</div>
+      <div class="tier-name">${tierNames[c.detector_class] || c.detector_class}</div>
       <div class="tier-desc">${c.message}</div>
-      ${(c.tier === 'prohibited' || c.tier === 'high_risk') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Isto é uma <strong>correspondência de padrão, não uma determinação</strong> :  verifique se o código sinalizado realmente implementa a prática descrita. Falsos positivos são possíveis; isto não é aconselhamento jurídico.</div>' : ''}
+      ${(c.detector_class === 'article_5_pattern' || c.detector_class === 'annex_iii_pattern') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Isto é uma <strong>correspondência de padrão, não uma determinação</strong> :  verifique se o código sinalizado realmente implementa a prática descrita. Falsos positivos são possíveis; isto não é aconselhamento jurídico.</div>' : ''}
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
-        Confiança: ${c.confidence_score}/100 &middot; Linguagem: ${result.language}
+        Prioridade do detector: ${c.detector_priority}/100 &middot; Linguagem: ${result.language}
         ${c.indicators_matched.length ? ' &middot; Indicadores: ' + c.indicators_matched.join(', ') : ''}
       </div>
     </div>
@@ -1664,34 +1199,34 @@ function renderScanResults(result) {
 
   // Summary stats
   html += `<div class="scan-summary">`;
-  html += `<div class="scan-stat"><div class="scan-stat-value" style="color:${c.tier === 'prohibited' ? 'var(--red)' : c.tier === 'high_risk' ? 'var(--red)' : c.tier === 'limited_risk' ? 'var(--amber)' : 'var(--green)'};">${c.indicators_matched.length}</div><div class="scan-stat-label">Indicadores de risco</div></div>`;
+  html += `<div class="scan-stat"><div class="scan-stat-value" style="color:${c.detector_class === 'article_5_pattern' ? 'var(--red)' : c.detector_class === 'annex_iii_pattern' ? 'var(--red)' : c.detector_class === 'article_50_pattern' ? 'var(--amber)' : 'var(--green)'};">${c.indicators_matched.length}</div><div class="scan-stat-label">Indicadores de risco</div></div>`;
   html += `<div class="scan-stat"><div class="scan-stat-value" style="color:${result.security.length > 0 ? 'var(--amber)' : 'var(--green)'};">${result.security.length}</div><div class="scan-stat-label">Achados de segurança</div></div>`;
   html += `<div class="scan-stat"><div class="scan-stat-value">${result.observations.length + result.bias.length}</div><div class="scan-stat-label">Observações</div></div>`;
   html += `<div class="scan-stat"><div class="scan-stat-value">${result.is_training ? 'Sim' : 'Não'}</div><div class="scan-stat-label">Atividade de treinamento</div></div>`;
   html += `</div>`;
 
   // Risk indicators
-  if (c.indicators_matched.length > 0 && c.tier !== 'not_ai') {
-    html += `<div class="scan-section-title">Detalhes da classificação de risco</div>`;
-    if (c.tier === 'prohibited') {
+  if (c.indicators_matched.length > 0 && c.detector_class !== 'no_ai_pattern') {
+    html += `<div class="scan-section-title">Detalhes dos padrões de código</div>`;
+    if (c.detector_class === 'article_5_pattern') {
       html += `<div class="finding-card severity-critical">
         <div class="finding-header">
           <div class="finding-title">${c.description}</div>
-          <span class="finding-badge badge-critical">PROIBIDO</span>
+          <span class="finding-badge badge-critical">PADRÃO DO ARTIGO 5</span>
         </div>
         <div class="finding-desc">${c.message}</div>
         ${c.exceptions ? `<div class="finding-remediation"><strong>Exceções:</strong> ${c.exceptions}</div>` : ''}
-        <div class="finding-meta">Artigos: ${c.applicable_articles.join(', ')} &middot; Linhas: ${c.match_lines.join(', ')}</div>
+        <div class="finding-meta">Dispositivos para revisão: ${c.suggested_provisions.join(', ')} &middot; Linhas: ${c.match_lines.join(', ')}</div>
       </div>`;
     } else {
-      html += `<div class="finding-card severity-${c.tier === 'high_risk' ? 'high' : 'medium'}">
+      html += `<div class="finding-card severity-${c.detector_class === 'annex_iii_pattern' ? 'high' : 'medium'}">
         <div class="finding-header">
           <div class="finding-title">${c.category || c.description}</div>
-          <span class="finding-badge badge-${c.tier === 'high_risk' ? 'high' : 'medium'}">${c.tier === 'high_risk' ? 'ALTO RISCO' : 'LIMITADO'}</span>
+          <span class="finding-badge badge-${c.detector_class === 'annex_iii_pattern' ? 'high' : 'medium'}">${c.detector_class === 'annex_iii_pattern' ? 'PADRÃO DO ANEXO III' : 'PADRÃO DO ARTIGO 50'}</span>
         </div>
         <div class="finding-desc">${c.description}</div>
         <div class="finding-meta">
-          Artigos: ${c.applicable_articles.join(', ')}
+          Dispositivos para revisão: ${c.suggested_provisions.join(', ')}
           ${c.match_lines.length ? ' &middot; Linhas: ' + c.match_lines.join(', ') : ''}
         </div>
       </div>`;
@@ -1741,36 +1276,7 @@ function renderScanResults(result) {
     }
   }
 
-  // Applicable obligations (for high-risk and limited-risk)
-  if (c.tier === 'high_risk') {
-    html += `<div class="scan-section-title">Obrigações aplicáveis</div>`;
-    html += `<div class="obligations">`;
-    for (const o of OBLIGATIONS) {
-      html += `<div class="obl-card">
-        <div class="obl-header">
-          <div class="obl-title">Artigo ${o.article}: ${o.name}</div>
-          <div class="obl-deadline">${o.deadline}</div>
-        </div>
-        <div class="obl-desc">${o.desc}</div>
-        <div class="obl-effort">Esforço estimado: ${o.effort}</div>
-      </div>`;
-    }
-    html += `</div>`;
-  } else if (c.tier === 'limited_risk') {
-    html += `<div class="scan-section-title">Obrigações aplicáveis</div>`;
-    html += `<div class="obligations">`;
-    for (const o of LIMITED_RISK_OBLIGATIONS) {
-      html += `<div class="obl-card">
-        <div class="obl-header">
-          <div class="obl-title">Artigo ${o.article}: ${o.name}</div>
-          <div class="obl-deadline">${o.deadline}</div>
-        </div>
-        <div class="obl-desc">${o.desc}</div>
-        <div class="obl-effort">Esforço estimado: ${o.effort}</div>
-      </div>`;
-    }
-    html += `</div>`;
-  }
+  // Legal obligations are emitted only by the decision kernel.
 
   // Training activity note
   if (result.is_training) {
@@ -1796,7 +1302,7 @@ function renderScanResults(result) {
 
   // Next steps
   html += `<div class="next-steps" style="margin-top:24px;"><h2>Próximos passos</h2>`;
-  const steps = getScanNextSteps(c.tier);
+  const steps = getScanNextSteps(c.detector_class);
   steps.forEach(function(s, i) {
     html += `<div class="step-item">
       <div class="step-num">${i + 1}</div>
@@ -1806,6 +1312,14 @@ function renderScanResults(result) {
   html += `</div>`;
 
   container.innerHTML = html;
+
+  RegulaDecisionUI.renderQuestionnaireResult(result.decision, {
+    locale: document.documentElement.lang,
+    questions: [],
+    tierElement: document.getElementById("scanDecisionSummary"),
+    detailsElement: document.getElementById("scanDecisionDetails"),
+    nextElement: document.getElementById("scanDecisionNext"),
+  });
 
   // Scroll to results
   container.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1818,7 +1332,7 @@ function escapeHtml(text) {
 }
 
 function getScanNextSteps(tier) {
-  if (tier === "prohibited") {
+  if (tier === "article_5_pattern") {
     return [
       { title: "Obtenha aconselhamento jur\u00eddico", desc: "As proibi\u00e7\u00f5es do Artigo 5 preveem as penalidades mais altas. Um advogado qualificado precisa avaliar se seu sistema est\u00e1 dentro do escopo ou se qualifica para uma exce\u00e7\u00e3o restrita." },
       { title: "Revise os padr\u00f5es correspondentes", desc: "Algumas correspond\u00eancias podem ser falsos positivos. Os padr\u00f5es acima mostram o que acionou este resultado do scanner. Verifique se o c\u00f3digo sinalizado implementa a pr\u00e1tica descrita." },
@@ -1826,7 +1340,7 @@ function getScanNextSteps(tier) {
       { title: "Para an\u00e1lise mais profunda", desc: "Sua equipe de desenvolvimento pode executar a CLI do Regula para an\u00e1lise arquivo por arquivo: <code>pipx install regula-ai</code>, depois <code>regula check .</code>" },
     ];
   }
-  if (tier === "high_risk") {
+  if (tier === "annex_iii_pattern") {
     return [
       { title: "Revise os achados acima", desc: "Verifique se os indicadores correspondentes descrevem corretamente a finalidade do seu sistema. Classifica\u00e7\u00e3o baseada em padr\u00f5es requer revis\u00e3o humana para confirmar o contexto." },
       { title: "Responda o question\u00e1rio tamb\u00e9m", desc: "O question\u00e1rio avalia o contexto de implanta\u00e7\u00e3o que a an\u00e1lise de c\u00f3digo n\u00e3o consegue detectar. Use ambos para ter uma vis\u00e3o completa." },
@@ -1834,7 +1348,7 @@ function getScanNextSteps(tier) {
       { title: "Para an\u00e1lise de todo o projeto", desc: "Esta an\u00e1lise avaliou um \u00fanico arquivo. Sua equipe de desenvolvimento pode analisar o projeto completo: <code>pipx install regula-ai</code>, depois <code>regula gap --project .</code>" },
     ];
   }
-  if (tier === "limited_risk") {
+  if (tier === "article_50_pattern") {
     return [
       { title: "Adicione avisos de transpar\u00eancia", desc: "O Artigo 50 exige que os usu\u00e1rios saibam quando interagem com IA ou consomem conte\u00fado gerado por IA." },
       { title: "Responda o question\u00e1rio tamb\u00e9m", desc: "O question\u00e1rio avalia o contexto de implanta\u00e7\u00e3o que a an\u00e1lise de c\u00f3digo n\u00e3o consegue detectar." },
@@ -1857,15 +1371,16 @@ function exportScanJSON() {
     date: new Date().toISOString(),
     disclaimer: "Isto não é aconselhamento jurídico. Indicação de risco baseada em padrões para revisão humana.",
     language: scanResult.language,
-    tier: c.tier,
-    confidence_score: c.confidence_score,
+    detector_class: c.detector_class,
+    detector_priority: c.detector_priority,
     indicators_matched: c.indicators_matched,
-    applicable_articles: c.applicable_articles,
+    suggested_provisions: c.suggested_provisions,
     description: c.description,
     security_findings: scanResult.security.length,
     observations: scanResult.observations.length,
     bias_findings: scanResult.bias.length,
     is_training: scanResult.is_training,
+    decision: scanResult.decision,
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
