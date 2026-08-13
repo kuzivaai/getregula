@@ -42,7 +42,7 @@ insufficient_information` example. Their published demonstrations still
 contained `Highest risk tier: not_ai` and `Overall score: 6%`.
 
 Those claims are stale relative to the local source, which carries the current
-`2,781` collected-test manifest and the repaired decision contract. The live
+canonical collected-test manifest and the repaired decision contract. The live
 pages are therefore not merely missing cosmetic changes; they demonstrate the
 pre-kernel output semantics that this work was intended to retire.
 
