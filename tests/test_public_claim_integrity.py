@@ -56,6 +56,11 @@ def test_active_surfaces_do_not_publish_prohibited_claims():
     # The negative controls below prove this is green because the copy was
     # corrected, not because the guards became inert.
     assert violations() == []
+    pricing = (REPO / "site/pricing.html").read_text(encoding="utf-8")
+    assert "Payment gate not active" in pricing
+    assert "Start free assessment" in pricing
+    assert "EUR 49" not in pricing and "EUR 149" not in pricing
+    assert "Compliance score with per-article breakdown" not in pricing
 
 
 def test_required_limitation_concepts_are_translated():
@@ -90,6 +95,7 @@ def test_public_entry_points_do_not_use_em_dashes():
         "site/assess/de.html",
         "site/assess/pt-br.html",
         "site/about.html",
+        "site/pricing.html",
     )
     for rel in paths:
         text = (REPO / rel).read_text(encoding="utf-8", errors="replace")
@@ -104,6 +110,7 @@ def test_mobile_navigation_supports_pointer_and_escape_close():
         "site/assess/index.html",
         "site/assess/de.html",
         "site/assess/pt-br.html",
+        "site/pricing.html",
     )
     for rel in paths:
         text = (REPO / rel).read_text(encoding="utf-8", errors="replace")

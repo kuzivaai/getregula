@@ -439,8 +439,8 @@ Article observations emitted: 0; held pending applicability: 8</pre>
     <div class="audience-grid">
         <div class="audience-card audience-biz">
             <div class="audience-label">Se voce dirige o negocio</div>
-            <h3>Voce conhece sua exposicao legal?</h3>
-            <p>Se sua equipe constroi ou usa IA, a Lei de IA da UE pode se aplicar, mesmo fora da UE. A maioria das ferramentas se enquadra em risco limitado ou minimo. Usa Claude Code ou Cursor? Cole <code>regula assess</code> no seu chat. Tem um desenvolvedor? Envie esta pagina.</p>
+            <h3>Comece pelo contexto de uso</h3>
+            <p>Se sua equipe desenvolve ou usa IA, jurisdi&ccedil;&atilde;o, finalidade pretendida, papel e contexto de implanta&ccedil;&atilde;o determinam quais regras podem se aplicar. Registre esse contexto em <code>regula assess</code> e encaminhe o resultado aos respons&aacute;veis t&eacute;cnicos e jur&iacute;dicos adequados.</p>
             <button type="button" class="audience-fwd" onclick="copyPageUrl(this)">
                 <span class="fwd-icon">&#8599;</span>
                 <span class="fwd-txt">Copiar link para enviar ao seu desenvolvedor</span>
@@ -452,8 +452,8 @@ Article observations emitted: 0; held pending applicability: 8</pre>
         </div>
         <div class="audience-card audience-dev">
             <div class="audience-label">Se voce escreve o codigo</div>
-            <h3>Usuarios na UE? A Lei de IA se aplica a voce.</h3>
-            <p>O Artigo 2 e extraterritorial. A maioria dos chatbots e ferramentas de produtividade sao risco limitado: uma divulgacao de transparencia, nada mais. Escaneie para confirmar.</p>
+            <h3>Revise os padr&otilde;es encontrados no c&oacute;digo</h3>
+            <p>O Artigo 2 inclui situa&ccedil;&otilde;es em que a Lei se aplica fora da UE, mas aplicabilidade e classifica&ccedil;&atilde;o de risco n&atilde;o podem ser determinadas apenas pelo c&oacute;digo-fonte. Use o scan para localizar evid&ecirc;ncias e perguntas para revis&atilde;o contextual.</p>
             <ul>
                 <li>Funciona com codigo gerado por IA (Cursor, Lovable, Bolt, Claude Code)</li>
                 <li>Gera documentacao Anexo IV a partir do seu codigo real</li>
@@ -463,8 +463,8 @@ Article observations emitted: 0; held pending applicability: 8</pre>
         </div>
         <div class="audience-card audience-audit">
             <div class="audience-label">Se voce audita conformidade</div>
-            <h3>Evidencia verificavel, nao autoatestacao.</h3>
-            <p>O Regula gera pacotes de evidencias assinados e com marca temporal, com manifestos de integridade SHA-256. Cada descoberta e rastreavel ate um arquivo e linha. Verifique a cadeia voce mesmo. <a href="/sample-report.html" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'sample-report'}})">Ver um relatorio de exemplo &rarr;</a></p>
+            <h3>Estruturas de evid&ecirc;ncia revis&aacute;veis</h3>
+            <p>O Regula pode gerar estruturas de pacotes de evid&ecirc;ncia com manifestos SHA-256; comandos opcionais acrescentam assinaturas ou marcas temporais quando seus pr&eacute;-requisitos est&atilde;o configurados. Os pacotes exigem preenchimento humano e n&atilde;o demonstram sufici&ecirc;ncia jur&iacute;dica. <a href="/sample-report.html" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'sample-report'}})">Ver um relat&oacute;rio de exemplo &rarr;</a> &middot; <a href="/pricing.html">Perguntas gratuitas e consultoria planejada &rarr;</a></p>
             <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula conform --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula conform --sign .</span>
@@ -478,7 +478,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
 <!-- O QUE A REGULA MOSTRA -->
 <div class="sec reveal" id="tiers">
     <h2 class="sec-head">O que a Regula mostra</h2>
-    <p class="sec-sub">A Lei de IA da UE classifica cada sistema de IA em um nivel de risco. O Regula escaneia seu codigo, mostra qual nivel se aplica e da a lista de correcoes.</p>
+    <p class="sec-sub">A Lei de IA da UE usa regras baseadas em risco cuja aplica&ccedil;&atilde;o depende da finalidade pretendida e do contexto de uso. O Regula apresenta indicadores candidatos e disposi&ccedil;&otilde;es relacionadas para revis&atilde;o humana; ele n&atilde;o decide a categoria jur&iacute;dica.</p>
     <div class="tiers">
         <div class="tier tier-r">
             <div class="tier-badge">Proibido</div>
