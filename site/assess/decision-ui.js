@@ -108,6 +108,14 @@
           ${completeness.contradictory_fact_count} ${escapeHtml(copy.contradictory)}
         </div>
       </div>`;
+    // The question card previously held focus when it was hidden, leaving
+    // keyboard and screen-reader users at <body> after completion. Move focus
+    // to the newly rendered status without adding it to the normal tab order.
+    const resultTier = options.tierElement.querySelector(".result-tier");
+    if (resultTier) {
+      resultTier.tabIndex = -1;
+      resultTier.focus();
+    }
 
     let detail = "";
     if (result.indications && result.indications.length) {
