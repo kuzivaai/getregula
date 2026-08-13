@@ -56,3 +56,18 @@ generated browser data file as active, if either rationale disappears after
 regeneration, or if a genuine implementation in another file becomes
 suppressed. Generated-data suppressions must remain narrow, reasoned, visible
 to the audit-suppression command, and covered by the clean-snapshot self-scan.
+
+## Sitemap metadata ordering defect found in the same publication cycle
+
+The CI claim/content job subsequently failed only its sitemap check. The
+pricing page had been edited and `update_sitemap.py` had been run before the
+commercial content commit. Because the generator derives `lastmod` from
+committed Git history, it still saw the page's 4 August history at generation
+time. A fresh CI checkout saw the 13 August commercial commit and correctly
+regenerated the value, making the clean-tree comparison fail.
+
+The sitemap was regenerated after the content commit, changing only the
+pricing URL's `lastmod` from `2026-08-04` to `2026-08-13`. The durable process
+lesson is that Git-derived metadata is post-commit output: either verify it in
+a second metadata commit or redesign the generator to accept an explicit,
+validated content date.
