@@ -136,3 +136,22 @@ publication:
 
 Until all five are demonstrated, source currency and deployment currency must
 remain separate claims.
+
+## Deploy-preview root cause and correction
+
+**Demonstrated on 2026-08-13.** GitHub's Netlify status context reported a
+successful deploy preview for pull request 50, but both the preview root and
+`/pricing.html` returned HTTP 404. Production returned HTTP 200 from GitHub
+Pages. The repository had no `netlify.toml`, and its static entry point is
+`site/index.html`, not a root `index.html`.
+
+**Root cause.** Netlify used the repository root as its publish directory.
+The build could therefore be green while the resulting preview contained no
+site entry point. The status measured artifact publication, not task-level
+renderability.
+
+**Correction.** `netlify.toml` now declares `site` as the publish directory.
+This does not change the canonical GitHub Pages production path. It makes the
+existing review preview publish the same static directory that production
+uploads. The post-push preview must still be opened in a real browser before
+the correction is called verified.
