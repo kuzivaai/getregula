@@ -1844,3 +1844,59 @@ fixture. The count-carrier guard rejected that draft, naming
 `tests/test_cascade_count.py`; the expanded batch reported one failure and 133
 passes. The fixture now uses historical arbitrary values, so it tests the
 predicate without creating a carrier for the current count.
+
+### N104. Verification at the repaired implementation commit
+
+**First raised:** 2026-08-13. **Status:** PARTIAL because the required one-shot
+full-suite rc cannot be obtained in this harness and the protected bare CLI
+still violates the kernel invariant.
+
+The implementation verification commit is
+`f0b7b481d641c5be4cde87c010a93f2c991296b5`, tree
+`b9a08aed1ad613eeb5dd22b737e8f09c80cbbeff`, clean before and after the runs.
+
+The exact full pytest command was attempted twice. In the persistent managed
+sandbox it can run past ten minutes but eight timestamp fixtures cannot create
+their localhost RFC 3161 server. Outside that syscall sandbox the timestamp
+module reports 23 passes, but the execution wrapper terminates long commands
+at about ten minutes; the full command reached 23 percent and was interrupted
+before writing its rc file. A detached unrestricted attempt was terminated
+with its wrapper before pytest started. None is called a test failure or pass.
+
+The suite was then exhaustively partitioned without skipping any collected
+case: the persistent run excluding only the timestamp module reported 2,756
+passes in 50 minutes 22 seconds, rc=0; the complete timestamp module outside
+the socket sandbox reported 23 passes in 5.20 seconds, rc=0. The itemisation
+reconciles to the generated collected total. This is stronger evidence than a
+partial run but does not satisfy the definition's explicit single-command
+full-suite requirement, which remains OPEN.
+
+The custom runner at the same implementation commit returned 0 and ended
+`All tests passed`. The six fast gates returned the rc vector
+`0 0 0 0 0 0`. Self-test reported 6 of 6 and rc=0. Doctor inside the managed
+filesystem sandbox failed only the audit-directory writability check; outside
+that restriction it reported eight passes, four information items, and rc=0.
+The real VS Code extension host likewise cannot start Chromium inside the
+process sandbox; outside it, both registered commands preserved prior
+diagnostics on the unexpected envelope and all four host tests passed, rc=0.
+
+Final re-enumeration at the implementation commit reproduced 87 direct Python
+calls, 64 CLI bindings, seven REST routes, three MCP tools, two editor commands,
+and six browser decision functions. The 60 regulatory edges remain itemised as
+26 indications and 34 obligations, split Colorado 7, EU 34, and Korea 19. All
+enumerated totals reconciled against their itemisations.
+
+The protected blocker also reproduced at that commit. Running bare `regula`
+from the high-risk fixture directory returned rc=0 while reporting zero files
+scanned, a compliance score of 9/100, highest risk tier `not_ai`, and
+decision-like next steps. The route is `_run_bare_scan()` in the protected
+`scripts/cli.py` monolith. It has not been edited. B5 and C1 remain PARTIAL
+pending an explicit owner ruling permitting the narrow route change.
+
+Phase A remains PARTIAL because N93's Korean delegated thresholds and two EU
+model variants remain unresolved from primary text. Phase B's kernel and
+assurance are implemented, but B5 is not closed across the protected bare
+route. Phase C remains PARTIAL at that same route. G1 and G4 remain co-binding;
+G2 is closed for the three browser locale engines, G3 is closed for the
+measured adapters, and G5 remains open for external human validation and the
+standing wider surface debt. Every standing verdict remains unchanged.
