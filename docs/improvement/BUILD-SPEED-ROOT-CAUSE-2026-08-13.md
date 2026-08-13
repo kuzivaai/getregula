@@ -343,6 +343,41 @@ execution. This is a policy decision, not an optimisation silently made here.
 
 ## Final verification at the repaired implementation commit
 
-Pending the clean, one-command run. This section must contain the commit, tree,
-wall time, per-stage result, and any environment-bound qualification before this
-record is called complete.
+The final implementation/evidence commit is
+`d5b79a0eaa02198db3295723c7dc15f19cb70f67`, tree
+`c5431221df6203c5b261e44ca92fb0ff3a2200eb`. The working tree was clean before
+the run.
+
+The exact required command was executed as one `&&` chain outside the managed
+syscall/filesystem sandbox so the RFC 3161 localhost fixtures and doctor audit
+directory check could run:
+
+```text
+python3 tests/test_classification.py &&
+python3 -m pytest tests/ -q &&
+python3 -m scripts.cli self-test &&
+python3 -m scripts.cli doctor
+```
+
+It returned rc=0 in 1063.14 seconds (17 minutes 43.14 seconds), using 1027.42
+CPU-user seconds, 30.57 CPU-system seconds, and 264372 KiB maximum RSS.
+
+- custom runner: 1464 passed, zero failed, zero skipped across 1161 functions;
+- pytest: every canonical collected case passed in 731.19 seconds;
+- self-test: 6 of 6 passed;
+- doctor: 8 passed and 4 informational items.
+
+An immediately preceding full run had one failure because the new website
+currency record copied the canonical collected-count literal outside the
+manifest's governed carriers. That run reported 2780 passes and one failure.
+The record was changed to reference the canonical manifest without duplicating
+its value; the focused policy guard passed, and the final run above then passed
+every collected case. The failure is retained as evidence that the
+anti-staleness guard works.
+
+The earlier baseline evidence comprised approximately one hour for the custom
+runner plus 50 minutes 22 seconds for the non-timestamp pytest partition (and a
+separate 5.20-second timestamp partition). It was not an identical one-command
+measurement, so the approximately 6.2x end-to-end improvement against the
+17.72-minute final chain is directional, not a controlled benchmark. The
+controlled 15-test comparison remains the stronger causal measurement.

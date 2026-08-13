@@ -1900,3 +1900,90 @@ route. Phase C remains PARTIAL at that same route. G1 and G4 remain co-binding;
 G2 is closed for the three browser locale engines, G3 is closed for the
 measured adapters, and G5 remains open for external human validation and the
 standing wider surface debt. Every standing verdict remains unchanged.
+
+### N105. Protected bare route, verification speed, and deployed-site currency
+
+**First raised:** 2026-08-13. **Status:** PARTIAL. The protected bare route is
+closed for the measured surface and the one-command verification requirement
+is satisfied. The published website is demonstrably stale, regulatory inputs
+remain unresolved, and representative human validation remains outstanding.
+
+The owner explicitly authorised the narrow protected
+`scripts/cli.py::_run_bare_scan()` change while prohibiting a broad monolith
+refactor. A fail-before subprocess regression reproduced the legacy behavior:
+bare `regula` converted detector observations and an undeclared fact map into a
+compliance percentage, `not_ai` tier, and decision-like advice. The regression
+required the canonical `insufficient_information` result, actionable unresolved
+facts, and absence of the percentage and tier; it failed on the unchanged
+route.
+
+The narrow repair removes only the legacy gap-engine decision block from that
+entry point. Detector findings remain visible and are explicitly labelled as
+code-review observations rather than legal facts. With no declared facts the
+route now calls `empty_decision("eu", "cli:bare")` and the shared decision-text
+formatter. Its next steps no longer branch on a manufactured readiness score.
+The focused regression passed, and the new test is wired into both discovery
+systems. B5 and C1 are therefore CLOSED for every currently enumerated entry
+point; a newly discovered route outside the enumeration predicate would reopen
+them.
+
+The repaired implementation/evidence commit is
+`d5b79a0eaa02198db3295723c7dc15f19cb70f67`, tree
+`c5431221df6203c5b261e44ca92fb0ff3a2200eb`, clean before the final run. The
+exact required four-command chain returned rc=0 in 1,063.14 seconds. The custom
+runner reported 1,464 passes, zero failures, zero skips across 1,161 functions;
+pytest reported every canonical collected case passing in 731.19 seconds;
+self-test reported 6 of 6; doctor reported eight passes and four information
+items. This is the session's first captured one-command full-suite pass. The
+command ran
+outside the managed sandbox because the timestamp fixtures require a localhost
+RFC 3161 server and doctor requires the real audit-directory permission check.
+
+The comprehensive speed record is
+`docs/improvement/BUILD-SPEED-ROOT-CAUSE-2026-08-13.md`. The 15 slowest custom
+tests previously summed to 3,386.684 seconds because narrow document, evidence,
+hash, CLI-shape, and HTML assertions repeatedly scanned the whole repository.
+A prediction recorded before editing said that substituting the existing
+four-file real fixture, without mocks, skips, caches, timeout changes, or weaker
+assertions, would bring the group below 120 seconds. All 15 passed in 3.69
+seconds wall time, an approximate 917.8-fold reduction. The final required
+chain took 17 minutes 43.14 seconds. Against the earlier approximately one-hour
+custom run plus 50-minute non-timestamp partition this is directionally about
+6.2 times faster, but those were not identical one-command measurements and
+the controlled 15-test comparison is the stronger causal evidence.
+
+The dominant root cause was fixture amplification, not inherently slow legal
+logic. Secondary costs remain: intentional duplicate custom/pytest discovery,
+legitimate repository-scale security and self-analysis tests, sandbox-driven
+reruns, and shared-host load variance. Serial CI now prints its 50 slowest
+tests. A manual, non-gating Python 3.10-to-3.13 matrix compares the custom
+runner, serial pytest, and pytest-xdist `worksteal`; xdist has not been promoted
+to a gate because Git/worktree, port, timestamp-server, and process-global
+isolation are not yet demonstrated. No core dependency was added.
+
+The rendered website currency record is
+`docs/improvement/WEBSITE-CURRENCY-2026-08-13.md`. Real-browser and web-reader
+checks found all three deployed landing locales carrying the older 2,722/2.722
+build and legacy `not_ai` plus readiness output. More seriously, answering
+every live assessment question `Not sure` still produced a 91/100 questionnaire
+signal, readiness percentages, effort estimates, and candidate provisions.
+Runtime inspection found the older inline engine rather than the local shared
+decision adapter and UI. The public website is therefore NOT current.
+
+The local EN, DE, and PT-BR assessment pages returned the canonical
+insufficient-information result for unresolved facts. Browser checks also found
+and repaired two local WCAG-relevant defects: Escape now closes each of the six
+mobile navigation dialogs, synchronises `aria-expanded`, and returns focus;
+long German labels now reflow without horizontal overflow at 320 pixels. The
+shared assessment UI now focuses the rendered live-status result. Fresh checks
+passed at 320 and 375 CSS pixels. These mechanical results do not establish
+representative human usability, comprehension, reliance, or confidence.
+
+No push, deployment, release, publication, tag, external contact, real-data
+collection, or spend occurred. Publication requires separate owner authority
+and must deploy the exact verified artifact, then repeat the live locale,
+unknown-facts, focus, Escape, and reflow probes. Phase A remains PARTIAL at the
+Korean delegated thresholds and two EU model variants. G1 is closed across the
+enumerated routes, but G4 remains co-binding for wider legacy scorer debt and G5
+remains open for external human validation. The standing product, venture,
+pack, contact, data-collection, and pilot verdicts remain unchanged.
