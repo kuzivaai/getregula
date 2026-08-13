@@ -451,9 +451,20 @@ def test_regula_self_scan_clean():
     assert_eq(output.get("regula_version"), VERSION,
               "envelope came from a different Regula version than the tree "
               "under test")
-    findings = output.get("data")
+    payload = output.get("data")
+    assert_true(isinstance(payload, dict),
+                "envelope carries no decision payload, so the outcome checks "
+                "would be vacuous")
+    decision = payload.get("decision")
+    assert_true(isinstance(decision, dict),
+                "check payload carries no canonical decision")
+    assert_eq(decision.get("result_type"), "insufficient_information",
+              "detector observations without legal facts became a determination")
+    assert_true(bool(decision.get("unresolved_predicates")),
+                "an insufficient-information decision names no resolvable facts")
+    findings = payload.get("detector_findings")
     assert_true(isinstance(findings, list),
-                "envelope carries no findings list, so there is nothing to "
+                "envelope carries no detector-findings list, so there is nothing to "
                 "assert about and the outcome checks would be vacuous")
     assert_true(
         len(findings) > 0,
@@ -476,9 +487,9 @@ def test_regula_self_scan_clean():
 
     # OUTCOME: unchanged in meaning from the version this replaces.
     active = [f for f in findings if not f.get("suppressed")]
-    prohibited = [f for f in active if f.get("tier") == "prohibited"]
-    high_risk = [f for f in active if f.get("tier") == "high_risk"]
-    credentials = [f for f in active if f.get("tier") == "credential_exposure"]
+    prohibited = [f for f in active if f.get("detector_class") == "prohibited"]
+    high_risk = [f for f in active if f.get("detector_class") == "high_risk"]
+    credentials = [f for f in active if f.get("detector_class") == "credential_exposure"]
 
     # explain_articles.py describes prohibited practices by design, exclude it
     prohibited = [f for f in prohibited if "explain_articles" not in f.get("file", "")]

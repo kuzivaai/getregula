@@ -73,9 +73,38 @@ TIER_ORDER = {"prohibited": 4, "high_risk": 3, "limited_risk": 2,
 def _highest_tier(findings: list[dict]) -> str:
     if not findings:
         return "not_ai"
-    return max(findings,
-               key=lambda f: TIER_ORDER.get(f.get("tier", "not_ai"), 0)
-               ).get("tier", "not_ai")
+    winner = max(
+        findings,
+        key=lambda f: TIER_ORDER.get(
+            f.get("detector_class", f.get("tier", "not_ai")), 0
+        ),
+    )
+    return winner.get("detector_class", winner.get("tier", "not_ai"))
+
+
+def _extract_detector_findings(doc: object) -> list[dict]:
+    """Decode both the canonical check envelope and legacy list fixtures.
+
+    An unexpected object is an error. Treating it as an empty list would turn
+    an adapter schema change into a published zero-recall measurement.
+    """
+    if isinstance(doc, list):
+        return doc
+    if not isinstance(doc, dict):
+        raise RuntimeError("regula check output is neither an object nor a list")
+    payload = doc.get("data", doc)
+    if isinstance(payload, list):
+        return payload
+    if not isinstance(payload, dict):
+        raise RuntimeError("regula check data is neither an object nor a list")
+    for key in ("detector_findings", "findings"):
+        findings = payload.get(key)
+        if isinstance(findings, list):
+            return findings
+    raise RuntimeError(
+        "regula check data has no detector_findings list; refusing to publish "
+        "a zero-recall artefact from an unknown schema"
+    )
 
 
 def _run_cli(target: Path, domains: list[str] | None) -> dict[str, list[dict]]:
@@ -96,8 +125,7 @@ def _run_cli(target: Path, domains: list[str] | None) -> dict[str, list[dict]]:
             f"regula produced no output (rc={proc.returncode}): "
             f"{proc.stderr[:400]}")
     doc = json.loads(proc.stdout)
-    payload = doc.get("data", doc) if isinstance(doc, dict) else doc
-    findings = payload if isinstance(payload, list) else payload.get("findings", [])
+    findings = _extract_detector_findings(doc)
     by_file: dict[str, list[dict]] = defaultdict(list)
     for f in findings:
         by_file[Path(f.get("file", "")).name].append(f)

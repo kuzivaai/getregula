@@ -1758,3 +1758,89 @@ as passing or all green. Their only generator is `pytest --collect-only`, which
 cannot establish either claim. README, TRUST, and the full-text site mirror now
 label the figure as collected and identify full execution as a separate check.
 This is a G4 correction: agreement with a generated count is not validity.
+
+### N102. Final-suite schema migration failures and recall fail-open
+
+**First raised:** 2026-08-12 during the first full pytest run at clean commit
+`843d3b7ce94bffc13649bb7b6f343169a53be74f`, tree
+`3bd9a05fe62925d6652c1f0fb2268d4c1e613f7d`. **Status:** REPAIRED in the
+working tree; final-commit full-suite verification remains OPEN.
+
+**Demonstrated.** The custom runner at that exact commit returned 0 and ended
+`All tests passed`. The independent full pytest run returned 1 after 39 minutes
+42 seconds. Its summary reported nine failures, 2,760 passes, and eight setup
+errors. The eight errors were all the same sandbox boundary: the timestamp
+fixture could not bind its local RFC 3161 server to `127.0.0.1`. The identical
+timestamp module was then run outside the restricted network sandbox and
+reported 23 passes in 5.69 seconds with rc=0. This classifies the eight setup
+errors as harness-environment failures, not product passes inside the original
+run.
+
+Five failures still read `data` as the pre-kernel findings list or expected
+categorical `Verdict`, `NO AI DETECTED`, or `MINIMAL` text without resolved
+scope facts. Those expectations were rewritten, not deleted. They now assert
+the tagged `insufficient_information` result, named resolvable facts, absence
+of unsupported categorical output, and detector lifecycle behaviour under
+`data.detector_findings`. The self-scan control additionally proves that the
+canonical decision and detector list are both present before checking detector
+classes. Focused controls reported 11 passes, followed by the self-scan control
+reporting one pass.
+
+The SBOM smoke test timed out at the generic 60-second helper. An isolated
+whole-repository run reproduced the issue at 75.41 seconds and 100 percent CPU,
+rc=0. The test now scans a temporary project containing one pinned dependency
+and asserts parsed CycloneDX version and component content. It no longer uses a
+wall-clock pass condition against the size of the development worktree.
+
+The generated recall comparison exposed a separate fail-open defect. After the
+check envelope changed from a findings list to a decision payload, the producer
+looked only for `findings` and silently converted the unfamiliar schema to an
+empty list. A first regeneration therefore reported zero scanner recall in
+every condition. That artefact was rejected. The producer now reads canonical
+`detector_findings`, retains the legacy direct-classifier tier field, and raises
+on an unknown object instead of publishing a zero-recall measurement. Two
+regression controls cover the canonical envelope and the fail-closed unknown
+schema. Regeneration then reproduced all prior hit and miss itemisations, and
+the complete recall module reported 15 passes in 3.86 seconds with rc=0.
+
+The quarantine liveness predicate also found that three locale `0%` entries
+had moved from `paragraph-sourced` to `blanked-by-strip-noise`. Only those three
+measured cause fields were refreshed. No quarantine entry was added, removed,
+or used to make a gate pass.
+
+Two new unittest controls were initially pytest-only. The custom runner wiring
+rule caught that omission: its selection predicate remained unchanged. They
+are now explicitly bound under the runner-only alias prefix, leaving pytest
+collection single and moving the custom runner predicate by exactly two. The
+published runner count control failed before the guarded TRUST update and five
+related controls passed afterward. The collected-test figure was regenerated
+through `site_facts.py` and `cascade_count.py`; no count was propagated by hand.
+
+This row does not claim a final green suite. A clean commit, full unsandboxed
+pytest run, custom runner run, six fast gates, self-test, doctor, and final tree
+check remain required. N96's protected bare-CLI boundary also remains open.
+
+### N103. Count cascade missed an expected-collection command comment
+
+**First raised:** 2026-08-13 during whole-diff inspection. **Status:** CLOSED
+in the working tree; final gates pending.
+
+The governed TRUST surface carried the new canonical count in several places
+but still instructed readers to expect the previous collection result. The
+cascade reported clean because its explicit writer templates covered
+`Expected: N passed`, not `Expected: N collected`. A file could therefore
+satisfy and violate the same count claim at once. This reproduces the N78
+count-carrier class rather than introducing a new propagation mechanism.
+
+The explicit collected-result template was added to `COUNT_TEMPLATES`, and an
+existing markup-visibility control now also plants a stale expected-collection
+comment and requires the predicate to nominate it. The first cascade after the
+repair updated exactly one surface, TRUST. The focused control and all seven
+independent at-rest surface controls then reported eight passes. No global
+numeric replacement was used.
+
+The first control draft used the live canonical value as its replacement
+fixture. The count-carrier guard rejected that draft, naming
+`tests/test_cascade_count.py`; the expanded batch reported one failure and 133
+passes. The fixture now uses historical arbitrary values, so it tests the
+predicate without creating a carrier for the current count.

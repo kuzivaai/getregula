@@ -150,6 +150,10 @@ class TestCountsAreSeenInsidePublishedMarkup(unittest.TestCase):
             cc._stale_values(text, 2612), {2354},
             "a count separated from its unit word by inline markup was not "
             "seen; this is how site/index.html published 2,354 for 3 days")
+        self.assertEqual(
+            cc._stale_values("# Expected: 2354 collected", 2622), {2354},
+            "a reproduction command's stale expected collection count was "
+            "hidden by a current count elsewhere in the same file")
 
     def test_dot_grouped_count_is_detected(self):
         """de-DE and pt-BR group thousands with a full stop."""
