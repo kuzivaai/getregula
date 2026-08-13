@@ -1,3 +1,4 @@
+// regula-ignore: * -- questionnaire mapping data names regulated practices but does not implement them
 // Shared questionnaire-to-fact adapter. Presentation strings remain in locale pages.
 (function (root, factory) {
   const api = factory(root.RegulaDecisionModel, root.RegulaDecisionKernel);
