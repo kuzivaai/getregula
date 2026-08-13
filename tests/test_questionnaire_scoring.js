@@ -24,6 +24,12 @@ function equal(actual, expected, message) {
   check(actual === expected, `${message}: expected ${expected}, got ${actual}`);
 }
 
+for (const generatedDataFile of ["decision-model.js", "decision-adapters.js"]) {
+  const source = fs.readFileSync(path.join(root, "site", "assess", generatedDataFile), "utf8");
+  check(source.startsWith("// regula-ignore: * -- "),
+    `${generatedDataFile} carries a reasoned self-scan suppression`);
+}
+
 function obligationIds(result) {
   return new Set((result.obligations || []).map(item => item.obligation_id));
 }
