@@ -115,6 +115,8 @@ def test_mcp_regula_gap_blocked_path_refused():
 
     Regression guard: the gap tool previously applied none of the path
     validation, so the weakest tool set the real security boundary.
+    Strengthened 2026-08-14: the refusal must also carry isError, because a
+    refusal presented as a successful result is ledger finding N82's class.
     """
     resp = handle_request({
         "jsonrpc": "2.0", "id": 8, "method": "tools/call",
@@ -123,6 +125,105 @@ def test_mcp_regula_gap_blocked_path_refused():
     assert_true("result" in resp, "refusal is a tool result, not a protocol error")
     text = resp["result"]["content"][0]["text"]
     assert_in("not permitted", text, "blocked path is refused")
+    assert_true(resp["result"].get("isError") is True,
+                "refusal is flagged as a tool error, not presented as success")
+
+
+# ── Tool-level error semantics (N82 class closure, 2026-08-14) ─────
+#
+# Every string-returning error path in the three tool functions must surface
+# as an MCP tool-result error (isError: true), never as an ordinary success.
+# One test per string-return site in scripts/mcp_server.py, plus a control
+# proving success results carry no error flag.
+
+def test_mcp_nonexistent_path_is_tool_error():
+    """regula_check on a path that does not exist is a flagged tool error."""
+    resp = handle_request({
+        "jsonrpc": "2.0", "id": 20, "method": "tools/call",
+        "params": {"name": "regula_check",
+                   "arguments": {"path": "/nonexistent/definitely/not/here"}},
+    })
+    result = resp["result"]
+    assert_in("does not exist", result["content"][0]["text"], "error names the cause")
+    assert_true(result.get("isError") is True, "missing path is a flagged tool error")
+    assert_true("structuredContent" not in result,
+                "an error result carries no structured success payload")
+
+
+def test_mcp_blocked_path_is_tool_error():
+    """regula_check on a denylisted path is a flagged tool error."""
+    resp = handle_request({
+        "jsonrpc": "2.0", "id": 21, "method": "tools/call",
+        "params": {"name": "regula_check", "arguments": {"path": "/etc"}},
+    })
+    result = resp["result"]
+    assert_in("not permitted", result["content"][0]["text"], "refusal names the cause")
+    assert_true(result.get("isError") is True, "blocked path is a flagged tool error")
+
+
+def test_mcp_classify_empty_input_is_tool_error():
+    """regula_classify with an empty input is a flagged tool error."""
+    resp = handle_request({
+        "jsonrpc": "2.0", "id": 22, "method": "tools/call",
+        "params": {"name": "regula_classify", "arguments": {"input": ""}},
+    })
+    result = resp["result"]
+    assert_in("required", result["content"][0]["text"], "error names the missing argument")
+    assert_true(result.get("isError") is True, "missing input is a flagged tool error")
+
+
+def test_mcp_scan_exception_is_tool_error():
+    """A scanner failure inside regula_check is a flagged tool error.
+
+    The tool function catches the exception and returns an error string;
+    before 2026-08-14 that string presented as a successful scan result.
+    """
+    from unittest.mock import patch
+
+    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_prohibited")
+    with patch("report.scan_files", side_effect=RuntimeError("planted scan failure")):
+        resp = handle_request({
+            "jsonrpc": "2.0", "id": 23, "method": "tools/call",
+            "params": {"name": "regula_check", "arguments": {"path": fixture_path}},
+        })
+    result = resp["result"]
+    assert_in("Error scanning", result["content"][0]["text"], "error names the operation")
+    assert_in("planted scan failure", result["content"][0]["text"], "error carries the cause")
+    assert_true(result.get("isError") is True, "scan failure is a flagged tool error")
+
+
+def test_mcp_gap_exception_is_tool_error():
+    """An assessment failure inside regula_gap is a flagged tool error."""
+    from unittest.mock import patch
+
+    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_high_risk")
+    with patch("compliance_check.assess_compliance",
+               side_effect=RuntimeError("planted gap failure")):
+        resp = handle_request({
+            "jsonrpc": "2.0", "id": 24, "method": "tools/call",
+            "params": {"name": "regula_gap", "arguments": {"path": fixture_path}},
+        })
+    result = resp["result"]
+    assert_in("Error running gap assessment", result["content"][0]["text"],
+              "error names the operation")
+    assert_true(result.get("isError") is True, "gap failure is a flagged tool error")
+
+
+def test_mcp_success_results_carry_no_error_flag():
+    """The control in the other direction: a successful call is not flagged.
+
+    Without this, an implementation that flags every result would pass the
+    error-path tests while breaking every success, which is the vacuity
+    shape measurement rule 4 exists to catch.
+    """
+    resp = handle_request({
+        "jsonrpc": "2.0", "id": 25, "method": "tools/call",
+        "params": {"name": "regula_classify",
+                   "arguments": {"input": "social scoring system"}},
+    })
+    result = resp["result"]
+    assert_true("structuredContent" in result, "success carries the structured payload")
+    assert_true("isError" not in result, "success is not flagged as an error")
 
 
 # ── Unknown Method ─────────────────────────────────────────────────
@@ -162,6 +263,12 @@ if __name__ == "__main__":
         test_mcp_regula_gap_blocked_path_refused,
         test_mcp_unknown_method,
         test_mcp_unknown_tool,
+        test_mcp_nonexistent_path_is_tool_error,
+        test_mcp_blocked_path_is_tool_error,
+        test_mcp_classify_empty_input_is_tool_error,
+        test_mcp_scan_exception_is_tool_error,
+        test_mcp_gap_exception_is_tool_error,
+        test_mcp_success_results_carry_no_error_flag,
     ]
     print("MCP Server Protocol Tests")
     print("=" * 40)
