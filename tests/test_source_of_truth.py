@@ -309,6 +309,21 @@ def test_current_version_declared_consistently_everywhere():
         assert m, f"{rel_path}: current-version declaration not found ({pattern})"
         if m.group(1) != VERSION:
             offenders.append(f"{rel_path}: declares {m.group(1)}")
+    # server.json (the official MCP registry manifest, added 2026-08-14)
+    # declares the current version twice: at the top level and inside each
+    # package entry. Both must track the PyPI release the manifest points
+    # at, or a registry publish would advertise a version PyPI does not
+    # serve. Parsed as JSON rather than regexed because the file has two
+    # "version" keys and a first-match regex would silently check only one.
+    server_manifest = json.loads(
+        (root / "server.json").read_text(encoding="utf-8"))
+    if server_manifest["version"] != VERSION:
+        offenders.append(f"server.json: declares {server_manifest['version']}")
+    for pkg in server_manifest.get("packages", []):
+        if pkg.get("version") != VERSION:
+            offenders.append(
+                f"server.json packages[{pkg.get('identifier')}]: "
+                f"declares {pkg.get('version')}")
     assert not offenders, (
         f"current-version declarations drifted from constants.VERSION "
         f"({VERSION}): {offenders}"

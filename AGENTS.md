@@ -27,7 +27,7 @@ python3 tests/test_classification.py && python3 -m pytest tests/ -q && python3 -
 - After code changes: run the verify command (all 4 steps)
 - After writing tests: wire into `test_classification.py` via alias import + globals binding
 - After regulatory content: verify claims against primary legislation before committing
-- Before releases: update version in all 9 files (constants.py, pyproject.toml, CITATION.cff, CLAUDE.md, annex_iv_template.md, index.html, de.html, pt-br.html, uae.html)
+- Before releases: bump `scripts/constants.py:VERSION` and every current-version declaration. The enforced set is enumerated by `tests/test_source_of_truth.py` (CITATION.cff, mcp-server.json, server.json, site/llms.txt, references/annex_iv_template.md, docs/MODEL_CARD.md, plus schema.org softwareVersion on the site pages) and fails on drift; CLAUDE.md's version line is manual. pyproject.toml is dynamic and must NOT carry a literal version (same test enforces this).
 - After site changes: confirm DE and PT-BR locales updated
 
 ## Architecture

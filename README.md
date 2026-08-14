@@ -1,13 +1,13 @@
 <!-- mcp-name: io.github.kuzivaai/regula -->
 # Regula
 
-**Find AI governance risks that may be visible in source code. Covers the EU AI Act, South Korea AI Basic Act, and Colorado SB 26-189, with questionnaires for context that code cannot show.**
+**Offline-capable, code-native AI governance scanning. The core scan runs locally, does not upload scanned file contents, and needs no account; telemetry is sent only with explicit opt-in consent. Regula flags patterns that may need review under the EU AI Act, South Korea's AI Basic Act, and Colorado SB 26-189, records the deployment facts code cannot show, and reports insufficient information rather than inventing a score.**
 
 [![PyPI](https://img.shields.io/pypi/v/regula-ai)](https://pypi.org/project/regula-ai/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2781%20collected-blue.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2787%20collected-blue.svg)](#verified-numbers)
 [![Accessibility target: WCAG 2.2 AA](https://img.shields.io/badge/accessibility%20target-WCAG%202.2%20AA-blue.svg)](docs/accessibility/README.md)
 
 ---
@@ -275,7 +275,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 419 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 13 |
-| Tests (pytest --collect-only) | 2,781 |
+| Tests (pytest --collect-only) | 2,787 |
 | Required production dependencies | 0 |
 
 For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md). What version numbers promise, the public API they cover, and the deprecation policy: [`docs/VERSIONING.md`](docs/VERSIONING.md).

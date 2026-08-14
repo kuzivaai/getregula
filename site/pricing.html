@@ -199,6 +199,39 @@
             border: 1px solid rgba(59,130,246,0.3);
         }
 
+        .pricing-card .interest-btn {
+            display: block;
+            width: 100%;
+            min-height: 44px;
+            margin-top: var(--s3);
+            padding: 10px var(--s4);
+            background: transparent;
+            color: var(--text-dim);
+            border: 1px dashed var(--border-strong);
+            border-radius: 8px;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .pricing-card .interest-btn:hover {
+            color: var(--text-2);
+            border-color: var(--accent);
+        }
+        .pricing-card .interest-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+        .pricing-card .interest-btn[disabled] {
+            cursor: default;
+            opacity: 0.7;
+        }
+        .pricing-card .interest-note {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: var(--s2);
+            min-height: 1em;
+        }
+
         .pricing-card code {
             font-family: var(--font-mono);
             font-size: 12px;
@@ -375,6 +408,8 @@
             <li>Clear referral boundary for qualified legal advice</li>
         </ul>
         <span class="cta-btn coming" aria-disabled="true">Payment gate not active</span>
+        <button type="button" class="interest-btn" data-plan="consultant-review">Register anonymous interest</button>
+        <p class="interest-note" role="status">One click adds one anonymous count. No personal data is collected.</p>
     </div>
 
     <!-- Professional tier -->
@@ -390,6 +425,8 @@
             <li>Re-scan and review cadence design</li>
         </ul>
         <span class="cta-btn coming" aria-disabled="true">Scoping not yet open</span>
+        <button type="button" class="interest-btn" data-plan="organisation-review">Register anonymous interest</button>
+        <p class="interest-note" role="status">One click adds one anonymous count. No personal data is collected.</p>
     </div>
 
 </div>
@@ -481,6 +518,29 @@
         document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
     }
     window.addEventListener('scroll', updateNav, { passive: true });
+
+    // Anonymous paid-interest counter. Sends only an event name and a plan
+    // label; no cookies, no identifiers, no personal data. Measured
+    // separately from assessment completion, as the commercial gate record
+    // requires (docs/commercial/PAID-CONSULTANT-GATE-2026-08-13.md, P1).
+    document.querySelectorAll('.interest-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            if (window.plausible) plausible('Paid Interest', { props: { plan: btn.getAttribute('data-plan') } });
+            btn.disabled = true;
+            var note = btn.nextElementSibling;
+            if (note) note.textContent = 'Thank you. Recorded as one anonymous count.';
+        });
+    });
+
+    // FAQ engagement, counted only when a question is opened.
+    document.querySelectorAll('.pricing-faq details').forEach(function (d) {
+        d.addEventListener('toggle', function () {
+            if (d.open && window.plausible) {
+                var q = d.querySelector('summary');
+                plausible('Pricing FAQ Open', { props: { question: q ? q.textContent.trim().slice(0, 60) : '' } });
+            }
+        });
+    });
 </script>
 
 </body>
