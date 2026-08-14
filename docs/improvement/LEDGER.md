@@ -2228,3 +2228,152 @@ anchored on the verb so `442 defined in-file` on the same line is untouched.
 
 The standing product, venture, contact, data-collection and pilot verdicts are
 unchanged. Nothing here is evidence of demand, usability or comprehension.
+
+### N109. A tracked metrics artefact recorded cumulative totals as weekly ones
+
+**First raised:** 2026-08-14. **Status:** IMPLEMENTED. Held on
+`feat/engagement-fixes`; nothing is on main.
+
+`data/metrics/pypi_weekly.json` recorded, every Monday from 2026-04-20 to
+2026-08-10, a whole-period cumulative download total under
+`"period": "last_7_days"`. The label was a string constant in
+`.github/workflows/weekly-metrics.yaml`; nothing derived it from the payload,
+and the value came from an aggregate endpoint whose window is implicit and is
+roughly 180 days, not seven.
+
+Measured on 2026-08-14 against the pypistats daily series for `regula-ai`, the
+final row overstates the quantity its label names:
+
+| Quantity, w/e 2026-08-10 row | Recorded | Actual 7-day | Overstatement |
+|---|---|---|---|
+| `with_mirrors` | 7,259 | 208 | 34.9x |
+| `without_mirrors` | 2,211 | 25 | 88.4x |
+
+The recorded values are not junk: they are accurate all-time totals. Running
+the corrected collector on 2026-08-14 returns `all_time_to_date` of 7,395 and
+2,222, which brackets the 10 August row exactly as a cumulative series should.
+**Only the label was ever wrong**, which is why four months of collection
+produced a "weekly" series that never once decreased.
+
+**Detection.** Not by a gate. The figure was quoted into a session's working
+notes as "1,282-2,177/wk without mirrors" and was caught only when it was
+re-derived from the live API during an unrelated review, per measurement rule
+3: a number in prose is not evidence, including one this programme wrote
+itself. Nothing under `data/metrics/` had any test at all. It reached no
+published surface, which is luck rather than design.
+
+**Fix, at the root.** The collector now fetches the dated daily series and
+computes the window itself, anchored on the data's own latest complete day
+rather than on `today`, and writes `window_start`, `window_end` and a separate
+`all_time_to_date` into every row so a reader can re-derive the figure. The
+`mirrors=true` parameter is gone: the bare endpoint returns both categories,
+and passing it filtered the artefact to one. All three series are summed over
+the same window so `by_system` and `by_python` describe the same week as
+`downloads`.
+
+Historical rows are relabelled to `all_time_to_collection_date` with
+`period_label_corrected` and a note. **Values are untouched.** Rewriting them
+would destroy the only record of what was collected; the defect was the label,
+so the label is what changes. Three rows (2026-05-11, 2026-06-01, 2026-06-29)
+carry empty `downloads` from silent collection failures and keep them.
+
+**Guard:** `tests/test_metrics_artefacts.py`, seven checks. A windowed row must
+carry a window of the width its label claims; a windowed total may not exceed
+the all-time total it is drawn from; and a windowed series may not be
+monotonically non-decreasing across its whole length, which is the defect's own
+fingerprint and catches cumulative data even under a plausible new label. Two
+further checks guard the source, because fixing the output alone would not have
+caught the original: the workflow may not contain a constant
+`"period": "last_7_days"` in executable code, and must still record the window
+boundaries.
+
+Controls fired and restored on 2026-08-14: reintroducing the constant into the
+workflow and restoring the original row labels failed exactly three guards
+(`test_period_is_not_a_bare_last_7_days_constant`,
+`test_windowed_rows_carry_a_window_of_the_width_they_claim`,
+`test_windowed_series_is_not_cumulative`), and both files were restored from
+backup and re-verified green. The first draft of the source guard failed
+against the workflow's own comment describing the defect; it now strips comment
+lines, so the fix documents itself without tripping its own check.
+
+Count cascade from 2,814, and runner functions from 1,182, to the current
+canonical values. **The new values are deliberately not written here as
+literals.** This file is inside the corpus
+`test_count_literal_appears_nowhere_outside_the_manifest` measures, so quoting
+the current count in it *creates* the violation, exactly as the `--diff-base`
+note at the top of this ledger warns about self-reference. Re-derive with
+`python3 scripts/cascade_count.py --check`, whose source is
+`data/site_facts.json`.
+
+**Two corrections to this entry's own first draft, both caught by review rather
+than by me.** They are recorded rather than silently edited, because the entry
+is about a label that nobody checked.
+
+1. *"The custom runner's function count is unchanged"* was true of the first
+   draft and false once the file was wired in. `.claude/rules/tests.md:9`
+   requires every new test file to be bound into `tests/test_classification.py`;
+   the first draft was not, so its checks ran under pytest only and were
+   invisible to the runner whose function count `docs/TRUST.md` publishes. Now
+   bound, all 13 methods, verified `1464 passed, 0 failed (1195 test
+   functions)`.
+2. *Three of the seven original guards passed vacuously.* `_windowed_rows()`
+   selects rows whose period starts with `last_`, and every committed row is
+   now `all_time_to_collection_date`, so the selector returned **0 rows** and
+   three checks iterated an empty list. The control run exercised them, so the
+   logic was sound, but measurement rule 4 is explicit that a blank gate is not
+   a green gate: they would not have bitten again until the collector wrote its
+   first windowed row. The three checks are now pure predicates
+   (`window_width_violations`, `exceeds_all_time_violations`,
+   `cumulative_series_violations`) exercised against constructed rows by
+   `TestWindowChecksDetectPlantedDefects`, which fires on every run. One of
+   those cases replays the artefact's real mislabelled series
+   (1132, 1282, 1407, 1920, 2177) and fails if the predicate ever stops
+   detecting it. A short-series case guards the opposite error: two rising
+   points must not be called cumulative.
+
+Direct binding into the runner calls a TestCase method **without** invoking
+`setUp`, so `TestPypiWeeklyArtefact.setUp` was removed and each method loads the
+artefact through `artefact_rows()`. The binding loop asserts
+`"setUp" not in cls.__dict__` so a future setUp fails loudly rather than being
+skipped in silence. `hasattr` would not do: `unittest.TestCase` always supplies
+a default.
+
+**Latent gap found while cascading, not fixed, recorded so it is not
+rediscovered.** At 2,821 the cascade made
+`test_count_literal_appears_nowhere_outside_the_manifest` fail against eight
+files. The cause is a genuine collision, and a pointed one: **2,821 is itself a
+figure from this programme's history** (`.claude/rules/measurement.md:39`
+cites it as the count that "survived across nine published surfaces while being
+overstated by 18.5%"). Six of the eight are living internal records
+(`measurement.md`, `CHANGELOG.md`, `BASELINE.md`, `LEDGER.md`, `PROGRAMME.md`,
+`STATE.md`) which mention that historical 2,821, not the current count. None of
+the three remedies the failure offers fits them: `count_record_policy.py:97`
+requires a dated-evidence path to contain its own `recorded_at`, so a living
+document cannot be classified; they are not current carriers; and the literal
+cannot be removed without falsifying a historical record. The failure cleared
+only because the count moved when the guards above were added. **It was not
+resolved, and it will recur** whenever the canonical count lands on a figure
+quoted anywhere in the programme's own history. The durable fix is for the
+policy to express "historical mention inside a living record", which is a
+change to a guard this entry did not touch.
+
+**The same guard then caught this entry twice more, which is the strongest
+argument for it.** The first draft of the paragraph above wrote the new
+canonical count into this file as a literal, and the full suite failed with
+`LEDGER.md` as the sole violation. An isolated run of the guard had passed
+minutes earlier, *before* that sentence was written: a narrower run is not
+evidence about a corpus the run itself is inside. Both figures are now stated
+as the command that derives them.
+
+**This corrects a measurement, not a market.** Regula's real adoption is
+lower than the artefact implied, not higher. The standing product, venture,
+contact, data-collection and pilot verdicts are unchanged.
+
+**Found while cascading N109, and fixed in the same commit:** the test-file
+count in `docs/architecture.md:53` read `110 test files` when
+`git ls-files tests/ | grep -c '^tests/test_.*\.py$'` returned **112**
+(111 before this session's file). That quantity is **not in the cascade
+manifest**, so unlike the collected count it drifts silently on every test
+file added. It is corrected to 112 here rather than left, but the underlying
+gap stands: `cascade_count.py` carries two quantities and this is a third that
+nothing enforces. Recorded so the next drift is not rediscovered from scratch.

@@ -56,6 +56,7 @@ import test_recall_artefact as _test_recall_artefact  # noqa: F401
 import test_bare_scan_decision as _test_bare_scan_decision  # noqa: F401
 import test_content_freshness as _test_content_freshness  # noqa: F401
 import test_documented_transcripts as _test_documented_transcripts  # noqa: F401
+import test_metrics_artefacts as _test_metrics_artefacts  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -102,6 +103,28 @@ _recall_unknown_case = (
 globals()[RUNNER_ALIAS_PREFIX + "recall_unknown_check_envelope"] = (
     _recall_unknown_case.test_unexpected_check_envelope_cannot_become_zero_recall
 )
+
+# N109's metrics guards are unittest methods, so the generic alias loop cannot
+# see them either. None of these classes defines setUp: binding a method here
+# calls it directly and would skip setUp entirely, which is why
+# test_metrics_artefacts loads the artefact per-method via artefact_rows().
+for _metrics_cls in (
+    _test_metrics_artefacts.TestPypiWeeklyArtefact,
+    _test_metrics_artefacts.TestWindowChecksDetectPlantedDefects,
+    _test_metrics_artefacts.TestCollectorDoesNotHardcodeThePeriod,
+):
+    # `hasattr` is useless here: unittest.TestCase always supplies a default
+    # setUp. Only a setUp defined on the class itself would be skipped.
+    assert "setUp" not in _metrics_cls.__dict__, (
+        f"{_metrics_cls.__name__} grew a setUp; direct binding would skip it"
+    )
+    for _metrics_name in _inspect.getmembers(_metrics_cls, _inspect.isfunction):
+        if not _metrics_name[0].startswith("test_"):
+            continue
+        globals()[RUNNER_ALIAS_PREFIX + "metrics_" + _metrics_name[0][5:]] = (
+            getattr(_metrics_cls(_metrics_name[0]), _metrics_name[0])
+        )
+del _metrics_cls, _metrics_name
 
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
 

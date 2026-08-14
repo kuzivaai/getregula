@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-14T17:33:06.922670+00:00",
+  "generated_at": "2026-08-14T19:59:58.917198+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,7 +27,7 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2814,
+      "total_collected": 2827,
       "total_functions": 2036,
       "per_file": {
         "tests/test_agent_governance.py": 28,
@@ -97,6 +97,7 @@
         "tests/test_manifest_timestamp.py": 23,
         "tests/test_mcp_server.py": 14,
         "tests/test_merge_blockers.py": 17,
+        "tests/test_metrics_artefacts.py": 0,
         "tests/test_monitor.py": 24,
         "tests/test_multi_jurisdiction.py": 35,
         "tests/test_new_commands.py": 14,
@@ -142,7 +143,7 @@
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1182
+      "runner_functions": 1195
     }
   },
   "notes": {

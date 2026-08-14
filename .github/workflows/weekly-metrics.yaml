@@ -20,9 +20,9 @@ jobs:
 
       - name: Collect PyPI download stats
         run: |
-          pip install -q pypistats
           python3 - <<'PYEOF'
-          import json, subprocess, sys
+          import json, urllib.request
+          from collections import defaultdict
           from datetime import date, timedelta
           from pathlib import Path
 
@@ -30,41 +30,89 @@ jobs:
           metrics_dir = Path("data/metrics")
           metrics_dir.mkdir(parents=True, exist_ok=True)
 
-          # Collect stats via pypistats CLI (JSON output)
-          def run_pypistats(subcmd, *args):
-              cmd = ["pypistats", subcmd, "regula-ai", "-j"] + list(args)
+          # Fetch the DATED DAILY series and compute the window here.
+          #
+          # Do not use an aggregate endpoint or the pypistats CLI's summary
+          # output for a windowed figure. Those return a total over whatever
+          # period the service happens to serve (~180 days), with no window in
+          # the payload. Writing such a total under a hard-coded
+          # "period": "last_7_days" is what produced the defect corrected on
+          # 2026-08-14: every row from 2026-04-20 to 2026-08-10 recorded a
+          # whole-period cumulative total labelled as a weekly one, overstating
+          # weekly downloads by ~35x (with mirrors) and ~88x (without).
+          # See docs/improvement/LEDGER.md N109.
+          #
+          # The window below is derived from the data's own date fields and the
+          # boundaries are written into the artefact so any reader can re-derive
+          # the figure. Never reintroduce a period label that is a constant.
+          def fetch(path):
+              url = f"https://pypistats.org/api/packages/regula-ai/{path}"
               try:
-                  r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-                  return json.loads(r.stdout) if r.returncode == 0 else None
+                  req = urllib.request.Request(url, headers={"User-Agent": "regula-metrics"})
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      return json.loads(r.read().decode())
               except Exception:
                   return None
 
-          overall = run_pypistats("overall")
-          by_system = run_pypistats("system")
-          by_python = run_pypistats("python_minor")
+          WINDOW_DAYS = 7
 
-          # Extract meaningful numbers
+          def last_complete_day(payload):
+              """pypistats publishes complete days only, so anchor the window on
+              the data's own latest date rather than on today's date."""
+              if not payload or not payload.get("data"):
+                  return None
+              dates = sorted({r["date"] for r in payload["data"] if r.get("date")})
+              return date.fromisoformat(dates[-1]) if dates else None
+
+          def window_sum(payload, start, end):
+              """Sum downloads per category over [start, end], plus all-time.
+
+              Every series is summed over the SAME window, passed in explicitly,
+              so by_system and by_python describe the same week as downloads.
+              A category may legitimately be absent: pypistats reports "null"
+              for counts it does not break out, and those are not attributed.
+              """
+              win, allt = defaultdict(int), defaultdict(int)
+              if not payload or not payload.get("data"):
+                  return {}, {}
+              for r in payload["data"]:
+                  cat = r.get("category")
+                  if cat in (None, "null"):
+                      continue
+                  allt[cat] += r["downloads"]
+                  if r.get("date") and start <= date.fromisoformat(r["date"]) <= end:
+                      win[cat] += r["downloads"]
+              return dict(win), dict(allt)
+
+          # No mirrors= param: the bare endpoint returns BOTH the with_mirrors
+          # and without_mirrors categories. Passing mirrors=true filters to one.
+          overall = fetch("overall")
+          by_system = fetch("system")
+          by_python = fetch("python_minor")
+
+          win_end = last_complete_day(overall)
+          win_start = win_end - timedelta(days=WINDOW_DAYS - 1) if win_end else None
+
+          if win_end:
+              dl, dl_all = window_sum(overall, win_start, win_end)
+              sys_win, _ = window_sum(by_system, win_start, win_end)
+              py_win, _ = window_sum(by_python, win_start, win_end)
+          else:
+              dl, dl_all, sys_win, py_win = {}, {}, {}, {}
+
           snapshot = {
               "date": today.isoformat(),
-              "period": "last_7_days",
-              "downloads": {},
-              "by_system": {},
-              "by_python": {},
+              "period": f"last_{WINDOW_DAYS}_complete_days",
+              "window_start": win_start.isoformat() if win_start else None,
+              "window_end": win_end.isoformat() if win_end else None,
+              "downloads": dl,
+              "all_time_to_date": dl_all,
+              "by_system": sys_win,
+              "by_python": py_win,
           }
 
-          if overall and "data" in overall:
-              for row in overall["data"]:
-                  snapshot["downloads"][row["category"]] = row["downloads"]
-
-          if by_system and "data" in by_system:
-              for row in by_system["data"]:
-                  if row["category"] != "null":
-                      snapshot["by_system"][row["category"]] = row["downloads"]
-
-          if by_python and "data" in by_python:
-              for row in by_python["data"]:
-                  if row["category"] != "null":
-                      snapshot["by_python"][row["category"]] = row["downloads"]
+          if win_end is None:
+              snapshot["collection_error"] = "pypistats unavailable; no window derived"
 
           # Append to rolling log
           log_file = metrics_dir / "pypi_weekly.json"
