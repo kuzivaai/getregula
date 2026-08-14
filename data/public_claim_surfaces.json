@@ -176,7 +176,7 @@
       "content_kind": "action-metadata-descriptor",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "description: Scan code for EU AI Act risk patterns. 419 patterns, 8 languages. The Regula core does not upload scanned file contents; repository handling by the workflow runner depends on your GitHub configuration."
+      "reason": "description: Scan code for EU AI Act risk indicators in CI. Runs in your workflow; the Regula core does not upload scanned file contents."
     },
     {
       "stable_id": "action:4448114d60503d35",
