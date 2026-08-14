@@ -1,0 +1,108 @@
+{
+  "_what_this_is": "The transcripts this project publishes that are bound to a tracked fixture, and can therefore be reproduced by running the command the page documents. scripts/verify_transcripts.py runs each command and requires every anchor to appear both on the page and in the real output.",
+  "_why": "Measured 2026-08-14 against a pristine checkout: nine tracked surfaces published a `Verdict:` line as CLI output while no command emitted `Verdict:` at all, two guides published `Overall score: NN%` from a formatter no CLI path reaches, and several pages wrote a detector priority as `confidence: NN%`, wording the tool no longer emits.",
+  "_not_covered": "Transcripts that illustrate a hypothetical project (site/guides/article-9-risk-management.html uses /home/dev/myproject, eu-ai-act-healthcare.html uses sample_medical.py, blog-risk-tiers-in-code.html uses hiring.py) cannot be reproduced by running anything, so they are out of scope here BY DESIGN, not by oversight. They are covered instead by tests/test_documented_transcripts.py::test_no_published_surface_shows_a_retired_output_marker, which proves the marker is retired by running the CLI rather than by asserting it.",
+  "_anchor_choice": "Anchors avoid the `Regula Scan:` header, which prints an absolute path that differs per checkout, and avoid `Model:`, which carries a decision-model date that moves independently. Values were confirmed by running the command 9 times across three separate checkouts of the same commit (the working tree, a worktree under /home, and one under /tmp), all agreeing on [WARN] [ 63]. That cross-location repetition exists because a single worktree once returned [INFO] [ 43] three times and that reading has never reproduced since; see the module docstring.",
+  "transcripts": [
+    {
+      "surface": "examples/cv-screening-app/README.md",
+      "command": [
+        "check",
+        "examples/cv-screening-app",
+        "--scope",
+        "all"
+      ],
+      "anchors": [
+        "Decision: insufficient_information",
+        "Detector observations (not legal facts):",
+        "High-risk:          1",
+        "WARN tier:          1",
+        "[WARN] [ 63] app.py \u2014 Employment and workers management [plan]"
+      ]
+    },
+    {
+      "surface": "examples/cv-screening-app/README.md",
+      "command": [
+        "gap",
+        "--project",
+        "examples/cv-screening-app"
+      ],
+      "anchors": [
+        "Article observations emitted: 0; held pending applicability: 8",
+        "Article evidence is attached only where the decision kernel resolved the corresponding obligation."
+      ]
+    },
+    {
+      "surface": "examples/customer-chatbot/README.md",
+      "command": [
+        "check",
+        "examples/customer-chatbot",
+        "--scope",
+        "all"
+      ],
+      "anchors": [
+        "Detector summary: ARTICLE 50 PATTERNS",
+        "Limited-risk:       1",
+        "INFO tier:          2",
+        "[INFO] [ 20] app.py:29 \u2014 Chatbots and conversational AI [develop]",
+        "Chatbots and conversational AI (detector priority: 20)"
+      ]
+    },
+    {
+      "surface": "examples/code-completion-tool/README.md",
+      "command": [
+        "check",
+        "examples/code-completion-tool"
+      ],
+      "anchors": [
+        "High-risk:          0",
+        "Limited-risk:       0",
+        "BLOCK tier:         0",
+        "INFO tier:          0"
+      ]
+    },
+    {
+      "surface": "site/sample-report.html",
+      "command": [
+        "check",
+        "examples/cv-screening-app",
+        "--scope",
+        "all"
+      ],
+      "anchors": [
+        "Decision: insufficient_information",
+        "Detector summary: ANNEX III OR SECURITY PATTERNS",
+        "WARN tier:          1",
+        "[WARN] [ 63] app.py \u2014 Employment and workers management [plan]"
+      ]
+    },
+    {
+      "surface": "site/guides/eu-ai-act-recruitment-hiring.html",
+      "command": [
+        "check",
+        "examples/cv-screening-app",
+        "--scope",
+        "all",
+        "--domain",
+        "employment"
+      ],
+      "anchors": [
+        "Decision: insufficient_information",
+        "Resolve the facts listed above before attaching Article 9 to 15 duties.",
+        "WARN tier:          1",
+        "[WARN] [ 63] app.py \u2014 Employment and workers management [plan]"
+      ]
+    },
+    {
+      "surface": "site/guides/eu-ai-act-recruitment-hiring.html",
+      "command": [
+        "gap",
+        "--project",
+        "examples/cv-screening-app"
+      ],
+      "anchors": [
+        "Article observations emitted: 0; held pending applicability: 8"
+      ]
+    }
+  ]
+}

@@ -149,6 +149,32 @@ COUNT_TEMPLATES = [
 ]
 
 
+# The SECOND published quantity: how many functions the legacy custom runner
+# selects. docs/TRUST.md publishes it twice, three lines from the collected
+# count, and it moves whenever a test module is wired into
+# tests/test_classification.py, which .claude/rules/tests.md requires.
+#
+# It was deliberately excluded from COUNT_TEMPLATES above, whose comment records
+# that "963 test functions" is "a different quantity that docs/TRUST.md
+# publishes three lines away". That exclusion was right and stays right: these
+# templates are a separate list applied in a separate pass against a separate
+# canonical, so neither quantity can ever be written with the other's value.
+#
+# WHY IT IS HERE NOW. Leaving it uncascaded cost two full suite runs to
+# discover on 2026-08-14 alone, once for the content-freshness module and once
+# for the documented-transcripts module. tests/test_published_count_manifest.py
+# catches the drift and names the cause, so it failed closed rather than
+# publishing a wrong number, but "fails closed twice in one session" is a
+# recurring manual step, which is what this module exists to remove.
+#
+# The shapes are anchored on the VERB, not on the unit word. "functions" alone
+# would nominate "442 defined in-file", a third quantity on the same line.
+RUNNER_TEMPLATES = [
+    rf"discovers{GAP}{{n}}{GAP}functions",
+    rf"executes{GAP}{{n}}{GAP}functions",
+]
+
+
 class RefusedError(RuntimeError):
     """Raised when a target is outside what this tool may ever touch."""
 
@@ -186,6 +212,35 @@ def canonical_count() -> int:
             f"cascade a cached number, and refusing to report a clean check "
             f"against one."
         )
+    return cached
+
+
+def canonical_runner_count() -> int:
+    """The published runner function count, cached then cross-checked.
+
+    Same contract as `canonical_count`: the value comes from committed data so
+    a typo cannot become the published number, and a stale cache is a refusal
+    rather than a silent pass. The live side calls
+    `site_facts.count_runner_functions()` directly rather than `compute()`,
+    because `compute()` re-runs pytest collection and this pass does not need
+    it.
+    """
+    facts = json.loads(CANONICAL.read_text(encoding="utf-8"))
+    tests = facts["counts"]["tests"]
+    if "runner_functions" not in tests:
+        raise RefusedError(
+            "data/site_facts.json has no counts.tests.runner_functions. "
+            "Regenerate it with `python3 scripts/site_facts.py`. Refusing to "
+            "cascade a quantity with no canonical source.")
+    cached = int(tests["runner_functions"])
+
+    import site_facts
+    live = int(site_facts.count_runner_functions())
+    if cached != live:
+        raise RefusedError(
+            f"data/site_facts.json is stale: it records {cached:,} runner "
+            f"functions, the runner currently selects {live:,}. Regenerate it "
+            f"with `python3 scripts/site_facts.py` and re-run.")
     return cached
 
 
@@ -269,7 +324,8 @@ def _swap(fragment: str, old: int, new: int) -> str:
     return fragment[:at] + now + fragment[at + len(was):]
 
 
-def propagate(new: int, apply: bool) -> int:
+def propagate(new: int, apply: bool, templates=None, label: str = "count") -> int:
+    templates = templates or COUNT_TEMPLATES
     changed, drift = 0, []
     for rel in manifest_surfaces():
         assert_permitted(rel)
@@ -279,8 +335,8 @@ def propagate(new: int, apply: bool) -> int:
             continue
         text = p.read_text(encoding="utf-8")
         updated = text
-        for old in _stale_values(text, new):
-            for rx in _count_regexes(old):
+        for old in _stale_values(text, new, templates):
+            for rx in _count_regexes(old, templates):
                 updated = rx.sub(
                     lambda m: _swap(m.group(0), old, new), updated)
         if updated != text:
@@ -290,15 +346,15 @@ def propagate(new: int, apply: bool) -> int:
                 changed += 1
     if drift:
         verb = "updated" if apply else "would update"
-        print(f"  {verb}: {len(drift)} surface(s)")
+        print(f"  {verb} ({label}): {len(drift)} surface(s)")
         for rel in drift:
             print(f"    {rel}")
     else:
-        print("  all manifest surfaces already carry the canonical value")
+        print(f"  all manifest surfaces already carry the canonical {label}")
     return changed if apply else len(drift)
 
 
-def _count_regexes(value: int):
+def _count_regexes(value: int, templates=None):
     """Compiled regexes for every sanctioned shape of `value`.
 
     Three renderings of the same number are sanctioned: bare (`2612`),
@@ -306,15 +362,16 @@ def _count_regexes(value: int):
     because site/locales/de.html and site/locales/pt-br.html are manifest
     surfaces and both group thousands with a full stop.
     """
+    templates = templates or COUNT_TEMPLATES
     plain, comma, dot = str(value), f"{value:,}", _dotted(value)
     alt = "(?:{})".format(
         "|".join(re.escape(s) for s in (comma, dot, plain)))
-    for tpl in COUNT_TEMPLATES:
+    for tpl in templates:
         yield re.compile(
             tpl.replace("{n}", alt).replace("{g}", GAP), re.IGNORECASE)
 
 
-def _stale_values(text: str, new: int) -> set:
+def _stale_values(text: str, new: int, templates=None) -> set:
     """Values appearing in a sanctioned count shape but differing from
     canonical. Nothing outside COUNT_TEMPLATES is ever a candidate.
 
@@ -332,13 +389,14 @@ def _stale_values(text: str, new: int) -> set:
     shape and differs from canonical is stale whatever its magnitude, and
     a magnitude the templates never match cannot be nominated anyway.
     """
+    templates = templates or COUNT_TEMPLATES
     out = set()
     for m in re.finditer(
             r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{4})(?![\w,.])", text):
         val = int(m.group(1).replace(",", "").replace(".", ""))
         if val == new:
             continue
-        for rx in _count_regexes(val):
+        for rx in _count_regexes(val, templates):
             if rx.search(text):
                 out.add(val)
                 break
@@ -353,9 +411,14 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     new = canonical_count()
+    runner = canonical_runner_count()
     print(f"canonical count (data/site_facts.json): {new:,}")
+    print(f"canonical runner functions: {runner:,}")
     print(f"manifest surfaces: {len(manifest_surfaces())}")
-    n = propagate(new, apply=args.apply)
+    n = propagate(new, apply=args.apply, templates=COUNT_TEMPLATES,
+                  label="collected count")
+    n += propagate(runner, apply=args.apply, templates=RUNNER_TEMPLATES,
+                   label="runner functions")
     if args.check and n:
         print("\nDRIFT. Run with --apply.")
         return 1

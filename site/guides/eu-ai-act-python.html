@@ -222,8 +222,18 @@ regula assess                       # interactive: does the AI Act apply?</code>
 Regula Scan: /home/dev/myproject
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project is classified as high-risk under EU AI Act Annex III.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
 
   Files scanned:      34
   High-risk:          1

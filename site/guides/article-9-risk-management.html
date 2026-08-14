@@ -200,8 +200,18 @@
 Regula Scan: /home/dev/myproject
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project is classified as high-risk under EU AI Act Annex III.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
   Files scanned:      34
   High-risk:          2
 
@@ -231,25 +241,31 @@ Regula Scan: /home/dev/myproject
 
 <h2>Gap analysis with Regula</h2>
 
-<p>The <code>regula gap</code> command scores your project against each applicable article, including Article&nbsp;9. Run it against your project root:</p>
+<p>The <code>regula gap</code> command reports which article obligations it can attach evidence to, and which it is holding back. Run it against your project root:</p>
 
 <pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project .
 
-EU AI Act Compliance Gap Assessment: myproject
-Overall score:     29%
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
 
-Article 9   Risk Management                     [ 60%] MODERATE
-  Evidence: Risk management content in: README.md
-  Gap:      Risk documentation lacks structured mitigations
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</code></pre>
 
-Article 10  Data Governance                     [ 30%] PARTIAL
-Article 11  Technical Documentation             [  0%] NOT FOUND
-Article 13  Transparency                        [  0%] NOT FOUND
-Article 14  Human Oversight                     [ 45%] PARTIAL</code></pre>
+<p style="color:var(--text-dim);font-size:0.85rem;margin-top:8px;"><em>Output is illustrative. Counts depend on your codebase.</em></p>
 
-<p style="color:var(--text-dim);font-size:0.85rem;margin-top:8px;"><em>Scores reflect only the technical components Regula can measure.</em></p>
-
-<p>The Article&nbsp;9 score reflects only the technical components Regula can measure. A moderate score means your codebase has some evidence of risk management artefacts but significant gaps remain. It does not mean your overall Article&nbsp;9 compliance is at that level, because the organisational components (which Regula cannot assess) also matter. A project could score highly on the code scan and still fail Article&nbsp;9 if no risk management process exists.</p>
+<p>Until the two facts above are settled by a person, Regula holds the article
+observations rather than emitting them. Earlier versions of this page showed a
+percentage beside each article. That output has been removed from the tool: a
+percentage against Article&nbsp;9 reads as a measure of Article&nbsp;9
+compliance, and it is not one. The organisational components of Article&nbsp;9,
+which are where a risk management process actually lives, are not visible to a
+code scan at all, so a codebase can look well covered and still have no risk
+management process behind it.</p>
 
 <p>To focus on Article&nbsp;9 specifically:</p>
 

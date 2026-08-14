@@ -318,9 +318,18 @@
   <span class="cli-dim">Regula v1.7.0 &mdash; EU AI Act code-risk indicator</span>
 ============================================================
 
-  <span class="cli-red">Verdict</span>: <span class="cli-red">PROHIBITED</span>
-  Your project contains AI practices prohibited under EU AI Act Article 5.
-  These must be removed before deployment in the EU.
+Decision: <span class="cli-red">insufficient_information</span>
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  <span class="cli-red">Detector summary: ARTICLE 5 PATTERNS</span>
+  The scanner found patterns relevant to Article 5 review.
+  Resolve the facts listed above before treating any of them as a prohibited practice.
 
   Why:
     1. hr_analytics.py:42 &mdash; Emotion inference in workplace or educational settings

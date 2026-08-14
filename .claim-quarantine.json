@@ -66,24 +66,32 @@
     {
       "file": "site/guides/article-9-risk-management.html",
       "claim": "29%",
-      "silent_because": "paragraph-sourced",
+      "silent_because": "text-absent",
       "also_blocked_by": []
     },
     {
       "file": "site/guides/eu-ai-act-healthcare.html",
-      "claim": "70%"
+      "claim": "70%",
+      "silent_because": "text-absent",
+      "also_blocked_by": []
     },
     {
       "file": "site/guides/eu-ai-act-healthcare.html",
-      "claim": "95%"
+      "claim": "95%",
+      "silent_because": "text-absent",
+      "also_blocked_by": []
     },
     {
       "file": "site/guides/eu-ai-act-recruitment-hiring.html",
-      "claim": "29%"
+      "claim": "29%",
+      "silent_because": "text-absent",
+      "also_blocked_by": []
     },
     {
       "file": "site/guides/eu-ai-act-recruitment-hiring.html",
-      "claim": "43%"
+      "claim": "43%",
+      "silent_because": "text-absent",
+      "also_blocked_by": []
     },
     {
       "file": "site/index.html",
@@ -123,7 +131,9 @@
     },
     {
       "file": "site/sample-report.html",
-      "claim": "43%"
+      "claim": "43%",
+      "silent_because": "text-absent",
+      "also_blocked_by": []
     }
   ],
   "burned_down": [

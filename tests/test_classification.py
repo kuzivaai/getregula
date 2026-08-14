@@ -55,6 +55,7 @@ import test_documentation as _test_documentation  # noqa: F401
 import test_recall_artefact as _test_recall_artefact  # noqa: F401
 import test_bare_scan_decision as _test_bare_scan_decision  # noqa: F401
 import test_content_freshness as _test_content_freshness  # noqa: F401
+import test_documented_transcripts as _test_documented_transcripts  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -116,7 +117,7 @@ def _bind_runner_case(target, kwargs, case_id):
     return runner_case
 
 
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -173,7 +174,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
                 continue
             _alias = f"{RUNNER_ALIAS_PREFIX}{_name}_{_case_index}"
             globals()[_alias] = _bind_runner_case(_fn, _kwargs, _case_index)
-del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness
+del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
