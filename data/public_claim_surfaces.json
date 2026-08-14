@@ -7714,6 +7714,17 @@
       "reason": "deployed reader or machine-readable content"
     },
     {
+      "stable_id": "website:786d3184c461225d",
+      "channel": "website",
+      "source": "site/assess/assess-flow.js",
+      "destination": "/assess/assess-flow.js",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "asset",
+      "claim_capable": false,
+      "classification": "non_claim_asset",
+      "reason": "deployed non-claim asset"
+    },
+    {
       "stable_id": "website:4eddf4cf98c36939",
       "channel": "website",
       "source": "site/assess/de.html",
@@ -8700,13 +8711,13 @@
       "mcp": 3,
       "package": 2,
       "repository_docs": 39,
-      "website": 94
+      "website": 95
     },
     "classification": {
       "active_product": 761,
       "historical_record": 1,
       "internal_record": 1,
-      "non_claim_asset": 27
+      "non_claim_asset": 28
     }
   },
   "exclusions": [
