@@ -19,7 +19,7 @@ stated date, not read from a repository record.
 |---|---|
 | PyPI `regula-ai` | PUBLISHED, 1.9.0 (27 Jul 2026). World-checked 14 Aug 2026 via the PyPI JSON API: live version 1.9.0, and the `mcp-name: io.github.kuzivaai/regula` ownership marker is present on line 1 of the published package description. The description still shows the pre-14-Aug README headline; the repositioned headline reaches PyPI at the next release. |
 | GitHub Action (`action.yml`) | EXISTS in the repository, exercised by `.github/workflows/test-action.yml`, branding present. NOT on the GitHub Marketplace: world-checked 14 Aug 2026, a Marketplace search for "regula" returns no kuzivaai action. The May 2026 revision of this file recorded the Marketplace listing as already done; either that record was wrong or the listing lapsed, and which of the two cannot be determined from here. The floating `v1` tag exists locally and on the remote and moves on each release (`.github/workflows/release.yml` header), so the `uses: kuzivaai/getregula@v1` examples resolve. |
-| MCP server (`scripts/mcp_server.py`) | EXISTS, stdio, stdlib-only, tool-level errors flagged per the MCP error form since 14 Aug 2026. NOT listed on the official MCP registry: world-checked 14 Aug 2026, `registry.modelcontextprotocol.io/v0/servers?search=regula` returns only an unrelated third-party server. |
+| MCP server (`scripts/mcp_server.py`) | EXISTS, stdio, stdlib-only, tool-level errors flagged per the MCP error form since 14 Aug 2026. LISTED on the official MCP registry since 2026-08-14T06:56:16Z as `io.github.kuzivaai/regula` 1.9.0 (owner-executed publish; world-checked via the registry API the same day, count 1; see the authorisation ledger below). Earlier the same day the search had returned only an unrelated third-party server. |
 | VS Code extension | Recorded as published (v0.1.0, May 2026). Not re-verified this session; the 11 Aug 2026 audit records the extension as outside CI. Treat as unverified until checked against the live marketplace. |
 | Hacker News | Submissions were already made (May 2026). Do not resubmit; this is a standing project rule. |
 | dev.to | Articles published (May 2026 record; not re-verified this session). |
@@ -85,4 +85,4 @@ with the repository's prohibited-claims classes
 
 | Date | Surface | Authorised by | Record |
 |---|---|---|---|
-| (empty; nothing authorised, nothing submitted) | | | |
+| 2026-08-14 | Official MCP registry | Owner, by personally executing `mcp-publisher login github` and `mcp-publisher publish` | Listed as `io.github.kuzivaai/regula` 1.9.0, status active, publishedAt 2026-08-14T06:56:16Z; verified via the registry API (`/v0/servers?search=io.github.kuzivaai/regula`, count 1) |
