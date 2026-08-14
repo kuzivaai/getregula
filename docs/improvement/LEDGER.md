@@ -2069,3 +2069,81 @@ as resolvable facts, including Article 2(1)(c) output-used-in-the-Union, GPAI
 status and representative need, so a non-EU visitor still cannot get an answer
 to the question the market model says they arrive with. The standing product,
 venture, contact, data-collection and pilot verdicts are unchanged.
+
+### N107. The wording guards were monolingual, and blind to markup and entities
+
+**First raised:** 2026-08-14. **Status:** IMPLEMENTED for the enumerated
+defects. Commits `HELD:b2f9f73` and `HELD:c72e910`, held on
+`feat/engagement-fixes` with `HELD:f008756`; nothing is on main.
+
+`PROHIBITED_CLAIMS` in `scripts/public_surface_inventory.py` is the guard that
+stops the project publishing the claims its own hard rule forbids. Every
+pattern in it was written in English and matched raw file text, while the site
+ships in English, German and Brazilian Portuguese. Three defects, each
+demonstrated against shipped pages before anything was changed:
+
+- **Inline markup split a phrase.** `zero <strong>network</strong> calls`
+  returned no hit from the English pattern that exists to catch exactly that
+  claim. This was never a locale problem; the guard failed in its own language.
+- **Accented copy is written with HTML entities**, so `c&oacute;digo` could not
+  match a pattern containing `codigo`.
+- **No German or Portuguese patterns existed at all.**
+
+Matching now runs over folded text (entities decoded, accents stripped,
+casefolded, whitespace collapsed) against both the tag-kept and the
+tag-stripped reading of each file, so claims in attribute values stay covered
+and coverage is a strict superset of the previous behaviour. Patterns are keyed
+claim class to language.
+
+Re-running the rebuilt guard over copy that the old guard reported clean
+surfaced **five genuine claims**, all corrected in the same commit:
+
+| Surface | Shipped | Why it survived |
+|---|---|---|
+| `site/locales/pt-br.html` hero | "seu codigo nunca sai da sua maquina" | absolute offline claim; EN and DE both hedge correctly |
+| `site/locales/de.html` social meta | `og:image:alt` and `twitter:image:alt` "Konformitaetsscanner" | EN had been corrected to "code-indicator scanner"; DE left behind |
+| `site/locales/pt-br.html` social meta | same two tags, "scanner de conformidade" | same, PT left behind |
+| `site/blog/blog-risk-tiers-in-code.html` | "Nothing leaves your machine" | phrasing absent from the English pattern |
+| `docs/benchmarks/PRECISION_RECALL_2026_04.md` | "Every number below can be reproduced from the labelled corpus checked into the repo" | a line wrap sat between "every number" and "below can be reproduced" |
+
+The last one is contradicted by the document's own later text in three places:
+the synthetic recall row is recorded as not reproducible on the current corpus,
+the April addendum is described as a simulation rather than a re-measurement,
+and the random-corpus labels behind the production precision figure are
+gitignored by design (the open item recorded as N51). The claim was scoped
+rather than deleted.
+
+**The structural fix matters more than the five corrections.** Shipped
+languages are now enumerated from the `lang` attribute of every tracked page,
+and a claim class that lacks an arm for a shipped language fails the build, so
+adding a fourth locale cannot silently reopen this. One planted claim per
+(class, language) proves each of the 27 arms fires, and the corrected hedged
+wording is asserted **not** to trip the guard, which is what separates a guard
+that discriminates from one that bans a subject.
+
+Controls run and all fired: dropping the Portuguese arm; making the folding a
+no-op; reintroducing the Portuguese offline claim; reintroducing the German
+`og:image:alt`. All four turned the suite red and all restored green.
+
+Two related scope defects were closed at the same time. The claim-freeze sweep
+had been scoped to `*.html`, so `site/llms.txt` and `site/llms-full.txt` still
+carried the frozen precision figure and its per-tier breakdown after every HTML
+page had been cleared; an agent reading `llms.txt` got a number no human-facing
+page carried. And `claim_auditor --verify-facts` covers 17 files, which is
+narrower than the 11-surface count manifest, so its 10 reported count
+mismatches were not the full set; enumeration found 14 occurrences across 11
+tracked files. The count cascade was run through `scripts/cascade_count.py`,
+not by hand, and `uv.lock` was untouched: its `2787` substrings are a sha256
+fragment and a `size` field, which is measurement rule 4d's own case.
+
+**Open, not closed here.** `scripts/cascade_count.py` still does not propagate
+the custom runner's function count; `tests/test_published_count_manifest.py`
+catches the drift and names the cause, so it fails closed, but the figure is
+corrected by hand each time. The AICDI gap percentages remain un-re-verified
+and that page keeps its genuine April date. The axe accessibility job was not
+run locally; it runs in CI on pull requests touching `site/**`.
+
+Nothing here is evidence of demand, usability or comprehension. It removes
+false and stale claims and adds gates that stop them returning. The standing
+product, venture, pack, contact, data-collection and pilot verdicts are
+unchanged.
