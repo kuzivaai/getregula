@@ -40,6 +40,13 @@ jobs:
         # dropped) and six more were found when this check was first run.
         # Corpora are cached under references/corpora, so this runs offline.
         run: python3 scripts/verify_quotations.py
+      - name: Published CLI transcripts reproduce
+        # Nine tracked surfaces published a `Verdict:` line as CLI output while
+        # no command emitted `Verdict:` at all, and two guides published a
+        # per-article `Overall score: NN%` from a formatter no CLI path
+        # reaches. Both asserted conclusions the tool does not make. This runs
+        # the command each page documents and compares.
+        run: python3 scripts/verify_transcripts.py
       - name: Browser questionnaire contract test
         # This file existed but no runner executed it, so it drifted from the
         # pages it guards (LEDGER F15). It is wired in here because the browser

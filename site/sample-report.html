@@ -117,9 +117,21 @@
 Regula Scan: /home/mkuziva/getregula/examples/cv-screening-app
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project shows indicators of high-risk AI under EU AI Act Annex III.
-  Human review must determine whether Article 6 conditions apply; this scan reports code indicators only.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
+  Why:
+    1. app.py:1 — Employment and workers management
+       (Art. 9, Art. 10)
   Files scanned:      1
   Prohibited:         0
   Credentials:        0
@@ -128,16 +140,13 @@ Regula Scan: /home/mkuziva/getregula/examples/cv-screening-app
   Limited-risk:       0
   Suppressed:         0
   BLOCK tier:         0
-  WARN tier:          0
-  INFO tier:          1
+  WARN tier:          1
+  INFO tier:          0
   Lifecycle:          develop: 1, plan: 1
 
   HIGH-RISK INDICATORS:
-    [INFO] [ 43] app.py — Employment and workers management [plan]
-
-  Questions for human review (1):
-    ? app.py:1 — Annex III, Category 4
-      Employment and workers management (confidence: 43%)
+    [WARN] [ 63] app.py — Employment and workers management [plan]
+      Add human oversight before automated hiring/employment decisions
 ============================================================
   Detector priority: 0-100 (higher = more code patterns matched; not a correctness probability)
   Tiers: BLOCK (&gt;=80 or prohibited), WARN (50-79), INFO (&lt;50)

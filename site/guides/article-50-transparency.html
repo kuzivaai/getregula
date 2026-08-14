@@ -247,16 +247,25 @@
 Regula Scan: sample_chatbot.py
 ============================================================
 
-  Verdict: LIMITED-RISK
-  Your project has limited-risk AI components (Article 50 transparency).
-  You must disclose AI usage to users.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ARTICLE 50 PATTERNS
+  The scanner found patterns relevant to Article 50 review.
+  Resolve the facts listed above before attaching a transparency duty.
   Files scanned:      1
   Limited-risk:       1
 
   LIMITED-RISK (Article 50):
     [INFO] [ 47] sample_chatbot.py:9 &mdash; Chatbots and conversational AI [develop]</code></pre>
 
-<p>The output tells you two things. First, the system has been classified as limited-risk under Article 50. Second, the specific line of code that triggered the detection. The <code>[develop]</code> tag indicates this is a development-phase pattern, meaning you are building the system (provider role).</p>
+<p>The output tells you two things. First, that Article&nbsp;50 is a candidate review path, with the applicability facts still unresolved: this is not a classification. Second, the specific line of code that triggered the detection. The <code>[develop]</code> tag indicates this is a development-phase pattern, meaning you are building the system (provider role).</p>
 
 <p>Regula detects patterns, not compliance. A detection means your code has characteristics that match Article 50 obligations. Whether you have actually satisfied those obligations requires checking that your disclosure mechanisms are in place, clear, and presented at first interaction.</p>
 

@@ -520,3 +520,74 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestTheRunnerFunctionCountIsCascadedSeparately(unittest.TestCase):
+    """The SECOND published quantity, added 2026-08-14.
+
+    `docs/TRUST.md` publishes the custom runner's function count twice, three
+    lines from the collected count. It was outside the cascade, so it drifted
+    silently until `tests/test_published_count_manifest.py` was written to
+    catch it, and then drifted twice more in one session, each time costing a
+    full suite run to discover.
+
+    The danger in fixing it is conflation: two quantities on the same line,
+    written by one tool. These controls exist to prove they cannot cross.
+    """
+
+    LINE = ("| Test suite | `tests/` (2,808 unique tests, 2,808 "
+            "pytest-collected; the legacy `tests/test_classification.py` "
+            "runner executes 1,182 functions, 442 defined in-file) |")
+    PROSE = "The runner currently discovers 1,182 functions, a count machine-checked by"
+
+    def test_runner_templates_match_both_published_shapes(self):
+        for text in (self.LINE, self.PROSE):
+            self.assertTrue(
+                any(rx.search(text)
+                    for rx in cc._count_regexes(1182, cc.RUNNER_TEMPLATES)),
+                f"no RUNNER_TEMPLATE matched: {text!r}")
+
+    def test_runner_pass_never_nominates_the_collected_count(self):
+        """2,808 must not be visible to the runner templates."""
+        stale = cc._stale_values(self.LINE, 1182, cc.RUNNER_TEMPLATES)
+        self.assertNotIn(2808, stale, stale)
+
+    def test_collected_pass_never_nominates_the_runner_count(self):
+        """1,182 must not be visible to the collected-count templates."""
+        stale = cc._stale_values(self.LINE, 2808, cc.COUNT_TEMPLATES)
+        self.assertNotIn(1182, stale, stale)
+
+    def test_the_third_quantity_on_the_same_line_is_never_touched(self):
+        """`442 defined in-file` is neither a collected count nor a runner count.
+
+        The runner shapes are anchored on the verb for exactly this reason: a
+        template keyed on the word "functions" alone would reach it.
+        """
+        for canonical, templates in ((1182, cc.RUNNER_TEMPLATES),
+                                     (2808, cc.COUNT_TEMPLATES)):
+            self.assertNotIn(442, cc._stale_values(self.LINE, canonical, templates))
+
+    def test_a_stale_runner_count_is_nominated_and_rewritten(self):
+        """Positive control: the pass must be able to fire, not just abstain."""
+        stale_line = self.PROSE.replace("1,182", "1,175")
+        nominated = cc._stale_values(stale_line, 1182, cc.RUNNER_TEMPLATES)
+        self.assertIn(1175, nominated, nominated)
+        out = stale_line
+        for rx in cc._count_regexes(1175, cc.RUNNER_TEMPLATES):
+            out = rx.sub(lambda m: cc._swap(m.group(0), 1175, 1182), out)
+        self.assertIn("discovers 1,182 functions", out)
+        self.assertNotIn("1,175", out)
+
+    def test_canonical_runner_count_refuses_a_missing_field(self):
+        """Fail closed rather than cascade a quantity with no canonical source."""
+        original = cc.CANONICAL
+        try:
+            import tempfile, os
+            with tempfile.TemporaryDirectory() as d:
+                path = Path(d) / "site_facts.json"
+                path.write_text(json.dumps({"counts": {"tests": {"total_collected": 1}}}))
+                cc.CANONICAL = path
+                with self.assertRaises(cc.RefusedError):
+                    cc.canonical_runner_count()
+        finally:
+            cc.CANONICAL = original

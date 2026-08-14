@@ -281,6 +281,46 @@ def missing_tracked_contributors(per_file, tracked=None) -> list[str]:
         and name not in per_file)
 
 
+def count_runner_functions() -> int:
+    """How many functions the legacy custom runner selects.
+
+    `docs/TRUST.md` publishes this alongside the pytest-collected count, in two
+    places, and it moves whenever a test module is wired into
+    `tests/test_classification.py`, which `.claude/rules/tests.md` requires.
+    `scripts/cascade_count.py` propagated only the collected count, so this one
+    drifted silently until `tests/test_published_count_manifest.py` was written
+    to catch it. It then drifted TWICE MORE in the single session of
+    2026-08-14, once for the content-freshness module and once for the
+    documented-transcripts module, each time costing a full suite run to
+    discover. Making it canonical here is what lets the cascade carry it.
+
+    Computed in a subprocess: importing the whole test tree into this module's
+    namespace to count names would be a side effect in a script whose output is
+    published, and a failure to import must fail closed rather than yield a
+    plausible smaller number.
+    """
+    code = (
+        "import sys; sys.path.insert(0, 'tests');"
+        "import test_classification as tc;"
+        "print(len([n for n, o in vars(tc).items()"
+        " if (n.startswith('test_') or n.startswith(tc.RUNNER_ALIAS_PREFIX))"
+        " and callable(o)]))"
+    )
+    try:
+        proc = subprocess.run([sys.executable, "-c", code], cwd=str(REPO),
+                              capture_output=True, text=True, check=False,
+                              timeout=300)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise RuntimeError(f"runner function count did not run: {exc}") from exc
+    value = proc.stdout.strip()
+    if proc.returncode != 0 or not value.isdigit():
+        detail = (proc.stderr or proc.stdout).strip().splitlines()
+        raise RuntimeError(
+            "refusing to publish an unmeasured runner function count "
+            f"(rc={proc.returncode}: {detail[-1] if detail else 'no output'})")
+    return int(value)
+
+
 def count_tests() -> dict:
     """Return a breakdown of test functions and per-file counts."""
     # Use actual pytest collection to get the truthful executable count,
@@ -389,7 +429,11 @@ def compute() -> dict:
             "patterns": patterns,
             "frameworks": count_frameworks(),
             "languages": count_languages(),
-            "tests": count_tests(),
+            # The runner count is folded in here rather than inside
+            # count_tests(), which is scoped to pytest collection and whose
+            # sandboxed tests fake subprocess.run for that one call.
+            "tests": {**count_tests(),
+                      "runner_functions": count_runner_functions()},
         },
         "notes": {
             "pattern_count_methodology": (
