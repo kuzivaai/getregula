@@ -8429,6 +8429,39 @@
       "reason": "deployed reader or machine-readable content"
     },
     {
+      "stable_id": "website:dd987e98c48f27ab",
+      "channel": "website",
+      "source": "site/privacy-de.html",
+      "destination": "/privacy-de.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:7395ad08da5aa840",
+      "channel": "website",
+      "source": "site/privacy-pt-br.html",
+      "destination": "/privacy-pt-br.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:a7175bfd767c2d90",
+      "channel": "website",
+      "source": "site/privacy.html",
+      "destination": "/privacy.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
       "stable_id": "website:95b81d903e81b9a6",
       "channel": "website",
       "source": "site/pt-br.html",
@@ -8594,6 +8627,39 @@
       "reason": "deployed reader or machine-readable content"
     },
     {
+      "stable_id": "website:abe03ea18990cb85",
+      "channel": "website",
+      "source": "site/terms-de.html",
+      "destination": "/terms-de.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:78d68e7b9c86c1ad",
+      "channel": "website",
+      "source": "site/terms-pt-br.html",
+      "destination": "/terms-pt-br.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:1b31f72bfad8e767",
+      "channel": "website",
+      "source": "site/terms.html",
+      "destination": "/terms.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
       "stable_id": "website:7cb348ca1d443494",
       "channel": "website",
       "source": "site/uae.html",
@@ -8634,10 +8700,10 @@
       "mcp": 3,
       "package": 2,
       "repository_docs": 39,
-      "website": 88
+      "website": 94
     },
     "classification": {
-      "active_product": 755,
+      "active_product": 761,
       "historical_record": 1,
       "internal_record": 1,
       "non_claim_asset": 27
