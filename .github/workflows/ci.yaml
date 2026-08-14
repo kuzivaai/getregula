@@ -34,6 +34,11 @@ jobs:
         run: python3 -m scripts.cli doctor
       - name: Security self-check (blocks unexpected findings in Regula's own source)
         run: python3 -m scripts.cli security-self-check
+      - name: Browser questionnaire contract test
+        # This file existed but no runner executed it, so it drifted from the
+        # pages it guards (LEDGER F15). It is wired in here because the browser
+        # assessment has no other regression gate.
+        run: node tests/test_questionnaire_scoring.js
 
   lint:
     name: Lint (ruff)

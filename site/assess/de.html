@@ -179,6 +179,16 @@
       .ans-btn.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
       .ans-btn.selected-no { border-color: var(--red); background: var(--red-dim); color: var(--red); }
       .ans-btn.selected-unsure { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
+      /* "Not applicable" resolves the fact just as "No" does, so it is styled
+         as a decisive answer. Only "Not sure" carries the open-question amber. */
+      .ans-btn.selected-na { border-color: var(--text-dim); background: var(--bg-hover); color: var(--text); }
+      .answer-legend { font-size: 0.78rem; color: var(--text-dim); margin: 12px 0 0 0; line-height: 1.5; }
+      .q-banner { background: var(--accent-dim); border: 1px solid var(--border-active); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; font-size: 0.87rem; line-height: 1.55; color: var(--text); }
+      .early-exit { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+      .early-exit .btn { min-height: 44px; }
+      .early-exit-note { font-size: 0.78rem; color: var(--text-dim); }
+      .early-exit-final { display: block; background: var(--green-dim); border: 1px solid var(--green); border-radius: var(--radius); padding: 16px; }
+      .early-exit-final p { margin: 0 0 12px 0; font-size: 0.9rem; line-height: 1.55; }
 
       /* Navigation buttons */
       .nav-buttons {
@@ -188,6 +198,9 @@
         padding: 10px 24px; border-radius: 8px; font-family: var(--font);
         font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none;
         transition: all 0.15s;
+        /* Project standard is a 44px minimum touch target; the export and
+           start-over controls previously rendered at 40px. */
+        min-height: 44px;
       }
       .btn-primary { background: #1d4ed8; color: #fff; }
       .btn-primary:hover { background: #1e40af; }
@@ -405,20 +418,9 @@
   <!-- QUESTIONNAIRE -->
   <div id="questionnaireSection" style="display:none;">
     <div id="assessIntro" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;font-size:0.9rem;line-height:1.6;color:var(--text-dim);"></div>
-    <script>
-    function updateAssessIntro() {
-      const intros = {
-        eu: "Die EU-KI-Verordnung stuft KI-Systeme in Risikokategorien ein : von minimalem Risiko bis verboten : mit unterschiedlichen rechtlichen Pflichten f\u00fcr jede Stufe. Diese Bewertung ermittelt, welche Stufe f\u00fcr Ihr System gilt und was Sie als N\u00e4chstes tun m\u00fcssen.",
-        kr: "Das s\u00fcdkoreanische KI-Grundgesetz stuft KI-Systeme als hochriskant oder hochleistungsf\u00e4hig ein, mit Pflichten f\u00fcr Risikomanagement, Transparenz und Erkl\u00e4rbarkeit. Diese Bewertung ermittelt, ob Ihr System betroffen ist und was Sie tun m\u00fcssen.",
-        co: "Colorado SB 26-189 reguliert automatisierte Entscheidungstechnologie (ADMT), die folgenreiche Entscheidungen \u00fcber Personen in bestimmten Bereichen trifft. Diese Bewertung ermittelt, ob Ihr System betroffen ist und welche Offenlegungspflichten gelten."
-      };
-      const el = document.getElementById("assessIntro");
-      if (el) el.innerHTML = '<p style="margin:0 0 8px 0;">' + (intros[activeJurisdiction] || intros.eu) + '</p><p style="margin:0 0 0 0;font-size:0.8rem;color:var(--text-muted);">Dies ist keine Rechtsberatung. Ihre Antworten werden weder gespeichert noch \u00fcbermittelt. Ergebnisse k\u00f6nnen \u00fcber einen zustandslosen Link geteilt werden.</p>';
-    }
-    </script>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Bewertungsfortschritt" id="progressWrap">
       <div class="progress-label" aria-live="polite">
-        <span id="progressText">Frage 1 von 15</span>
+        <span id="progressText">Frage 1</span>
         <span id="progressPct">0%</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
@@ -429,6 +431,7 @@
       <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled title="Bitte eine Antwort auswählen, um fortzufahren">Weiter</button>
     </div>
     <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;" aria-hidden="true">Tastatur: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">Y</kbd> Ja &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> Nein &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">U</kbd> Unsicher &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">A</kbd> nicht anwendbar &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> Weiter</div>
+    <div id="earlyExit" style="display:none;"></div>
   </div>
 
   <!-- CODE SCANNER -->
@@ -535,6 +538,7 @@
 <script src="decision-kernel.js"></script>
 <script src="decision-adapters.js"></script>
 <script src="decision-ui.js"></script>
+<script src="assess-flow.js"></script>
 <script>
 // =====================================================================
 // Regula Web-Bewertung :  portiert von scripts/questionnaire.py
@@ -545,35 +549,15 @@
 // Multi-Jurisdiktions-Unterstützung
 // =====================================================================
 
-let activeJurisdiction = "eu";
+
 
 const JURISDICTION_INFO = {
-  eu: { name: "EU AI Act", law: "Verordnung (EU) 2024/1689", status: "In Kraft (stufenweise Anwendung)", questionCount: 18 },
-  kr: { name: "Südkorea KI-Grundgesetz", law: "Gesetz Nr. 20676", status: "In Kraft", questionCount: 16 },
-  co: { name: "Colorado SB 26-189", law: "C.R.S. Title 6, Article 1, Part 17", status: "Verabschiedet, wirksam ab 1. Januar 2027", questionCount: 14 },
+  eu: { name: "EU AI Act", law: "Verordnung (EU) 2024/1689", status: "In Kraft (stufenweise Anwendung)" },
+  kr: { name: "Südkorea KI-Grundgesetz", law: "Gesetz Nr. 20676", status: "In Kraft" },
+  co: { name: "Colorado SB 26-189", law: "C.R.S. Title 6, Article 1, Part 17", status: "Verabschiedet, wirksam ab 1. Januar 2027" },
 };
 
-function selectJurisdiction(jur) {
-  activeJurisdiction = jur;
-  if (window.plausible) plausible("Assess Jurisdiction", { props: { jurisdiction: jur } });
-  document.querySelectorAll(".jurisdiction-btn").forEach(b => {
-    b.style.border = "1px solid var(--border)";
-    b.style.background = "transparent";
-    b.style.color = "var(--text-dim)";
-    b.classList.remove("selected");
-    b.setAttribute("aria-pressed", "false");
-  });
-  const btn = document.getElementById("jur-" + jur);
-  btn.style.border = "1px solid var(--border-active)";
-  btn.style.background = "var(--accent-dim)";
-  btn.style.color = "var(--accent)";
-  btn.classList.add("selected");
-  btn.setAttribute("aria-pressed", "true");
 
-  const info = JURISDICTION_INFO[jur];
-  document.getElementById("jurisdictionInfo").textContent =
-    info.law + " :  " + info.status + " :  " + info.questionCount + " Fragen";
-}
 
 // Südkorea-Fragen (aus south-korea-mapping.md-Forschung)
 const QUESTIONS_KR = [
@@ -639,7 +623,6 @@ const QUESTIONS_KR = [
     article: "Artikel 36",
   },
 ];
-const DISPLAY_ORDER_KR = QUESTIONS_KR.map((_, index) => index);
 
 // Colorado-Fragen (aus colorado-mapping.md-Forschung)
 const QUESTIONS_CO = [
@@ -698,7 +681,6 @@ const QUESTIONS_CO = [
     article: "Section 6-1-1705",
   },
 ];
-const DISPLAY_ORDER_CO = QUESTIONS_CO.map((_, index) => index);
 
 // QUESTIONS array: positions 0-11 are the original 12 questions (stable for URL encoding).
 // Positions 12-14 are new questions appended to preserve backward compatibility.
@@ -711,9 +693,9 @@ const QUESTIONS = [
     help: "Die KI-Verordnung gilt für KI-Systeme, die auf dem EU-Markt bereitgestellt werden oder deren Ergebnisse in der EU verwendet werden, unabhängig davon, wo der Anbieter ansässig ist (Artikel 2).",
     article: "Artikel 2",
   },
-  { id: "is_ai_system", text: "Erfüllt der Gegenstand die Definition eines KI-Systems nach dem EU AI Act?", help: "Prüfen Sie dies anhand von Artikel 3(1). Ein Code-Muster allein belegt die Definition nicht.", article: "Artikel 3(1)" },
-  { id: "role_provider", text: "Handelt die Organisation als Anbieter dieses Systems?", help: "Anbieterspezifische Pflichten setzen voraus, dass diese Rolle feststeht.", article: "Artikel 3 und 17" },
-  { id: "role_deployer", text: "Verwendet oder betreibt die Organisation das System in eigener Verantwortung?", help: "Betreiberspezifische Pflichten setzen voraus, dass diese Rolle feststeht.", article: "Artikel 3" },
+  { id: "is_ai_system", text: "Erfüllt der Gegenstand die Definition eines KI-Systems nach dem EU AI Act?", help: "Artikel 3 Nummer 1 bezeichnet als „KI-System“ „ein maschinengestütztes System, das für einen in unterschiedlichem Grade autonomen Betrieb ausgelegt ist und das nach seiner Betriebsaufnahme anpassungsfähig sein kann und das aus den erhaltenen Eingaben für explizite oder implizite Ziele ableitet, wie Ausgaben wie etwa Vorhersagen, Inhalte, Empfehlungen oder Entscheidungen erstellt werden, die physische oder virtuelle Umgebungen beeinflussen können“. Maßgeblich ist, was das System mit seinen Eingaben tut, nicht die verwendete Technik. Ein Code-Muster allein belegt die Definition nicht.", article: "Artikel 3(1)" },
+  { id: "role_provider", text: "Handelt die Organisation als Anbieter dieses Systems?", help: "Artikel 3 Nummer 3 bezeichnet als „Anbieter“ „eine natürliche oder juristische Person, Behörde, Einrichtung oder sonstige Stelle, die ein KI-System oder ein KI-Modell mit allgemeinem Verwendungszweck entwickelt oder entwickeln lässt und es unter ihrem eigenen Namen oder ihrer Handelsmarke in Verkehr bringt oder das KI-System unter ihrem eigenen Namen oder ihrer Handelsmarke in Betrieb nimmt, sei es entgeltlich oder unentgeltlich“. Sie können zugleich Anbieter und Betreiber sein; diese und die nächste Frage werden getrennt beantwortet.", article: "Artikel 3 und 17" },
+  { id: "role_deployer", text: "Verwendet oder betreibt die Organisation das System in eigener Verantwortung?", help: "Artikel 3 Nummer 4 bezeichnet als „Betreiber“ „eine natürliche oder juristische Person, Behörde, Einrichtung oder sonstige Stelle, die ein KI-System in eigener Verantwortung verwendet, es sei denn, das KI-System wird im Rahmen einer persönlichen und nicht beruflichen Tätigkeit verwendet“. Der Einsatz in einem von Ihnen betriebenen Produkt oder Dienst ist keine persönliche und nicht berufliche Tätigkeit.", article: "Artikel 3" },
   {
     id: "affected_domain",
     text: "Ist dieses System in einem der folgenden Bereiche tätig: biometrische Identifizierung, kritische Infrastruktur, Bildung, Beschäftigung/Einstellung, wesentliche Dienste (Kredit, Versicherung, Gesundheitswesen, Sozialleistungen), Strafverfolgung, Migration/Grenzkontrolle, Justiz/demokratische Prozesse?",
@@ -805,230 +787,48 @@ const QUESTIONS = [
 // Profiling (Q12 in array) is shown before exemptions (Q8-9) so users
 // understand the gate before answering exemption questions.
 // Array indices into QUESTIONS:
-const DISPLAY_ORDER = QUESTIONS.map((_, index) => index);
+// Flow control lives in assess-flow.js so the three locale pages share one
+// implementation. Only question data and display strings are page-local.
+RegulaAssessFlow.install({
+  questions: { eu: QUESTIONS, kr: QUESTIONS_KR, co: QUESTIONS_CO },
+  jurisdictionInfo: JURISDICTION_INFO,
+  scopeQuestionId: { eu: "deployment_eu", kr: "kr_scope", co: "co_scope" },
+  copy: {
+    jurisdictionMeta: (info, questions, minutes) =>
+      `${info.law} : ${info.status} : ${questions} Fragen, etwa ${minutes} Minuten`,
+    progress: (n, total) => `Frage ${n} von ${total}`,
+    optionalProgress: (n, total) => `Optionale Frage ${n} von ${total}`,
+    questionEyebrow: (n, total) => `FRAGE ${n} VON ${total}`,
+    optionalEyebrow: (n, total) => `OPTIONALE FRAGE ${n} VON ${total}`,
+    next: "Weiter",
+    seeResults: "Ergebnisse anzeigen",
+    answerGroupLabel: "Wählen Sie Ihre Antwort",
+    answers: {
+      yes: "Ja",
+      no: "Nein",
+      unsure: "Unsicher",
+      notApplicable: "Nicht anwendbar",
+    },
+    answerLegend: "Ja, Nein und Nicht anwendbar werden als Antworten erfasst und können eine rechtliche Prüfung klären. Unsicher wird als ausdrücklich unbekannt erfasst und niemals als Nein gewertet.",
+    keys: { yes: "j", no: "n", unsure: "u", notApplicable: "a" },
+    readiness: {
+      title: "Das regulatorische Ergebnis steht nun fest.",
+      body: "Die restlichen Fragen erfassen Ihre derzeitigen Maßnahmen. Sie sind für Ihre eigenen Notizen und für eine prüfende Person nützlich, ändern das Ergebnis oben aber nicht. Sie können jederzeit aufhören.",
+    },
+    earlyExit: {
+      seeResult: "Ergebnisse jetzt anzeigen",
+      note: "Sie können jederzeit aufhören. Unbeantwortete Fragen werden als offen ausgewiesen, nie als Nein.",
+      finalBody: "Sie haben die Frage zum Geltungsbereich mit Nein beantwortet, daher scheint diese Verordnung nicht einschlägig zu sein. Die restlichen Fragen können an diesem Ergebnis nichts ändern.",
+    },
+    storageNotice: "Dies ist keine Rechtsberatung. Ihre Antworten bleiben in diesem Browser: Sie werden im Sitzungsspeicher abgelegt, damit Sie fortfahren können, beim Neustart gelöscht und niemals an einen Server gesendet. Ergebnisse können über einen zustandslosen Link geteilt werden.",
+    intros: {
+      eu: "Die EU-KI-Verordnung stellt bei den rechtlichen Pflichten auf Zweckbestimmung und Einsatzkontext ab. Dieser Fragebogen nennt Anhaltspunkte für eine menschliche Prüfung; er stellt weder Ihre rechtliche Einstufung noch die Konformität oder die anwendbaren Pflichten fest.",
+      kr: "Das südkoreanische KI-Grundgesetz regelt bestimmte KI-Systeme. Dieser Fragebogen nennt Anhaltspunkte für eine menschliche Prüfung; er stellt nicht fest, ob Ihr System rechtlich erfasst oder konform ist.",
+      co: "Colorado SB 26-189 regelt bestimmte automatisierte Entscheidungstechnologie. Dieser Fragebogen nennt Anhaltspunkte für eine menschliche Prüfung; er stellt weder die rechtliche Erfassung noch die Konformität oder die anwendbaren Offenlegungspflichten fest.",
+    },
+  },
+});
 
-// Anwendbarkeit und Pflichten stammen ausschließlich aus dem kanonischen Entscheidungsmodell.
-
-// Helfer: aktive Fragen und Reihenfolge für die aktuelle Rechtsordnung
-function getActiveQuestions() {
-  if (activeJurisdiction === "kr") return QUESTIONS_KR;
-  if (activeJurisdiction === "co") return QUESTIONS_CO;
-  return QUESTIONS;
-}
-function getActiveDisplayOrder() {
-  if (activeJurisdiction === "kr") return DISPLAY_ORDER_KR;
-  if (activeJurisdiction === "co") return DISPLAY_ORDER_CO;
-  return DISPLAY_ORDER;
-}
-
-// =====================================================================
-// Zustand (mit sessionStorage-Persistenz)
-// =====================================================================
-let currentQuestion = 0;
-let answers = {};
-let assessmentStarted = false;
-
-function saveProgress() {
-  try {
-    sessionStorage.setItem("regula_assess", JSON.stringify({
-      currentQuestion, answers, assessmentStarted, activeJurisdiction
-    }));
-  } catch (e) { /* quota or private browsing */ }
-}
-
-function loadProgress() {
-  try {
-    const saved = sessionStorage.getItem("regula_assess");
-    if (saved) {
-      const data = JSON.parse(saved);
-      currentQuestion = data.currentQuestion || 0;
-      answers = data.answers || {};
-      assessmentStarted = data.assessmentStarted || false;
-      if (data.activeJurisdiction) {
-        activeJurisdiction = data.activeJurisdiction;
-        selectJurisdiction(activeJurisdiction);
-      }
-      if (assessmentStarted) {
-        document.getElementById("heroSection").style.display = "none";
-        document.getElementById("questionnaireSection").style.display = "block";
-        document.getElementById("assessIntro").style.display = "block";
-        renderQuestion();
-      }
-    }
-  } catch (e) { /* ignore */ }
-}
-
-// =====================================================================
-// Fragebogen-Logik
-// =====================================================================
-
-function startAssessment() {
-  assessmentStarted = true;
-  document.getElementById("heroSection").style.display = "none";
-  document.getElementById("questionnaireSection").style.display = "block";
-  document.getElementById("resultsSection").classList.remove("active");
-  document.getElementById("assessIntro").style.display = "block";
-  updateAssessIntro();
-  renderQuestion();
-  if (window.plausible) plausible("Assessment Started");
-}
-
-function renderQuestion() {
-  const activeQ = getActiveQuestions();
-  const activeOrder = getActiveDisplayOrder();
-  const q = activeQ[activeOrder[currentQuestion]];
-  const existing = answers[q.id] || null;
-  const container = document.getElementById("questionContainer");
-  const qId = "q-" + q.id;
-
-  container.innerHTML = `
-    <div class="q-card" role="group" aria-labelledby="${qId}-text">
-      <div class="q-number" aria-hidden="true">FRAGE ${currentQuestion + 1} VON ${activeOrder.length}</div>
-      <div class="q-text" id="${qId}-text">${q.text}</div>
-      <div class="q-help" id="${qId}-help">${q.help}</div>
-      <div class="q-article">${q.article}</div>
-      <div class="answers" role="group" aria-label="Wählen Sie Ihre Antwort" aria-describedby="${qId}-help">
-        <button type="button" class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)" aria-pressed="${existing === 'yes'}">Ja</button>
-        <button type="button" class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)" aria-pressed="${existing === 'no'}">Nein</button>
-        <button type="button" class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)" aria-pressed="${existing === 'unsure'}">Unsicher</button>
-        <button type="button" class="ans-btn ${existing === 'not_applicable' ? 'selected-unsure' : ''}" onclick="answer('not_applicable', this)" aria-pressed="${existing === 'not_applicable'}">Nicht anwendbar</button>
-      </div>
-    </div>
-  `;
-
-  // Hide intro after first question
-  if (currentQuestion > 0) {
-    const intro = document.getElementById("assessIntro");
-    if (intro) intro.style.display = "none";
-  }
-
-  // Update progress
-  const pct = Math.round((currentQuestion / activeOrder.length) * 100);
-  document.getElementById("progressBar").style.width = pct + "%";
-  document.getElementById("progressPct").textContent = pct + "%";
-  document.getElementById("progressText").textContent = `Frage ${currentQuestion + 1} von ${activeOrder.length}`;
-  document.getElementById("progressWrap").setAttribute("aria-valuenow", pct);
-
-  // Button states
-  document.getElementById("prevBtn").disabled = currentQuestion === 0;
-  document.getElementById("nextBtn").disabled = !existing;
-  document.getElementById("nextBtn").textContent = currentQuestion === activeOrder.length - 1 ? "Ergebnisse anzeigen" : "Weiter";
-
-  // Focus management: move focus to the question text for screen readers
-  const qText = document.getElementById(qId + "-text");
-  if (qText) { qText.setAttribute("tabindex", "-1"); qText.focus(); }
-}
-
-function answer(value, btn) {
-  const activeQ = getActiveQuestions();
-  const activeOrder = getActiveDisplayOrder();
-  const q = activeQ[activeOrder[currentQuestion]];
-  answers[q.id] = value;
-
-  // Update button states visually and aria-pressed
-  btn.parentElement.querySelectorAll(".ans-btn").forEach(b => {
-    b.className = "ans-btn";
-    b.setAttribute("aria-pressed", "false");
-  });
-  btn.setAttribute("aria-pressed", "true");
-  if (value === "yes") btn.className = "ans-btn selected";
-  else if (value === "no") btn.className = "ans-btn selected-no";
-  else btn.className = "ans-btn selected-unsure";
-
-  document.getElementById("nextBtn").disabled = false;
-  saveProgress();
-}
-
-function nextQuestion() {
-  if (window.plausible) plausible("Assess Question", { props: { step: currentQuestion + 1, jurisdiction: activeJurisdiction } });
-  if (currentQuestion < getActiveDisplayOrder().length - 1) {
-    currentQuestion++;
-    renderQuestion();
-    saveProgress();
-  } else {
-    showResults();
-  }
-}
-
-function prevQuestion() {
-  if (currentQuestion > 0) {
-    currentQuestion--;
-    renderQuestion();
-    saveProgress();
-  }
-}
-
-// =====================================================================
-// Bewertung :  portiert von questionnaire.py evaluate_questionnaire()
-// =====================================================================
-
-function calculateResults() {
-  return RegulaDecisionAdapters.evaluateQuestionnaireDecision(activeJurisdiction, answers);
-}
-
-// =====================================================================
-// Ergebnis-Darstellung
-// =====================================================================
-
-function showResults() {
-  document.getElementById("questionnaireSection").style.display = "none";
-  const results = calculateResults();
-  document.getElementById("resultsSection").classList.add("active");
-  RegulaDecisionUI.renderQuestionnaireResult(results, {
-    locale: document.documentElement.lang,
-    questions: getActiveQuestions(),
-    tierElement: document.getElementById("tierResult"),
-    detailsElement: document.getElementById("obligationsList"),
-    nextElement: document.getElementById("nextStepsSection"),
-  });
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  if (window.plausible) plausible("Assessment Complete", { props: { result_type: results.result_type, jurisdiction: activeJurisdiction } });
-}
-
-// =====================================================================
-// URL-Kodierung (zustandslos, wie EuroComply)
-// =====================================================================
-
-function encodeAnswers() {
-  return RegulaDecisionAdapters.encodeAnswers(activeJurisdiction, answers, getActiveQuestions());
-}
-
-function decodeAnswers(code) {
-  return RegulaDecisionAdapters.decodeAnswers(activeJurisdiction, code, getActiveQuestions());
-}
-
-function copyShareLink() {
-  if (window.plausible) plausible("Assess Export", { props: { type: "share-link" } });
-  const code = encodeAnswers();
-  const jurParam = activeJurisdiction !== "eu" ? "&j=" + activeJurisdiction : "";
-  const url = window.location.origin + window.location.pathname + "?r=" + code + jurParam;
-  const input = document.getElementById("shareUrl");
-  input.value = url;
-  document.getElementById("shareSection").style.display = "block";
-  input.select();
-  navigator.clipboard.writeText(url).catch(() => {});
-}
-
-function exportJSON() {
-  if (window.plausible) plausible("Assess Export", { props: { type: "json" } });
-  RegulaDecisionUI.exportResult(calculateResults(), {
-    locale: document.documentElement.lang,
-    answers: answers,
-  });
-}
-
-function resetAssessment() {
-  currentQuestion = 0;
-  answers = {};
-  assessmentStarted = false;
-  activeJurisdiction = "eu";
-  selectJurisdiction("eu");
-  document.getElementById("resultsSection").classList.remove("active");
-  document.getElementById("heroSection").style.display = "block";
-  document.getElementById("questionnaireSection").style.display = "none";
-  window.history.replaceState(null, "", window.location.pathname);
-  try { sessionStorage.removeItem("regula_assess"); } catch (e) {}
-}
 
 // =====================================================================
 // Code-Scanner-UI
@@ -1070,32 +870,7 @@ function resetScanner() {
 }
 
 // Keyboard navigation for questionnaire
-document.addEventListener("keydown", function(e) {
-  if (!assessmentStarted) return;
-  const section = document.getElementById("questionnaireSection");
-  if (section.style.display === "none") return;
-  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
 
-  if (key === "ArrowRight" || key === "ArrowDown") {
-    e.preventDefault();
-    if (!document.getElementById("nextBtn").disabled) nextQuestion();
-  } else if (key === "ArrowLeft" || key === "ArrowUp") {
-    e.preventDefault();
-    if (!document.getElementById("prevBtn").disabled) prevQuestion();
-  } else if (key === "1" || key === "y") {
-    const btns = document.querySelectorAll(".ans-btn");
-    if (btns.length >= 1) { btns[0].click(); btns[0].focus(); }
-  } else if (key === "2" || key === "n") {
-    const btns = document.querySelectorAll(".ans-btn");
-    if (btns.length >= 2) { btns[1].click(); btns[1].focus(); }
-  } else if (key === "3" || key === "u") {
-    const btns = document.querySelectorAll(".ans-btn");
-    if (btns.length >= 3) { btns[2].click(); btns[2].focus(); }
-  } else if (key === "4" || key === "a") {
-    const btns = document.querySelectorAll(".ans-btn");
-    if (btns.length >= 4) { btns[3].click(); btns[3].focus(); }
-  }
-});
 
 // Enable scan button when code is entered
 document.getElementById("codeInput").addEventListener("input", function() {
@@ -1394,34 +1169,7 @@ function exportScanJSON() {
 // Init: check for shared results in URL
 // =====================================================================
 
-(function init() {
-  const params = new URLSearchParams(window.location.search);
 
-  // Parse jurisdiction from URL
-  const jurParam = params.get("j");
-  if (jurParam && JURISDICTION_INFO[jurParam]) {
-    activeJurisdiction = jurParam;
-    selectJurisdiction(jurParam);
-  }
-
-  const code = params.get("r");
-  if (code) {
-    // Strip the encoded answers from the address bar once decoded: the
-    // analytics script reads location.href for pageviews, and the r=
-    // payload is user-derived data that should not leave the browser.
-    try { history.replaceState(null, "", location.pathname); } catch (e) {}
-    const decoded = decodeAnswers(code);
-    if (decoded) {
-      answers = decoded;
-      assessmentStarted = true;
-      document.getElementById("heroSection").style.display = "none";
-      showResults();
-      return;
-    }
-  }
-  // Restore in-progress assessment from sessionStorage
-  loadProgress();
-})();
 </script>
 <script>
 // Nav scroll effect

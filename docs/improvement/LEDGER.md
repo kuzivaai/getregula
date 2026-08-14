@@ -1987,3 +1987,85 @@ Korean delegated thresholds and two EU model variants. G1 is closed across the
 enumerated routes, but G4 remains co-binding for wider legacy scorer debt and G5
 remains open for external human validation. The standing product, venture,
 pack, contact, data-collection, and pilot verdicts remain unchanged.
+
+### N106. Browser questionnaire: abandonment defects, locale determination claim, and flow de-duplication
+
+**First raised:** 2026-08-14. **Status:** IMPLEMENTED for the enumerated
+defects; the scoping-flow gap and representative-user validation remain open.
+
+The three locale assessment pages each carried a verbatim copy of the whole
+questionnaire flow; extracted function and constant signatures were identical
+across them. That duplication is the cause behind most of what follows, so the
+flow was extracted to `site/assess/assess-flow.js` and the pages reduced to
+question data plus display strings. The diff removes 965 lines and adds 387
+across the three pages while adding behaviour.
+
+Reproduced in a browser against the shipped pages before any change:
+
+- The scope question is decisive on its own. Supplying scope=no with every
+  other answer set to yes returns `outside_scope_candidate` for EU, Korea and
+  Colorado alike, yet the interface required 17 further questions before
+  showing it. A persistent early-exit control was added, with a distinct final
+  panel when scope resolves out.
+- Thirteen of the 48 questions across the three jurisdictions mapped to no
+  kernel fact and could not affect any result (EU 5 of 18, Korea 5 of 16,
+  Colorado 3 of 14). Decision-bearing questions now run first and the rest are
+  labelled optional. The split is derived from the adapter at runtime rather
+  than listed, so a question that later gains a mapping is promoted without an
+  edit.
+- The element carrying the question count was written only by a click handler,
+  so a visitor on the default selection saw an empty string and no indication
+  of length. It is now written on load with a time estimate.
+- The result name rendered twice, at two sizes in one colour; the eyebrow is
+  now a generic label. A realistic in-scope result was 5,682 pixels with 27
+  unresolved-fact cards burying eight obligations; the first five stay visible
+  and the remainder fold into a `details` element, leaving 2,924 pixels with
+  nothing removed from the DOM.
+- The on-screen notice claimed answers "are not stored or transmitted" while
+  every click wrote them to `sessionStorage`. Transmission was correctly
+  denied; storage was not. The notice now states what actually happens.
+- `not_applicable` is a decisive fact state in `decision_kernel._resolve_fact`,
+  resolving a predicate false exactly as `no` does, but it carried the amber
+  styling used for `unsure`. A user choosing it as a soft non-answer was
+  asserting a negative. It now has decisive styling and every question carries
+  a legend distinguishing the two.
+
+Found during the rework rather than in the audit:
+
+- The German and Brazilian Portuguese intros claimed the assessment
+  "determines" which tier applies and what the reader must do. English had
+  been corrected to the candidate framing and the other two locales were left
+  behind, so the two non-English pages were making the exact claim the hard
+  rule forbids, invisible to an English reader. Both were rewritten for all
+  three jurisdictions.
+- An explicit `?j=` jurisdiction link lost to stale `sessionStorage`, opening
+  the wrong regulation. Reproduced by planting stale state. The URL now
+  outranks storage, and a jurisdiction mismatch drops the saved position rather
+  than resuming it against a different question set.
+- `tests/test_questionnaire_scoring.js` had still never been executed by any
+  runner (the state recorded as F15) and had drifted: its question list omitted
+  `autonomous_decisions`, which all three pages ship. It is now a CI step, and
+  it gained a sync check deriving question ids from the pages, a locale-parity
+  check, and an anti-fork check. The sync check failed on exactly that drifted
+  id on its first run. Assertions went from 64 to 177.
+
+Controls were run rather than assumed. Breaking a question-to-fact mapping made
+the contract test exit 1 and restoring it returned 0. Removing the
+case-insensitivity from the shared keyboard handler, and separately re-forking a
+flow function into a locale page, each made
+`test_web_assessment_locales_preserve_candidate_framing_and_current_status`
+fail; both passed again on restore. Share links are positional over the question
+array, which was deliberately not reordered, and a full round trip plus a legacy
+15-slot code both decode correctly.
+
+One measurement correction is recorded rather than dropped: an initial contrast
+pass reported the new banner at 2.87:1 by comparing against a translucent
+background without compositing it. The corrected figure is 14.02:1.
+
+None of this is evidence of usability, comprehension or trust, all of which
+need representative users and remain gated. Detection efficacy is untouched.
+Five of the eight scoping facts named in the GTM Sprint 1 backlog remain absent
+as resolvable facts, including Article 2(1)(c) output-used-in-the-Union, GPAI
+status and representative need, so a non-EU visitor still cannot get an answer
+to the question the market model says they arrive with. The standing product,
+venture, contact, data-collection and pilot verdicts are unchanged.
