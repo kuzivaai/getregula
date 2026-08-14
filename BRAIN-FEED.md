@@ -12,7 +12,7 @@ scans it like any other.
 <!-- BRAIN:BEGIN -->
 state: Development-time AI governance risk-indication CLI, published and deployed. The claim gates are green on main and the commercial gates are not.
 blocker: The controlling commercial verdicts (STOP, PRODUCT_PILOT_STATUS NOT_APPROVED, TECHNICAL_EVIDENCE FAILED) stand until new evidence clears each gate on its own terms; no engineering increment moves them.
-next: Owner decisions before engineering, per the priority action plan in the 13 August end-to-end dossier: name the seller and consultant, define the service scope, take qualified advice on terms, refunds, privacy and tax.
+next: Owner decisions before engineering, per the priority action plan in the 13 August end-to-end dossier: name the seller and consultant, define the service scope, take qualified advice on terms, refunds, privacy and tax. Separately, review the browser-assessment rework on feat/engagement-fixes: the questionnaire flow is now one shared module instead of three inline copies, and the German and Brazilian Portuguese intros no longer claim the tool determines a legal classification.
 gates: Claim freeze holds for external use. No precision figures, no test count, no pattern count, no version number, no cross-map count anywhere outside this repo. Never present a scan as a compliance determination, or "not flagged" as "compliant". Payment and booking stay disabled until every P0 control is complete.
 updated: 2026-08-14
 <!-- BRAIN:END -->

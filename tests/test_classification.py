@@ -6325,11 +6325,27 @@ def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
             '<script src="decision-kernel.js"></script>',
             '<script src="decision-adapters.js"></script>',
             '<script src="decision-ui.js"></script>',
+            '<script src="assess-flow.js"></script>',
         ):
             assert source in text, f"{filename} missing shared source {source!r}"
-        assert (
-            'const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;' in text
-        ), f"{filename} must make the advertised letter shortcuts case-insensitive"
+        # Flow control is shared, so a page that re-declares it has forked.
+        for forked in (
+            "function renderQuestion(",
+            "function nextQuestion(",
+            "function showResults(",
+        ):
+            assert forked not in text, (
+                f"{filename} re-declares {forked!r}; flow lives in assess-flow.js"
+            )
+
+    # The keyboard shortcuts moved into the shared flow module with the rest of
+    # the questionnaire control. Asserting it here keeps the guarantee while
+    # letting one implementation serve all three locales.
+    shared_flow = (assess_dir / "assess-flow.js").read_text(encoding="utf-8")
+    assert (
+        "const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;"
+        in shared_flow
+    ), "assess-flow.js must make the advertised letter shortcuts case-insensitive"
 
     shared_ui = (assess_dir / "decision-ui.js").read_text(encoding="utf-8")
     assert 'querySelector(".result-tier")' in shared_ui
