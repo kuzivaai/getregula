@@ -1,7 +1,7 @@
 <!-- mcp-name: io.github.kuzivaai/regula -->
 # Regula
 
-**Find AI governance risks that may be visible in source code. Covers the EU AI Act, South Korea AI Basic Act, and Colorado SB 26-189, with questionnaires for context that code cannot show.**
+**Offline-capable, code-native AI governance scanning. The core scan runs locally, does not upload scanned file contents, and needs no account; telemetry is sent only with explicit opt-in consent. Regula flags patterns that may need review under the EU AI Act, South Korea's AI Basic Act, and Colorado SB 26-189, records the deployment facts code cannot show, and reports insufficient information rather than inventing a score.**
 
 [![PyPI](https://img.shields.io/pypi/v/regula-ai)](https://pypi.org/project/regula-ai/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)

@@ -14,7 +14,7 @@ license = "(Apache-2.0 OR EUPL-1.2) AND LicenseRef-DRL-1.1"
 license-files = ["LICENSE.txt", "LICENSE.EUPL", "docs/LICENSE.Detection.Rules.md", "NOTICE"]
 requires-python = ">=3.10"
 authors = [{name = "The Implementation Layer"}]
-keywords = ["ai-governance", "eu-ai-act", "compliance", "claude-code", "risk-indication", "south-korea", "colorado", "multi-jurisdiction"]
+keywords = ["ai-governance", "eu-ai-act", "compliance", "claude-code", "risk-indication", "south-korea", "colorado", "multi-jurisdiction", "static-analysis", "offline", "mcp-server", "github-action", "sarif"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
