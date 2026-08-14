@@ -2147,3 +2147,84 @@ Nothing here is evidence of demand, usability or comprehension. It removes
 false and stale claims and adds gates that stop them returning. The standing
 product, venture, pack, contact, data-collection and pilot verdicts are
 unchanged.
+
+### N108. Published CLI transcripts asserted conclusions the tool does not make
+
+**First raised:** 2026-08-14. **Status:** IMPLEMENTED for the enumerated
+surfaces; the non-reproducible detector reading below is OPEN and undiagnosed.
+Commit `HELD:4de7541`, held on `feat/engagement-fixes`; nothing is on main.
+
+Nine tracked surfaces published a `Verdict:` line as CLI output. No command
+emits `Verdict:` at all. Six went further and printed "Your project is
+classified as high-risk under EU AI Act Annex III", four adding "You must
+comply with Articles 9-15 before the enforcement deadline". That is a legal
+classification and an obligation, attributed to the tool, inside a transcript
+that makes it look like the tool said them. The hard rule forbids exactly that.
+The shipped tool does not do it: it reports `insufficient_information`, labels
+findings "Detector observations (not legal facts)", and names the facts a
+person must still settle. **The documentation was left behind by the
+decision-kernel rework, and what it was left showing is the older, stronger
+framing.** This is a claim defect that presented as a staleness defect.
+
+Enumerated across tracked non-test surfaces, and all corrected:
+
+| Retired output | Where | Emitted by any command |
+|---|---|---|
+| `Verdict: HIGH-RISK` / `PROHIBITED` / `LIMITED-RISK` | 9 surfaces | 0 |
+| `Your project is classified as high-risk` | 6 surfaces | 0 |
+| `You must comply with Articles 9-15` | 4 surfaces | 0 |
+| `EU AI Act Compliance Gap Assessment`, `Overall score: NN%` | 2 guides, 1 README | 0 |
+| `confidence: NN%` | 4 surfaces | 0, replaced by `detector priority: N` |
+
+`format_gap_text` survives only in `compliance_check.py`'s own `__main__`
+block and as an unused import in `cli_compliance.py`, so the per-article
+percentage report is unreachable from the CLI. That is the right outcome: a
+percentage against an article reads as a measure of compliance with that
+article, which Regula does not determine.
+
+**Two guards, because one cannot cover both cases.**
+`scripts/verify_transcripts.py` runs the command each page documents, from
+`data/documented_transcripts.json`, and requires every anchor to appear both on
+the page and in the real output. Running the DOCUMENTED command rather than a
+curated one is load-bearing: the bundled fixtures live under `examples/`, which
+the default production scope excludes, so a page omitting `--scope all` shows a
+reader nothing, and only this design catches that. Transcripts of a
+hypothetical project (`/home/dev/myproject`, `sample_medical.py`) cannot be
+re-run at all, so those are covered by `RETIRED_MARKERS`, which
+`retired_markers_are_unreachable()` proves is a measurement by running the CLI
+and failing if a forbidden marker turns out to be live.
+
+Controls fired and restored: a stale value; an anchor no page contains; a line
+on the page but absent from output; and a marked-up
+`<span>Verdict</span>: HIGH-RISK`. The last failed first time and exposed a
+defect in the new normaliser itself, tag-to-space producing `Verdict :` which
+does not contain `Verdict:`, so a marked-up verdict would have evaded the guard
+while a plain one was caught. The blog page used exactly that markup.
+
+**OPEN, and the most interesting item here.** One `git worktree` of HEAD
+returned `[INFO] [ 43]` / `INFO tier: 1` for the cv-screening fixture three
+times in a row, and three pages plus the manifest were briefly "corrected" to
+match it before the reading was challenged. It has never reproduced. The value
+is `[WARN] [ 63]` / `WARN tier: 1` in nine runs across three separate checkouts
+of the same commit. **No cause was established and none is guessed.** For a
+tool whose product is reproducible evidence, a detector priority differing by
+20 points and a tier on byte-identical input warrants investigation this has
+not had. Recorded as observed, not diagnosed.
+
+**Quarantine.** Six entries went silent as `text-absent` because the
+corrections removed their text, and are burned down with disposition
+`corrected`. Entries fall 25 to 19 and the ratchet ceiling falls with them to
+19, leaving no headroom. The thirteen live entries remain: ten are scan results
+in two blog posts that would need their corpora re-scanned, and three are the
+assess pages' `0%`, which measurement shows is CSS (`max-width: 100%`) and a
+progress-bar label rather than a claim. That third group is a gate-scope
+question in the auditor's noise stripping, not a content defect, and is left
+for the owner rather than burned down on a disposition that would not be true.
+
+`scripts/cascade_count.py` also gained a second quantity, the custom runner's
+function count, after it drifted twice in this session at the cost of a full
+suite run each time. Separate template list, separate pass, separate canonical,
+anchored on the verb so `442 defined in-file` on the same line is untouched.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. Nothing here is evidence of demand, usability or comprehension.
