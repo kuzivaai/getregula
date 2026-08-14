@@ -292,7 +292,15 @@ def handle_request(request: Dict[str, Any]) -> Dict[str, Any]:
                 "content": [{"type": "text", "text": json.dumps(text, sort_keys=True)}],
                 "structuredContent": text,
             })
-        return ok({"content": [{"type": "text", "text": text}]})
+        # Contract: a tool function returns a dict on success and a str ONLY
+        # for a tool-level error (invalid path, blocked path, scan failure,
+        # missing input). Before 2026-08-14 that str flowed into an ordinary
+        # success result, so an MCP client saw "Error scanning ..." as a
+        # successful tool call. That is ledger finding N82's class surviving
+        # on the string paths after the exception paths were fixed. Every
+        # str return is now flagged per the MCP tool-result error form, so
+        # no future string-returning error path can present as success.
+        return ok({"content": [{"type": "text", "text": text}], "isError": True})
 
     elif method == "ping":
         return ok({})
