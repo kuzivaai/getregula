@@ -40,11 +40,10 @@
          'unsafe-inline' is required (inline scripts/styles throughout).
          frame-ancestors is ignored in meta CSP per spec :  clickjacking protection
          requires a server header or CDN proxy (e.g. Cloudflare). -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://formspree.io https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preconnect" href="https://plausible.io" crossorigin>
-    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <title>Regula: EU AI Act Code-Indicator Scanner (Open Source)</title>
     <meta name="description" content="Open-source tool that flags AI governance risks in source code for human review. It does not determine legal classification or compliance.">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -343,7 +342,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2,787</strong> tests
+                <strong style="color:var(--text);">2,801</strong> tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unexpected security findings
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero dependencies
                 <span class="sp-sep" aria-hidden="true">&middot;</span> the local core does not upload scanned files
@@ -744,7 +743,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
         </div>
         <div class="card-base art-card">
             <h3>Pattern matching, not understanding</h3>
-            <p>83.5% precision on production code (blind-labelled random corpus, N=115, Python only, measured on v1.7.0, labelled by a single reviewer with no inter-rater agreement measurement). 15.2% on AI library source code :  the hardest corpus, since those libraries implement AI rather than using it for regulated decisions. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Published benchmark &rarr;</a></p>
+            <p>Regula matches patterns in source code. It does not read intent, so it flags things that turn out to be fine and misses things a person would catch. Its own precision and recall measurements are under review and are not quoted here as current figures; the methodology and its limits are published in full. <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md" style="color:#8888aa;">Benchmark methodology and limits &rarr;</a></p>
         </div>
         <div class="card-base art-card">
             <h3>Scaffolds, not substance</h3>
@@ -870,15 +869,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
             <span class="cmd">pipx install regula-ai</span>
             <span class="cp" aria-live="polite">copy</span>
         </button>
-        <p style="font-size:13px;color:var(--text-dim);margin:24px 0 12px;">Not ready to install? Get notified when deadlines change.</p>
-        <div data-fs-success style="display:none;font-size:13px;color:#10b981;margin-bottom:8px;">You're on the list. Major releases only.</div>
-        <div data-fs-error style="display:none;font-size:13px;color:#ef4444;margin-bottom:8px;"></div>
-        <form id="notify-form" class="notify">
-            <input type="email" id="notify-email" name="email" placeholder="your@email.com" aria-label="Email for updates" data-fs-field required>
-            <span data-fs-error="email" style="font-size:11px;color:#ef4444;"></span>
-            <button type="submit" data-fs-submit-btn>Get updates</button>
-        </form>
-        <p class="notify-msg">No spam. Major releases and EU AI Act deadline reminders only.</p>
+        
     </div>
 </div>
 
@@ -1046,13 +1037,6 @@ Article observations emitted: 0; held pending applicability: 8</pre>
     });
 </script>
 
-<script>
-    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
-    formspree('initForm', { formElement: '#notify-form', formId: 'xjgppkkn' });
-    document.getElementById('notify-form').addEventListener('submit', function() {
-        if (window.plausible) plausible('CTA Click', { props: { type: 'notify' } });
-    });
-</script>
-<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
 </body>
 </html>

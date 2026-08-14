@@ -39,9 +39,9 @@ REGION = {
     "og_description": "South Africa's draft National AI Policy was gazetted on 10 April 2026 and its withdrawal was officially confirmed on 5 June 2026. The draft is not current policy or law.",
     "twitter_title": "South Africa Draft AI Policy 2026 — Regula",
     "twitter_description": "Official publication and withdrawal records, plus a qualified summary of the existing South African legal baseline.",
-    "last_updated": "4 August 2026",
+    "last_updated": "14 August 2026",
     "published_time": "2026-04-07T00:00:00+02:00",
-    "modified_time": "2026-08-04T00:00:00+01:00",
+    "modified_time": "2026-08-14T00:00:00+00:00",
     "lede": "South Africa's draft National Artificial Intelligence Policy was published in <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf\">Government Gazette No. 54477 on 10 April 2026</a>. Cabinet later approved its withdrawal after fictitious references were identified, as the <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.sanews.gov.za/node/81987\">official government news service confirmed on 5 June 2026</a>. The withdrawn draft is historical material, not current policy or law. Existing legislation may still apply within its own scope.",
     # Bespoke tracker (verbatim from the reviewed page) — used instead
     # of builder-rendered tracker_rows.

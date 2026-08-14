@@ -51,6 +51,7 @@ CLAUDE.md
 hooks/
 .ci-heal/
 .playwright-cli/
+.playwright-mcp/
 .handover.md
 
 # Regula runtime output

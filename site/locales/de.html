@@ -36,11 +36,10 @@
       .term-body { position: relative; min-height: 340px }
     </style>
     <meta name="theme-color" content="#070711">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://formspree.io https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preconnect" href="https://plausible.io" crossorigin>
-    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <title>Regula: Open-Source-Scanner für KI-Governance-Indikatoren</title>
     <meta name="description" content="Open-Source-CLI für KI-Governance-Indikatoren im Code und strukturierte menschliche Prüfung. Keine rechtliche Einstufung oder Compliance-Bestimmung.">
     <meta name="robots" content="index, follow, max-image-preview:large">
@@ -57,9 +56,9 @@
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Regula :  EU-KI-Gesetz-Konformitätsscanner für Code">
+    <meta property="og:image:alt" content="Regula :  EU-KI-Gesetz-Indikator-Scanner für Code">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
-    <meta name="twitter:image:alt" content="Regula :  EU-KI-Gesetz-Konformitätsscanner für Code">
+    <meta name="twitter:image:alt" content="Regula :  EU-KI-Gesetz-Indikator-Scanner für Code">
     <meta name="author" content="Regula">
     <link rel="canonical" href="https://getregula.com/locales/de.html">
     <script type="application/ld+json">
@@ -324,7 +323,7 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.787</strong> Tests
+                <strong style="color:var(--text);">2.801</strong> Tests
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> unerwartete Sicherheitsbefunde
                 <span class="sp-sep" aria-hidden="true">&middot;</span> null Abh&auml;ngigkeiten
                 <span class="sp-sep" aria-hidden="true">&middot;</span> der lokale Kern lädt gescannte Dateien nicht hoch
@@ -731,7 +730,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
         </div>
         <div class="card-base art-card">
             <h3>Mustererkennung, nicht Verst&auml;ndnis</h3>
-            <p>83,5% Pr&auml;zision auf Produktionscode (blind-gelabelter Zufallskorpus, N=115). 15,2% Pr&auml;zision auf KI-Bibliotheks-Quellcode : dem schwierigsten Korpus, da diese Bibliotheken KI implementieren, anstatt sie f&uuml;r regulierte Entscheidungen zu nutzen. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Ver&ouml;ffentlichter Benchmark &rarr;</a></p>
+            <p>Regula gleicht Muster im Quellcode ab. Es erkennt keine Absicht, meldet daher Stellen, die sich als unproblematisch erweisen, und &uuml;bersieht Stellen, die ein Mensch bemerken w&uuml;rde. Die eigenen Pr&auml;zisions- und Trefferquotenmessungen werden derzeit &uuml;berpr&uuml;ft und werden hier nicht als aktuelle Zahlen genannt; die Methodik und ihre Grenzen sind vollst&auml;ndig ver&ouml;ffentlicht. <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md" style="color:#8888aa;">Methodik und Grenzen &rarr;</a></p>
         </div>
         <div class="card-base art-card">
             <h3>Ger&uuml;ste, nicht Substanz</h3>
@@ -818,15 +817,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
             <span class="cmd">pipx install regula-ai</span>
             <span class="cp">kopieren</span>
         </button>
-        <p style="font-size:13px;color:var(--text-dim);margin:24px 0 12px;">Noch nicht bereit zum Installieren? Lassen Sie sich benachrichtigen, wenn Fristen sich &auml;ndern.</p>
-        <div data-fs-success style="display:none;font-size:13px;color:#10b981;margin-bottom:8px;">Sie sind auf der Liste. Nur Hauptversionen.</div>
-        <div data-fs-error style="display:none;font-size:13px;color:#ef4444;margin-bottom:8px;"></div>
-        <form id="notify-form" class="notify">
-            <input type="email" id="notify-email" name="email" placeholder="ihre@email.de" aria-label="E-Mail f&uuml;r Updates" data-fs-field required>
-            <span data-fs-error="email" style="font-size:11px;color:#ef4444;"></span>
-            <button type="submit" data-fs-submit-btn>Updates erhalten</button>
-        </form>
-        <p class="notify-msg">Kein Spam. Nur Hauptversionen und EU-KI-Gesetz-Fristen.</p>
+        
     </div>
 </div>
 
@@ -994,13 +985,6 @@ Article observations emitted: 0; held pending applicability: 8</pre>
     });
 </script>
 
-<script>
-    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
-    formspree('initForm', { formElement: '#notify-form', formId: 'xjgppkkn' });
-    document.getElementById('notify-form').addEventListener('submit', function() {
-        if (window.plausible) plausible('CTA Click', { props: { type: 'notify' } });
-    });
-</script>
-<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
 </body>
 </html>

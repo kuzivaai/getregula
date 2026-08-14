@@ -5,12 +5,14 @@ from __future__ import annotations
 import argparse
 import email.parser
 import hashlib
+import html
 import importlib
 import json
 import re
 import subprocess
 import sys
 import tarfile
+import unicodedata
 import zipfile
 from collections import Counter, deque
 from pathlib import Path
@@ -29,26 +31,160 @@ REPORT = REPO / "docs/improvement/PUBLIC-SURFACE-DISCOVERY.md"
 POLICY = REPO / "data/public_surface_policy.json"
 TEXT_SITE = {".html", ".htm", ".txt", ".xml", ".json"}
 LINK_RE = re.compile(r"(?<!!)\[[^]]*\]\(([^)#?]+)(?:#[^)]*)?\)")
+TAG_RE = re.compile(r"<[^>]+>")
+
+# Languages the site actually ships. Derived at test time from the lang
+# attribute of every tracked page (see tests/test_public_claim_integrity.py);
+# repeated here as the authoring contract for PROHIBITED_CLAIMS, which must
+# carry one arm per shipped language or the guard is blind to that locale.
+CLAIM_LANGUAGES = ("en", "de", "pt")
+
+
+def fold_for_claim_match(text: str) -> str:
+    """Reduce copy to the form the prohibited-claim patterns are written against.
+
+    Three defects made the previous raw-text match unsound, each demonstrated
+    against shipped pages before this was written:
+
+    1. Inline markup split a phrase, so `zero <strong>network</strong> calls`
+       evaded the English pattern that exists precisely to catch it.
+    2. Accented copy is written with HTML entities, so `c&oacute;digo` never
+       matched a pattern containing `codigo`, let alone `código`.
+    3. Accents alone defeated matching even after decoding.
+
+    So: decode entities, fold to ASCII-compatible letters, casefold, and
+    collapse whitespace. Patterns are therefore authored lowercase and
+    unaccented; `test_claim_patterns_are_written_in_folded_form` enforces that.
+    """
+    decoded = html.unescape(text)
+    decomposed = unicodedata.normalize("NFKD", decoded)
+    stripped = "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+    return re.sub(r"\s+", " ", stripped.casefold())
+
+
+def claim_match_variants(text: str) -> tuple[str, ...]:
+    """Both readings of a source: markup kept, and markup replaced by space.
+
+    Matching only the tag-stripped form would lose claims that live in
+    attribute values (`aria-label`, `alt`, `content`), which the raw match used
+    to cover. Matching only the raw form is what let markup-split phrases
+    through. Each pattern is tried against both and the results unioned, so
+    coverage is a strict superset of the previous behaviour and no join
+    artefact can invent a match that neither reading contains.
+    """
+    return (fold_for_claim_match(text),
+            fold_for_claim_match(TAG_RE.sub(" ", html.unescape(text))))
+
+
+# claim class -> language -> pattern, matched against folded text.
+# Non-English arms are translations of the English claim, not quotations of
+# shipped copy; each is proved live by a planted negative control per
+# (class, language) pair in tests/test_public_claim_integrity.py. A hedged
+# statement must not match: the German and Portuguese homepages say the local
+# core does not upload scanned files, which is a bounded claim and stays green.
 PROHIBITED_CLAIMS = {
-    "legal classification": re.compile(
-        r"(?:(?:regula|scanner|tool|command)\s+(?:automatically\s+)?"
-        r"classif(?:y|ies)\b.{0,120}(?:system|snippet).{0,80}risk tier|"
-        r"classifies your system\b)",
-        re.I,
-    ),
-    "compliance scan": re.compile(r"(?:compliance scanner|compliance issues|assess compliance gaps)", re.I),
-    "obligation determination": re.compile(r"tells? you which obligations apply", re.I),
-    "universal network": re.compile(
-        r"(?:zero network calls|no API calls|no data leaves|"
-        r"zero data transmission|never leaves your machine)",
-        re.I,
-    ),
-    "DPA determination": re.compile(r"no DPA (?:is )?required", re.I),
-    "auditor completeness": re.compile(r"auditor.ready|audit.ready", re.I),
-    "universal reproducibility": re.compile(r"every (?:metric|number).*(?:reproduc|CI.enforced)", re.I),
-    "unbounded runtime": re.compile(r"(?:in|under|takes?) (?:10|30) seconds", re.I),
-    "zero security findings": re.compile(r"zero known security findings|0 known security findings", re.I),
+    "legal classification": {
+        "en": re.compile(
+            r"(?:(?:regula|scanner|tool|command)\s+(?:automatically\s+)?"
+            r"classif(?:y|ies)\b.{0,120}(?:system|snippet).{0,80}risk tier|"
+            r"classifies your system\b)",
+            re.I,
+        ),
+        "de": re.compile(
+            r"(?:(?:regula|scanner|tool|werkzeug)\s+(?:automatisch\s+)?"
+            r"(?:klassifiziert|stuft)\b.{0,120}(?:system|code).{0,80}"
+            r"risiko(?:stufe|klasse|kategorie)|"
+            r"klassifiziert ihr system\b|bestimmt die risiko(?:stufe|klasse))",
+            re.I,
+        ),
+        "pt": re.compile(
+            r"(?:(?:regula|scanner|ferramenta)\s+(?:automaticamente\s+)?"
+            r"classifica\b.{0,120}sistema.{0,80}(?:nivel|categoria|grau) de risco|"
+            r"classifica o seu sistema\b|determina o nivel de risco)",
+            re.I,
+        ),
+    },
+    "compliance scan": {
+        "en": re.compile(r"(?:compliance scanner|compliance issues|assess compliance gaps)", re.I),
+        "de": re.compile(
+            r"(?:compliance.scanner|konformitatsscanner|compliance.probleme|"
+            r"konformitatsprobleme|compliance.lucken bewerten)",
+            re.I,
+        ),
+        "pt": re.compile(
+            r"(?:scanner de conformidade|verificador de conformidade|"
+            r"problemas de conformidade|avalia(?:r)? lacunas de conformidade)",
+            re.I,
+        ),
+    },
+    "obligation determination": {
+        "en": re.compile(r"tells? you which obligations apply", re.I),
+        "de": re.compile(r"sagt ihnen,? welche pflichten (?:gelten|zutreffen|anwendbar sind)", re.I),
+        "pt": re.compile(r"diz(?: a voce)?,? quais obrigacoes se aplicam", re.I),
+    },
+    "universal network": {
+        "en": re.compile(
+            r"(?:zero network calls|no API calls|no data leaves|"
+            r"zero data transmission|never leaves your machine|"
+            r"your code never leaves|nothing leaves your machine)",
+            re.I,
+        ),
+        "de": re.compile(
+            r"(?:(?:null|keine) netzwerk(?:aufrufe|verbindungen|anfragen)|"
+            r"keine daten verlassen|"
+            r"verlasst (?:niemals|nie) (?:ihren|deinen|den) (?:rechner|computer)|"
+            r"ihr code verlasst (?:niemals|nie))",
+            re.I,
+        ),
+        "pt": re.compile(
+            r"(?:(?:zero|sem|nenhuma) chamadas? de rede|nenhum dado sai|"
+            r"nunca sa(?:i|em) d(?:a|o) (?:sua|seu) (?:maquina|computador)|"
+            r"seu codigo nunca sai)",
+            re.I,
+        ),
+    },
+    "DPA determination": {
+        "en": re.compile(r"no DPA (?:is )?required", re.I),
+        "de": re.compile(r"(?:kein avv|keine auftragsverarbeitung|kein auftragsverarbeitungsvertrag) (?:ist )?erforderlich", re.I),
+        "pt": re.compile(r"(?:nenhum|sem) (?:dpa|contrato de tratamento de dados)(?: e)? (?:necessario|exigido)", re.I),
+    },
+    "auditor completeness": {
+        "en": re.compile(r"auditor.ready|audit.ready", re.I),
+        "de": re.compile(r"(?:auditbereit|auditsicher|prufungsbereit|pruferfertig)", re.I),
+        "pt": re.compile(r"pront[oa]s? para auditoria", re.I),
+    },
+    # Bounded, not `.*`. Folding collapses newlines, so an unbounded run would
+    # span a whole document and pair an "every number" in the intro with a
+    # "reproducible" thousands of characters later. 200 characters is about two
+    # sentences, which is the range over which the two halves form one claim.
+    "universal reproducibility": {
+        "en": re.compile(r"every (?:metric|number).{0,200}?(?:reproduc|CI.enforced)", re.I),
+        "de": re.compile(r"jede (?:kennzahl|zahl|metrik).{0,200}?(?:reproduzierbar|ci.erzwungen)", re.I),
+        "pt": re.compile(r"(?:cada|toda) (?:metrica|numero).{0,200}?(?:reproduzivel|garantid[oa] (?:por|no) ci)", re.I),
+    },
+    "unbounded runtime": {
+        "en": re.compile(r"(?:in|under|takes?) (?:10|30) seconds", re.I),
+        "de": re.compile(r"(?:in|unter|dauert) (?:10|30) sekunden", re.I),
+        "pt": re.compile(r"(?:em|menos de|leva) (?:10|30) segundos", re.I),
+    },
+    "zero security findings": {
+        "en": re.compile(r"zero known security findings|0 known security findings", re.I),
+        "de": re.compile(r"(?:null|keine|0) bekannten? sicherheits(?:befunde|probleme)", re.I),
+        "pt": re.compile(
+            r"(?:zero|nenhum[a]?|0) (?:vulnerabilidades|falhas|problemas) de seguranca conhecid[oa]s",
+            re.I,
+        ),
+    },
 }
+
+
+def claim_violations(text: str) -> list[tuple[str, str]]:
+    """Every (claim class, language) prohibited claim present in ``text``."""
+    variants = claim_match_variants(text)
+    return [(name, language)
+            for name, arms in PROHIBITED_CLAIMS.items()
+            for language, pattern in sorted(arms.items())
+            if any(pattern.search(variant) for variant in variants)]
 
 
 class DiscoveryError(RuntimeError):
@@ -342,8 +478,8 @@ def discover(root: Path = REPO) -> dict[str, Any]:
         path = root / rel
         if not path.is_file(): continue
         body = path.read_text(encoding="utf-8", errors="replace")
-        residual.extend({"source": rel, "claim_class": name}
-                        for name, pattern in PROHIBITED_CLAIMS.items() if pattern.search(body))
+        residual.extend({"source": rel, "claim_class": name, "language": language}
+                        for name, language in claim_violations(body))
     return {"schema_version": 2, "authority": "repository-derived delivery mechanisms",
             "records": rows,
             "totals": {"channel": dict(sorted(Counter(r["channel"] for r in rows).items())),
