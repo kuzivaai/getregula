@@ -36,9 +36,9 @@ REGION = {
     "og_description": "PL 2338/2023 in committee. LGPD already applies to AI. Live tracker covering legislative status, ANPD enforcement, and developer guidance.",
     "twitter_title": "Brazil AI Regulation — LGPD & Marco Legal da IA | Regula",
     "twitter_description": "PL 2338/2023 in committee. LGPD already applies. Legislative tracker, ANPD enforcement priorities, developer checklist.",
-    "last_updated": "4 August 2026",
+    "last_updated": "14 August 2026",
     "published_time": "2026-04-25T00:00:00-03:00",
-    "modified_time": "2026-08-04T00:00:00-03:00",
+    "modified_time": "2026-08-14T00:00:00+00:00",
     "lede": "Brazil's Marco Legal da Inteligencia Artificial (PL 2338/2023) passed the Senate on 10 December 2024 and is now in a Special Commission at the Chamber of Deputies. It is not yet law. In the meantime, the LGPD already applies to AI systems that process personal data, including automated decision-making under Article 20. This page is the live reference &mdash; what is in force, what is pending, and what developers building for the Brazilian market should do now.",
     # Bespoke tracker (verbatim from the reviewed page) — used instead
     # of builder-rendered tracker_rows.

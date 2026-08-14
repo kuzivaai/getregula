@@ -36,11 +36,10 @@
       .term-body { position: relative; min-height: 340px }
     </style>
     <meta name="theme-color" content="#070711">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://formspree.io https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://plausible.io; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="preconnect" href="https://plausible.io" crossorigin>
-    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <title>Regula: Scanner open-source de governança de IA</title>
     <meta name="description" content="CLI open-source que encontra indicadores de governança de IA no código para revisão humana. Não determina classificação jurídica nem conformidade.">
     <meta name="keywords" content="LGPD IA, Marco Legal da IA, PL 2338/2023, conformidade IA Brasil, ferramenta compliance IA, Lei de IA da UE, regulamenta&ccedil;&atilde;o intelig&ecirc;ncia artificial, LGPD artigo 20, classifica&ccedil;&atilde;o de risco IA">
@@ -58,9 +57,9 @@
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Regula :  scanner de conformidade da Lei de IA da UE para c&oacute;digo">
+    <meta property="og:image:alt" content="Regula :  scanner de indicadores da Lei de IA da UE para c&oacute;digo">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
-    <meta name="twitter:image:alt" content="Regula :  scanner de conformidade da Lei de IA da UE para c&oacute;digo">
+    <meta name="twitter:image:alt" content="Regula :  scanner de indicadores da Lei de IA da UE para c&oacute;digo">
     <meta name="author" content="Regula">
     <link rel="canonical" href="https://getregula.com/locales/pt-br.html">
     <script type="application/ld+json">
@@ -333,10 +332,10 @@
                 <a href="https://github.com/kuzivaai/getregula" style="color:#8888aa;font-size:12px;font-family:'JetBrains Mono',monospace;">GitHub &#8599;</a>
             </div>
             <div class="social-proof">
-                <strong style="color:var(--text);">2.787</strong> testes
+                <strong style="color:var(--text);">2.801</strong> testes
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <strong style="color:var(--text);">0</strong> vulnerabilidades inesperadas
                 <span class="sp-sep" aria-hidden="true">&middot;</span> zero depend&ecirc;ncias
-                <span class="sp-sep" aria-hidden="true">&middot;</span> seu c&oacute;digo nunca sai da sua m&aacute;quina
+                <span class="sp-sep" aria-hidden="true">&middot;</span> o n&uacute;cleo local n&atilde;o envia os arquivos analisados
                 <span class="sp-sep" aria-hidden="true">&middot;</span> <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md" style="color:#8888aa;">trust pack</a>
             </div>
         </div>
@@ -748,7 +747,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
         </div>
         <div class="card-base art-card">
             <h3>Correspondencia de padroes, nao compreensao</h3>
-            <p>83,5% de precisao em codigo de producao (corpus aleatorio blind-labelled, N=115). 15,2% de precisao em codigo-fonte de bibliotecas AI :  o corpus mais dificil, pois essas bibliotecas implementam AI em vez de usa-la para decisoes reguladas. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md" style="color:#8888aa;">Benchmark publicado &rarr;</a></p>
+            <p>O Regula compara padroes no codigo-fonte. Ele nao interpreta intencao, portanto sinaliza trechos que acabam sendo adequados e deixa passar trechos que uma pessoa perceberia. As medicoes de precisao e cobertura estao em revisao e nao sao citadas aqui como numeros atuais; a metodologia e seus limites estao publicados na integra. <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md" style="color:#8888aa;">Metodologia e limites &rarr;</a></p>
         </div>
         <div class="card-base art-card">
             <h3>Estruturas, nao substancia</h3>
@@ -835,15 +834,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
             <span class="cmd">pipx install regula-ai</span>
             <span class="cp">copiar</span>
         </button>
-        <p style="font-size:13px;color:var(--text-dim);margin:24px 0 12px;">Ainda nao quer instalar? Receba notificacoes quando os prazos mudarem.</p>
-        <div data-fs-success style="display:none;font-size:13px;color:#10b981;margin-bottom:8px;">Voce esta na lista. Apenas versoes principais.</div>
-        <div data-fs-error style="display:none;font-size:13px;color:#ef4444;margin-bottom:8px;"></div>
-        <form id="notify-form" class="notify">
-            <input type="email" id="notify-email" name="email" placeholder="seu@email.com" aria-label="E-mail para atualizacoes" data-fs-field required>
-            <span data-fs-error="email" style="font-size:11px;color:#ef4444;"></span>
-            <button type="submit" data-fs-submit-btn>Receber atualizacoes</button>
-        </form>
-        <p class="notify-msg">Sem spam. Apenas versoes principais e prazos da Lei de IA da UE.</p>
+        
     </div>
 </div>
 
@@ -1011,13 +1002,6 @@ Article observations emitted: 0; held pending applicability: 8</pre>
     });
 </script>
 
-<script>
-    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
-    formspree('initForm', { formElement: '#notify-form', formId: 'xjgppkkn' });
-    document.getElementById('notify-form').addEventListener('submit', function() {
-        if (window.plausible) plausible('CTA Click', { props: { type: 'notify' } });
-    });
-</script>
-<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
 </body>
 </html>

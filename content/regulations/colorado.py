@@ -108,9 +108,9 @@ REGION = {
         "consumer correction and human-review rights, from 1 Jan 2027."
     ),
 
-    "last_updated": "2026-07-27",
+    "last_updated": "14 August 2026",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-07-27T00:00:00+00:00",
+    "modified_time": "2026-08-14T00:00:00+00:00",
 
     "lede": (
         "Colorado was the first US state to pass a comprehensive, horizontal "

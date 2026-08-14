@@ -1,8 +1,13 @@
 # Regula precision & recall — published methodology, April 2026
 
-> This is Regula's published precision and recall benchmark. Every number
-> below can be reproduced from the labelled corpus checked into the repo
-> at `benchmarks/labels.json` using a single command.
+> This is Regula's published precision and recall benchmark. The OSS-corpus
+> figures below can be reproduced from the labelled corpus checked into the
+> repo at `benchmarks/labels.json` using a single command. Figures drawn from
+> other corpora carry their own source line, and not all of them reproduce:
+> the synthetic recall row is superseded, the April addendum is a simulation
+> rather than a re-measurement, and the random-corpus labels behind the
+> production precision figure are not checked into the repository. Each is
+> flagged where it appears.
 >
 > The benchmark deliberately includes **two distinct corpora**:
 >

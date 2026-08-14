@@ -56,9 +56,9 @@ REGION = {
         "Korea AI Basic Act \u2014 in force 22 Jan 2026. Regula's live coverage."
     ),
 
-    "last_updated": "2026-08-04",
+    "last_updated": "14 August 2026",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-08-04T00:00:00+00:00",
+    "modified_time": "2026-08-14T00:00:00+00:00",
 
     "lede": (
         "South Korea is the second major jurisdiction after the European Union "

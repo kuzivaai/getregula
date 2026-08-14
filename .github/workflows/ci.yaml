@@ -34,6 +34,12 @@ jobs:
         run: python3 -m scripts.cli doctor
       - name: Security self-check (blocks unexpected findings in Regula's own source)
         run: python3 -m scripts.cli security-self-check
+      - name: Quoted regulatory passages are verbatim
+        # A quotation is a promise that the source says exactly this. The site
+        # shipped one that was not (Article 3(4), "any" for "a", exclusion
+        # dropped) and six more were found when this check was first run.
+        # Corpora are cached under references/corpora, so this runs offline.
+        run: python3 scripts/verify_quotations.py
       - name: Browser questionnaire contract test
         # This file existed but no runner executed it, so it drifted from the
         # pages it guards (LEDGER F15). It is wired in here because the browser
