@@ -22,7 +22,7 @@ renders it. This file guards four properties:
 
 from __future__ import annotations
 
-import json
+import re
 import sys
 import unittest
 from datetime import date, timedelta
@@ -196,3 +196,46 @@ class TestCellIntegrity(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestPriceAgreesWithThePricingPage(unittest.TestCase):
+    """The published price exists in two places, so it must be checked.
+
+    `site/pricing.html` states the prices on the cards; the comparison table's
+    Regula price cell repeats them on all three homepages. MEASURED
+    2026-08-15: the pricing page was reduced from GBP 1,500 and GBP 800 to
+    GBP 950 and GBP 650, the comparison source was not, and the site published
+    two different prices for the same service in three locales at once until
+    an audit found it. Neither surface is wrong to carry the figure; what was
+    missing was anything that compares them.
+    """
+
+    PRICING_PAGE = REPO_ROOT / "site" / "pricing.html"
+
+    @staticmethod
+    def _amounts(text: str) -> set:
+        return set(re.findall(r"GBP\s*([\d,\.]+)", text))
+
+    def test_every_gbp_amount_in_the_table_appears_on_the_pricing_page(self) -> None:
+        page = self.PRICING_PAGE.read_text(encoding="utf-8")
+        # The pricing page is authored in English, so compare against the
+        # English cell and the locale cells' digits, which differ only in
+        # thousands separator.
+        on_page = {a.replace(",", "").replace(".", "") for a in self._amounts(page)}
+        self.assertTrue(on_page, "no GBP amount found on the pricing page")
+
+        d = data()
+        for row in d["rows"]:
+            if row["key"] != "price":
+                continue
+            for lang in LANGS:
+                cell = row["cells"]["regula"][lang]
+                for amount in self._amounts(cell):
+                    normalised = amount.replace(",", "").replace(".", "")
+                    self.assertIn(
+                        normalised, on_page,
+                        f"the comparison table's {lang} price cell states "
+                        f"GBP {amount}, which does not appear on "
+                        f"site/pricing.html. The two surfaces have drifted and "
+                        f"the site is publishing two prices for one service.",
+                    )

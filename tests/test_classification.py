@@ -116,6 +116,7 @@ for _metrics_cls in (
     _test_comparison_table.TestSourceOfTruth,
     _test_comparison_table.TestFreshness,
     _test_comparison_table.TestCellIntegrity,
+    _test_comparison_table.TestPriceAgreesWithThePricingPage,
 ):
     # `hasattr` is useless here: unittest.TestCase always supplies a default
     # setUp. Only a setUp defined on the class itself would be skipped.

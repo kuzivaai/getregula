@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-15T08:02:31.180047+00:00",
+  "generated_at": "2026-08-15T10:08:32.490870+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,7 +27,7 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2841,
+      "total_collected": 2842,
       "total_functions": 2037,
       "per_file": {
         "tests/test_agent_governance.py": 28,
@@ -144,7 +144,7 @@
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1208
+      "runner_functions": 1209
     }
   },
   "notes": {

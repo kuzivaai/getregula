@@ -5,12 +5,30 @@
   "verified_on": "2026-08-15",
   "max_age_days": 90,
   "columns": [
-    {"key": "regula", "label": "Regula"},
-    {"key": "legalithm", "label": "Legalithm"},
-    {"key": "ec", "label": "EC AI Act Compliance Checker (official beta)"},
-    {"key": "fli", "label": "Future of Life Institute checker"},
-    {"key": "prighter", "label": "Prighter"},
-    {"key": "bigfour", "label": "Big four and AI governance platforms"}
+    {
+      "key": "regula",
+      "label": "Regula"
+    },
+    {
+      "key": "legalithm",
+      "label": "Legalithm"
+    },
+    {
+      "key": "ec",
+      "label": "EC AI Act Compliance Checker (official beta)"
+    },
+    {
+      "key": "fli",
+      "label": "Future of Life Institute checker"
+    },
+    {
+      "key": "prighter",
+      "label": "Prighter"
+    },
+    {
+      "key": "bigfour",
+      "label": "Big four and AI governance platforms"
+    }
   ],
   "sources": {
     "regula": [
@@ -44,9 +62,9 @@
       },
       "cells": {
         "regula": {
-          "en": "Tool free. Starter assessment GBP 1,500 fixed; advisory GBP 800 per day",
-          "de": "Werkzeug kostenlos. Starter-Assessment GBP 1.500 pauschal; Beratung GBP 800 pro Tag",
-          "pt": "Ferramenta gratuita. Avaliação inicial GBP 1.500 fixo; consultoria GBP 800 por dia"
+          "en": "Tool free. Starter assessment GBP 950 fixed; advisory GBP 650 per day",
+          "de": "Werkzeug kostenlos. Starter-Assessment GBP 950 pauschal; Beratung GBP 650 pro Tag",
+          "pt": "Ferramenta gratuita. Avaliação inicial GBP 950 fixo; consultoria GBP 650 por dia"
         },
         "legalithm": {
           "en": "Free tier EUR 0. Starter EUR 17/mo, Pro EUR 47/mo, Business EUR 119/mo at launch pricing (list EUR 29, 79, 199). Free-launch mode active",
