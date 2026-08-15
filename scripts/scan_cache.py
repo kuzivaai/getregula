@@ -6,6 +6,7 @@ Unchanged files skip re-scanning on subsequent runs.
 """
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Optional
@@ -45,7 +46,21 @@ _CACHE_SCHEMA = f"v4:{_REGULA_VERSION}:{_patterns_fingerprint()}"
 
 class ScanCache:
     def __init__(self, cache_dir: Optional[Path] = None):
-        self._cache_dir = cache_dir or Path.home() / ".regula" / "cache"
+        # REGULA_CACHE_DIR was already the documented override for the feed
+        # cache (scripts/feed.py) but the scan cache ignored it, so the only
+        # way to isolate a scan was to move HOME wholesale. MEASURED
+        # 2026-08-15: with a warm ambient cache the bundled fixture reported a
+        # detector priority of 63 and with a cold one it reported 43, on the
+        # same bytes and the same command, because cache keys carry the path
+        # RELATIVE to the scan root while provenance is derived from the full
+        # path. Honouring the variable here lets a check run on a cold cache
+        # and is why scripts/verify_transcripts.py can be deterministic. It
+        # does not fix the key itself; see LEDGER N112.
+        env_dir = os.environ.get("REGULA_CACHE_DIR")
+        self._cache_dir = (
+            cache_dir
+            or (Path(env_dir) if env_dir else Path.home() / ".regula" / "cache")
+        )
         self._cache_dir.mkdir(parents=True, exist_ok=True)
         self._memory: dict = {}
         self._load()

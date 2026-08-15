@@ -1,0 +1,420 @@
+{
+  "schema_version": 1,
+  "_purpose": "Single source of truth for the published competitor comparison table. scripts/build_comparison.py renders it into site/index.html, site/locales/de.html and site/locales/pt-br.html between the COMPARISON:BEGIN and COMPARISON:END markers. Never hand-edit the rendered HTML; edit this file and rebuild, the same rule that content/regulations follows.",
+  "_evidence_rule": "Every cell that states a fact carries a source URL fetched on verified_on. A cell that could not be established from the provider's own website, PyPI, npm or GitHub is the literal string 'not verified' in every language, and is listed by the freshness check.",
+  "verified_on": "2026-08-15",
+  "max_age_days": 90,
+  "columns": [
+    {"key": "regula", "label": "Regula"},
+    {"key": "legalithm", "label": "Legalithm"},
+    {"key": "ec", "label": "EC AI Act Compliance Checker (official beta)"},
+    {"key": "fli", "label": "Future of Life Institute checker"},
+    {"key": "prighter", "label": "Prighter"},
+    {"key": "bigfour", "label": "Big four and AI governance platforms"}
+  ],
+  "sources": {
+    "regula": [
+      "https://pypi.org/pypi/regula-ai/json",
+      "https://github.com/kuzivaai/getregula"
+    ],
+    "legalithm": [
+      "https://legalithm.com/",
+      "https://legalithm.com/pricing",
+      "https://registry.npmjs.org/legalithm"
+    ],
+    "ec": [
+      "https://ai-act-service-desk.ec.europa.eu/en/eu-ai-act-compliance-checker"
+    ],
+    "fli": [
+      "https://artificialintelligenceact.eu/assessment/eu-ai-act-compliance-checker/"
+    ],
+    "prighter": [
+      "https://prighter.com/eu-ai-act/",
+      "https://prighter.com/pricing/"
+    ],
+    "bigfour": []
+  },
+  "rows": [
+    {
+      "key": "price",
+      "label": {
+        "en": "Price",
+        "de": "Preis",
+        "pt": "Preço"
+      },
+      "cells": {
+        "regula": {
+          "en": "Tool free. Starter assessment GBP 1,500 fixed; advisory GBP 800 per day",
+          "de": "Werkzeug kostenlos. Starter-Assessment GBP 1.500 pauschal; Beratung GBP 800 pro Tag",
+          "pt": "Ferramenta gratuita. Avaliação inicial GBP 1.500 fixo; consultoria GBP 800 por dia"
+        },
+        "legalithm": {
+          "en": "Free tier EUR 0. Starter EUR 17/mo, Pro EUR 47/mo, Business EUR 119/mo at launch pricing (list EUR 29, 79, 199). Free-launch mode active",
+          "de": "Kostenlose Stufe EUR 0. Starter EUR 17/Mon., Pro EUR 47/Mon., Business EUR 119/Mon. zum Einführungspreis (Liste EUR 29, 79, 199). Free-Launch-Modus aktiv",
+          "pt": "Nível gratuito EUR 0. Starter EUR 17/mês, Pro EUR 47/mês, Business EUR 119/mês em preço de lançamento (lista EUR 29, 79, 199). Modo de lançamento gratuito ativo"
+        },
+        "ec": {
+          "en": "No price stated on the page",
+          "de": "Kein Preis auf der Seite angegeben",
+          "pt": "Nenhum preço indicado na página"
+        },
+        "fli": {
+          "en": "No charge stated on the page",
+          "de": "Keine Gebühr auf der Seite angegeben",
+          "pt": "Nenhuma taxa indicada na página"
+        },
+        "prighter": {
+          "en": "EU AI Act GPAI representation from EUR 39/mo (EUR 35/mo, EUR 420/yr billed annually) to EUR 440/mo (EUR 396/mo, EUR 4,752/yr billed annually), excluding VAT",
+          "de": "EU-KI-Verordnung GPAI-Vertretung von EUR 39/Mon. (EUR 35/Mon., EUR 420/Jahr bei Jahresabrechnung) bis EUR 440/Mon. (EUR 396/Mon., EUR 4.752/Jahr bei Jahresabrechnung), zzgl. MwSt.",
+          "pt": "Representação GPAI do Regulamento de IA da UE de EUR 39/mês (EUR 35/mês, EUR 420/ano na facturação anual) a EUR 440/mês (EUR 396/mês, EUR 4.752/ano na facturação anual), sem IVA"
+        },
+        "bigfour": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        }
+      }
+    },
+    {
+      "key": "licence",
+      "label": {
+        "en": "Licence",
+        "de": "Lizenz",
+        "pt": "Licença"
+      },
+      "cells": {
+        "regula": {
+          "en": "Apache-2.0 OR EUPL-1.2, with detection rules under DRL-1.1",
+          "de": "Apache-2.0 ODER EUPL-1.2, Erkennungsregeln unter DRL-1.1",
+          "pt": "Apache-2.0 OU EUPL-1.2, com regras de detecção sob DRL-1.1"
+        },
+        "legalithm": {
+          "en": "MIT, for the npm package legalithm 0.6.0",
+          "de": "MIT, für das npm-Paket legalithm 0.6.0",
+          "pt": "MIT, para o pacote npm legalithm 0.6.0"
+        },
+        "ec": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        },
+        "fli": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        },
+        "prighter": {
+          "en": "Not applicable, this is a service rather than software",
+          "de": "Nicht zutreffend, dies ist eine Dienstleistung und keine Software",
+          "pt": "Não aplicável, trata-se de um serviço e não de software"
+        },
+        "bigfour": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        }
+      }
+    },
+    {
+      "key": "offline",
+      "label": {
+        "en": "Runs fully offline with no upload",
+        "de": "Läuft vollständig offline ohne Upload",
+        "pt": "Funciona totalmente offline sem envio de dados"
+      },
+      "cells": {
+        "regula": {
+          "en": "Scanner runs locally and does not upload code. Optional commands (news feed, vocabulary refresh, RFC 3161 timestamping) make outbound requests; timestamping sends hashes",
+          "de": "Der Scanner läuft lokal und lädt keinen Code hoch. Optionale Befehle (Nachrichten-Feed, Vokabular-Aktualisierung, RFC-3161-Zeitstempel) senden Anfragen nach außen; Zeitstempel senden Hashes",
+          "pt": "O scanner funciona localmente e não envia código. Comandos opcionais (feed de notícias, atualização de vocabulário, carimbo temporal RFC 3161) fazem pedidos externos; o carimbo envia hashes"
+        },
+        "legalithm": {
+          "en": "Partly. Its README states guard and verify-record run offline with no key and no network; generating the compliance record requires an API key",
+          "de": "Teilweise. Die README gibt an, dass guard und verify-record offline ohne Schlüssel und ohne Netzwerk laufen; die Erzeugung des Compliance-Datensatzes erfordert einen API-Schlüssel",
+          "pt": "Parcialmente. O README indica que guard e verify-record funcionam offline sem chave e sem rede; gerar o registo de conformidade exige uma chave de API"
+        },
+        "ec": {
+          "en": "No, it is a hosted web tool",
+          "de": "Nein, es ist ein gehostetes Web-Werkzeug",
+          "pt": "Não, é uma ferramenta web alojada"
+        },
+        "fli": {
+          "en": "No, it is a hosted web tool",
+          "de": "Nein, es ist ein gehostetes Web-Werkzeug",
+          "pt": "Não, é uma ferramenta web alojada"
+        },
+        "prighter": {
+          "en": "Not applicable, this is a service rather than software",
+          "de": "Nicht zutreffend, dies ist eine Dienstleistung und keine Software",
+          "pt": "Não aplicável, trata-se de um serviço e não de software"
+        },
+        "bigfour": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        }
+      }
+    },
+    {
+      "key": "account",
+      "label": {
+        "en": "Account required",
+        "de": "Konto erforderlich",
+        "pt": "Conta necessária"
+      },
+      "cells": {
+        "regula": {
+          "en": "No",
+          "de": "Nein",
+          "pt": "Não"
+        },
+        "legalithm": {
+          "en": "A free API key is required to generate the compliance record; guard and verify need no key",
+          "de": "Für die Erzeugung des Compliance-Datensatzes ist ein kostenloser API-Schlüssel erforderlich; guard und verify benötigen keinen Schlüssel",
+          "pt": "É necessária uma chave de API gratuita para gerar o registo de conformidade; guard e verify não precisam de chave"
+        },
+        "ec": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        },
+        "fli": {
+          "en": "No",
+          "de": "Nein",
+          "pt": "Não"
+        },
+        "prighter": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        },
+        "bigfour": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        }
+      }
+    },
+    {
+      "key": "scanning",
+      "label": {
+        "en": "Source code scanning, or declaration and questionnaire only",
+        "de": "Quellcode-Analyse oder nur Selbstauskunft und Fragebogen",
+        "pt": "Análise de código-fonte ou apenas declaração e questionário"
+      },
+      "cells": {
+        "regula": {
+          "en": "Source code scanning across eight language families, with a Python AST engine and tree-sitter for JavaScript and TypeScript, alongside a questionnaire",
+          "de": "Quellcode-Analyse über acht Sprachfamilien, mit Python-AST-Engine und tree-sitter für JavaScript und TypeScript, ergänzt durch einen Fragebogen",
+          "pt": "Análise de código-fonte em oito famílias de linguagens, com motor AST em Python e tree-sitter para JavaScript e TypeScript, a par de um questionário"
+        },
+        "legalithm": {
+          "en": "Both. Its npm description states it detects AI dependencies and marks and verifies AI-generated content, alongside an assessment workflow",
+          "de": "Beides. Die npm-Beschreibung gibt an, dass es KI-Abhängigkeiten erkennt sowie KI-generierte Inhalte markiert und prüft, ergänzt durch einen Bewertungsablauf",
+          "pt": "Ambos. A descrição no npm indica que deteta dependências de IA e marca e verifica conteúdo gerado por IA, a par de um fluxo de avaliação"
+        },
+        "ec": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        },
+        "fli": {
+          "en": "Question-based form, not a code scanner",
+          "de": "Fragebasiertes Formular, kein Code-Scanner",
+          "pt": "Formulário baseado em perguntas, não é um scanner de código"
+        },
+        "prighter": {
+          "en": "No code scanning is mentioned on the page",
+          "de": "Auf der Seite wird keine Code-Analyse erwähnt",
+          "pt": "Não é mencionada qualquer análise de código na página"
+        },
+        "bigfour": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        }
+      }
+    },
+    {
+      "key": "jurisdictions",
+      "label": {
+        "en": "Jurisdictions covered",
+        "de": "Abgedeckte Rechtsräume",
+        "pt": "Jurisdições abrangidas"
+      },
+      "cells": {
+        "regula": {
+          "en": "EU AI Act, South Korea AI Basic Act, Colorado SB 26-189",
+          "de": "EU-KI-Verordnung, Südkorea AI Basic Act, Colorado SB 26-189",
+          "pt": "Regulamento de IA da UE, AI Basic Act da Coreia do Sul, Colorado SB 26-189"
+        },
+        "legalithm": {
+          "en": "EU AI Act and GDPR",
+          "de": "EU-KI-Verordnung und DSGVO",
+          "pt": "Regulamento de IA da UE e RGPD"
+        },
+        "ec": {
+          "en": "EU AI Act, Regulation (EU) 2024/1689",
+          "de": "EU-KI-Verordnung, Verordnung (EU) 2024/1689",
+          "pt": "Regulamento de IA da UE, Regulamento (UE) 2024/1689"
+        },
+        "fli": {
+          "en": "EU AI Act, Regulation (EU) 2024/1689",
+          "de": "EU-KI-Verordnung, Verordnung (EU) 2024/1689",
+          "pt": "Regulamento de IA da UE, Regulamento (UE) 2024/1689"
+        },
+        "prighter": {
+          "en": "European Union, including its extraterritorial scope",
+          "de": "Europäische Union, einschließlich ihres extraterritorialen Anwendungsbereichs",
+          "pt": "União Europeia, incluindo o seu âmbito extraterritorial"
+        },
+        "bigfour": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        }
+      }
+    },
+    {
+      "key": "unknowns",
+      "label": {
+        "en": "Names the facts that remain unknown, or returns a score or tier",
+        "de": "Benennt die offenen Fakten oder liefert eine Punktzahl oder Stufe",
+        "pt": "Nomeia os factos que permanecem desconhecidos ou devolve uma pontuação ou nível"
+      },
+      "cells": {
+        "regula": {
+          "en": "Reports insufficient_information and names the facts a person must still settle",
+          "de": "Meldet insufficient_information und benennt die Fakten, die eine Person noch klären muss",
+          "pt": "Reporta insufficient_information e nomeia os factos que uma pessoa ainda tem de resolver"
+        },
+        "legalithm": {
+          "en": "Its site states it produces a dated, cited record classifying the system by risk level with article references",
+          "de": "Die Website gibt an, einen datierten, belegten Datensatz zu erzeugen, der das System nach Risikostufe einordnet, mit Artikelverweisen",
+          "pt": "O site indica que produz um registo datado e citado que classifica o sistema por nível de risco, com referências a artigos"
+        },
+        "ec": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        },
+        "fli": {
+          "en": "Its page recommends seeking professional legal advice and following national guidance",
+          "de": "Die Seite empfiehlt, professionelle Rechtsberatung einzuholen und nationale Leitlinien zu befolgen",
+          "pt": "A página recomenda procurar aconselhamento jurídico profissional e seguir orientações nacionais"
+        },
+        "prighter": {
+          "en": "Not applicable, this is a representation service",
+          "de": "Nicht zutreffend, dies ist ein Vertretungsdienst",
+          "pt": "Não aplicável, trata-se de um serviço de representação"
+        },
+        "bigfour": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        }
+      }
+    },
+    {
+      "key": "motion",
+      "label": {
+        "en": "Self serve or sales led",
+        "de": "Selbstbedienung oder vertriebsgeführt",
+        "pt": "Autosserviço ou conduzido por vendas"
+      },
+      "cells": {
+        "regula": {
+          "en": "Self serve for the tool. Paid work starts with an email, as no checkout exists",
+          "de": "Selbstbedienung für das Werkzeug. Bezahlte Arbeit beginnt mit einer E-Mail, da es keine Kasse gibt",
+          "pt": "Autosserviço para a ferramenta. O trabalho pago começa com um e-mail, pois não existe checkout"
+        },
+        "legalithm": {
+          "en": "Self serve. Its site states the free assessment starts in the browser with no signup",
+          "de": "Selbstbedienung. Die Website gibt an, dass die kostenlose Bewertung ohne Registrierung im Browser startet",
+          "pt": "Autosserviço. O site indica que a avaliação gratuita começa no navegador sem registo"
+        },
+        "ec": {
+          "en": "Self serve, a public web tool",
+          "de": "Selbstbedienung, ein öffentliches Web-Werkzeug",
+          "pt": "Autosserviço, uma ferramenta web pública"
+        },
+        "fli": {
+          "en": "Self serve, a public web tool",
+          "de": "Selbstbedienung, ein öffentliches Web-Werkzeug",
+          "pt": "Autosserviço, uma ferramenta web pública"
+        },
+        "prighter": {
+          "en": "Prices are published, and its AI Act page routes to a contact form",
+          "de": "Preise sind veröffentlicht, und die Seite zur KI-Verordnung führt zu einem Kontaktformular",
+          "pt": "Os preços são publicados e a página do Regulamento de IA encaminha para um formulário de contacto"
+        },
+        "bigfour": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        }
+      }
+    },
+    {
+      "key": "positioning",
+      "label": {
+        "en": "Positioning",
+        "de": "Positionierung",
+        "pt": "Posicionamento"
+      },
+      "cells": {
+        "regula": {
+          "en": "Developer tool, run at the point code is written",
+          "de": "Entwicklerwerkzeug, eingesetzt dort, wo Code entsteht",
+          "pt": "Ferramenta de programação, usada onde o código é escrito"
+        },
+        "legalithm": {
+          "en": "Developer tool producing a compliance record",
+          "de": "Entwicklerwerkzeug, das einen Compliance-Datensatz erzeugt",
+          "pt": "Ferramenta de programação que produz um registo de conformidade"
+        },
+        "ec": {
+          "en": "Official Commission tool, marked beta, operated by DG CONNECT and the AI Office",
+          "de": "Offizielles Werkzeug der Kommission, als Beta gekennzeichnet, betrieben von DG CONNECT und dem KI-Büro",
+          "pt": "Ferramenta oficial da Comissão, marcada como beta, operada pela DG CONNECT e pelo Serviço de IA"
+        },
+        "fli": {
+          "en": "Independent tool maintained by the Future of Life Institute, which states it is not affiliated with the European Union",
+          "de": "Unabhängiges Werkzeug des Future of Life Institute, das angibt, nicht mit der Europäischen Union verbunden zu sein",
+          "pt": "Ferramenta independente mantida pelo Future of Life Institute, que declara não estar associada à União Europeia"
+        },
+        "prighter": {
+          "en": "Authorised representative service",
+          "de": "Dienst als bevollmächtigter Vertreter",
+          "pt": "Serviço de representante autorizado"
+        },
+        "bigfour": {
+          "en": "not verified",
+          "de": "not verified",
+          "pt": "not verified"
+        }
+      }
+    }
+  ],
+  "caveat": {
+    "en": "This comparison reflects our reading of publicly available information from each provider's own website, PyPI and GitHub as at {date}. Features and prices change; verify the current position with each provider before relying on it. We compare only tools that address development-time or organisational EU AI Act readiness. Where we could not verify a cell from a primary source, it is marked not verified.",
+    "de": "This comparison reflects our reading of publicly available information from each provider's own website, PyPI and GitHub as at {date}. Features and prices change; verify the current position with each provider before relying on it. We compare only tools that address development-time or organisational EU AI Act readiness. Where we could not verify a cell from a primary source, it is marked not verified.",
+    "pt": "This comparison reflects our reading of publicly available information from each provider's own website, PyPI and GitHub as at {date}. Features and prices change; verify the current position with each provider before relying on it. We compare only tools that address development-time or organisational EU AI Act readiness. Where we could not verify a cell from a primary source, it is marked not verified."
+  },
+  "stamp_label": {
+    "en": "Verified",
+    "de": "Verified",
+    "pt": "Verified"
+  },
+  "_aria_note": "Preserved from the pre-2026-08-15 hand-written block so the scrollable region keeps its accessible name (WCAG 1.3.1 and 4.1.2). Do not drop role=region or the label.",
+  "aria_label": {
+    "en": "Comparison of EU AI Act readiness tools and services",
+    "de": "Vergleich von Werkzeugen und Diensten zur EU-KI-Verordnung",
+    "pt": "Comparação de ferramentas e serviços de conformidade com o Regulamento de IA da UE"
+  },
+  "caption": {
+    "en": "Comparison of EU AI Act readiness tools and services: Regula, Legalithm, the EC AI Act Compliance Checker, the Future of Life Institute checker, Prighter, and big four and AI governance platforms",
+    "de": "Vergleich von Werkzeugen und Diensten zur EU-KI-Verordnung: Regula, Legalithm, EC AI Act Compliance Checker, Future-of-Life-Institute-Checker, Prighter sowie Big-Four- und KI-Governance-Plattformen",
+    "pt": "Comparação de ferramentas e serviços de preparação para o Regulamento de IA da UE: Regula, Legalithm, EC AI Act Compliance Checker, verificador do Future of Life Institute, Prighter e plataformas das big four e de governança de IA"
+  }
+}
