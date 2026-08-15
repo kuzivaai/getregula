@@ -67,22 +67,36 @@ Detector observations (not legal facts):
   Limited-risk:       0
   Suppressed:         0
   BLOCK tier:         0
-  WARN tier:          1
-  INFO tier:          0
+  WARN tier:          0
+  INFO tier:          1
   Lifecycle:          develop: 1, plan: 1
 
   HIGH-RISK INDICATORS:
-    [WARN] [ 63] app.py — Employment and workers management [plan]
-      Add human oversight before automated hiring/employment decisions
+    [INFO] [ 43] app.py — Employment and workers management [plan]
+
+  Questions for human review (1):
+    ? app.py:1 — Annex III, Category 4
+      Employment and workers management (detector priority: 43)
 ============================================================
 ```
 
 `--scope all` is required. This fixture lives under `examples/`, which the
 default production scope excludes, so the plain command reports
-`NO ACTIVE PRODUCTION-SCOPE PATTERNS` and shows nothing. The bracketed 63 is a
+`NO ACTIVE PRODUCTION-SCOPE PATTERNS` and shows nothing. The bracketed 43 is a
 detector priority, not a probability and not a compliance score; earlier
 versions of this file wrote it as a confidence percentage, and the tool no
 longer emits that wording.
+
+**Living under `examples/` costs this finding 20 points, and that is worth
+understanding before you read the number across to your own code.**
+`classify_provenance` treats any path containing an `example`, `demo`,
+`sample`, `tutorial` or `cookbook` segment as example provenance, and example
+provenance subtracts a flat 20. The published tier bands are BLOCK at 80 or
+above, WARN from 50 to 79, and INFO below 50, so the deduction also moves this
+finding from WARN to INFO. The same directory copied to a path without such a
+segment scores 63 and prints WARN. Verified on 2026-08-15 by scanning
+`examples/cv-screening-app` and a byte-identical copy at a neutral path, and
+recorded as ledger N110. **In a real project, this code would score 63.**
 
 **What to notice — three things, and two of them are precision features:**
 

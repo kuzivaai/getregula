@@ -142,3 +142,49 @@ def test_cache_context_isolates_entries():
         print("  PASS  test_cache_context_isolates_entries")
     finally:
         shutil.rmtree(tmp)
+
+
+def test_regula_cache_dir_env_var_is_honoured():
+    """N112. The scan cache must be redirectable without moving HOME.
+
+    `REGULA_CACHE_DIR` was already the documented override for the feed cache
+    but the scan cache ignored it, so `scripts/verify_transcripts.py` set the
+    variable, changed nothing, and shipped an isolation that was inert. The
+    full suite caught it: the gate still failed. An override nobody honours is
+    a blank gate, not a green one, so this asserts the variable actually moves
+    the file rather than asserting it is merely accepted.
+    """
+    import os
+    from scan_cache import ScanCache
+    tmp = Path(tempfile.mkdtemp())
+    previous = os.environ.get("REGULA_CACHE_DIR")
+    try:
+        os.environ["REGULA_CACHE_DIR"] = str(tmp)
+        cache = ScanCache()
+        assert cache._cache_dir == tmp, (
+            f"REGULA_CACHE_DIR was ignored: cache dir is {cache._cache_dir}, "
+            f"not {tmp}. A scan cannot then be isolated from the operator's "
+            f"ambient cache, and any check that relies on it is inert.")
+        # put() only updates memory; flush() persists. Asserting on the file
+        # without flushing would have failed for the wrong reason and taught
+        # nothing about the variable.
+        cache.put("a.py", "import torch", [{"tier": "high_risk"}])
+        cache.flush()
+        assert (tmp / "scan_cache.json").exists(), \
+            "the cache wrote somewhere other than the directory it reported"
+
+        # An explicit argument still wins, so callers that pass a directory
+        # are not silently overridden by an operator's environment.
+        other = Path(tempfile.mkdtemp())
+        try:
+            assert ScanCache(cache_dir=other)._cache_dir == other, \
+                "an explicit cache_dir must outrank the environment variable"
+        finally:
+            shutil.rmtree(other)
+        print("  PASS  test_regula_cache_dir_env_var_is_honoured")
+    finally:
+        if previous is None:
+            os.environ.pop("REGULA_CACHE_DIR", None)
+        else:
+            os.environ["REGULA_CACHE_DIR"] = previous
+        shutil.rmtree(tmp)

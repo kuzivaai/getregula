@@ -140,13 +140,16 @@ Detector observations (not legal facts):
   Limited-risk:       0
   Suppressed:         0
   BLOCK tier:         0
-  WARN tier:          1
-  INFO tier:          0
+  WARN tier:          0
+  INFO tier:          1
   Lifecycle:          develop: 1, plan: 1
 
   HIGH-RISK INDICATORS:
-    [WARN] [ 63] app.py — Employment and workers management [plan]
-      Add human oversight before automated hiring/employment decisions
+    [INFO] [ 43] app.py — Employment and workers management [plan]
+
+  Questions for human review (1):
+    ? app.py:1 — Annex III, Category 4
+      Employment and workers management (detector priority: 43)
 ============================================================
   Detector priority: 0-100 (higher = more code patterns matched; not a correctness probability)
   Tiers: BLOCK (&gt;=80 or prohibited), WARN (50-79), INFO (&lt;50)

@@ -120,9 +120,21 @@ def count_pattern(count: int) -> re.Pattern:
     # rendering. The leading side was fixed for `#dcNNNN` (2026-07-31); the
     # trailing side for a stable_id of the form `cli:NNNNfb52...` where the
     # canonical count landed at the start of a hex run (2026-08-07).
+    #
+    # (?<!\d\.) and (?!\.\d) exclude a dotted numeric run. The European
+    # rendering uses a full stop as the thousands separator, so MEASURED
+    # 2026-08-15: at one canonical value the dot variant matched inside the
+    # PKCS#7 OIDs in scripts/timestamp.py, on the RSADSI arc. Those are not
+    # claims, and text-replacing them to cascade a count would break RFC 3161
+    # timestamping outright, which is measurement rule 4d's exact hazard. A
+    # standalone dot-grouped rendering in prose still matches, because the
+    # DE and PT-BR pages publish the count that way; only a component sitting
+    # inside a longer dotted sequence is excluded. The colliding value is
+    # deliberately not written here, for the reason this whole check exists
+    # (N111).
     return re.compile(
-        r"(?<!\w)(" + "|".join(re.escape(v) for v in sorted(variants))
-        + r")(?!\w)")
+        r"(?<!\w)(?<!\d\.)(" + "|".join(re.escape(v) for v in sorted(variants))
+        + r")(?!\w)(?!\.\d)")
 
 
 def classify_count_occurrences(count: int, files: dict[str, str | bytes],

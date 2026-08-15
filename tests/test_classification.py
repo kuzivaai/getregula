@@ -57,6 +57,7 @@ import test_bare_scan_decision as _test_bare_scan_decision  # noqa: F401
 import test_content_freshness as _test_content_freshness  # noqa: F401
 import test_documented_transcripts as _test_documented_transcripts  # noqa: F401
 import test_metrics_artefacts as _test_metrics_artefacts  # noqa: F401
+import test_comparison_table as _test_comparison_table  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -112,6 +113,9 @@ for _metrics_cls in (
     _test_metrics_artefacts.TestPypiWeeklyArtefact,
     _test_metrics_artefacts.TestWindowChecksDetectPlantedDefects,
     _test_metrics_artefacts.TestCollectorDoesNotHardcodeThePeriod,
+    _test_comparison_table.TestSourceOfTruth,
+    _test_comparison_table.TestFreshness,
+    _test_comparison_table.TestCellIntegrity,
 ):
     # `hasattr` is useless here: unittest.TestCase always supplies a default
     # setUp. Only a setUp defined on the class itself would be skipped.

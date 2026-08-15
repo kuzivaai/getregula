@@ -34,6 +34,7 @@ RECORD_CLASSES = REPO / "data" / "count_record_classes.json"
 sys.path.insert(0, str(REPO / "scripts"))
 from count_record_policy import (  # noqa: E402
     classify_count_occurrences,
+    count_pattern,
     discover_tracked_files,
     read_tracked_files,
     validate_record_policy,
@@ -78,12 +79,15 @@ def _count_pattern(count: int):
     stable_id of the form `cli:NNNNfb52a8321880`: the count at the START
     of a hex run, which the leading lookbehind cannot see. Excluding only
     a trailing digit let hex letters follow the count.
+
+    MEASURED 2026-08-15: this helper used to REIMPLEMENT the pattern rather
+    than call it, and the copy drifted the moment the real one was corrected
+    for the OID collision (N111). The controls below then exercised the copy
+    and passed while the shipped guard behaved differently, which is the
+    silent drift `.claude/rules/quality-standards.md` forbids outright. It now
+    delegates, so the controls test the code that actually runs.
     """
-    grouped = f"{count:,}"
-    variants = {str(count), grouped, grouped.replace(",", ".")}
-    return re.compile(
-        r"(?<!\w)(" + "|".join(re.escape(v) for v in sorted(variants))
-        + r")(?!\w)")
+    return count_pattern(count)
 
 class TestPublishedCountManifest(unittest.TestCase):
     def _policy(self, *historical):
@@ -276,6 +280,26 @@ class TestPublishedCountManifest(unittest.TestCase):
             rx.findall(f"| {count:,} |"), [f"{count:,}"],
             "the narrowed lookbehind stopped seeing a real published claim, "
             "so the guard has been blinded rather than corrected")
+
+        # N111. MEASURED 2026-08-15: the European rendering uses a full stop
+        # as the thousands separator, and at one canonical value the dot
+        # variant matched inside the PKCS#7 OIDs in scripts/timestamp.py, on
+        # the RSADSI arc. Cascading a count by text-replacing that would break
+        # RFC 3161 timestamping, which is measurement rule 4d's exact hazard.
+        # The colliding value is not written here, per the note above.
+        dotted = f"{count:,}".replace(",", ".")
+        self.assertEqual(
+            rx.findall(f'_OID_CONTENT_TYPE = "1.{dotted}.113549.1.9.3"'), [],
+            "the count matched inside a dotted OID arc; text-replacing that "
+            "would corrupt the timestamping OIDs")
+        self.assertEqual(
+            rx.findall(f"v1.{dotted}.1"), [],
+            "the count matched inside a dotted version string")
+        self.assertEqual(
+            rx.findall(f"<strong>{dotted}</strong> Tests"), [dotted],
+            "the dotted-run exclusion blinded the guard to the German "
+            "locale's own rendering of the published count, which is a real "
+            "claim and the reason the dot variant exists at all")
 
     def test_count_literal_appears_nowhere_outside_the_manifest(self):
         count = _canonical_count()

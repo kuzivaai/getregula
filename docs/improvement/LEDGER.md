@@ -2377,3 +2377,202 @@ manifest**, so unlike the collected count it drifts silently on every test
 file added. It is corrected to 112 here rather than left, but the underlying
 gap stands: `cascade_count.py` carries two quantities and this is a third that
 nothing enforces. Recorded so the next drift is not rediscovered from scratch.
+
+### N110. The non-reproducible detector reading was path sensitivity, not non-determinism
+
+**First raised:** 2026-08-14 as N108's open tail, carried into the 14 August
+handover as the highest technical priority. **Status:** RESOLVED 2026-08-15.
+Held on `feat/engagement-fixes`; nothing is on main.
+
+The prior session reported that `examples/cv-screening-app` returned
+`[INFO] [ 43]` / `INFO tier: 1` in one worktree, three times, and
+`[WARN] [ 63]` / `WARN tier: 1` in nine runs across three checkouts of the same
+commit, and recorded that **no cause was established and none was guessed**.
+For a tool whose product is reproducible evidence, a 20-point swing and a tier
+change on byte-identical input was correctly treated as serious.
+
+**It is deterministic. The variable is the path, not the bytes.**
+
+`_is_example_file` (`scripts/report.py:169`) tests the resolved path's parts for
+any of `example`, `examples`, `demo`, `demos`, `tutorial`, `tutorials`,
+`sample`, `samples`, `cookbook`. A match classifies the file as example
+provenance, and example provenance subtracts a flat **20**
+(`scripts/report.py:273`). The arithmetic closes exactly: `high_risk` base 55
+plus one 8-point match bonus is 63, less 20 is 43. The published tier bands are
+BLOCK at 80 or above, WARN 50 to 79, INFO below 50, so the same deduction also
+moves the finding from WARN to INFO. **The tier change was never a second
+symptom; it is the 20-point deduction crossing 50.**
+
+**Demonstrated, not inferred.** `examples/cv-screening-app` was copied whole to
+a scratch path with no matching segment. `sha256sum` on both `app.py` files
+returned `4be30730ff79a95135c4f96671c7696d738c29d20964c0d6e767380762766425`.
+Scanning each with the same command:
+
+| Path | Output |
+|---|---|
+| `examples/cv-screening-app` | `[INFO] [ 43]` |
+| scratch copy, no `examples` segment | `[WARN] [ 63]` |
+
+Two hypotheses were tested and rejected first, in order of prior likelihood.
+The scan cache was cleared to `{}` and the reading did not move, so
+`scripts/scan_cache.py` is not implicated. Optional imports were enumerated and
+`tree_sitter` and its grammars are present, and in any case `app.py` is Python
+and uses the stdlib `ast` path. A first control was contaminated by copying
+`app.py` alone rather than the project: without the surrounding files the
+finding was suppressed by domain gating, which is correct behaviour and not a
+third reading.
+
+**Consequence for published surfaces, which is the part that matters.** The
+documented command scans the in-repo path, so **43 is the correct published
+value** and the 63 anchors were recorded against a location that command does
+not use. `scripts/verify_transcripts.py` was failing for the right reason and
+was not silenced. Three surfaces are corrected to the real output
+(`examples/cv-screening-app/README.md`, `site/sample-report.html`,
+`site/guides/eu-ai-act-recruitment-hiring.html`), together with the manifest
+anchors in `data/documented_transcripts.json` and that file's `_anchor_choice`
+note, which had recorded the superseded conclusion that 43 "has never
+reproduced".
+
+**A documentation trap, now named.** Every published transcript of a bundled
+fixture understates by 20 what the same code scores in a real project, purely
+because the fixture lives under `examples/`. The example README now states this
+and says plainly that the same code would score 63 in a real project. Nothing
+was changed in the scoring itself: deprioritising demo code is the intended
+behaviour and the precision work depends on it.
+
+**Open, and deliberately not fixed here:** the penalty is invisible in the
+output. A reader sees 43 with no indication that 20 was deducted or why.
+Surfacing the deduction in the finding record is a product change beyond this
+session's scope, and `PRODUCT_BUILD` is STOP. Recorded rather than actioned.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. This resolves an evidence-integrity question; it is not a market
+signal.
+
+### N111. The count guard matched inside a cryptographic OID, and its test had drifted
+
+**First raised:** 2026-08-15, by the guard failing during an unrelated
+cascade. **Status:** IMPLEMENTED. Held on `feat/engagement-fixes`; nothing is
+on main.
+
+Two defects, found together, the second only because the first was fixed.
+
+**1. A dotted numeric run is not a claim.** `count_pattern` builds three
+renderings of the canonical count: bare, comma-grouped, and dot-grouped for the
+DE and PT-BR pages. The dot-grouped variant matched inside the PKCS#7 object
+identifiers in `scripts/timestamp.py`, on the RSADSI arc, where the digits are
+a fragment of an OID and carry no claim at all. The guard reported the file as
+publishing a stale count.
+
+The hazard is not the false positive, it is the obvious remedy. Cascading a
+count by text-replacing those digits would rewrite the OIDs and **break RFC
+3161 timestamping outright**. That is measurement rule 4d's exact hazard, the
+rule written after a near-identical replace corrupted `uv.lock`, and this time
+the instrument making the false accusation was the guard itself.
+
+The lookbehind and lookahead now exclude a component sitting inside a longer
+dotted sequence, while a standalone dot-grouped rendering in prose still
+matches, because the DE and PT-BR pages genuinely publish the count that way.
+Controls run both directions: OID arcs and dotted version strings do not
+match; the German page's own `<strong>` rendering, the comma-grouped English
+form and the bare integer all still do.
+
+**2. The test that guards the pattern had copied it.**
+`tests/test_published_count_manifest.py::_count_pattern` **reimplemented** the
+regex rather than calling it. The copy drifted the instant the real one was
+corrected: the controls exercised the copy, passed, and would have reported a
+healthy guard while the shipped guard behaved differently. That is precisely
+what `.claude/rules/quality-standards.md` forbids, and the failure mode it
+names, a manually maintained copy drifting silently, had already occurred by
+the time it was noticed. The helper now delegates, so every control tests the
+code that actually runs.
+
+**A third occurrence of the N109 self-inflicted trap, recorded because three
+is a pattern.** The first draft of both fixes wrote the colliding canonical
+value into the comments explaining them, and the guard immediately failed
+naming those two files. `tests/test_published_count_manifest.py` already
+carried a note saying the colliding value is deliberately not written into that
+file. The note was right and was not read. Both comments now describe the
+collision without the number, in the "MEASURED <date>: at one canonical value"
+form the file already used.
+
+**Standing gap, unchanged from N109 and now more clearly a design issue.**
+Three separate collisions in two days, one against a historical figure in the
+programme's own records, one self-inflicted in a living document, one against
+an unrelated digit run in source. The policy cannot express "this digit
+sequence is not a claim about the test count", so each collision is resolved
+individually. A disposition is still owed.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged.
+
+### N112. The scan cache is provenance-blind, so a published reading depends on scan order
+
+**First raised:** 2026-08-15, by `test_every_documented_transcript_reproduces`
+passing in isolation and failing in the full suite on the same commit and the
+same tree. **Status:** GATE FIXED, UNDERLYING DEFECT OPEN. Held on
+`feat/engagement-fixes`; nothing is on main.
+
+**This supersedes part of N110.** N110 concluded that the 43 versus 63
+disagreement was path sensitivity and nothing else. Path sensitivity is real
+and is exactly 20 points, and that part stands. **The conclusion that it was
+the whole explanation was wrong**, and the full suite is what proved it: the
+same command, same bytes, same path, returned 63 inside the suite and 43
+outside it.
+
+**What is proven.** The reading depends on the state of
+`~/.regula/cache/scan_cache.json`. With the cache left warm by a suite run the
+fixture reports `[WARN] [ 63]`; emptied, it reports `[INFO] [ 43]`. Reproduced
+in both directions, twice. Cache keys have the form
+`app.py:v4:<version>:<patterns-fingerprint>:<context>:<content-sha256>`. **The
+path component is the path relative to the scan root, while `_is_example_file`
+derives provenance from the FULL path.** Two byte-identical copies of a file at
+the same relative path therefore share one key while differing in the 20-point
+example penalty, and whichever scan ran first decides what the other one reads.
+That is the mechanism behind the reading the 14 August handover recorded as
+never reproducing: it was never about the worktree, it was about what had been
+scanned before.
+
+**What is NOT proven, stated plainly.** Which test writes the colliding entry
+was not identified. Six candidate test files each reproduced the failure when
+paired with the transcript test, so it is a common side effect rather than one
+polluter, and `regula check` invocations run directly wrote zero cache entries
+in this environment, which is itself unexplained. Two earlier hypotheses were
+tested and rejected before this one: clearing the cache and re-running did not
+move the reading at the time it was tried, and optional imports are present.
+**The first of those rejections was premature and is the reason N110 was
+published incomplete.**
+
+**The first attempt at this fix was inert, and the suite caught that too.**
+`verify_transcripts.run_command` was changed to set `REGULA_CACHE_DIR` to a
+fresh temporary directory per invocation. That variable was the documented
+override for the feed cache in `scripts/feed.py` and **the scan cache ignored
+it entirely**, reading only `Path.home() / ".regula" / "cache"`. The isolation
+therefore changed nothing, the next full suite failed in exactly the same
+place, and the "fix" had been an assumption that an environment variable was
+honoured, never a measurement that it was. Measurement rule 4 names this: an
+absent signal is not a passing signal, and a blank gate is not a green gate.
+
+**Fixed here, verified: the gate, not the defect.** `ScanCache.__init__` now
+honours `REGULA_CACHE_DIR`, with an explicit `cache_dir` argument still
+outranking it, and `verify_transcripts.run_command` sets it per invocation.
+Controlled both ways on 2026-08-15: with the ambient cache warm the fixture
+prints 63 and the isolated run prints 43, and the gate passes with the poisoned
+ambient cache still in place. `tests/test_scan_cache.py` gained
+`test_regula_cache_dir_env_var_is_honoured`, which asserts the variable moves
+the file rather than merely being accepted, and which was itself controlled by
+reverting the override and watching it fail. Writing that test also surfaced
+why direct CLI runs appeared to write nothing: `put()` updates memory and
+`flush()` persists, so an unflushed assertion fails for the wrong reason.
+
+**Open, and the more serious half.** The cache key should participate in
+provenance, or provenance should be recomputed rather than cached. Until then,
+**the same command on the same bytes can print a different detector priority
+depending on what was scanned earlier on that machine**, which is a
+reproducibility defect in a tool whose product is reproducible evidence. It is
+a product change and `PRODUCT_BUILD` is STOP, so it is recorded rather than
+made. Anyone acting on it should start at `ScanCache.get`/`put` in
+`scripts/scan_cache.py` and `classify_provenance` in `scripts/report.py:182`.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged.

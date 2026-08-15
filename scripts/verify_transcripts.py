@@ -68,9 +68,11 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
@@ -133,11 +135,36 @@ def load_manifest() -> list[dict]:
 
 
 def run_command(argv: list[str]) -> tuple[str, int]:
-    """Run the documented command exactly as a reader would."""
-    run = subprocess.run(
-        [sys.executable, "-m", "scripts.cli", *argv],
-        cwd=REPO, capture_output=True, text=True, check=False, timeout=600,
-    )
+    """Run the documented command exactly as a reader would, on a cold cache.
+
+    The cache directory is redirected to a fresh temporary directory for every
+    invocation. Without that, this check is not a measurement of the page: it
+    measures the page plus whatever the ambient `~/.regula/cache` happens to
+    hold.
+
+    MEASURED 2026-08-15. This gate passed standalone and failed inside the full
+    suite on the same commit and the same tree, differing only in cache state:
+    with the cache left warm by a suite run the fixture reported
+    `[WARN] [ 63]`, and with the cache emptied it reported `[INFO] [ 43]`,
+    reproduced in both directions. Cache keys are
+    `relative-path : schema : context : content-sha256`, so two byte-identical
+    copies of a file at the same relative path share a key while their
+    provenance, which `_is_example_file` derives from the FULL path, does not
+    take part in the key. An entry written while scanning a copy outside
+    `examples/` can therefore be served to a scan inside it, carrying the
+    20-point example penalty away with it.
+
+    Isolating the cache here makes the gate deterministic. It does NOT fix the
+    underlying collision, which is recorded as N112 and is a product change
+    this session did not make.
+    """
+    with tempfile.TemporaryDirectory(prefix="regula-transcript-cache-") as tmp:
+        env = dict(os.environ, REGULA_CACHE_DIR=tmp)
+        run = subprocess.run(
+            [sys.executable, "-m", "scripts.cli", *argv],
+            cwd=REPO, capture_output=True, text=True, check=False,
+            timeout=600, env=env,
+        )
     return run.stdout + run.stderr, run.returncode
 
 
