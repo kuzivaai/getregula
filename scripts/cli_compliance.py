@@ -519,7 +519,8 @@ def cmd_assess(args) -> None:
         )
         sys.exit(2)
 
-    sys.exit(run_assess(output_format, answers=answers))
+    sys.exit(run_assess(output_format, answers=answers,
+                        save_facts=getattr(args, "save_facts", None)))
 
 
 def cmd_baseline(args) -> None:
