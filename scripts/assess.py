@@ -382,7 +382,93 @@ def run_from_answers(answers_csv: str) -> dict:
     return {"tier": tier, "non_eu_provider": False, "answers": answers}
 
 
-def run_assess(output_format: str = "text", answers: Optional[str] = None) -> int:
+# Which assess answers correspond EXACTLY to one fact in the decision model, and
+# which do not. The unmapped ones are listed with their reason rather than
+# omitted, because an answer that silently goes nowhere is what N149 is about.
+#
+# The test is correspondence, not similarity. `prohibited` and
+# `transparency_trigger` each ask one yes/no question covering seven and three
+# distinct kernel facts respectively, so a `yes` does not say WHICH, and writing
+# it against any single fact id would be Regula inventing a fact. The honest
+# answer is that this questionnaire cannot resolve them, said out loud.
+ANSWER_TO_FACT = {
+    "uses_ai": ("is_ai_system", Q_USES_AI),
+    "eu_users": ("jurisdiction_in_scope", Q_EU_USERS),
+    "high_risk_domain": ("eu_annex_iii_use", Q_HIGH_RISK),
+}
+
+ANSWER_NOT_MAPPED = {
+    "prohibited": (
+        "one yes/no over seven separate Article 5 practices; the model has a "
+        "distinct fact for each and a single yes does not say which"),
+    "transparency_trigger": (
+        "one yes/no over direct interaction, synthetic content and biometric "
+        "categorisation; the model has a distinct fact for each"),
+    "non_eu_provider": (
+        "the model has no fact for where the provider is established; "
+        "jurisdiction_in_scope and role_provider are different questions"),
+}
+
+
+def facts_from_answers(answers: dict, jurisdiction: str = "eu") -> tuple:
+    """Map assess answers onto canonical facts. Returns (facts, unmapped).
+
+    Every value is `user_declaration`: a person answered a question this tool
+    asked, and the question asked is recorded in the provenance so a later
+    reader can judge the correspondence rather than take it on trust. The assess
+    wording is broader than the legal definition in at least one place
+    (`uses_ai` asks about using an AI API; `is_ai_system` asks whether the
+    subject meets the Act's definition), which is exactly why the question
+    travels with the answer.
+    """
+    import fact_store as fs
+
+    facts = {}
+    for answer_key, (fact_id, question) in ANSWER_TO_FACT.items():
+        if answer_key not in answers:
+            continue
+        state = answers[answer_key]
+        if state not in ("yes", "no"):
+            continue
+        facts[fact_id] = {"values": [fs.build_value(
+            state, jurisdiction, "cli:assess",
+            source_type=fs.SOURCE_USER_DECLARATION,
+            # The WHOLE question, not its first line. `high_risk_domain` opens
+            # with "Does your product do any of the following?" and everything
+            # that makes the answer mean anything is in the nine bullets under
+            # it. An evidence record that stored only the opening line would
+            # record that somebody said yes to nothing in particular.
+            question=" ".join(question.split()),
+            derived_from=f"assess:{answer_key}",
+        )]}
+    unmapped = {k: v for k, v in ANSWER_NOT_MAPPED.items() if k in answers}
+    return facts, unmapped
+
+
+def save_declared_facts(result: dict, project: str, jurisdiction: str = "eu") -> dict:
+    """Write the mappable answers to <project>/.regula/facts.json.
+
+    Merges over an existing store rather than replacing it, so answering the
+    questionnaire a second time does not silently discard a fact declared with
+    `check --fact`.
+    """
+    import fact_store as fs
+    from decision_kernel import DecisionKernel
+
+    kernel = DecisionKernel()
+    facts, unmapped = facts_from_answers(result.get("answers", {}), jurisdiction)
+    path = fs.store_path(project)
+    existing = {}
+    if path.is_file():
+        existing = fs.load(path, kernel.model)["facts"]
+    merged = fs.merge(existing, facts)
+    fs.save(path, merged, kernel.model_version)
+    return {"path": str(path), "written": facts, "unmapped": unmapped,
+            "total_in_store": len(merged)}
+
+
+def run_assess(output_format: str = "text", answers: Optional[str] = None,
+               save_facts: Optional[str] = None) -> int:
     """Main entry point. Returns exit code (1 if prohibited, else 0)."""
     if answers is not None:
         try:
@@ -421,6 +507,15 @@ def run_assess(output_format: str = "text", answers: Optional[str] = None) -> in
 
     exit_code = 1 if tier == TIER_PROHIBITED else 0
 
+    saved = None
+    if save_facts is not None:
+        try:
+            saved = save_declared_facts(result, save_facts)
+        except Exception as exc:                                # noqa: BLE001
+            print(f"Error: could not write declared facts: {exc}", file=sys.stderr)
+            return 2
+        result = dict(result, declared_facts=saved)
+
     if output_format == "json":
         import json
         from envelope import build_envelope
@@ -429,4 +524,17 @@ def run_assess(output_format: str = "text", answers: Optional[str] = None) -> in
         return exit_code
 
     print(format_result(tier, non_eu))
+    if saved is not None:
+        print()
+        print(f"  Declared facts written to {saved['path']}")
+        print(f"  {len(saved['written'])} of your answers map to a fact the "
+              f"decision model uses; {saved['total_in_store']} fact(s) now in the store:")
+        for fact_id in sorted(saved["written"]):
+            print(f"    - {fact_id} = {saved['written'][fact_id]['values'][0]['state']}")
+        if saved["unmapped"]:
+            print(f"  {len(saved['unmapped'])} answer(s) were NOT written, and why:")
+            for key, reason in sorted(saved["unmapped"].items()):
+                print(f"    - {key}: {reason}")
+        print("  These are your declarations. Regula establishes none of them.")
+        print("  Next: regula check .   (it now reads them)")
     return exit_code

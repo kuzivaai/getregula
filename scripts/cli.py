@@ -887,6 +887,26 @@ def _build_subparsers(subparsers):
              "for --format text/json/sarif (not html or --audit-suppressions). "
              "Optional; omit for legacy behaviour.",
     )
+    # N149: the decision block names the facts it needs and, until 2026-08-17,
+    # nothing could supply them. These three flags are that route. Regula
+    # establishes no fact; every value is a person's declaration and carries the
+    # provenance saying so.
+    p_check.add_argument("--fact", action="append", metavar="ID=STATE",
+                         help="Declare one fact for this run, e.g. "
+                              "--fact is_ai_system=yes. States: yes, no, unknown, "
+                              "not_applicable. `unknown` is a real answer and is "
+                              "never read as `no`. Repeatable; overrides the store.")
+    p_check.add_argument("--facts-file", metavar="PATH",
+                         help="Read declared facts from an explicit file instead of "
+                              "only the project store at .regula/facts.json")
+    p_check.add_argument("--no-facts", action="store_true",
+                         help="Ignore any declared facts, including the project "
+                              "store, for this run")
+    p_check.add_argument("--list-facts", action="store_true",
+                         help="Print every fact id this jurisdiction's decision "
+                              "model defines, with its question, and exit. The "
+                              "ids --fact accepts, listed from the model rather "
+                              "than from documentation.")
     p_check.add_argument("--no-ignore", action="store_true", help="Don't respect regula-ignore comments")
     p_check.add_argument("--audit-suppressions", action="store_true",
                          help="List all regula-ignore and regula-accept annotations with status (ISO 42001 9.1)")
@@ -1512,6 +1532,17 @@ def _build_subparsers(subparsers):
             "(the 5th slot is non_eu_provider when high_risk=yes, "
             "else transparency_trigger)."
         ),
+    )
+    # N149: assess asked questions that answer the facts `check` says it needs,
+    # and discarded them. This writes them where `check` reads. Opt-in, because
+    # writing into somebody's project is a side effect they should ask for.
+    p_assess.add_argument(
+        "--save-facts", nargs="?", const=".", metavar="PROJECT",
+        help="Write the answers that map to a decision-model fact into "
+             "<PROJECT>/.regula/facts.json, where `regula check` reads them. "
+             "Defaults to the current directory. Only answers that correspond "
+             "exactly to one fact are written, and the command says which "
+             "answers were not written and why.",
     )
     p_assess.add_argument(
         "--jurisdiction", type=_normalise_jurisdiction,

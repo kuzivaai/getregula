@@ -249,9 +249,87 @@ def _write_analysis_manifest(
     print(f"Analysis manifest written to {out}", file=sys.stderr)
 
 
+def _declared_facts(args, project: str, jurisdiction: str) -> tuple:
+    """Facts a person declared about this project, from the store and the flags.
+
+    N149 closed: `check` names the facts it needs and now has somewhere to
+    receive them. Precedence is store, then `--facts-file`, then `--fact`, so a
+    one-off on the command line overrides a file without editing it.
+
+    Returns `(facts, notices)`. Fails closed on an unreadable store: a fact map
+    that quietly came back empty is indistinguishable from a user who declared
+    nothing, which would discard the answers silently and is the exact defect
+    this route exists to remove.
+    """
+    from decision_kernel import DecisionKernel
+    import fact_store as fs
+
+    if getattr(args, "no_facts", False):
+        if getattr(args, "fact", None) or getattr(args, "facts_file", None):
+            # Refusing beats picking. "Ignore every declared fact" and "here is
+            # a declared fact" are contradictory instructions, and silently
+            # honouring one would discard an answer without saying so, which is
+            # the defect this whole route exists to remove.
+            raise fs.FactStoreError(
+                "--no-facts contradicts --fact/--facts-file. --no-facts ignores "
+                "every declared fact including the project store; drop it to "
+                "declare facts, or drop the declarations to ignore the store.")
+        return {}, ["declared facts ignored for this run (--no-facts)"]
+
+    model = DecisionKernel().model
+    notices: list = []
+    sources: list = []
+
+    default_store = fs.store_path(project)
+    explicit = getattr(args, "facts_file", None)
+    for path, required in ((default_store, False), (Path(explicit) if explicit else None, True)):
+        if path is None:
+            continue
+        if not path.is_file():
+            if required:
+                raise fs.FactStoreError(f"{path}: --facts-file names no readable file")
+            continue
+        loaded = fs.load(path, model)
+        notices.extend(loaded["notices"])
+        notices.append(f"read {len(loaded['facts'])} declared fact(s) from {loaded['path']}")
+        sources.append(loaded["facts"])
+
+    cli_facts = fs.collect_cli_facts(getattr(args, "fact", None), jurisdiction, model)
+    if cli_facts:
+        notices.append(f"read {len(cli_facts)} declared fact(s) from --fact")
+        sources.append(cli_facts)
+
+    return fs.merge(*sources), notices
+
+
+def _print_fact_catalogue(jurisdiction: str = "eu") -> None:
+    """Every fact id the model defines, printed from the model.
+
+    `--fact` used to name ids nothing enumerated, so a user's only route to the
+    vocabulary was to run the command and read what it happened to ask for.
+    """
+    from decision_kernel import DecisionKernel
+
+    kernel = DecisionKernel()
+    definitions = kernel.model.get("fact_definitions", {})
+    print(f"Decision model {kernel.model_version}: "
+          f"{len(definitions)} fact id(s) defined")
+    print("Declare any of them with: regula check . --fact <id>=<state>")
+    print("States: yes, no, unknown, not_applicable. "
+          "`unknown` is an answer and is never read as `no`.\n")
+    for fact_id in sorted(definitions):
+        print(f"  {fact_id}")
+        question = definitions[fact_id].get("question")
+        if question:
+            print(f"      {question}")
+
+
 def cmd_check(args) -> None:
     """Scan files for risk indicators."""
     from datetime import datetime, timezone
+    if getattr(args, "list_facts", False):
+        _print_fact_catalogue()
+        return
     _manifest_started_at = datetime.now(timezone.utc).isoformat()
     _sarif_written_path = None
     from cli import (
@@ -293,7 +371,17 @@ def cmd_check(args) -> None:
         min_tier=getattr(args, "min_tier", "") or "",
         declared_domains=declared_domains,
     )
-    decision = empty_decision("eu", "cli:check")
+    # N149: the decision block names the facts it needs. Until 2026-08-17 there
+    # was no route by which anyone could supply them, so the same two facts were
+    # named on every run forever. Declared facts arrive from two places, both of
+    # them a person: the project-local store `assess --save-facts` writes, and
+    # `--fact id=state` on this command. Regula establishes none of them.
+    declared_facts, fact_notices = _declared_facts(args, project, "eu")
+    if declared_facts:
+        from decision_adapters import evaluate_payload
+        decision = evaluate_payload({"jurisdiction": "eu", "facts": declared_facts})
+    else:
+        decision = empty_decision("eu", "cli:check")
     jurisdiction_decisions = {"eu": decision}
     # Capture scan statistics immediately (side-channel on the function).
     # Used to record honest scanned/skipped counts in the completion
@@ -473,6 +561,8 @@ def cmd_check(args) -> None:
                     "detector_findings": detector_findings(findings),
                     "detector_explanations": explained,
                     "decision": decision,
+                    "declared_facts": declared_facts,
+                    "declared_facts_notices": fact_notices,
                     "jurisdiction_decisions": jurisdiction_decisions,
                 },
                 exit_code=_exit_code,
@@ -487,6 +577,8 @@ def cmd_check(args) -> None:
                 {
                     "detector_findings": detector_findings(findings),
                     "decision": decision,
+                    "declared_facts": declared_facts,
+                    "declared_facts_notices": fact_notices,
                     "jurisdiction_decisions": jurisdiction_decisions,
                 },
                 exit_code=_exit_code,
@@ -516,6 +608,27 @@ def cmd_check(args) -> None:
         # territorial scope, or the other facts required for a legal result.
         for jurisdiction_decision in jurisdiction_decisions.values():
             print("\n" + format_decision_text(jurisdiction_decision))
+        # A decision that moved because somebody said so must show that somebody
+        # said so, next to the decision it moved (N149). Provenance is printed
+        # in full rather than summarised: `declared by a user` is the load-bearing
+        # word in every line of it.
+        if declared_facts:
+            import fact_store as _fs
+            print(f"\nDeclared facts: {len(declared_facts)} "
+                  f"(asserted by a person, not established by Regula)")
+            for line in _fs.describe(declared_facts):
+                print(line)
+        for _notice in fact_notices:
+            print(f"  INFO: {_notice}", file=sys.stderr)
+        if not declared_facts and not getattr(args, "no_facts", False):
+            print("\n  No facts are declared for this project, so the decision "
+                  "above cannot resolve.", file=sys.stderr)
+            print("  Supply them either way round:", file=sys.stderr)
+            print("    regula check . --fact is_ai_system=yes "
+                  "--fact jurisdiction_in_scope=yes", file=sys.stderr)
+            print("    regula assess --save-facts        "
+                  "# answers the questions, then writes .regula/facts.json",
+                  file=sys.stderr)
         print("\nDetector observations (not legal facts):")
         if prohibited:
             verdict_tier = "ARTICLE 5 PATTERNS"

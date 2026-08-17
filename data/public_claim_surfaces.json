@@ -740,6 +740,17 @@
       "reason": "Jurisdiction to assess against (default: eu). Aliases: kr=korea, co=colorado. Korea and Colorado assessments are available via the web tool at https://getregula.com/assess/?j=kr or ?j=co"
     },
     {
+      "stable_id": "cli:1d01b565582bc728",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula assess:--save-facts",
+      "destination": "regula assess --save-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Write the answers that map to a decision-model fact into <PROJECT>/.regula/facts.json, where `regula check` reads them. Defaults to the current directory. Only answers that correspond exactly to one fact are written, and the command says which answers were not written and why."
+    },
+    {
       "stable_id": "cli:7d6474c5c1726cfe",
       "channel": "cli",
       "source": "scripts/cli.py#regula assess:-f",
@@ -1510,6 +1521,28 @@
       "reason": "Show detailed classification reasoning, obligation roadmap, and effort estimates"
     },
     {
+      "stable_id": "cli:e0cb2c2adf84b43f",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula check:--fact",
+      "destination": "regula check --fact",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Declare one fact for this run, e.g. --fact is_ai_system=yes. States: yes, no, unknown, not_applicable. `unknown` is a real answer and is never read as `no`. Repeatable; overrides the store."
+    },
+    {
+      "stable_id": "cli:8646f5421db5c103",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula check:--facts-file",
+      "destination": "regula check --facts-file",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Read declared facts from an explicit file instead of only the project store at .regula/facts.json"
+    },
+    {
       "stable_id": "cli:b8fa557b8d5067df",
       "channel": "cli",
       "source": "scripts/cli.py#regula check:--format",
@@ -1587,6 +1620,17 @@
       "reason": "Filter findings to a specific lifecycle phase"
     },
     {
+      "stable_id": "cli:92a776668d2ebd4a",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula check:--list-facts",
+      "destination": "regula check --list-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Print every fact id this jurisdiction's decision model defines, with its question, and exit. The ids --fact accepts, listed from the model rather than from documentation."
+    },
+    {
       "stable_id": "cli:21ae86035b3df274",
       "channel": "cli",
       "source": "scripts/cli.py#regula check:--manifest",
@@ -1618,6 +1662,17 @@
       "claim_capable": true,
       "classification": "active_product",
       "reason": "Project name for SARIF output"
+    },
+    {
+      "stable_id": "cli:c293feebfb47d192",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula check:--no-facts",
+      "destination": "regula check --no-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Ignore any declared facts, including the project store, for this run"
     },
     {
       "stable_id": "cli:561a9980a1d4a0e9",
@@ -8674,14 +8729,14 @@
   "totals": {
     "channel": {
       "action": 22,
-      "cli": 630,
+      "cli": 635,
       "mcp": 3,
       "package": 2,
       "repository_docs": 39,
       "website": 92
     },
     "classification": {
-      "active_product": 761,
+      "active_product": 766,
       "historical_record": 1,
       "internal_record": 1,
       "non_claim_asset": 25

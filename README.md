@@ -7,7 +7,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2982%20collected-blue.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2998%20collected-blue.svg)](#verified-numbers)
 [![Accessibility target: WCAG 2.2 AA](https://img.shields.io/badge/accessibility%20target-WCAG%202.2%20AA-blue.svg)](docs/accessibility/README.md)
 
 ---
@@ -89,7 +89,24 @@ pipx install regula-ai      # or: pip install regula-ai / uv pip install regula-
 **Not sure if the AI Act applies?** No code needed:
 ```bash
 regula assess               # record declared context for human review
+regula assess --save-facts  # and write the answers where `regula check` reads them
 ```
+
+The scan tells you which facts it needs and cannot get from code. You supply
+them, and the decision moves:
+
+```bash
+regula check . --list-facts                     # every fact id the model defines
+regula check . --fact is_ai_system=yes \
+               --fact jurisdiction_in_scope=yes # declare them for one run
+```
+
+Declared facts are **yours**, not Regula's. Each is stored with who declared it,
+through which command, in answer to which question, and when, in
+`.regula/facts.json`, and the scan prints that provenance beside the decision.
+`unknown` is an answer and is never read as `no`. A declared fact can move a
+decision from `insufficient_information` to an indication; it does not produce a
+risk tier, a compliance score, a readiness percentage or an effort estimate.
 
 **Want to scan your code?**
 ```bash
@@ -304,7 +321,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 419 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 13 |
-| Tests (pytest --collect-only) | 2,982 |
+| Tests (pytest --collect-only) | 2,998 |
 | Required production dependencies | 0 |
 
 For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md). What version numbers promise, the public API they cover, and the deprecation policy: [`docs/VERSIONING.md`](docs/VERSIONING.md).
