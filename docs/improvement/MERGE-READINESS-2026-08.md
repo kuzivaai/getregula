@@ -949,6 +949,9 @@ a declared contract, it is a performance characteristic, and it is stated
 because a user who upgrades and sees a slow first scan should be able to find
 out why.
 
+**Corrected in section 14: the schema now moves v5 to v7**, for a second and
+different reason. The sentence above is left as the measurement at `09ec405`.
+
 **The counter-argument, restated because it is real and has not gone away.**
 1.9.0 was itself a corrective realignment three weeks ago, and a second
 discontinuity reads as churn. That is a presentation cost, not a correctness
@@ -968,3 +971,63 @@ of four Python versions, the pytest version CI installs, the composite action,
 real-world accuracy over zero human-labelled repositories, and any human reader,
 all remain uncovered. **"Passes every check this machine can run" is still a
 much smaller claim than "ready to merge", and the gap is still section 8.**
+
+---
+
+## 14. Addendum, 2026-08-17 (fifth session): one more cache defect, same class
+
+**Appended rather than folded in**, for the reason section 13 gives. Measured at
+`09ec405`, tree `0fa38947d118716dabcc8ae36702da10368e6022`.
+
+### 14.1 What was found
+
+The previous session closed section 13 with an open question it had looked at and
+not answered: whether `min_tier` is the only `scan_files` parameter that changes
+what a per-file cache entry contains. **It is not.** `respect_ignores`, the flag
+behind `regula check --no-ignore`, is threaded into `_parse_suppression_rules`
+(`scripts/report.py`) and decides whether a finding is emitted with
+`suppressed: True`. It was absent from the cache key, so both settings of a
+user-facing flag shared one entry.
+
+Measured on an isolated fixture, `REGULA_CACHE_DIR` per condition, one variable
+moving:
+
+```
+A. cold cache, --no-ignore   suppressed=False   exit 1   <- correct
+B. cold cache, default       suppressed=True    exit 0   <- correct
+C. B's cache,  --no-ignore   suppressed=True    exit 0   <- WRONG
+```
+
+C is a **silent false negative** on the one command whose purpose is to
+disregard the annotation. The reverse order is a **false positive**: a scan
+warmed by `--no-ignore` makes a later default scan report a finding the file's
+own `# regula-ignore` silences. Both directions were reproduced before the fix
+and both are asserted by tests. Ledger **N163**.
+
+### 14.2 What the fix changes for a release
+
+- **The scan-cache schema moves v5 to v7**, not v5 to v6. Nothing migrates, for
+  the reason every earlier bump gives: an entry written under an unsound key
+  cannot be told from a sound one afterwards. The user-visible consequence is
+  unchanged in kind, a cold first scan after upgrade.
+- **A second cost, new and worth stating**: two scans of the same tree that
+  differ in `--no-ignore` now each pay a cold scan, because they no longer share
+  entries. That is the correct trade: it buys a slow right answer in place of a
+  fast wrong one, which is the same call section 13 made for `min_tier`.
+- **Nothing else in section 13.7's reasoning moves.** This is not a change to a
+  declared output contract, so it does not add to the 2.0.0 case and does not
+  weaken it. **2.0.0 remains the verdict.**
+
+### 14.3 The durable half
+
+The one-line fix would have been to add the flag to the key. What landed instead
+is `report.CACHE_KEY_SCAN_PARAMS` and `report.CACHE_EXEMPT_SCAN_PARAMS`, which
+classify **every** parameter of `scan_files` as either in the key or provably
+unable to change an entry, each with its reason, plus a test that reads
+`inspect.signature(scan_files)` and fails if a parameter appears in neither.
+
+That matters because this is the third instance of one class: N112 (classifiers
+derived from the full path), N147 (scan completeness), N163 (scan parameters).
+Each was found by someone happening to look. **A parameter added after today
+cannot be forgotten the way this one was**, because there is now a list for it
+to be missing from and a test that reads the list against the function.
