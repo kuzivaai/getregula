@@ -2541,7 +2541,7 @@ def test_integration_high_risk_project():
 def test_integration_compliant_project():
     """Full scan of compliant fixture project"""
     from compliance_check import assess_compliance
-    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_compliant")
+    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_no_findings")
     if not Path(fixture_path).exists():
         print("⊘ Integration: compliant fixture (SKIPPED — fixture not found)")
         return
@@ -3575,7 +3575,7 @@ def test_ci_flag_compliant_exits_0():
     """--ci flag on compliant code exits 0."""
     import subprocess
     r = subprocess.run(["python3", "scripts/cli.py", "check",
-                        "tests/fixtures/sample_compliant/", "--ci"],
+                        "tests/fixtures/sample_no_findings/", "--ci"],
                        capture_output=True, text=True)
     assert_eq(r.returncode, 0, f"--ci compliant should exit 0, got {r.returncode}")
     print("\u2713 --ci flag: compliant code exits 0")
@@ -3622,7 +3622,7 @@ def test_ci_flag_before_subcommand():
     """--ci flag works when placed before the subcommand (global position)."""
     import subprocess
     r = subprocess.run(["python3", "scripts/cli.py", "--ci", "check",
-                        "tests/fixtures/sample_compliant/"],
+                        "tests/fixtures/sample_no_findings/"],
                        capture_output=True, text=True)
     assert_eq(r.returncode, 0,
               f"--ci before subcommand should exit 0 for compliant, got {r.returncode}")
@@ -3679,7 +3679,7 @@ def _assert_json_envelope(stdout, command_name):
 
 def test_smoke_report():
     """Smoke test: regula report --format json runs and exits 0."""
-    r = _run_cli("report", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("report", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_true(r.returncode in (0, 1), f"report exit {r.returncode}: {r.stderr[:200]}")
     assert_true(len(r.stdout) > 10, "report should produce output")
     print("\u2713 Smoke: report --format json exits 0 with output")
@@ -3687,7 +3687,7 @@ def test_smoke_report():
 
 def test_smoke_discover():
     """Smoke test: regula discover runs and exits 0."""
-    r = _run_cli("discover", "--project", "tests/fixtures/sample_compliant/")
+    r = _run_cli("discover", "--project", "tests/fixtures/sample_no_findings/")
     assert_true(r.returncode in (0, 1), f"discover exit {r.returncode}: {r.stderr[:200]}")
     assert_true(len(r.stdout) > 10, "discover should produce output")
     print("\u2713 Smoke: discover exits 0 with output")
@@ -3825,7 +3825,7 @@ def test_smoke_compliance():
 
 def test_smoke_gap():
     """Smoke test: regula gap --format json runs and exits 0."""
-    r = _run_cli("gap", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("gap", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_eq(r.returncode, 0, f"gap exit {r.returncode}: {r.stderr[:200]}")
     data = _assert_json_envelope(r.stdout, "gap")
     assert_true("data" in data, "gap: missing data field")
@@ -3834,7 +3834,7 @@ def test_smoke_gap():
 
 def test_smoke_benchmark():
     """Smoke test: regula benchmark --format json runs and exits 0."""
-    r = _run_cli("benchmark", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("benchmark", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_eq(r.returncode, 0, f"benchmark exit {r.returncode}: {r.stderr[:200]}")
     assert_true(len(r.stdout) > 10, "benchmark should produce output")
     print("\u2713 Smoke: benchmark --format json exits 0 with output")
@@ -3851,7 +3851,7 @@ def test_smoke_timeline():
 
 def test_smoke_deps():
     """Smoke test: regula deps --format json runs and exits 0."""
-    r = _run_cli("deps", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("deps", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_eq(r.returncode, 0, f"deps exit {r.returncode}: {r.stderr[:200]}")
     data = _assert_json_envelope(r.stdout, "deps")
     assert_true("data" in data, "deps: missing data field")
@@ -3860,7 +3860,7 @@ def test_smoke_deps():
 
 def test_smoke_sbom():
     """Smoke test: regula sbom --format json runs and exits 0."""
-    r = _run_cli("sbom", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("sbom", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_eq(r.returncode, 0, f"sbom exit {r.returncode}: {r.stderr[:200]}")
     data = json.loads(r.stdout)
     assert_true("bomFormat" in data, "sbom: missing bomFormat (CycloneDX)")
@@ -3900,7 +3900,7 @@ main()
 
 def test_framework_flag_removed():
     """Test that the unused --framework flag has been removed."""
-    r = _run_cli("--framework", "eu-ai-act", "check", "tests/fixtures/sample_compliant/")
+    r = _run_cli("--framework", "eu-ai-act", "check", "tests/fixtures/sample_no_findings/")
     assert_eq(r.returncode, 2, f"--framework should be unrecognized, got exit {r.returncode}")
     assert_true("unrecognized" in r.stderr.lower() or "error" in r.stderr.lower(),
                 f"Should show error for --framework, got: {r.stderr[:200]}")
