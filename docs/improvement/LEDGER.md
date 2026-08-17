@@ -5659,10 +5659,23 @@ public pull request.
 
 **2. "None of these commits has ever been through CI" is false for two of them,
 and CI passed.** The remote ref sits at `238d1f1`, pushed 2026-08-14 09:25:49
-+0100 per `git reflog show refs/remotes/origin/feat/engagement-fixes`. So of the
-40 commits in `main..HEAD`, **2 are on the remote and in PR #55, and 38 have
-never been pushed**. `gh pr checks 55` reports every check passing on that head,
-including the two classes this repository records as unreproducible:
++0100 per `git reflog show refs/remotes/origin/feat/engagement-fixes`. **Two
+commits are on the remote and in PR #55, and everything after `238d1f1` is
+unpushed.**
+
+That sentence deliberately carries **no total**, and the first draft of it did.
+It said "of the 40 commits, 2 are on the remote and 38 have never been pushed",
+which was correct at the parent commit and wrong the instant the commit stating
+it existed: the real figures at that commit are `main..238d1f1 = 2`,
+`238d1f1..HEAD = 39`, `main..HEAD = 41`. **This is the self-referential
+measurement trap that has now occurred five times in this programme** (N109
+twice, N111, N153, and here), and the fifth is the first in which the corpus is
+the commit history rather than a file corpus. Recorded as `COMMIT_ERRATA.md`
+erratum 5. Re-derive with `git rev-list --count`; do not quote a total from
+here.
+
+`gh pr checks 55` reports every check passing on that head, including the two
+classes this repository records as unreproducible:
 
 ```
 test (3.10)   pass  9m42s      test (3.11)   pass  6m59s
@@ -5681,9 +5694,9 @@ deploy  skipping
 passed.** N161 says three quarters of the matrix and the composite action are
 unreproducible; that is true **of this machine** and it is not true of this
 branch's history. The honest form is that both have passed on a two-commit state
-and neither has been exercised on the 38 commits that carry the decision kernel,
-the claim closures, the fact loop and the cache repairs. **The gap is real and it
-is 38 commits wide, not 40.**
+and neither has been exercised on the commits after `238d1f1`, which carry the
+decision kernel, the claim closures, the fact loop and the cache repairs. **The
+gap is real, it is everything after `238d1f1`, and it is not zero.**
 
 **3. There is a second deploy channel and the CI enumeration cannot see it.**
 `netlify.toml` at the repository root sets `publish = "site"`, and no workflow
