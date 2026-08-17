@@ -24,6 +24,7 @@ Exit codes:
 """
 from __future__ import annotations
 
+import argparse
 import ast
 import importlib.util
 import json
@@ -80,6 +81,40 @@ def count_commands() -> int:
     # than hardcoding +1 — so if monitor is ever removed the count doesn't
     # silently overcount by one.
     return total + (1 if has_monitor else 0)
+
+
+def count_commands_from_registry() -> int:
+    """Count what a user can actually type, from the argparse registry itself.
+
+    `count_commands` above counts `def cmd_*` definitions and then compensates by
+    hand: it drops the six `cmd_monitor_*` sub-handlers and `cmd_feedback_summary`
+    and adds one back for the `monitor` group. That compensation is correct today
+    and is a hand-maintained mapping between two populations that nothing
+    reconciles.
+
+    This function measures the population the published claim is actually about.
+    "62 commands" on the landing page is a promise about what a reader can run,
+    and the subparser registry is the only artefact that knows. If a command is
+    ever registered without a `cmd_` handler, or a handler exists that nothing
+    registers, the two derivations diverge and `cascade_count.canonical_command_count`
+    refuses rather than publishing whichever happens to be read first.
+
+    MEASURED 2026-08-17 at `bc36b66`: both derivations return 62, and the
+    registry's set differs from the normalised handler set by exactly `monitor`
+    on one side and the six `monitor-*` sub-handlers plus `feedback-summary` on
+    the other, which is what the compensation encodes.
+    """
+    parser = argparse.ArgumentParser(prog="regula")
+    subparsers = parser.add_subparsers(dest="command")
+    cli = _load_module(REPO / "scripts" / "cli.py", "cli")
+    if cli is None or not hasattr(cli, "_build_subparsers"):
+        raise RuntimeError(
+            "scripts/cli.py did not expose _build_subparsers, so the command "
+            "registry could not be read. Refusing to fall back to a count "
+            "derived from function names: an unknown registry must not become "
+            "a published number.")
+    cli._build_subparsers(subparsers)
+    return len(subparsers.choices)
 
 
 def count_patterns() -> dict:

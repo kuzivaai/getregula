@@ -314,7 +314,7 @@
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>zero runtime dependencies</span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
-        <span><a href="https://github.com/kuzivaai/getregula/tree/main/tests" style="color:inherit;text-decoration:underline dotted;">2,922 tests</a></span>
+        <span><a href="https://github.com/kuzivaai/getregula/tree/main/tests" style="color:inherit;text-decoration:underline dotted;">2,960 tests</a></span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>Versioned security-alert inventory</span>
     </div>
@@ -403,14 +403,19 @@ Regula Quickstart
 
   First scan complete (0.0s)
   Files scanned:      1
-  <span class="out-warn">BLOCK findings:     1</span>
-
-  Top findings:
-    <span class="out-warn">[BLOCK]</span> [ 88] demo.py
-          <span class="out-block">Annex III, Category 4</span>
-          Employment and workers management
+  BLOCK findings:     0
+  WARN findings:      0
+  <span class="out-warn">INFO findings:      1</span>
 
 <span class="prompt">$</span> <span class="cmd">regula classify --file demo.py</span>
+<span class="out-ok">Decision: insufficient_information</span>
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observation (not a legal classification):
 <span class="out-warn">HIGH-RISK</span>: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15
 
 <span class="prompt">$</span> <span class="out-ok"># Reports code-observable indicators; runtime varies by repository.</span></pre>

@@ -210,6 +210,14 @@
 <p>The scope is narrower than it first appears. It applies to public authorities (or those acting on their behalf), not private companies. And it triggers on the <em>combination</em> of social scoring plus detrimental treatment in unrelated contexts or disproportionate to the behaviour. A bank's credit scoring is not caught because it is a private entity and the scoring is contextually related. A local authority AI that uses parking fine data to deny housing applications would be.</p>
 
 <pre tabindex="0"><code>$ regula classify --input "system using social credit scoring for citizens"
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observation (not a legal classification):
 PROHIBITED: Social scoring by public authorities or on their behalf</code></pre>
 
 <p>Regula's <a href="/blog/blog-classify-ai-system.html">classify command</a> checks system descriptions against Article 5 categories. Verify the classification against the full legislative text, because context matters.</p>
@@ -273,6 +281,14 @@ PROHIBITED: Social scoring by public authorities or on their behalf</code></pre>
 <p>Use <code>regula classify</code> with a description of your system to check whether it matches a prohibited category:</p>
 
 <pre tabindex="0"><code>$ regula classify --input "system using social credit scoring for citizens"
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observation (not a legal classification):
 PROHIBITED: Social scoring by public authorities or on their behalf</code></pre>
 
 <p>If the classification returns PROHIBITED, that requires legal review. Regula matches on patterns in the description, but the legal determination depends on context that code scanning cannot fully assess.</p>

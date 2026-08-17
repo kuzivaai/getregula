@@ -255,6 +255,14 @@ regula assess                       # interactive: does the AI Act apply?</code>
 <p>Here is what Regula produces when it classifies a JavaScript file with employment-related AI patterns:</p>
 
 <pre tabindex="0"><code>$ regula classify --file hiring_scorer.js
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observation (not a legal classification):
 HIGH-RISK: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15</code></pre>
 
 <p>And a full check with the domain flag:</p>

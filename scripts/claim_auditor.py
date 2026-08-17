@@ -887,6 +887,109 @@ def delivery_surface_paths() -> set[str]:
     return paths
 
 
+CLAIM_SCAN_COVERAGE_PATH = REPO_ROOT / "data/claim_scan_coverage.json"
+
+
+class CoverageError(RuntimeError):
+    """The declared scan-coverage register is missing, unreadable or stale."""
+
+
+def load_scan_coverage() -> dict:
+    """The declared record of who reads the surfaces this module cannot.
+
+    Fatal on failure, for the same reason `delivery_surface_paths` is fatal: an
+    unknown coverage population must never become a green audit.
+    """
+    try:
+        payload = json.loads(CLAIM_SCAN_COVERAGE_PATH.read_text(encoding="utf-8"))
+        coverage = payload["coverage"]
+    except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise CoverageError(
+            f"cannot load {CLAIM_SCAN_COVERAGE_PATH.name}: {exc}") from exc
+    if not isinstance(coverage, dict):
+        raise CoverageError("coverage must be a mapping of suffix to record")
+    return coverage
+
+
+def unscannable_delivery_surfaces() -> dict[str, list[str]]:
+    """Active claim-capable delivery surfaces this module cannot read, by suffix.
+
+    MEASURED 2026-08-17 at `bc36b66`: 6 of 108. `main` filtered its reports with
+    `if r.scanned` and printed nothing about the remainder, so a suffix outside
+    SCANNED_SUFFIXES became an invisible hole in exactly the instrument built to
+    close invisible holes.
+    """
+    by_suffix: dict[str, list[str]] = {}
+    for rel in sorted(delivery_surface_paths()):
+        suffix = Path(rel).suffix.lower()
+        if suffix in SCANNED_SUFFIXES:
+            continue
+        by_suffix.setdefault(suffix, []).append(rel)
+    return by_suffix
+
+
+def audit_scan_coverage() -> list[str]:
+    """Both directions: no undeclared hole, and no record that has gone stale."""
+    problems = []
+    unscannable = unscannable_delivery_surfaces()
+    coverage = load_scan_coverage()
+
+    for suffix, paths in sorted(unscannable.items()):
+        if suffix not in coverage:
+            problems.append(
+                f"{suffix}: {len(paths)} active claim-capable delivery "
+                f"surface(s) this auditor cannot read, with no declared "
+                f"coverage record: {', '.join(paths)}. Add a record to "
+                f"{CLAIM_SCAN_COVERAGE_PATH.name} naming which claim class is "
+                f"covered elsewhere and which is not covered at all, or bring "
+                f"the suffix into SCANNED_SUFFIXES.")
+            continue
+        record = coverage[suffix]
+        for required in ("covered_for", "covered_by", "not_covered_for"):
+            if required not in record:
+                problems.append(f"{suffix}: coverage record has no {required!r}")
+        if record.get("covered_for") and not record.get("covered_by"):
+            problems.append(
+                f"{suffix}: claims a covered class with no instrument named. "
+                f"A class is covered by an instrument or it is not covered.")
+
+    for suffix in sorted(coverage):
+        if suffix not in unscannable:
+            problems.append(
+                f"{suffix}: declared in {CLAIM_SCAN_COVERAGE_PATH.name} but no "
+                f"active claim-capable delivery surface has that suffix. The "
+                f"record has outlived its premise and must be removed; an "
+                f"exclusion that matches nothing is how a stale disposition "
+                f"survives a change nobody re-measured.")
+    return problems
+
+
+def format_scan_coverage() -> str:
+    """The coverage statement printed beside a delivery-surface result.
+
+    Measurement rule 5 in the report itself: state what the gate tested and, in
+    the same breath, what it did not.
+    """
+    unscannable = unscannable_delivery_surfaces()
+    if not unscannable:
+        return ""
+    coverage = load_scan_coverage()
+    total = sum(len(v) for v in unscannable.values())
+    lines = [
+        f"  NOT READ BY THIS AUDITOR: {total} active claim-capable delivery "
+        f"surface(s) across {len(unscannable)} suffix(es). This result says "
+        f"nothing about them."
+    ]
+    for suffix, paths in sorted(unscannable.items()):
+        record = coverage.get(suffix, {})
+        by = ", ".join(record.get("covered_by") or ["nothing"])
+        gap = ", ".join(record.get("not_covered_for") or [])
+        lines.append(f"    {suffix} ({len(paths)}): {', '.join(paths)}")
+        lines.append(f"        covered by  : {by}")
+        lines.append(f"        NOT covered : {gap or 'nothing stated'}")
+    return "\n".join(lines)
+
+
 def delivered_targets(paths: list[Path]) -> list[Path]:
     """Filter a Git change set to active delivery surfaces, preserving order."""
     active = delivery_surface_paths()
@@ -1665,8 +1768,20 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print(human_report(scanned_reports))
 
+    coverage_problems: list[str] = []
+    if args.delivery_surfaces:
+        # The whole population is in view here, so this is the one mode where a
+        # green result could be mistaken for "every delivered claim is sourced".
+        coverage_problems = audit_scan_coverage()
+        if args.format != "json":
+            statement = format_scan_coverage()
+            if statement:
+                print(statement)
+        for problem in coverage_problems:
+            print(f"claim-auditor: coverage: {problem}", file=sys.stderr)
+
     has_findings = any(r.findings for r in scanned_reports)
-    return 1 if has_findings else 0
+    return 1 if (has_findings or coverage_problems) else 0
 
 
 if __name__ == "__main__":

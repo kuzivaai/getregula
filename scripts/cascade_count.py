@@ -215,6 +215,44 @@ TEST_FILE_TEMPLATES = [
 ]
 
 
+# The FOURTH published quantity: how many commands the CLI registers.
+#
+# WHY IT IS HERE. Ledger N131 recorded it as a fourth ungated quantity and it is
+# the worst of the four, for two reasons the other three do not have. It is
+# published in THREE LANGUAGES, so a miss is invisible to a reader of the
+# language that was updated. And `claim_auditor --verify-facts` was the only
+# thing standing between a miss and a published wrong number, which makes it a
+# reader rather than a writer: it can say "this is wrong" but never fix it, so
+# every command added or removed meant a hand-applied edit across three locales.
+#
+# N131's own enumeration named five locations. Enumerated again on 2026-08-17
+# the live reader-facing set is TWELVE, across five files and three languages,
+# and the one N131 named that a plain adjacency grep does NOT find is
+# `site/about.html`, which reads "62 CLI commands" with a qualifier between the
+# number and its unit word. That is measurement rule 4c's own failure mode
+# (hand enumeration under-counting, now the sixth occurrence in this programme)
+# and simultaneously ledger N10's (the unit word is not always adjacent). Both
+# are why the qualifier form below exists as its own template rather than being
+# assumed away.
+#
+# CANDIDATE_ANY_INTEGER is required: the count is two digits, and
+# CANDIDATE_THOUSANDS structurally cannot nominate a number below 1,000, which
+# is the blindness that let "112 test files" stand while git tracked 113.
+COMMAND_TEMPLATES = [
+    # English, bare and with a qualifier between the number and the unit word.
+    rf"{{n}}{GAP}commands",
+    rf"{{n}}{GAP}CLI{GAP}commands",
+    # German. The site ships de-DE and the unit word is inflected, not translated
+    # word-for-word, so a pattern list written only in English is blind to it by
+    # construction. This is N107's finding in a second instrument.
+    rf"{{n}}{GAP}Befehle",
+    # Brazilian Portuguese.
+    rf"{{n}}{GAP}comandos",
+    # The README's own summary table, where the number follows its unit words.
+    rf"CLI commands{GAP}?\|{GAP}?{{n}}",
+]
+
+
 class RefusedError(RuntimeError):
     """Raised when a target is outside what this tool may ever touch."""
 
@@ -309,6 +347,50 @@ def canonical_test_file_count() -> int:
         raise RefusedError(
             f"data/site_facts.json is stale: it records {cached:,} test files, "
             f"the tree currently has {live:,}. Regenerate it with "
+            f"`python3 scripts/site_facts.py` and re-run.")
+    return cached
+
+
+def canonical_command_count() -> int:
+    """The published command count, cached then cross-checked TWICE.
+
+    Same contract as the other three canonicals: the value comes from committed
+    data so a typo cannot become the published number, and a stale cache is a
+    refusal rather than a silent pass.
+
+    This one is cross-checked against two independent derivations rather than
+    one, and that is deliberate. `site_facts.count_commands` counts `def cmd_*`
+    definitions with a hand-written compensation for the `monitor` sub-command
+    group; `site_facts.count_commands_from_registry` reads the argparse registry,
+    which is the population the published claim is actually about, because "62
+    commands" promises a reader what they can type. Requiring the two to agree
+    turns that compensation from a coincidence into a checked invariant: a
+    command registered with no handler, or a handler nothing registers, becomes
+    a refusal here instead of a number that depends on which function was called.
+    """
+    facts = json.loads(CANONICAL.read_text(encoding="utf-8"))
+    counts = facts["counts"]
+    if "commands" not in counts:
+        raise RefusedError(
+            "data/site_facts.json has no counts.commands. Regenerate it with "
+            "`python3 scripts/site_facts.py`. Refusing to cascade a quantity "
+            "with no canonical source.")
+    cached = int(counts["commands"])
+
+    import site_facts
+    registry = int(site_facts.count_commands_from_registry())
+    handlers = int(site_facts.count_commands())
+    if registry != handlers:
+        raise RefusedError(
+            f"the two command derivations disagree: the argparse registry "
+            f"offers {registry:,} commands and {handlers:,} are derived from "
+            f"`cmd_` handlers. One of them is wrong and this tool will not "
+            f"pick. Either a command is registered with no handler, or a "
+            f"handler exists that nothing registers.")
+    if cached != registry:
+        raise RefusedError(
+            f"data/site_facts.json is stale: it records {cached:,} commands, "
+            f"the CLI currently registers {registry:,}. Regenerate it with "
             f"`python3 scripts/site_facts.py` and re-run.")
     return cached
 
@@ -491,9 +573,11 @@ def main(argv=None) -> int:
     new = canonical_count()
     runner = canonical_runner_count()
     test_files = canonical_test_file_count()
+    commands = canonical_command_count()
     print(f"canonical count (data/site_facts.json): {new:,}")
     print(f"canonical runner functions: {runner:,}")
     print(f"canonical test files: {test_files:,}")
+    print(f"canonical commands: {commands:,}")
     print(f"manifest surfaces: {len(manifest_surfaces())}")
     n = propagate(new, apply=args.apply, templates=COUNT_TEMPLATES,
                   label="collected count")
@@ -501,6 +585,8 @@ def main(argv=None) -> int:
                    label="runner functions")
     n += propagate(test_files, apply=args.apply, templates=TEST_FILE_TEMPLATES,
                    label="test files", candidates=CANDIDATE_ANY_INTEGER)
+    n += propagate(commands, apply=args.apply, templates=COMMAND_TEMPLATES,
+                   label="commands", candidates=CANDIDATE_ANY_INTEGER)
     if args.check and n:
         print("\nDRIFT. Run with --apply.")
         return 1

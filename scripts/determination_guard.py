@@ -58,13 +58,20 @@ disposition is a DECLARED RECORD keyed on the hit's own line, and a record that
 matches nothing FAILS as stale, so an exemption cannot outlive its premise.
 
 SUFFIX SCOPE, and the carrier this closes. `.svg` is scanned. A terminal-recorder
-SVG is entirely text: it carries a whole transcript in `<text>` nodes. The
-delivery inventory classifies `site/assets/demo/regula-check.svg` as
-`content_kind: asset, claim_capable: False` purely because `.svg` is not in
-`TEXT_SITE`, and `claim_auditor.SCANNED_SUFFIXES` and
-`verify_transcripts.py` both filter it out as well. `README.md:32` embeds that
-file. Three independent instruments cannot read the first visual on the project's
-front page. This module can.
+SVG is entirely text: it carries a whole transcript in `<text>` nodes. When this
+module was written on 2026-08-17 the delivery inventory classified
+`site/assets/demo/regula-check.svg` as `content_kind: asset,
+claim_capable: False` purely because `.svg` was not in `TEXT_SITE`, and
+`claim_auditor.SCANNED_SUFFIXES` and `verify_transcripts.py` both filtered it
+out as well, while `README.md:32` embedded it as the first visual on the
+project's front page. This module was the only instrument that could read it.
+
+Later the same day the three recordings were removed, the README embed was
+replaced by a fenced transcript bound to a re-runnable command, `svg_text` gave
+the other instruments a way to read the carrier, and the inventory started
+deciding `.svg` by content rather than by suffix. `.svg` stays in scope here
+regardless: the scope must outlive the files that motivated it, or the next
+recording added would be unread again.
 
 Usage:
     python3 scripts/determination_guard.py            # report, rc=1 on findings

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-17T10:05:25.776952+00:00",
+  "generated_at": "2026-08-17T12:15:55.070741+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2922,
-      "total_functions": 2876,
+      "total_collected": 2960,
+      "total_functions": 2914,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -43,13 +43,14 @@
         "tests/test_bias_report.py": 4,
         "tests/test_bias_stats.py": 9,
         "tests/test_build_regulations.py": 14,
-        "tests/test_cascade_count.py": 32,
+        "tests/test_cascade_count.py": 39,
         "tests/test_check_decompositions.py": 20,
         "tests/test_claim_auditor.py": 41,
         "tests/test_claim_auditor_coords.py": 4,
         "tests/test_claim_auditor_percent.py": 15,
         "tests/test_claim_diff.py": 20,
         "tests/test_claim_quarantine.py": 17,
+        "tests/test_claim_scan_coverage.py": 10,
         "tests/test_classification.py": 441,
         "tests/test_classify_risk.py": 207,
         "tests/test_cli_integration.py": 48,
@@ -73,7 +74,7 @@
         "tests/test_determination_guard.py": 18,
         "tests/test_doc_audit.py": 10,
         "tests/test_documentation.py": 17,
-        "tests/test_documented_transcripts.py": 7,
+        "tests/test_documented_transcripts.py": 15,
         "tests/test_domain_scoring.py": 52,
         "tests/test_dpv_export.py": 19,
         "tests/test_engagement.py": 19,
@@ -114,8 +115,8 @@
         "tests/test_policy_config.py": 5,
         "tests/test_precision_provenance.py": 7,
         "tests/test_project_fingerprint.py": 79,
-        "tests/test_public_claim_integrity.py": 16,
-        "tests/test_public_surface_inventory.py": 17,
+        "tests/test_public_claim_integrity.py": 18,
+        "tests/test_public_surface_inventory.py": 20,
         "tests/test_published_count_manifest.py": 30,
         "tests/test_recall_artefact.py": 15,
         "tests/test_recall_decomposition.py": 5,
@@ -144,13 +145,14 @@
         "tests/test_source_of_truth.py": 10,
         "tests/test_stale_number_floor.py": 14,
         "tests/test_surface_agreement.py": 4,
+        "tests/test_svg_text.py": 8,
         "tests/test_telemetry.py": 18,
         "tests/test_tracked_citation.py": 13,
         "tests/test_tracked_inputs.py": 14,
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1263
+      "runner_functions": 1285
     }
   },
   "notes": {
