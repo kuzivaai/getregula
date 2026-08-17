@@ -187,3 +187,53 @@ Recorded anyway, because a reader checking whether `da726aa` was disclosed
 would otherwise find the disclosure missing at the commit that claims it.
 
 **Correction.** The commit landing this file carries both entries.
+
+---
+
+## Erratum 5: `a28aca8` states a commit count that its own landing changed (17 Aug 2026)
+
+**Commit:** `a28aca8` "docs(ledger,merge): the branch has an open pull request,
+CI has passed on it, and a push is already a publication".
+
+**What the message says.** "Of the 40 commits in `main..HEAD`, 2 are on the
+remote and in PR #55 and 38 have never been pushed", and "The gap is 38 commits
+wide, not 40". The ledger entry N164 and `MERGE-READINESS` section 15 that the
+commit lands say the same.
+
+**What is true at that commit.** Measured immediately after it landed:
+
+```
+main..3f52501  = 2
+3f52501..HEAD  = 39
+main..HEAD     = 41
+RECONCILED: 2 + 39 = 41
+```
+
+**Every figure is off by exactly one, because the commit that states the count
+is inside the count.** 40 and 38 were correct at `518b45f`, the parent, which is
+where they were measured. They stopped being correct the moment the commit
+carrying them existed.
+
+**Cause, and it is a known one.** This is the self-referential measurement trap
+that `MERGE-READINESS`'s own header paragraph records for the test count, where
+it has now occurred four times (N109 twice, N111, N153). **The instance recorded
+there is a number inside a corpus the number measures; this is a number inside a
+history the number counts.** Same shape, different instrument, and the countermeasure
+recorded for the first did not generalise to the second because nobody had
+noticed they were the same failure.
+
+It also breaks this file's sibling rule that every figure states the commit and
+the tree it was measured in. Had the message said "measured at `518b45f`", it
+would have been correct and would not have needed this entry.
+
+**Consequence.** Low. The load-bearing claims of `a28aca8` are the three
+qualitative ones (a PR is open; CI has passed on the pushed head; a push
+publishes a preview), and none depends on the total. A reader reconciling
+`git rev-list --count main..HEAD` against the message will find a discrepancy of
+one and should read it as this erratum rather than as a missing commit.
+
+**Correction.** No history was rewritten. The prose in `docs/improvement/LEDGER.md`
+N164 and in `MERGE-READINESS` section 15 is restated in a **drift-proof form**
+that carries no total: *two commits are on the remote, and everything after
+`3f52501` is unpushed.* That formulation cannot go stale as further commits land,
+which is the durable fix rather than chasing the number.

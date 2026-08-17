@@ -1186,9 +1186,14 @@ passed.** Section 2c and N161 call both unreproducible; that is true of **this
 machine** and not of this branch's history.
 
 **The honest form:** both have passed on a two-commit state, and neither has been
-exercised on the 38 commits carrying the decision kernel, the claim closures, the
-fact loop and the cache repairs. **The gap is 38 commits wide, not 40**, and
-everything that makes this branch worth merging is inside it.
+exercised on the commits after `3f52501`, which carry the decision kernel, the
+claim closures, the fact loop and the cache repairs. **The gap is everything
+after `3f52501`**, and everything that makes this branch worth merging is inside
+it.
+
+**No total is stated here and the first draft stated one.** "38 of 40" was
+correct at the parent commit and wrong the instant the commit stating it existed;
+see `COMMIT_ERRATA.md` erratum 5. Re-derive with `git rev-list --count`.
 
 ### 15.3 A push is already a publication, and no gate here could see that
 
