@@ -246,6 +246,30 @@ gate that is not one of the six fast gates is not thereby a gate that passes.
 
 ### Failing
 
+> **STALE, corrected 2026-08-17 rather than rewritten.** Every row below is the
+> historical record of what was failing when it was written, and this file's own
+> rule is that prose is not rewritten to suit a later state. What has changed is
+> stated here instead.
+>
+> **The merge blocker is no longer red.** Measured at `7a84e9c`, clean tree:
+> `python3 scripts/claim_auditor.py --diff-base main` reports
+> `scanned 56 file(s), 375 claim(s), 0 unsourced`, **rc=0**. The row below
+> records rc=1 at six commits in July 2026 and is correct at each of them. The
+> figure moved because the branch's own documents were sourced, not because the
+> gate changed; the gate is the same instrument.
+>
+> **The other three rows are measurements, not gates**, and two of them say so in
+> their own Result cell (`rc=0: a measurement, not a gate`). They are retained
+> because a superseded measurement is part of the record.
+>
+> **What IS failing at `7a84e9c`: nothing in the local gate set.** Fourteen gates
+> rc=0, each captured from `$?` after redirection to a file deleted before the
+> run. **What is UNVERIFIED is different from what is failing**, and belongs
+> here rather than in a passing list: CI has never executed on this branch (owner
+> decision 8), so the accessibility job in particular has never run against any
+> of these commits, and N122 recorded that this job "is blind to work that stays
+> local".
+
 | What | Command | Result |
 |---|---|---|
 | **The merge blocker.** Unsourced numeric and superlative claims on the branch diff. | `python3 scripts/claim_auditor.py --diff-base main` | **rc=1, at six commits.** At `e8b5986`, main working tree: `scanned 59 file(s), 945 claim(s), 273 unsourced`. At `60fa775`, tree `46b7c3d`: `scanned 59 file(s), 976 claim(s), 274 unsourced`. At `13ffc00`, tree `9fd730a`, clean: `scanned 59 file(s), 978 claim(s), 274 unsourced`. At `057c009`, tree `218b4a1`, **with this file's edits still uncommitted in the working tree**: `scanned 59 file(s), 996 claim(s), 279 unsourced`. At `ef2b8de`, tree `f9b12b6`, clean: `scanned 60 file(s), 1016 claim(s), 280 unsourced`. At `197eb99`, tree `5147def`, **with this file's N42 edit uncommitted in the working tree**: `scanned 64 file(s), 1051 claim(s), 282 unsourced`. `--diff-base` selects files from the diff and reads their WORKING TREE contents, so a figure taken on a dirty tree measures the dirty tree, and that is stated rather than smoothed over. This is NOT one of the six fast gates, so its red does not appear in a gates block. |
@@ -3660,7 +3684,9 @@ from a rename in the diff.
 
 ### N130. A published-surface carrier that three independent instruments cannot read, carrying stale output on the front page
 
-**State:** OPEN
+**State:** CLOSED
+
+**Resolved by:** N135
 
 **First raised:** 2026-08-17, checking the premise that the site has no product
 imagery.
@@ -3721,7 +3747,9 @@ the output which exists is stale, unreferenced, or on a carrier nothing audits.
 
 ### N131. A fourth ungated count quantity, and it is published in three languages
 
-**State:** OPEN
+**State:** CLOSED
+
+**Resolved by:** N141
 
 **First raised:** 2026-08-17, sizing the cost of removing a CLI command.
 
@@ -3810,7 +3838,9 @@ re-authenticates, which is already a standing owner item.
 
 ### N133. The GTM plan publishes a figure retracted the same day, and is deliberately left untracked
 
-**State:** OPEN
+**State:** CLOSED
+
+**Resolved by:** N142
 
 **First raised:** 2026-08-17, reading the GTM sprint plan against N109.
 
@@ -3998,3 +4028,482 @@ matcher, for example `pgrep -f 'pyt[e]st'`, or kill by PID captured beforehand.
 On the second occurrence the target did receive the signal, and the chain
 recorded `s2_pytest=143`, which is a SIGTERM and not a test result; it is
 reported here as a stopped run rather than a failing one.
+### N135. The front page's first visual was a transcript on a carrier three instruments were built to read and could not
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17 as N130. This entry closes it.
+
+**Status:** CLOSED. The three recordings are removed, the README embed is
+replaced by a fenced transcript bound to a re-runnable command, and `.svg` is
+readable by the instruments that should read it. Held on `feat/engagement-fixes`;
+nothing is on main.
+
+**Measured first, and the picture N130 recorded differs in four ways.** Text
+extracted from every tracked `.svg` by predicate, grouping `<text>` nodes by
+(parent element, y) and joining in x order, with every claim-shaped statement
+reconciled against its own itemisation:
+
+| Recording | Rendered lines | Claim-shaped statements | Referenced from |
+|---|---|---|---|
+| `regula-check.svg` | 20 | 9 | `README.md:32`, `site/llms-full.txt:37`, and 8 more tracked locations |
+| `regula-bare.svg` | 41 | 3 | the generated inventory and two `docs/improvement/` records only |
+| `regula-comply.svg` | 12 | 5 | the generated inventory and two `docs/improvement/` records only |
+| `vscode-extension/resources/regula-sidebar.svg` | **0** | 0 | `vscode-extension/package.json` |
+
+The four differences from N130's account:
+
+1. **`regula-ai-1.6.1` is in `regula-bare.svg`, not in the embedded one.** N130
+   attributes it correctly; the brief that commissioned this work merged the two.
+2. **The command listing is 36, not "roughly 35", and it is in `regula-comply.svg`.**
+   Parsed from that recording's own argparse usage block: 36 command names, all
+   36 still registered today, and **26 registered commands missing**.
+3. **`comply` IS a registered command.** It is number 15 of 62 in the subparser
+   registry at `bc36b66`. So the premise that the recording shows "an argparse
+   error for a command that does not exist" is FALSE at HEAD. The recording is
+   worse than that premise, not better: it tells a reader that a valid command is
+   invalid.
+4. **A fourth tracked `.svg` exists** that no account mentioned, and it carries
+   zero text. It is the case a suffix rule gets wrong in the other direction.
+
+**Dispositions, and one departs from the brief.**
+
+- `regula-comply.svg`: **DELETED.** An argparse error transcript, embedded
+  nowhere, actively wrong at HEAD.
+- `regula-bare.svg`: **DELETED.** Embedded nowhere; publishes a superseded
+  version; and its content is a help listing, which is the most drift-prone
+  output the tool has. Re-recording it would have created a FIFTH ungated carrier
+  for the command count in the same session whose Phase 1 exists to gate that
+  quantity.
+- `regula-check.svg`: **DELETED, and the README embed replaced by a fenced
+  `console` block** carrying real output of `regula check examples/cv-screening-app
+  --scope all`, bound into `data/documented_transcripts.json` so it is re-run and
+  compared on every check. `site/llms-full.txt` mirrors it.
+
+**The brief asked for regeneration and regeneration was achievable**: `svg-term`
+2.1.1 and `asciinema` 2.4.0 are both installed, `demos/regula-cli.cast` exists,
+and the pipeline was exercised end to end on a throwaway recording before this
+decision was taken. It was not used, for five reasons, and the owner may
+disagree with all five since this is one commit to revert:
+
+1. **A regenerated recording publishes an absolute filesystem path.** Measured:
+   the documented command prints `Regula Scan: /home/mkuziva/getregula/examples/cv-screening-app`.
+   The only ways round it are to record from a fabricated path or to edit the
+   recording, and then it is not a recording.
+2. **It cannot be gated for currency**, only for anchors, and anchors work
+   identically on a fenced block.
+3. **It is not diff-reviewable.** A regenerated 6KB SVG is unreadable in review,
+   against a repository rule requiring the diff of every touched file to be read.
+4. **Accessibility.** A transcript inside an `<img>`-embedded SVG with the alt
+   text "Regula check demo" delivers none of its content to a screen reader, on a
+   project that publishes a WCAG 2.2 AA target.
+5. **It restales silently on every CLI change**, which is the defect being closed.
+
+The cost is stated rather than hidden: a static block is less visually striking
+than an animated terminal, and that is why the recording existed.
+
+**Per-instrument scope, decided separately and by measurement rather than
+uniformly, which is what N130 asked for.**
+
+- **`verify_transcripts.py`: `.svg` ADDED**, read through the new `scripts/svg_text.py`
+  rather than as opaque bytes. This is the instrument whose stated purpose most
+  exactly covers the file: N108 built it so that no published transcript can
+  assert what the tool does not emit, and a terminal recording is a published
+  transcript. `.yaml`/`.yml` added at the same time for the retired-marker scan.
+- **`public_surface_inventory.TEXT_SITE`: `.svg` ADDED, but decided by CONTENT,
+  not by suffix.** An `.svg` under `site/` is claim-capable if and only if it has
+  `<text>` nodes. A suffix rule gets one of the two cases wrong whichever way it
+  is set, and both cases exist in this tree today. It **fails closed**: an
+  unparseable SVG is classified claim-capable, because "I could not read it" and
+  "it contains nothing" are different answers.
+- **`claim_auditor.SCANNED_SUFFIXES`: `.svg` NOT ADDED, and this was measured
+  rather than argued.** One variable toggled on the real module over the real
+  files: with `.svg` in scope the auditor reports **2 findings per recording and
+  all of them are the `y="0%" x="0%"` coordinate attributes on the `<svg>`
+  element**, while the actual transcript text produces **zero** findings, because
+  the whole file is one paragraph and its numbers sit nowhere near a unit word.
+  Two false positives and no true positives per file. The auditor's unit is a
+  prose paragraph with in-paragraph provenance; a transcript has neither a
+  paragraph nor an author. See N138 for what was built so that this decision
+  cannot become a silent hole.
+
+**A guard already read it, which no account noticed.**
+`scripts/determination_guard.py`, built the previous day by N129, already carries
+`.svg` in its `SCANNED_SUFFIXES` and `tests/test_determination_guard.py` already
+asserted that this exact file was in scope. So "three independent instruments
+cannot read it" is true and "no instrument can read it" is false. That test's
+assertion is now on a path SHAPE rather than on a file, because the scope has to
+outlive the files that motivated it.
+
+**Control, run both ways on the real corpus.** A retired framing was planted in an
+SVG split across three `<text>` nodes and staged so `git ls-files` saw it. No
+single node contains the marker (`['Confidence', 'scores:', '0-100']`); only the
+reconstructed line does. The guard fired naming the file and the string, rc=1;
+the file was removed and the guard returned rc=0.
+
+**And the honest half of that control.** Whether the reconstruction is
+load-bearing was measured rather than assumed, and the answer is "for the general
+case, yes; for the file actually shipped, no". On svg-term's own emitted shape
+document order equals x order, so a naive tag-strip would have found the marker
+too. It fails on two equally legal shapes: words emitted out of x order, and a
+node from another line interleaved between two words of this one. Both are
+asserted in `tests/test_svg_text.py`, including the unflattering one.
+
+**A defect the tests caught in this work's own code.** The content-decided
+classifier resolved paths against the module-level `REPO` rather than against the
+`root` argument its caller passes, so a temporary-directory fixture resolved
+against the real repository, missed, raised `OSError`, failed closed, and
+classified a plain logo as claim-capable. That is measurement rule 1 in the
+module being written to close a measurement-rule-5 defect. Found by a test
+written before the behaviour was believed.
+
+### N136. The retired confidence framing was live on four carriers, not one
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, by widening the transcript guard's suffix scope and
+running it before changing any content.
+
+**Status:** CLOSED. All four corrected; `Confidence scores` added to
+`RETIRED_MARKERS` and proven retired by running the CLI. Held on
+`feat/engagement-fixes`; nothing is on main.
+
+N130 recorded `Confidence scores: 0-100` as live on the SVG. Enumerated by
+predicate across the tracked corpus under three candidate suffix sets before
+anything was edited:
+
+| Suffix set | Hits | Where |
+|---|---|---|
+| `.md .html .txt` (as shipped) | 1 | `docs/architecture.md` |
+| `+ .svg` | 2 | and `site/assets/demo/regula-check.svg` |
+| `+ .yaml .yml` | 4 | and `references/en18228_mapping.yaml`, `references/en18282_mapping.yaml` |
+
+**Zero false positives at any width**, which is why the widening was kept.
+
+The sharpest instance is not the SVG. `docs/architecture.md` listed
+"**Confidence scores**, not binary labels" as a *design principle* of the shipped
+product, and two standards-crosswalk reference files described the tool's output
+by the same retired name. Those describe a behaviour the tool no longer has: it
+emits `Detector priority: 0-100 (higher = more code patterns matched; not a
+correctness probability)`, which was the whole point of the N108 rename.
+
+**Fail-before was on shipped content, not on a plant**: rc=1 naming all four,
+with no plant involved. Pass-after rc=0.
+
+**Recorded as not closed.** No mechanism polices `references/*.yaml` for
+currency. No command reads either mapping file, so the transcript guard's
+question ("does a published surface show output the CLI cannot produce") does not
+apply to them, and they were caught here only because the marker scan was widened
+to their suffix. Their content is now correct and nothing keeps it so.
+
+### N137. Four surfaces published a legal classification stripped of the sentence that qualifies it, and one of them was fabricated
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, while measuring N130.
+
+**Status:** CLOSED for the enumerated surfaces, guarded by a new mechanism in
+`scripts/verify_transcripts.py`. Held on `feat/engagement-fixes`; nothing is on
+main.
+
+**A retired-marker list can never catch this class, and that is why it needed a
+second mechanism rather than a longer list.** `regula classify --file app.py`
+really does print
+
+```
+Detector observation (not a legal classification):
+HIGH-RISK: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15
+```
+
+beneath a full `Decision: insufficient_information` block naming the two facts
+still unresolved. Four tracked surfaces published **the last line alone**. Every
+one was quoting the tool accurately, and every one read as a legal classification
+made by the tool, which is the single thing `CLAUDE.md` forbids twice. Adding the
+line to `RETIRED_MARKERS` would be false and
+`retired_markers_are_unreachable()` would have correctly refused it, because the
+tool does emit it.
+
+Enumerated by predicate over 314 tracked surfaces, 6 hits, of which **2 are false
+positives and were excluded by a claim-shape rule rather than by a path
+exclusion**: `action.yml` carries `PROHIBITED: ${{ steps.count-findings.outputs.prohibited_count }}`
+twice, which is a YAML mapping key whose value is a variable name. That is the
+N34 class, where `ATTRIBUTED_CLAIM` read the tool name `Write` as an attribution
+verb. The rule requires a prose category name after the colon, and both
+directions are pinned by tests.
+
+The four real ones:
+
+| Where it was published | What it published |
+|---|---|
+| `demos/regula-cli.txt` | the bare `HIGH-RISK:` line, under `$ regula classify --file demo.py` |
+| `site/regions/uae.html` | the same transcript, copied onto a published page |
+| `site/guides/article-5-prohibited-practices.html` | a bare `PROHIBITED:` line, twice |
+| `site/guides/eu-ai-act-javascript.html` | a bare `HIGH-RISK:` line under "here is what Regula produces" |
+
+All four now carry the decision block and the qualifier the tool prints.
+
+**The worse half: the demo transcript was fabricated, and its own README said
+so.** `demos/README.md` stated that the cast "was hand-authored to match the
+actual output of Regula". Measured against real runs on the exact file the page
+shows:
+
+| Published | Real |
+|---|---|
+| `Successfully installed regula-ai-1.7.4` | 1.9.0 |
+| `BLOCK findings: 1` | **0** |
+| `[BLOCK] [ 88] demo.py` | no such finding at any invocation |
+| `HIGH-RISK: ...` bare | printed under a decision block and a qualifier |
+
+`[BLOCK] [ 88]` is not producible: the file scores `INFO` with one finding
+suppressed by domain gating, and `[WARN] [ 63]` with `--domain employment`. The
+tier and the priority were both invented, and the same invented transcript had
+been copied onto `site/regions/uae.html`, a published marketing page.
+`demos/regula-cli.txt` is regenerated from real output; `demos/README.md` now
+states which artefact is real output and which remains hand-authored, rather than
+describing the hand-authoring as a match to real output.
+
+**The new mechanism.** `QUALIFIED_OUTPUT` in `verify_transcripts.py`: current,
+true output that becomes a determination when published without its qualifier.
+Each rule declares the pattern, the qualifiers that clear it, a backwards window,
+and a `proof_command`. `qualified_output_is_really_emitted()` runs that command
+and requires the pattern AND a qualifier to appear together in real output, so a
+rule describes what the tool prints rather than what an author prefers. That is
+`retired_markers_are_unreachable`'s discipline in the opposite direction.
+
+### N138. `--delivery-surfaces` reported green over six surfaces it cannot read, and said nothing
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, checking whether making `.svg` claim-capable would
+pull it into the claim auditor by the back door.
+
+**Status:** CLOSED. `data/claim_scan_coverage.json` plus
+`audit_scan_coverage()`/`format_scan_coverage()` in `scripts/claim_auditor.py`,
+guarded by ten checks in `tests/test_claim_scan_coverage.py` with controls both
+ways. Held on `feat/engagement-fixes`; nothing is on main.
+
+**Pre-existing, and not caused by anything in this session.** N64 built
+`--delivery-surfaces` so that a green diff audit could not coexist with an
+unchanged delivery surface carrying an unsourced claim. Measured at `bc36b66`:
+`delivery_surface_paths()` returns **108** active claim-capable surfaces, and
+`scan_file` returns `scanned=False` for **6** of them, because `main` filters its
+reports with `if r.scanned` and prints nothing at all about the remainder.
+
+The six: `action.yml`, `pyproject.toml`, `scripts/cli.py`,
+`scripts/mcp_server.py`, `site/sa-tracker.json`, `site/sitemap.xml`. Two of them
+are read by no claim instrument at all.
+
+**Why the fix is not "add the suffixes", measured by toggling one variable on the
+real module.** With `.py` and `.yml` in scope, `action.yml` produces 5 findings
+and `scripts/cli.py` produces 14, and almost every one is `ATTRIBUTED_CLAIM`
+matching the verb `write` inside `write(f"`. Two genuine numeric claims do
+surface in `scripts/cli.py`'s help text (`200 KB`, `12 months`) and are recorded
+in the register rather than fixed, because sourcing a help string is a product
+change under `PRODUCT_BUILD` STOP. Absorbing the rest would require the allowlist
+or the quarantine, and using either to make a check pass is prohibited outright.
+
+So the gap is **declared and printed at the point of use**. Each record names the
+claim class covered, the instrument covering it, and, in a required field, **what
+is not covered by anything**. `site/sitemap.xml` carries an explicitly EMPTY
+coverage entry: no instrument reads it, and the reason that is acceptable is that
+its grammar has nowhere to put a claim, not that anybody checked.
+
+Controls run on the real tree and restored byte-exactly (sha256 compared):
+removing the `.toml` record turns the audit red naming `pyproject.toml`; adding a
+record for a suffix nothing delivers fails as stale, which is the discipline
+`count_record_policy.not_a_count_claim` and the quarantine burn-downs already
+apply.
+
+### N139. The file built for LLM agents mirrors a README that has moved on, and kept three claims the README dropped
+
+**State:** PARTIAL
+
+**First raised:** 2026-08-17, reading a cascade diff.
+
+**Status:** the three determination claims are CORRECTED. The wider mirror drift
+is OPEN and deliberately not repaired here. Held on `feat/engagement-fixes`;
+nothing is on main.
+
+`site/llms-full.txt` embeds a copy of `README.md` under a `## README` heading and
+is hand-maintained: no generator writes it, enumerated across `scripts/` and
+`.github/workflows/`. Measured by difflib against the current README, the mirror
+is **0.676 similar**, and the divergences are not cosmetic:
+
+| Probe | README | llms-full |
+|---|---|---|
+| "Offline-capable, code-native AI governance scanning" | present | absent |
+| "EU AI Act compliance tool for code" | absent | **present** |
+| "Choose how to start" | present | absent |
+| "South Korea's AI Basic Act" | present | absent |
+
+Three claims corrected here, enumerated by a determination-vocabulary predicate
+over lines present in the mirror and absent from the README, 13 hits of which 10
+are legitimate negated prose:
+
+1. `regula assess # 5 yes/no questions → your risk tier`. The tool records
+   declared context for human review; it does not return a tier. This is N106's
+   finding ("determines which tier applies") on a surface N106 did not reach.
+2. `| regula | Scan current directory, show compliance score and next steps |`.
+   **N105 removed the compliance score from `_run_bare_scan()`.** The README row
+   was corrected to "show an indicator summary"; this mirror was not. It
+   documents a removed behaviour using the forbidden framing.
+3. `## Step 1: Find Out Your Risk Tier`, a heading contradicted by its own body
+   two lines below, which is correctly hedged.
+
+**Not fixed, and recorded so it is not rediscovered.** Regenerating a 340-line
+mirror inside a claim-integrity change would make the two indistinguishable in
+the diff, which is the reasoning N129 used to defer the `sample_compliant`
+rename. The durable fix is to generate the mirror from the README rather than
+maintain it by hand, and that is a build change of its own.
+
+### N140. The em-dash guard was wider than the rule it enforces, and two guards collided on one line
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, by the custom runner failing on a README change.
+
+**Status:** CLOSED. `tests/test_public_claim_integrity.py` now implements the
+exemption the written rule already states, with controls both ways. Held on
+`feat/engagement-fixes`; nothing is on main.
+
+The project's convention reads: "No em dashes in NEW prose ... **Verbatim records
+are exempt and must be reproduced exactly: quoted command output, quoted
+directives, and quoted external text keep whatever characters they contain,
+because altering them falsifies the record.**" The guard implemented the first
+half only, as a substring test over the whole file.
+
+**The collision, demonstrated rather than asserted.** `regula check
+examples/cv-screening-app --scope all` emits
+
+```
+[INFO] [ 43] app.py — Employment and workers management [plan]
+```
+
+Measured: the tool emits the em-dash form (True), a hyphen form (False), and an
+en-dash form (False). So a README transcript either reproduces the em dash and
+fails this guard, or alters it and fails `verify_transcripts`, which requires the
+page and real output to agree. **Two guards, one line, and only one of them
+matched the written rule.**
+
+**Blast radius measured before the change**, across all nine guarded pages: **one**
+em-dash occurrence in total, inside a fenced block; **zero** in prose on every
+page. The exemption therefore changes exactly one verdict.
+
+Controls: a planted `&mdash;` in real prose on `site/about.html` turns the guard
+red naming the file, restored byte-exactly with sha256 compared; fenced and
+`<pre>`/`<code>` regions are exempt; an exemption must not run past a closing
+tag; an unclosed block must not exempt to end of file; and all four entity
+spellings the rule names are covered, not only the literal.
+
+### N141. The command count is cascaded, derived from the registry, in three languages
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17 as N131. This entry closes it.
+
+**Status:** CLOSED. `scripts/cascade_count.py` carries a fourth quantity;
+`scripts/site_facts.count_commands_from_registry` supplies it; seven checks in
+`tests/test_cascade_count.py` guard it. Held on `feat/engagement-fixes`; nothing
+is on main.
+
+**Verified at HEAD before building anything, by parsing the subparser choices
+rather than by trusting the published figure: 62.** The two independent
+derivations agree, and their populations differ in exactly the way the existing
+compensation encodes: the registry has `monitor`, the handler scan has the six
+`cmd_monitor_*` sub-handlers and `cmd_feedback_summary`.
+
+**The registry is now the canonical**, because "62 commands" on the landing page
+promises a reader what they can type, and the subparser registry is the only
+artefact that knows. `canonical_command_count` cross-checks it against the
+handler scan and REFUSES on disagreement, which turns a hand-maintained
+compensation into a checked invariant.
+
+**N131's enumeration of five locations was short.** Enumerated again by
+predicate: the live reader-facing set is **twelve occurrences across five files
+in three languages**, and the one a plain adjacency grep does not find is
+`site/about.html`, which reads "62 CLI commands" with a qualifier between the
+number and its unit word. That is ledger N10's finding (the unit word is not
+always adjacent) and measurement rule 4c's (hand enumeration under-counts, now
+the sixth occurrence in this programme) in a single cell. The qualifier form is
+its own template for that reason.
+
+`CANDIDATE_ANY_INTEGER` is required and is not a detail: `CANDIDATE_THOUSANDS`
+structurally cannot nominate a number below 1,000, which is the blindness that
+let `docs/architecture.md` publish "112 test files" while git tracked 113. At 62
+the wrong candidate scanner would have made the whole quantity permanently
+invisible while reporting a clean check.
+
+**Live control on the real tree, three directions, restored byte-exactly across
+15 files with sha256 compared:**
+
+- registering `zzcontrol` with **no** `cmd_` handler: `canonical_command_count`
+  refused by name, "the argparse registry offers 63 commands and 62 are derived
+  from `cmd_` handlers ... this tool will not pick";
+- with a handler added, both derivations returned 63 and `--check` went **rc=1
+  naming all six surfaces**: `README.md`, `site/index.html`, `site/about.html`,
+  `site/llms-full.txt`, `site/locales/de.html`, `site/locales/pt-br.html`;
+- `--apply` moved **14 occurrences** across the three languages and `--check`
+  returned to rc=0.
+
+**And the occurrence that correctly did NOT move.** `site/llms-full.txt` retained
+one `62` after the apply: `24 of 62`, a blind-label denominator from the
+precision corpus. The unit-word anchoring left it alone without needing a
+declared exclusion, which is the outcome N123's mechanism exists for and did not
+have to be used for.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N142. The GTM plan's retracted figure is corrected, and both venture directories are now tracked
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17 as N133. This entry closes it.
+
+**Status:** CLOSED. Figure and attribution corrected; `docs/venture/gtm-2026-08-14/`
+and `docs/venture/research-2026-08/` are tracked. `marketing/` remains untracked
+and the reason is stated below. Held on `feat/engagement-fixes`; nothing is on
+main.
+
+The plan's section 8 read "PyPI downloads 1,282-2,177/week without mirrors
+(Jul-Aug 2026, per the corrected claim-freeze record)". N109 retracted exactly
+that figure on the same date the plan was written, as a whole-period cumulative
+total carried under a `"period": "last_7_days"` label, overstating the quantity
+its label names by 88.4 times. The attribution was the worse half: it cited the
+corrected record for the opposite of what that record says.
+
+Corrected to **roughly 25 per week excluding mirrors**, with the correction left
+visible as a note rather than the wrong figure silently deleted, because a
+document that quietly loses a wrong number teaches nothing.
+
+**Added while correcting it, because the section set thresholds with no baseline
+to set them against.** Measured from the Plausible export taken 2026-08-14:
+**188 visitors over the 91 days 2026-05-15 to 2026-08-13**, mean 2.07 a day,
+median 2, and 15 days with none. Over the same window one visitor started the
+assessment and one completed it. `docs/venture/research-2026-08/` derives what
+follows: at that volume a full year of split testing detects no change smaller
+than about 1.7-fold, so none of the plan's metrics can support a before-and-after
+claim.
+
+**Tracking decision, measured rather than preferred.** N133 recorded that the
+directory was deliberately left untracked because tracking it would make a
+retracted figure part of the claim corpus. That reason is now spent. Staged and
+measured before deciding: `claim_auditor --diff-base main` rc=0 with **0
+unsourced**, and all fourteen gates rc=0. Both directories are therefore
+tracked, on the reasoning that an untracked document reaches no gate at all,
+which is precisely how the retracted figure survived in it.
+
+**`marketing/` is deliberately NOT tracked**, and that is a decision rather than
+an oversight. Nothing in it was examined this session, and tracking unexamined
+content into the claim corpus is the same move in the opposite direction.
+
+**A limit of this decision, recorded rather than resolved.**
+`determination_guard.EXCLUDED_PREFIXES` contains `docs/venture/` on the grounds
+that it holds "dated evidence registers, frozen at capture". The research
+directory is analysis rather than a frozen register, so it inherits an exclusion
+whose stated premise does not fit it. It is left as it stands because narrowing
+that prefix is a change to a guard this entry did not otherwise touch, and it is
+written down so the next session does not rediscover it.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
