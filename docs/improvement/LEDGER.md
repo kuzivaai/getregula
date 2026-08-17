@@ -3385,12 +3385,23 @@ unchanged. `PRODUCT_BUILD` remains STOP.
 
 ### N127. Three surfaces disagree about when the South African draft AI policy was withdrawn
 
-**State:** OPEN
+**State:** CLOSED
+
+**Resolved by:** N134
 
 **First raised:** 2026-08-15, checking a correction offered by a dossier pass.
 
 **Status:** OPEN, and deliberately not resolved here. No date was changed.
 Held on `feat/engagement-fixes`; nothing is on main.
+
+**2026-08-17: resolved by N134, and this row was right to refuse to guess.** The
+primary-source research it asked for found that the disagreement was not an error
+about one date but a missing distinction between three events, and that the act
+which actually withdrew the draft, a gazette of 12 June 2026, was recorded on no
+surface in this repository. Two of this row's own statements do not survive: its
+hypothesis that `CLAUDE.md`'s 27 April was a conflation with Colorado is REFUTED,
+and its list of four records was five, the fifth being `site/blog/writing.html`.
+The Status prose above is the historical record and is not rewritten.
 
 Four records, three different answers, and the primary-sourced one is the
 outlier:
@@ -3824,3 +3835,166 @@ the honest order is to correct the figure first.
 The same document also carries two items its own second-pass verification
 records as corrections rather than removing them, which is the right instinct;
 this one it did not catch.
+
+### N134. The South African withdrawal dates disagreed because three events were being called one, and the act that withdrew the draft was recorded nowhere
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15 as N127, which recorded four records giving three
+answers and deliberately did not resolve them. Researched at source 2026-08-17.
+This entry closes N127, which carries the pointer back; the marker is deliberately
+not repeated here, because `tests/test_ledger_enumeration.py` reads it as a
+declaration and refused the first draft of this row with "N134 cannot resolve
+itself". The guard was right and is the reason this sentence is prose.
+
+**Status:** RESOLVED across every surface, guarded by
+`tests/test_sa_withdrawal_dates.py` with controls both ways. Held on
+`feat/engagement-fixes`; nothing is on main.
+
+**N127 framed this as a disagreement about one date. It is a missing
+distinction between three separate events**, each with its own actor and its own
+consequence:
+
+| Date | Event | Source |
+|---|---|---|
+| 25 Mar 2026, with the Special Sitting of 1 Apr | Cabinet approved the draft for public comment | SAnews |
+| 10 Apr 2026 | Gazetted, Government Notice 3880 in Gazette No. 54477, comments to 10 Jun 2026 at 16h00 | the gazette |
+| 25 Apr 2026 | Portfolio committee chairperson publicly called for withdrawal | SABC News |
+| 26 Apr 2026 | The Minister ANNOUNCED the withdrawal after an internal process, citing fictitious sources | SAnews, syndicated by allAfrica dated 26 Apr |
+| 5 Jun 2026 | CABINET APPROVED the withdrawal, announced by the Minister in the Presidency at a post-Cabinet media briefing, to allow a rework | SAnews |
+| 12 Jun 2026 | The notice was WITHDRAWN BY GAZETTE. **The operative act.** | quoted verbatim by ITWeb, 15 Jun 2026 |
+
+**The finding that matters is the last row: no surface in this repository
+recorded it at all.** Every surface dated the withdrawal by when it was announced
+or approved. For a tool whose subject is regulatory obligation, the date an
+instrument took effect is the one a reader needs, and a reader asking on 1 June
+whether the draft still stood was told it had been withdrawn five weeks earlier.
+The minister's operative wording is: "I, Solly Malatsi, Minister of
+Communications and Digital Technologies, hereby withdraw Government Notice
+Number 3880 published in Government Gazette Number 54477 on 10 April 2026 ...
+withdrawn in its entirety effective from the date of publication."
+
+**A false correction was very nearly published to a correct file, and this is the
+part to keep.** On first reading, `content/regulations/south-africa.py`'s
+"Cabinet-approved withdrawal confirmed 5 Jun 2026" looked unsupported, and a
+Wikipedia article states there is no record of a separate Cabinet decision to
+withdraw. Both readings were wrong: SAnews carries "Cabinet approves withdrawal
+of AI policy", dated 5 June 2026, reporting a post-Cabinet briefing. **The file
+was right and its citation supports its claim.** Measurement rule 4e exists for
+exactly this, and the only reason it did not become a wrong correction is that
+the rule was followed and the second artefact was read before the contradiction
+was asserted.
+
+**N127's own hypothesis is REFUTED.** It proposed that `CLAUDE.md`'s "27 April
+2026" was a conflation with Colorado's 27 April enforcement stay, on the ground
+that every other 27 April in the repository is Colorado. It is not: 27 April is
+when the South African press reported the announcement (IOL, TimesLive and Daily
+Maverick pieces all carry that date), so it was a one-day error about a real
+event. A plausible diagnosis that pattern-matched and would have survived because
+nobody checked it.
+
+**Corrected, and what each was.**
+
+- `content/regulations/sa-tracker.json`, the live tracker's source of truth: the
+  single "Withdrawal" row becomes three, announced / approved by Cabinet /
+  gazetted, and `withdrawn_by_gazette`, `withdrawal_announced` and
+  `withdrawal_approved_by_cabinet` are explicit fields. `gazette_status` is
+  deliberately left at its existing value rather than made date-bearing, because
+  a consumer may switch on it.
+- `content/regulations/south-africa.py`, from which the region page is generated:
+  five separate renderings of the same withdrawal sentence, plus the status line,
+  the og description and the static tracker rows.
+- **Two contradictions the file carried against itself**, both recorded by N127
+  and both now resolved rather than merely reconciled. Its FAQ said the draft was
+  "withdrawn later that month", meaning April, while three other passages said
+  5 June; neither was the operative date. And it said the comment window "was due
+  to close on 10 June 2026, but withdrawal of the draft superseded it", which
+  inverts the sequence: **the window ran to its close on 10 June and the
+  withdrawal was gazetted on 12 June, two days after.** The April announcement
+  superseded it in practice, the gazette did not supersede it at all.
+- `site/regions/regulations.html`, whose card stated the announcement date as the
+  withdrawal date on one line and Cabinet approval on the next.
+- `site/locales/de.html` and `site/locales/pt-br.html`, which said "Withdrawn
+  ~26 Apr 2026". The tilde was the only acknowledgement anywhere that the date
+  was approximate.
+- `CLAUDE.md`, the project's own instruction file, which is how the wrong date
+  propagated: an agent reading it inherited "27 April 2026" as fact.
+
+**A drift nothing was enforcing.** `south-africa.py`'s docstring requires the
+static no-JS fallback and the tracker JSON to be kept in sync. They had drifted:
+the JSON recorded Cabinet approval as 25 March plus the 1 April special sitting,
+and the static fallback said 2 April, which is the briefing that announced it. **A
+reader with JavaScript disabled got a different date from a reader with it
+enabled**, and the requirement lived only in prose. Now asserted.
+
+**STATED PROVENANCE LIMIT, and it is in the data rather than only here.** The
+gazette was NOT retrieved: `gov.za` and `sanews.gov.za` both returned
+`ECONNREFUSED` from this machine on 2026-08-17, so the operative wording comes
+from ITWeb of 15 June 2026 quoting the notice. The gazetted row therefore carries
+`state: secondary`, which is the tracker schema's own vocabulary, and a test
+asserts it stays `secondary` so that a later session cannot promote it to
+verified without opening the gazette. **The withdrawal gazette's own number is
+deliberately asserted nowhere**, because it was not read, and a test guards
+against the obvious wrong repair of reusing 54477, which is the number of the
+gazette that PUBLISHED the draft.
+
+**Found while wiring the guard, and it is a trap rather than an oversight.**
+`.claude/rules/tests.md` requires a new test file to be wired into
+`tests/test_classification.py`, and adding the import plus the `_mod` tuple entry
+LOOKS like wiring. For a module whose tests are all `TestCase` methods it is not:
+the generic loop scans `dir(_mod)` for names beginning `test_`, and a class-based
+module exposes only class names. **Both modules added on 2026-08-17, this one and
+N129's, were imported, listed, and contributing nothing.** It is invisible except
+as a published function count that fails to move, which is how it was caught.
+Both are now bound explicitly through the same mechanism N109 built for the
+metrics guards, with its `setUp` assertion, and the canonical runner count moved
+by exactly the 28 methods involved.
+
+**Controls, run and restored.** Ten checks pass; restoring the pre-fix card
+wording to `site/regions/regulations.html` turns the misdating guard red naming
+the file and line, and the file was restored byte-exactly with SHA-256 compared
+before and after. The misdating pattern is pinned in both directions: it fires on
+all four forms that were live, and stays silent on the corrected copy including
+"the comment window closed on 10 June 2026", which contains a date and is not a
+withdrawal claim.
+
+**Not claimed.** Nothing here establishes what South African law now requires.
+The draft is withdrawn and existing legislation applies within its own scope,
+which is what the page already said. This is a date-integrity correction.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+**A FIFTH surface, which N127's enumeration of four did not name.**
+`site/blog/writing.html` is the writing index, and its South Africa card carried
+both a stale "Last updated: 4 August 2026" and the same imprecise sentence
+("later withdrawn ... Cabinet confirmed the withdrawal on 5 June"). It was found
+by `tests/test_content_freshness.py::test_blog_index_dates_match_the_pages_they_link_to`
+going red the moment the page's own `last_updated` moved, which is the coupling
+that check exists for. Hand enumeration of surfaces has now under-counted in this
+programme five times; the count here came from a test, not from reading.
+
+**`CLAUDE.md` is GITIGNORED, and that is the mechanism by which the wrong date
+propagated.** `git check-ignore -v CLAUDE.md` returns `.gitignore:35`, and
+`git ls-files CLAUDE.md` is empty. Three consequences, none of them obvious from
+reading the file: no claim gate reaches it, so the wrong date was never
+auditable; a fresh clone does not receive it, so a new contributor never sees
+these instructions at all; and **the correction made here cannot be committed and
+is local to this machine**. Under measurement rule 4b it is not a published
+surface, so N127 was counting an untracked file among its four records. Under
+N114's converse it is still load-bearing, because it is the file an agent reads
+first and treats as authoritative. Recorded rather than resolved: whether the
+project's instruction file should be tracked is an owner decision with a reason
+on each side, and the reason it is ignored today is a user-level gitignore that
+excludes `.claude/` and `CLAUDE.md` across every repository.
+
+**The self-kill trap recurred twice more while stopping superseded runs.**
+`pkill -f 'python3 -m pytest tests/ -q'` and `pgrep -f` with the same pattern
+both match the shell whose command line contains the pattern, so the shell kills
+itself and returns 144 while the target survives. It happened on 2026-08-17 in
+the N129 work and twice again here. The fix is trivial and is written down
+because three occurrences is a pattern: match on a form that cannot match the
+matcher, for example `pgrep -f 'pyt[e]st'`, or kill by PID captured beforehand.
+On the second occurrence the target did receive the signal, and the chain
+recorded `s2_pytest=143`, which is a SIGTERM and not a test result; it is
+reported here as a stopped run rather than a failing one.
