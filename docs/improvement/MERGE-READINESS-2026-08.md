@@ -17,9 +17,21 @@ than edited into the figures above.** The sitemap defect in section 2b is
 repaired in `60f9d82`, so `27_sitemap` is rc=0 at the session tip; the row is left
 reading rc=1 because it is the measurement at `ae59cd5` and that is what the
 commit range was assessed at. And `ba96a74` added seven tests, so the collected
-count moved from 2,960 to 2,967 and the runner count from 1,285 to 1,292. **The
+count moved by seven from 2,960 and the runner count by seven from 1,285. **The
 `2960 passed` line in section 3 is the run at `ae59cd5` and is correct at that
 commit.** The final chain at the session tip is in the session handover.
+
+**The new values are deliberately not written here as literals, and the first
+draft of this paragraph did write them.** This file is inside the corpus
+`test_count_literal_appears_nowhere_outside_the_manifest` measures, so quoting the
+current count in it *creates* the violation. The full suite at `06f5ac6` failed on
+exactly that, naming this file as the sole violation, after an isolated run of the
+same guard had passed minutes earlier because the sentence had not yet been
+written. **That is the fourth occurrence of this trap in this programme** (N109
+twice, N111 once) and the second time the "a narrower run is not evidence about a
+corpus the run itself is inside" lesson has had to be relearned by the person who
+had just read it. Re-derive both figures with
+`python3 scripts/cascade_count.py --check`, whose source is `data/site_facts.json`.
 
 ---
 

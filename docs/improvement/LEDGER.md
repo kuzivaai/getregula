@@ -5064,3 +5064,74 @@ evidence.
 
 `ACCURACY_EVIDENCE: NOT_GATHERED`. `PROTOCOL: DESIGNED_NOT_PREREGISTERED`.
 `EXECUTION: NOT_AUTHORISED`. No standing verdict is changed.
+
+### N153. The self-quoting count trap, fourth occurrence, in the session that had just read the three before it
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, by the final full suite going red at `06f5ac6` with
+one failure.
+
+**Status:** CLOSED for the instance in the commit that follows. The underlying
+gap N109 and N111 both record, that the policy cannot express "a historical
+mention inside a living record", is unchanged and is not this row's to close.
+
+**Demonstrated.** The final verification chain at `06f5ac6`, tree
+`ad663df1df9a7f4f88031d3e905aee6e0a5e7d40`, launched quiescent:
+
+```
+s1_runner   = 0    Results: 1464 passed, 0 failed, 0 skipped (1292 test functions)
+s2_pytest   = 1    1 failed, 2966 passed in 521.17s (0:08:41)
+s3_selftest = 0    s4_doctor = 0    s5_ruff = 0
+FAILED tests/test_published_count_manifest.py::TestPublishedCountManifest::
+       test_count_literal_appears_nowhere_outside_the_manifest
+STATE IDENTICAL before/after
+```
+
+Reproduced in isolation:
+
+```
+AssertionError: Lists differ: ['docs/improvement/MERGE-READINESS-2026-08.md'] != []
+: the published test count (<REDACTED, see below>) appears in files not authorised
+by the current-carrier or dated-record policies
+```
+
+**That redaction is the trap firing a FIFTH time, inside the entry recording the
+fourth, and it is left visible rather than tidied.** The first draft of the block
+above pasted the assertion message verbatim, as this file's rules for quoted
+command output require, and the guard immediately failed naming this file. Both
+rules are real and they collide here: verbatim records must keep what they
+contain, and the current canonical count may not appear in a file inside the
+measured corpus. The count-literal guard wins, because it is a gate and the other
+is a convention, and the redaction is marked so the record shows a value was
+removed rather than never present. N111 hit the identical collision and resolved
+it the same way. **The count is derivable by
+`python3 scripts/cascade_count.py --check`.**
+
+**The mechanism is the one N109 wrote down and it recurred anyway.** The
+merge-readiness document was written before the cascade, then given a closing note
+saying which figures had moved since, and that note wrote both new canonical
+values as literals into a file inside the corpus the guard measures. **An isolated
+run of that same guard had passed minutes earlier**, before the note existed.
+N109's own words: "a narrower run is not evidence about a corpus the run itself is
+inside."
+
+**Fourth occurrence.** N109 records two, N111 a third, all in the same shape: the
+prose written to explain a count quotes the count. Three of the four were caught
+only by the full suite, which is the argument for running it rather than a subset.
+
+**Fixed by N111's remedy**, not by an exemption: the sentence now states that the
+figures moved by seven and names
+`python3 scripts/cascade_count.py --check` as the way to derive them, and it
+records that its own first draft carried the literal.
+
+**Nothing was allowlisted, classified as a dated record, or excluded.** The three
+routes the failure message offers were all available and all declined: this file
+is a living record and not an immutable dated one, it is not a current carrier,
+and removing the literal is the correct answer rather than the convenient one.
+
+**What is NOT closed.** The policy still cannot express "this digit sequence is a
+historical mention inside a living document", which N109 recorded as a standing
+gap and N123 built `not_a_count_claim` for while deliberately leaving it holding
+zero records. A fifth occurrence is likely and the disposition is still owed.
+
