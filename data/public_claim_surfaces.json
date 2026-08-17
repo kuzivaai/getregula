@@ -517,7 +517,7 @@
       "content_kind": "cli-option",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "Exit 1 if transparency not compliant"
+      "reason": "Exit 1 if either Article 50/52 transparency document is absent (file presence only)"
     },
     {
       "stable_id": "cli:484cda1cedb7b86e",

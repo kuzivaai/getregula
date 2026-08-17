@@ -18,14 +18,23 @@ permissions:
   contents: read
 
 jobs:
-  # ── Job 1: Compliant code passes cleanly ───────────────────────────
-  test-compliant:
-    name: Compliant code passes
+  # ── Job 1: code with no findings exits 0 ───────────────────────────
+  # Named for the OBSERVABLE, not for a compliance state. Until 2026-08-17 these
+  # names described the fixture's code as satisfying the law, which is the
+  # project's own CI treating "not flagged" as a compliance state: the exact
+  # conflation CLAUDE.md forbids. LEDGER N125 carries the old wording verbatim;
+  # it is not quoted here, because quoting it reintroduces the claim and
+  # determination_guard.py fired on the first draft of this very comment.
+  # The fixture directory is still tests/fixtures/sample_compliant/
+  # and carries the same conflation in its name; renaming it touches 40
+  # occurrences across 14 tracked files and is recorded as open, not done.
+  test-no-findings:
+    name: Code with no findings exits 0
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Run Regula on compliant fixture
+      - name: Run Regula on the no-findings fixture
         id: regula
         uses: ./
         with:
@@ -40,7 +49,7 @@ jobs:
           fail-on-prohibited: "true"
           fail-on-high-risk: "true"
           upload-sarif: "false"
-        # Compliant code has no prohibited or high-risk findings.
+        # This fixture has no prohibited and no high-risk findings.
         # This step should exit 0.
 
       - name: Verify outputs are populated
@@ -341,7 +350,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Run Regula on a compliant fixture
+      - name: Run Regula on the no-findings fixture
         id: regula
         uses: ./
         with:

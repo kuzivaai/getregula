@@ -187,9 +187,20 @@ def cmd_compliance(args) -> None:
             print()
 
     elif args.subcommand == "workflow":
-        print("\n  Regula Compliance Status Workflow")
+        # These are labels YOU set on your own systems in your own registry.
+        # Regula never sets one: a discovered system is always recorded as
+        # not_started and an existing value is preserved untouched. The heading
+        # read "Regula Compliance Status Workflow", which presented the states
+        # as Regula's, and made `compliant` read as an end-state Regula awards
+        # for using it. The owner ruled on 2026-08-17 to keep the stored values,
+        # so no registry migrates, and to correct the framing here instead.
+        # LEDGER N125.
+        print("\n  Self-recorded compliance status: the labels you can set")
         print("  " + "=" * 50)
         print("  not_started \u2192 assessment \u2192 implementing \u2192 compliant \u2192 review_due")
+        print("  These record YOUR assessment of your own system. Regula does")
+        print("  not set, check or endorse any of them, and setting `compliant`")
+        print("  is your declaration, not a determination by this tool.")
         print()
         for status, transitions in COMPLIANCE_TRANSITIONS.items():
             print(f"    {status:<20} \u2192 {', '.join(transitions)}")

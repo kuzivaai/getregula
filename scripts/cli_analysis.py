@@ -337,9 +337,15 @@ def cmd_ai_codegen(args) -> None:
     # (DEF-008 class: json_output("ai-codegen", ...) previously always
     # hardcoded envelope exit_code=0, contradicting the real process exit
     # code under --strict/--ci when transparency_compliant is False).
+    # LEDGER N125 named scripts/cli.py:1646 (the help text) as the place --strict
+    # turned a determination into a CI failure. This is the line that actually
+    # does it, and it was not in that enumeration. The flag keeps its behaviour,
+    # which is a legitimate gate: "fail the build if a required document is
+    # missing" is a real, code-observable condition. Only the key it reads
+    # changes, so what the exit code MEANS is now what it can support.
     _codegen_exit = 0
     if getattr(args, "strict", False) or getattr(args, "ci", False):
-        if not result.get("summary", {}).get("transparency_compliant", False):
+        if not result.get("summary", {}).get("transparency_documents_present", False):
             _codegen_exit = 1
     if fmt == "json":
         json_output("ai-codegen", result, exit_code=_codegen_exit)

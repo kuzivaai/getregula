@@ -234,8 +234,14 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
             "  This deadline is unchanged by the Digital Omnibus.",
             "",
             "  Next steps:",
-            "  1. regula disclose .    -- generate compliant disclosure text",
-            "  2. regula check .       -- confirm no high-risk patterns",
+            # This step used to describe the generated disclosure text as
+            # carrying a compliance state, which asserts that an artefact the
+            # tool produces satisfies the law. That is the determination this
+            # project forbids, and it sat seven lines above the TIER_MINIMAL
+            # passage that gets the register exactly right. LEDGER N125 carries
+            # the verbatim old wording. The command drafts text for review.
+            "  1. regula disclose .    -- draft disclosure text to review",
+            "  2. regula check .       -- look for high-risk patterns in code",
             "",
         ]
 

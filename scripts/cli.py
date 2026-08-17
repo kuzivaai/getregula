@@ -1642,12 +1642,20 @@ def _build_subparsers(subparsers):
                            metavar="path", help="Project path (same as --project)")
     p_codegen.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_codegen.add_argument("--no-git", action="store_true", help="Skip git log scanning")
+    # The help text used to read "Exit 1 if transparency not compliant", which
+    # advertised a compliance determination the tool does not make and cannot
+    # make: the predicate is two files existing on disk and neither is read.
+    # It now names the observable the flag actually keys on. LEDGER N125.
     p_codegen.add_argument("--strict", action="store_true",
-                           help="Exit 1 if transparency not compliant")
+                           help="Exit 1 if either Article 50/52 transparency "
+                                "document is absent (file presence only)")
     p_codegen.set_defaults(func=cmd_ai_codegen)
 
     # --- badge ---
-    p_badge = subparsers.add_parser("badge", help="Generate compliance badge")
+    p_badge = subparsers.add_parser(
+        "badge",
+        help="Render a scan-result badge (indicator counts, not a compliance state)",
+    )
     p_badge.add_argument("path", nargs="?", default=".", help="Path to scan")
     p_badge.add_argument("--format", "-f", choices=["endpoint", "svg", "markdown"], default="endpoint")
     p_badge.set_defaults(func=cmd_badge)

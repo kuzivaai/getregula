@@ -116,7 +116,12 @@ def generate_roadmap(
     for art_num, art_data in articles.items():
         score = art_data.get("score", 100)
         if score >= 90:
-            continue  # Already compliant enough
+            # No remediation task is emitted above this evidence-completeness
+            # score. The comment here read "Already compliant enough", which
+            # named a compliance state this score cannot establish: it measures
+            # how much of the scaffold has been filled in, not whether an
+            # article's duty is discharged. LEDGER N125.
+            continue
 
         effort_range = ARTICLE_EFFORT.get(art_num, (16, 32))
         avg_effort = (effort_range[0] + effort_range[1]) / 2
