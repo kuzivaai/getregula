@@ -4995,3 +4995,72 @@ step does not honour it.**
 **What would close it:** print the condition next to the fraction, or run the
 scanner-default condition as well, so the log cannot be read as the default.
 
+
+### N152. A pre-registerable protocol for the first real-world accuracy evidence
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, as the design for the question the record has no
+answer to.
+
+**Status:** OPEN. **Designed, not pre-registered, not executed, not authorised.**
+`docs/improvement/ACCURACY-PROTOCOL-2026-08.md`.
+
+The record's honest answer today is that real-world accuracy is untested over
+zero human-labelled repositories, that the only measured commercial result is
+0/40 against a transparent baseline at 40/40 over constructed correlated
+families, that the 83.5% precision figure is single-reviewer and its corpus is
+not reconstructible (N51), and that the recall fractions are over 30 hand-written
+synthetic fixtures. There is no counter-evidence because none has been gathered.
+
+**The construct, and rejecting the obvious one is the design decision.** "Is this
+repository a high-risk AI system under Annex III" is a legal determination that
+depends on intended purpose, provider role and Article 6(3) exclusions, none of
+which is in the code. A study asking it would measure the raters' willingness to
+guess. The protocol measures **indication validity**: whether a competent
+reviewer, seeing only the code, judges a flagged location worth examining for the
+use area the finding names. That is what "risk indication, not legal advice"
+means, and a tool failing it fails on its own terms.
+
+**One sizing constraint is derived rather than assumed, and it changed the
+design.** Measured on the three real repositories this session used, the default
+scan produces **0.67 high-risk findings per repository** (2, 0, 0). Estimating
+high-risk precision to plus or minus 10 points needs 62 findings, which at that
+rate needs **about 90 repositories**. That is not a smallest credible exercise, so
+the primary endpoint is precision over all detector classes, where the observed
+16.7 findings per repository reaches 60 items in roughly four to eight
+repositories, and high-risk precision becomes a pre-specified subgroup whose
+interval will be wide and must be published wide.
+
+**n = 60** is chosen as the smallest whose worst-case interval is under 13
+percentage points (plus or minus 12.7 at p=0.5, plus or minus 10.1 at p=0.8).
+
+**The pass criterion is fixed in advance at a Wilson lower bound of 0.60**, and
+deliberately below the published 83.5%: if the real-world figure lands between
+them the study passes and simultaneously establishes that the published figure
+does not generalise, which the project must be willing to publish.
+
+**Design features that exist because this programme has been burned:** every
+repository pinned to a SHA before scanning, because N51 records that the corpus
+behind 83.5% is unreconstructible for exactly the want of that; a committed
+enumerated frame, query and seed, so the draw can be replayed; 20% unflagged
+decoys, without which the estimate measures acquiescence; the result withheld
+entirely if Cohen's kappa falls below 0.60, because a precision figure computed
+from labels the raters do not agree on is a number without a referent; and
+`NOT_ASSESSABLE` reported as its own category and never redistributed.
+
+**Estimated cost, labelled as estimate:** 85 items per rater, 8.5 to 14 hours
+each, roughly 20 to 32 rater-hours in total for Stage 1. Stage 2, repository-level
+sensitivity, needs 13 to 25 positively-labelled repositories against a
+pre-registered floor of 0.33 and is a multiple of that, so it is gated on Stage 1
+reporting rather than bundled with it.
+
+**Blocked on, and none of it is engineering:** owner authorisation
+(`REAL_DATA_COLLECTION` is DISABLED and recruiting raters is external contact),
+rater recruitment against the stated eligibility bar, a timestamped
+pre-registration, a licence review of the frame, and a decision in advance to
+publish a failing result. A protocol published only when it passes is not
+evidence.
+
+`ACCURACY_EVIDENCE: NOT_GATHERED`. `PROTOCOL: DESIGNED_NOT_PREREGISTERED`.
+`EXECUTION: NOT_AUTHORISED`. No standing verdict is changed.
