@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Tests for scan caching."""
+import json
 import sys
 import tempfile
 import shutil
@@ -78,10 +79,19 @@ def _isolated_scan(monkeypatch, tmp_path):
 
 
 def test_min_tier_scan_does_not_poison_cache(monkeypatch, tmp_path):
-    """A --min-tier scan must not write cache entries: it skips whole
-    detector passes, so its per-file findings lists are incomplete and
-    would silently under-report on every later full scan of the same
-    content. Regression for the v3-schema leak."""
+    """A full scan must never be served an entry a --min-tier scan wrote.
+
+    The property is unchanged and the mechanism moved on 2026-08-17. Until then
+    a partial scan wrote nothing at all, which was sound about completeness and
+    left `regula check`, whose own min_tier default is `limited_risk`, reading a
+    cache it could never fill: three consecutive runs on a 5,031-file repository
+    left the cache at 2 bytes and each took 45 to 50 seconds (LEDGER N147).
+
+    A partial scan now writes under a `mintier-<level>` scope component in the
+    key, so it contributes what it read, and a full scan reads the `full` scope
+    only. This test is what proves the second half: it is the same scenario and
+    the same assertion, and it fails if the scopes ever collide.
+    """
     scan_files = _isolated_scan(monkeypatch, tmp_path)
     proj = tmp_path / "proj"
     proj.mkdir()
@@ -303,3 +313,90 @@ def test_regula_cache_dir_env_var_is_honoured():
         else:
             os.environ["REGULA_CACHE_DIR"] = previous
         shutil.rmtree(tmp)
+
+
+# --------------------------------------------------------------------------
+# N147: `regula check` read the cache and never filled it
+# --------------------------------------------------------------------------
+
+def test_a_partial_scan_now_writes_entries_of_its_own(monkeypatch, tmp_path):
+    """The half of N147 that was missing: a partial scan must contribute.
+
+    Measured on open-webui/open-webui at 01f4282, 5,031 files: before this,
+    three consecutive `regula check .` runs left the cache at 2 bytes and took
+    45.1s, 48.8s and 50.5s; after, the first wrote 69,263 bytes and the next two
+    took 6.1s and 4.8s.
+    """
+    scan_files = _isolated_scan(monkeypatch, tmp_path)
+    proj = tmp_path / "partial"
+    proj.mkdir()
+    (proj / "app.py").write_text(
+        "import openai\nchat = openai.ChatCompletion.create(model='gpt-4')\n",
+        encoding="utf-8")
+
+    cache_file = tmp_path / "cache" / "scan_cache.json"
+    scan_files(str(proj), min_tier="limited_risk")
+    assert cache_file.exists(), "a partial scan wrote no cache file at all"
+    written = json.loads(cache_file.read_text(encoding="utf-8"))
+    assert written, "a partial scan wrote an empty cache"
+    # Substring with delimiters rather than positional parsing: the schema
+    # component itself contains colons, so an index into a split is not a
+    # reading of the scope, it is a coincidence.
+    assert all(":mintier-2:" in k for k in written), sorted(written)[:2]
+    assert not any(":full:" in k for k in written), sorted(written)[:2]
+
+
+def test_a_full_scan_writes_a_separate_scope_and_both_survive(monkeypatch, tmp_path):
+    scan_files = _isolated_scan(monkeypatch, tmp_path)
+    proj = tmp_path / "both"
+    proj.mkdir()
+    (proj / "app.py").write_text(
+        "import openai\nchat = openai.ChatCompletion.create(model='gpt-4')\n",
+        encoding="utf-8")
+
+    cache_file = tmp_path / "cache" / "scan_cache.json"
+    scan_files(str(proj), min_tier="limited_risk")
+    scan_files(str(proj))
+    keys = json.loads(cache_file.read_text(encoding="utf-8"))
+    assert any(":mintier-2:" in k for k in keys), sorted(keys)[:2]
+    assert any(":full:" in k for k in keys), sorted(keys)[:2]
+
+
+def test_a_partial_reader_prefers_a_complete_entry():
+    """A `full` entry is a superset and the read path filters it by tier, so a
+    partial reader must take it when it exists. Without this, `check` after a
+    full scan would go from 6 seconds back to 45."""
+    import scan_cache as sc
+    with tempfile.TemporaryDirectory() as tmp:
+        cache = sc.ScanCache(Path(tmp))
+        cache.put("a.py", "x", [{"tier": "high_risk"}], scope=sc.FULL_SCOPE)
+        cache.put("a.py", "x", [{"tier": "limited_risk"}], scope="mintier-2")
+
+        # Partial reader: full first.
+        got = cache.get("a.py", "x", scopes=(sc.FULL_SCOPE, "mintier-2"))
+        assert got == [{"tier": "high_risk"}], got
+        # Full reader: `full` only, and never the partial entry.
+        assert cache.get("a.py", "x", scopes=(sc.FULL_SCOPE,)) == [{"tier": "high_risk"}]
+        # With no full entry at all, a full reader gets nothing rather than the
+        # partial one. This is the assertion that stops the repair becoming the
+        # defect it replaced.
+        cache2 = sc.ScanCache(Path(tmp) / "second")
+        cache2.put("a.py", "x", [{"tier": "limited_risk"}], scope="mintier-2")
+        assert cache2.get("a.py", "x", scopes=(sc.FULL_SCOPE,)) is None
+        assert cache2.get("a.py", "x", scopes=(sc.FULL_SCOPE, "mintier-2")) is not None
+
+
+def test_the_scope_is_part_of_the_key_not_a_stored_field():
+    """A field would leave completeness to the caller remembering to check it."""
+    import scan_cache as sc
+    full = sc.ScanCache._key("a.py", "h", "", "", sc.FULL_SCOPE)
+    partial = sc.ScanCache._key("a.py", "h", "", "", "mintier-2")
+    assert full != partial
+    assert sc.FULL_SCOPE in full and "mintier-2" in partial
+
+
+def test_the_schema_bump_invalidates_every_earlier_entry():
+    """Nothing migrates: an entry written under the old key cannot be told apart
+    from a sound one after the fact, which is why v4 to v5 did the same."""
+    import scan_cache as sc
+    assert sc._CACHE_SCHEMA.startswith("v6:"), sc._CACHE_SCHEMA

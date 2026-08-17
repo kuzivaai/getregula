@@ -83,12 +83,42 @@ SECRET_PATTERNS = {
         "source": "GitHub documentation",
     },
     "private_key": {
-        "pattern": r"-----BEGIN (?:RSA |DSA |EC |OPENSSH )?PRIVATE KEY-----",
+        # The header must be FOLLOWED by base64 key material. A PEM header on
+        # its own is a MARKER FOR a key, not a key.
+        #
+        # MEASURED 2026-08-17 on vercel/ai at 86892f3: the single
+        # highest-priority finding across 2,408 scanned files was this pattern
+        # firing on a constant holding the PEM header text, used to parse a key
+        # the caller supplies at runtime. There was no key material in the file,
+        # and the accusation was about a named third party's public repository,
+        # which is the shape most likely to be checked by a reader who knows the
+        # code. Recorded as LEDGER N148.
+        #
+        # The separator class bridges the three shapes real key material takes
+        # in source: real newlines, an escaped `\n` inside a string literal
+        # (common in JS and Python config), and concatenation across lines with
+        # quotes and `+`. The bound is 40 characters, so a header and a body
+        # separated by a paragraph of prose is not read as one key.
+        #
+        # `ENCRYPTED ` is added at the same time. It is a real PEM header
+        # variant (PKCS#8 encrypted private keys) that the previous pattern
+        # could not match at all, so this change narrows one direction and
+        # widens another, and both are stated.
+        "pattern": (r"-----BEGIN (?:RSA |DSA |EC |OPENSSH |ENCRYPTED )?PRIVATE KEY-----"
+                    r"(?:[\s\"'`+,)(\[\]]|\\n|\\r){0,40}[A-Za-z0-9+/]{32,}"),
         "confidence": "high",
         "confidence_score": 98,
-        "description": "Private key detected",
-        "remediation": "Never include private keys in commands. Use SSH agent or key file path.",
-        "source": "Standard PEM format",
+        "description": "Private key material detected",
+        # The old remediation ("Use SSH agent or key file path") is advice for
+        # passing a key to a command, which is a different situation from a key
+        # committed into source. Corrected in the same change as the pattern,
+        # because a false positive with confident wrong advice is worse than a
+        # false positive alone.
+        "remediation": ("Remove the key from source and rotate it: anything committed "
+                        "to version control must be treated as disclosed. Load it at "
+                        "runtime from a secrets manager, an environment variable or a "
+                        "file outside the repository."),
+        "source": "Standard PEM format (RFC 7468)",
     },
 
     # --- MEDIUM confidence (contextual, warn-worthy) ---

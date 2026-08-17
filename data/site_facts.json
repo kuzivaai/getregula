@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-17T17:05:57.426838+00:00",
+  "generated_at": "2026-08-17T17:29:55.228977+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -18,17 +18,17 @@
       "data_source": 10,
       "logging": 4,
       "oversight": 4,
-      "credential": 18,
+      "credential": 17,
       "agentic_categories": 10,
-      "grand_total": 722,
-      "composite_tier_cred_agentic": 447,
-      "historical_330_bucket": 479
+      "grand_total": 721,
+      "composite_tier_cred_agentic": 446,
+      "historical_330_bucket": 478
     },
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2998,
-      "total_functions": 2952,
+      "total_collected": 3004,
+      "total_functions": 2958,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -61,7 +61,7 @@
         "tests/test_compliance_check.py": 64,
         "tests/test_conform.py": 124,
         "tests/test_content_freshness.py": 6,
-        "tests/test_coverage_critical.py": 46,
+        "tests/test_coverage_critical.py": 47,
         "tests/test_cross_file_flow.py": 103,
         "tests/test_crosswalk_omnibus.py": 10,
         "tests/test_decision_conformance.py": 5,
@@ -133,7 +133,7 @@
         "tests/test_roadmap.py": 16,
         "tests/test_sa_withdrawal_dates.py": 10,
         "tests/test_sbom_enrichment.py": 25,
-        "tests/test_scan_cache.py": 10,
+        "tests/test_scan_cache.py": 15,
         "tests/test_scan_safety.py": 26,
         "tests/test_scan_security.py": 8,
         "tests/test_scope_exclusion.py": 50,
