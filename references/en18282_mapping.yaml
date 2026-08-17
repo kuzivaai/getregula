@@ -77,7 +77,7 @@ mappings:
       - "sensitive_info_disclosure"
       - "no_output_validation"
       - "excessive_agency"
-    note: "Confidence scores provide risk signal. Risk determination requires threat modelling with organisational context."
+    note: "Detector priority (a count of matched code patterns) provides a risk signal. Risk determination requires threat modelling with organisational context."
 
   # Clause 10: Measures across five outcomes per attack type
   - clause: "10"

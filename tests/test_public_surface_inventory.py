@@ -68,6 +68,63 @@ def test_binary_asset_is_non_claim_asset(tmp_path):
     assert row["classification"] == "non_claim_asset" and not row["claim_capable"]
 
 
+def test_a_terminal_recording_svg_is_claim_capable_and_a_logo_is_not(tmp_path):
+    """The classification a suffix rule gets wrong whichever way it is set.
+
+    MEASURED 2026-08-17: `site/assets/demo/regula-check.svg` was recorded
+    `content_kind: asset, claim_capable: False, classification: non_claim_asset`
+    purely because `.svg` was absent from TEXT_SITE, while `README.md:32`
+    rendered it as the project's first visual and its `<text>` nodes published
+    `Confidence scores: 0-100`, the framing retired across nine surfaces. Adding
+    `.svg` to TEXT_SITE unconditionally would have made the opposite error on
+    `vscode-extension/resources/regula-sidebar.svg`, which is a drawing. The
+    decision is made from content, and both directions are asserted here because
+    a rule that only ever says yes is not a classifier.
+    """
+    root, files = _site_root(tmp_path)
+    (root / "site/recording.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg">'
+        '<text x="0" y="1">Files</text><text x="40" y="1">scanned:</text>'
+        '<text x="90" y="1">1</text></svg>', encoding="utf-8")
+    (root / "site/logo.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h10v10H0z"/></svg>',
+        encoding="utf-8")
+    rows = psi.website_records(root, files | {"site/recording.svg", "site/logo.svg"})
+
+    recording = next(r for r in rows if r["source"] == "site/recording.svg")
+    assert recording["claim_capable"] is True
+    assert recording["classification"] == "active_product"
+
+    logo = next(r for r in rows if r["source"] == "site/logo.svg")
+    assert logo["claim_capable"] is False
+    assert logo["classification"] == "non_claim_asset"
+    assert logo["content_kind"] == "asset"
+
+
+def test_an_unreadable_svg_is_classified_claim_capable_rather_than_ignored(tmp_path):
+    """Fails closed, which is the opposite of the obvious choice.
+
+    "I could not read it" and "it contains nothing" are different answers, and
+    only one of them is safe to act on. Reading a parse failure as a non-claim
+    asset would reproduce exactly the state this fix exists to end.
+    """
+    root, files = _site_root(tmp_path)
+    (root / "site/broken.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg"><text>unclosed', encoding="utf-8")
+    rows = psi.website_records(root, files | {"site/broken.svg"})
+    row = next(r for r in rows if r["source"] == "site/broken.svg")
+    assert row["claim_capable"] is True
+
+
+def test_content_decision_is_scoped_and_cannot_reclassify_other_suffixes(tmp_path):
+    """A `.png` full of bytes that happen to look like markup stays an asset."""
+    (tmp_path / "x.png").write_bytes(
+        b'<svg xmlns="http://www.w3.org/2000/svg"><text y="1">words</text></svg>')
+    assert psi.carries_readable_text(tmp_path / "x.png") is False
+    assert ".svg" in psi.CONTENT_DECIDED_SUFFIXES
+    assert ".png" not in psi.CONTENT_DECIDED_SUFFIXES
+
+
 def test_cli_registry_mutation_is_detected(monkeypatch):
     parser = argparse.ArgumentParser(prog="regula")
     commands = parser.add_subparsers(dest="command")

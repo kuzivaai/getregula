@@ -25,11 +25,22 @@ except ModuleNotFoundError:  # Python 3.10: only the project readme key is neede
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+from svg_text import SvgTextError, carries_text  # noqa: E402
+
 REPO = Path(__file__).resolve().parent.parent
 OUTPUT = REPO / "data/public_claim_surfaces.json"
 REPORT = REPO / "docs/improvement/PUBLIC-SURFACE-DISCOVERY.md"
 POLICY = REPO / "data/public_surface_policy.json"
 TEXT_SITE = {".html", ".htm", ".txt", ".xml", ".json"}
+
+# Suffixes whose claim-capability cannot be decided from the suffix, because the
+# same extension carries both kinds of file. An SVG may be a logo, which cannot
+# carry a claim, or a terminal recording, which is a whole transcript sitting in
+# `<text>` nodes. A suffix rule gets one of those wrong whichever way it is set:
+# excluding `.svg` classified a published transcript on the project's front page
+# as `non_claim_asset`, and including it unconditionally would classify the
+# VS Code sidebar icon as reader-facing text. Decided by content instead.
+CONTENT_DECIDED_SUFFIXES = {".svg"}
 LINK_RE = re.compile(r"(?<!!)\[[^]]*\]\(([^)#?]+)(?:#[^)]*)?\)")
 TAG_RE = re.compile(r"<[^>]+>")
 
@@ -38,6 +49,29 @@ TAG_RE = re.compile(r"<[^>]+>")
 # repeated here as the authoring contract for PROHIBITED_CLAIMS, which must
 # carry one arm per shipped language or the guard is blind to that locale.
 CLAIM_LANGUAGES = ("en", "de", "pt")
+
+
+def carries_readable_text(path: Path) -> bool:
+    """True if a content-decided file publishes words a reader can read.
+
+    Only consulted for `CONTENT_DECIDED_SUFFIXES`; every other suffix keeps its
+    suffix rule, so this cannot quietly reclassify anything else.
+
+    Fails CLOSED, which is the opposite of the obvious choice. An SVG that
+    cannot be parsed is treated as claim-capable, because "I could not read it"
+    and "it contains nothing" are different answers and only one of them is
+    safe to act on. Returning False on a parse failure would make an unreadable
+    file classify as a non-claim asset, which is precisely the state that let a
+    published transcript sit unaudited on the front page.
+    """
+    if path.suffix.lower() not in CONTENT_DECIDED_SUFFIXES:
+        return False
+    try:
+        return carries_text(path.read_text(encoding="utf-8", errors="replace"))
+    except SvgTextError:
+        return True
+    except OSError:
+        return True
 
 
 def fold_for_claim_match(text: str) -> str:
@@ -231,9 +265,14 @@ def website_records(root: Path, files: set[str]) -> list[dict[str, Any]]:
     rows = []
     for rel in sorted(p for p in files if p.startswith("site/")):
         suffix = Path(rel).suffix.lower()
-        claim = suffix in TEXT_SITE
+        # Resolved against the ROOT this call was given, never against the
+        # module-level REPO. A predicate that resolves paths against its own
+        # file location answers about the wrong tree, which is measurement
+        # rule 1 and is how the figures 185 and 168 were produced.
+        claim = suffix in TEXT_SITE or carries_readable_text(root / rel)
         kind = "web-page" if suffix in {".html", ".htm"} else (
-            "machine-readable" if suffix in {".txt", ".xml", ".json"} else "asset")
+            "machine-readable" if suffix in {".txt", ".xml", ".json"} else (
+                "machine-readable" if claim else "asset"))
         dest = "/" + rel.removeprefix("site/")
         if dest.endswith("/index.html"):
             dest = dest[:-10]

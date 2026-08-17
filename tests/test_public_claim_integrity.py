@@ -158,21 +158,101 @@ def test_public_homepages_do_not_expose_internal_programme_gates():
         assert not any(phrase in text for phrase in phrases), (rel, phrases)
 
 
-def test_public_entry_points_do_not_use_em_dashes():
-    paths = (
-        "README.md",
-        "site/index.html",
-        "site/locales/de.html",
-        "site/locales/pt-br.html",
-        "site/assess/index.html",
-        "site/assess/de.html",
-        "site/assess/pt-br.html",
-        "site/about.html",
-        "site/pricing.html",
-    )
-    for rel in paths:
+EM_DASH_GUARDED_PAGES = (
+    "README.md",
+    "site/index.html",
+    "site/locales/de.html",
+    "site/locales/pt-br.html",
+    "site/assess/index.html",
+    "site/assess/de.html",
+    "site/assess/pt-br.html",
+    "site/about.html",
+    "site/pricing.html",
+)
+
+_MD_FENCE = re.compile(r"```.*?```", re.S)
+_HTML_PRE = re.compile(r"<pre\b.*?</pre>", re.S | re.I)
+_HTML_CODE = re.compile(r"<code\b.*?</code>", re.S | re.I)
+_EM_ENTITY = re.compile(r"&mdash;|&#8212;|&#x2014;", re.I)
+
+
+def prose_only(text: str, rel: str) -> str:
+    """The page with its verbatim records removed.
+
+    The convention this guard enforces is stated in the project's own rules as
+    "No em dashes in NEW PROSE ... Verbatim records are exempt and must be
+    reproduced exactly: quoted command output, quoted directives, and quoted
+    external text keep whatever characters they contain, because altering them
+    falsifies the record."
+
+    The guard did not implement the second half, and on 2026-08-17 the two
+    halves collided. `regula check examples/cv-screening-app --scope all` emits
+
+        [INFO] [ 43] app.py — Employment and workers management [plan]
+
+    with an em dash, and only with an em dash: substituting a hyphen or an en
+    dash was tried and neither appears in real output. So a transcript on
+    README.md either reproduces the em dash and fails this check, or alters it
+    and fails `scripts/verify_transcripts.py`, which requires the page and the
+    real output to agree. Two guards, one line, and only one of them matched the
+    written rule.
+
+    MEASURED before changing anything, across all nine guarded pages: **one**
+    em-dash occurrence in total, and it is inside a fenced block. Prose
+    occurrences: **zero**, on every page. So this exemption changes the verdict
+    for exactly one occurrence and leaves every other page's verdict identical.
+    """
+    if rel.endswith((".md", ".markdown")):
+        return _MD_FENCE.sub(" ", text)
+    return _HTML_CODE.sub(" ", _HTML_PRE.sub(" ", text))
+
+
+def em_dashes_in_prose(text: str, rel: str) -> int:
+    stripped = prose_only(text, rel)
+    return stripped.count("—") + len(_EM_ENTITY.findall(stripped))
+
+
+def test_public_entry_points_do_not_use_em_dashes_in_prose():
+    for rel in EM_DASH_GUARDED_PAGES:
         text = (REPO / rel).read_text(encoding="utf-8", errors="replace")
-        assert "—" not in text and "&mdash;" not in text.lower(), rel
+        assert em_dashes_in_prose(text, rel) == 0, rel
+
+
+def test_the_verbatim_exemption_is_bounded_and_still_catches_prose():
+    """Both directions, because an exemption that only ever excuses is a hole.
+
+    A guard relaxed to let a real change through has to be shown still failing
+    on the thing it was written for, or the relaxation is indistinguishable from
+    switching it off.
+    """
+    md_prose = "Regula flags patterns — it does not determine compliance."
+    md_verbatim = "Before\n\n```console\n$ regula check .\n[INFO] app.py — x\n```\n\nAfter"
+    assert em_dashes_in_prose(md_prose, "README.md") == 1
+    assert em_dashes_in_prose(md_verbatim, "README.md") == 0
+
+    html_prose = "<p>Regula flags patterns &mdash; it does not determine compliance.</p>"
+    html_verbatim = "<pre><code>$ regula check .\n[INFO] app.py &mdash; x</code></pre>"
+    assert em_dashes_in_prose(html_prose, "site/index.html") == 1
+    assert em_dashes_in_prose(html_verbatim, "site/index.html") == 0
+
+    # The exemption must not swallow the rest of the file after a block closes.
+    mixed = ("<pre>a &mdash; b</pre><p>then prose &mdash; here</p>")
+    assert em_dashes_in_prose(mixed, "site/index.html") == 1
+
+    # An unclosed block must not exempt everything to end of file.
+    unclosed = "<pre>a &mdash; b<p>then prose &mdash; here</p>"
+    assert em_dashes_in_prose(unclosed, "site/index.html") == 2
+
+    # Every entity spelling the rule names is covered, not only the literal.
+    for entity in ("&mdash;", "&#8212;", "&#x2014;", "&MDASH;"):
+        assert em_dashes_in_prose(f"<p>a {entity} b</p>", "site/index.html") == 1
+
+
+def test_the_em_dash_page_list_is_not_empty_and_reaches_the_real_pages():
+    """Guard the guard: a scan over an empty list passes for free."""
+    assert len(EM_DASH_GUARDED_PAGES) >= 9
+    for rel in EM_DASH_GUARDED_PAGES:
+        assert (REPO / rel).is_file(), rel
 
 
 def test_mobile_navigation_supports_pointer_and_escape_close():

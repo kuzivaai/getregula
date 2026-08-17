@@ -50,7 +50,7 @@ regula/
 ├── references/                    # Regulatory reference documents
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
-├── tests/                         # 119 test files, 2,922 tests (pytest --collect-only)
+├── tests/                         # 121 test files, 2,960 tests (pytest --collect-only)
 │   ├── test_classification.py     # Core classification tests (main test file)
 │   └── ...                        # See tests/ for full list
 ├── docs/
@@ -76,7 +76,7 @@ regula/
 
 - **Core engine + thin adapters.** One classification engine, multiple platform integrations.
 - **Same hook protocol.** Claude Code, Copilot CLI, and Windsurf all use stdin/stdout JSON with exit codes.
-- **Confidence scores, not binary labels.** 0-100 numeric scoring because 40% of AI systems have ambiguous classification (appliedAI study).
+- **Detector priority, not binary labels.** 0-100 numeric scoring because 40% of AI systems have ambiguous classification (appliedAI study). The number counts how many code patterns matched; it is not a confidence and not a probability that the finding is correct.
 - **Inline suppression with audit trail.** `# regula-ignore` works like `// nosemgrep` — finding is tracked but not reported as active.
 - **SARIF for CI/CD.** Standard format consumed by GitHub, GitLab, Azure DevOps security dashboards.
 - **Named governance contacts.** The policy file supports optional AI Officer and DPO fields. These fields do not represent an Article 4 requirement; AI-literacy measures and ISO/IEC 42001 role controls must be assessed separately.

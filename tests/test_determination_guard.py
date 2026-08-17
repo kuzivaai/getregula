@@ -129,14 +129,22 @@ class TestTheCorpusIsRealAndReaches(unittest.TestCase):
         """`.svg` is scanned, and that is the point rather than an accident.
 
         A terminal-recorder SVG is entirely text: the whole transcript sits in
-        `<text>` nodes. `README.md` embeds one. Three independent instruments
-        cannot read it: the delivery inventory classes it `non_claim_asset`
-        because `.svg` is outside `public_surface_inventory.TEXT_SITE`,
-        `claim_auditor.SCANNED_SUFFIXES` excludes it, and
-        `verify_transcripts.py` filters to `.md/.html/.txt`. This guard does not.
+        `<text>` nodes. On 2026-08-17 `README.md` embedded one and three
+        independent instruments could not read it: the delivery inventory
+        classed it `non_claim_asset` because `.svg` was outside
+        `public_surface_inventory.TEXT_SITE`, `claim_auditor.SCANNED_SUFFIXES`
+        excluded it, and `verify_transcripts.py` filtered to `.md/.html/.txt`.
+        This guard did not, and was the only instrument that could see it.
+
+        The three recordings were removed the same day and the README embed
+        replaced with a fenced transcript bound to a re-runnable command, so the
+        path below no longer exists. The assertion is deliberately on the path
+        SHAPE and not on a file: this guard's `.svg` scope must survive the
+        recordings' removal, or the next one added would be unread again.
         """
         self.assertIn(".svg", dg.SCANNED_SUFFIXES)
-        self.assertTrue(dg.in_scope("site/assets/demo/regula-check.svg"))
+        self.assertTrue(dg.in_scope("site/assets/demo/any-future-recording.svg"))
+        self.assertTrue(dg.in_scope("vscode-extension/resources/regula-sidebar.svg"))
 
 
 class TestQuietingMechanismsAreBounded(unittest.TestCase):

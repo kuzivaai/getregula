@@ -94,7 +94,7 @@ mappings:
     topic: "Comparison against acceptability criteria"
     relationship: "indicator"
     regula_categories: ["all_high_risk"]
-    note: "Confidence scores (0-100) provide a code-level risk signal. They do NOT constitute risk evaluation — that requires human judgement against Clause 4.4 criteria."
+    note: "Detector priority (0-100, a count of matched code patterns) provides a code-level risk signal. It does NOT constitute risk evaluation — that requires human judgement against Clause 4.4 criteria."
 
   # Clause 8: Testing
   - clause: "8"

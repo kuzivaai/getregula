@@ -7813,39 +7813,6 @@
       "reason": "Tracked binary screenshot deployed by Pages; pixels are not scanned as public copy."
     },
     {
-      "stable_id": "website:9aadcb8b6fab7bb6",
-      "channel": "website",
-      "source": "site/assets/demo/regula-bare.svg",
-      "destination": "/assets/demo/regula-bare.svg",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "deployed non-claim asset"
-    },
-    {
-      "stable_id": "website:535cc8d2e39e6806",
-      "channel": "website",
-      "source": "site/assets/demo/regula-check.svg",
-      "destination": "/assets/demo/regula-check.svg",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "deployed non-claim asset"
-    },
-    {
-      "stable_id": "website:32220af22b79a708",
-      "channel": "website",
-      "source": "site/assets/demo/regula-comply.svg",
-      "destination": "/assets/demo/regula-comply.svg",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "deployed non-claim asset"
-    },
-    {
       "stable_id": "website:30f8fdea8360590f",
       "channel": "website",
       "source": "site/assets/fonts.css",
@@ -8711,13 +8678,13 @@
       "mcp": 3,
       "package": 2,
       "repository_docs": 39,
-      "website": 95
+      "website": 92
     },
     "classification": {
       "active_product": 761,
       "historical_record": 1,
       "internal_record": 1,
-      "non_claim_asset": 28
+      "non_claim_asset": 25
     }
   },
   "exclusions": [
