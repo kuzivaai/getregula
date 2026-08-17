@@ -98,7 +98,19 @@ exclude = ["tools*", "benchmarks*", "tests*"]
 # BBQ bias-eval sample: without it, `regula conform` in an installed
 # context prints "BBQ eval failed" (found 16 Jul 2026 running the
 # evaluation journey against the published 1.7.5 wheel).
-"scripts" = ["bias_data/*.json", "dpv_data/*.json", "eli_data/*.json"]
+#
+# dashboard/index.html: `regula api-server` registers as "Start the REST API
+# server with web dashboard" and `_handle_dashboard` serves this file at
+# /v1/dashboard. It was not packaged, so the installed product answered that
+# endpoint with a 302-byte JSON message advising the user to "Place index.html
+# in scripts/dashboard/", which is an instruction to edit site-packages. The
+# tree served 52,443 bytes of HTML for the same request. Found 2026-08-17 by
+# building a wheel from this tree and diffing its behaviour against the tree,
+# which no session had done; same class as the 1.7.6 `regula dpv` break above.
+# Coverage is enforced at rest by tests/test_installed_artefact.py, which reads
+# REQUIRED_PACKAGED_DATA rather than restating this list.
+"scripts" = ["bias_data/*.json", "dpv_data/*.json", "eli_data/*.json",
+             "dashboard/*.html"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

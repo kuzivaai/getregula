@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-17T14:48:00.629957+00:00",
+  "generated_at": "2026-08-17T16:49:36.021626+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2967,
-      "total_functions": 2921,
+      "total_collected": 2982,
+      "total_functions": 2936,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -95,6 +95,7 @@
         "tests/test_hook_fail_open.py": 4,
         "tests/test_hooks_audit.py": 50,
         "tests/test_hostile_sweep.py": 4,
+        "tests/test_installed_artefact.py": 15,
         "tests/test_ledger_enumeration.py": 10,
         "tests/test_ledger_status.py": 13,
         "tests/test_lifecycle_phases.py": 13,
@@ -153,7 +154,7 @@
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1292
+      "runner_functions": 1307
     }
   },
   "notes": {

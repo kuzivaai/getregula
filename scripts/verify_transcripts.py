@@ -233,8 +233,24 @@ def load_manifest() -> list[dict]:
     return payload["transcripts"]
 
 
-def run_command(argv: list[str]) -> tuple[str, int]:
+# The command prefix that invokes the CLI under test. The default is this
+# working tree, run as a module. It is a parameter rather than a constant
+# because the tree is not what anyone installs: N144 recorded that the strings
+# RETIRED_MARKERS asserts are unreachable were reachable in the product on
+# PyPI, and this guard could not have found that, because it could only ever
+# run the tree. `scripts/verify_installed_artefact.py` passes the console
+# script of a built, installed artefact here.
+TREE_CLI: list[str] = [sys.executable, "-m", "scripts.cli"]
+
+
+def run_command(argv: list[str], cli: list[str] | None = None,
+                cwd: str | Path | None = None) -> tuple[str, int]:
     """Run the documented command exactly as a reader would, on a cold cache.
+
+    `cli` is the executable prefix; `cwd` is the directory the command runs in,
+    which decides how the fixture paths in `argv` resolve and, through
+    `_is_example_file`, what the finding scores (N110). Both default to this
+    tree so every existing caller is unchanged.
 
     The cache directory is redirected to a fresh temporary directory for every
     invocation. Without that, this check is not a measurement of the page: it
@@ -260,8 +276,8 @@ def run_command(argv: list[str]) -> tuple[str, int]:
     with tempfile.TemporaryDirectory(prefix="regula-transcript-cache-") as tmp:
         env = dict(os.environ, REGULA_CACHE_DIR=tmp)
         run = subprocess.run(
-            [sys.executable, "-m", "scripts.cli", *argv],
-            cwd=REPO, capture_output=True, text=True, check=False,
+            [*(cli or TREE_CLI), *argv],
+            cwd=str(cwd or REPO), capture_output=True, text=True, check=False,
             timeout=600, env=env,
         )
     return run.stdout + run.stderr, run.returncode
@@ -395,13 +411,20 @@ def qualified_output_is_really_emitted() -> list[str]:
     return problems
 
 
-def retired_markers_are_unreachable(commands: list[list[str]] | None = None
+def retired_markers_are_unreachable(commands: list[list[str]] | None = None,
+                                    cli: list[str] | None = None,
+                                    cwd: str | Path | None = None,
                                     ) -> list[str]:
     """Positive proof that each marker really is retired.
 
     Without this the list above is an assertion. With it, a marker that the CLI
     starts emitting again fails the suite instead of silently forbidding
     wording the tool now produces.
+
+    `cli`/`cwd` decide WHICH artefact is proved. Run against this tree the
+    answer has always been yes; run against the published 1.9.0 wheel it is no,
+    and nothing in this repository could say so until the parameter existed
+    (N144).
     """
     commands = commands or [
         ["check", "examples/cv-screening-app"],
@@ -411,7 +434,7 @@ def retired_markers_are_unreachable(commands: list[list[str]] | None = None
     ]
     problems = []
     for argv in commands:
-        output, _rc = run_command(argv)
+        output, _rc = run_command(argv, cli=cli, cwd=cwd)
         shown = normalise(output)
         for marker in RETIRED_MARKERS:
             if normalise(marker) in shown:
