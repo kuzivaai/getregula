@@ -5625,3 +5625,91 @@ not touch detection, so it moves no published precision or recall figure; and
 `scan_params_token` is proved to distinguish the two settings by a test, not by
 inspection, because an inert key component is exactly the blank gate measurement
 rule 4 warns about.
+
+### N164. The branch has a pull request, CI has passed on it, and a push is already a publication
+
+**State:** OPEN
+
+**First raised:** 2026-08-17 (fifth session), by checking the remote rather than
+repeating the record, at the end of a session in which everything else had been
+re-derived.
+
+**Status:** OPEN as a record defect across at least three sessions of
+`docs/improvement/MERGE-READINESS-2026-08.md` and the owner-action list derived
+from it. Corrected in that file's section 15. **No code change and no push.**
+
+**Three claims this repository has been carrying are wrong or incomplete.**
+
+**1. "Open a pull request" is not an available action, because one is open.**
+Every session since this branch opened has listed opening a PR as the first owner
+action and as "the only way CI can ever run on these commits". Read from the
+remote:
+
+```
+$ gh pr list --state open --json number,title,headRefName,baseRefName,headRefOid
+{"baseRefName":"main","headRefName":"feat/engagement-fixes",
+ "headRefOid":"3f525015140c46ffc0ce1f74f2ab57cfdb9c5405","number":55,
+ "title":"Engagement fixes: hero hierarchy, pricing rebuild with direct contact, region next-step"}
+```
+
+**PR #55 is open, base `main`, head this branch.** The action required is a
+**push**, not opening a pull request. That is a materially different act: it is
+one command, it needs no new outward-facing artefact, and it updates an existing
+public pull request.
+
+**2. "None of these commits has ever been through CI" is false for two of them,
+and CI passed.** The remote ref sits at `3f52501`, pushed 2026-08-14 09:25:49
++0100 per `git reflog show refs/remotes/origin/feat/engagement-fixes`. So of the
+40 commits in `main..HEAD`, **2 are on the remote and in PR #55, and 38 have
+never been pushed**. `gh pr checks 55` reports every check passing on that head,
+including the two classes this repository records as unreproducible:
+
+```
+test (3.10)   pass  9m42s      test (3.11)   pass  6m59s
+test (3.12)   pass  9m46s      test (3.13)   pass  10m22s
+Compliant code passes            pass    High-risk warns (pass)        pass
+High-risk fails when configured  pass    SARIF file generated          pass
+Outputs populated                pass    Dependency pinning threshold  pass
+Warn-tier fixture                pass    Default inputs                pass
+Fail closed on failed scan       pass    Completion manifest present   pass
+CodeQL  pass    regula-scan  pass    axe WCAG 2.2 automated checks  pass
+site-integrity  pass    Analyze (python)  pass    Lint (ruff)  pass
+deploy  skipping
+```
+
+**All four Python versions and all ten composite-action jobs have run and
+passed.** N161 says three quarters of the matrix and the composite action are
+unreproducible; that is true **of this machine** and it is not true of this
+branch's history. The honest form is that both have passed on a two-commit state
+and neither has been exercised on the 38 commits that carry the decision kernel,
+the claim closures, the fact loop and the cache repairs. **The gap is real and it
+is 38 commits wide, not 40.**
+
+**3. There is a second deploy channel and the CI enumeration cannot see it.**
+`netlify.toml` at the repository root sets `publish = "site"`, and no workflow
+file mentions Netlify, so it is a GitHub App integration rather than a workflow
+step. The merge-readiness enumeration walks `.github/workflows/*.y*ml`, so **it
+is structurally incapable of reporting Netlify**, and its "13 workflow files, 134
+steps" is complete about workflows and silent about this. `gh pr checks 55`
+reports it:
+
+```
+netlify/getregula/deploy-preview   pass   https://deploy-preview-55--getregula.netlify.app
+```
+
+**The operational consequence has never been written down: a push to this branch
+publishes `site/` to a preview URL.** Section 4 of the merge-readiness document
+says "A merge to `main` IS a publication", and that is true and insufficient. A
+**push** is also a publication, to a different and already-live address, and it
+happens before any merge decision is taken. Whoever authorises the push is
+authorising that.
+
+**Measurement rule 5 in its exact form.** The workflow enumeration was a correct
+answer to "which workflow steps fire", reported in a section headed as the CI
+picture. A check that is not a workflow was outside the predicate's population,
+and nothing said so. This is the same shape as F21 and as N138.
+
+**What this does not change.** Nothing about the 38 unpushed commits, the
+`main`-is-unprotected finding, the 2.0.0 verdict, or any standing verdict. **No
+push was made and none is recommended here**; it is an owner action and it is now
+described accurately enough for the owner to decide.
