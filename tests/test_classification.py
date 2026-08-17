@@ -63,6 +63,7 @@ import test_remediation_plan_integrity as _test_remediation_plan_integrity  # no
 import test_hook_fail_open as _test_hook_fail_open  # noqa: F401
 import test_locale_link_language as _test_locale_link_language  # noqa: F401
 import test_determination_guard as _test_determination_guard  # noqa: F401
+import test_sa_withdrawal_dates as _test_sa_withdrawal_dates  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -136,6 +137,37 @@ for _metrics_cls in (
         )
 del _metrics_cls, _metrics_name
 
+# Same problem, 2026-08-17, and worth naming because it is a trap rather than an
+# oversight. `.claude/rules/tests.md` says to wire a new test file into this
+# module, and adding the import plus the `_mod` tuple entry LOOKS like wiring.
+# It is not, for a module whose tests are all TestCase methods: the generic loop
+# below scans `dir(_mod)` for names starting with `test_`, and a class-based
+# module exposes only class names. Both modules added on 2026-08-17 were imported,
+# listed in the tuple, and contributed nothing, which is invisible unless you
+# watch the published function count fail to move. Bound explicitly here.
+for _n129_cls in (
+    _test_determination_guard.TestTheGuardCanFail,
+    _test_determination_guard.TestTheCorpusIsRealAndReaches,
+    _test_determination_guard.TestQuietingMechanismsAreBounded,
+    _test_determination_guard.TestDeclaredExemptions,
+    _test_determination_guard.TestTheShippedTreeIsClean,
+    _test_determination_guard.TestTheBadgeSpecifically,
+    _test_sa_withdrawal_dates.TestTheOperativeActIsRecorded,
+    _test_sa_withdrawal_dates.TestNoSurfaceMisdatesTheWithdrawal,
+    _test_sa_withdrawal_dates.TestTheFallbackAgreesWithTheJson,
+    _test_sa_withdrawal_dates.TestTheChecksCanFail,
+):
+    assert "setUp" not in _n129_cls.__dict__, (
+        f"{_n129_cls.__name__} grew a setUp; direct binding would skip it"
+    )
+    for _n129_name in _inspect.getmembers(_n129_cls, _inspect.isfunction):
+        if not _n129_name[0].startswith("test_"):
+            continue
+        globals()[RUNNER_ALIAS_PREFIX + "claims_" + _n129_name[0][5:]] = (
+            getattr(_n129_cls(_n129_name[0]), _n129_name[0])
+        )
+del _n129_cls, _n129_name
+
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
 
 
@@ -150,7 +182,7 @@ def _bind_runner_case(target, kwargs, case_id):
     return runner_case
 
 
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_ledger_enumeration, _test_remediation_plan_integrity, _test_hook_fail_open, _test_locale_link_language, _test_determination_guard):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_ledger_enumeration, _test_remediation_plan_integrity, _test_hook_fail_open, _test_locale_link_language, _test_determination_guard, _test_sa_withdrawal_dates):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
