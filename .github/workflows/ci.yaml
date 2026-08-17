@@ -103,6 +103,25 @@ jobs:
       - name: Check hreflang on cross-language links
         run: python3 scripts/locale_link_audit.py --check
 
+  determination-guard:
+    name: No output asserts a compliance state
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      # The project's hard rule, gated. Three shipped paths stated a compliance
+      # determination and none of the guards that existed could see it: the
+      # multilingual claim guard had arms for four claim classes and none for
+      # asserting a state, and the transcript guard's retired-marker list does
+      # not contain the word. LEDGER N125. The corpus includes .svg, which the
+      # delivery inventory, the claim auditor and the transcript guard all skip.
+      - name: Prove the guard can fail before trusting it
+        run: python3 scripts/determination_guard.py --control
+      - name: Check no scanned surface asserts a compliance state
+        run: python3 scripts/determination_guard.py --check
+
   html-wellformed:
     name: HTML well-formedness (landing pages)
     runs-on: ubuntu-latest

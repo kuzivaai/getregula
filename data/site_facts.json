@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-15T15:04:16.056461+00:00",
+  "generated_at": "2026-08-17T08:21:47.361300+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2892,
-      "total_functions": 2846,
+      "total_collected": 2912,
+      "total_functions": 2866,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -70,6 +70,7 @@
         "tests/test_dependency_compromised_text.py": 9,
         "tests/test_dependency_pinning.py": 14,
         "tests/test_dependency_scan_safety.py": 5,
+        "tests/test_determination_guard.py": 18,
         "tests/test_doc_audit.py": 10,
         "tests/test_documentation.py": 17,
         "tests/test_documented_transcripts.py": 7,
@@ -104,7 +105,7 @@
         "tests/test_metrics_artefacts.py": 13,
         "tests/test_monitor.py": 24,
         "tests/test_multi_jurisdiction.py": 35,
-        "tests/test_new_commands.py": 14,
+        "tests/test_new_commands.py": 16,
         "tests/test_omnibus_status.py": 13,
         "tests/test_open_questions.py": 5,
         "tests/test_owasp_agentic.py": 24,
@@ -148,7 +149,7 @@
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1233
+      "runner_functions": 1235
     }
   },
   "notes": {
