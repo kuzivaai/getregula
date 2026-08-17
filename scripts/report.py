@@ -622,6 +622,46 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         except ValueError:
             rel = str(fp)
         _skipped.append((rel, reason))
+
+    # Directories the default skip list removed from the walk, and how many
+    # code files sit under them. Counting is bounded: a developer machine can
+    # hold a `node_modules` with hundreds of thousands of entries, and a
+    # disclosure line must never cost more than the scan it describes. When
+    # the budget is exhausted the count is reported as a floor rather than as
+    # a total, because an exhausted budget and a small directory must not
+    # produce the same-looking number (measurement rule 4).
+    _PRUNE_ENTRY_BUDGET = 20000
+    _pruned_dirs: list = []          # list[{"path", "skipped_because"}]
+    _pruned_code_files = 0
+    _prune_budget_left = _PRUNE_ENTRY_BUDGET
+
+    def _count_pruned_code_files(directory: Path) -> int:
+        """Count code-extension files under a pruned directory, under budget.
+
+        Uses os.walk without reading any file: this is an inventory of what
+        was not scanned, not a scan. Returns the count for THIS directory so
+        the caller can drop directories that held no code at all; `.git` is
+        pruned on every scan and reporting it as "files not scanned" would be
+        noise that implies a loss where there was none.
+        """
+        nonlocal _pruned_code_files, _prune_budget_left
+        if _prune_budget_left <= 0:
+            return 0
+        here = 0
+        try:
+            for _r, _d, _f in os.walk(directory):
+                _prune_budget_left -= len(_f) + len(_d)
+                for _name in _f:
+                    if Path(_name).suffix in CODE_EXTENSIONS:
+                        here += 1
+                if _prune_budget_left <= 0:
+                    break
+        except OSError:
+            # An unreadable pruned directory is not a scan failure. It is
+            # simply not countable, and the exact flag below says so.
+            _prune_budget_left = 0
+        _pruned_code_files += here
+        return here
     # Track how many findings were suppressed by domain gating and which
     # opt-in categories were involved. Used by cmd_check to show an
     # INFO message explaining the --domain flag.
@@ -696,6 +736,35 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         walk_iter = ((r, d, f, None) for r, d, f in os.walk(project))
 
     for root, dirs, files, _dirfd in walk_iter:
+        # Record what the default skip list removes BEFORE removing it.
+        #
+        # MEASURED 2026-08-17 on ageitgey/face_recognition at 9f3061a:
+        # `regula check . --scope all` reported "Files scanned: 6" and three
+        # high-risk findings, while the same command pointed at each
+        # subdirectory in turn reported fourteen over twenty-eight files. The
+        # difference is this line: twenty-three of that repository's files
+        # live under `examples/`, and `examples` is in SKIP_DIRS. Eleven of
+        # fourteen findings, 79%, were invisible at the default invocation and
+        # no line of the output said a directory had been skipped.
+        #
+        # The pruning itself is a deliberate design decision with a stated
+        # rationale on SKIP_DIRS and is NOT changed here. What changes is that
+        # the scan can no longer report a file count without also being able
+        # to report what it declined to read. That is the N138 remedy applied
+        # to a second instrument: an instrument that cannot see part of its
+        # population declares the gap at the point of use rather than leaving
+        # it silent.
+        _pruned_here = [d for d in dirs if d in SKIP_DIRS]
+        for _d in _pruned_here:
+            _p = Path(root) / _d
+            try:
+                _rel = str(_p.relative_to(project))
+            except ValueError:
+                _rel = str(_p)
+            _here = _count_pruned_code_files(_p)
+            if _here:
+                _pruned_dirs.append({"path": _rel, "skipped_because": _d,
+                                     "code_files": _here})
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
@@ -1236,6 +1305,17 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         # {"path", "reason"}. Legitimate exclusions are NOT listed here.
         "skipped_files": [{"path": p, "reason": r} for p, r in _skipped],
         "skipped_total": len(_skipped),
+        # Directories the default skip list removed from the walk. These are
+        # NOT scan failures and they do not make a scan partial: the pruning
+        # is deliberate. They are here so that "Files scanned: N" can never
+        # again be printed without the population it excluded being available
+        # to the caller that prints it.
+        "pruned_dirs": _pruned_dirs,
+        "pruned_dirs_total": len(_pruned_dirs),
+        "pruned_code_files": _pruned_code_files,
+        # False when the counting budget was exhausted or a pruned directory
+        # was unreadable, in which case pruned_code_files is a floor.
+        "pruned_count_exact": _prune_budget_left > 0,
     }
 
     return findings

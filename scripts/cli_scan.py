@@ -643,6 +643,31 @@ def cmd_check(args) -> None:
             phase_str = ", ".join(f"{p}: {c}" for p, c in sorted(phase_counts.items()))
             print(f"  {'Lifecycle:':<20}{phase_str}")
 
+        # Skipped-directory disclosure.
+        #
+        # "Files scanned: N" is true and incomplete on its own. MEASURED
+        # 2026-08-17 on ageitgey/face_recognition at 9f3061a: the default
+        # invocation read 6 of 30 Python files and reported 3 high-risk
+        # findings, while the same tool pointed at each subdirectory reported
+        # 14, because 23 files live under `examples/` and `examples` is in
+        # SKIP_DIRS. The pruning is deliberate and is unchanged; what was
+        # wrong was reporting a count over a population without saying which
+        # population. Same remedy as N138's coverage register: declare the
+        # gap at the point of use.
+        pruned_dirs = stats.get("pruned_dirs", []) or []
+        pruned_files = int(stats.get("pruned_code_files", 0))
+        if pruned_files > 0:
+            approx = "" if stats.get("pruned_count_exact", True) else "at least "
+            names = sorted({d["path"] for d in pruned_dirs})
+            shown = ", ".join(names[:6])
+            more = f", and {len(names) - 6} more" if len(names) > 6 else ""
+            print(f"\n  INFO: {approx}{pruned_files} code file(s) in "
+                  f"{len(pruned_dirs)} skipped director(ies) were not scanned")
+            print(f"        {shown}{more}")
+            print("        These directory names are excluded by default "
+                  "(examples, tests caches, vendored code).")
+            print("        To scan one, pass it as the path: regula check <dir>")
+
         # Domain gating INFO: tell users about --domain when findings were suppressed
         gated_count = stats.get("domain_gated_count", 0)
         gated_cats = stats.get("domain_gated_categories", [])
