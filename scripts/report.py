@@ -257,6 +257,60 @@ def path_context_token(filepath) -> str:
     )
 
 
+# Every parameter of scan_files, classified against the scan cache. LEDGER N163.
+#
+# The classification exists because `respect_ignores` was absent from the cache
+# key for as long as the cache has existed, and nothing could have told anyone:
+# there was no list to be missing from. N112 (full-path classifiers) and N147
+# (scan completeness) are the same omission in two other axes. The guard in
+# tests/test_scan_cache.py reads `inspect.signature(scan_files)`, so a
+# parameter added later fails the suite until it is ruled on here.
+#
+# The test to apply to a new parameter is one question: **can two scans that
+# differ only in this parameter produce different findings FOR THE SAME FILE?**
+# If yes it belongs in the key. Changing which files are visited is not the
+# same thing and does not.
+CACHE_KEY_SCAN_PARAMS = {
+    "project_path": "identity of the file: the key's `path` component, plus "
+                    "`path_context` for the classifiers derived from the full "
+                    "path (N112)",
+    "respect_ignores": "decides whether a finding is emitted with "
+                       "`suppressed: True`, via _parse_suppression_rules and "
+                       "_scan_agent_autonomy: the `params` component (N163)",
+    "min_tier": "skips whole detector passes, so the entry is partial: the "
+                "`scope` component, `mintier-<level>` (N147)",
+}
+
+CACHE_EXEMPT_SCAN_PARAMS = {
+    "skip_tests": "file selection, not entry content. A skipped test file is "
+                  "`continue`d before any cache read or write, so it neither "
+                  "reads nor writes an entry.",
+    "declared_domains": "applied to cached findings on the READ path, not "
+                        "baked into them: the entry stores the finding ungated "
+                        "and _check_domain_gated re-gates it per scan. "
+                        "test_domain_gated_finding_survives_cache pins this.",
+    "enrich_oversight": "post-processing over the whole finding list after the "
+                        "walk has ended and the cache has been flushed, so it "
+                        "is applied identically to cached and freshly scanned "
+                        "findings and never enters an entry.",
+}
+
+
+def scan_params_token(respect_ignores: bool = True) -> str:
+    """The `params` component of the scan cache key.
+
+    Carries every scan parameter that changes what a per-file entry CONTAINS
+    and is not already carried by another component. `min_tier` is the `scope`
+    component and is deliberately not repeated here; everything else is
+    accounted for in CACHE_KEY_SCAN_PARAMS and CACHE_EXEMPT_SCAN_PARAMS above.
+
+    Any NEW parameter that can change a file's findings must be added here and
+    to CACHE_KEY_SCAN_PARAMS, or the cache will serve one setting's result to
+    the other, which is what LEDGER N163 records.
+    """
+    return f"ri{int(bool(respect_ignores))}"
+
+
 def _is_open_question(finding: dict) -> bool:
     """Determine if a finding should be flagged as an open question.
 
@@ -713,6 +767,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     _cache_read_scopes = ((FULL_SCOPE,) if min_tier_level == 0
                           else (FULL_SCOPE, _cache_scope))
 
+    # Every remaining scan parameter that changes what an entry contains.
+    # Unlike the scope component this has no fallback: a differently
+    # parameterised entry is a different answer, not a superset. LEDGER N163.
+    _cache_params = scan_params_token(respect_ignores=respect_ignores)
+
     def _cache_put(filepath, content: str, file_findings: list) -> None:
         """Write a per-file cache entry under this scan's own scope.
 
@@ -727,7 +786,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             cache.put(str(filepath.relative_to(project)), content,
                       file_findings, context=_cache_ctx,
                       path_context=path_context_token(filepath),
-                      scope=_cache_scope)
+                      scope=_cache_scope, params=_cache_params)
         except Exception:
             pass  # Cache write is best-effort
 
@@ -947,7 +1006,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     cached_raw = cache.get(
                         rel_path, content, context=_cache_ctx,
                         path_context=path_context_token(filepath),
-                        scopes=_cache_read_scopes)
+                        scopes=_cache_read_scopes, params=_cache_params)
                     if cached_raw is not None:
                         cached = cached_raw
                         if min_tier_level > 0:

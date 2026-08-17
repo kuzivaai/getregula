@@ -399,4 +399,176 @@ def test_the_schema_bump_invalidates_every_earlier_entry():
     """Nothing migrates: an entry written under the old key cannot be told apart
     from a sound one after the fact, which is why v4 to v5 did the same."""
     import scan_cache as sc
-    assert sc._CACHE_SCHEMA.startswith("v6:"), sc._CACHE_SCHEMA
+    assert sc._CACHE_SCHEMA.startswith("v7:"), sc._CACHE_SCHEMA
+
+
+# --------------------------------------------------------------------------
+# N163: `respect_ignores` changes what an entry contains and was not in the key
+# --------------------------------------------------------------------------
+
+def _ignore_annotated_project(root: Path) -> Path:
+    """A project whose single file carries a bare `# regula-ignore`.
+
+    The annotation suppresses the ai_security finding that `pickle.load`
+    produces, so the file's findings differ between the two settings of
+    `respect_ignores`. That is the whole point: a fixture on which the flag
+    changes nothing would let the test pass without testing anything.
+    """
+    proj = root / "app"
+    proj.mkdir(parents=True)
+    (proj / "app.py").write_text(
+        "# regula-ignore\n"
+        "import torch\n"
+        "import pickle\n"
+        "\n"
+        "\n"
+        "def load_model(path):\n"
+        "    with open(path, 'rb') as fh:\n"
+        "        return pickle.load(fh)\n"
+        "\n"
+        "\n"
+        "def run(prompt):\n"
+        "    return load_model('model.bin'), torch.tensor([1])\n",
+        encoding="utf-8")
+    return proj
+
+
+def _suppressed_flags(findings) -> list:
+    return sorted(bool(f.get("suppressed")) for f in findings
+                  if f.get("tier") == "ai_security")
+
+
+def test_respect_ignores_is_not_served_across_the_flag(monkeypatch, tmp_path):
+    """N163. `--no-ignore` must not be answered by a default scan's entry.
+
+    `respect_ignores` is threaded into `_parse_suppression_rules` and
+    `_scan_agent_autonomy`, so it decides whether a finding is emitted with
+    `suppressed: True`. It was absent from the cache key, so the two settings
+    shared one entry and whichever scan ran first decided what the other one
+    reported.
+
+    MEASURED 2026-08-17 on an isolated fixture, one variable moving:
+
+        A. cold cache, --no-ignore   suppressed=False   exit 1   <- correct
+        B. cold cache, default       suppressed=True    exit 0   <- correct
+        C. B's cache,  --no-ignore   suppressed=True    exit 0   <- WRONG
+
+    C is a false negative on a command whose entire purpose is to disregard the
+    annotation, and it is silent. Both directions are asserted here because the
+    reverse is a false positive: a user's `# regula-ignore` disregarded and CI
+    turned red with nothing in the output to explain it.
+    """
+    scan_files = _isolated_scan(monkeypatch, tmp_path)
+    root = Path(tempfile.mkdtemp(prefix="n163-fwd-"))
+    try:
+        proj = _ignore_annotated_project(root)
+
+        cold_default = scan_files(str(proj))
+        assert _suppressed_flags(cold_default) == [True], (
+            f"fixture is wrong: a default scan must suppress the annotated "
+            f"finding, got {[(f['tier'], f.get('suppressed')) for f in cold_default]}")
+
+        warm_no_ignore = scan_files(str(proj), respect_ignores=False)
+        assert _suppressed_flags(warm_no_ignore) == [False], (
+            "a --no-ignore scan was served the default scan's cache entry, so "
+            "the finding it exists to surface came back marked suppressed "
+            "(N163). Same command, same files, answer decided by whether a "
+            "default scan happened to run first.")
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_a_default_scan_is_not_served_a_no_ignore_entry(monkeypatch, tmp_path):
+    """N163, the other direction: the user's annotation must still be honoured.
+
+    A cache warmed by `--no-ignore` holds the finding unsuppressed. A later
+    default scan reading that entry reports a finding the file's own
+    `# regula-ignore` says to silence, which is a false positive and a
+    contradiction of a documented feature.
+    """
+    scan_files = _isolated_scan(monkeypatch, tmp_path)
+    root = Path(tempfile.mkdtemp(prefix="n163-rev-"))
+    try:
+        proj = _ignore_annotated_project(root)
+
+        cold_no_ignore = scan_files(str(proj), respect_ignores=False)
+        assert _suppressed_flags(cold_no_ignore) == [False], (
+            f"fixture is wrong: --no-ignore must leave the finding unsuppressed, "
+            f"got {[(f['tier'], f.get('suppressed')) for f in cold_no_ignore]}")
+
+        warm_default = scan_files(str(proj))
+        assert _suppressed_flags(warm_default) == [True], (
+            "a default scan was served a --no-ignore entry, so a finding the "
+            "file's own `# regula-ignore` silences was reported anyway (N163).")
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_cache_key_isolates_by_scan_params():
+    """The unit-level property, with the negative control beside it.
+
+    Without the control this could pass because nothing was ever cached, which
+    is measurement rule 4: an absent signal is not a passing signal.
+    """
+    from scan_cache import ScanCache
+    tmp = Path(tempfile.mkdtemp())
+    try:
+        cache = ScanCache(cache_dir=tmp)
+        entry = [{"tier": "ai_security", "suppressed": True}]
+        cache.put("app.py", "import torch", entry, params="ri1")
+
+        assert cache.get("app.py", "import torch", params="ri1") == entry, \
+            "an entry must still be readable under its own scan params"
+        assert cache.get("app.py", "import torch", params="ri0") is None, (
+            "a --no-ignore scan was served an entry written by a scan that "
+            "honoured the annotations")
+
+        # Control: the lookup that must miss above is the same lookup that hits
+        # when the discriminator is removed.
+        cache.put("app.py", "import torch", entry)
+        assert cache.get("app.py", "import torch") == entry, \
+            "control failed: the collision could not be reproduced, so the " \
+            "assertion above proves nothing"
+        print("  PASS  test_cache_key_isolates_by_scan_params")
+    finally:
+        shutil.rmtree(tmp)
+
+
+def test_every_scan_files_parameter_is_classified_for_the_cache():
+    """The class guard. A new scan parameter must be ruled on, not forgotten.
+
+    `respect_ignores` was not in the key because nobody enumerated the
+    parameters against it; the same omission produced N112 (full-path
+    classifiers) and N147 (scan completeness). The population here comes from
+    `inspect.signature`, so it cannot drift from the function, and a parameter
+    that appears in neither bucket fails this test rather than silently
+    joining an entry it changes.
+    """
+    import inspect
+    import report
+
+    actual = set(inspect.signature(report.scan_files).parameters)
+    classified = set(report.CACHE_KEY_SCAN_PARAMS) | set(report.CACHE_EXEMPT_SCAN_PARAMS)
+
+    assert not (actual - classified), (
+        f"scan_files parameter(s) {sorted(actual - classified)} are classified "
+        f"neither as part of the cache key nor as provably unable to change a "
+        f"per-file entry. Add each to report.CACHE_KEY_SCAN_PARAMS or to "
+        f"report.CACHE_EXEMPT_SCAN_PARAMS with the reason.")
+    assert not (classified - actual), (
+        f"classification names parameter(s) {sorted(classified - actual)} that "
+        f"scan_files no longer takes")
+    assert not (set(report.CACHE_KEY_SCAN_PARAMS)
+                & set(report.CACHE_EXEMPT_SCAN_PARAMS)), \
+        "a parameter cannot be both in the key and exempt from it"
+    assert all(report.CACHE_KEY_SCAN_PARAMS.values()), \
+        "every in-key parameter must record HOW it reaches the key"
+    assert all(report.CACHE_EXEMPT_SCAN_PARAMS.values()), \
+        "every exempt parameter must record WHY it cannot change an entry"
+
+    # The one this guard was written for: the token must actually move.
+    assert (report.scan_params_token(respect_ignores=True)
+            != report.scan_params_token(respect_ignores=False)), \
+        "scan_params_token does not distinguish the two settings of " \
+        "respect_ignores, so the key component is inert"
+    print("  PASS  test_every_scan_files_parameter_is_classified_for_the_cache")

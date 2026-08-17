@@ -5467,3 +5467,122 @@ three interpreters it has never been run on; that it passes under pytest 9.x;
 that CodeQL raises nothing new; and that the Pages deploy succeeds. None of
 those is knowable from this machine and all five are answered by opening a pull
 request, which is an owner action because it is outward-facing.
+
+### N162. A demonstration page published the precision figure on a surface the provenance register did not know
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, by the full-suite verification chain at `10b63d7`,
+which went red on one test naming one file.
+
+**Status:** CLOSED by `cdfaf18`. Recorded here in the following session because
+writing it at the time would have dirtied the tree under a verification run then
+in flight, and a chain that describes a tree which changed underneath it
+describes no commit (N50, N54). **The delay is itself the entry's point:** the
+finding lived only in a commit message and an out-of-repository handover for the
+length of a session, which is exactly the condition this ledger exists to
+prevent.
+
+`docs/DEMO.md`, written in the same session, states `Precision 83.5% on N=115`
+with its single-reviewer basis, as any surface carrying that figure is required
+to. `KNOWN_SURFACES` in `tests/test_precision_provenance.py` did not list it, and
+`test_no_unlisted_surface_publishes_the_figure` is the guard that says an
+unregistered carrier is a defect whether or not its provenance is good:
+
+```
+AssertionError: Lists differ: ['docs/DEMO.md'] != []
+: 83.5% published on unlisted surface(s); add to KNOWN_SURFACES and give each
+  the N and labeller route:
+  docs/DEMO.md
+```
+
+**Registering it is a strengthening, not an exemption**, and that was checked
+rather than asserted. Every entry in `KNOWN_SURFACES` is then held by
+`test_every_published_83_5_carries_provenance_AT_EACH_LOCATION` to carry `N=115`
+and a route to the single-reviewer disclosure in the same section. The control
+was run on the real file and restored byte-exactly: with the N and the labeller
+route removed, the guard turns red naming
+`docs/DEMO.md (section @line 239)`; restored, 14 pass.
+
+**The coverage lesson, third occurrence.** The fast gate set was green when the
+page was written. **A green gate set is a claim about coverage**, and only the
+full suite tests it. N145 recorded the same lesson four commits into the previous
+session, and measurement rule 5 records it in general terms.
+
+### N163. `respect_ignores` decides what a cache entry contains and was not in the key
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17 (fifth session), following the explicit open
+question the previous session left in its handover: it had proved a full scan
+cannot receive a partial entry, and stated that it had **not** proved `min_tier`
+is the only scan parameter that changes what a per-file entry contains, naming
+`respect_ignores` and `skip_tests` as unchecked. **It was right to be uneasy.**
+
+**Status:** CLOSED by the `params` key component, the parameter classification
+and its signature-driven guard.
+
+`respect_ignores` is the flag behind `regula check --no-ignore`. It is threaded
+into `_parse_suppression_rules` (`scripts/report.py`, at the early prohibited
+check and again at the main pass) and into `_scan_agent_autonomy`, so it decides
+whether a finding is emitted with `suppressed: True`, and `suppressed` decides
+the process exit code. It was not in the cache key, so both settings of a
+user-facing flag shared one entry and whichever scan ran first decided what the
+other one reported.
+
+**Measured before the fix**, isolated fixture, `REGULA_CACHE_DIR` per condition,
+one variable moving:
+
+```
+A. cold cache, --no-ignore   ai_security suppressed=False   exit 1   <- correct
+B. cold cache, default       ai_security suppressed=True    exit 0   <- correct
+C. B's cache,  --no-ignore   ai_security suppressed=True    exit 0   <- WRONG
+```
+
+**Both directions are defects and both were reproduced.** C is a silent false
+negative on the one command whose purpose is to disregard the annotation: a
+pipeline auditing past suppressions gets exit 0 and an empty result. The reverse
+order is a false positive: a scan warmed by `--no-ignore` makes a later default
+scan report a finding the file's own `# regula-ignore` silences, turning CI red
+with nothing in the output to explain why.
+
+**After the fix**, same script, same fixture: C returns `suppressed=False` and
+exit 1, identical to A, and the cache file grows from 600 to 1,201 bytes because
+C now writes its own entry instead of reading B's.
+
+**What landed is the class fix, not the one-liner.** Adding the flag to the key
+would have closed this instance. `report.CACHE_KEY_SCAN_PARAMS` and
+`report.CACHE_EXEMPT_SCAN_PARAMS` classify **every** parameter of `scan_files`
+as either in the key or provably unable to change an entry, each with its
+reason, and `test_every_scan_files_parameter_is_classified_for_the_cache` reads
+`inspect.signature(scan_files)` and fails if a parameter appears in neither
+bucket. The three exemptions are stated rather than assumed:
+
+- `skip_tests` is file selection: a skipped test file is `continue`d before any
+  cache read or write, so it neither reads nor writes an entry.
+- `declared_domains` is applied on the READ path, not baked in: the entry stores
+  the finding ungated and `_check_domain_gated` re-gates per scan. Pinned
+  already by `test_domain_gated_finding_survives_cache`.
+- `enrich_oversight` runs over the whole finding list after the walk has ended
+  and the cache has been flushed, so it reaches cached and freshly scanned
+  findings identically and never enters an entry.
+
+**This is the third instance of one class**, and that is the reason for the
+list rather than the patch: N112 (classifiers derived from the full path), N147
+(scan completeness), N163 (scan parameters). All three were found by someone
+happening to look, two of them only after the defect had shipped. A parameter
+added after today cannot be forgotten the same way, because there is now a list
+for it to be missing from and a test that reads the list against the function.
+
+**Costs, stated rather than buried.** Schema v6 to v7, so every existing entry is
+invalidated and the first run after upgrade is cold; and two scans of one tree
+that differ in `--no-ignore` now each pay a cold scan rather than sharing.
+**That is the correct trade and it is the same one N147 made**: a slow right
+answer in place of a fast wrong one. `_cache_put` was not made to write partial
+or cross-parameter results as if they were whole.
+
+**What this does NOT do**, so nobody reads more into it than it earns: it does
+not touch detection, so it moves no published precision or recall figure; and
+`scan_params_token` is proved to distinguish the two settings by a test, not by
+inspection, because an inert key component is exactly the blank gate measurement
+rule 4 warns about.
