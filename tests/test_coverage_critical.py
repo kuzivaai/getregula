@@ -42,7 +42,15 @@ _PK_HEADERS = [
     "-----BEGIN EC PRIVATE KEY" + "-----",
     "-----BEGIN OPENSSH PRIVATE KEY" + "-----",
     "-----BEGIN DSA PRIVATE KEY" + "-----",
+    "-----BEGIN ENCRYPTED PRIVATE KEY" + "-----",
 ]
+# Base64 that looks like key material and is not a key: assembled from character
+# codes so the pre-tool credential hook does not block writing this file, which
+# is what `AGENTS.md` prescribes for synthetic credentials in tests.
+_PK_BODY = "".join(chr(c) for c in (
+    77, 73, 73, 69, 111, 119, 73, 66, 65, 65, 75, 67, 65, 81, 69, 65,
+    118, 88, 107, 51, 70, 113, 55, 98, 78, 113, 50, 99, 57, 100, 80, 113,
+    81, 119, 84, 49, 121, 90, 48, 76, 109, 78, 52, 112, 82, 115, 56, 117))
 _PG_CONN = "postgres://user:pass@db.example.com:5432/mydb"
 _MONGO_CONN = "mongodb://admin:pass@cluster.example.com/mydb"
 _PG_LOCAL = "postgres://localhost:5432/mydb"
@@ -86,14 +94,51 @@ def test_secret_github_token():
     print("✓ Secrets: detects GitHub tokens (ghp_ and ghs_)")
 
 
-def test_secret_private_key():
-    """Detects PEM private key headers"""
+def _private_key_findings(text):
     from credential_check import check_secrets
+    return [f for f in check_secrets(text) if f.pattern_name == "private_key"]
+
+
+def test_secret_private_key_material_in_every_pem_format():
+    """Detects a PEM private key in every header format AND every source shape.
+
+    Renamed from `test_secret_private_key`, which asserted that a bare header
+    with no key material was detected. That property was the defect: measured
+    2026-08-17 on vercel/ai at 86892f3, the single highest-priority finding
+    across 2,408 scanned files was this pattern firing on a constant holding the
+    PEM header text, used to parse a key supplied at runtime, with no key
+    material in the file at all (LEDGER N148). The assertion is not weakened,
+    it is aimed at the property the detector is for: key material, not a marker
+    for it. The negative half is `test_a_pem_header_alone_is_not_key_material`.
+    """
     for header in _PK_HEADERS:
-        findings = check_secrets(header)
-        pk = [f for f in findings if f.pattern_name == "private_key"]
-        assert_true(len(pk) > 0, f"detects {header[:30]}...")
-    print("✓ Secrets: detects all private key formats")
+        for label, text in (
+            ("real newlines", header + "\n" + _PK_BODY + "\n"),
+            ("escaped newline in a string literal",
+             '"' + header + "\\n" + _PK_BODY + '"'),
+            ("concatenated across source lines",
+             "'" + header + "' +\n  '" + _PK_BODY + "'"),
+        ):
+            assert_true(len(_private_key_findings(text)) > 0,
+                        f"detects {header[:26]}... as {label}")
+    print("✓ Secrets: detects key material in every PEM format and source shape")
+
+
+def test_a_pem_header_alone_is_not_key_material():
+    """The other direction, without which the test above passes by firing on
+    everything. Each of these is a marker FOR a key, not a key."""
+    header = _PK_HEADERS[0]
+    for label, text in (
+        ("a parser constant, the vercel/ai shape", "const pemHeader = '" + header + "';"),
+        ("a comment", "// keys begin with " + header),
+        ("a split call", "text.split('" + header + "')[1]"),
+        ("a docstring example, the crewAI shape",
+         '    ...     private_key_pem="' + header + '...",'),
+        ("a header followed by too little to be a body", header + "\nshort"),
+    ):
+        assert_eq(len(_private_key_findings(text)), 0,
+                  f"does not fire on {label}")
+    print("✓ Secrets: a PEM header with no key material is not a finding")
 
 
 def test_secret_generic_api_key():
@@ -160,7 +205,13 @@ def test_has_high_confidence_secret():
     assert_true(has_high_confidence_secret(_SK), "OpenAI key")
     assert_true(has_high_confidence_secret(_ANT), "Anthropic key")
     assert_true(has_high_confidence_secret(_AWS), "AWS key")
-    assert_true(has_high_confidence_secret(_PK_HEADERS[0]), "private key")
+    # Key MATERIAL, not the header alone: a PEM header with nothing after it is
+    # a marker for a key and stopped being a finding on 2026-08-17 (N148). The
+    # scenario is the same and the assertion now names what it asserts.
+    assert_true(has_high_confidence_secret(_PK_HEADERS[0] + "\n" + _PK_BODY),
+                "private key material")
+    assert_false(has_high_confidence_secret(_PK_HEADERS[0]),
+                 "a bare PEM header is not high-confidence key material")
     assert_false(has_high_confidence_secret("print('hello')"), "no secret")
     assert_false(has_high_confidence_secret(""), "empty string")
     assert_false(has_high_confidence_secret(_GENERIC_KEY),
@@ -751,7 +802,8 @@ if __name__ == "__main__":
         test_secret_anthropic_key,
         test_secret_google_api_key,
         test_secret_github_token,
-        test_secret_private_key,
+        test_secret_private_key_material_in_every_pem_format,
+        test_a_pem_header_alone_is_not_key_material,
         test_secret_generic_api_key,
         test_secret_connection_string,
         test_secret_connection_string_localhost_exempt,

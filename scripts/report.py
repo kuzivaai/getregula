@@ -34,7 +34,7 @@ from log_event import collect_audit_trail
 from credential_check import check_secrets
 from remediation import get_remediation
 from agent_monitor import detect_autonomous_actions
-from scan_cache import ScanCache
+from scan_cache import FULL_SCOPE, ScanCache
 
 
 # ---------------------------------------------------------------------------
@@ -694,26 +694,40 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     }
     min_tier_level = _TIER_ORDER.get(min_tier, 0)
 
-    def _cache_put(filepath, content: str, file_findings: list) -> None:
-        """Write a per-file cache entry — full scans only.
+    # How complete an entry this scan may write, and which entries it may read.
+    #
+    # A --min-tier scan skips whole detector passes (credentials, ai_security)
+    # and drops classify findings below the threshold, so its result is a
+    # partial one. Until 2026-08-17 the answer was that a partial scan wrote
+    # nothing, which is sound about completeness and left `regula check`, whose
+    # own `min_tier` default is `limited_risk`, reading a cache it could never
+    # fill (LEDGER N147). The scope component in the cache key lets a partial
+    # scan contribute what it read without any full scan trusting it as
+    # complete.
+    #
+    # Read order matters and is not arbitrary: a `full` entry is a superset and
+    # the read path below filters it by tier, so a partial reader prefers one
+    # and falls back to its own scope. A full scan reads `full` only.
+    _cache_scope = (FULL_SCOPE if min_tier_level == 0
+                    else f"mintier-{min_tier_level}")
+    _cache_read_scopes = ((FULL_SCOPE,) if min_tier_level == 0
+                          else (FULL_SCOPE, _cache_scope))
 
-        A --min-tier scan skips whole detector passes (credentials,
-        ai_security) and drops classify findings below the threshold, so
-        an entry written under min_tier would be silently incomplete for
-        every later full scan of the same content. Partial scans read
-        the cache but never populate it.
+    def _cache_put(filepath, content: str, file_findings: list) -> None:
+        """Write a per-file cache entry under this scan's own scope.
 
         Takes the FULL path, not the relative one. The relative path is what
         the key uses to identify the file, but the cached findings embed
         provenance and the context penalty, both derived from the full path,
         so the key needs both or entries cross that boundary (LEDGER N112).
         """
-        if cache is None or min_tier_level > 0:
+        if cache is None:
             return
         try:
             cache.put(str(filepath.relative_to(project)), content,
                       file_findings, context=_cache_ctx,
-                      path_context=path_context_token(filepath))
+                      path_context=path_context_token(filepath),
+                      scope=_cache_scope)
         except Exception:
             pass  # Cache write is best-effort
 
@@ -932,7 +946,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if cache is not None:
                     cached_raw = cache.get(
                         rel_path, content, context=_cache_ctx,
-                        path_context=path_context_token(filepath))
+                        path_context=path_context_token(filepath),
+                        scopes=_cache_read_scopes)
                     if cached_raw is not None:
                         cached = cached_raw
                         if min_tier_level > 0:

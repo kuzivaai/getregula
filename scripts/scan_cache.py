@@ -51,7 +51,33 @@ def _patterns_fingerprint() -> str:
 # production file whose entry was written by an `examples/` copy was dropped
 # from a production-scope scan entirely. See LEDGER N112. The bump also
 # invalidates every v4 entry, which was written under the unsound key.
-_CACHE_SCHEMA = f"v5:{_REGULA_VERSION}:{_patterns_fingerprint()}"
+# v6: cache keys carry the SCOPE the entry was written under. Until 2026-08-17
+# `_cache_put` refused to write at all on a `--min-tier` scan, which is correct
+# about completeness and had a consequence nobody had measured: `regula check`
+# passes `min_tier='limited_risk'`, so **the documented command read the cache
+# and never filled it**. Measured on open-webui/open-webui at 01f4282, 5,031
+# files: three consecutive `regula check .` runs left the cache at 2 bytes and
+# the third took 40.7s, while one bare `regula` wrote 59,079 bytes and the next
+# `check` took 4.0s. A user who runs the documented command first pays the cold
+# cost on every run, forever (LEDGER N147).
+#
+# The scope component fixes the class rather than special-casing `check`. A
+# partial scan now writes under `mintier-<level>`, so it contributes what it
+# actually read; a full scan writes and reads `full` only, so **no full scan can
+# ever be served an entry a partial scan wrote**. A partial reader still prefers
+# a `full` entry when one exists, because a complete entry is a superset and the
+# read path already filters it by tier, which is why `check` after a full scan
+# stays fast.
+#
+# MIGRATION: nothing is migrated. The bump invalidates every v5 entry, so the
+# first run after upgrade is a cold scan. That is the same treatment v4 to v5
+# received for the same reason: an entry written under an unsound key cannot be
+# distinguished from a sound one after the fact.
+_CACHE_SCHEMA = f"v6:{_REGULA_VERSION}:{_patterns_fingerprint()}"
+
+# The scope of a complete scan. Named rather than spelled inline so a caller
+# cannot invent a second spelling of it.
+FULL_SCOPE = "full"
 
 
 class ScanCache:
@@ -92,7 +118,8 @@ class ScanCache:
         return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
     @staticmethod
-    def _key(path: str, content_hash: str, context: str, path_context: str) -> str:
+    def _key(path: str, content_hash: str, context: str, path_context: str,
+             scope: str = FULL_SCOPE) -> str:
         """Build a cache key.
 
         `path_context` carries every classification input derived from the
@@ -100,18 +127,38 @@ class ScanCache:
         rather than being folded into `context` so that a key can be read back
         and attributed, and so a caller that forgets it produces a visibly
         different key rather than a silently colliding one.
+
+        `scope` records how complete the entry is: `full` for a scan that ran
+        every detector pass, `mintier-<level>` for one that did not. It is a key
+        component rather than a stored field because a reader must be unable to
+        obtain a partial entry by accident, and a field would leave that to the
+        caller remembering to check it.
         """
-        return f"{path}:{_CACHE_SCHEMA}:{context}:{path_context}:{content_hash}"
+        return (f"{path}:{_CACHE_SCHEMA}:{context}:{path_context}:"
+                f"{scope}:{content_hash}")
 
     def get(self, path: str, content: str, context: str = "",
-            path_context: str = "") -> Optional[list]:
-        return self._memory.get(
-            self._key(path, self._hash(content), context, path_context))
+            path_context: str = "", scopes: tuple = (FULL_SCOPE,)) -> Optional[list]:
+        """First hit across `scopes`, in the order given.
+
+        A partial reader passes `(FULL_SCOPE, "mintier-N")` so that a complete
+        entry is preferred and its own narrower entry is the fallback: the read
+        path filters a complete entry down by tier, so a superset is always a
+        safe answer. A full scan passes `(FULL_SCOPE,)` and can therefore never
+        receive an entry some partial scan wrote.
+        """
+        content_hash = self._hash(content)
+        for scope in scopes:
+            hit = self._memory.get(
+                self._key(path, content_hash, context, path_context, scope))
+            if hit is not None:
+                return hit
+        return None
 
     def put(self, path: str, content: str, findings: list, context: str = "",
-            path_context: str = "") -> None:
+            path_context: str = "", scope: str = FULL_SCOPE) -> None:
         self._memory[
-            self._key(path, self._hash(content), context, path_context)
+            self._key(path, self._hash(content), context, path_context, scope)
         ] = findings
 
     def flush(self) -> None:
