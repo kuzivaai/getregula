@@ -269,6 +269,19 @@ gate that is not one of the six fast gates is not thereby a gate that passes.
 > decision 8), so the accessibility job in particular has never run against any
 > of these commits, and N122 recorded that this job "is blind to work that stays
 > local".
+>
+> **CORRECTED 2026-08-17 by N145, and the correction is about the SET rather than
+> about any gate in it.** The sentence above is true of the fourteen gates that
+> session ran. It is not true of CI. Enumerating every check from
+> `.github/workflows/` and running each locally found `update_sitemap.py`
+> followed by `git diff --exit-code site/sitemap.xml`, a step of `ci.yaml`'s
+> claim-audit job, **failing at `ae59cd5` with 37 stale `lastmod` values**. That
+> step is not one of the fast gates, which is exactly what N76(a) recorded about
+> it on PR #44. Repaired in `60f9d82`. **A complete set of green gates is a claim
+> about coverage, and this branch has now produced two counterexamples.** The
+> accessibility job HAS now been run at both audited viewports with a positive
+> control, 96 runs and 0 failures; see `docs/improvement/MERGE-READINESS-2026-08.md`
+> section 3a.
 
 | What | Command | Result |
 |---|---|---|
@@ -4507,3 +4520,478 @@ written down so the next session does not rediscover it.
 
 The standing product, venture, contact, data-collection and pilot verdicts are
 unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N143. The ledger's own enumerator cannot see section 1, so its OPEN count is a count of part of the file
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, deriving the open-item list for a merge decision
+and finding that the instrument's answer omitted every item the previous
+session's own prose carried forward.
+
+**Status:** OPEN. Measured and recorded, not fixed. Extending the State token to
+a 74-row table is a change to the file every session edits, and doing it inside a
+session whose subject is a merge decision would make the two indistinguishable in
+the diff, which is the reasoning N129 used to defer the `sample_compliant` rename.
+
+`scripts/ledger_status.py` reports its population as entries:
+
+```
+$ python3 scripts/ledger_status.py
+ledger-status: 81 entries in LEDGER.md
+  OPEN     15
+  PARTIAL  25
+  CLOSED   41
+```
+
+`ledger_status._HEADING` is `^#{2,3} \*?\*?N(\d+)[.\s—-]`, which matches a prose
+entry heading. **Section 1 of this file is a markdown table of 74 rows and has no
+`**State:**` field at all**, so none of it is in that population. The rows it
+cannot see include F25, F30, N6, N7, N10, N11, N12, N13, N14, N35, N36, N51, N53
+and the "Gate scope repair" row, every one of which the 17 August consolidated
+record carried forward by hand as still open.
+
+Measured over the section by predicate:
+
+```
+section-1 rows                                   : 74
+rows whose Status STARTS 'OPEN'                  : 15
+  of those, the same cell later says 'CLOSED'    : 2 -> ['N28', 'N53']
+RECONCILED: 15 = 2 contradicted + 13 not contradicted
+```
+
+**Neither 15 nor 30 is the answer, and that is the finding.** Reading the first
+word of a Status cell over-counts, because this file never rewrites prose and two
+cells that open OPEN close CLOSED further down. Reading the instrument
+under-counts, because the instrument cannot see the section. **There is no field
+to enumerate**, which is precisely the condition N116 ended for the prose entries
+and never extended to the table.
+
+This is measurement rule 5 inside the instrument N116 built to satisfy
+measurement rule 4c. The instrument is correct about its population and its
+population is not the file.
+
+**What would close it:** a `**State:**` equivalent on each section-1 row, and
+`ledger_status` widened to read it, with a control proving the widened reader
+reaches a row it previously could not. **Falsifier for this entry:** any
+enumeration of section 1 that reproduces from a committed command.
+
+### N144. The published product and this tree disagree about the one thing this project forbids
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, installing `regula-ai` from PyPI into a clean
+virtual environment and running it on a third-party repository, which no session
+in this programme had done.
+
+**Status:** OPEN, and it is an owner decision rather than an engineering one:
+closing it means releasing. Recorded with reproductions.
+
+Cold `pip install regula-ai` into a fresh venv completes in 1.15s with zero
+dependencies and installs 1.9.0. **The command and flag surface is identical to
+this tree**, measured by building the real parser on both sides and reading the
+subparser choices rather than by parsing help text: 62 commands each, empty
+symmetric difference, and 0 of 61 commands differ in the option strings their
+`--help` prints. A prospect comparing `--help` would see no difference at all.
+
+**The behaviour differs, and the difference is the hard rule.** On
+`ageitgey/face_recognition` at commit 9f3061aaeed9a8756d2c970f5dfe066617a8281d of that repository (written without backticks: it names no object here, and this file's guard requires every backticked hash to resolve in THIS repository, per N39c):
+
+```
+$ regula                       # PyPI 1.9.0
+  Compliance score:       2/100
+  Highest risk tier:      high_risk
+
+$ python3 -m scripts.cli       # this tree, same repository
+Decision: insufficient_information
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+```
+
+```
+$ regula check .               # PyPI 1.9.0
+  Verdict: HIGH-RISK
+  Your project shows indicators of high-risk AI under EU AI Act Annex III.
+  ...
+  Confidence scores: 0-100 (higher = more indicators matched)
+```
+
+Located exactly:
+
+```
+installed  scripts/cli.py:178       print(f"  {'Compliance score:':<24}{gap_score}/100")
+installed  scripts/cli_scan.py:525  print(f"\n  {verdict_color('Verdict')}: {verdict_color(verdict_tier)}")
+tree       scripts/verify_transcripts.py:117  a RETIRED_MARKERS entry for that
+                                              exact string, reason "asserted a
+                                              tier the tool does not determine"
+```
+
+**The strings this tree's guard lists as retired, and whose unreachability
+`retired_markers_are_unreachable()` asserts, are reachable in the product on
+PyPI.** The guard is correct about the tree and the tree is not what anyone has.
+
+```
+scripts/decision_kernel.py in installed 1.9.0 : ABSENT
+files containing 'insufficient_information'
+  installed 1.9.0 : 0
+  this tree       : 4
+```
+
+**The entire epistemic kernel is absent from the installable product.** N94 and
+everything downstream of it exists only on this unpushed branch.
+
+**Consequence, stated plainly:** anyone demonstrating from this tree and
+directing a viewer to `pip install regula-ai` would be showing a tool that
+declines to make a determination while the viewer installs one that prints a
+compliance score out of 100, a verdict and a risk tier. The breaking changes a
+release would carry, and the version number they imply, are set out in
+`docs/improvement/MERGE-READINESS-2026-08.md` section 7.
+
+### N145. The sitemap check was red at the tip, and it is N76(a) recurring four commits later
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, enumerating every CI check from the workflow files
+and running each locally with its own captured exit code, which no prior session
+had done for this branch.
+
+**Status:** CLOSED in `60f9d82`. The class remains open and is N76's, not this
+row's.
+
+`ci.yaml`'s claim-audit job runs `python3 scripts/update_sitemap.py && git diff
+--exit-code site/sitemap.xml`. At `ae59cd5` it exits 1:
+
+```
+sitemap: 47 canonical URL(s) reconciled; 37 lastmod value(s) updated from git history
+rc=1
+```
+
+Thirty-seven `lastmod` values read `2026-08-14` for pages whose last commit is 15
+or 17 August. Four commits on this branch changed pages under `site/` and none
+regenerated the sitemap.
+
+**N76(a) recorded exactly this defect on PR #44**, established that a sitemap is
+a generated artefact of a site change in the same way the count cascade is, and
+recorded that `update_sitemap.py` is not one of the fast gates so no local check
+can see it. That entry closed the instance and left the class open with the
+words "whether other CI steps have no local counterpart is NOT enumerated here".
+**The lesson was written down and the defect recurred four commits later.** The
+gate set is still narrower than CI.
+
+Regeneration is idempotent, verified rather than assumed: a second run reports
+`0 lastmod value(s) updated` and leaves the file byte-identical. It was
+regenerated AFTER the commit that changed site pages, not before, so the file
+converges rather than going stale again immediately.
+
+**The general finding, which is the part to keep:** the previous session reported
+fourteen gates rc=0 and a green full chain at this tip, and that was true of
+every gate it ran. The set it ran did not contain this check. **A complete set of
+green gates is a claim about coverage, and this branch has now produced two
+counterexamples to it.** Every CI check is enumerated by predicate in
+`docs/improvement/MERGE-READINESS-2026-08.md` section 2, with the ten that cannot
+be reproduced on this machine named and the reason given for each.
+
+### N146. A scan reported how many files it read and never how many it declined to read
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, walking the buyer's path on third-party
+repositories, which no measurement in this programme had done.
+
+**Status:** CLOSED for the disclosure in `ba96a74`, with seven checks and controls
+both ways. Whether the pruning itself should change is a separate ruling and is
+put to the owner in `docs/improvement/DEFAULTS-RECOMMENDATION-2026-08.md`.
+
+Measured on `ageitgey/face_recognition` at
+commit 9f3061aaeed9a8756d2c970f5dfe066617a8281d of that repository (written without backticks: it names no object here, and this file's guard requires every backticked hash to resolve in THIS repository, per N39c), same command, per directory:
+
+```
+target               py_on_disk   files_scanned   high_risk
+.                        30             6             3
+face_recognition          4             4             2
+examples                 22            23            11
+tests                     2             0             0
+docs                      1             1             1
+docker                    0             0             0
+```
+
+`regula check .` reports 3 high-risk findings; the same tool reports **14** across
+the same tree when pointed at each subdirectory. The difference is
+`constants.SKIP_DIRS`, which contains `examples`, `example`, `demos` and `demo`,
+and 23 of that repository's files live under `examples/`. **Eleven of fourteen
+findings, 79%, were invisible at the default invocation and no line of the output
+said a directory had been skipped.** The only scope line printed refers to a
+provenance deduction on a different file.
+
+For a tool whose clearest competence is Annex III Category 1, the finding it
+suppressed is a face-identification library's own examples.
+
+`SKIP_DIRS` is byte-identical between PyPI 1.9.0 and this tree, so this was
+current behaviour rather than a historical note.
+
+**The pruning is unchanged.** Its rationale is recorded on `SKIP_DIRS` itself and
+cites a benchmarked false-positive reduction. What changed is that the scan can no
+longer print a file count without the excluded population being available to the
+caller that prints it, which is the N138 remedy applied to a second instrument.
+A pruned directory holding no code is deliberately not listed: `.git` is pruned on
+every scan and naming it would imply a loss where there was none.
+
+**Recorded and not fixed:** the figure in that rationale, a 23% false-positive
+inflation benchmarked on five OSS projects, is undated, names no corpus, and
+lives in a code comment where no claim instrument reaches it. It should be
+re-derived before it is treated as decisive.
+
+### N147. `regula check` reads the scan cache and never fills it, so the documented command is slow forever
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, timing the buyer's path on a real application.
+
+**Status:** OPEN. Diagnosed with a one-variable control, not fixed:
+`PRODUCT_BUILD` is STOP and the repair changes caching behaviour for every
+command.
+
+Measured on `open-webui/open-webui` at
+commit 01f4282f1ffe0d6212f58d3afbeae21fffd0c4be of that repository (backticks deliberately omitted, see above), 5,031 files, with the cache file
+emptied between conditions:
+
+```
+after empty:            3 bytes
+after 'regula check .': 2 bytes        3rd consecutive check: 40.7s
+after a bare 'regula':  59,079 bytes   (a full scan; 60.7s)
+check immediately after bare regula:   4.0s
+```
+
+**Three consecutive `regula check .` runs left the cache at two bytes**, and the
+first `check` after one full scan was ten times faster. `cmd_check` passes
+`min_tier='limited_risk'` (`scripts/cli_scan.py:293`) and `_cache_put` refuses to
+write on a partial scan (`scripts/report.py`), which is correct and documented:
+an entry written under `min_tier` would be silently incomplete for every later
+full scan.
+
+**N113 established that mechanism and recorded a different consequence.** It
+explains why `check` never poisons the cache, which is why no amount of running
+`check` alone reproduced the N112 collision. This row records the other half:
+`check` also never *benefits* from the cache it maintains for others. **A user who
+runs the documented `regula check .` first, which is the second line of the
+tool's own Quick start, pays the cold cost on every run, forever**, and only a
+user who happens to run bare `regula` ever sees the fast path.
+
+Timings on this machine varied between 40.7s and 68.5s for nominally identical
+cold runs, so the ratio rather than the absolute figure is the measurement.
+
+**What would close it:** a cache entry that records the tier it was written under,
+so a partial scan can populate entries that a later partial scan of the same tier
+may read. That is a schema change on top of the v4-to-v5 move N113 already made,
+and it is a product change.
+
+### N148. The highest-priority finding on a major vendor's repository is a false positive on a parser constant
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, running the tool on `vercel/ai` at
+commit 86892f3f6b4de52ee7f41d73c9c477b839596468 of that repository (backticks deliberately omitted, see above).
+
+**Status:** OPEN. Recorded, deliberately not fixed. Changing a detection pattern
+moves the published precision and recall figures and requires re-measuring the
+corpus, which is a measurement change rather than a repair.
+
+Across 2,408 scanned files the single highest-priority finding is:
+
+```
+[BLOCK] [ 98] packages/google-vertex/src/edge/google-vertex-auth-edge.ts
+        Private key detected in AI system code. Article 15 requires cybersecurity
+        measures for high-risk systems. Fix: Never include private keys in
+        commands. Use SSH agent or key file path.
+```
+
+Line 59 of that file assigns a constant holding the PEM header text that marks
+the start of a private key block. It is used to parse a key the caller supplies
+at runtime. **There is no key material in the file**, and the remediation offered
+is advice for a different situation.
+
+Two further defects visible in the same finding. The JSON `file` field carries
+only the basename, so on a monorepo with duplicate basenames a finding cannot be
+located from the JSON alone, while the SARIF output for the same scan carries the
+full path. And the accusation is about a named third party's public repository,
+which is the shape most likely to be checked by a reader who knows the code.
+
+**This entry could not be written on the first attempt.** The project's own
+`hooks/pre_tool_use.py` blocked the write, on the same string, which is the
+control working exactly as designed. The string is described rather than quoted,
+as `AGENTS.md` prescribes.
+
+### N149. The tool asks two questions, ships a command that answers them, and discards the answers
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, asking whether the `insufficient_information` result
+reads as valuable or as a failure to someone who has not been told it is a
+feature.
+
+**Status:** OPEN. Demonstrated in both directions, not fixed: the durable repair
+is a fact store that `check` reads, which is a product change under
+`PRODUCT_BUILD` STOP.
+
+Reproduced on a third-party repository, `PYTHONPATH` set so the tree's CLI runs:
+
+```
+=== 1. bare check BEFORE assess ===
+Decision: insufficient_information
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition ...
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+=== 2. assess with answers ===
+  Result: CANDIDATE HIGH-RISK INDICATORS (Annex III)     rc=0
+
+=== 3. bare check AFTER assess ===
+Decision: insufficient_information
+Facts needed to resolve the next decision: 2
+  - is_ai_system: ...
+  - jurisdiction_in_scope: ...
+
+=== 4. anything written? ===
+(nothing under the project; no .regula directory created)
+```
+
+`regula assess --answers yes,yes,no,yes,no` answers exactly the two facts the
+scan says it needs, exits 0, and its own Next steps say `regula check .`. Running
+`check` again returns the identical block.
+
+**The formatter offers no route either.** `decision_adapters.py:170-178` prints
+the fact ids and their questions and nothing else; there is no `--fact` flag on
+`check` and no mention of `assess`. Enumerated across `scripts/cli.py` and
+`scripts/decision_adapters.py`, no `--fact`, `declared_facts`, `facts_file` or
+`sourced_facts` route exists.
+
+**Why this matters more than a missing feature.** The
+`insufficient_information` result is the honest core of the product and the whole
+reason the 26 unpushed commits exist. To a reader who has not been told it is a
+feature, a decision block that names two questions, ships a command that answers
+them, and then asks the same two questions again does not read as rigour. It
+reads as a tool that cannot finish. **That judgement is mine and is untested: no
+comprehension test has ever been run on any surface of this project**, which is
+the observation that would settle it either way.
+
+**The cheapest honest step**, which is not taken here because it is still a
+product change: the block should name what can and cannot supply each fact, so a
+reader is not left to discover by experiment that nothing carries over.
+
+### N150. The two gates the brief named cost nothing on real code, and a third suppressor nobody was measuring costs everything
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, measuring every candidate default rather than
+reasoning about the published recall fractions.
+
+**Status:** OPEN, put to the owner as a decision in
+`docs/improvement/DEFAULTS-RECOMMENDATION-2026-08.md`. No default was changed.
+
+**A premise did not survive.** The 23/30 figure is real and does not mean what it
+is usually quoted to mean. `benchmarks/synthetic/RECALL.json` records its own
+method for that condition: the fixtures were copied and given an injected
+`import torch`, so **the corpus was modified rather than the default changed**,
+and the artefact says in terms that the number is not comparable to a scan of the
+corpus as committed.
+
+**The decomposition, by set difference rather than by subtracting fractions**, and
+with the nesting that subtraction assumes checked rather than assumed:
+
+```
+missed(domains) subset of missed(default)? True
+missed(both)    subset of missed(domains)? True
+
+A. recovered by declaring domains        : 6
+B. recovered only by adding an AI import : 7
+C. never recovered (pattern-side)        : 7
+itemisation: 6 + 7 + 7 = 20 = default misses as published   RECONCILED
+gate behaviour 13, pattern absence 7
+```
+
+So a third of the default misses are patterns the tool does not have, and no
+default change reaches them.
+
+**Every candidate default, measured through the real CLI**, with the gate toggled
+by rebinding `classify_risk.is_ai_related` rather than by editing the corpus, and
+with a control first proving the driver reproduces the shipped CLI byte-identically
+apart from the timestamp:
+
+```
+configuration              high-risk recall  prohibited  FP on 3 negs  findings emitted
+D0  current default               10/30           5/5           0/3            21
+D1  domains declared              16/30           5/5           0/3            27
+D2  AI-indicator gate off         14/30           5/5           0/3            25
+D3  both gates off                23/30           5/5           0/3            34
+```
+
+**D3 reaches 23/30 by changing the tool, where the artefact reached 23/30 by
+changing the corpus.** Two methods, one figure.
+
+**The same four defaults on three real repositories, and this is the finding:**
+
+```
+repository               D0     D1     D2     D3     D3-D0
+face_recognition          2      2      3      3        +1
+open-webui               18     18     20     20        +2
+vercel-ai                30     30     38     38        +8
+
+D1 adds files: []   on all three, by file set as well as by count
+```
+
+**Declaring domains is the single largest recall win on the synthetic corpus, +6
+of 30, and adds exactly nothing on any real repository.** The reason is not
+mysterious: the domain gate opens when a project's imports fingerprint a domain,
+and a real repository that does face recognition imports face-recognition
+libraries. The synthetic fixtures are single files with no dependency surface, so
+only an explicit `--domain` can open the gate for them. **The corpus is
+constructed in exactly the shape that makes the domain gate look expensive.**
+
+**And neither gate is the largest suppressor on real code.** On
+`face_recognition` the two gates are worth +0 and +1, while the directory skip
+recorded at N146 is worth **11**.
+
+**Stated limits.** The synthetic corpus holds three negative fixtures, so the
+`0/3` column cannot bound a false-positive cost and must not be read as "no false
+positives". The three real repositories have no labels, so the cost column counts
+findings and not errors; my classification of the eleven findings D2 adds into
+four clearly real, three arguable and four clearly noise is judgement and is
+labelled as such in the recommendation. **What would overturn the domain-gate
+conclusion** is a real repository in an Annex III domain that imports nothing the
+fingerprint recognises; all three here import their domain's libraries.
+
+### N151. The CI benchmark step reports a recall figure for a condition no user runs
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, reconciling the recall figure the CI step prints
+against the artefact's own conditions.
+
+**Status:** OPEN. Recorded, not changed.
+
+`.github/workflows/benchmark.yml`'s synthetic-recall job runs
+`python3 benchmarks/synthetic/run.py`, and that module calls
+`scan_files(str(FIXTURES), declared_domains=_all_domains)`. That is the
+**classifier path with all eight domains declared**, which
+`benchmarks/synthetic/RECALL.json` labels and annotates:
+
+```
+conditions/classifier/domains-declared/note = NOT what a user runs. Bypasses the
+  CLI's scope and min-tier filtering. Its disagreement with the scanner path on
+  this corpus is finding F8.
+```
+
+The step prints `high_risk tp=16 fp=0 fn=14 recall=53%` with no condition beside
+it, while the default a user gets is 10/30, 33%. **A reader of that CI log gets a
+figure 20 percentage points above the shipped default and nothing tells them
+which condition produced it.**
+
+This is measurement rule 5 in the benchmark gate itself: the gate measures
+something narrower, and in this case more flattering, than the claim its output
+reads as. The artefact does the right thing, carrying a `_publication_rule` that
+every published recall fraction must state its path and gate condition. **The CI
+step does not honour it.**
+
+**What would close it:** print the condition next to the fraction, or run the
+scanner-default condition as well, so the log cannot be read as the default.
+
