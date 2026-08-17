@@ -5581,6 +5581,45 @@ that differ in `--no-ignore` now each pay a cold scan rather than sharing.
 answer in place of a fast wrong one. `_cache_put` was not made to write partial
 or cross-parameter results as if they were whole.
 
+**The composite bump is v4 to v7, and no sentence anywhere said so.** This entry's
+first draft said "v5 to v7" and that was wrong in the same way the document it
+was correcting was. Measured, not added up: `git show main:scripts/scan_cache.py`
+reads `_CACHE_SCHEMA = f"v4:..."`, the artefact installed from
+`regula-ai==1.9.0` reads `v4`, and the branch tip reads `v7`. **v5 and v6 have
+only ever existed on this unpushed branch**, so a user upgrading from the
+published product crosses all three bumps at once. Each increment N113, N147 and
+N163 recorded was correct about itself, and the number a user experiences is the
+composite.
+
+**The published product is exposed to all three defects in this class**, and that
+is established by READING it rather than by running it. In
+`regula-ai==1.9.0` the key is built inline as
+`f"{path}:{_CACHE_SCHEMA}:{context}:{self._hash(content)}"` at
+`scan_cache.py:69` and `:73`, and both call sites pass only `context=_cache_ctx`
+(`report.py:642`, `:830`). No path-context component (N112), no scope component
+(N147), no scan-parameter component (N163). `respect_ignores` reaches the same
+two suppression call sites there as here (`report.py:862`, `:875`). Its
+`_cache_put` returns early on any partial scan, so `regula check` alone cannot
+poison anything there; the reachable path in 1.9.0 is a full scan writing and a
+differently `--no-ignore`'d scan reading, both computing the identical key.
+
+**A runtime comparison against 1.9.0 was attempted and is WITHDRAWN**, recorded
+because it is the more useful half. It ran, produced output, and the output means
+nothing. 1.9.0 resolves its cache as `Path.home() / ".regula" / "cache"` with no
+environment override, because `REGULA_CACHE_DIR` reached the scan cache only in
+this branch as part of N112. All three conditions therefore shared the operator's
+ambient cache rather than the isolated directory each was handed, they were not
+independent, and **the test condition and its own cold-cache control returned the
+same exit code**. A comparison whose control does not discriminate is a blank
+gate (measurement rule 4), so the reading was discarded rather than reported. Two
+consequences: a behavioural claim about 1.9.0's cache is not measurable on this
+machine without moving `HOME` wholesale, which is why the finding above is a
+source reading; and those runs wrote into `~/.regula/cache/scan_cache.json`, the
+operator's real cache. Those entries are keyed on a scratch fixture path that
+will never be scanned again and are inert, and the file was left in place rather
+than deleted, because deleting it would discard the operator's legitimate entries
+to tidy up after mine.
+
 **What this does NOT do**, so nobody reads more into it than it earns: it does
 not touch detection, so it moves no published precision or recall figure; and
 `scan_params_token` is proved to distinguish the two settings by a test, not by

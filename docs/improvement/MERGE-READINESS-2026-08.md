@@ -1006,10 +1006,17 @@ and both are asserted by tests. Ledger **N163**.
 
 ### 14.2 What the fix changes for a release
 
-- **The scan-cache schema moves v5 to v7**, not v5 to v6. Nothing migrates, for
-  the reason every earlier bump gives: an entry written under an unsound key
-  cannot be told from a sound one afterwards. The user-visible consequence is
-  unchanged in kind, a cold first scan after upgrade.
+- **The scan-cache schema moves v4 to v7 for anyone upgrading from the published
+  product**, and that composite is worth stating because no single sentence in
+  this file said it. Section 7b records `v4 to v5` (N113) at `1272f97`; section
+  13.7 records `v5 to v6` (N147); this session adds `v6 to v7`. Each increment is
+  correct about itself. **The number a user experiences is the composite**, and it
+  is measured rather than added up: `git show main:scripts/scan_cache.py` and the
+  installed `regula-ai==1.9.0` both read `_CACHE_SCHEMA = f"v4:..."`, and the
+  branch tip reads `v7`. v5 and v6 are states that have only ever existed on this
+  unpushed branch. Nothing migrates at any step, for the reason every bump gives:
+  an entry written under an unsound key cannot be told from a sound one
+  afterwards. The user-visible consequence is one cold scan after upgrade.
 - **A second cost, new and worth stating**: two scans of the same tree that
   differ in `--no-ignore` now each pay a cold scan, because they no longer share
   entries. That is the correct trade: it buys a slow right answer in place of a
@@ -1031,3 +1038,101 @@ derived from the full path), N147 (scan completeness), N163 (scan parameters).
 Each was found by someone happening to look. **A parameter added after today
 cannot be forgotten the way this one was**, because there is now a list for it
 to be missing from and a test that reads the list against the function.
+
+### 14.4 The published product is exposed to all three, established by reading it
+
+**Demonstrated, statically.** `regula-ai==1.9.0` installed from PyPI builds its
+cache key inline in two places and it carries no discriminator beyond the scan
+context:
+
+```
+site-packages/scripts/scan_cache.py:69   key = f"{path}:{_CACHE_SCHEMA}:{context}:{self._hash(content)}"
+site-packages/scripts/scan_cache.py:73   key = f"{path}:{_CACHE_SCHEMA}:{context}:{self._hash(content)}"
+site-packages/scripts/report.py:642      cache.put(rel_path, content, file_findings, context=_cache_ctx)
+site-packages/scripts/report.py:830      cached_raw = cache.get(rel_path, content, context=_cache_ctx)
+```
+
+No path-context component (N112), no scope component (N147), no scan-parameter
+component (N163), and `respect_ignores` is threaded into the same two suppression
+call sites there as here (`report.py:862`, `report.py:875`). **The published
+product is exposed to all three defects by construction.**
+
+Its `_cache_put` returns early on any partial scan
+(`if cache is None or min_tier_level > 0: return`), which is the N147 slowness
+and which also means `regula check` alone cannot poison anything there. The
+reachable path in 1.9.0 is a **full** scan writing an entry and a differently
+`--no-ignore`'d scan reading it, since both compute the identical key.
+
+### 14.5 What this addendum does NOT establish, and why
+
+**The runtime comparison against 1.9.0 was attempted and is withdrawn.** It ran
+and produced output, and the output means nothing, which is worse than not
+running it.
+
+`regula-ai==1.9.0` resolves its scan cache as `Path.home() / ".regula" / "cache"`
+with no environment override; `REGULA_CACHE_DIR` reached the scan cache only in
+this branch, as part of the N112 work. So all three conditions of the experiment
+shared the operator's **ambient** cache instead of the isolated directory each
+was given, they were not independent runs, and the test condition and its own
+cold-cache control returned the same exit code. **A comparison whose control does
+not discriminate is a blank gate** (measurement rule 4), and the conclusion drawn
+from it is withdrawn rather than reported.
+
+Two consequences recorded rather than tidied away. **A behavioural claim about
+1.9.0's cache cannot be measured on this machine at all** without moving `HOME`
+wholesale, which is why 14.4 reads the source instead. And **those runs wrote
+into `~/.regula/cache/scan_cache.json`**, the operator's real cache. The entries
+are keyed on a scratch fixture path that will never be scanned again and are
+therefore inert, and the file was left in place rather than deleted, because
+deleting it would discard the operator's legitimate cached entries to tidy up
+after mine.
+
+### 14.6 The wheel was rebuilt, because section 13's parity no longer described this tree
+
+Section 13.1 and 13.2 measured a wheel built at `3ede86b`. **This session changed
+packaged source** (`scripts/scan_cache.py`, `scripts/report.py`), so that result
+stopped describing the tree the moment the fix landed. Re-run at `23195b5`:
+
+```
+$ python3 -m build --outdir <dist>
+rc=0    Successfully built regula_ai-1.9.0.tar.gz and regula_ai-1.9.0-py3-none-any.whl
+
+$ <fresh venv>/bin/pip install --no-index --no-cache-dir <dist>/regula_ai-1.9.0-py3-none-any.whl
+rc=0    Successfully installed regula-ai-1.9.0
+
+$ <venv>/bin/regula --version    rc=0   regula 1.9.0
+$ <venv>/bin/regula self-test    rc=0
+$ <venv>/bin/regula doctor       rc=0
+```
+
+`--no-index` is load-bearing: the package came from the file. Every run used a
+working directory outside this repository.
+
+```
+$ python3 scripts/verify_installed_artefact.py --package-root <venv-site-packages> --cli <venv>/bin/regula
+  MANIFEST     182 file(s) named in RECORD: OK
+  MODULES      99 module(s) in the import closure: OK
+  PACKAGING    7 required data file(s) against pyproject: OK
+  DATA         7 required data file(s) in this install: OK
+  CLAIMS       180 installed file(s) scanned: OK
+  PROVENANCE   1 console script: OK
+  TRANSCRIPTS  4 command(s) run: OK
+  TOTAL       0 finding(s) across 7 check(s); RECONCILED: itemised 0 == counted 0
+rc=0
+```
+
+**And the repair itself was verified in the artefact, not only in the tree**,
+which is the whole point of N144. The same three conditions, run against the
+installed wheel from a working directory outside this repository:
+
+```
+installed artefact: regula 1.9.0
+  A_cold_noignore        exit=1  [('ai_security', False)]
+  B_cold_default         exit=0  [('ai_security', True)]
+  C_warm_noignore        exit=1  [('ai_security', False)]
+```
+
+A and C are identical, which is the property. **A guard that can only read the
+working tree cannot answer for the product anyone holds**, and this is the first
+session in which a behavioural repair was confirmed in the built package on the
+same day it was written.
