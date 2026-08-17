@@ -4743,7 +4743,9 @@ re-derived before it is treated as decisive.
 
 ### N147. `regula check` reads the scan cache and never fills it, so the documented command is slow forever
 
-**State:** OPEN
+**State:** CLOSED
+
+**Resolved by:** N156
 
 **First raised:** 2026-08-17, timing the buyer's path on a real application.
 
@@ -4787,7 +4789,9 @@ and it is a product change.
 
 ### N148. The highest-priority finding on a major vendor's repository is a false positive on a parser constant
 
-**State:** OPEN
+**State:** CLOSED
+
+**Resolved by:** N157
 
 **First raised:** 2026-08-17, running the tool on `vercel/ai` at
 commit 86892f3f6b4de52ee7f41d73c9c477b839596468 of that repository (backticks deliberately omitted, see above).
@@ -4823,7 +4827,9 @@ as `AGENTS.md` prescribes.
 
 ### N149. The tool asks two questions, ships a command that answers them, and discards the answers
 
-**State:** OPEN
+**State:** CLOSED
+
+**Resolved by:** N155
 
 **First raised:** 2026-08-17, asking whether the `insufficient_information` result
 reads as valuable or as a failure to someone who has not been told it is a
@@ -5135,3 +5141,329 @@ historical mention inside a living document", which N109 recorded as a standing
 gap and N123 built `not_a_count_claim` for while deliberately leaving it holding
 zero records. A fifth occurrence is likely and the disposition is still owed.
 
+
+### N154. Every claim guard here could only ever answer for the tree, and a wheel built from it was missing a file a command serves
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, building a distribution from this tree and
+installing it, which no session in this programme had done.
+
+**Status:** CLOSED for the mechanism and for the packaging defect it found, in
+`dd4b272`. The release decision it informs is the owner's and is N144's.
+
+**The guard defect, which is the larger half.** `determination_guard.py`
+enumerates by `git ls-files`; `verify_transcripts.retired_markers_are_unreachable`
+ran `python3 -m scripts.cli` from the repository root and nothing else. Both are
+correct about the tree, and the tree is not what anyone installs. That is N144:
+the strings this tree lists as retired are reachable in the product on PyPI, and
+no instrument here could say so.
+
+Repaired at the mechanism rather than at the instance. `determination_guard`
+gains `--root`, scanning an installed package by its own `*.dist-info/RECORD`.
+A walk was tried first and **rejected on measurement**: over a real
+site-packages it returned a finding inside pip's vendored `distlib`, which is
+not this project's artefact. `verify_transcripts.run_command` and
+`retired_markers_are_unreachable` take the CLI prefix and working directory as
+parameters, defaulting to this tree. `scripts/verify_installed_artefact.py`
+orchestrates seven checks over an install: RECORD manifest, module import
+closure computed from the TREE (computing it from the artefact would shrink the
+closure to fit the defect), packaging-config coverage, required data files, the
+determination guard, console-script provenance, and the retired-marker proof
+against the installed CLI from a working directory that is not this repository.
+
+**Controls, both ways, and the positive one is decisive.** Against the wheel
+built from this tree before the packaging fix: 1 finding. After: 0 across 7
+checks. Against `regula-ai==1.9.0` installed from PyPI: **23 findings**, being 3
+absent kernel modules (`decision_kernel`, `decision_adapters`, `tree_guard`), 3
+absent data files, 8 compliance-state assertions in shipped source, and 9
+retired markers emitted by the live CLI. N144 measured by an instrument instead
+of by hand.
+
+**The packaging defect.** `regula api-server` registers as "Start the REST API
+server with web dashboard" and `_handle_dashboard` serves
+`scripts/dashboard/index.html`. No `package-data` pattern named it. Measured on
+both sides in the same minute: the tree answered `/v1/dashboard` with 52,443
+bytes of HTML and the installed wheel with 302 bytes of JSON advising the user
+to place a file inside site-packages. Same class as the 1.7.6 `regula dpv`
+break. Fixed; the rebuilt wheel serves bytes identical to the tree's.
+
+**Parity at the session tip, three layers, each by predicate.** Command and flag
+surface by building the real parser on both sides and reading the subparser
+choices: 62 commands each, empty symmetric difference, 0 of 62 differing in
+option strings or nested subparser choices. Module presence: 150 of 150
+`scripts/*.py`. Behaviour: 7 commands on `ageitgey/face_recognition` at
+commit 9f3061aaeed9a8756d2c970f5dfe066617a8281d of that repository, 0
+differences. **The same harness against PyPI 1.9.0 returns 7 of 7 differing**,
+naming `Verdict: HIGH-RISK` against `Decision: insufficient_information`, a JSON
+`data` list against a dict, and a badge labelled `EU AI Act` against one
+labelled `regula`, so the comparison discriminates.
+
+**Residual, stated rather than left implicit.** `references/corpora/*.txt.gz`,
+`references/corpora/SOURCES.json` and an `aicdi` PDF are in the tree and not in
+the wheel. They are read only by `scripts/verify_quotations.py`, a maintainer
+gate rather than a user command, so their absence is not a user-visible defect
+and they are deliberately outside `REQUIRED_PACKAGED_DATA`.
+
+### N155. The tool asked two questions, shipped a command that answered them, and discarded the answers
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17 as N149.
+
+**Status:** CLOSED in `784e24c`. This entry closes N149.
+
+`check` reported `insufficient_information` and named `is_ai_system` and
+`jurisdiction_in_scope`; `assess` answered exactly those and wrote nothing; a
+second `check` returned the identical block. No `--fact`, `declared_facts`,
+`facts_file` or `sourced_facts` route existed anywhere.
+
+`scripts/fact_store.py` is a project-local store at
+`<project>/.regula/facts.json`. Project-local rather than `~/.regula` because a
+fact is about the system assessed and not about the machine, and a
+home-directory store would carry one project's legal declaration into another's
+assessment silently, which is the shape of N112/N113. The value shape is the
+kernel's own `FactValue` contract, validated by `FactValue.from_dict` in both
+directions, rather than a second contract (N81). **Nothing migrates**: the file
+did not exist before, so no disk carries a prior shape. An unknown
+`schema_version` or an unknown fact id is refused; a `model_version` difference
+is reported on every run naming both versions and the declarations are still
+applied.
+
+Routes: `check --fact id=state` repeatable, `--facts-file`, `--no-facts`,
+`--list-facts`, and `assess --save-facts [PROJECT]`. Flags rather than commands,
+so the published command count stays 62 and no three-language cascade of an
+ungated quantity is needed (N131/N141).
+
+Regula establishes no fact. Every value records source type, command, the whole
+question asked, and a UTC timestamp, and `check` prints all of it beside the
+decision. Three of assess's six answers map and three do not, and the command
+says which and why: `prohibited` is one yes/no over seven distinct Article 5
+facts and `transparency_trigger` one over three.
+
+Demonstrated end to end: bare check naming two facts, through the questionnaire,
+to `indication: high_risk_candidate` on five declared facts. `unknown` is
+preserved and never read as `no`. No tier, score, readiness percentage or effort
+estimate is produced, asserted by string absence in the payload.
+
+**Two defects found by running the controls rather than by reading.** A
+malformed or unknown declaration reported "Internal error ... This is a bug in
+Regula"; `FactStoreError` is now a `UsageError` and exits 2, which is the N119
+class. And `--fact` pointed users at `--list-facts`, which did not exist; it
+does now and prints the vocabulary from the model.
+
+**Recorded and NOT fixed, because it is a product-design question rather than a
+defect:** with the two bare facts resolved the unresolved list goes from 2 to
+47, which reads worse to a reader even though it is progress. The formatter now
+prints the kernel's own leverage figure per fact, which the kernel always
+computed and never showed. Whether that is enough is untested on any reader, and
+no comprehension test has ever been run on any surface of this project.
+
+### N156. `regula check` read the scan cache and never filled it
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17 as N147.
+
+**Status:** CLOSED in `d1b7e2f`. This entry closes N147.
+
+`cmd_check` passes `min_tier='limited_risk'` and `_cache_put` refused to write
+on any partial scan, so the documented command paid the cold cost forever.
+Fixed at the class rather than by special-casing `check`: the cache key gains a
+SCOPE component, a partial scan writes under `mintier-<level>` and contributes
+what it read, and a full scan writes and reads `full` only so it can never be
+served a partial entry. A partial reader prefers a `full` entry, which is a
+superset the read path already filters by tier.
+
+Schema v5 to v6. **Nothing migrates**: every v5 entry is invalidated and the
+first run after upgrade is cold, the same treatment v4 to v5 received.
+
+Measured on `open-webui/open-webui` at
+commit 01f4282f1ffe0d6212f58d3afbeae21fffd0c4be of that repository, 5,031 files,
+a fresh cache directory per condition, one variable:
+
+```
+BEFORE (HEAD 784e24c)              AFTER
+check 1: 45.1s  cache 2 B          check 1: 48.2s  cache 69,263 B
+check 2: 48.8s  cache 2 B          check 2:  6.1s  cache 69,263 B
+check 3: 50.5s  cache 2 B          check 3:  4.8s  cache 69,263 B
+bare:    54.9s  cache 65,961 B     bare:    51.0s  cache 136,949 B
+check:    6.3s                     check:    7.8s
+```
+
+**Stated cost:** with both scopes on record the cache file roughly doubles.
+
+### N157. The top finding on a vendor repository was a marker for a key, and the corpus label that would have caught it is itself wrong
+
+**State:** OPEN
+
+**First raised:** 2026-08-17 as N148.
+
+**Status:** the PATTERN is fixed in `d1b7e2f`. **The mislabelled corpus item is
+OPEN and is the owner's**, because relabelling is a measurement change and a
+single reviewer overturning a rater's label is the weakness N51 records.
+
+The private-key pattern matched a PEM header with no key material. It now
+requires base64 material after the header, bridged across real newlines, an
+escaped `\n` in a string literal, and concatenation across source lines.
+`ENCRYPTED ` is added, a real PEM variant the old pattern could not match at
+all, so this narrows one direction and widens another.
+
+**Swept over 13,175 files in four corpora with both patterns:** synthetic
+fixtures 0 to 0, `face_recognition` 0 to 0, `open-webui` 0 to 0, `vercel-ai` 1
+to 0. The one loss is the documented false positive and nothing is gained.
+`build_recall_artefact.py --check` reports RECALL.json matches a fresh run.
+
+**Effect on published precision, exactly.** The tracked labelled corpus holds
+three `private_key` items: two `fp` and one `tp`. Removing all three moves
+overall precision 164/446 = 0.36771 to 163/443 = 0.36795, unchanged at published
+resolution; the `credential_exposure` tier row would move 2/7 = 0.286 to 1/4 =
+0.250. Nothing is relabelled, so the committed artefact is unchanged.
+
+**The 83.5% figure on N=115 cannot be re-measured at all**, because its corpus
+is gitignored and no longer reconstructible. That is N51 costing a real decision
+rather than sitting in a register.
+
+**The labelled true positive does not survive inspection.** It is crewAI's
+`lib/crewai/src/crewai/a2a/utils/agent_card_signing.py:106`. Its blob is
+byte-identical at the only commit that ever touched it, at an April-era pin and
+at today's head, so this is the content that was labelled. By AST: the header
+occurs once, inside the docstring of `sign_agent_card`, on a doctest line with an
+ellipsis placeholder; the file contains zero base64 runs of 32 or more
+characters and no END marker. **On the evidence of the file, that label is
+wrong.** What would close this row: an owner ruling on whether to relabel, and
+if so a re-scored artefact.
+
+**A sub-claim of N148 that does NOT reproduce, corrected here rather than
+carried.** N148 records that "the JSON output carries only the basename, so on a
+monorepo the finding cannot be located from the JSON, while the SARIF output for
+the same scan carries full paths." Measured on a nested tree: both the JSON
+`file` field and the SARIF `artifactLocation.uri` read the SAME field, which is
+the path relative to the SCAN ROOT, and both print `regulations/brazil.py`.
+`generate_sarif` uses `f["file"]`. The claim is refuted in both halves. It is
+true only that on a FLAT scan root a relative path and a basename coincide.
+
+**Observed while checking it, recorded and not acted on:** the JSON includes
+findings marked `suppressed` and SARIF drops them, so the two outputs report
+different totals for the same scan for that reason rather than for any path
+reason.
+
+### N158. The pack a prospect keeps counted observations without saying what the scan read
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17, establishing whether this tree's evidence pack has
+the ordering defect recorded against the published 1.9.0 pack.
+
+**Status:** CLOSED in `e814931`.
+
+**The ordering defect does NOT reproduce in this tree**, established by
+generating both packs from the same repository at the same pin in the same
+minute. PyPI 1.9.0 opens with "Risk Classification / Highest risk tier found:
+HIGH-RISK", then "Overall compliance score: 42%", an eight-row article
+percentage table and "Estimated effort: ~116-193 hours", with its disclaimer as
+the last two lines of fifty-seven. This tree opens with the reliance gate and
+carries no determination-shaped table at all. No ordering change was made.
+
+**What was missing is the same class one instrument later.** The pack reported
+observation counts with no statement of the population they were drawn from. On
+that repository the default scan reads 8 files while 23 code files under
+`examples/` are pruned. N146 fixed this in `check`; the pack is the artefact
+most likely to be read by somebody who never saw the tool run. `00-summary.md`
+now carries a Scan coverage section before any count, and covers three further
+states: nothing excluded, an unreadable file reported as a PARTIAL scan, and a
+pack built with no statistics printing "**Not recorded.**" rather than implying
+full coverage.
+
+**A defect in the first draft, found by running:** it joined `pruned_dirs` as
+strings and the entries are dicts, which aborted pack generation.
+
+### N159. A demonstration path, measured on the built artefact rather than on the tree
+
+**State:** CLOSED
+
+**First raised:** 2026-08-17 as the conditional Phase 2 of that session's brief.
+
+**Status:** CLOSED in `3ede86b`. `docs/DEMO.md`.
+
+Every command executed in order from a clean HOME and a fresh cache against
+`ageitgey/face_recognition` at
+commit 9f3061aaeed9a8756d2c970f5dfe066617a8281d of that repository, using a
+wheel built from this tree and installed from the file. Timings measured, not
+estimated. It includes the moment `insufficient_information` is resolved by
+supplying facts, names the gap in its own questionnaire, shows the scan stating
+what it declined to read, and states the accuracy position in full including the
+0/40 commercial result and the unreconstructible precision corpus.
+
+`tests/test_demo_doc.py` binds every `regula` invocation on the page to the real
+argparse registry, built by capturing the constructed parser rather than by
+parsing help text. **What no guard covers is printed on the page**: the timings
+and the third-party output depend on a clone this repository does not contain.
+
+### N160. The merge-readiness document's workflow tally is the pre-correction figure
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, re-deriving the CI enumeration at this tip with the
+predicate the previous session committed to scratch, rather than quoting its
+result (measurement rule 3).
+
+**Status:** OPEN as a record defect in `docs/improvement/MERGE-READINESS-2026-08.md`;
+corrected in the dated addendum appended to that file rather than by rewriting
+its section 2, per this file's rule that prose is the historical record.
+
+`docs/improvement/MERGE-READINESS-2026-08.md` section 2 prints
+`workflows total 13 = fires-on-PR 6 + does-not 7` in a block whose surrounding
+paragraph states that the predicate's empty-`pull_request:` defect had been
+corrected and that "the figures above are the corrected run". Re-run at this tip
+with that same corrected predicate over unchanged workflow files, the answer is
+**7 + 6**: `accessibility.yml`, `benchmark.yml`, `ci.yaml`, `codeql.yml`,
+`regula-scan.yaml`, `site-integrity.yml` and `test-action.yml` fire on a pull
+request whose base is `main`, and six do not.
+
+Every other figure in that block is the corrected one and reconciles: 13
+workflow files, 134 steps, 90 PR steps of which 40 `run` and 50 `uses`, and the
+section's own prose counts ten `test-action.yml` jobs among the 40. A PR subset
+that excluded `test-action.yml` could not have produced 90 or 40. So the
+workflow-level line is a pre-correction figure pasted beside post-correction
+step figures.
+
+**Nothing downstream changes.** The ten unreproducible checks, the merge
+decision and the release verdict all rest on the step-level figures.
+
+### N161. The evidence a merge would be trusting rather than knowing, re-derived at this tip
+
+**State:** OPEN
+
+**First raised:** 2026-08-17, re-deriving rather than quoting.
+
+**Status:** OPEN. This is a statement of what cannot be run here, not a defect
+with a fix.
+
+Of the 40 `run` steps that fire on a pull request to `main`, **ten cannot be
+reproduced on this machine**, and they are the ten `test-action.yml` verify
+steps: `test-no-findings`, `test-high-risk-warn`, `test-high-risk-fail`,
+`test-sarif-output`, `test-outputs`, `test-pinning-threshold`, `test-warn-tier`,
+`test-defaults`, `test-fail-closed-bad-path` and `test-manifest-present`. Each
+runs `uses: ./` and asserts on `${{ steps.regula.outputs.* }}`, which are
+GitHub Actions runtime expressions with no local equivalent. That workflow is
+what a GitHub Marketplace user runs.
+
+Four further classes cannot be run and are not among those ten:
+
+- `ci.yaml::test` on Python 3.10, 3.11 and 3.13. Verified by command at this
+  tip: only `python3.12` is present; 3.10, 3.11, 3.13 and 3.14 are absent.
+  **Three quarters of the matrix is unreproducible.**
+- The pytest version CI installs. CI pins `~=9.0`; system `python3 -m pytest` is
+  **8.4.2** and the repository `.venv` holds 9.1.1. Every suite result recorded
+  by this branch ran on 8.4.2, which is the project's own documented command.
+- `codeql.yml::analyze` and `regula-scan.yaml`, which need GitHub's analysis and
+  code-scanning services.
+- `ci.yaml::deploy`, gated on a push to `refs/heads/main`.
+
+**What a merge would therefore be trusting rather than knowing:** that the
+composite action still works for a Marketplace user; that the suite passes on
+three interpreters it has never been run on; that it passes under pytest 9.x;
+that CodeQL raises nothing new; and that the Pages deploy succeeds. None of
+those is knowable from this machine and all five are answered by opening a pull
+request, which is an owner action because it is outward-facing.

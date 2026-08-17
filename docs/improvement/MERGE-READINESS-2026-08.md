@@ -807,3 +807,164 @@ be run here.
 **And I would not present the merge as making the product ready.** It makes the
 product honest. Readiness is section 8 item 6, and that remains untested over zero
 human-labelled repositories.
+
+---
+
+## 13. Addendum, 2026-08-17: the build, the parity, and the release verdict
+
+**Appended rather than folded into the sections above**, because those are the
+measurement at `1272f97` and this is a different tree. Measured at `3ede86b`.
+
+### 13.1 A wheel was built from this tree and installed, which had never been done
+
+The clean install recorded in section 6 is of **1.9.0 from PyPI**. Section 7d
+named this as an unmet precondition. It is now met.
+
+```
+$ python3 -m build --outdir <dist>
+rc=0        regula_ai-1.9.0-py3-none-any.whl, regula_ai-1.9.0.tar.gz
+
+$ <fresh venv>/bin/pip install --no-index --no-cache-dir <dist>/regula_ai-1.9.0-py3-none-any.whl
+rc=0        Successfully installed regula-ai-1.9.0
+
+$ <venv>/bin/regula --version        rc=0   regula 1.9.0
+$ <venv>/bin/regula self-test        rc=0   6/6 passed
+$ <venv>/bin/regula doctor           rc=0
+$ <venv>/bin/regula demo             rc=0
+$ <venv>/bin/regula dpv --help       rc=0
+```
+
+`--no-index` is load-bearing: the package came from the file and not from PyPI.
+The console script's interpreter is the venv's, checked structurally rather than
+assumed, and every measured run used a working directory outside this repository
+so no route existed by which the tree could answer for the artefact.
+
+### 13.2 Parity, in three layers, each by predicate
+
+**Layer 1, command and flag surface**, by constructing the real argparse parser
+on both sides and reading the subparser choices, not by parsing help text:
+
+```
+tree      : 62 commands   installed : 62 commands
+only in tree : []         only in installed : []
+FLAG SURFACE : 0 of 62 common commands differ in option strings
+NESTED SUBS  : 0 of 62 common commands differ in nested subparser choices
+root options : tree 8, installed 8, identical True
+```
+
+**Layer 2, module presence**: the decision kernel, the CLI entry point and the
+transitive closure of everything they import, computed from the TREE and checked
+against the artefact, because computing it from the artefact would shrink the
+closure to fit the defect. 99 of 99 present; all 150 `scripts/*.py` present;
+every required runtime data file present.
+
+**Layer 3, behaviour**, same commands, same pinned repository, both sides, cold
+cache and isolated HOME per invocation:
+
+```
+target: ageitgey/face_recognition at 9f3061aaeed9a8756d2c970f5dfe066617a8281d
+         (a commit in THAT repository)
+commands compared : 7      DIFFERENCES : 0
+```
+
+**Total differences across all three layers: 0, reconciled against itemisation.**
+
+**The comparison discriminates**, which is the control that stops this being a
+blank gate. The same layer-3 harness pointed at `regula-ai==1.9.0` from PyPI
+returns **7 of 7 commands differing**, naming `Verdict: HIGH-RISK` against
+`Decision: insufficient_information`, a JSON `data` list against a dict, and a
+badge labelled `EU AI Act` against one labelled `regula`.
+
+### 13.3 One packaging defect was found by construction, and fixed
+
+`regula api-server` registers as "Start the REST API server with web dashboard"
+and serves `scripts/dashboard/index.html` at `/v1/dashboard`. No package-data
+pattern named it. The tree answered that endpoint with 52,443 bytes of HTML and
+the installed wheel with 302 bytes of JSON advising the user to place a file
+inside site-packages. Same class as the 1.7.6 `regula dpv` break. Fixed in
+`dd4b272`; the rebuilt wheel now serves bytes identical to the tree's. See
+ledger N154.
+
+### 13.4 The guards can now be run against an installed artefact
+
+`scripts/verify_installed_artefact.py`, ledger N154. Against the wheel built
+from this tree: **0 findings across 7 checks**. Against `regula-ai==1.9.0` from
+PyPI: **23 findings**, being 3 absent kernel modules, 3 absent data files, 8
+compliance-state assertions in shipped source, and 9 retired markers emitted by
+the live CLI. That is N144 produced by an instrument rather than by hand, and it
+is the only mechanism here that could have caught it before a user did.
+
+### 13.5 Correction to section 2's workflow tally
+
+Section 2 prints `workflows total 13 = fires-on-PR 6 + does-not 7`. Re-derived
+at this tip with the same corrected predicate over unchanged workflow files, the
+answer is **7 + 6**. Every other figure in that block is the corrected one and
+reconciles. Recorded as ledger N160; nothing downstream changes, because the
+merge decision rests on the step-level figures.
+
+### 13.6 The ten checks a merge would be trusting rather than knowing
+
+The ten are the `test-action.yml` verify steps, one per job:
+`test-no-findings`, `test-high-risk-warn`, `test-high-risk-fail`,
+`test-sarif-output`, `test-outputs`, `test-pinning-threshold`, `test-warn-tier`,
+`test-defaults`, `test-fail-closed-bad-path`, `test-manifest-present`. Each runs
+`uses: ./` and asserts on `${{ steps.regula.outputs.* }}`, GitHub Actions
+runtime expressions with no local equivalent. That workflow is what a Marketplace
+user runs.
+
+Four further classes, not among those ten and equally unrunnable: three quarters
+of the Python matrix (only 3.12 exists here, verified by command); the pytest
+version CI installs (CI pins `~=9.0`, the suite ran on 8.4.2); CodeQL and the
+Regula scan upload, which need GitHub services; and `ci.yaml::deploy`. Ledger
+N161 states what each means for a merge.
+
+### 13.7 Release verdict
+
+**2.0.0, and I agree with the previous session's reasoning.** The two pieces of
+evidence the question turns on:
+
+- **The `ai-codegen` payload key was renamed with no alias** (N129). A consumer
+  reading that key gets a `KeyError`, not a changed value, and no deprecation
+  period was offered.
+- **The default output shape changed.** `check --format json`'s `data` moves
+  from a list to a dict, and the finding tier field is renamed `tier` to
+  `detector_class`. Any consumer indexing `data[0]` breaks. This is now measured
+  rather than inherited: the layer-3 harness reports the difference by name,
+  `tree='  "data": {'` against `installed='  "data": ['`.
+
+Either alone requires a major bump under the deprecation policy
+`docs/VERSIONING.md` declares. `regula plan --done` moving from exit 0 to exit 2
+(N119) is a third.
+
+**Two things this session adds to that reasoning.**
+
+First, **the fact-store flags are additive and change nothing about the version
+question**: `--fact`, `--facts-file`, `--no-facts`, `--list-facts` and
+`--save-facts` are new flags on existing commands, the command count is
+unchanged at 62, and no existing invocation behaves differently.
+
+Second, **the scan-cache schema moves v5 to v6** and invalidates every existing
+entry, so the first run after upgrade is cold. That is not a breaking change to
+a declared contract, it is a performance characteristic, and it is stated
+because a user who upgrades and sees a slow first scan should be able to find
+out why.
+
+**The counter-argument, restated because it is real and has not gone away.**
+1.9.0 was itself a corrective realignment three weeks ago, and a second
+discontinuity reads as churn. That is a presentation cost, not a correctness
+argument, and this project's own precedent is to take the correct number.
+
+**Preconditions now met that were not:** a wheel exists, it installs from the
+file into a clean environment, and its parity with the tree is measured in three
+layers.
+
+**Preconditions still not met:** `main` is unprotected, and no commit on this
+branch has been through CI. Both are owner actions.
+
+### 13.8 What is still true from section 8
+
+Everything in section 8 except item 5. Packaging is now covered. CI itself, three
+of four Python versions, the pytest version CI installs, the composite action,
+real-world accuracy over zero human-labelled repositories, and any human reader,
+all remain uncovered. **"Passes every check this machine can run" is still a
+much smaller claim than "ready to merge", and the gap is still section 8.**
