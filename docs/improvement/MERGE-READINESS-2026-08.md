@@ -1136,3 +1136,90 @@ A and C are identical, which is the property. **A guard that can only read the
 working tree cannot answer for the product anyone holds**, and this is the first
 session in which a behavioural repair was confirmed in the built package on the
 same day it was written.
+
+---
+
+## 15. Addendum, 2026-08-17 (fifth session): the remote, read instead of repeated
+
+**This section corrects claims sections 1, 2c, 8 and 11 have carried since this
+branch opened.** They were re-stated by three consecutive sessions, including
+mine, and none of us checked the remote. Ledger **N164**.
+
+### 15.1 A pull request is already open
+
+```
+$ gh pr list --state open --json number,title,headRefName,baseRefName,headRefOid
+{"baseRefName":"main","headRefName":"feat/engagement-fixes",
+ "headRefOid":"238d1f1b648aeb57e426da4abeee0b9f2178c940","number":55, ...}
+```
+
+Section 11 item 2 says "Open a pull request. The only way CI can ever run on
+these commits". **PR #55 is open, base `main`, head this branch.** The action is a
+**push**, not opening a pull request.
+
+### 15.2 Two of the forty commits have been through CI, and it passed
+
+```
+$ git reflog show --date=iso refs/remotes/origin/feat/engagement-fixes
+238d1f1 ...@{2026-08-14 09:25:49 +0100}: update by push
+
+$ git rev-list --count main..238d1f1     -> 2
+$ git rev-list --count 238d1f1..HEAD     -> 38
+```
+
+```
+$ gh pr checks 55
+test (3.10) pass 9m42s   test (3.11) pass 6m59s
+test (3.12) pass 9m46s   test (3.13) pass 10m22s
+Compliant code passes pass          High-risk warns (pass) pass
+High-risk fails when configured pass  SARIF file generated pass
+Outputs populated pass              Dependency pinning threshold pass
+Warn-tier fixture pass              Default inputs pass
+Fail closed on failed scan pass     Completion manifest present pass
+CodeQL pass   regula-scan pass   axe WCAG 2.2 automated checks pass
+site-integrity pass   Analyze (python) pass   Lint (ruff) pass
+deploy skipping
+```
+
+**All four Python versions and all ten composite-action jobs have run and
+passed.** Section 2c and N161 call both unreproducible; that is true of **this
+machine** and not of this branch's history.
+
+**The honest form:** both have passed on a two-commit state, and neither has been
+exercised on the 38 commits carrying the decision kernel, the claim closures, the
+fact loop and the cache repairs. **The gap is 38 commits wide, not 40**, and
+everything that makes this branch worth merging is inside it.
+
+### 15.3 A push is already a publication, and no gate here could see that
+
+`netlify.toml` sets `publish = "site"`. No workflow file mentions Netlify, so it
+is a GitHub App integration rather than a workflow step, and **the enumeration in
+section 2 walks `.github/workflows/*.y*ml` and is therefore structurally
+incapable of reporting it.** Its "13 workflow files, 134 steps" is complete about
+workflows and silent about this.
+
+```
+netlify/getregula/deploy-preview   pass   https://deploy-preview-55--getregula.netlify.app
+```
+
+Section 4 says "A merge to `main` IS a publication." True and insufficient.
+**A push to this branch is also a publication**, to a different and already-live
+address, and it happens before any merge decision is taken. Whoever authorises
+the push is authorising that, and it should be said before it is done rather than
+discovered after.
+
+**This is measurement rule 5 in its exact form:** a correct answer to "which
+workflow steps fire", reported in a section headed as the CI picture, with a
+check that is not a workflow outside the predicate's population and nothing
+saying so.
+
+### 15.4 What this changes for the owner
+
+- **Owner action 1 becomes "push", not "open a pull request".** Cheaper, and it
+  carries the publication consequence in 15.3.
+- **The evidence position improves and the gap sharpens.** Four Python versions
+  and the composite action are demonstrated on this branch's history rather than
+  assumed. They are demonstrated on the wrong two commits.
+- **Nothing else moves.** `main` is still unprotected, the 2.0.0 verdict stands,
+  and every standing verdict is unchanged. **No push was made and none is
+  recommended here.**
