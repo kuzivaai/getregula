@@ -18,7 +18,7 @@ def _run(*args, timeout=120):
 # --- badge ---
 
 def test_badge_endpoint_format():
-    result = _run("badge", "tests/fixtures/sample_compliant/", "--format", "endpoint")
+    result = _run("badge", "tests/fixtures/sample_no_findings/", "--format", "endpoint")
     assert result.returncode == 0
     data = json.loads(result.stdout)
     assert data["schemaVersion"] == 1
@@ -32,7 +32,7 @@ def test_badge_endpoint_format():
 
 
 def test_badge_svg_format():
-    result = _run("badge", "tests/fixtures/sample_compliant/", "--format", "svg")
+    result = _run("badge", "tests/fixtures/sample_no_findings/", "--format", "svg")
     assert result.returncode == 0
     assert "<svg" in result.stdout
     assert "regula" in result.stdout
@@ -46,7 +46,7 @@ def test_badge_markdown_carries_its_own_caveat_and_no_determination():
     that produced it, so the qualification is the link target. This asserts both
     halves: the claim is gone, and the caveat travels.
     """
-    result = _run("badge", "tests/fixtures/sample_compliant/", "--format", "markdown")
+    result = _run("badge", "tests/fixtures/sample_no_findings/", "--format", "markdown")
     assert result.returncode == 0
     out = result.stdout
     assert "compliant" not in out.lower()
@@ -93,7 +93,7 @@ def test_badge_high_risk_reports_an_indicator_count():
 # --- attest ---
 
 def test_attest_intoto_format():
-    result = _run("attest", "tests/fixtures/sample_compliant/")
+    result = _run("attest", "tests/fixtures/sample_no_findings/")
     assert result.returncode == 0
     data = json.loads(result.stdout)
     assert data["_type"] == "https://in-toto.io/Statement/v1"
@@ -104,7 +104,7 @@ def test_attest_intoto_format():
 
 
 def test_attest_with_signing():
-    result = _run("attest", "tests/fixtures/sample_compliant/", "--sign-key", "test-key-123")
+    result = _run("attest", "tests/fixtures/sample_no_findings/", "--sign-key", "test-key-123")
     assert result.returncode == 0
     data = json.loads(result.stdout)
     assert "signatures" in data
@@ -113,7 +113,7 @@ def test_attest_with_signing():
 
 def test_attest_output_file(tmp_path):
     out = str(tmp_path / "attestation.json")
-    result = _run("attest", "tests/fixtures/sample_compliant/", "--output", out)
+    result = _run("attest", "tests/fixtures/sample_no_findings/", "--output", out)
     assert result.returncode == 0
     with open(out) as f:
         data = json.load(f)
@@ -156,7 +156,7 @@ def test_env_regula_format():
     env = os.environ.copy()
     env["REGULA_FORMAT"] = "json"
     result = subprocess.run(
-        [sys.executable, "-m", "scripts.cli", "check", "tests/fixtures/sample_compliant/"],
+        [sys.executable, "-m", "scripts.cli", "check", "tests/fixtures/sample_no_findings/"],
         capture_output=True, text=True, timeout=30, env=env,
         cwd=os.path.join(os.path.dirname(__file__), ".."),
     )

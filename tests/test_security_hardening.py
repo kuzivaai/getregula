@@ -301,7 +301,7 @@ def test_path_validation_resolves_symlinks():
     from cli import _validate_path
 
     # Valid path should work and return resolved Path
-    result = _validate_path("tests/fixtures/sample_compliant")
+    result = _validate_path("tests/fixtures/sample_no_findings")
     assert_true(result.is_absolute(), "returned path is absolute")
     assert_true(result.exists(), "returned path exists")
     print("✓ Path: _validate_path returns resolved absolute path")
