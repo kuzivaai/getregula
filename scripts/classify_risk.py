@@ -17,6 +17,22 @@ __all__ = [
     "check_high_risk", "check_limited_risk", "check_ai_security",
     "check_bias_risk", "generate_observations", "is_training_activity",
     "strip_comments", "RiskTier", "Classification",
+    # Re-exports. These are imported FROM this module by other code and are
+    # part of its surface whether or not it calls them itself. They were absent
+    # here and unused locally, which reads to any linter as dead imports;
+    # removing them breaks eight call sites. Declaring them is the fix, not a
+    # suppression.
+    #
+    # Before removing any name from this list, grep hooks/ EXPLICITLY.
+    # hooks/ is gitignored (.gitignore:51), so gitignore-aware tooling reports
+    # zero hits for a live consumer and the name looks dead. `ISO_42001_MAP`
+    # was declared here for that reason: deleting it broke the hook's scripts
+    # import, and the hook FAILS OPEN, so `regula` allowed a prohibited command
+    # with only a stderr warning. It has since been removed, because the hook
+    # imported it and never called it, so it was a dependency edge with no
+    # consumer rather than a re-export. `risk_patterns` remains its only home.
+    # Untracked is not unused; unused is still unused. See LEDGER N114.
+    "get_governance_contacts", "get_regulatory_basis", "_parse_yaml_fallback",
 ]
 
 import argparse
@@ -34,7 +50,7 @@ from risk_types import RiskTier, Classification
 from risk_patterns import (
     PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS,
     AI_SECURITY_PATTERNS, AI_INDICATORS, GPAI_TRAINING_PATTERNS,
-    ISO_42001_MAP, GOVERNANCE_OBSERVATIONS, BIAS_RISK_PATTERNS,
+    GOVERNANCE_OBSERVATIONS, BIAS_RISK_PATTERNS,
 )
 
 # Policy configuration

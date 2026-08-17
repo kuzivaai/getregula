@@ -425,5 +425,146 @@ class TestPublishedCountManifest(unittest.TestCase):
             f"A reader following that instruction sees a different number.")
 
 
+class TestOccurrenceExclusions(unittest.TestCase):
+    """The disposition N109 and N111 recorded as owed.
+
+    Four collisions in two weeks were each answered by widening a lookaround
+    in `count_pattern`. Those widenings are correct and stay, but they are
+    global, they can only express lexical facts, and the reason ends up in a
+    docstring detached from the occurrence it explains.
+
+    `not_a_count_claim` records a single occurrence in a live file as not a
+    claim, keyed on its surrounding context. Every branch is driven through
+    the REAL `classify_count_occurrences` on synthetic files, because the
+    registry is deliberately empty today: all four known collisions are still
+    handled lexically, so nothing was migrated to give the list something to
+    hold. Without these fixtures the mechanism would be an unexercised branch,
+    which is the state N109's own metrics artefacts were in.
+
+    Both rules that make this a disposition and not a bypass are controlled:
+    declaring a file does not exempt the file, and a record that matches
+    nothing fails.
+    """
+
+    COUNT = 2000 + 468
+
+    def _policy(self, *exclusions):
+        return {"schema_version": 1, "records": [],
+                "occurrence_exclusions": list(exclusions)}
+
+    def _exclusion(self, path, context, **over):
+        rec = {"path": path, "record_class": "not_a_count_claim",
+               "context_regex": context,
+               "rationale": "Synthetic non-claim token.",
+               "finding": "N111"}
+        rec.update(over)
+        return rec
+
+    def test_a_declared_non_claim_occurrence_is_not_a_violation(self):
+        # A timeout constant, chosen because it is the case the LEXICAL
+        # exclusions cannot reach: the digits are delimited by non-word
+        # characters on both sides, exactly as a published claim would be, so
+        # no lookaround can tell the two apart. This is why the disposition
+        # had to be contextual rather than a fifth regex.
+        body = f"DEFAULT_TIMEOUT_MS = {self.COUNT}\n"
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": body}, set(), set(),
+            self._policy(self._exclusion("net.py", r"DEFAULT_TIMEOUT_MS\s*=")))
+        self.assertEqual(violations, [])
+
+    def test_the_same_occurrence_undeclared_is_a_violation(self):
+        """Control. The fixture above must not pass for an unrelated reason."""
+        body = f"DEFAULT_TIMEOUT_MS = {self.COUNT}\n"
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": body}, set(), set(), self._policy())
+        self.assertEqual(violations, ["net.py"])
+
+    def test_declaring_a_file_does_not_exempt_the_rest_of_it(self):
+        """The objection N70 raised against broad path exclusions.
+
+        One declared hex colour and one genuine published claim in the same
+        file. A per-FILE exemption would swallow the claim; a per-OCCURRENCE
+        one must still report the file.
+        """
+        body = (f"DEFAULT_TIMEOUT_MS = {self.COUNT}\n"
+                f"# The suite currently runs {self.COUNT:,} tests.\n")
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": body}, set(), set(),
+            self._policy(self._exclusion("net.py", r"DEFAULT_TIMEOUT_MS\s*=")))
+        self.assertEqual(violations, ["net.py"])
+
+    def test_a_record_that_matches_nothing_is_reported_stale(self):
+        """An exclusion cannot outlive its premise.
+
+        The token was renamed, or the canonical count moved and no longer
+        collides. Either way the record now narrows the guard for nothing, and
+        silence here is how a registry grows past the problem it describes.
+        """
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": "DEFAULT_TIMEOUT_MS = 9999\n"}, set(), set(),
+            self._policy(self._exclusion("net.py", r"DEFAULT_TIMEOUT_MS\s*=")))
+        self.assertEqual(len(violations), 1, violations)
+        self.assertIn("stale exclusion", violations[0])
+
+    def test_a_context_that_matches_everything_is_refused(self):
+        """A broad exclusion wearing a narrow record's clothes.
+
+        `validate_record_policy` refuses `excluded_by_design` by name. A
+        context_regex matching the empty string vouches for every occurrence
+        in the file, which is the same thing spelled differently.
+        """
+        with self.assertRaises(ValueError) as ctx:
+            classify_count_occurrences(
+                self.COUNT, {"net.py": f"T = {self.COUNT}\n"}, set(), set(),
+                self._policy(self._exclusion("net.py", r"x*")))
+        self.assertIn("empty string", str(ctx.exception))
+
+    def test_an_exclusion_must_name_a_finding(self):
+        with self.assertRaises(ValueError) as ctx:
+            classify_count_occurrences(
+                self.COUNT, {"net.py": f"T = {self.COUNT}\n"}, set(), set(),
+                self._policy(self._exclusion("net.py", r"T\s*=", finding="")))
+        self.assertIn("finding is required", str(ctx.exception))
+
+    def test_a_current_surface_cannot_declare_the_count_not_a_claim(self):
+        """A page that publishes the count cannot also disown it."""
+        with self.assertRaises(ValueError) as ctx:
+            classify_count_occurrences(
+                self.COUNT, {"site/index.html": f"{self.COUNT:,} tests\n"},
+                {"site/index.html"}, set(),
+                self._policy(self._exclusion("site/index.html", r"\d+ tests")))
+        self.assertIn("cannot also", str(ctx.exception))
+
+    def test_context_is_scoped_to_the_hits_own_line(self):
+        """Otherwise a token elsewhere in the file vouches for a real claim.
+
+        The first implementation used a character window either side of the
+        hit, and this fixture is why it was replaced: in a short file every
+        line falls inside every other line's window, so the declared constant
+        below silently covered the published claim two lines down.
+
+        Both problems are reported here, deliberately: the claim is a
+        violation, and the exclusion is stale because it covered nothing.
+        Collapsing them would hide whichever was fixed second.
+        """
+        near = (f"DEFAULT_TIMEOUT_MS = 9999\n"
+                f"# The suite currently runs {self.COUNT:,} tests.\n")
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": near}, set(), set(),
+            self._policy(self._exclusion("net.py", r"DEFAULT_TIMEOUT_MS\s*=")))
+        self.assertEqual(len(violations), 2, violations)
+        self.assertIn("net.py", violations)
+        self.assertTrue(any("stale exclusion" in v for v in violations),
+                        violations)
+
+    def test_the_shipped_registry_validates(self):
+        """The real data, not a fixture, through the real validator."""
+        policy = json.loads(RECORD_CLASSES.read_text(encoding="utf-8"))
+        self.assertIn("occurrence_exclusions", policy,
+                      "the registry lost its exclusion list")
+        for rec in policy["occurrence_exclusions"]:
+            self.assertEqual(rec.get("record_class"), "not_a_count_claim")
+
+
 if __name__ == "__main__":
     unittest.main()

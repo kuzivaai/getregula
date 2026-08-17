@@ -4,7 +4,7 @@
 import copy
 import random
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 import pytest

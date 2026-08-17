@@ -107,6 +107,17 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     outline-offset: 3px;
     border-radius: var(--r-sm);
 }
+/* Scrollable regions made keyboard-reachable with tabindex="0" (every <pre>,
+   and the wrappers around wide tables) are focus stops, so they need a
+   visible indicator or they satisfy 2.1.1 Keyboard while failing 2.4.7 Focus
+   Visible. Added 2026-08-15 with the tabindex sweep, which created 74 focus
+   stops that nothing here covered. Offset is negative so the outline sits
+   inside the block rather than colliding with the text beside it. */
+[tabindex]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+    border-radius: var(--r-sm);
+}
 
 /* ===== ACCESSIBILITY ===== */
 .skip-link {

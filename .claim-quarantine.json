@@ -1,5 +1,5 @@
 {
-  "_status": "UNVERIFIED BACKLOG \u2014 QUARANTINED \u2014 NOT ENDORSED",
+  "_status": "UNVERIFIED BACKLOG — QUARANTINED — NOT ENDORSED",
   "_what_this_is": "Claims that existed BEFORE the claim auditor could detect bare percentages. They are NOT approved, NOT verified, and NOT endorsed. Quarantine exists so the gate can go green for NEW claims immediately while this backlog is burned down.",
   "_keying": "Entries key on file + normalised claim text, never line numbers. Line-keyed entries rot on every page edit and would have broken the moment the coordinate fix landed.",
   "_ratchet": "This list may only shrink. tests/test_claim_quarantine.py fails if the count rises above the ceiling. Burn-down records a per-item disposition (verified-with-source / corrected / removed) in `burned_down` below, and the ceiling falls by one for every record there, derived rather than typed, so burning an entry down cannot silently leave headroom for a new one to take its place.",
@@ -9,20 +9,8 @@
     "3. the remainder"
   ],
   "_created": "2026-07-28",
-  "_count": 19,
+  "_count": 10,
   "entries": [
-    {
-      "file": "site/assess/de.html",
-      "claim": "0%"
-    },
-    {
-      "file": "site/assess/index.html",
-      "claim": "0%"
-    },
-    {
-      "file": "site/assess/pt-br.html",
-      "claim": "0%"
-    },
     {
       "file": "site/blog/blog-scanning-10-ai-apps.html",
       "claim": "27.8%"
@@ -62,42 +50,6 @@
     {
       "file": "site/blog/blog-scanning-5-frameworks.html",
       "claim": "72%"
-    },
-    {
-      "file": "site/index.html",
-      "claim": "0%",
-      "silent_because": "blanked-by-strip-noise",
-      "also_blocked_by": []
-    },
-    {
-      "file": "site/index.html",
-      "claim": "50%",
-      "silent_because": "blanked-by-strip-noise",
-      "also_blocked_by": []
-    },
-    {
-      "file": "site/locales/de.html",
-      "claim": "0%",
-      "silent_because": "blanked-by-strip-noise",
-      "also_blocked_by": []
-    },
-    {
-      "file": "site/locales/de.html",
-      "claim": "50%",
-      "silent_because": "blanked-by-strip-noise",
-      "also_blocked_by": []
-    },
-    {
-      "file": "site/locales/pt-br.html",
-      "claim": "0%",
-      "silent_because": "blanked-by-strip-noise",
-      "also_blocked_by": []
-    },
-    {
-      "file": "site/locales/pt-br.html",
-      "claim": "50%",
-      "silent_because": "blanked-by-strip-noise",
-      "also_blocked_by": []
     }
   ],
   "burned_down": [
@@ -300,6 +252,78 @@
       "silent_because": "text-absent",
       "measured_at": "4de7541",
       "note": "Same `(confidence: 43%)` transcript wording as the recruitment guide. The page now shows the current output, whose detector priority is 63 and lands in WARN."
+    },
+    {
+      "file": "site/index.html",
+      "claim": "0%",
+      "disposition": "removed",
+      "silent_because": "blanked-by-strip-noise",
+      "measured_at": "ea64ffe",
+      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at ea64ffe with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+    },
+    {
+      "file": "site/index.html",
+      "claim": "50%",
+      "disposition": "removed",
+      "silent_because": "blanked-by-strip-noise",
+      "measured_at": "ea64ffe",
+      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at ea64ffe with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "0%",
+      "disposition": "removed",
+      "silent_because": "blanked-by-strip-noise",
+      "measured_at": "ea64ffe",
+      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at ea64ffe with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+    },
+    {
+      "file": "site/locales/de.html",
+      "claim": "50%",
+      "disposition": "removed",
+      "silent_because": "blanked-by-strip-noise",
+      "measured_at": "ea64ffe",
+      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at ea64ffe with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "0%",
+      "disposition": "removed",
+      "silent_because": "blanked-by-strip-noise",
+      "measured_at": "ea64ffe",
+      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at ea64ffe with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+    },
+    {
+      "file": "site/locales/pt-br.html",
+      "claim": "50%",
+      "disposition": "removed",
+      "silent_because": "blanked-by-strip-noise",
+      "measured_at": "ea64ffe",
+      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at ea64ffe with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+    },
+    {
+      "file": "site/assess/de.html",
+      "claim": "0%",
+      "disposition": "corrected",
+      "silent_because": "blanked-by-strip-noise",
+      "measured_at": "ea64ffe+working-tree (instrument changed; see note)",
+      "note": "The initial value of a progress readout, <span id=\"progressPct\">0%</span>, inside a role=\"progressbar\" wrapper and an aria-live=\"polite\" label. It is replaced by script at runtime, so the file's copy is a placeholder, not a published claim. This entry was LIVE at ea64ffe and went silent because the INSTRUMENT was corrected in the same change, not because the page changed: claim_auditor._blank_live_regions now blanks the content of ARIA live regions and progressbars. Measured after that change: --delivery-surfaces fell from 442 claims / 17 unsourced to 439 / 14, a difference of exactly these three placeholders."
+    },
+    {
+      "file": "site/assess/index.html",
+      "claim": "0%",
+      "disposition": "corrected",
+      "silent_because": "blanked-by-strip-noise",
+      "measured_at": "ea64ffe+working-tree (instrument changed; see note)",
+      "note": "The initial value of a progress readout, <span id=\"progressPct\">0%</span>, inside a role=\"progressbar\" wrapper and an aria-live=\"polite\" label. It is replaced by script at runtime, so the file's copy is a placeholder, not a published claim. This entry was LIVE at ea64ffe and went silent because the INSTRUMENT was corrected in the same change, not because the page changed: claim_auditor._blank_live_regions now blanks the content of ARIA live regions and progressbars. Measured after that change: --delivery-surfaces fell from 442 claims / 17 unsourced to 439 / 14, a difference of exactly these three placeholders."
+    },
+    {
+      "file": "site/assess/pt-br.html",
+      "claim": "0%",
+      "disposition": "corrected",
+      "silent_because": "blanked-by-strip-noise",
+      "measured_at": "ea64ffe+working-tree (instrument changed; see note)",
+      "note": "The initial value of a progress readout, <span id=\"progressPct\">0%</span>, inside a role=\"progressbar\" wrapper and an aria-live=\"polite\" label. It is replaced by script at runtime, so the file's copy is a placeholder, not a published claim. This entry was LIVE at ea64ffe and went silent because the INSTRUMENT was corrected in the same change, not because the page changed: claim_auditor._blank_live_regions now blanks the content of ARIA live regions and progressbars. Measured after that change: --delivery-surfaces fell from 442 claims / 17 unsourced to 439 / 14, a difference of exactly these three placeholders."
     }
   ],
   "_burn_down": "PROTOCOL FOR BASE ENTRIES. To burn one down, remove it from `entries` and add a record here carrying `file`, `claim`, `disposition`, `silent_because` and `measured_at`. The ceiling in tests/test_claim_quarantine.py is QUARANTINE_BASE_CEILING minus the length of this list plus the live sensitivity admissions, so it falls automatically and nothing has to be edited by hand. tests/test_claim_quarantine.py re-measures every record here and fails if a burned-down claim turns out still to be on its page. ADMISSIONS BURN DOWN ELSEWHERE: an entry admitted under _sensitivity_admissions carries its own `burned_down` object inside its tranche and must NOT be listed here, because it already lowers the ceiling through the live-admission count and listing it twice would lower the ceiling twice. `measured_at` is the commit the silence was measured at; the instrument, scripts/claim_auditor.py, was unmodified at that commit. It is provenance, not the guarantee: the guarantee is that the test re-measures on every run. PRIORITY ORDER, AND WHY IT WAS NOT FOLLOWED. _priority_order puts the 83.5% precision claim first and 'the remainder' third, and the fifteen entries burned down on 2026-07-30 are in the third group. The owner directed this burn-down explicitly on the ground that an entry naming text which is not on the page suppresses nothing, so there is no per-item judgement to make and the priority order does not bear on it. Recorded here rather than left to be inferred, because LEDGER.md N23 had declined the same burn-down one session earlier for exactly that reason.",

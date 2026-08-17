@@ -598,6 +598,31 @@ class TestQuarantineRatchet(unittest.TestCase):
                     f"{rec['file']} still contains {rec['claim']!r}, but the "
                     f"burn-down record says the text is absent. The ceiling "
                     f"was lowered on a premise that no longer holds.")
+            elif rec["silent_because"] == ql.BLANKED:
+                # Added 2026-08-15 with the nine strip-noise burn-downs. Only
+                # TEXT_ABSENT was being re-measured, so a BLANKED record was
+                # field-checked and then trusted forever. If a strip_noise rule
+                # were later narrowed the claim would go live again while its
+                # ceiling reduction stayed, which is exactly the "lowered on a
+                # premise that no longer holds" failure the branch above exists
+                # to prevent. Both halves are asserted: the text IS on the page,
+                # and strip_noise DOES remove it. Asserting only the second
+                # would pass for a claim that had simply been deleted, which is
+                # a different disposition with a different record.
+                path = REPO / rec["file"]
+                raw = path.read_text(encoding="utf-8", errors="replace")
+                self.assertTrue(
+                    ql.claim_text_present(raw, rec["claim"]),
+                    f"{rec['file']} no longer contains {rec['claim']!r}. The "
+                    f"record says it is blanked by strip_noise, but the text "
+                    f"is gone, so the disposition should be 'removed' with "
+                    f"silent_because {ql.TEXT_ABSENT!r}.")
+                stripped = ca.strip_noise(raw, path.suffix)
+                self.assertFalse(
+                    ql.claim_text_present(stripped, rec["claim"]),
+                    f"strip_noise no longer blanks {rec['claim']!r} in "
+                    f"{rec['file']}, so this claim is live again while its "
+                    f"burn-down still holds the ceiling down by one.")
         print(f"✓ {len(records)} burned-down entr(ies) re-measured, all gone")
 
     def test_every_silent_entry_carries_a_measured_silent_because(self):
@@ -620,7 +645,20 @@ class TestQuarantineRatchet(unittest.TestCase):
         measured = ql.measure(self.doc)
         by_key = {(s["file"], s["claim"]): s for s in measured["silent"]}
         live_keys = set(measured["live"])
-        self.assertTrue(by_key, "nothing is silent; this check has no subject")
+
+        # Anti-vacuity. This used to be `assertTrue(by_key)`, which conflated
+        # two different states: "the measurement produced nothing, so this
+        # check has no subject" and "no entry is silent, because the silent
+        # ones were all burned down". The second is the goal, and on
+        # 2026-08-15 reaching it turned this test red. The property being
+        # guarded is the PAIRING, which holds at zero silent entries too, so
+        # the guard is now that the measurement accounts for every entry:
+        # non-vacuous whatever the split, and it still fails if `measure`
+        # returns an empty accounting for a non-empty quarantine.
+        self.assertEqual(
+            len(by_key) + len(live_keys), len(self.doc["entries"]),
+            "the measurement does not account for every entry, so the checks "
+            "below would silently skip whatever it dropped")
 
         for e in self.doc["entries"]:
             key = (e["file"], ca._normalise_claim(e["claim"]))

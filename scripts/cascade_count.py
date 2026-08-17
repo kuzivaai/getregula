@@ -110,6 +110,26 @@ _SPACE_ENTITY = (
 _HTML_COMMENT = r"<!--.*?-->"
 GAP = rf"(?:[ \t]|{_INLINE_TAG}|{_SPACE_ENTITY}|{_HTML_COMMENT})+"
 
+
+# Which numbers are even NOMINATED as possibly-stale. Membership in a template
+# shape is the real filter; this only decides what gets offered to it.
+#
+# CANDIDATE_THOUSANDS is the original and stays the default: four digits, or
+# three-or-fewer grouped by a comma or a full stop (both, because the German
+# and Brazilian pages group with a full stop). It cannot nominate a bare
+# three-digit number, so **no published count below 1,000 could ever be found
+# stale**. That is how `docs/architecture.md` published "112 test files" while
+# git tracked 113 on the same commit: the number was not merely unmatched, it
+# was never a candidate. The docstring on _stale_values already records the
+# same class of blindness being closed once for dot-grouping.
+#
+# CANDIDATE_ANY_INTEGER nominates two digits and up. It is NOT safe for
+# COUNT_TEMPLATES, which contains a bare table-cell shape (`| {n} |`) that any
+# three-digit number in any table would match. Use it only with templates
+# anchored on unit words specific enough to carry the whole filter themselves.
+CANDIDATE_THOUSANDS = r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{4})(?![\w,.])"
+CANDIDATE_ANY_INTEGER = r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{2,})(?![\w,.])"
+
 COUNT_TEMPLATES = [
     # Shields.io badge forms, one per unit word, named explicitly.
     #
@@ -172,6 +192,26 @@ COUNT_TEMPLATES = [
 RUNNER_TEMPLATES = [
     rf"discovers{GAP}{{n}}{GAP}functions",
     rf"executes{GAP}{{n}}{GAP}functions",
+]
+
+
+# The THIRD published quantity: how many test FILES there are.
+#
+# WHY IT IS HERE. `docs/architecture.md` publishes one line carrying the test
+# FILE count and the collected count together. The collected half was
+# cascade-managed and correct; the file half was managed by nobody and was
+# already wrong by one at `ea64ffe`. It is the exact shape measurement rule 5
+# warns about: half a line carries a guarantee and the whole line reads as
+# though it does. (The figures are deliberately not written here. Derive them
+# with `python3 scripts/cascade_count.py --check`; a canonical count written as
+# a literal into a living document is what tests/test_published_count_manifest
+# exists to refuse, and this comment failed that check on its first draft.)
+#
+# Anchored on the unit words "test files", which no other quantity in the
+# corpus uses, and applied in its own pass against its own canonical so it can
+# never be written with the collected or runner value.
+TEST_FILE_TEMPLATES = [
+    rf"{{n}}{GAP}test files",
 ]
 
 
@@ -241,6 +281,35 @@ def canonical_runner_count() -> int:
             f"data/site_facts.json is stale: it records {cached:,} runner "
             f"functions, the runner currently selects {live:,}. Regenerate it "
             f"with `python3 scripts/site_facts.py` and re-run.")
+    return cached
+
+
+def canonical_test_file_count() -> int:
+    """The published test-FILE count, cached then cross-checked.
+
+    Same contract as the other two canonicals. The population is the keys of
+    `counts.tests.per_file`, which `site_facts.count_tests` builds by the same
+    recursive walk pytest collects from, and whose tracking is already policed
+    (`untracked_test_contributors` warns at generation, `tests/test_site_facts`
+    fails at rest). Deriving the count from that dict rather than re-walking
+    means it cannot disagree with the per-file inventory it is a summary of.
+    """
+    facts = json.loads(CANONICAL.read_text(encoding="utf-8"))
+    tests = facts["counts"]["tests"]
+    if "per_file" not in tests:
+        raise RefusedError(
+            "data/site_facts.json has no counts.tests.per_file. Regenerate it "
+            "with `python3 scripts/site_facts.py`. Refusing to cascade a "
+            "quantity with no canonical source.")
+    cached = len(tests["per_file"])
+
+    import site_facts
+    live = len(site_facts.count_tests()["per_file"])
+    if cached != live:
+        raise RefusedError(
+            f"data/site_facts.json is stale: it records {cached:,} test files, "
+            f"the tree currently has {live:,}. Regenerate it with "
+            f"`python3 scripts/site_facts.py` and re-run.")
     return cached
 
 
@@ -324,7 +393,8 @@ def _swap(fragment: str, old: int, new: int) -> str:
     return fragment[:at] + now + fragment[at + len(was):]
 
 
-def propagate(new: int, apply: bool, templates=None, label: str = "count") -> int:
+def propagate(new: int, apply: bool, templates=None, label: str = "count",
+              candidates: str = None) -> int:
     templates = templates or COUNT_TEMPLATES
     changed, drift = 0, []
     for rel in manifest_surfaces():
@@ -335,7 +405,7 @@ def propagate(new: int, apply: bool, templates=None, label: str = "count") -> in
             continue
         text = p.read_text(encoding="utf-8")
         updated = text
-        for old in _stale_values(text, new, templates):
+        for old in _stale_values(text, new, templates, candidates):
             for rx in _count_regexes(old, templates):
                 updated = rx.sub(
                     lambda m: _swap(m.group(0), old, new), updated)
@@ -361,17 +431,26 @@ def _count_regexes(value: int, templates=None):
     comma-grouped (`2,612`) and dot-grouped (`2.612`). The third exists
     because site/locales/de.html and site/locales/pt-br.html are manifest
     surfaces and both group thousands with a full stop.
+
+    The alternation carries a LEFT boundary so a shorter value cannot match
+    inside a longer one. Without it, `14` matches the tail of `114` and the
+    tool reports permanent drift on a file it has just corrected: observed
+    2026-08-15 on `docs/architecture.md` the moment two-digit values became
+    nominatable. There is deliberately NO right boundary: one template is the
+    JSON shape `"total_collected": {n}`, where the next character is a comma,
+    and a trailing `(?![\\d.,])` would stop the tool seeing its own canonical.
     """
     templates = templates or COUNT_TEMPLATES
     plain, comma, dot = str(value), f"{value:,}", _dotted(value)
-    alt = "(?:{})".format(
+    alt = r"(?<![\d.,])(?:{})".format(
         "|".join(re.escape(s) for s in (comma, dot, plain)))
     for tpl in templates:
         yield re.compile(
             tpl.replace("{n}", alt).replace("{g}", GAP), re.IGNORECASE)
 
 
-def _stale_values(text: str, new: int, templates=None) -> set:
+def _stale_values(text: str, new: int, templates=None,
+                  candidates: str = None) -> set:
     """Values appearing in a sanctioned count shape but differing from
     canonical. Nothing outside COUNT_TEMPLATES is ever a candidate.
 
@@ -391,8 +470,7 @@ def _stale_values(text: str, new: int, templates=None) -> set:
     """
     templates = templates or COUNT_TEMPLATES
     out = set()
-    for m in re.finditer(
-            r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{4})(?![\w,.])", text):
+    for m in re.finditer(candidates or CANDIDATE_THOUSANDS, text):
         val = int(m.group(1).replace(",", "").replace(".", ""))
         if val == new:
             continue
@@ -412,13 +490,17 @@ def main(argv=None) -> int:
 
     new = canonical_count()
     runner = canonical_runner_count()
+    test_files = canonical_test_file_count()
     print(f"canonical count (data/site_facts.json): {new:,}")
     print(f"canonical runner functions: {runner:,}")
+    print(f"canonical test files: {test_files:,}")
     print(f"manifest surfaces: {len(manifest_surfaces())}")
     n = propagate(new, apply=args.apply, templates=COUNT_TEMPLATES,
                   label="collected count")
     n += propagate(runner, apply=args.apply, templates=RUNNER_TEMPLATES,
                    label="runner functions")
+    n += propagate(test_files, apply=args.apply, templates=TEST_FILE_TEMPLATES,
+                   label="test files", candidates=CANDIDATE_ANY_INTEGER)
     if args.check and n:
         print("\nDRIFT. Run with --apply.")
         return 1

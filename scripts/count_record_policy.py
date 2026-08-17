@@ -10,10 +10,60 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-ALLOWED_RECORD_CLASSES = {"dated_evidence"}
+# A whole file whose count literal was true when the file was frozen. Keyed on
+# an immutable blob hash, because the file must never change again.
+DATED_EVIDENCE = "dated_evidence"
+
+# A single OCCURRENCE inside a LIVE file that is not a claim about the test
+# count at all: a hex colour, an OID arc, a byte size, a port. Keyed on the
+# surrounding text rather than a blob hash, because the file keeps changing.
+#
+# THE DISPOSITION N109 AND N111 SAID WAS OWED. Four collisions in two weeks
+# (a `#dcNNNN` hex colour, a `cli:NNNNfb52...` stable_id, the PKCS#7 RSADSI
+# arc, and a sub-1000 count no candidate scanner could nominate) were each
+# resolved by widening a lookaround in `count_pattern`. That works, and those
+# lookarounds are correct, but it does not scale and it is the wrong shape:
+#
+#   - Every widening is GLOBAL. Excluding a hex colour in one file narrows the
+#     guard in every file, for every value, forever.
+#   - It can only express LEXICAL facts. "This integer is a byte size" or
+#     "this is a port number" has no lexical signature to exclude on.
+#   - The reason lives in a docstring beside the regex, detached from the
+#     occurrence it explains, and drifts the way N111 records a copy drifting.
+#
+# So a fifth collision is now a data entry with a re-measured premise instead
+# of a fifth regex. Two properties make it a disposition rather than a bypass,
+# both enforced in classify_count_occurrences:
+#
+#   1. Declaring a file does NOT exempt the file. EVERY occurrence must be
+#      covered by a declared context; one uncovered hit and the file is still
+#      a violation. This is the objection N70 raised against broad path
+#      exclusions, answered directly.
+#   2. A record that matches nothing FAILS. A stale exclusion is an exclusion
+#      whose premise has gone, and leaving it is how the guard quietly stops
+#      guarding. Same discipline as the quarantine's burn-down re-measurement.
+NOT_A_COUNT_CLAIM = "not_a_count_claim"
+
+ALLOWED_RECORD_CLASSES = {DATED_EVIDENCE}
+ALLOWED_EXCLUSION_CLASSES = {NOT_A_COUNT_CLAIM}
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+# A context_regex is matched against the hit's OWN LINE, and nothing else.
+#
+# The first attempt used a symmetric character window either side of the hit.
+# It was wrong in a way the fixtures caught immediately: in a short file every
+# line is inside every other line's window, so one declared timeout constant
+# vouched for a genuine published claim two lines below it. A window has no
+# principled width, and any width is too wide for a small file.
+#
+# The line is a real boundary and it fits every collision seen so far: a hex
+# colour, an OID arc, a stable_id, a byte size and a timeout constant all sit
+# on the same line as the digits they explain. A context that needs more than
+# a line is not describing the token; it is describing the file, which is the
+# broad exclusion this whole registry refuses.
+CONTEXT_SCOPE = "line"
 
 
 def discover_tracked_files(repo: Path) -> list[Path]:
@@ -137,6 +187,59 @@ def count_pattern(count: int) -> re.Pattern:
         + r")(?!\w)(?!\.\d)")
 
 
+def validate_exclusion_policy(policy: dict, files: dict[str, str | bytes],
+                              current_paths: set[str],
+                              non_surface_paths: set[str] | None = None,
+                              ) -> dict[str, list[dict]]:
+    """Validate per-occurrence `not_a_count_claim` records, grouped by path.
+
+    Deliberately NOT keyed on a blob hash: these live in files that keep
+    changing, so a hash would fail on every unrelated edit and be deleted for
+    noise. The premise is re-measured instead, in classify_count_occurrences.
+    """
+    excluded: dict[str, list[dict]] = {}
+    for record in policy.get("occurrence_exclusions", []):
+        if not isinstance(record, dict):
+            raise ValueError("occurrence exclusion entry must be an object")
+        path = record.get("path")
+        if not isinstance(path, str) or not path or path.endswith("/"):
+            raise ValueError("exclusion path must name one exact file")
+        if record.get("record_class") not in ALLOWED_EXCLUSION_CLASSES:
+            raise ValueError(f"invalid exclusion class for {path}")
+        if path in current_paths:
+            raise ValueError(
+                f"a current surface publishes the count and cannot also "
+                f"declare it not a claim: {path}")
+        if path in (non_surface_paths or set()):
+            raise ValueError(
+                f"already skipped as a non-surface, so this exclusion could "
+                f"never match and would be stale from birth: {path}")
+        if path not in files:
+            raise ValueError(f"exclusion points to missing tracked file: {path}")
+        context = record.get("context_regex")
+        if not isinstance(context, str) or not context.strip():
+            raise ValueError(f"context_regex is required for {path}")
+        try:
+            compiled = re.compile(context)
+        except re.error as exc:
+            raise ValueError(f"invalid context_regex for {path}: {exc}") from exc
+        # A context that matches everything excludes everything, which is the
+        # broad exclusion `validate_record_policy` already refuses by name.
+        if compiled.search("") is not None:
+            raise ValueError(
+                f"context_regex for {path} matches the empty string, so it "
+                f"would vouch for every occurrence in the file")
+        if not str(record.get("rationale", "")).strip():
+            raise ValueError(f"rationale is required for {path}")
+        if not str(record.get("finding", "")).strip():
+            raise ValueError(
+                f"finding is required for {path}: an exclusion with no ledger "
+                f"row is a decision nobody can audit")
+        excluded.setdefault(path, []).append(
+            {**record, "_compiled": compiled})
+    return excluded
+
+
 def classify_count_occurrences(count: int, files: dict[str, str | bytes],
                                current_paths: set[str],
                                non_surface_paths: set[str],
@@ -144,11 +247,14 @@ def classify_count_occurrences(count: int, files: dict[str, str | bytes],
     """Return files whose count literal lacks an authorised record class."""
     historical = validate_record_policy(
         policy, files, current_paths, non_surface_paths, repo)
+    exclusions = validate_exclusion_policy(
+        policy, files, current_paths, non_surface_paths)
     pattern = count_pattern(count)
     structural_json_key = re.compile(
         r'"(line|line_number|start_line|end_line|lineno|offset|column|'
         r'total_lines|loc|size|bytes)"\s*:\s*$')
     violations: list[str] = []
+    matched_exclusions: set[int] = set()
     for path, raw_body in files.items():
         if path in current_paths or path in non_surface_paths or path in historical:
             continue
@@ -161,6 +267,35 @@ def classify_count_occurrences(count: int, files: dict[str, str | bytes],
             continue
         hits = [match for match in pattern.finditer(body)
                 if not structural_json_key.search(body[:match.start()])]
+        declared = exclusions.get(path, [])
+        if hits and declared:
+            # Per-OCCURRENCE, not per-file. A file that declares its hex
+            # colours stays fully audited for everything else in it, so one
+            # genuine claim among a hundred excluded tokens is still caught.
+            uncovered = []
+            for match in hits:
+                line_start = body.rfind("\n", 0, match.start()) + 1
+                line_end = body.find("\n", match.end())
+                line = body[line_start:
+                            line_end if line_end != -1 else len(body)]
+                covering = [i for i, rec in enumerate(declared)
+                            if rec["_compiled"].search(line)]
+                if covering:
+                    matched_exclusions.update(id(declared[i]) for i in covering)
+                else:
+                    uncovered.append(match)
+            hits = uncovered
         if hits:
             violations.append(path)
+
+    # A record that covered nothing is stale: either the token it described is
+    # gone, or the canonical count moved and it no longer collides. Reporting
+    # it keeps the registry the size of the real problem, the same reason the
+    # quarantine re-measures its burn-downs rather than trusting them.
+    for path, records in sorted(exclusions.items()):
+        for record in records:
+            if id(record) not in matched_exclusions:
+                violations.append(
+                    f"{path} [stale exclusion: context_regex "
+                    f"{record['context_regex']!r} matched no occurrence]")
     return sorted(violations)

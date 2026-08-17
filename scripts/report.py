@@ -230,6 +230,33 @@ def classify_provenance(filepath: Path) -> str:
     return "production"
 
 
+def path_context_token(filepath) -> str:
+    """Every classification input this module derives from the FULL path.
+
+    The scan cache keys on the path RELATIVE to the scan root, so two
+    byte-identical files sitting at the same relative path under different
+    roots produce the same path component. Provenance and the example/init
+    confidence penalties are derived from the FULL path instead, so without
+    this token the cached entry written for one can be served for the other,
+    and whichever ran first decides what the other one reports.
+
+    That is a correctness defect, not only a reproducibility one: `--scope
+    production` filters on provenance, so a production file served an entry
+    written by an `examples/` copy is classified "example" and its finding
+    disappears from the scan. Measured both ways, LEDGER N112.
+
+    Any NEW classifier derived from the full path must be added here, or the
+    cache will serve its result across the boundary that classifier draws.
+    """
+    fp = Path(filepath)
+    return (
+        f"{classify_provenance(fp)}"
+        f"|t{int(_is_test_file(fp))}"
+        f"|e{int(_is_example_file(fp))}"
+        f"|i{int(_is_init_file(fp))}"
+    )
+
+
 def _is_open_question(finding: dict) -> bool:
     """Determine if a finding should be flagged as an open question.
 
@@ -627,7 +654,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     }
     min_tier_level = _TIER_ORDER.get(min_tier, 0)
 
-    def _cache_put(rel_path: str, content: str, file_findings: list) -> None:
+    def _cache_put(filepath, content: str, file_findings: list) -> None:
         """Write a per-file cache entry — full scans only.
 
         A --min-tier scan skips whole detector passes (credentials,
@@ -635,11 +662,18 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         an entry written under min_tier would be silently incomplete for
         every later full scan of the same content. Partial scans read
         the cache but never populate it.
+
+        Takes the FULL path, not the relative one. The relative path is what
+        the key uses to identify the file, but the cached findings embed
+        provenance and the context penalty, both derived from the full path,
+        so the key needs both or entries cross that boundary (LEDGER N112).
         """
         if cache is None or min_tier_level > 0:
             return
         try:
-            cache.put(rel_path, content, file_findings, context=_cache_ctx)
+            cache.put(str(filepath.relative_to(project)), content,
+                      file_findings, context=_cache_ctx,
+                      path_context=path_context_token(filepath))
         except Exception:
             pass  # Cache write is best-effort
 
@@ -827,7 +861,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Check scan cache — if content unchanged, reuse cached findings
             try:
                 if cache is not None:
-                    cached_raw = cache.get(rel_path, content, context=_cache_ctx)
+                    cached_raw = cache.get(
+                        rel_path, content, context=_cache_ctx,
+                        path_context=path_context_token(filepath))
                     if cached_raw is not None:
                         cached = cached_raw
                         if min_tier_level > 0:
@@ -898,7 +934,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         }
                         finding["open_question"] = _is_open_question(finding)
                         findings.append(finding)
-                        _cache_put(rel_path, content, findings[file_findings_start:])
+                        _cache_put(filepath, content, findings[file_findings_start:])
                         continue
 
             if not _is_ai:
@@ -920,7 +956,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             "provenance": provenance,
                             "lifecycle_phases": ["develop"],
                         })
-                _cache_put(rel_path, content, findings[file_findings_start:])
+                _cache_put(filepath, content, findings[file_findings_start:])
                 continue
 
             suppressed_rules, file_decisions = _parse_suppression_rules(lines, respect_ignores, rel_path)
@@ -942,13 +978,13 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 # count these files for a single summary line. This
                 # eliminates 94% of false positives from the corpus.
                 _ai_files_no_indicators += 1
-                _cache_put(rel_path, content, findings[file_findings_start:])
+                _cache_put(filepath, content, findings[file_findings_start:])
                 continue
 
             # Skip findings below min_tier threshold
             tier_level = _TIER_ORDER.get(result.tier.value, 0)
             if tier_level < min_tier_level:
-                _cache_put(rel_path, content, findings[file_findings_start:])
+                _cache_put(filepath, content, findings[file_findings_start:])
                 continue
 
             is_suppressed = "*" in suppressed_rules
@@ -1056,7 +1092,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if _lines_in_strings == len(result.match_lines):
                     # Every match was inside a string literal — skip entirely.
                     # Deterministic given content, so the cache entry is safe.
-                    _cache_put(rel_path, content, findings[file_findings_start:])
+                    _cache_put(filepath, content, findings[file_findings_start:])
                     continue
                 elif _lines_in_strings > 0:
                     # Some matches in strings — penalise confidence
@@ -1110,7 +1146,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # evidence and is noise (205 FPs at 16% precision in dev benchmark).
             if result.tier.value == "minimal_risk" and confidence_score < 20:
                 # Deterministic given content — safe to cache the exclusion.
-                _cache_put(rel_path, content, findings[file_findings_start:])
+                _cache_put(filepath, content, findings[file_findings_start:])
                 continue
 
             # Domain gating: suppress opt-in high_risk findings unless
@@ -1131,7 +1167,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     # cache hit. Skipping the write here would just leave
                     # gated files permanently uncached.
                     finding["open_question"] = _is_open_question(finding)
-                    _cache_put(rel_path, content,
+                    _cache_put(filepath, content,
                                findings[file_findings_start:] + [finding])
                     continue  # suppress: all indicators are opt-in without activation
 
@@ -1139,7 +1175,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             findings.append(finding)
 
             # Cache findings collected for this file
-            _cache_put(rel_path, content, findings[file_findings_start:])
+            _cache_put(filepath, content, findings[file_findings_start:])
 
     # Flush cache to disk
     try:

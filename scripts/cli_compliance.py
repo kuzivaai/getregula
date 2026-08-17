@@ -365,7 +365,7 @@ def cmd_gap(args) -> None:
 
     if args.project != ".":
         _validate_path(args.project)
-    from compliance_check import assess_compliance, format_gap_text
+    from compliance_check import assess_compliance
     from decision_adapters import empty_decision, format_decision_text, resolved_gap_evidence
     articles = [args.article] if args.article else None
     fw_arg = getattr(args, "framework", None)
@@ -445,17 +445,25 @@ def cmd_gpai_check(args) -> None:
 def cmd_plan(args) -> None:
     """Emit a plan only after the kernel resolves applicable obligations."""
     from cli import json_output, _validate_path
+    from errors import UsageError
 
     if args.project != ".":
         _validate_path(args.project)
-    project_path = str(Path(args.project).resolve())
     from decision_adapters import empty_decision, format_decision_text
-    from remediation_plan import mark_task_done
 
+    # This command emits no plan: `empty_decision` is unconditional, so
+    # applicability never resolves here and the task list is always absent.
+    # `--done` therefore has no task it could refer to, whatever id is given.
+    # It used to write `{"<id>": "completed"}` into `.regula/plan-status.json`
+    # and print success for any string at all, which manufactured an evidence
+    # record with no referent. Refusing is the accurate answer, and it matches
+    # what `--status` already says.
     if args.done:
-        status = mark_task_done(project_path, args.done)
-        print(f"Marked {args.done} as completed.")
-        return
+        raise UsageError(
+            "Cannot mark a task complete: this command emits no plan while "
+            "applicability is unresolved, so there is no task list to mark "
+            "against. Nothing was written."
+        )
 
     if args.status:
         print("Existing plan status cannot be interpreted until applicability is resolved.")

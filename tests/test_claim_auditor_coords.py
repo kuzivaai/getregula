@@ -41,7 +41,7 @@ class _Fixture:
         self.path = self.dir / name
         self.path.write_text("\n".join(lines) + "\n", encoding="utf-8")
         self.claim_line = next(
-            i for i, l in enumerate(lines, start=1) if CLAIM_SNIPPET in l)
+            i for i, line in enumerate(lines, start=1) if CLAIM_SNIPPET in line)
 
     def scan(self):
         return ca.scan_file(self.path, ca.load_allowlist())

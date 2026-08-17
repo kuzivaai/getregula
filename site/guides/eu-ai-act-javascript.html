@@ -213,7 +213,7 @@
 
 <p>Regula strips comments before scanning, so commented-out code does not produce false positives. For JavaScript and TypeScript files, it handles both single-line comments (<code>//</code>) and block comments (<code>/* */</code>). This means:</p>
 
-<pre><code>// import OpenAI from 'openai'  &larr; not flagged (commented out)
+<pre tabindex="0"><code>// import OpenAI from 'openai'  &larr; not flagged (commented out)
 
 /*
 const anthropic = new Anthropic()
@@ -226,7 +226,7 @@ import OpenAI from 'openai'      &larr; flagged (live code)</code></pre>
 
 <h2>Quick start: scanning a JavaScript project</h2>
 
-<pre><code>pipx install regula-ai
+<pre tabindex="0"><code>pipx install regula-ai
 regula check .                      # scan current directory
 regula check . --domain employment  # activate domain-specific patterns
 regula assess                       # interactive: does the AI Act apply?</code></pre>
@@ -254,12 +254,12 @@ regula assess                       # interactive: does the AI Act apply?</code>
 
 <p>Here is what Regula produces when it classifies a JavaScript file with employment-related AI patterns:</p>
 
-<pre><code>$ regula classify --file hiring_scorer.js
+<pre tabindex="0"><code>$ regula classify --file hiring_scorer.js
 HIGH-RISK: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15</code></pre>
 
 <p>And a full check with the domain flag:</p>
 
-<pre><code>$ regula check sample_js_hiring.js --domain employment
+<pre tabindex="0"><code>$ regula check sample_js_hiring.js --domain employment
 
 Regula Scan: sample_js_hiring.js
 ============================================================
@@ -301,7 +301,7 @@ Detector observations (not legal facts):
 
 <h3>CV screening and candidate ranking</h3>
 
-<pre><code>// Flagged: employment screening patterns
+<pre tabindex="0"><code>// Flagged: employment screening patterns
 const ranked = scoreResume(applicant, model)
 const shortlist = candidates.filter(c =&gt; c.score &gt; threshold)
 const filtered = filterApplicants(applications, criteria)</code></pre>
@@ -310,7 +310,7 @@ const filtered = filterApplicants(applications, criteria)</code></pre>
 
 <h3>AI API calls with no logging</h3>
 
-<pre><code>// Flagged: API call with no record-keeping
+<pre tabindex="0"><code>// Flagged: API call with no record-keeping
 const response = await openai.chat.completions.create({
   model: 'gpt-4',
   messages: [{ role: 'user', content: userData }]
@@ -321,7 +321,7 @@ return response.choices[0].message.content  // no log</code></pre>
 
 <h3>Content generation without disclosure</h3>
 
-<pre><code>// Flagged: AI-generated content without transparency
+<pre tabindex="0"><code>// Flagged: AI-generated content without transparency
 const reply = await generateText({
   model: openai('gpt-4'),
   prompt: userMessage
@@ -332,7 +332,7 @@ res.json({ message: reply.text })  // user not told this is AI</code></pre>
 
 <h3>Sentiment analysis on user content</h3>
 
-<pre><code>// Flagged: emotion/sentiment inference
+<pre tabindex="0"><code>// Flagged: emotion/sentiment inference
 import { pipeline } from '@xenova/transformers'
 const classifier = await pipeline('sentiment-analysis')
 const result = await classifier(customerMessage)</code></pre>
@@ -357,7 +357,7 @@ const result = await classifier(customerMessage)</code></pre>
 
 <p>Add Regula to your GitHub Actions pipeline so every pull request gets scanned. Here is a minimal workflow for a JavaScript or TypeScript project:</p>
 
-<pre><code># .github/workflows/regula.yml
+<pre tabindex="0"><code># .github/workflows/regula.yml
 name: EU AI Act Scan
 
 on:

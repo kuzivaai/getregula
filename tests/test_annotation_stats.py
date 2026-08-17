@@ -1,7 +1,6 @@
 # regula-ignore
 """Tests for the multi-annotator agreement, dedup and temporal-split tools."""
 
-import json
 import sys
 import unittest
 from pathlib import Path

@@ -177,7 +177,7 @@ REGION = {
 
             <p>For a team building AI for the Brazilian market, the practically useful commands are:</p>
 
-<pre><code><span class="term-comment"># Install</span>
+<pre tabindex="0"><code><span class="term-comment"># Install</span>
 <span class="term-cmd">pipx install regula-ai</span>
 
 <span class="term-comment"># Scan for risk indicators with Brazil-specific mapping</span>
@@ -425,8 +425,8 @@ REGION = {
     <div style="max-width:760px;margin:var(--s7) auto var(--s5);padding:0 var(--s5);">
         <h3 style="font-size:18px;color:var(--text);margin-bottom:var(--s3);">Related reading</h3>
         <ul style="list-style:none;padding:0;margin:0;">
-            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Extraterritorial reach and cross-border applicability</span></li>
-            <li style="margin-bottom:var(--s2);"><a href="/regions/south-africa-ai-policy.html" style="color:var(--accent);">South Africa Draft National AI Policy</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Another emerging-market AI governance framework</span></li>
+            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);text-decoration:underline;">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Extraterritorial reach and cross-border applicability</span></li>
+            <li style="margin-bottom:var(--s2);"><a href="/regions/south-africa-ai-policy.html" style="color:var(--accent);text-decoration:underline;">South Africa Draft National AI Policy</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Another emerging-market AI governance framework</span></li>
         </ul>
     </div>
 """,

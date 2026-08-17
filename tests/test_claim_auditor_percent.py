@@ -116,5 +116,80 @@ class TestStripFence(unittest.TestCase):
                          "tests/test_claim_auditor_coords.py")
 
 
+class TestLiveRegionsAreNotClaims(unittest.TestCase):
+    """ARIA live regions and progressbars hold state, not published claims.
+
+    `<span id="progressPct">0%</span>` on the three assess pages was reported
+    as an unsourced numeric claim and quarantined in all three locales. It is
+    the initial value of a readout that script replaces, so the number in the
+    file is a placeholder. The rule is semantic rather than a per-page
+    exemption: the markup already has to declare itself a live region for
+    assistive technology, so any future status readout is covered.
+
+    The fence is the point. A percentage in ordinary prose, or in an element
+    that merely sits near a live region, must stay in scope.
+    """
+
+    def test_progressbar_content_is_blanked(self):
+        raw = ('<div role="progressbar" aria-valuenow="0">\n'
+               '  <span id="progressPct">0%</span>\n'
+               '</div>\n')
+        self.assertNotIn("0%", ca.strip_noise(raw, ".html"))
+
+    def test_aria_live_content_is_blanked(self):
+        raw = '<p aria-live="polite">Coverage is now 42%</p>\n'
+        self.assertNotIn("42%", ca.strip_noise(raw, ".html"))
+
+    def test_ordinary_prose_is_untouched(self):
+        """Control. The whole gate is worthless if this one blanks too much."""
+        raw = '<p>Detector precision was 83.5% on the labelled corpus.</p>\n'
+        self.assertIn("83.5%", ca.strip_noise(raw, ".html"))
+
+    def test_a_sibling_after_the_region_closes_is_untouched(self):
+        """Control for the parser's depth counting, not just its matching.
+
+        If the end-tag bookkeeping is wrong the blank runs past `</div>` and
+        swallows the next claim, which narrows the gate invisibly.
+        """
+        raw = ('<div aria-live="polite"><span>0%</span></div>\n'
+               '<p>Precision was 83.5% on the corpus.</p>\n')
+        cleaned = ca.strip_noise(raw, ".html")
+        self.assertNotIn("0%", cleaned)
+        self.assertIn("83.5%", cleaned)
+
+    def test_nested_elements_inside_a_region_do_not_end_it_early(self):
+        raw = ('<div aria-live="polite">\n'
+               '  <div><span>11%</span></div>\n'
+               '  <span>22%</span>\n'
+               '</div>\n')
+        cleaned = ca.strip_noise(raw, ".html")
+        self.assertNotIn("11%", cleaned)
+        self.assertNotIn("22%", cleaned)
+
+    def test_a_void_element_inside_a_region_does_not_end_it_early(self):
+        raw = ('<div aria-live="polite">33%<br>44%</div>\n'
+               '<p>Precision was 83.5%.</p>\n')
+        cleaned = ca.strip_noise(raw, ".html")
+        self.assertNotIn("33%", cleaned)
+        self.assertNotIn("44%", cleaned)
+        self.assertIn("83.5%", cleaned)
+
+    def test_an_unclosed_region_is_audited_rather_than_blanked_to_eof(self):
+        """Over-blanking narrows the gate silently, so malformed markup fails
+        towards auditing rather than towards skipping."""
+        raw = ('<div aria-live="polite">55%\n'
+               '<p>Precision was 83.5% on the corpus.</p>\n')
+        cleaned = ca.strip_noise(raw, ".html")
+        self.assertIn("83.5%", cleaned)
+
+    def test_line_count_is_preserved(self):
+        raw = ('<div role="progressbar">\n  <span>0%</span>\n</div>\n'
+               '<p>tail 83.5%</p>\n')
+        cleaned = ca.strip_noise(raw, ".html")
+        self.assertEqual(raw.count("\n"), cleaned.count("\n"),
+                         "live-region blanking changed the line count, which "
+                         "would reintroduce coordinate drift")
+
+
 if __name__ == "__main__":
     unittest.main()

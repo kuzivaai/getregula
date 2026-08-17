@@ -326,7 +326,7 @@
 
         <div class="code-block">
             <div class="code-label">citizen_rating.py</div>
-<pre><span style="color:#8a8aa8">import</span> tensorflow <span style="color:#8a8aa8">as</span> tf
+<pre tabindex="0"><span style="color:#8a8aa8">import</span> tensorflow <span style="color:#8a8aa8">as</span> tf
 
 <span style="color:#8888aa"># Evaluate citizens based on social behaviour</span>
 social_scoring_model = tf.keras.Sequential()
@@ -346,7 +346,7 @@ social_scoring_model = tf.keras.Sequential()
                 <div class="term-dot td-y"></div>
                 <div class="term-dot td-g"></div>
             </div>
-<pre><span class="t-p">$</span> <span class="t-c">regula check citizen_rating.py</span>
+<pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check citizen_rating.py</span>
 
 Regula Scan: citizen_rating.py
 ============================================================
@@ -370,7 +370,7 @@ Regula Scan: citizen_rating.py
 
         <div class="code-block">
             <div class="code-label">hr_analytics.py</div>
-<pre><span style="color:#8a8aa8">from</span> transformers <span style="color:#8a8aa8">import</span> pipeline
+<pre tabindex="0"><span style="color:#8a8aa8">from</span> transformers <span style="color:#8a8aa8">import</span> pipeline
 
 emotion_classifier = pipeline(<span style="color:#7dd3fc">"text-classification"</span>, model=<span style="color:#7dd3fc">"emotion-bert"</span>)
 
@@ -392,7 +392,7 @@ emotion_classifier = pipeline(<span style="color:#7dd3fc">"text-classification"<
 
         <div class="code-block">
             <div class="code-label">hiring.py</div>
-<pre><span style="color:#8a8aa8">from</span> sklearn.ensemble <span style="color:#8a8aa8">import</span> RandomForestClassifier
+<pre tabindex="0"><span style="color:#8a8aa8">from</span> sklearn.ensemble <span style="color:#8a8aa8">import</span> RandomForestClassifier
 
 <span style="color:#8a8aa8">def</span> <span style="color:#e2e2f0">screen_candidates</span>(resumes):
     <span style="color:#8888aa">"""Automated CV screening for hiring decisions."""</span>
@@ -412,7 +412,7 @@ emotion_classifier = pipeline(<span style="color:#7dd3fc">"text-classification"<
                 <div class="term-dot td-y"></div>
                 <div class="term-dot td-g"></div>
             </div>
-<pre><span class="t-p">$</span> <span class="t-c">regula check hiring.py</span>
+<pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check hiring.py</span>
 
 Regula Scan: hiring.py
 ============================================================
@@ -436,7 +436,7 @@ Regula Scan: hiring.py
 
         <div class="code-block">
             <div class="code-label">lending.py</div>
-<pre><span style="color:#8a8aa8">import</span> xgboost <span style="color:#8a8aa8">as</span> xgb
+<pre tabindex="0"><span style="color:#8a8aa8">import</span> xgboost <span style="color:#8a8aa8">as</span> xgb
 
 <span style="color:#8a8aa8">def</span> <span style="color:#e2e2f0">score_loan_application</span>(applicant_data):
     <span style="color:#8888aa">"""Predict creditworthiness for loan approval."""</span>
@@ -458,7 +458,7 @@ Regula Scan: hiring.py
 
         <div class="code-block">
             <div class="code-label">support_bot.py</div>
-<pre><span style="color:#8a8aa8">import</span> openai
+<pre tabindex="0"><span style="color:#8a8aa8">import</span> openai
 
 <span style="color:#8a8aa8">def</span> <span style="color:#e2e2f0">handle_chatbot_message</span>(user_input):
     <span style="color:#8888aa">"""Process incoming message for virtual assistant."""</span>
@@ -479,7 +479,7 @@ Regula Scan: hiring.py
                 <div class="term-dot td-y"></div>
                 <div class="term-dot td-g"></div>
             </div>
-<pre><span class="t-p">$</span> <span class="t-c">regula check support_bot.py</span>
+<pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check support_bot.py</span>
 
 Regula Scan: support_bot.py
 ============================================================
@@ -503,7 +503,7 @@ Regula Scan: support_bot.py
 
         <div class="code-block">
             <div class="code-label">recommender.py</div>
-<pre><span style="color:#8a8aa8">import</span> logging
+<pre tabindex="0"><span style="color:#8a8aa8">import</span> logging
 <span style="color:#8a8aa8">import</span> openai
 
 logger = logging.getLogger(__name__)
@@ -525,7 +525,7 @@ logger = logging.getLogger(__name__)
                 <div class="term-dot td-y"></div>
                 <div class="term-dot td-g"></div>
             </div>
-<pre><span class="t-p">$</span> <span class="t-c">regula check recommender.py</span>
+<pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check recommender.py</span>
 
 Regula Scan: recommender.py
 ============================================================

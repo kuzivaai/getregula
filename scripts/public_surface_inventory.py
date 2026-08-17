@@ -321,19 +321,28 @@ def _yaml_descriptors(path: Path) -> list[tuple[str, str, str]]:
         line = lines[i]
         top = re.match(r"^(inputs|outputs):\s*$", line)
         if top:
-            section = top.group(1); current = ""; i += 1; continue
+            section = top.group(1)
+            current = ""
+            i += 1
+            continue
         item = re.match(r"^  ([A-Za-z0-9_-]+):\s*$", line)
         if section in {"inputs", "outputs"} and item:
-            current = item.group(1); i += 1; continue
+            current = item.group(1)
+            i += 1
+            continue
         desc = re.match(r"^(\s*)(name|description):\s*(.*)$", line)
         if desc and (len(desc.group(1)) == 0 or section in {"inputs", "outputs"}):
             key, value = desc.group(2), desc.group(3).strip().strip("'\"")
             if value in {">-", "|", "|-", ">"}:
-                indent = len(desc.group(1)); parts = []; i += 1
+                indent = len(desc.group(1))
+                parts = []
+                i += 1
                 while i < len(lines) and (not lines[i].strip() or len(lines[i]) - len(lines[i].lstrip()) > indent):
-                    if lines[i].strip(): parts.append(lines[i].strip())
+                    if lines[i].strip():
+                        parts.append(lines[i].strip())
                     i += 1
-                value = " ".join(parts); i -= 1
+                value = " ".join(parts)
+                i -= 1
             rows.append((section, current if section != "metadata" else "action", key + ": " + value))
         i += 1
     if not rows:
@@ -384,7 +393,8 @@ def cli_records(root: Path, files: set[str]) -> list[dict[str, Any]]:
                            "registered parser description/help/epilogue and exit semantics"))
         for action in current._actions:
             if isinstance(action, argparse._SubParsersAction):
-                for name, child in sorted(action.choices.items()): queue.append((f"{path} {name}", child))
+                for name, child in sorted(action.choices.items()):
+                    queue.append((f"{path} {name}", child))
             else:
                 for option in action.option_strings:
                     rows.append(record("cli", source + ":" + option, f"{path} {option}",
@@ -416,9 +426,11 @@ def apply_policy(root: Path, rows: list[dict[str, Any]]) -> tuple[list[dict[str,
     seen = set()
     for entry in payload.get("dispositions", []):
         source = entry["source"]
-        if source in seen: raise DiscoveryError(f"duplicate policy source: {source}")
+        if source in seen:
+            raise DiscoveryError(f"duplicate policy source: {source}")
         seen.add(source)
-        if source not in by_source: raise DiscoveryError(f"stale policy entry: {source}")
+        if source not in by_source:
+            raise DiscoveryError(f"stale policy entry: {source}")
         if entry["classification"] not in {"historical_record", "internal_record", "non_claim_asset"}:
             raise DiscoveryError(f"invalid narrow policy disposition: {source}")
         row = by_source[source]
@@ -427,7 +439,8 @@ def apply_policy(root: Path, rows: list[dict[str, Any]]) -> tuple[list[dict[str,
         row["reason"] = entry["reason"]
         exclusions.append(row.copy())
     missing = sorted(row["source"] for row in rows if row["classification"] == "needs_policy")
-    if missing: raise DiscoveryError(f"missing policy disposition: {', '.join(missing)}")
+    if missing:
+        raise DiscoveryError(f"missing policy disposition: {', '.join(missing)}")
     return rows, exclusions
 
 
@@ -441,18 +454,22 @@ def verify_package_artifacts(root: Path, dist: Path) -> None:
     if not isinstance(readme, str):
         raise DiscoveryError("pyproject project.readme is missing or unsupported")
     expected_body = (root / readme).read_text(encoding="utf-8").strip()
-    wheels = sorted(dist.glob("*.whl")); sdists = sorted(dist.glob("*.tar.gz"))
+    wheels = sorted(dist.glob("*.whl"))
+    sdists = sorted(dist.glob("*.tar.gz"))
     if len(wheels) != 1 or len(sdists) != 1:
         raise DiscoveryError("package verification requires exactly one wheel and one sdist")
     with zipfile.ZipFile(wheels[0]) as archive:
         names = [name for name in archive.namelist() if name.endswith(".dist-info/METADATA")]
-        if len(names) != 1: raise DiscoveryError("wheel METADATA missing or ambiguous")
+        if len(names) != 1:
+            raise DiscoveryError("wheel METADATA missing or ambiguous")
         wheel_meta = archive.read(names[0]).decode("utf-8")
     with tarfile.open(sdists[0], "r:gz") as archive:
         members = [m for m in archive.getmembers() if m.name.count("/") == 1 and m.name.endswith("/PKG-INFO")]
-        if len(members) != 1: raise DiscoveryError("sdist PKG-INFO missing or ambiguous")
+        if len(members) != 1:
+            raise DiscoveryError("sdist PKG-INFO missing or ambiguous")
         stream = archive.extractfile(members[0])
-        if stream is None: raise DiscoveryError("sdist PKG-INFO unreadable")
+        if stream is None:
+            raise DiscoveryError("sdist PKG-INFO unreadable")
         sdist_meta = stream.read().decode("utf-8")
     for label, raw in (("wheel METADATA", wheel_meta), ("sdist PKG-INFO", sdist_meta)):
         message = email.parser.Parser().parsestr(raw)
@@ -470,13 +487,15 @@ def discover(root: Path = REPO) -> dict[str, Any]:
     rows, exclusions = apply_policy(root, rows)
     rows.sort(key=lambda row: (row["channel"], row["destination"], row["source"]))
     ids = [row["stable_id"] for row in rows]
-    if len(ids) != len(set(ids)): raise DiscoveryError("duplicate stable ID")
+    if len(ids) != len(set(ids)):
+        raise DiscoveryError("duplicate stable ID")
     claim_files = sorted({r["source"].split("#", 1)[0] for r in rows
                           if r["classification"] == "active_product" and r["claim_capable"]})
     residual = []
     for rel in claim_files:
         path = root / rel
-        if not path.is_file(): continue
+        if not path.is_file():
+            continue
         body = path.read_text(encoding="utf-8", errors="replace")
         residual.extend({"source": rel, "claim_class": name, "language": language}
                         for name, language in claim_violations(body))
@@ -533,7 +552,8 @@ def main(argv: list[str] | None = None) -> int:
             raise DiscoveryError("generated public-surface inventory/report is stale")
     if args.verify_dist:
         verify_package_artifacts(REPO, args.verify_dist)
-    if not args.write and not args.check and not args.verify_dist: print(encoded, end="")
+    if not args.write and not args.check and not args.verify_dist:
+        print(encoded, end="")
     return 0
 
 

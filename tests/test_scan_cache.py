@@ -144,6 +144,121 @@ def test_cache_context_isolates_entries():
         shutil.rmtree(tmp)
 
 
+def test_cache_key_isolates_by_path_context():
+    """N112. Entries must not cross a full-path classification boundary.
+
+    The key's path component is the path RELATIVE to the scan root, so two
+    byte-identical files at the same relative path under different roots share
+    it. Provenance and the example/init penalties come from the FULL path, so
+    without a path-context component the entry written for one is served for
+    the other.
+
+    This asserts the isolation directly AND runs the negative control: with the
+    component blanked, the same two lookups collide. Without that control the
+    test could pass because nothing was ever cached.
+    """
+    from scan_cache import ScanCache
+    tmp = Path(tempfile.mkdtemp())
+    try:
+        cache = ScanCache(cache_dir=tmp)
+        entry = [{"tier": "high_risk", "provenance": "example"}]
+        cache.put("app.py", "import openai", entry,
+                  context="app", path_context="example|t0|e1|i0")
+
+        assert cache.get("app.py", "import openai", context="app",
+                         path_context="example|t0|e1|i0") == entry, \
+            "an entry must still be readable under its own path context"
+
+        assert cache.get("app.py", "import openai", context="app",
+                         path_context="production|t0|e0|i0") is None, (
+            "a production file was served the cache entry of an examples copy "
+            "at the same relative path. --scope production filters on "
+            "provenance, so this drops a real finding from the scan.")
+
+        # Negative control: the lookup that must miss above is the SAME lookup
+        # that hits when the discriminator is removed. Proves the assertion
+        # above is testing the key and not an empty cache.
+        cache.put("app.py", "import openai", entry, context="app")
+        assert cache.get("app.py", "import openai", context="app") == entry, \
+            "control failed: the collision could not be reproduced, so the " \
+            "assertion above proves nothing"
+        print("  PASS  test_cache_key_isolates_by_path_context")
+    finally:
+        shutil.rmtree(tmp)
+
+
+def test_path_context_token_separates_every_full_path_classifier():
+    """The token must change whenever a full-path classifier changes.
+
+    If a classifier is added to report.py and not to path_context_token, the
+    cache silently serves results across the boundary that classifier draws.
+    This pins the four that exist.
+    """
+    from report import path_context_token
+    base = path_context_token(Path("/srv/app/api.py"))
+    variants = {
+        "example": Path("/srv/examples/api.py"),
+        "test": Path("/srv/tests/api.py"),
+        "init": Path("/srv/app/__init__.py"),
+    }
+    for label, p in variants.items():
+        assert path_context_token(p) != base, (
+            f"path_context_token does not distinguish a {label} file from a "
+            f"production one, so their cache entries collide")
+    assert len({path_context_token(p) for p in variants.values()} | {base}) == 4, \
+        "two different full-path classifications produced the same token"
+    print("  PASS  test_path_context_token_separates_every_full_path_classifier")
+
+
+def test_provenance_survives_a_cache_warmed_by_an_examples_copy(monkeypatch, tmp_path):
+    """N112, end to end: the defect that made a production finding vanish.
+
+    A full scan (`regula report`, `evidence-pack`, `conform`) populates the
+    cache; `regula check` passes min_tier='limited_risk' and so only ever READS
+    it. Two byte-identical files, each the root of its own scan, therefore both
+    key on 'app.py'. Before the fix the examples copy's entry was served to the
+    production file, its provenance became "example", and a --scope production
+    scan reported ZERO findings on a file that has one.
+    """
+    scan_files = _isolated_scan(monkeypatch, tmp_path)
+    src = ("import openai\n"
+           "client = openai.OpenAI(api_key='sk-test')\n"
+           "def decide(applicant):\n"
+           "    return client.chat.completions.create(\n"
+           "        model='gpt-4',\n"
+           "        messages=[{'role': 'user', 'content': applicant}])\n")
+
+    # NOT pytest's tmp_path: it names the directory after the test function, so
+    # every segment of the fixture path starts with "test_" and _is_test_file
+    # classifies the whole tree as "test" provenance. The fixture would then
+    # assert nothing about examples-versus-production. tmp_path is still used
+    # for the isolated cache, where the directory name is irrelevant.
+    root = Path(tempfile.mkdtemp(prefix="n112-"))
+    try:
+        demo = root / "examples" / "demoapp"
+        prod = root / "plain"
+        for d in (demo, prod):
+            d.mkdir(parents=True)
+            (d / "app.py").write_text(src, encoding="utf-8")
+
+        # The examples copy warms the cache under the shared relative path.
+        warm = scan_files(str(demo))
+        assert warm and all(f.get("provenance") == "example" for f in warm), (
+            f"fixture is wrong: the examples copy must produce findings and "
+            f"they must classify as example, got "
+            f"{[(f['file'], f.get('provenance')) for f in warm]}")
+
+        after = scan_files(str(prod), skip_tests=True, min_tier="limited_risk")
+        assert [f for f in after if f.get("provenance") == "production"], (
+            "a production file's finding disappeared from a production-scope "
+            "scan because the cache served an examples copy's entry (N112)")
+        assert all(f.get("provenance") == "production" for f in after), (
+            f"provenance was served from the wrong file: "
+            f"{[(f['file'], f.get('provenance')) for f in after]}")
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
 def test_regula_cache_dir_env_var_is_honoured():
     """N112. The scan cache must be redirectable without moving HOME.
 

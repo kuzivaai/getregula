@@ -256,12 +256,12 @@ def check_commit_anchors(path, lines, require_head=False):
     """
     findings = []
     start = finish = count = None
-    start_line = finish_line = count_line = None
+    finish_line = count_line = None
 
     for index, line in enumerate(lines, 1):
         match = STARTED_AT.search(line)
         if match and start is None:
-            start, start_line = match.group(1), index
+            start = match.group(1)
         match = FINISHED_AT.search(line)
         if match and finish is None:
             finish, finish_line = match.group(1), index
