@@ -171,6 +171,54 @@ class TestGenerateSummary:
         assert "| Article 50 pattern observations | 3 |" in summary
         assert "| Total detector observations | 10 |" in summary
 
+    def test_scan_coverage_names_what_was_not_read(self):
+        """N146 applied to the pack: a count of observations must not be
+        printed without the population it was drawn from.
+
+        Measured on ageitgey/face_recognition at 9f3061a: the default scan reads
+        8 files and 23 code files under `examples/` are pruned, and until
+        2026-08-17 the pack said neither.
+        """
+        now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
+        stats = {"files_scanned": 8, "pruned_code_files": 23,
+                 "pruned_dirs": [{"path": "examples", "skipped_because": "examples"}],
+                 "skipped_total": 0}
+        summary = _generate_summary("proj", now, [], self._decision(), stats)
+        assert "## Scan coverage" in summary
+        assert "**Files read:** 8" in summary
+        assert "23 code file(s)" in summary
+        assert "examples" in summary
+        # And it must come BEFORE the counts it qualifies.
+        assert summary.index("## Scan coverage") < summary.index("## Detector observations")
+
+    def test_scan_coverage_says_so_when_nothing_was_excluded(self):
+        """The other direction: without it the section could pass by always
+        claiming an exclusion."""
+        now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
+        stats = {"files_scanned": 12, "pruned_code_files": 0,
+                 "pruned_dirs": [], "skipped_total": 0}
+        summary = _generate_summary("proj", now, [], self._decision(), stats)
+        assert "**Files read:** 12" in summary
+        assert "No code file was excluded" in summary
+        assert "code file(s) in" not in summary
+
+    def test_scan_coverage_fails_loud_when_stats_are_absent(self):
+        """Rule 4: an absent signal is not a passing signal. A pack built
+        without statistics must say the population is unstated rather than
+        imply full coverage."""
+        now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
+        summary = _generate_summary("proj", now, [], self._decision())
+        assert "**Not recorded.**" in summary
+        assert "unstated" in summary
+
+    def test_scan_coverage_reports_an_unreadable_file_as_a_partial_scan(self):
+        now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
+        stats = {"files_scanned": 5, "pruned_code_files": 0,
+                 "pruned_dirs": [], "skipped_total": 2}
+        summary = _generate_summary("proj", now, [], self._decision(), stats)
+        assert "PARTIAL" in summary
+        assert "2 eligible file(s)" in summary
+
     def test_compliance_score(self):
         now = datetime(2026, 5, 1, 12, 0, tzinfo=timezone.utc)
         summary = _generate_summary("proj", now, [], self._decision())
