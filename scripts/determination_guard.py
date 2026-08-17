@@ -292,6 +292,73 @@ def in_scope(rel: str) -> bool:
     return Path(rel).suffix.lower() in SCANNED_SUFFIXES
 
 
+# Directory names inside an installed package that are build residue rather
+# than shipped content.
+_ARTEFACT_SKIP_DIRS = {"__pycache__"}
+
+
+DIST_NAME = "regula_ai"
+
+
+def artefact_files(root: Path) -> list[str]:
+    """Every file THIS distribution installed under `root`, from its own RECORD.
+
+    `_tracked_files` cannot serve here and substituting it would be measurement
+    rule 1: an installed artefact is not a git checkout, so there is no index to
+    ask. A bare walk cannot serve either, and that was measured rather than
+    assumed: walking a real virtual environment's site-packages returned a
+    finding inside `pip/_vendor/distlib/metadata.py`, which is not this
+    project's artefact at all. The population is what the wheel installed, and
+    the wheel says so in `*.dist-info/RECORD`.
+
+    Fails closed on a missing or empty RECORD, because an empty corpus is a
+    guard that passes for the wrong reason (measurement rule 4).
+    """
+    root = Path(root)
+    if not root.is_dir():
+        raise RuntimeError(f"{root}: not a directory, so there is no artefact to scan")
+
+    records = sorted(root.glob(f"{DIST_NAME}-*.dist-info/RECORD"))
+    if len(records) != 1:
+        raise RuntimeError(
+            f"{root}: expected exactly one {DIST_NAME}-*.dist-info/RECORD, found "
+            f"{len(records)}. Without the distribution's own manifest this scan "
+            f"would be a walk over whatever else is installed beside it.")
+
+    files = []
+    for line in records[0].read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        rel = line.split(",")[0]
+        if not rel or rel.endswith("/"):
+            continue
+        if _ARTEFACT_SKIP_DIRS & set(Path(rel).parts):
+            continue
+        if any(part.endswith((".dist-info", ".egg-info")) for part in Path(rel).parts):
+            continue
+        if not (root / rel).is_file():
+            raise RuntimeError(f"{rel}: named in RECORD but absent from {root}")
+        files.append(rel)
+    if not files:
+        raise RuntimeError(f"{root}: RECORD lists no files, so this scan would prove nothing")
+    return sorted(files)
+
+
+def artefact_in_scope(rel: str) -> bool:
+    """Scope inside an installed artefact.
+
+    Deliberately NOT `in_scope`. `EXCLUDED_PREFIXES` names repository paths that
+    do not exist in a wheel, and applying them would silently do nothing while
+    looking like coverage. The one exclusion that must survive is this module's
+    own source, which ships inside the package and IS a corpus of literal
+    compliance-state assertions by construction — the same self-reference
+    `_own_path` handles for the tree.
+    """
+    if Path(rel).name == Path(__file__).name and Path(rel).parts[:1] == ("scripts",):
+        return False
+    return Path(rel).suffix.lower() in SCANNED_SUFFIXES
+
+
 def _cleared_by_negator(folded: str, start: int) -> bool:
     window = folded[max(0, start - NEGATOR_WINDOW):start]
     return bool(NEGATORS.search(window))
@@ -332,9 +399,13 @@ def _exempt_line(rel: str, line: str) -> str | None:
     return None
 
 
-def scan_file(rel: str) -> list[dict]:
-    """Findings in one tracked file, line by line so exemptions can be exact."""
-    path = REPO_ROOT / rel
+def scan_file(rel: str, root: Path | None = None) -> list[dict]:
+    """Findings in one file, line by line so exemptions can be exact.
+
+    `root` defaults to the repository. It is a parameter so the same predicate
+    can read an installed package; forking it would be measurement rule 1.
+    """
+    path = Path(root or REPO_ROOT) / rel
     try:
         text = path.read_text(encoding="utf-8", errors="replace")
     except OSError as exc:                                    # pragma: no cover
@@ -379,10 +450,17 @@ def run(argv=None) -> int:
     parser.add_argument("--control", action="store_true",
                         help="Prove the guard can fail: run it against planted "
                              "determinations and a planted negation")
+    parser.add_argument("--root", metavar="PATH",
+                        help="Scan an INSTALLED package root (site-packages) by "
+                             "walk instead of this repository by git index. "
+                             "N144: the tree is not what anyone installs.")
     args = parser.parse_args(argv)
 
     if args.control:
         return _control()
+
+    if args.root:
+        return _run_artefact(Path(args.root))
 
     files = _tracked_files()
     scoped = [f for f in files if in_scope(f)]
@@ -410,6 +488,38 @@ def run(argv=None) -> int:
               "DECLARED_NOT_A_DETERMINATION with a reason.")
         return 1
     print("  no compliance-state assertion on any scanned surface — OK")
+    return 0
+
+
+def _run_artefact(root: Path) -> int:
+    """The same guard, over an installed artefact rather than over the tree.
+
+    DECLARED_NOT_A_DETERMINATION is deliberately NOT consulted here. Every entry
+    in it is keyed on a repository-relative path, and honouring those keys inside
+    a wheel would exempt lines by coincidence of name. An artefact scan is
+    therefore stricter than a tree scan, which is the correct direction: what
+    ships has no context to plead.
+    """
+    files = artefact_files(root)
+    scoped = [f for f in files if artefact_in_scope(f)]
+    if not scoped:
+        print("determination-guard: REFUSING, artefact corpus is empty. A guard "
+              "with no corpus passes for the wrong reason.", file=sys.stderr)
+        return 2
+
+    findings = []
+    for rel in scoped:
+        findings.extend(scan_file(rel, root=root))
+
+    print(f"determination-guard: scanned {len(scoped)} installed file(s) of "
+          f"{len(files)} under {root}, {len(findings)} finding(s)")
+    for f in findings:
+        print(f"  {f['file']}:{f['line']}: {f['shape']}: {f['fragment']}")
+    if findings:
+        print("\nThese are in the artefact a user installs, not only in the tree. "
+              "N144 is the entry that exists because nothing checked this.")
+        return 1
+    print("  no compliance-state assertion in the installed artefact — OK")
     return 0
 
 
