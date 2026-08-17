@@ -566,7 +566,6 @@ class TestMonitorRotation:
 # an exposure on any shared workstation, build agent, or CI runner.
 
 def _modes(root):
-    import os
     from pathlib import Path
     dirs = [p for p in Path(root).rglob("*") if p.is_dir()] + [Path(root)]
     files = list(Path(root).rglob("audit_*.jsonl"))
@@ -656,7 +655,8 @@ def test_doctor_reports_an_exposed_store(tmp_path, monkeypatch):
 
     monkeypatch.setenv("REGULA_AUDIT_DIR", str(store))
     import importlib
-    import log_event, doctor
+    import log_event
+    import doctor
     importlib.reload(log_event)
     importlib.reload(doctor)
 

@@ -55,3 +55,14 @@ def magenta(s: str) -> str:
     return f"{MAGENTA}{s}{RESET}"
 
 
+def plain(s: str) -> str:
+    """Identity, for call sites that select a colour function by verdict.
+
+    Those sites need a no-colour branch with the same signature as `red` and
+    friends. Writing `lambda x: x` inline gave two anonymous copies in
+    `cli_scan.py`, which is what E731 objects to; naming it here keeps the
+    selection uniform and gives the branch somewhere to be tested.
+    """
+    return s
+
+

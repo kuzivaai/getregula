@@ -39,6 +39,22 @@ consolidated session record.
   Under the rule immediately above, a number that changed because the corpus
   changed is correct at its own commit and is not superseded. Reserve the
   marker for a statement that was WRONG or has been WITHDRAWN.
+- **Every N-entry carries a machine-readable `**State:**` token, and no count
+  of this file may be taken any other way.** The states are `OPEN`, `PARTIAL`
+  and `CLOSED`, assigned from the entry's own `**Status:**` prose by one rule:
+  CLOSED names no residual work at all; PARTIAL means the substantive work is
+  done but the status names something outstanding (a verification, a gate, a
+  sub-item, a sibling); OPEN means the substantive work is not done. The prose
+  is the historical record and is never rewritten to match the token.
+  Introduced 2026-08-15, after a handover asserted "23 of 51" open under a
+  heading reading "Produced by enumeration, not from memory". It was hand-read.
+  A keyword scan of the same file returned 29, the two lists agreed on 22, and
+  neither was reproducible, because there was no field to enumerate. **State
+  which definition you mean**: by "substantive work outstanding" the answer is
+  the OPEN count, by "anything outstanding at all" it is OPEN + PARTIAL, and
+  those differ by more than twenty. Derive both with
+  `python3 scripts/ledger_status.py`; `tests/test_ledger_enumeration.py`
+  refuses an entry with no token, an unknown token, or two.
 - **A status may not name a commit that cannot establish it.** A docs-only
   commit does not close a code defect. Six rows in section 1 named the commit
   that RECORDED a finding as the commit that FIXED it; corrected 2026-07-30
@@ -489,6 +505,8 @@ published is the move this programme exists to catch.
 
 ## N61 — Commercial review used stale current-release identity
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-01. **Status:** partially addressed.
 
 PyPI no-cache JSON, pip index, downloaded wheel METADATA, and tag mapping identify
@@ -508,6 +526,8 @@ improved. commercial_v1 remains STOP and the product remains not approved for
 a customer pilot.
 
 ## N62 — Delivery-derived public-surface inventory
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-01. **Status:** implemented; discovered residual claim
 classes corrected, exact final verification pending.
@@ -531,6 +551,8 @@ NOT_APPROVED.
 
 ## N63 — Decision labels were downstream of three reproducibility defects
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-01. **Status:** implementation complete; independent
 exact-commit verification pending.
 
@@ -552,6 +574,8 @@ competitor equivalence, demand or pilot evidence, so commercial_v1 remains STOP
 and `PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
 
 ## N64 — Active-delivery claim enforcement and readiness decision
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-03. **Status:** partially addressed; N65's corrected
 claim gate is verified, but wider release readiness remains blocked.
@@ -580,6 +604,8 @@ N60 and N61 retain their prior status. commercial_v1 remains STOP and
 `PRODUCT_PILOT_STATUS` remains NOT_APPROVED.
 
 ## N65 — Merge blocker used tracked-renderable as a publication proxy
+
+**State:** CLOSED
 
 **First raised:** 2026-08-03. **Status:** implementation and exact verification
 complete for the corrected merge-claim predicate; wider release readiness is not
@@ -610,6 +636,8 @@ candidates with zero unsourced, exit 0. This closes N65's verification condition
 only. Repository release readiness and every other open item remain separate.
 
 ## N66 — Validation-readiness decision pack remains externally disabled
+
+**State:** OPEN
 
 **First raised:** 2026-08-05. **Status:** preparation implemented; its original
 H1 recommendation is superseded by N67; controls and professional prerequisites
@@ -653,6 +681,8 @@ immigration, public, release or deployment action.
 
 ## N67 — Exact UK insurer claims-triage onboarding hypothesis lacks public transaction evidence
 
+**State:** CLOSED
+
 **First raised:** 2026-08-05. **Status:** exact hypothesis ABANDONED as the
 governing beachhead; public result complete; external action remains NOT
 AUTHORISED.
@@ -682,6 +712,8 @@ insufficient. This item changes neither N66's external controls nor any product,
 efficacy, claim-integrity, release, ownership or immigration item.
 
 ## N68 — Successor falsification does not overturn the abandoned H1
+
+**State:** CLOSED
 
 **First raised:** 2026-08-05. **Status:** public successor review complete;
 exact H1 remains ABANDONED; no spend or external action authorised.
@@ -717,6 +749,8 @@ technical subset and manual-workflow comparison. No product, contact, spend,
 ownership, immigration, public or release action is authorised.
 
 ## N69 — Direct-transaction discovery requires owner and professional gates
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-05. **Status:** preparation ready for owner review;
 external contact and real-data collection remain NOT AUTHORISED.
@@ -777,6 +811,8 @@ a separately permissioned register using random tokens. H1 remains abandoned,
 H2 remains not created, and contact remains not authorised.
 
 ## N70 — Current-count enforcement hid collisions behind broad path exclusions
+
+**State:** CLOSED
 
 **First raised:** 2026-08-05. **Status:** CLOSED 2026-08-05 in
 `4996590c53f012828f75bfa69d3b10875db18103`, tree
@@ -846,6 +882,8 @@ the paragraph above.
 
 ## N71 — Stage A linkage and re-identification controls remain pre-execution
 
+**State:** OPEN
+
 **First raised:** 2026-08-05. **Status:** preparation corrected; owner and
 professional gates remain OPEN; real data DISABLED.
 
@@ -871,6 +909,8 @@ flow can join identity and analytical content, use deterministic IDs, link
 counterparts without permission, or fail to propagate withdrawal.
 
 ## N73. The second wall-clock test, converted, and the class disposition
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-06. **Status:** CLOSED for this instance in
 `356abab`. N28's own instance remains OPEN and untouched.
@@ -925,6 +965,8 @@ no detection pattern, threshold or flag was touched.
 
 ## N74. The cryptography ceiling forbade its own fix, on two lines
 
+**State:** CLOSED
+
 **First raised:** 2026-08-06. **Status:** FULLY CLOSED. `a62afc6` closed
 `pyproject.toml`; `b61267f` closed the three CI workflow lines; `b978076`
 relocked `uv.lock`. Enumerated afterwards by command: no
@@ -964,6 +1006,8 @@ reasons, and was reverted byte-exactly rather than folded in. Nothing in CI
 consumes `uv.lock`.
 
 ## N75. A third wall-clock test, found by the verification that followed the second
+
+**State:** CLOSED
 
 **First raised:** 2026-08-06. **Status:** CLOSED 2026-08-06 in `10b8378`,
 after its own overturning criterion was met. The criterion was "a second
@@ -1022,6 +1066,8 @@ network-dependent wall clock must not be able to block a merge.
 
 ## N76. The first pull request this branch ever opened found two defects no local gate could see
 
+**State:** CLOSED
+
 **First raised:** 2026-08-06. **Status:** BOTH CLOSED in `496235d`; the class
 half is closed by a new guard.
 
@@ -1072,6 +1118,8 @@ the known instance; whether other CI steps have no local counterpart is NOT
 enumerated here and is left open rather than assumed away.
 
 ## N77. The corrected counts reached main but not the live site
+
+**State:** CLOSED
 
 **First raised:** 2026-08-06. **Status:** RESOLVED 2026-08-06. The live site
 now serves the current count and matches the repository. **The final
@@ -1176,6 +1224,8 @@ figures in the interim is quoting the previous count.
 
 ## N78. The count-literal scan matched inside a hex identifier, and the runner count drifted, both caught by the tip verification
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-07. **Status:** CLOSED 2026-08-07 (fix commit
 follows this branch's tip `eb3fef3`; final full-suite evidence recorded on
 this row when the tip re-run completes).
@@ -1237,6 +1287,8 @@ and the dated Downloads handover produced from this checkpoint.
 
 ### N79. Unresolved browser answers can reach a handable regulatory artefact
 
+**State:** OPEN
+
 **First raised:** 2026-08-11. **Status:** OPEN, containment designed, no public
 surface changed in Phases 0 to 2.
 
@@ -1255,6 +1307,8 @@ points.
 
 ### N80. The epistemic defect is not confined to the questionnaire
 
+**State:** OPEN
+
 **First raised:** 2026-08-11. **Status:** OPEN, generator G1 confirmed by
 prediction at 3/5 strict hits.
 
@@ -1271,6 +1325,8 @@ is changing questionnaire weights because that repairs one instance and none
 of the predicted scanner, gap, jurisdiction, or artefact defects.
 
 ### N81. Decision engines are copied and contractually divergent
+
+**State:** OPEN
 
 **First raised:** 2026-08-11. **Status:** OPEN, generator G2 confirmed by
 prediction at 2/3 strict hits.
@@ -1289,6 +1345,8 @@ equivalence executable.
 
 ### N82. Adapter boundaries do not fail closed
 
+**State:** OPEN
+
 **First raised:** 2026-08-11. **Status:** OPEN, generator G3 confirmed by
 prediction at 4/4 hits.
 
@@ -1306,6 +1364,8 @@ state that preserves prior diagnostics. The rejected alternative is adding an
 would remain unsafe.
 
 ### N83. Assurance targets agreement with current artefacts more often than validity
+
+**State:** OPEN
 
 **First raised:** 2026-08-11. **Status:** OPEN, generator G4 confirmed by
 prediction at 5/5 hits.
@@ -1332,6 +1392,8 @@ more snapshots of current output.
 
 ### N84. Product surface exceeds validated evidence
 
+**State:** OPEN
+
 **First raised:** 2026-08-11. **Status:** OPEN, generator G5 confirmed by
 prediction at 3/3 hits.
 
@@ -1347,6 +1409,8 @@ alternative is retaining every surface with stronger disclaimers because
 disclaimers do not prevent a definitive machine output or false-clean state.
 
 ### N85. The binding constraint is an absent executable meaning contract
+
+**State:** OPEN
 
 **First raised:** 2026-08-11. **Status:** OPEN, confirmed by path enumeration;
 remediation architecture designed.
@@ -1365,6 +1429,8 @@ Uncalibrated numeric confidence is removed from decision meaning. The rejected
 alternative is threshold tuning.
 
 ### N86. N78 is not closed on the current tree
+
+**State:** OPEN
 
 **First raised:** 2026-08-11. **Status:** OPEN, confirmed defect; deliberately
 not repaired opportunistically during diagnosis/design.
@@ -1386,6 +1452,8 @@ consequence containment item.
 
 ### N87. Current standards status must separate publication from OJ citation
 
+**State:** OPEN
+
 **First raised:** 2026-08-11. **Status:** OPEN monitoring item; current research
 checkpoint recorded.
 
@@ -1403,6 +1471,8 @@ Commission-assessment, and OJ-citation fields. The rejected alternative is
 treating an EN publication announcement as legal presumption of conformity.
 
 ### N88. Remediation sequence and repository/external boundary
+
+**State:** OPEN
 
 **First raised:** 2026-08-11. **Status:** DESIGNED, not executed.
 
@@ -1428,6 +1498,8 @@ predicates.
 
 ### N89. Phase 3 was not reached
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-11. **Status:** CLOSED as a session-scope decision;
 containment remains OPEN under N79 and N88.
 
@@ -1448,6 +1520,8 @@ verification. The final commit and tree must replace this checkpoint after the
 implementation is committed.
 
 ### N90. Third-party evidence and conformity handoff
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-11 as audit open question A1. **Status:** CLOSED for
 the no-sourced-facts experiment; resolved-input recipient comprehension remains
@@ -1488,6 +1562,8 @@ to recipients would be Asserted, not Demonstrated.
 
 ### N91. VS Code extension host boundary
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-11 as A2 and N82/N84. **Status:** CLOSED for the
 observed valid-but-unexpected envelope and parse-failure paths at commit
 `203e03b3d9c63ff45b22df3fc18f8cb480e63d1f`; inclusion in repository CI remains
@@ -1501,6 +1577,8 @@ error. Parse and command failures do the same. The implementation and extension
 host control are committed in `203e03b` and held unpushed.
 
 ### N92. Obligation and entry-point surface
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-11 as A3. **Status:** CLOSED for the current
 worktree predicate; must be regenerated at the final commit.
@@ -1540,6 +1618,8 @@ therefore falsified for this moved tree.
 
 ### N93. Primary-law basis and model correction
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-11 as A4. **Status:** PARTIAL. All 60 emitted edges
 have a recorded official source and condition basis; delegated Korean threshold
 values and two model variants remain unresolved.
@@ -1562,6 +1642,8 @@ require new obligation-variant and role-conversion predicates, respectively.
 
 ### N94. Epistemic decision kernel
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-11 as G1/R1. **Status:** IMPLEMENTED and committed;
 whole-tree verification is not final.
 
@@ -1581,6 +1663,8 @@ needed for the current edges. The rejected alternative was converting detector
 matches to facts, which would recreate the absence/no defect.
 
 ### N95. Semantic, property, mutation, and cross-runtime assurance
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-11 as B5 to B7, C3, and G4. **Status:** IMPLEMENTED;
 focused controls are green, while full-suite and final-commit gates remain
@@ -1608,6 +1692,8 @@ through `tests/test_documentation.py`.
 
 ### N96. Adapter and browser wiring
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-11 as C1 to C4 and G2/G3. **Status:** PARTIAL.
 
 **Demonstrated by implementation and focused tests.** Questionnaire, check,
@@ -1631,6 +1717,8 @@ provides another compliant route.
 
 ### N97. Documentation and public-surface truth
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-11 as C5 and G5. **Status:** PARTIAL, held unpushed.
 
 **Demonstrated.** EN, DE, and PT-BR terminal demos are generated from real
@@ -1652,6 +1740,8 @@ user-ready.
 
 ### N98. Generator status after this work
 
+**State:** OPEN
+
 **First raised:** 2026-08-11. **Status:** G1 substantially implemented but not
 closed at the protected bare CLI; G2 closed for the three browser locale
 decision engines and made detectable through conformance; G3 closed for the
@@ -1665,6 +1755,8 @@ co-binding: a correct kernel cannot make legacy readiness and documentation
 scorers valid if they remain callable as legal conclusions.
 
 ### N99. Verification and release state
+
+**State:** OPEN
 
 **First raised:** 2026-08-12. **Status:** OPEN.
 
@@ -1682,6 +1774,8 @@ STAGE_A_PACK HOLD, EXTERNAL_CONTACT NOT_AUTHORISED, REAL_DATA_COLLECTION
 DISABLED, and PILOT NOT_APPROVED.
 
 ### N100. Custom runner parameter expansion and stale invariant expectations
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-12 during final verification. **Status:** REPAIRED;
 final whole-run verification remains pending.
@@ -1724,6 +1818,8 @@ unwired-module backlog.
 
 ### N101. Generated inventory and count reconciliation after kernel wiring
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-12 during final verification. **Status:** CURRENT in
 the working tree; commit and final gates pending.
 
@@ -1760,6 +1856,8 @@ label the figure as collected and identify full execution as a separate check.
 This is a G4 correction: agreement with a generated count is not validity.
 
 ### N102. Final-suite schema migration failures and recall fail-open
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-12 during the first full pytest run at clean commit
 `843d3b7ce94bffc13649bb7b6f343169a53be74f`, tree
@@ -1822,6 +1920,8 @@ check remain required. N96's protected bare-CLI boundary also remains open.
 
 ### N103. Count cascade missed an expected-collection command comment
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-13 during whole-diff inspection. **Status:** CLOSED
 in the working tree; final gates pending.
 
@@ -1846,6 +1946,8 @@ passes. The fixture now uses historical arbitrary values, so it tests the
 predicate without creating a carrier for the current count.
 
 ### N104. Verification at the repaired implementation commit
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-13. **Status:** PARTIAL because the required one-shot
 full-suite rc cannot be obtained in this harness and the protected bare CLI
@@ -1902,6 +2004,8 @@ measured adapters, and G5 remains open for external human validation and the
 standing wider surface debt. Every standing verdict remains unchanged.
 
 ### N105. Protected bare route, verification speed, and deployed-site currency
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-13. **Status:** PARTIAL. The protected bare route is
 closed for the measured surface and the one-command verification requirement
@@ -1990,6 +2094,8 @@ pack, contact, data-collection, and pilot verdicts remain unchanged.
 
 ### N106. Browser questionnaire: abandonment defects, locale determination claim, and flow de-duplication
 
+**State:** PARTIAL
+
 **First raised:** 2026-08-14. **Status:** IMPLEMENTED for the enumerated
 defects; the scoping-flow gap and representative-user validation remain open.
 
@@ -2072,6 +2178,8 @@ venture, contact, data-collection and pilot verdicts are unchanged.
 
 ### N107. The wording guards were monolingual, and blind to markup and entities
 
+**State:** CLOSED
+
 **First raised:** 2026-08-14. **Status:** IMPLEMENTED for the enumerated
 defects. Commits `HELD:b2f9f73` and `HELD:c72e910`, held on
 `feat/engagement-fixes` with `HELD:f008756`; nothing is on main.
@@ -2149,6 +2257,8 @@ product, venture, pack, contact, data-collection and pilot verdicts are
 unchanged.
 
 ### N108. Published CLI transcripts asserted conclusions the tool does not make
+
+**State:** PARTIAL
 
 **First raised:** 2026-08-14. **Status:** IMPLEMENTED for the enumerated
 surfaces; the non-reproducible detector reading below is OPEN and undiagnosed.
@@ -2230,6 +2340,8 @@ The standing product, venture, contact, data-collection and pilot verdicts are
 unchanged. Nothing here is evidence of demand, usability or comprehension.
 
 ### N109. A tracked metrics artefact recorded cumulative totals as weekly ones
+
+**State:** CLOSED
 
 **First raised:** 2026-08-14. **Status:** IMPLEMENTED. Held on
 `feat/engagement-fixes`; nothing is on main.
@@ -2380,6 +2492,8 @@ nothing enforces. Recorded so the next drift is not rediscovered from scratch.
 
 ### N110. The non-reproducible detector reading was path sensitivity, not non-determinism
 
+**State:** CLOSED
+
 **First raised:** 2026-08-14 as N108's open tail, carried into the 14 August
 handover as the highest technical priority. **Status:** RESOLVED 2026-08-15.
 Held on `feat/engagement-fixes`; nothing is on main.
@@ -2451,6 +2565,8 @@ signal.
 
 ### N111. The count guard matched inside a cryptographic OID, and its test had drifted
 
+**State:** CLOSED
+
 **First raised:** 2026-08-15, by the guard failing during an unrelated
 cascade. **Status:** IMPLEMENTED. Held on `feat/engagement-fixes`; nothing is
 on main.
@@ -2507,6 +2623,10 @@ The standing product, venture, contact, data-collection and pilot verdicts are
 unchanged.
 
 ### N112. The scan cache is provenance-blind, so a published reading depends on scan order
+
+**State:** CLOSED
+
+**Resolved by:** N113
 
 **First raised:** 2026-08-15, by `test_every_documented_transcript_reproduces`
 passing in isolation and failing in the full suite on the same commit and the
@@ -2576,3 +2696,739 @@ made. Anyone acting on it should start at `ScanCache.get`/`put` in
 
 The standing product, venture, contact, data-collection and pilot verdicts are
 unchanged.
+
+---
+
+### N113. N112 was a false-negative defect, not a priority wobble, and the fix crossed a recorded STOP
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15, by an independent audit of the 15 August handover
+that re-ran every gate it cited rather than reading them.
+
+**Status:** FIXED and guarded on `feat/engagement-fixes`; nothing is on main.
+**SUPERSEDES:N112** on severity and on disposition.
+
+**What N112 got wrong.** N112 characterised the scan-cache key defect as a
+reproducibility problem: the same command printing detector priority 63 or 43
+depending on what had been scanned earlier. That is real and it stands. It was
+not the whole harm. The cached finding dict embeds `provenance`, and `--scope
+production` **filters on provenance**, so the poisoned entry does not merely
+shift a score across a tier band, it changes which findings exist. Measured, on
+two byte-identical files each the root of its own scan, so both key on
+`app.py`:
+
+```
+BASELINE  cold cache, check plain/     -> 1 production finding   [('app.py','production')]
+POISONED  examples/ scanned first      -> 0 production findings  [('app.py','example')]
+```
+
+Reproduced in both directions and both ways round. A real finding in a
+production file disappears from a production-scope scan because of what was
+scanned earlier on that machine. In a tool whose output is risk indication,
+that is a false negative.
+
+**What N112 left unproven, now proven.** N112 recorded that "`regula check`
+invocations run directly wrote zero cache entries, which is itself
+unexplained", and that the polluting caller was never identified. The cause:
+`cmd_check` passes `min_tier='limited_risk'` (`scripts/cli_scan.py:293`), and
+`_cache_put` deliberately refuses to write on a partial scan
+(`scripts/report.py:657`, documented there and guarded by
+`test_min_tier_scan_does_not_poison_cache`). **`regula check` therefore reads
+the cache and never fills it.** The writers are the full-scan callers:
+`report`, `evidence-pack`, `conform`, `benchmark`, `quickstart`, `dpv-export`,
+`init`, `security-self-check`. The collision is cross-command, which is why no
+amount of running `check` alone ever reproduced it.
+
+**The fix.** Cache keys gain a path-context component (`ScanCache._key`, schema
+bumped v4 to v5, which also invalidates every entry written under the unsound
+key). `report.path_context_token` emits every classification this module
+derives from the FULL path (provenance, test, example, init), and both the
+`get` and all eight `put` sites pass it. Guarded by three tests in
+`tests/test_scan_cache.py`, each shown to FAIL under a control that neuters the
+discriminator and PASS with it, per measurement rule 4.
+
+**This crossed a recorded decision and the owner should rule on it.** N112
+concluded "it is a product change and `PRODUCT_BUILD` is STOP, so it is
+recorded rather than made." That disposition was reached on the belief that the
+harm was a priority wobble. The harm is a false negative. The change was made
+on that new evidence and on an explicit instruction to fix, it is on an
+unpushed branch with nothing published, and it is therefore fully reversible.
+**`PRODUCT_BUILD` remains STOP; this entry does not move it.**
+
+### N114. "Grep for all usages" has a blind spot here: gitignored code is still live code
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15, by removing an import that six separate searches
+had reported as dead and watching seven tests fail.
+
+**Status:** RESTORED and documented in `scripts/classify_risk.py`; the guard is
+the widened lint gate plus the `__all__` declaration.
+
+`ISO_42001_MAP` was imported by `scripts/classify_risk.py` and never used
+there. A repo-wide search reported exactly one occurrence, its definition in
+`scripts/risk_patterns.py`. It was removed as dead. Its real and only consumer
+is `hooks/pre_tool_use.py:19`, which imports it **from `classify_risk`** as a
+re-export. **`hooks/` is gitignored** (`.gitignore:51`), and gitignore-aware
+search tooling skips it silently, reporting zero hits rather than declining to
+look.
+
+Two things follow, and the second is the serious one.
+
+1. Rule 4b says untracked files are not published surfaces and must not be
+   counted as such. That is about scope. It does not mean untracked files are
+   not *dependencies*. **Untracked is not unused.** Before deleting any name,
+   grep `hooks/` explicitly, or run a search that does not honour gitignore.
+2. **The hook fails open.** Its `except ImportError` installs stubs that allow
+   everything, so the broken import turned `regula`'s governance hook into a
+   permit-everything pass: a command matching the Article 5(1)(c) prohibition
+   was ALLOWED, with only a line on stderr. This is deliberate and documented
+   at `hooks/pre_tool_use.py:22-30`, and the reasoning (do not brick a session
+   on a partial install) is sound. It is recorded here because the blast radius
+   of any import error in `scripts/` is larger than it looks, and because
+   nothing tests the fail-open path itself.
+
+Three of the four names flagged in `classify_risk.py` were re-exports with
+seven further call sites between them. `ruff --fix` offered to remove all four.
+
+### N115. The lint gate was narrower than the debt it was reported against
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15. **Status:** GATE WIDENED in
+`.github/workflows/ci.yaml` and `CLAUDE.md`; residue is zero.
+
+The project gate selected `F821,F811` only. `F401,F841` were ungated as
+"style", and 18 had accumulated across 14 files. Four were not style: see N114.
+Measurement rule 5 applies, in that passing `F821,F811` was being reported as
+lint cleanliness while the gate tested something narrower than the claim. All
+18 are resolved, none by suppression: the re-exports are declared in `__all__`,
+which is the underlying-code fix, and the one deliberate `import yaml`
+availability probe in `tests/test_classification.py` now uses
+`importlib.util.find_spec`, so it can no longer be mistaken for an unused
+import and "fixed" into a test that skips whether or not pyyaml is present. The
+gate now selects `F821,F811,F401,F841`.
+
+### N116. The register could not be counted, and a count of it was published anyway
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15. **Status:** FIELD ADDED to every entry;
+`scripts/ledger_status.py` enumerates it; `tests/test_ledger_enumeration.py`
+guards it with three controls.
+
+The 15 August handover's section 6 is headed "Produced by enumeration, not from
+memory" and opens with "Ledger entries with an open status: 23 of 51". The 51
+reproduces. **The 23 does not, and could not have**, because this file recorded
+state only as prose and there was no field to enumerate. A mechanical scan of
+the `**Status:**` lines returns 29; the two lists agree on 22; the handover's
+list contains N98, which no keyword rule catches because its status reads "not
+closed" without the word "open", and the mechanical list contains seven the
+handover omits.
+
+This is measurement rule 4c's own failure mode, occurring in a document that
+cites measurement rule 4c. The handover's section 6.12 item 3 asks for exactly
+this field without connecting the request to the figure it invalidates.
+
+Neither number was dishonest; they were answering different questions. By
+"substantive work outstanding" the count is the OPEN total. By "anything
+outstanding at all, including a named final verification" it is OPEN plus
+PARTIAL, and on this tree those differ by more than twenty. The phrase "open"
+therefore carries no information here unless the definition travels with it.
+
+**The two figures are deliberately not written into this paragraph.** They move
+whenever an entry is added, including by this very entry, and the first draft
+of this row stated both and was stale inside the hour: the same defect one
+paragraph below its own diagnosis. Derive them:
+`python3 scripts/ledger_status.py`.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N117. The published test-function count measured a narrower population than its label named
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15, by a new test file counting **0** in
+`data/site_facts.json` while containing six tests.
+
+**Status:** FIXED. `scripts/site_facts.py` counts with `ast`; guarded by five
+checks in `tests/test_site_facts.py`, each with a control. Held on
+`feat/engagement-fixes`; nothing is on main.
+
+`data/site_facts.md` publishes a row labelled **"Test functions (all files)"**.
+It was produced by `re.findall(r"^def (test_\w+)", text, re.MULTILINE)`, which
+counts a function only at column zero. Every test written as a
+`unittest.TestCase` method was therefore invisible: **565 of them across 22
+files**, including whole suites such as `test_classify_risk.py` (207) and
+`test_evidence_pack_unit.py` (89).
+
+This is the N109 shape a third time: the values were never wrong, the
+population was. A label naming a quantity wider than the one measured, on a
+tracked surface, which measurement rule 4b makes a published surface.
+
+**A second defect, found only because the first was being fixed.** Widening
+the regex to `^[ \t]*def test_` immediately produced a per-file count ABOVE
+what pytest collects for `tests/test_classification.py`: 442 against 441. The
+extra is `def test_model_accuracy():` sitting at column zero inside a
+triple-quoted code sample that the file feeds to the AST parser under test.
+**The original regex matched that string too**, so the published figure was
+one function that does not exist plus a category that does. A regex cannot
+distinguish source from a string literal. `count_test_functions()` now parses
+with `ast` and counts what pytest collects: a `test_*` function at module
+level, or a `test_*` method declared directly in a class. A function nested
+inside another function is not collected and is not counted.
+
+**Why nothing caught it.** Two counts sat side by side in the same artefact,
+`total_collected` from a real pytest collection and `total_functions` from
+this scan, and nothing compared them. The new guard does, per file, against a
+live collection rather than a recorded number, and the invariant is
+one-directional because parametrisation expands one source function into
+several collected items: per-file static count must be **at most** the
+per-file collected count. That is the check that found the string literal.
+
+**Effect on the published figure.** `total_functions` moves from 2,059 to a
+value derived by `python3 -m scripts.site_facts`; the difference is over 700.
+The number is deliberately not written here, for the reason N116 gives.
+
+**Controls, all fired.** Replacing the AST counter with the widened regex
+fails four of the five checks, including the collection cross-check.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N118. A published progress readout was audited as a numeric claim, and six quarantine entries had gone stale
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15, working N108's deferred disposition.
+
+**Status:** FIXED in `scripts/claim_auditor.py`; nine entries burned down.
+Held on `feat/engagement-fixes`; nothing is on main.
+
+N108 left three assess-page `0%` entries for the owner rather than burning
+them down "on a disposition that would not be true", and characterised them as
+CSS (`max-width: 100%`) plus a progress-bar label. **The CSS half was wrong.**
+Measured, all three are one thing: `<span id="progressPct">0%</span>`, inside a
+`role="progressbar"` wrapper and an `aria-live="polite"` label. That is why
+`strip_noise`'s existing `<style>` stripping never reached them.
+
+The content of an ARIA live region or a progressbar is replaced by script at
+runtime, so the value in the file is a placeholder, not a published claim.
+`_blank_live_regions()` blanks it, using `html.parser` rather than a regex
+because nesting has to be counted, and dropping any region left unclosed at
+EOF rather than blanking to end of file, since over-blanking narrows the gate
+silently. The rule is semantic, not a per-page exemption: any future status
+readout is covered, because the markup must already declare itself to
+assistive technology.
+
+**What the gate no longer tests, stated per measurement rule 5:** a genuine
+claim written inside a live region is not audited. Accepted, because static
+editorial prose does not belong in a region declared as machine-updated.
+
+**A separate finding, and the more useful one.** The 15 August audit record
+described the quarantine as "10 genuine + 9 CSS false positives". Only three of
+those nine were still live. **Six had been fixed some time ago and were
+holding ratchet headroom for findings that no longer existed**, which is
+exactly what `quarantine_liveness.py` exists to surface and what N23 recorded
+happening to fifteen entries before. All nine are now burned down with their
+measured cause; entries and ceiling both fall from 19 to 10.
+
+The two groups carry different provenance and are recorded separately. The six
+were silent at `4d922be` with the instrument unmodified. The three went silent
+because the INSTRUMENT changed in this same commit, and their notes say so: a
+burn-down caused by a change to the measuring tool must not read as though the
+page changed.
+
+**Two gaps closed while burning down.**
+`test_every_burned_down_entry_is_really_gone_from_its_page` re-measured only
+`text-absent` records; a `blanked-by-strip-noise` record was field-checked and
+then trusted forever, so narrowing a strip rule later would revive the claim
+while its ceiling reduction stayed. Both halves are now asserted: the text IS
+on the page, and `strip_noise` DOES remove it.
+
+And `test_every_silent_entry_carries_a_measured_silent_because` opened with
+`assertTrue(silent_entries)`, so **clearing the backlog completely turned it
+red**. The guard conflated "the measurement produced nothing" with "nothing is
+silent, because they were all burned down", and the second is the goal. It now
+asserts the accounting invariant, which holds at zero silent entries and is
+still non-vacuous.
+
+**Controls, all fired.** Disabling `_blank_live_regions` or the `<style>`
+strip turns the burn-down re-measurement red; two parser controls cover the
+unclosed-region and depth-counting branches.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N119. `regula plan --done` reported success for a task no plan contained
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15 (recorded unfixed as §6.6 of the audit record).
+
+**Status:** FIXED in `scripts/remediation_plan.py`, `scripts/cli_compliance.py`
+and `scripts/errors.py`; five tests, controlled. Held on
+`feat/engagement-fixes`; nothing is on main.
+
+`regula plan --project . --done BOGUS-ID` printed `Marked BOGUS-ID as
+completed.`, exited 0, and wrote
+`{"BOGUS-ID": {"status": "completed", ...}}` into
+`.regula/plan-status.json`. Reproduced directly.
+
+**The defect is wider than the missing id check the audit recorded.**
+`cmd_plan` builds `empty_decision("eu", "cli:plan")` unconditionally, so
+applicability never resolves there and the command emits **no task list at
+all**. Every id was therefore bogus, not only the malformed ones, and
+`--status` already declined to interpret the very file `--done` was writing.
+`.regula/` output is read as evidence; manufacturing a record with no referent
+is worse than emitting nothing.
+
+Fixed at both layers, because either alone leaves the class open.
+`mark_task_done()` now REQUIRES the id set of the plan the mark belongs to and
+raises `UsageError` otherwise, which fixes the library for `conform`, the only
+caller that has a real plan. `cmd_plan --done` refuses outright with exit 2,
+in the same voice `--status` already used, and the argparse help says the flag
+is unavailable until applicability resolves rather than advertising a path
+that fails.
+
+`UsageError` is new in `errors.py`: exit 2, distinct from `ConfigError`
+because nothing is wrong with the configuration, the request cannot be
+satisfied.
+
+**Control.** Restoring the old CLI behaviour, with the library check satisfied
+by an id set the CLI invents, leaves the library tests green and fails the end
+to end one. That is why both layers are tested.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N120. The governance hook's fail-open path had no test, and two imports it never used
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15, following N114.
+
+**Status:** FIXED. `tests/test_hook_fail_open.py`, four checks, three controls.
+The fail-open trade-off is UNCHANGED and remains the owner's. Held on
+`feat/engagement-fixes`; nothing is on main.
+
+N114 recorded that deleting `ISO_42001_MAP` broke the hook's import and turned
+`regula` into a permit-everything pass, and answered it by declaring the name a
+re-export in `classify_risk.__all__`. That is correct given the constraint, but
+it treats the symptom: **`hooks/pre_tool_use.py` imported the name and never
+called it.** It was a dependency edge with no consumer, not a re-export. The
+hook now imports only what it calls, and the declaration is gone from
+`classify_risk`, whose sole remaining home for the map is `risk_patterns`.
+
+The new test that asserts no guarded import is unused **immediately found a
+second one**, `has_high_confidence_secret`: the hook filters the findings
+`check_secrets` already returned, on the same `confidence` field, and never
+called the helper. Also removed.
+
+**A latent gap in the degraded mode itself.** Two names in the guarded import,
+`is_training_activity` and `generate_observations`, had no stub in the except
+block. Fail-open worked only because both call sites happen to sit inside
+`except Exception: pass`. Relying on a broad except two levels down for a
+control's degraded mode is a coincidence, not a design. Both are stubbed, and
+a test now pairs every guarded import with a stub.
+
+**What did NOT change.** The hook still fails open, still exits 0, and still
+warns on stderr. That trade-off is documented at the import site, the
+reasoning is sound, and making it fail closed is an owner decision. The tests
+pin it rather than alter it, including the stderr warning, which is the only
+signal a user gets that the control is off.
+
+**Controls.** Re-adding an unused import reproduces the 15 August break
+exactly and the suite catches it three ways; removing a stub, and silencing
+the warning, each fail their own check.
+
+hooks/ is gitignored, so this test file is the only tracked artefact that
+exercises it. Untracked is not unused; unused is still unused.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N121. Fifty links from localised pages to English-only pages said nothing about it
+
+**State:** CLOSED
+
+**State note:** the machine-readable half is fixed and gated. Translating the
+destinations is a content and commercial decision that is NOT made here.
+
+**First raised:** 2026-08-15 (the audit recorded one instance: the DE and PT
+pricing links).
+
+**Status:** FIXED for what can be fixed under the freeze.
+`scripts/locale_link_audit.py` with `--check`/`--apply`, a CI job, and six
+tests with controls. Held on `feat/engagement-fixes`; nothing is on main.
+
+Enumerated rather than read, per measurement rule 4c, it is not one instance
+and not two. **82 links across 8 localised pages.** Hand-reading found four
+pages and missed `privacy-de`, `privacy-pt-br`, `terms-de` and `terms-pt-br`,
+which mark the language with a `-de` SUFFIX rather than a filename. That is
+hand enumeration failing for the third time in this programme, in a session
+that opened by citing the first two.
+
+Every such link now carries the correct `hreflang`, applied mechanically so no
+published copy was touched; the diff was checked and contains nothing but the
+attribute. A language switcher gets the target's own tag, not `en`: the first
+draft called every non-German target English and would have written a false
+statement into markup, which is worse than the missing attribute it replaced.
+
+**What is NOT claimed.** `hreflang` is best practice, not a WCAG 2.2 AA
+success criterion; 3.1.2 Language of Parts governs content IN a page, not a
+link's destination. This must not be reported as a conformance fix.
+
+The part a sighted reader can see is applied by hand to the four body-copy
+calls to action, where landing on an unreadable page defeats the task:
+"(auf Englisch)" and "(em ingles)". Suffixing nineteen footer links per locale
+would be worse for a reader, not better, and that is a design judgement rather
+than an omission.
+
+The real fix is a translated page. Pricing is the most claim-sensitive surface
+here, the two commits before this work were both price-integrity fixes, and
+duplicating prices into two more locales under `PAYMENT_GATE NOT_ACTIVE` would
+triple the drift surface. Not done, and recorded as not done.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N122. The accessibility gate had never run on this branch, and it was failing
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15, running the axe job locally for the first time.
+
+**Status:** FIXED. 48 canonical pages, zero violations, exit 0. Held on
+`feat/engagement-fixes`; nothing is on main.
+
+The first local run of `docs/accessibility/run-axe.js` **failed**: two
+`scrollable-region-focusable` violations, impact serious, on
+`/guides/article-9-risk-management.html` and `/guides/eu-ai-act-healthcare.html`.
+A horizontally scrolling `<pre>` that a keyboard user cannot scroll is
+WCAG 2.1.1 Keyboard, a Level **A** criterion, on a site whose target is AA.
+
+**Cause established by measurement, not inference.** The temptation was to
+conclude that `docs/accessibility/README.md`'s claim of a clean 4 August audit
+was false. Measurement rule 4e says read both artefacts first, so the audit was
+re-run in a worktree at `95caef4`: both pages were in scope there and both
+returned zero. **The claim was true.** The regression arrived later, on this
+branch. Commit `9e21501`, the N108 correction that replaced published CLI
+transcripts with real command output, took the longest line inside those
+`<pre>` blocks from 68 and 74 characters to 121, past the container at the
+runner's fixed 1400px viewport. A correctness fix to one claim broke an
+accessibility criterion on the same page, and the two had no gate in common.
+
+**Why nothing caught it.** `.github/workflows/accessibility.yml` triggers on
+`pull_request` for `site/**`. These fifteen commits have never been pushed, so
+the job had never run against them. The gate is correct and wired to the right
+paths; **it is blind to work that stays local.** That is the finding worth
+keeping.
+
+The fix completes a pattern the site already used inconsistently: 22 of 73
+`<pre>` elements carried `tabindex="0"` and 51 did not. All 73 now do. An
+accessible name was deliberately not added: `role` plus `aria-label` on 73 code
+blocks adds 73 landmarks and makes screen-reader navigation worse, and the rule
+asks for focusability.
+
+**`site_integrity.py` then caught the layer error.** Three region pages are
+rendered from `content/regulations/*.py`, and the first pass edited the shipped
+HTML directly, producing three regen drift failures. Fixed at source; source
+and shipped are identical again.
+
+**Not conformance.** Thirteen pages still return `incomplete`, which axe
+reports when a human must decide, and automated checks reach only part of
+WCAG. Zero violations means zero violations of the rules this tool evaluates.
+The README now says so, and its local-run instructions are corrected: the
+server line did not background, so anyone following them verbatim hung before
+reaching the audit.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N123. The count-collision policy had no way to say "this digit sequence is not a claim"
+
+**State:** CLOSED
+
+**First raised:** N109 and restated in N111 as "a disposition is still owed".
+
+**Status:** MECHANISM ADDED, deliberately holding zero records.
+`scripts/count_record_policy.py`, guarded by ten checks in
+`tests/test_published_count_manifest.py`. Held on `feat/engagement-fixes`;
+nothing is on main.
+
+Four collisions in two weeks (a `#dcNNNN` hex colour, a `cli:NNNNfb52...`
+stable_id, the PKCS#7 RSADSI arc, and a sub-1000 count no candidate scanner
+could nominate) were each answered by widening a lookaround in
+`count_pattern`. Those widenings are correct and they stay. As a policy it does
+not hold, for three reasons: every widening is GLOBAL and narrows the guard in
+every file for every value; it can express only LEXICAL facts, so "this integer
+is a byte size" or "a port number" has no signature to exclude on; and the
+reason ends up in a docstring detached from the occurrence, which is how N111's
+own copy drifted.
+
+`not_a_count_claim` records a single occurrence in a LIVE file, keyed on
+`context_regex` matched against **the hit's own line**. The first design used a
+character window either side and the fixtures killed it immediately: in a short
+file every line is inside every other line's window, so one declared timeout
+constant vouched for a published claim two lines below. A line is a real
+boundary and it fits every collision seen so far.
+
+Two rules make this a disposition rather than a bypass, and both are
+controlled. **Declaring a file does not exempt the file:** every occurrence
+must be covered or the file is still a violation, which answers the objection
+N70 raised against broad path exclusions. **A record that matches nothing
+FAILS as stale**, so an exclusion cannot outlive its premise, the same
+discipline the quarantine applies to its burn-downs.
+
+**Empty is the correct state today** and is not an oversight. All four known
+collisions are handled lexically and correctly, and nothing was migrated to
+give the list something to hold. Every branch is therefore driven through the
+real `classify_count_occurrences` on synthetic files, or the mechanism would
+be an unexercised branch, which is the state N109's own metrics artefacts were
+in. The fixture is a timeout constant rather than a hex colour, chosen because
+it is the case no lookaround can reach: the digits are delimited by non-word
+characters on both sides, exactly as a published claim is.
+
+The fifth collision is now a data entry with a re-measured premise instead of a
+fifth global regex.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N124. A ledger State could contradict its own Status prose with nothing to say why
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15, reviewing all 55 State assignments added by N116.
+
+**Status:** FIXED. `**Resolved by:**` convention, enforced with five checks in
+`tests/test_ledger_enumeration.py`. Held on `feat/engagement-fixes`; nothing is
+on main.
+
+The audit record asked for owner review of the State tokens, on the ground that
+they were assigned by rule, from prose, by someone who did not write the
+record. **All 55 reproduce.** Checked entry by entry against each entry's own
+Status prose; the seven the previous handover thought might be closable (N95,
+N99, N100, N101, N102, N103 and N108's tail) are each correctly assigned by the
+stated rule. That is the review result and it is a clean one.
+
+The defect is in the rule, not the assignments. Status prose is the historical
+record and is never rewritten, so an entry whose residual is closed by a LATER
+entry ends up contradicting itself, and nothing distinguishes that from an
+assignment error. Two entries already had this shape and were treated
+differently: **N112** says "UNDERLYING DEFECT OPEN" and is CLOSED because N113
+fixed it; **N108** said its detector reading was "OPEN and undiagnosed" and was
+PARTIAL, although N110 diagnosed it and N112 and N113 fixed it. Same shape, two
+answers.
+
+An entry may now carry `**Resolved by:** Nxxx`, and it is REQUIRED whenever the
+State is CLOSED while the Status headline still reads as outstanding. The ids
+must resolve to real entries.
+
+**The marker set is narrow, and that was earned.** The first draft also matched
+"remains", "blocked" and "not started", and flagged three entries that were not
+diverging at all: N74's "no `cryptography` pin remains in any tracked file"
+means nothing remains, and N67 and N68's "external action remains NOT
+AUTHORISED" is a standing governance verdict, not this entry's residual work. A
+gate that is wrong three times in four gets switched off. Both the true
+positive and the three false ones are pinned as controls.
+
+N108 is closed by this session: its detector reading by N110, N112 and N113,
+and its deferred quarantine disposition by N118.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N125. Three shipped paths print a compliance determination, which is the one thing this project forbids
+
+**State:** OPEN
+
+**First raised:** 2026-08-15, by an independent dossier pass; each path read in
+place and each output reproduced by running the command.
+
+**Status:** OPEN. **Not fixed.** Every one is a product behaviour change and
+`PRODUCT_BUILD` is STOP. Recorded with reproductions so the owner can rule.
+Held on `feat/engagement-fixes`; nothing is on main.
+
+`CLAUDE.md` states the hard rule twice: never present a scan result as a
+compliance determination, and never present "not flagged" as "compliant".
+Three shipped paths do exactly that.
+
+**1. `regula badge` emits a green "compliant" badge for any unflagged project,
+and it is built to travel.** `scripts/cli_report.py:349-350`: with no
+prohibited and no high-risk findings, `color = "brightgreen"` and
+`message = "compliant"`, under `label = "EU AI Act"`. Reproduced on a
+directory whose only content is `print('hello')`:
+
+```
+$ regula badge . --format markdown
+[![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-compliant-brightgreen)](https://getregula.com)
+```
+
+That is a copy-paste Markdown badge asserting EU AI Act compliance, linking to
+getregula.com, for a file that prints a greeting. **A badge is designed to be
+embedded in a third party's README, where it travels with no disclaimer and
+carries an implied endorsement from this project.** Of the three, this is the
+one with reach.
+
+**2. `regula ai-codegen` asserts Article 50/52 compliance from two files
+existing.** `scripts/ai_code_governance.py:343` defines
+`transparency_compliant = has_ai_policy and has_disclosure`, and line 418
+prints `EU AI Act Transparency (Art 50/52): COMPLIANT`. Reproduced by creating
+two files totalling 34 bytes:
+
+```
+$ echo "# AI usage policy" > docs/AI_USAGE_POLICY.md
+$ echo "# AI disclosure"   > docs/AI_DISCLOSURE.md
+$ regula ai-codegen --project .
+Governance Score: 70/100 (GOOD)
+EU AI Act Transparency (Art 50/52): COMPLIANT
+$ regula ai-codegen --project . --strict ; echo $?
+0
+```
+
+`scripts/cli.py:1645-1646` wires `--strict` to "Exit 1 if transparency not
+compliant", so this becomes a green CI gate. The predicate is file existence.
+It reads neither file.
+
+**3. "Generate compliant disclosure text", including on a public page.**
+`scripts/assess.py:237` prints
+`regula disclose . -- generate compliant disclosure text`, and the same
+sentence is published at `site/blog/blog-does-ai-act-apply.html:475`. This
+asserts the artefact the tool produces IS compliant. It is the only one of the
+three with a web surface, and it reached the site from the CLI copy.
+
+**Why the existing guards did not catch it.** `verify_transcripts.py` and
+`RETIRED_MARKERS` (N108) enumerate retired output strings such as `Verdict:`
+and "Your project is classified as high-risk". None of them contains the word
+`compliant`, so the guard that exists for exactly this class does not test for
+the strongest form of the claim. Widening `RETIRED_MARKERS` would catch 3 but
+also flag legitimate negated prose ("does not determine compliance"), so the
+guard needs a claim-shape rule rather than a substring, and that design is part
+of the fix rather than a precondition for it.
+
+**Not fixed here, deliberately.** Changing what `badge`, `ai-codegen` and
+`assess` print is product behaviour under an explicit STOP, at the end of a
+session, in a tool whose entire proposition is not making this claim. The
+owner should rule on all three together, because a partial fix leaves the
+badge, which is the one that propagates.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N126. The accessibility gate tested one viewport, and the tabindex sweep created 74 focus stops with no focus indicator
+
+**State:** CLOSED
+
+**First raised:** 2026-08-15, immediately after N122 reported the axe job clean.
+
+**Status:** FIXED. `run-axe.js` audits desktop and mobile; **48 pages x 2
+viewports = 96 runs, 0 failures, exit 0**. Held on `feat/engagement-fixes`;
+nothing is on main.
+
+N122 fixed two `scrollable-region-focusable` violations and reported 48 pages
+clean. The gate was narrower than that result reads: `run-axe.js:50` fixed the
+viewport at 1400x900, while the site's own breakpoint is 900px
+(`site/assets/site.css:1297`), so every responsive rule was tested on one side
+only.
+
+**Measured across 1400, 1200, 800 and 390px**, a real WCAG 2.1.1 Level A
+failure appears at 390 and nowhere else: the table wrapper at
+`site/blog/blog-aicdi-governance-gaps.html:191`, a bare
+`<div style="overflow-x:auto;">` with no `tabindex` and no focusable
+descendant. The N122 sweep reached all 73 `<pre>` elements and no `<div>`.
+
+**A claim that did not survive checking, recorded because it nearly shipped.**
+The finding as first reported named four such containers. Three of them, the
+comparison-table wrappers on `index.html` and the two locale pages, do NOT
+fail, at any width tested: they are inside a responsive layout that stops the
+table overflowing below the breakpoint. The count is one, not four, and only
+running axe at each width established that.
+
+**Two further Level A failures the mobile viewport exposed**, invisible at
+1400px: `link-in-text-block` on the Brazil, South Africa and South Korea
+region pages. Measured cause, from axe's own node output: link `#3b82f6`
+against surrounding text `#e2e2f0` is **2.86:1**, below the 3:1 minimum, with
+no underline. That is WCAG 1.4.1 Use of Colour. Fixed at
+`content/regulations/{brazil,south-africa,south-korea}.py` and the pages
+regenerated, because editing the shipped HTML is overwritten by
+`build_regulations.py` and `site_integrity.py`'s regen check catches it.
+
+**A defect this programme introduced.** The N122 sweep added `tabindex="0"` to
+73 `<pre>` elements, and `site/assets/site.css` had no rule matching
+`[tabindex]`. Every one of those focus stops was invisible when focused:
+2.1.1 Keyboard satisfied by creating a 2.4.7 Focus Visible failure.
+`.claude/rules/site-html.md` already required a `:focus-visible` rule for any
+div given role or tabindex, and it was not followed. A `[tabindex]:focus-visible`
+rule now covers all 74, and `minify_css.py` was re-run.
+
+**Control.** Reverting the aicdi fix takes the widened gate from 0 failures to
+4 and it exits 1.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.
+
+### N127. Three surfaces disagree about when the South African draft AI policy was withdrawn
+
+**State:** OPEN
+
+**First raised:** 2026-08-15, checking a correction offered by a dossier pass.
+
+**Status:** OPEN, and deliberately not resolved here. No date was changed.
+Held on `feat/engagement-fixes`; nothing is on main.
+
+Four records, three different answers, and the primary-sourced one is the
+outlier:
+
+| Says | Where |
+|---|---|
+| Gazetted 10 Apr 2026; **withdrawal confirmed 5 June 2026** | `content/regulations/south-africa.py:39,45` and the generated `site/regions/south-africa-ai-policy.html`, each citing a primary source (Gazette 54477 on gov.za; sanews.gov.za/node/81987) |
+| "withdrawn **26 Apr 2026**" | `site/regions/regulations.html:242` |
+| "Withdrawn **~26 Apr 2026**" | `site/locales/de.html:853`, `site/locales/pt-br.html:870` |
+| "withdrawn on **27 April 2026**" | `CLAUDE.md:28`, the project's own instruction file |
+
+**The 27 April figure appears to be a conflation.** Every other "27 April 2026"
+in this repository is Colorado: the `xAI v. Weiser` enforcement stay
+(`content/regulations/colorado.py:35,71,182,196,379`). Nothing else supports
+27 April for South Africa.
+
+The 26 April and 5 June figures may both be defensible if one is the Cabinet
+decision and the other the official confirmation, which is how the detailed
+page words it. The tracker card and the two locale cards do not word it that
+way; they state a bare withdrawal date.
+
+**Three further facts, found while checking a proposed correction, and each
+one makes this worse than "two surfaces disagree".**
+
+- **The full string "26 April 2026" appears in NO tracked file.** Only the
+  abbreviated `26 Apr 2026`, on three cards. A date that is published only in
+  abbreviated form and never written out is a date nobody has had to state
+  plainly, which is how it survived.
+- **`site/regions/regulations.html` contradicts itself inside one card.** Line
+  242 reads "withdrawn 26 Apr 2026"; line 243, the body of the same card,
+  reads "Cabinet confirmed withdrawal on 5 June". A reader gets both without
+  leaving the card.
+- **The primary-sourced file contradicts itself too.**
+  `content/regulations/south-africa.py:192`, an FAQ answer, says the policy was
+  gazetted 10 April "and then withdrawn later that month", while lines 39, 45
+  and 89 of the same file say the withdrawal was officially confirmed on
+  5 June 2026. So the file that carries the gov.za and SAnews citations is not
+  internally consistent either, and it is the source the region page is
+  generated from.
+
+The likely reconciliation is that a Cabinet decision in late April was
+officially confirmed on 5 June, and that the copy has never distinguished the
+two events. That is a hypothesis, not a finding. **Nothing here endorses any of
+the four records.**
+
+**Not resolved because a regulatory date is the highest-sensitivity class here
+and I did not check the primary sources.** The repo's own rule is to
+cross-check against a primary source before writing a date. Two published
+cards and the instruction file need an owner with those sources in front of
+them. Recorded rather than guessed.
+
+The standing product, venture, contact, data-collection and pilot verdicts are
+unchanged. `PRODUCT_BUILD` remains STOP.

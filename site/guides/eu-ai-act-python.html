@@ -202,7 +202,7 @@
 
 <h2>Quick start: scanning a Python project</h2>
 
-<pre><code>pipx install regula-ai
+<pre tabindex="0"><code>pipx install regula-ai
 regula check .                      # scan current directory
 regula check . --domain healthcare  # activate domain-specific patterns
 regula assess                       # interactive: does the AI Act apply?</code></pre>
@@ -217,7 +217,7 @@ regula assess                       # interactive: does the AI Act apply?</code>
 
 <p>A scan produces a verdict and a list of findings. Here is what a typical result looks like:</p>
 
-<pre><code>$ regula check .
+<pre tabindex="0"><code>$ regula check .
 
 Regula Scan: /home/dev/myproject
 ============================================================
@@ -261,7 +261,7 @@ Detector observations (not legal facts):
 
 <h3>Deserialisation with no input validation</h3>
 
-<pre><code># Flagged: pickle.load() / joblib.load() with no validation
+<pre tabindex="0"><code># Flagged: pickle.load() / joblib.load() with no validation
 model = pickle.load(open("model.pkl", "rb"))
 model = joblib.load("classifier.joblib")</code></pre>
 
@@ -269,7 +269,7 @@ model = joblib.load("classifier.joblib")</code></pre>
 
 <h3>Predictions with no logging</h3>
 
-<pre><code># Flagged: model.predict() with no record-keeping
+<pre tabindex="0"><code># Flagged: model.predict() with no record-keeping
 result = model.predict(user_data)
 send_decision(result)  # no log of what was predicted or why</code></pre>
 
@@ -277,7 +277,7 @@ send_decision(result)  # no log of what was predicted or why</code></pre>
 
 <h3>Sentiment analysis without disclosure</h3>
 
-<pre><code># Flagged: sentiment analysis on user content
+<pre tabindex="0"><code># Flagged: sentiment analysis on user content
 from transformers import pipeline
 classifier = pipeline("sentiment-analysis")
 result = classifier(user_message)</code></pre>
@@ -286,7 +286,7 @@ result = classifier(user_message)</code></pre>
 
 <h3>CV screening and candidate ranking</h3>
 
-<pre><code># Flagged: employment screening patterns
+<pre tabindex="0"><code># Flagged: employment screening patterns
 candidates = rank_candidates(applications, model)
 shortlist = [c for c in candidates if c.score > threshold]</code></pre>
 
@@ -307,7 +307,7 @@ shortlist = [c for c in candidates if c.score > threshold]</code></pre>
 
 <p>Add Regula to your GitHub Actions pipeline so every pull request gets scanned. Here is a minimal workflow:</p>
 
-<pre><code># .github/workflows/regula.yml
+<pre tabindex="0"><code># .github/workflows/regula.yml
 name: EU AI Act Scan
 
 on:

@@ -35,15 +35,18 @@ def _site_root(tmp_path: Path) -> tuple[Path, set[str]]:
 ])
 def test_new_web_delivery_candidates_are_discovered(tmp_path, rel):
     root, files = _site_root(tmp_path)
-    path = root / rel; path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("public", encoding="utf-8"); files.add(rel)
+    path = root / rel
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("public", encoding="utf-8")
+    files.add(rel)
     rows = psi.website_records(root, files)
     assert any(row["source"] == rel and row["classification"] == "active_product" for row in rows)
 
 
 def test_readme_link_addition_and_rename_are_bidirectional(tmp_path):
     (tmp_path / "README.md").write_text("[Guide](docs/guide.md)\n", encoding="utf-8")
-    (tmp_path / "docs").mkdir(); (tmp_path / "docs/guide.md").write_text("guide", encoding="utf-8")
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs/guide.md").write_text("guide", encoding="utf-8")
     files = {"README.md", "docs/guide.md"}
     assert {r["source"] for r in psi.docs_records(tmp_path, files)} == files
     (tmp_path / "README.md").write_text("[Guide](docs/renamed.md)\n", encoding="utf-8")
@@ -124,7 +127,9 @@ def test_package_readme_discovery_supports_python_310(tmp_path, monkeypatch, rea
 def test_wheel_metadata_and_sdist_pkg_info_are_verified(tmp_path, monkeypatch, python_310_fallback):
     if python_310_fallback:
         monkeypatch.setattr(psi, "tomllib", None)
-    root = tmp_path / "repo"; dist = root / "dist"; dist.mkdir(parents=True)
+    root = tmp_path / "repo"
+    dist = root / "dist"
+    dist.mkdir(parents=True)
     (root / "README.md").write_text("Long description\n", encoding="utf-8")
     (root / "pyproject.toml").write_text(
         '[project]\nname="x"\nversion="1"\ndescription="Summary"\nreadme="README.md"\n', encoding="utf-8")
@@ -132,7 +137,8 @@ def test_wheel_metadata_and_sdist_pkg_info_are_verified(tmp_path, monkeypatch, p
     with zipfile.ZipFile(dist / "x-1-py3-none-any.whl", "w") as archive:
         archive.writestr("x-1.dist-info/METADATA", metadata)
     with tarfile.open(dist / "x-1.tar.gz", "w:gz") as archive:
-        info = tarfile.TarInfo("x-1/PKG-INFO"); info.size = len(metadata)
+        info = tarfile.TarInfo("x-1/PKG-INFO")
+        info.size = len(metadata)
         archive.addfile(info, io.BytesIO(metadata))
     psi.verify_package_artifacts(root, dist)
     (root / "README.md").write_text("Changed\n", encoding="utf-8")
@@ -149,7 +155,8 @@ def test_stale_duplicate_and_invalid_policy_dispositions_fail(tmp_path):
         ([{"source": "site/x.html", "classification": "active_product", "reason": "x"}], "invalid"),
     ]:
         (tmp_path / "data/public_surface_policy.json").write_text(json.dumps({"dispositions": dispositions}), encoding="utf-8")
-        with pytest.raises(psi.DiscoveryError, match=match): psi.apply_policy(tmp_path, [row.copy()])
+        with pytest.raises(psi.DiscoveryError, match=match):
+            psi.apply_policy(tmp_path, [row.copy()])
 
 
 def test_missing_policy_disposition_fails(tmp_path):
@@ -170,9 +177,11 @@ def test_duplicate_stable_id_control():
 
 
 def test_git_unavailable_and_ignored_or_untracked_inputs_fail_safe(monkeypatch, tmp_path):
-    def unavailable(*args, **kwargs): raise OSError("missing git")
+    def unavailable(*args, **kwargs):
+        raise OSError("missing git")
     monkeypatch.setattr(subprocess, "run", unavailable)
-    with pytest.raises(psi.DiscoveryError, match="git unavailable"): psi.tracked(tmp_path)
+    with pytest.raises(psi.DiscoveryError, match="git unavailable"):
+        psi.tracked(tmp_path)
     root, files = _site_root(tmp_path)
     (root / "site/untracked.html").write_text("not shipped", encoding="utf-8")
     assert not any(r["source"] == "site/untracked.html" for r in psi.website_records(root, files))

@@ -10,7 +10,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from classify_risk import Classification, RiskTier
+from classify_risk import Classification
 from decision_kernel import DecisionInputError, DecisionKernel, fact
 
 

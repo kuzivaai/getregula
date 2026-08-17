@@ -582,7 +582,7 @@ class TestTheRunnerFunctionCountIsCascadedSeparately(unittest.TestCase):
         """Fail closed rather than cascade a quantity with no canonical source."""
         original = cc.CANONICAL
         try:
-            import tempfile, os
+            import tempfile
             with tempfile.TemporaryDirectory() as d:
                 path = Path(d) / "site_facts.json"
                 path.write_text(json.dumps({"counts": {"tests": {"total_collected": 1}}}))

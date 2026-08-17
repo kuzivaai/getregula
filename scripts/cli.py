@@ -1149,8 +1149,10 @@ def _build_subparsers(subparsers):
     p_plan.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_plan.add_argument("--output", "-o", help="Write plan to file")
     p_plan.add_argument("--name", "-n", help="Project name")
-    p_plan.add_argument("--status", action="store_true", help="Show completion progress")
-    p_plan.add_argument("--done", metavar="TASK-ID", help="Mark a task as completed")
+    p_plan.add_argument("--status", action="store_true",
+                       help="Show completion progress (unavailable until applicability resolves)")
+    p_plan.add_argument("--done", metavar="TASK-ID",
+                       help="Mark a task as completed (unavailable until applicability resolves)")
     p_plan.set_defaults(func=cmd_plan)
 
     # --- roadmap ---

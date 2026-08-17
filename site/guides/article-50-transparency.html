@@ -242,7 +242,7 @@
 
 <p>Regula's <code>check</code> command scans your codebase for patterns that indicate limited-risk AI components subject to Article 50. When it finds chatbot frameworks, conversational AI patterns, or content generation code, it flags them as limited-risk.</p>
 
-<pre><code>$ regula check sample_chatbot.py
+<pre tabindex="0"><code>$ regula check sample_chatbot.py
 
 Regula Scan: sample_chatbot.py
 ============================================================
@@ -294,7 +294,7 @@ Detector observations (not legal facts):
 
 <p>Article 50(1) compliance at the code level typically looks like a disclosure check at the start of an interaction. Here is a minimal example:</p>
 
-<pre><code># No transparency disclosure (Article 50 problem)
+<pre tabindex="0"><code># No transparency disclosure (Article 50 problem)
 def handle_message(user_input):
     response = model.generate(user_input)
     return response
@@ -309,7 +309,7 @@ def handle_message(user_input, session):
 
 <p>For Article 50(2), synthetic content marking is typically metadata embedded in the output:</p>
 
-<pre><code># Synthetic image without provenance (Article 50 problem)
+<pre tabindex="0"><code># Synthetic image without provenance (Article 50 problem)
 def generate_image(prompt):
     image = model.generate(prompt)
     return image

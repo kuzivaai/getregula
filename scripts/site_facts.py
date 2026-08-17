@@ -24,6 +24,7 @@ Exit codes:
 """
 from __future__ import annotations
 
+import ast
 import importlib.util
 import json
 import re
@@ -281,6 +282,35 @@ def missing_tracked_contributors(per_file, tracked=None) -> list[str]:
         and name not in per_file)
 
 
+def count_test_functions(source: str) -> int:
+    """Count the `test_*` functions pytest would collect from one file.
+
+    Module-level functions, plus methods declared directly inside a class.
+    A function nested inside another function is NOT collected by pytest and
+    is not counted here.
+
+    Uses `ast` because the regex this replaced counted `def test_...` inside
+    a triple-quoted code sample as a real test, and the widened form of the
+    same regex produced a per-file count higher than pytest's own collection,
+    which is how the string-literal hit was found at all.
+
+    A file that will not parse raises. A test file that cannot be parsed is a
+    broken test file, and silently scoring it 0 would understate a published
+    count, which is the defect this function exists to fix.
+    """
+    tree = ast.parse(source)
+    _DEFS = (ast.FunctionDef, ast.AsyncFunctionDef)
+    total = 0
+    for node in tree.body:
+        if isinstance(node, _DEFS) and node.name.startswith("test_"):
+            total += 1
+        elif isinstance(node, ast.ClassDef):
+            total += sum(1 for child in node.body
+                         if isinstance(child, _DEFS)
+                         and child.name.startswith("test_"))
+    return total
+
+
 def count_runner_functions() -> int:
     """How many functions the legacy custom runner selects.
 
@@ -358,12 +388,32 @@ def count_tests() -> dict:
     # per_file key for the provenance predicates to see. Keys are
     # repo-relative posix paths because basenames cannot be compared soundly
     # against tracked paths (see untracked_test_contributors).
+    # N117. `^def (test_\w+)` counted MODULE-LEVEL functions only, so every
+    # test written as a `unittest.TestCase` method was invisible: 565 of them
+    # across 22 files, against a published label reading "Test functions (all
+    # files)". The values were never wrong, the population was, which is the
+    # N109 shape again: a label naming a quantity wider than the one measured.
+    #
+    # Found because a new test file counted 0 while containing six tests.
+    # Nothing had flagged it, because nothing compared this figure to the
+    # collection it sits beside; `test_site_facts.py` now does, per file.
+    #
+    # Counted with `ast`, not a regex, and that is not a refinement.
+    # Widening the regex to `^[ \t]*def test_` immediately produced a count
+    # ABOVE what pytest collects for `test_classification.py`, because
+    # `def test_model_accuracy():` appears inside a triple-quoted code sample
+    # fed to the AST parser under test. The OLD regex matched that string too,
+    # so the previous figure was one function that does not exist plus a whole
+    # category that does. A regex cannot see the difference between source and
+    # a string literal; `ast` never confuses them.
+    #
+    # Collected the way pytest collects: a `test_*` function at module level,
+    # or a `test_*` method directly inside a class. A function nested inside
+    # another function is not collected and is not counted.
     per_file: dict[str, int] = {}
     for path in sorted(tests_dir.rglob("test_*.py")):
-        text = path.read_text(encoding="utf-8")
-        per_file[path.relative_to(REPO).as_posix()] = len(
-            re.findall(r"^def (test_\w+)", text, re.MULTILINE)
-        )
+        per_file[path.relative_to(REPO).as_posix()] = count_test_functions(
+            path.read_text(encoding="utf-8"))
 
     # N52. Both counts above read the WORKING TREE: the walk reads it, and
     # `pytest --collect-only` collects from it. An untracked test file is

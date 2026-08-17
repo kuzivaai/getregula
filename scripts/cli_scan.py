@@ -508,7 +508,7 @@ def cmd_check(args) -> None:
     else:
         # Human-readable output
         from i18n import t
-        from term_style import red, yellow, blue, magenta
+        from term_style import red, yellow, blue, magenta, plain
         print(f"\n{t('scan_header', path=project)}")
         print(f"{'=' * 60}")
 
@@ -542,7 +542,7 @@ def cmd_check(args) -> None:
                 "This is not a legal classification. Review intended purpose, "
                 "Articles 4 and 5, and other context-dependent duties."
             )
-            verdict_color = lambda x: x  # identity function — no color applied
+            verdict_color = plain
         else:
             _pre_stats = getattr(scan_files, "last_stats", {}) or {}
             _pre_gated = _pre_stats.get("domain_gated_count", 0)
@@ -569,7 +569,7 @@ def cmd_check(args) -> None:
                 verdict_tier = "NO DETECTOR PATTERNS"
                 verdict_desc = "The scanner found no code patterns in the scanned files."
                 verdict_action = "This does not establish that the subject is not an AI system or outside scope."
-            verdict_color = lambda x: x  # identity function — no color applied
+            verdict_color = plain
 
         print(f"\n  {verdict_color('Detector summary')}: {verdict_color(verdict_tier)}")
         print(f"  {verdict_desc}")

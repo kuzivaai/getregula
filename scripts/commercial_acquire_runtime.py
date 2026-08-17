@@ -10,7 +10,6 @@ set so the original hashes continue to verify.
 
 import argparse
 import json
-import subprocess
 import sys
 from pathlib import Path
 

@@ -40,6 +40,7 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass, field, asdict
+from html.parser import HTMLParser
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -323,9 +324,112 @@ def load_allowlist() -> list[re.Pattern[str]]:
     return patterns
 
 
+class _LiveRegionFinder(HTMLParser):
+    """Locate the character spans of ARIA live regions and progressbars.
+
+    Nesting matters and regex cannot count it, so this walks the tags with
+    stdlib `html.parser` and records the outermost matching subtree only.
+    Malformed or unclosed markup leaves a region open; `spans()` discards
+    anything still open at EOF rather than blanking to end of file, because
+    over-blanking silently narrows the gate and that is the failure mode this
+    whole module exists to avoid.
+    """
+
+    _VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+             "link", "meta", "param", "source", "track", "wbr"}
+
+    def __init__(self, text: str):
+        super().__init__(convert_charrefs=False)
+        self._text = text
+        # Offset of the first character of each 1-based line.
+        self._line_start = [0, 0]
+        for line in text.splitlines(keepends=True):
+            self._line_start.append(self._line_start[-1] + len(line))
+        self._open_depth = 0     # depth inside the region currently tracked
+        self._start = None       # offset where that region began
+        self._spans: list[tuple[int, int]] = []
+
+    def _offset(self) -> int:
+        line, col = self.getpos()
+        return self._line_start[line] + col
+
+    @staticmethod
+    def _is_live(attrs) -> bool:
+        for name, value in attrs:
+            lowered = (name or "").lower()
+            if lowered == "aria-live" and (value or "").strip():
+                return True
+            if lowered == "role" and (value or "").strip().lower() == "progressbar":
+                return True
+        return False
+
+    def handle_starttag(self, tag, attrs):
+        if tag in self._VOID:
+            return
+        if self._start is not None:
+            self._open_depth += 1
+        elif self._is_live(attrs):
+            self._start = self._offset()
+            self._open_depth = 1
+
+    def handle_startendtag(self, tag, attrs):
+        return  # self-closing: opens and closes, so it cannot contain text
+
+    def handle_endtag(self, tag):
+        if self._start is None or tag in self._VOID:
+            return
+        self._open_depth -= 1
+        if self._open_depth == 0:
+            end = self._text.find(">", self._offset())
+            self._spans.append(
+                (self._start, end + 1 if end != -1 else len(self._text)))
+            self._start = None
+
+    def spans(self) -> list[tuple[int, int]]:
+        self.feed(self._text)
+        self.close()
+        return self._spans  # an unclosed region is deliberately dropped
+
+
+def _blank_live_regions(text: str) -> str:
+    """Blank the text inside ARIA live regions and progressbars.
+
+    The content of `aria-live="..."` and `role="progressbar"` elements is
+    replaced by script at runtime, so the value sitting in the file is a
+    placeholder rather than a published claim. `<span id="progressPct">0%</span>`
+    on the three assess pages was reported as an unsourced numeric claim on
+    that basis, and three of the nineteen quarantine entries were that one
+    placeholder in three locales.
+
+    This is a semantic rule, not a special case for those pages: any future
+    status or progress readout is covered, because the markup already has to
+    declare itself as a live region for assistive technology.
+
+    What the gate now does NOT test, stated plainly per measurement rule 5: a
+    genuine claim written inside a live region is no longer audited. That is
+    accepted, because static editorial prose does not belong in a region
+    declared to assistive technology as machine-updated. Line counts are
+    preserved, as everywhere else in this function.
+    """
+    if "aria-live" not in text.lower() and "progressbar" not in text.lower():
+        return text
+    try:
+        spans = _LiveRegionFinder(text).spans()
+    except Exception:
+        return text  # unparseable markup: audit it rather than skip it
+    if not spans:
+        return text
+    out = list(text)
+    for start, end in spans:
+        for i in range(start, min(end, len(out))):
+            if out[i] != "\n":
+                out[i] = " "
+    return "".join(out)
+
+
 def strip_noise(text: str, suffix: str) -> str:
     """Remove code fences, inline code, HTML script/style, HTML comments,
-    and historical CHANGELOG sections.
+    ARIA live-region content, and historical CHANGELOG sections.
 
     Preserves newline counts so line numbers continue to map to the
     original file — each stripped region is replaced with the same number
@@ -379,6 +483,8 @@ def strip_noise(text: str, suffix: str) -> str:
 
     text = re.sub(r"<pre\b[^>]*>.*?</pre\s*>", _join_pre, text,
                   flags=re.DOTALL | re.IGNORECASE)
+
+    text = _blank_live_regions(text)
 
     if suffix in (".md", ".markdown"):
         text = re.sub(r"```.*?```", _blank, text, flags=re.DOTALL)
@@ -717,10 +823,7 @@ def scan_file(path: Path, allowlist: list[re.Pattern[str]]) -> FileReport:
         if has_src:
             continue  # paragraph sourced → all claims inside are fine
 
-        raw_lines = raw.splitlines()
         for claim in para_claims:
-            idx = claim.line - 1
-            claim_line = raw_lines[idx] if 0 <= idx < len(raw_lines) else ""
             if any(p.search(claim.snippet) for p in allowlist):
                 continue
             if is_quarantined(report.path, claim.snippet):

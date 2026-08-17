@@ -41,7 +41,17 @@ def _patterns_fingerprint() -> str:
 # which caps confidence scores) can never be served to a different one.
 # The bump also invalidates v3 entries, which could be incomplete when
 # written by a --min-tier scan.
-_CACHE_SCHEMA = f"v4:{_REGULA_VERSION}:{_patterns_fingerprint()}"
+#
+# v5: cache keys carry a PATH-CONTEXT token as well. The `path` component is
+# the path RELATIVE to the scan root, while provenance and the example/init
+# confidence penalties are derived from the FULL path, so two byte-identical
+# files at the same relative path under different roots shared one key and
+# whichever was scanned first decided what the other one read. That is not
+# only a priority wobble: `--scope production` filters on provenance, so a
+# production file whose entry was written by an `examples/` copy was dropped
+# from a production-scope scan entirely. See LEDGER N112. The bump also
+# invalidates every v4 entry, which was written under the unsound key.
+_CACHE_SCHEMA = f"v5:{_REGULA_VERSION}:{_patterns_fingerprint()}"
 
 
 class ScanCache:
@@ -54,8 +64,9 @@ class ScanCache:
         # same bytes and the same command, because cache keys carry the path
         # RELATIVE to the scan root while provenance is derived from the full
         # path. Honouring the variable here lets a check run on a cold cache
-        # and is why scripts/verify_transcripts.py can be deterministic. It
-        # does not fix the key itself; see LEDGER N112.
+        # and is why scripts/verify_transcripts.py can be deterministic. The
+        # key itself is fixed separately, by the v5 path-context component
+        # above; this variable remains the way to isolate a scan outright.
         env_dir = os.environ.get("REGULA_CACHE_DIR")
         self._cache_dir = (
             cache_dir
@@ -80,13 +91,28 @@ class ScanCache:
     def _hash(content: str) -> str:
         return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
-    def get(self, path: str, content: str, context: str = "") -> Optional[list]:
-        key = f"{path}:{_CACHE_SCHEMA}:{context}:{self._hash(content)}"
-        return self._memory.get(key)
+    @staticmethod
+    def _key(path: str, content_hash: str, context: str, path_context: str) -> str:
+        """Build a cache key.
 
-    def put(self, path: str, content: str, findings: list, context: str = "") -> None:
-        key = f"{path}:{_CACHE_SCHEMA}:{context}:{self._hash(content)}"
-        self._memory[key] = findings
+        `path_context` carries every classification input derived from the
+        FULL path (see report.path_context_token). It is a separate component
+        rather than being folded into `context` so that a key can be read back
+        and attributed, and so a caller that forgets it produces a visibly
+        different key rather than a silently colliding one.
+        """
+        return f"{path}:{_CACHE_SCHEMA}:{context}:{path_context}:{content_hash}"
+
+    def get(self, path: str, content: str, context: str = "",
+            path_context: str = "") -> Optional[list]:
+        return self._memory.get(
+            self._key(path, self._hash(content), context, path_context))
+
+    def put(self, path: str, content: str, findings: list, context: str = "",
+            path_context: str = "") -> None:
+        self._memory[
+            self._key(path, self._hash(content), context, path_context)
+        ] = findings
 
     def flush(self) -> None:
         cf = self._cache_file()

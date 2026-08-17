@@ -5665,7 +5665,7 @@
       "content_kind": "cli-option",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "Mark a task as completed"
+      "reason": "Mark a task as completed (unavailable until applicability resolves)"
     },
     {
       "stable_id": "cli:70453e18d84e6e26",
@@ -5731,7 +5731,7 @@
       "content_kind": "cli-option",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "Show completion progress"
+      "reason": "Show completion progress (unavailable until applicability resolves)"
     },
     {
       "stable_id": "cli:8ef87e06e2f7fbb2",

@@ -234,7 +234,7 @@ REGION = {
             "heading": "Where Regula fits for Colorado teams",
             "body": """
 <p>Regula was built primarily against the EU AI Act, but SB 26-189's documentation and human-review concepts map onto work Regula already does. Practical starting commands:</p>
-<pre><code>pip install regula-ai
+<pre tabindex="0"><code>pip install regula-ai
 
 regula discover .              # AI systems present in the project
 regula check . --jurisdictions eu,colorado   # Risk indicators + Colorado obligation mapping
