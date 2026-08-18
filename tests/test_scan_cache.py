@@ -543,6 +543,19 @@ def test_every_scan_files_parameter_is_classified_for_the_cache():
     `inspect.signature`, so it cannot drift from the function, and a parameter
     that appears in neither bucket fails this test rather than silently
     joining an entry it changes.
+
+    What this guard does NOT cover, stated per measurement rule 5 because a
+    passing guard reads as broader than it is. Its population is the signature
+    of ONE function. Enumerated 2026-08-18 over the 357 tracked Python files,
+    exactly one production call site constructs a `ScanCache` and writes
+    entries: `report.py:728`, with the flush at `report.py:1326`, both inside
+    `scan_files` (lines 600 to 1395). The other two write-shaped matches,
+    `log_event.py:344` and `monitor.py:279`, are unrelated file handles. So
+    this guard covers the only writer that exists today and is silent about a
+    second one. If any other entry point ever writes cache entries, its
+    parameters are outside this population and nothing here would notice. A
+    new writer must either route through `scan_files` or carry its own
+    classification and its own guard.
     """
     import inspect
     import report

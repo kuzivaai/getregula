@@ -37,16 +37,49 @@ had just read it. Re-derive both figures with
 
 ## 0. The verdict, first
 
-**Not ready as it stood, and one commit away from ready on the mechanical
-criteria.**
+**The branch passes every check this machine can run. That is a much smaller
+claim than "ready to merge", and the difference is stated here rather than in
+section 8, because a reader who stops after a verdict should not be able to
+mistake one for the other.**
 
-One CI check fails at the tip: the sitemap step of the `Claim auditor` job. It is
-a generated artefact whose inputs four commits on this branch changed and which
-none of them regenerated. It is repaired in this session. Without that repair the
-merge turns `main` red on the first push.
+**What is demonstrated.** Re-derived 2026-08-18 at `7f8f0a3e`, tree `dea0e2d2`,
+each exit code read from a file that did not exist before its run: the custom
+runner rc=0 with 0 failed, `pytest` rc=0 with 0 failed, `self-test` rc=0,
+`doctor` rc=0, `ruff` rc=0. The suite's collected total is deliberately not
+written here: it is generated into `data/site_facts.json` and carried only by
+the surfaces `data/published_count_manifest.json` authorises, so a copy in
+this file would be a drift surface the next correction would miss. Re-derive
+with `python3 -m pytest tests/ -q`. The determination guard reports `scanned 559 tracked file(s) of
+963, 0 finding(s)`, rc=0. The sitemap failure this section used to open with is
+repaired and the chain is green.
 
-**With that repair the branch passes every check this machine can run.** That is
-a narrower statement than "ready", and section 8 says what no gate covers.
+**What that does not cover.** Stated per measurement rule 5, which lives in
+`.claude/rules/measurement.md`, and placed in front of the verdict rather
+than behind it:
+
+1. **CI has run on the PR head and on nothing after it.** All four Python
+   versions and all ten composite-action jobs passed on `3f52501`. Everything
+   after `3f52501` carries the decision kernel, the claim closures, the fact
+   loop and the cache repairs, and none of it has been through CI. That is the
+   gap, and it is where the value of this branch lives. (No count is written
+   here: a total stated in the commit that changes it is `COMMIT_ERRATA.md`
+   erratum 5. Re-derive with `git rev-list --count 3f52501..HEAD`.)
+2. **Three of the four Python versions.** Only 3.12 exists on this machine.
+3. **The pytest version CI installs.** The suite ran on 8.4.2; CI pins `~=9.0`.
+4. **Real-world accuracy.** Untested over 0 human-labelled repositories. The
+   only measured commercial benchmark result is **0/40 against a transparent
+   baseline at 40/40**, diagnostic over constructed correlated families.
+5. **Any human reader.** No comprehension, usability or trust testing has ever
+   been run on any surface of this project.
+6. **The default scan's own scope.** Section 9.
+7. **What the push publishes.** A push updates a public pull request and
+   rebuilds a public, unauthenticated Netlify preview of `site/`. Section 15.3
+   and N164. It does not update getregula.com and publishes nothing to PyPI;
+   section 16 measures both.
+
+Section 8 keeps the full list and its history. Items 1 and 4 of that list have
+since been narrowed by sections 13.8, 15.2 and 16, and this list is the current
+one.
 
 **The judgement a mechanical result cannot make** is in section 6. This branch is
 not a polish backlog. It is the difference between a product that prints
@@ -1228,3 +1261,139 @@ saying so.
 - **Nothing else moves.** `main` is still unprotected, the 2.0.0 verdict stands,
   and every standing verdict is unchanged. **No push was made and none is
   recommended here.**
+
+
+---
+
+## 16. Addendum, 2026-08-18 (sixth session): the preview fetched, the releases reconciled, and two arguments measured
+
+Measured at `7f8f0a3e`, tree `dea0e2d2`. Every figure below was produced by a
+command in this session; nothing is carried forward. Figures inherited from
+earlier sessions and not re-derived here stay labelled Asserted where they sit.
+
+### 16.1 What the push publishes, enumerated by deploy configuration
+
+The predicate walks tracked deploy configuration rather than workflow files,
+because the workflow enumeration is structurally blind to app integrations
+(15.3). Exactly one deploy-config file is tracked: `netlify.toml`, publishing
+`site/`.
+
+- The push is a **fast-forward**: `3f52501` is an ancestor of `7f8f0a3e`,
+  established by `git merge-base --is-ancestor`.
+- It changes **195 files**, of which **57 are under `site/`**, the directory
+  `netlify.toml` publishes. [Verified 2026-08-18 by
+  `git diff --name-only 3f52501..HEAD`, the second figure by filtering that
+  same output on the path prefix. Neither was counted by hand, per
+  measurement rule 4c in `.claude/rules/measurement.md`.]
+- **GitHub Pages does not update.** The `deploy` job in `ci.yaml` is gated
+  `if: github.ref == 'refs/heads/main' && github.event_name == 'push'`.
+- **PyPI does not update.** `release.yml` fires only on `v[0-9]+.[0-9]+.[0-9]+*`
+  tags.
+- **Netlify does update, publicly, and no workflow gates it.**
+
+**The plain paragraph the owner asked for.** Pushing this branch updates a public
+pull request on a public repository and causes Netlify to rebuild and serve a
+publicly reachable, unauthenticated deploy preview of the changed website. It
+does not update getregula.com and it publishes nothing to PyPI. Everything it
+publishes is world-readable by anyone with the URL, including the full diff and
+the CI logs.
+
+### 16.2 The preview, fetched and enumerated
+
+All 62 pages serve 200. All 62 differ from their git blobs at the commit the
+preview was built from. The divergence reconciles completely, with no residue:
+
+```
+diff lines added   : 998        diff lines removed : 750
+attributed to Netlify CDP injection : 250
+attributed to href rewriting        : 1498
+UNEXPLAINED                          : 0
+reconciles: 1748 == 1748 -> True
+```
+
+Netlify injects a tracking div and an async script element into every page, and
+rewrites internal links. All 55 rewritten link targets were tested and resolve
+200. Two consequences are recorded as **N166**: a third-party script runs on
+every page of the public preview and no page discloses it; and because
+production is GitHub Pages while the preview is Netlify, evidence gathered from
+the preview does not transfer to production.
+
+**The preview currently serves a forbidden claim that the branch has already
+fixed.** The determination guard finds 2 findings at the PR head, identical on
+served bytes and on blobs, at `site/blog/blog-does-ai-act-apply.html:475`. At
+the tip the phrase is absent and the guard reports `scanned 559 tracked file(s)
+of 963, 0 finding(s)`, rc=0. **A push therefore removes a live compliance-state
+assertion from a public surface rather than adding one.** Under measurement rule
+5: 559 of 963 means none on the scanned surface, not none anywhere.
+
+### 16.3 The material change the push makes to a public page is the price list
+
+| | preview (public now) | tip (what a push publishes) |
+|---|---|---|
+| `site/pricing.html` price blocks | `EUR 0`, `Talk to us` | `Free`, `GBP 950`, `GBP 650` |
+
+Introduced by `9ed56ec`, revised by `7a7a4c2`; neither is an ancestor of the PR
+head, so these prices are **not currently public and the push makes them
+public**. Read against three standing verdicts that are unchanged here:
+`PAYMENT_GATE NOT_ACTIVE`, `WILLINGNESS_TO_PAY UNVALIDATED`, `VENTURE_DECISION
+STOP`.
+
+Ledger **N132** is OPEN and records that all three statistics offered for the
+pricing-transparency direction were checked at source and are refuted or
+unverifiable. Its own rule applies and is repeated here so the owner meets it at
+the decision: the direction is **Reasoned, not evidenced, and must be labelled
+so**. N132's provenance was corrected in this session; it previously named a
+commit that does not touch the pricing page.
+
+A comparison of price-shaped strings across the whole site was run and the sets
+are identical, 14 HTML files on each side. An earlier count of 28 against 14 in
+this session was **wrong and is withdrawn**: 14 of the 28 were binary assets
+matching the byte sequences by chance.
+
+### 16.4 PyPI reconciled against the repository
+
+```
+reconciliation: 16 published = 14 tagged + 2 untagged
+```
+
+Every published release is represented by a release commit, so the strict test
+is negative. Two releases, `1.5.1` and `1.7.2`, carry no git tag, and `1.5.1`
+has no changelog entry and shipped a wheel with no sdist. Recorded as **N165**,
+not acted on.
+
+### 16.5 The three cache exemptions, measured instead of argued
+
+```
+skip_tests         -> HOLDS (file selection only)
+declared_domains   -> HOLDS (findings 4 -> 7, entry values unchanged)
+enrich_oversight   -> HOLDS
+CONTROL: in-key params that changed a common file's VALUE: ['respect_ignores']
+```
+
+The control ran both ways and discriminates, so the three HOLDS results are not
+a blank gate. The guard's blind spot is now stated in its own source: its
+population is the signature of one function, and exactly one production call
+site writes cache entries today. Full detail, including a withdrawn first
+attempt, is in **N163**.
+
+### 16.6 The N163 cost, measured on the pinned repositories
+
+Before-arm is a worktree at `23195b5^` (v6); after-arm is the tip (v7).
+
+| repository | files | BEFORE | AFTER | delta |
+|---|---|---|---|---|
+| `ageitgey/face_recognition` 9f3061a | 106 | 0.22s | 0.36s | +0.14s |
+| `open-webui/open-webui` 01f4282 | 5,031 | 3.20s | 29.17s | +25.97s (9.1 times) |
+| `vercel/ai` 86892f3 | 7,992 | 2.38s | 61.29s | +58.90s (25.8 times) |
+
+Cache size doubles in every arm. **It does not flatter the fix:** none of the
+three corpora contains a single `regula-ignore` annotation, so the correctness
+benefit cannot manifest on any of them and the cost buys nothing there.
+
+### 16.7 What this session did not do
+
+No push, no merge, no tag, no release, no deploy, no repository setting changed.
+No new defect fixed: N165 and N166 are recorded and left. Every standing verdict
+is unchanged. The composite `v4` to `v7` claim in 14.2 was re-derived here and
+moves from Asserted to **Demonstrated**: `v1.9.0`, `origin/main` and `3f52501`
+all read `v4`; the tip reads `v7`.
