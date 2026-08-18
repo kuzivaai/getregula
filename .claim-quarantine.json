@@ -257,49 +257,49 @@
       "file": "site/index.html",
       "claim": "0%",
       "disposition": "removed",
-      "silent_because": "blanked-by-strip-noise",
-      "measured_at": "4d922be",
-      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at 4d922be with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+      "silent_because": "text-absent",
+      "measured_at": "working tree, 2026-08-18",
+      "note": "The CSS this entry described is gone. It cited site/index.html:264, the .final-glow radial-gradient stops, which were removed with the decorative orb in the 2026-08-18 information-architecture change (LEDGER N169). The claim text is therefore no longer on the page at all, so the cause moves from blanked-by-strip-noise to text-absent. Re-measured 2026-08-18 by scripts/claim_quarantine liveness against the current page, not assumed; removing the entry stays gate-neutral."
     },
     {
       "file": "site/index.html",
       "claim": "50%",
       "disposition": "removed",
-      "silent_because": "blanked-by-strip-noise",
-      "measured_at": "4d922be",
-      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at 4d922be with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+      "silent_because": "text-absent",
+      "measured_at": "working tree, 2026-08-18",
+      "note": "The CSS this entry described is gone. It cited site/index.html:264, the .final-glow radial-gradient stops, which were removed with the decorative orb in the 2026-08-18 information-architecture change (LEDGER N169). The claim text is therefore no longer on the page at all, so the cause moves from blanked-by-strip-noise to text-absent. Re-measured 2026-08-18 by scripts/claim_quarantine liveness against the current page, not assumed; removing the entry stays gate-neutral."
     },
     {
       "file": "site/locales/de.html",
       "claim": "0%",
       "disposition": "removed",
-      "silent_because": "blanked-by-strip-noise",
-      "measured_at": "4d922be",
-      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at 4d922be with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+      "silent_because": "text-absent",
+      "measured_at": "working tree, 2026-08-18",
+      "note": "The CSS this entry described is gone. It cited the .final-glow radial-gradient stops in the page's own inline <style> block, removed with the decorative orb in the 2026-08-18 information-architecture change (LEDGER N169). The claim text is therefore no longer on the page at all, so the cause moves from blanked-by-strip-noise to text-absent. Enumerated with quarantine_liveness.claim_text_present, the predicate the test itself uses, rather than by reading; a plain substring check found two of these four."
     },
     {
       "file": "site/locales/de.html",
       "claim": "50%",
       "disposition": "removed",
-      "silent_because": "blanked-by-strip-noise",
-      "measured_at": "4d922be",
-      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at 4d922be with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+      "silent_because": "text-absent",
+      "measured_at": "working tree, 2026-08-18",
+      "note": "The CSS this entry described is gone. It cited the .final-glow radial-gradient stops in the page's own inline <style> block, removed with the decorative orb in the 2026-08-18 information-architecture change (LEDGER N169). The claim text is therefore no longer on the page at all, so the cause moves from blanked-by-strip-noise to text-absent. Enumerated with quarantine_liveness.claim_text_present, the predicate the test itself uses, rather than by reading; a plain substring check found two of these four."
     },
     {
       "file": "site/locales/pt-br.html",
       "claim": "0%",
       "disposition": "removed",
-      "silent_because": "blanked-by-strip-noise",
-      "measured_at": "4d922be",
-      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at 4d922be with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+      "silent_because": "text-absent",
+      "measured_at": "working tree, 2026-08-18",
+      "note": "The CSS this entry described is gone. It cited the .final-glow radial-gradient stops in the page's own inline <style> block, removed with the decorative orb in the 2026-08-18 information-architecture change (LEDGER N169). The claim text is therefore no longer on the page at all, so the cause moves from blanked-by-strip-noise to text-absent. Enumerated with quarantine_liveness.claim_text_present, the predicate the test itself uses, rather than by reading; a plain substring check found two of these four."
     },
     {
       "file": "site/locales/pt-br.html",
       "claim": "50%",
       "disposition": "removed",
-      "silent_because": "blanked-by-strip-noise",
-      "measured_at": "4d922be",
-      "note": "A CSS length inside the page's own <style> block (site/index.html:264, .final-glow radial-gradient stops and a top offset). strip_noise blanks <style> before scanning, so the entry suppressed nothing and had not for some time. Silence measured at 4d922be with scripts/claim_auditor.py unmodified: with `entries` emptied, --delivery-surfaces reported 17 unsourced and named none of these six. Removing it is gate-neutral."
+      "silent_because": "text-absent",
+      "measured_at": "working tree, 2026-08-18",
+      "note": "The CSS this entry described is gone. It cited the .final-glow radial-gradient stops in the page's own inline <style> block, removed with the decorative orb in the 2026-08-18 information-architecture change (LEDGER N169). The claim text is therefore no longer on the page at all, so the cause moves from blanked-by-strip-noise to text-absent. Enumerated with quarantine_liveness.claim_text_present, the predicate the test itself uses, rather than by reading; a plain substring check found two of these four."
     },
     {
       "file": "site/assess/de.html",

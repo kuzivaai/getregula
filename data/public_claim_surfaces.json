@@ -8022,6 +8022,17 @@
       "reason": "deployed non-claim asset"
     },
     {
+      "stable_id": "website:004e357d92415b9e",
+      "channel": "website",
+      "source": "site/assets/qualifier.js",
+      "destination": "/assets/qualifier.js",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "asset",
+      "claim_capable": false,
+      "classification": "non_claim_asset",
+      "reason": "deployed non-claim asset"
+    },
+    {
       "stable_id": "website:2b2612d4f124f75a",
       "channel": "website",
       "source": "site/assets/regula-logo.png",
@@ -8733,13 +8744,13 @@
       "mcp": 3,
       "package": 2,
       "repository_docs": 39,
-      "website": 92
+      "website": 93
     },
     "classification": {
       "active_product": 766,
       "historical_record": 1,
       "internal_record": 1,
-      "non_claim_asset": 25
+      "non_claim_asset": 26
     }
   },
   "exclusions": [

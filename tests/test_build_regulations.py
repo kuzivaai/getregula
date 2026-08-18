@@ -207,7 +207,14 @@ def test_build_regulations_render_region_produces_valid_html():
 
     # Chrome
     assert 'class="skip-link"' in html
-    assert 'id="progress-bar"' in html
+    # The scroll progress bar was removed from the template on 2026-08-18 with
+    # the rest of the decorative sweep (LEDGER N169), and this assertion went
+    # with it. The nav's route to the commercial offer replaces it, because the
+    # thing worth pinning is chrome a reader needs rather than chrome that
+    # moves: /pricing.html was reachable from no page's navigation at all
+    # before that sweep (LEDGER N172), and a regenerated page must not lose it.
+    assert 'id="progress-bar"' not in html
+    assert 'href="/pricing.html"' in html
     # After the IA restructure, regulations lives at /regions/regulations.html
     # and blog content lives at /blog/writing.html. Accept either the old
     # root-level paths or the new subdir paths so this test stays compatible

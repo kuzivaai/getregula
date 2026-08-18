@@ -1,0 +1,299 @@
+{
+  "lang": "en",
+  "h1": "Does AI regulation reach your business?",
+  "sub": "Five questions, in plain words. No account, nothing to install, and nothing you type here leaves your browser. At the end you get a list of what your answers point at and what a person still has to settle.",
+  "meta": "Regula indicates where to look. It does not decide your risk tier, your obligations, or whether you comply. This is not legal advice.",
+  "questions": [
+    {
+      "id": "q1",
+      "legend": "Do you sell to, or have users in, the EU?",
+      "help": "The rules can reach a business based anywhere. What matters is whether your product, or what your product produces, is used by people in the EU.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "unsure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "legend": "Does your product use AI at all?",
+      "help": "This includes AI you did not build: a chatbot, a model you call through someone else's service, or a feature a no-code tool added for you.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "unsure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "legend": "Did you build the AI, or are you using someone else's?",
+      "help": "The rules place different duties on the organisation that puts an AI system on the market and on the organisation that uses one. You can be both.",
+      "options": [
+        {
+          "value": "built",
+          "label": "We built or trained it"
+        },
+        {
+          "value": "using",
+          "label": "We use someone else's"
+        },
+        {
+          "value": "both",
+          "label": "Both"
+        },
+        {
+          "value": "unsure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "legend": "Do people see content your AI produced, or talk to it directly?",
+      "help": "Text, images, audio, video, or a chatbot. There are disclosure duties where someone might not realise they are dealing with AI, or with something AI made.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "unsure",
+          "label": "Not sure"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "legend": "Does AI help decide something about a person?",
+      "help": "Hiring, credit, insurance, a place on a course, access to healthcare, or a benefit. It counts even when a person signs the decision off at the end.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Yes"
+        },
+        {
+          "value": "no",
+          "label": "No"
+        },
+        {
+          "value": "unsure",
+          "label": "Not sure"
+        }
+      ]
+    }
+  ],
+  "submit": "Show me what this points at",
+  "reset": "Start again",
+  "nojsTitle": "These five questions need JavaScript to work out what they point at.",
+  "nojsLead": "The questions themselves are above and they are worth reading either way. To get the rest without JavaScript:",
+  "nojsItems": [
+    {
+      "text": "Read the guide on whether the EU AI Act applies to your app.",
+      "href": "/blog/blog-does-ai-act-apply.html"
+    },
+    {
+      "text": "Read what is included in a paid assessment, with the prices.",
+      "href": "/pricing.html"
+    },
+    {
+      "text": "Email us and describe your situation in your own words.",
+      "href": "mailto:support@getregula.com?subject=Where%20do%20I%20stand"
+    }
+  ],
+  "months": [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ],
+  "dateFormat": "{d} {month} {y}",
+  "dates": {
+    "prohibited": "2025-02-02",
+    "article50": "2026-08-02",
+    "marking": "2026-12-02",
+    "annexIII": "2027-12-02"
+  },
+  "errorOne": "One question is still unanswered. It is highlighted below, and “Not sure” is a real answer if you do not know.",
+  "errorMany": "{n} questions are still unanswered. They are highlighted below, and “Not sure” is a real answer if you do not know.",
+  "clearedNotice": "Your answers have been cleared. The five questions are ready again.",
+  "resultHeading": "What your answers point at",
+  "ledeIn": "Below is what your own answers point at, and what they cannot settle. None of it is a decision about your risk tier or your obligations, because those depend on facts that five questions cannot reach.",
+  "ledeNoEu": "Nothing you have told us connects you to the EU market, so the EU AI Act may not be the first thing to look at. That is a scoping question rather than a conclusion, and what follows says why it is not settled.",
+  "ledeNoAi": "You have said your product does not use AI. The Act works from its own definition, which is broader than most people expect, so this is worth checking rather than assuming.",
+  "pointsHeading": "Worth reading, based on what you said",
+  "unsettledHeading": "What this cannot settle",
+  "routesHeading": "What you can do next",
+  "points": {
+    "scope": {
+      "title": "The rules can reach you from outside the EU",
+      "body": "You said people in the EU use your product. Article 2 sets out who the Act applies to, and it covers providers and deployers established in a third country where the output produced by the AI system is used in the Union. Where you are registered is not the test.",
+      "cite": "Regulation (EU) 2024/1689, Article 2(1)(c)",
+      "href": "/blog/blog-does-ai-act-apply.html",
+      "linkText": "Does the EU AI Act apply to your app?"
+    },
+    "scopeUnsure": {
+      "title": "Whether the rules reach you is the first thing to settle",
+      "body": "You are not sure whether people in the EU use your product. That is the first question to answer, because Article 2 covers providers and deployers established in a third country where the output produced by the AI system is used in the Union. It turns on where your users are and where your output ends up.",
+      "cite": "Regulation (EU) 2024/1689, Article 2(1)(c)",
+      "href": "/blog/blog-does-ai-act-apply.html",
+      "linkText": "Does the EU AI Act apply to your app?"
+    },
+    "noEu": {
+      "title": "Nothing you told us connects you to the EU market",
+      "body": "You said your product is not sold to, and not used by, people in the EU. Article 2 can still reach an organisation established in a third country where the output produced by the AI system is used in the Union, so it is worth knowing where your output ends up. Other countries are legislating too, and this site tracks several of them.",
+      "cite": "Regulation (EU) 2024/1689, Article 2(1)(c)",
+      "href": "/regions/regulations.html",
+      "linkText": "Rules in other countries"
+    },
+    "noAi": {
+      "title": "The definition is broader than most people expect",
+      "body": "You said your product does not use AI. The Act works from its own definition in Article 3(1), which turns on what a system does with the input it receives rather than on which technology built it. If anything in your product infers, predicts, recommends or generates, check it against the definition rather than assume.",
+      "cite": "Article 3(1)",
+      "href": "/blog/blog-classify-ai-system.html",
+      "linkText": "How the definition works"
+    },
+    "definition": {
+      "title": "Whether it is an AI system in the Act's own sense",
+      "body": "This is the first thing a person has to settle, and five plain questions cannot settle it. Article 3(1) turns on what the system does with the input it receives, not on the product label, the library it imports, or whether anyone calls it AI.",
+      "cite": "Article 3(1)",
+      "href": "/blog/blog-classify-ai-system.html",
+      "linkText": "How the definition works"
+    },
+    "roleProvider": {
+      "title": "You would be reading the provider duties",
+      "body": "You said you built or trained it. The organisation that develops an AI system and places it on the market, or puts it into service under its own name or trademark, carries the heavier set of duties. Whether you are the provider of a given system is a legal question about how it reaches its users, not a description of your engineering.",
+      "cite": "Article 3(3)",
+      "href": "/guides/",
+      "linkText": "Guides by article"
+    },
+    "roleDeployer": {
+      "title": "You would be reading the deployer duties",
+      "body": "You said you use someone else's. An organisation using an AI system under its own authority has its own duties, lighter than a provider's but not nothing. Running someone else's model inside a product you offer is not personal, non-professional use.",
+      "cite": "Article 3(4)",
+      "href": "/guides/",
+      "linkText": "Guides by article"
+    },
+    "roleBoth": {
+      "title": "You may be both, and the line can move",
+      "body": "You said both, and both sets of duties can apply to the same organisation. Article 25 also sets out when a deployer, distributor or importer becomes the provider of a high-risk system: putting your own name or trademark on it, making a substantial modification to it, or modifying the intended purpose of a system so that it becomes high-risk.",
+      "cite": "Articles 3(3), 3(4) and 25(1)",
+      "href": "/guides/",
+      "linkText": "Guides by article"
+    },
+    "roleUnsure": {
+      "title": "Your role is one of the facts to settle first",
+      "body": "You are not sure. The Act distinguishes the organisation that places an AI system on the market or puts it into service under its own name from the organisation that uses one under its own authority, and it puts different duties on each. Article 25 also sets out when using or modifying someone else's high-risk system makes you its provider.",
+      "cite": "Articles 3(3), 3(4) and 25(1)",
+      "href": "/guides/",
+      "linkText": "Guides by article"
+    },
+    "transparency": {
+      "title": "Telling people they are dealing with AI",
+      "body": "You said people see AI-produced content or talk to your system directly. Article 50 sets out several transparency duties with different actors, conditions and exceptions. They have applied since {article50}, and the marking requirements carry a grace period to {marking}. A missing disclosure is something to review, not proof that every Article 50 duty applies to you.",
+      "cite": "Article 50",
+      "href": "/guides/article-50-transparency.html",
+      "linkText": "Article 50 transparency, in detail"
+    },
+    "decisions": {
+      "title": "Decisions about people are the strictest part",
+      "body": "You said AI helps decide something about a person. Annex III lists the uses treated as high risk and Article 6 sets out how a system in one of those areas is classified; those obligations apply from {annexIII}. Article 6(3) also sets out conditions under which such a system is not high risk, including a narrow procedural task or improving the result of a previously completed human activity, and it states that a system performing profiling of natural persons is always high risk. Which of these describes you is exactly what this page cannot answer.",
+      "cite": "Article 6(2) and 6(3), Annex III",
+      "href": "/guides/article-9-risk-management.html",
+      "linkText": "What high-risk actually requires"
+    },
+    "prohibited": {
+      "title": "A few uses are banned outright",
+      "body": "Some practices are prohibited rather than regulated, and the prohibitions have applied since {prohibited}. This page did not ask about them, so read the list rather than assume it does not touch you.",
+      "cite": "Article 5",
+      "href": "/guides/article-5-prohibited-practices.html",
+      "linkText": "The prohibited practices, listed"
+    }
+  },
+  "unsettled": [
+    "Whether what you have meets the Act's own definition of an AI system. Article 3(1) is the test, and it is not the same as whether you call it AI.",
+    "Which role or roles you occupy. That depends on how the system reaches the people who use it, not on who wrote the code.",
+    "Your intended purpose. Most classification turns on it, and it is a statement you make rather than something a tool can read.",
+    "Whether any of the Article 6(3) conditions applies to you, and whether anything you do removes it.",
+    "Everything that lives in your contracts, your governance and how the system behaves once it is running. No scanner can see any of it, and neither can five questions."
+  ],
+  "routes": {
+    "free": {
+      "title": "Keep going, free",
+      "price": "Free, and it stays free",
+      "body": "Work through the fuller assessment in your browser. It asks the same ground in the law's own terms and shows where each question comes from. No account, and nothing you enter is uploaded. If you are comfortable with a terminal, the same indicators are available on your own machine, and the scanner does not upload your code.",
+      "cmd": "pipx install regula-ai && regula check .",
+      "cta": "Open the free assessment",
+      "href": "/assess/",
+      "short": "Free, in your browser or your terminal. No account, nothing uploaded."
+    },
+    "paid": {
+      "title": "A written assessment",
+      "price": "GBP 950, fixed scope",
+      "body": "One codebase, one product scope, remote, about a week of elapsed time. The scan read with you indicator by indicator, a written list of the facts still to be settled, and a prioritised brief you keep. It is not a compliance determination, not a certification and not legal advice. No payment runs on this site; it starts with an email.",
+      "cta": "Read what is included",
+      "href": "/pricing.html",
+      "short": "A written assessment at a published fixed price. It is not a determination."
+    },
+    "consultant": {
+      "title": "Talk to a consultant",
+      "price": "GBP 650 per day",
+      "body": "A live session with an independent AI governance consultant. It is not a certification, and the consultant does not give legal advice unless separately qualified and engaged to do so. Booking is not open yet: the named consultant, the duration and the full terms will be published first. Until then it is an email, and talking costs nothing.",
+      "cta": "Email about a review",
+      "href": "mailto:support@getregula.com?subject=Consultant%20review%20enquiry",
+      "short": "A conversation with an independent consultant. Not a certification, and not bookable yet."
+    }
+  },
+  "consultantWarranted": "Your answers name a use the Act treats most strictly, or a system you build and cannot yet place. That is the case where a conversation with a person is worth more than another tool.",
+  "limits": [
+    "Regula indicates where to look. It does not decide your risk tier, your obligations, or whether you comply. Conformity is determined by regulators and notified bodies, not by a questionnaire, and “not flagged” never means “compliant”.",
+    "Nothing here is legal advice. There is no EU legal entity behind this offer and no professional indemnity cover is in place. Anything that turns on a legal conclusion needs an appropriately qualified professional."
+  ],
+  "shareLabel": "Copy a link to these answers",
+  "shareDone": "Link copied",
+  "afterHeading": "What happens after you answer",
+  "afterLead": "Three routes, and each one is described here as what it actually is.",
+  "devHeading": "If you are comfortable with a terminal",
+  "devBody": "The same indicators are available as a local command. It reads files on your machine and does not upload them. Below is real output from the committed test fixture, reproduced on every build by the project's own checks, not a mock-up. Note what it does with an unresolved question: it names the facts it needs rather than guessing a tier.",
+  "errorNone": "You have not answered anything yet. Start with the first question, and “Not sure” is a real answer if you do not know.",
+  "nothingToBuy": "On these answers there is probably nothing here for you to buy, and saying so is more use than selling you something. The free tools stay available if your situation changes, and an email costs nothing if you want a second opinion.",
+  "englishOnlyCue": "",
+  "thousandsSep": ",",
+  "proof": {
+    "tests": "{tests} tests, re-run on every change",
+    "security": "0 unexpected security findings",
+    "deps": "zero dependencies in the core",
+    "upload": "the local core does not upload scanned files",
+    "trustLabel": "trust pack",
+    "trustHref": "https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md"
+  }
+}

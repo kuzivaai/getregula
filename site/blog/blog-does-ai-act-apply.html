@@ -213,7 +213,6 @@
 </head>
 <body>
 
-<div id="progress-bar" aria-hidden="true"></div>
 <a class="skip-link" href="#main">Skip to content</a>
 
 <nav class="nav" id="nav" aria-label="Main navigation">
@@ -222,6 +221,7 @@
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -546,14 +546,6 @@
 </footer>
 
 <script>
-// Scroll progress bar
-window.addEventListener('scroll', () => {
-    const bar = document.getElementById('progress-bar');
-    if (!bar) return;
-    const h = document.documentElement;
-    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
-    bar.style.width = Math.min(pct, 100) + '%';
-});
 // Nav scroll effect
 window.addEventListener('scroll', () => {
     const nav = document.querySelector('.nav');

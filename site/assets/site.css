@@ -35,6 +35,14 @@ html { scroll-behavior: smooth; overflow-x: hidden; scroll-padding-top: 72px; }
     --accent: #3b82f6;
     --accent-hover: #60a5fa;
     --accent-soft: rgba(59,130,246,0.08);
+    /* Solid-fill action colours. --accent is 3.68:1 against white, which
+       fails WCAG 1.4.3 for normal-size text, so a filled button never uses
+       it as a background. Measured: #2563eb is 5.17:1 with white and 3.88:1
+       against --bg, so the label passes 1.4.3 and the control boundary
+       passes 1.4.11; the hover fill is darker still at 6.70:1 and keeps an
+       --accent border so the boundary stays above 3:1. */
+    --action: #2563eb;
+    --action-hover: #1d4ed8;
     --success: #10b981;
     --warn: #f59e0b;
     --danger: #ef4444;
@@ -143,16 +151,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible {
     border: 0;
 }
 
-/* ===== SCROLL PROGRESS BAR ===== */
-#progress-bar {
-    position: fixed;
-    top: 0; left: 0;
-    width: 0%;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--purple));
-    z-index: 999;
-    transition: width 0.1s linear;
-}
 
 /* ===== GLOBAL NAV ===== */
 .nav {
@@ -241,15 +239,6 @@ dialog.nav-right {
 
 /* ===== HERO ===== */
 .hero-wrap { position: relative; overflow: hidden; }
-.hero-glow {
-    position: absolute;
-    top: -20%;
-    right: -5%;
-    width: 700px;
-    height: 700px;
-    background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 65%);
-    pointer-events: none;
-}
 .hero {
     max-width: 1200px;
     margin: 0 auto;
@@ -807,16 +796,6 @@ a.card-base:hover { color: inherit; }
     border-top: 1px solid var(--border);
     margin-top: var(--s10);
 }
-.final-glow {
-    position: absolute;
-    bottom: -40%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 800px;
-    height: 600px;
-    background: radial-gradient(ellipse, rgba(59,130,246,0.10) 0%, transparent 60%);
-    pointer-events: none;
-}
 .final {
     max-width: 720px;
     margin: 0 auto;
@@ -1337,8 +1316,7 @@ button.audience-fwd {
     .stats-inner { grid-template-columns: repeat(2, 1fr); }
     .tier-hint { display: none; }
     .notify { flex-direction: column; }
-    .hero-glow { width: 400px; height: 400px; }
-    /* Mobile card borders need more visibility */
+        /* Mobile card borders need more visibility */
     .card-base { border-color: var(--border-strong); }
     /* Issue 12: hide long descriptions in footer on mobile */
     .foot-col-links a .muted { display: none; }
@@ -1684,7 +1662,7 @@ footer p a:hover {
 /* ===== PRINT STYLES ===== */
 @media print {
     body { background: white; color: black; }
-    .nav, .hero-glow, .final-glow, .term-wrap, .cta-pill,
+    .nav, .term-wrap, .cta-pill,
     .badge, .notify, footer { display: none; }
     .reveal { opacity: 1; transform: none; }
     a { color: black; text-decoration: underline; }
@@ -1693,3 +1671,384 @@ footer p a:hover {
     .sec-head, h1, h2, h3, h4 { color: black; }
     p, li { color: #333; }
 }
+
+/* =============================================================
+   QUALIFIER  —  the first view
+   -------------------------------------------------------------
+   Five plain-language questions, one card, no progress indicator.
+   The absence of a progress bar is a deliberate, evidenced choice,
+   not an omission: Conrad, Couper, Tourangeau and Peytchev (2010),
+   "The impact of progress indicators on task completion",
+   Interacting with Computers 22(5) 417-427, measured breakoff at
+   21.8% for an early-discouraging indicator against 12.7% for no
+   indicator at all, replicated at 19.9% against 14.3%. A single
+   card showing all five questions makes remaining effort finite at
+   a glance, which is the encouraging first frame without the
+   instrument that can backfire. Rationale and the provenance
+   warning that travels with those figures:
+   docs/ux/USERS-JOURNEYS-IA-2026-08.md section 3.
+
+   Typography here is deliberate rather than default: Fraunces for
+   the question the reader arrived with, DM Sans for the questions
+   they answer, JetBrains Mono reserved for numerals and for command
+   output so a number never reads as prose.
+
+   No decoration. There is no glow, no orb and no gradient band in
+   this component; every rule below either carries information or
+   creates the space that makes the information readable.
+   ============================================================= */
+
+.qual-wrap {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+}
+.qual {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: var(--s9) var(--s6) var(--s9);
+}
+.qual h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 4.6vw, 2.6rem);
+    line-height: 1.14;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    margin-bottom: var(--s5);
+    text-wrap: balance;
+}
+.qual-sub {
+    font-size: var(--fs-md);
+    line-height: 1.62;
+    color: var(--text-2);
+    margin-bottom: var(--s4);
+    max-width: 62ch;
+}
+.qual-meta {
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+    color: var(--text-dim);
+    margin-bottom: var(--s7);
+    max-width: 62ch;
+}
+
+/* ---- the question list ---- */
+.qual-qs { list-style: none; margin: 0 0 var(--s7); padding: 0; }
+.qual-q + .qual-q { margin-top: var(--s6); }
+.qual-q fieldset { border: 0; margin: 0; padding: 0; }
+.qual-q legend {
+    display: block;
+    width: 100%;
+    font-size: var(--fs-lg);
+    line-height: 1.34;
+    font-weight: 600;
+    color: var(--text);
+    padding: 0;
+    text-wrap: pretty;
+}
+.qual-n {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    color: var(--text-faint);
+    margin-right: var(--s3);
+    font-weight: 400;
+}
+.qual-help {
+    font-size: var(--fs-base);
+    line-height: 1.6;
+    color: var(--text-dim);
+    margin: var(--s2) 0 var(--s3);
+    max-width: 60ch;
+}
+
+/* ---- options ----
+   The native radio is kept in the accessibility tree and kept
+   focusable. It is clipped rather than hidden, because display:none
+   and visibility:hidden both remove it from focus order and from
+   assistive technology, which would cost the arrow-key group
+   navigation, the role and the checked state that come free with a
+   real radio group. */
+.qual-opts { display: flex; flex-wrap: wrap; gap: var(--s3); }
+.qual-opt { position: relative; }
+.qual-opt input {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: 0; padding: 0; border: 0;
+    clip-path: inset(50%);
+    overflow: hidden;
+    white-space: nowrap;
+}
+.qual-face {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 88px;
+    padding: var(--s3) var(--s5);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    background: var(--bg-elev);
+    color: var(--text-2);
+    font-size: var(--fs-base);
+    font-weight: 500;
+    cursor: pointer;
+}
+.qual-opt input:checked + .qual-face {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--accent);
+}
+.qual-opt input:focus-visible + .qual-face {
+    outline: 3px solid var(--accent-hover);
+    outline-offset: 2px;
+}
+@media (hover: hover) {
+    .qual-opt input:not(:checked) + .qual-face:hover { border-color: var(--text-dim); }
+}
+
+/* ---- actions ---- */
+.qual-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s4);
+    margin-top: var(--s8);
+}
+.qual-go {
+    min-height: 48px;
+    padding: var(--s3) var(--s7);
+    border: 1px solid var(--accent);
+    border-radius: var(--r-md);
+    background: var(--action);
+    color: #ffffff;
+    font-family: var(--font-body);
+    font-size: var(--fs-md);
+    font-weight: 600;
+    cursor: pointer;
+}
+.qual-go:focus-visible { outline: 3px solid var(--accent-hover); outline-offset: 3px; }
+@media (hover: hover) { .qual-go:hover { background: var(--action-hover); } }
+.qual-quiet {
+    min-height: 44px;
+    padding: var(--s3) var(--s4);
+    border: 1px solid transparent;
+    border-radius: var(--r-md);
+    background: none;
+    color: var(--text-dim);
+    font-family: var(--font-body);
+    font-size: var(--fs-base);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+.qual-quiet:focus-visible { outline: 3px solid var(--accent-hover); outline-offset: 2px; }
+.qual-quiet[disabled] { color: var(--text-faint); cursor: not-allowed; text-decoration: none; opacity: 0.55; }
+
+/* ---- the incomplete-answer state ---- */
+.qual-err {
+    margin-top: var(--s5);
+    padding: var(--s4) var(--s5);
+    border: 1px solid var(--danger);
+    border-left-width: 4px;
+    border-radius: var(--r-md);
+    background: rgba(239,68,68,0.07);
+    color: var(--text);
+    font-size: var(--fs-base);
+    line-height: 1.55;
+}
+.qual-q.is-missing legend { color: var(--danger); }
+.qual-q.is-missing .qual-face { border-color: var(--danger); }
+
+/* ---- the result ---- */
+.qual-result {
+    margin-top: var(--s9);
+    padding-top: var(--s8);
+    border-top: 1px solid var(--border-strong);
+}
+.qual-result:focus { outline: none; }
+.qual-result:focus-visible { outline: 3px solid var(--accent-hover); outline-offset: 6px; }
+.qual-result h2 {
+    font-family: var(--font-serif);
+    font-size: var(--fs-xl);
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: var(--s4);
+}
+.qual-lede {
+    font-size: var(--fs-md);
+    line-height: 1.6;
+    color: var(--text-2);
+    margin-bottom: var(--s7);
+    max-width: 62ch;
+}
+.qual-result h3 {
+    font-family: var(--font-body);
+    font-size: var(--fs-base);
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    font-weight: 600;
+    color: var(--text-faint);
+    margin: var(--s8) 0 var(--s4);
+}
+.qual-points { list-style: none; margin: 0; padding: 0; }
+.qual-point {
+    padding: var(--s5) 0;
+    border-top: 1px solid var(--border);
+}
+.qual-point:last-child { border-bottom: 1px solid var(--border); }
+.qual-point h4 {
+    font-size: var(--fs-md);
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: var(--s2);
+}
+.qual-point p { font-size: var(--fs-base); line-height: 1.6; color: var(--text-2); margin-bottom: var(--s3); max-width: 66ch; }
+.qual-point-link { display: inline-block; color: var(--accent-hover); }
+.qual-cite {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-faint);
+    margin-top: var(--s2);
+}
+.qual-unsettled { margin: 0; padding-left: var(--s5); }
+.qual-unsettled li { font-size: var(--fs-base); line-height: 1.6; color: var(--text-2); margin-bottom: var(--s3); max-width: 66ch; }
+
+/* ---- the three routes ---- */
+.qual-routes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: var(--s4);
+    margin-top: var(--s4);
+}
+.qual-route {
+    display: flex;
+    flex-direction: column;
+    padding: var(--s6);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--bg-elev);
+}
+.qual-route.is-open { border-color: var(--accent); }
+.qual-route h4 { font-size: var(--fs-md); font-weight: 600; color: var(--text); margin-bottom: var(--s2); }
+.qual-price {
+    font-family: var(--font-mono);
+    font-size: var(--fs-base);
+    color: var(--text-dim);
+    margin-bottom: var(--s3);
+}
+.qual-route p { font-size: var(--fs-sm); line-height: 1.6; color: var(--text-2); margin-bottom: var(--s4); }
+.qual-route .qual-route-cta {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: var(--s3) var(--s4);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    color: var(--text);
+    font-size: var(--fs-base);
+    font-weight: 500;
+    text-decoration: none;
+}
+.qual-route .qual-route-cta:focus-visible { outline: 3px solid var(--accent-hover); outline-offset: 2px; }
+@media (hover: hover) { .qual-route .qual-route-cta:hover { border-color: var(--accent); } }
+.qual-route code {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    color: var(--cyan);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: var(--s3);
+    margin-bottom: var(--s4);
+    overflow-x: auto;
+}
+.qual-limits {
+    margin-top: var(--s8);
+    padding: var(--s5) var(--s6);
+    border: 1px solid var(--border-strong);
+    border-left-width: 4px;
+    border-radius: var(--r-md);
+    background: var(--bg-elev);
+}
+.qual-limits p { font-size: var(--fs-base); line-height: 1.6; color: var(--text-2); margin: 0; max-width: 70ch; }
+.qual-limits p + p { margin-top: var(--s3); }
+.qual-share { margin-top: var(--s7); }
+
+/* ---- no JavaScript ---- */
+.qual-nojs {
+    margin-top: var(--s7);
+    padding: var(--s5) var(--s6);
+    border: 1px solid var(--warn);
+    border-left-width: 4px;
+    border-radius: var(--r-md);
+    background: rgba(245,158,11,0.06);
+}
+.qual-nojs p { font-size: var(--fs-base); line-height: 1.6; color: var(--text); margin: 0 0 var(--s3); }
+.qual-nojs ul { margin: 0; padding-left: var(--s5); }
+.qual-nojs li { font-size: var(--fs-base); line-height: 1.6; color: var(--text-2); margin-bottom: var(--s2); }
+
+/* ---- motion ----
+   Every transition in this component is declared here and only here,
+   so the reduced-motion guard below is provably complete for it. */
+@media (prefers-reduced-motion: no-preference) {
+    .qual-face, .qual-go, .qual-route .qual-route-cta {
+        transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+    }
+}
+
+@media (max-width: 640px) {
+    .qual { padding: var(--s8) var(--s5) var(--s8); }
+    /* Options wrap rather than stack. Forcing a column tripled the height of
+       every question and pushed the whole card off a 320px screen; wrapping
+       keeps a three-option question on one row there and lets the four-option
+       question wrap by itself. Measured at 320x568 and 390x844. The 44px
+       minimum target height is unchanged either way (WCAG 2.5.8). */
+    .qual-opts { gap: var(--s2); }
+    /* min-width stays at the 44px floor. Setting it to 0 let the short
+       "No" option size to its content and it measured 43px wide at
+       320px, one pixel under WCAG 2.5.8 Target Size (Minimum). */
+    .qual-face { min-width: 44px; padding: var(--s3) var(--s4); flex: 1 1 auto; }
+    .qual-routes { grid-template-columns: 1fr; }
+}
+@media (max-width: 360px) {
+    .qual { padding: var(--s7) var(--s4) var(--s8); }
+    .qual-face { min-width: 44px; padding: var(--s3); font-size: var(--fs-sm); }
+}
+.qual-after-h {
+    font-family: var(--font-serif);
+    font-size: var(--fs-lg);
+    line-height: 1.25;
+    color: var(--text);
+    margin: var(--s9) 0 var(--s3);
+    padding-top: var(--s7);
+    border-top: 1px solid var(--border);
+}
+.qual .qual-unsettled a { color: var(--accent-hover); }
+/* The credibility strip under the developer entry. Every item is a fact a
+   reader can check for themselves, which is the only kind of social proof a
+   product with no customers is entitled to. The test count is generated from
+   data/site_facts.json at build time, never typed. */
+.qual-proof {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s2) var(--s5);
+    margin: 0 0 var(--s6);
+    padding: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-dim);
+}
+.qual-proof li { position: relative; }
+.qual-proof li + li::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--s5) / -2);
+    top: 0.35em;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--text-faint);
+}
+.qual-proof a { color: var(--text-dim); }
