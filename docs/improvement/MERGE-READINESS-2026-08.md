@@ -42,6 +42,15 @@ claim than "ready to merge", and the difference is stated here rather than in
 section 8, because a reader who stops after a verdict should not be able to
 mistake one for the other.**
 
+**Corrected 2026-08-18 (seventh session).** The paragraph below was true at
+`dac9a903` and **was not true at the branch tip when it was written.** Two
+commits landed after that measurement, and one of them, `1518213`, introduced a
+compliance-state assertion into `BRAIN-FEED.md` that turned the determination
+guard red and failed two tests in both runners. Nothing said the figures
+predated the tip. That is measurement rule 3 applied to exit codes rather than
+to counts, and it is recorded as **N167**. The defect is fixed and the current
+figures are in **section 17**, which supersedes the paragraph below.
+
 **What is demonstrated.** Re-derived 2026-08-18 at `dac9a903`, tree `dea0e2d2`,
 each exit code read from a file that did not exist before its run: the custom
 runner rc=0 with 0 failed, `pytest` rc=0 with 0 failed, `self-test` rc=0,
@@ -1397,3 +1406,116 @@ No new defect fixed: N165 and N166 are recorded and left. Every standing verdict
 is unchanged. The composite `v4` to `v7` claim in 14.2 was re-derived here and
 moves from Asserted to **Demonstrated**: `v1.9.0`, `origin/main` and `238d1f1`
 all read `v4`; the tip reads `v7`.
+
+---
+
+## 17. Addendum, 2026-08-18 (seventh session): the tip was red, the front door was rebuilt, and the chain re-derived
+
+This section supersedes section 0's figures. Every number below was produced by a
+command in this session and each exit code was read from a file that did not
+exist before its run. Figures inherited from earlier sessions and not re-derived
+here stay labelled Asserted where they sit.
+
+### 17.1 The tip was not green when section 0 said it was
+
+Re-derived at `1518213` **before any work started**, which is why it was found
+at all; the commands are the ones in `AGENTS.md` and `.claude/rules/measurement.md`:
+
+```
+determination-guard  rc=1   scanned 559 tracked file(s) of 963, 1 finding(s)
+custom runner        rc=1   Results: 1464 passed, 2 failed, 0 skipped
+pytest               rc=1   2 failed, 3017 passed in 499.43s
+```
+
+All three were one cause: `BRAIN-FEED.md:15`, a sentence added by `1518213`
+itself, describing the forbidden claim the deploy preview still serves and
+reproducing its shape in the description. Section 0's green result is real and
+was measured at `dac9a903`, two commits earlier. **Nothing said the figures
+predated the tip.** Recorded as **N167** in `docs/improvement/LEDGER.md`. Fixed
+by rewording rather than by adding a guard exemption.
+
+### 17.2 The chain at the end of this session
+
+Run sequentially on a frozen tree, each exit code written to a file in a
+directory that was empty beforehand:
+
+```
+pytest               rc=0   3039 passed in 695.37s (0:11:35)
+custom runner        rc=0   Results: 1464 passed, 0 failed, 0 skipped (1350 test functions)
+determination-guard  rc=0   scanned 565 tracked file(s) of 970, 0 finding(s)
+ruff                 rc=0   All checks passed!
+self-test            rc=0   6/6 passed
+doctor               rc=0   8 passed, 4 info
+site-integrity       rc=0   RESULT: OK
+locale-link-audit    rc=0   96 cross-language link(s) across 8 localised page(s); 0 unmarked
+claim-auditor        rc=0   scanned 102 file(s), 447 claim(s), 0 unsourced
+```
+
+The collected total reconciles with what is published: `data/site_facts.json`
+records 3,039, the live run collected 3,039, and `cascade_count.py --check`
+reports every manifest surface carrying it. Under measurement rule 5, the
+determination guard scans 565 of 970 tracked files, so its zero means none on
+the scanned surface, not none anywhere.
+
+**What this measurement does not cover, and it is the same recursion this
+programme keeps hitting.** The figures above were taken on the tree that became
+the two commits carrying this work. Changed after the measurement: the three
+records this section sits in, and `site/sitemap.xml`, which
+`scripts/update_sitemap.py` generates from git history and therefore cannot
+produce until those commits exist. Section 17.5 records the re-run at the final
+commit.
+
+### 17.3 Accessibility, and what the automated part does and does not establish
+
+```
+axe-core, initial state   : 48 canonical pages x 2 viewports = 96 runs, 0 violations
+axe-core, result state    : 3 locales x 2 viewports x 4 answer branches = 24 runs, 0 violations
+axe-core, error state     : 1 run, 0 violations
+CONTROL: planted image-alt violation on the same page -> axe reports ["image-alt"]
+```
+
+**Stated per measurement rule 5 in `.claude/rules/measurement.md`:** axe-core
+tests a fixed rule set, and no automated tool establishes WCAG conformance. What it establishes is that no rule
+in that set fires. The manual checks run beside it, each in a real browser, were
+keyboard traversal to the first radio, arrow-key navigation and selection within
+a group, the rendered focus ring, accessible names computed with `getByRole`
+(confirming the `1/5` counter is excluded from the group's name), the skip
+link's target containing the form, heading order, horizontal overflow at 1400,
+1280, 640, 390 and 320 CSS pixels, touch-target size at 320, 360 and 390,
+reduced-motion transition duration, and the JavaScript-disabled rendering.
+
+Two failures were found by computing rather than by looking, and both are fixed:
+a filled call-to-action at **3.68:1** against white where WCAG 1.4.3 requires
+4.5:1 for text that size, and a **43px** target against the 44px floor in 2.5.8.
+Both are in **N170**.
+
+### 17.4 What a push would now publish that it would not have before
+
+Unchanged from section 16 in kind: a push updates a public pull request and
+causes Netlify to rebuild a public, unauthenticated deploy preview of `site/`.
+It does not update getregula.com and publishes nothing to PyPI.
+
+What changed in substance is that the material public change is no longer only
+the price list. It is the front page itself, in three languages, plus a
+navigation entry to the pricing page on every page that has a navigation.
+**Section 16.3 still stands and its constraint travels with this work**: ledger
+N132 is OPEN, all three statistics offered for the pricing-transparency
+direction fail at source, and the direction is Reasoned, not evidenced. The
+three standing verdicts it names are unchanged: `PAYMENT_GATE NOT_ACTIVE`,
+`WILLINGNESS_TO_PAY UNVALIDATED`, `VENTURE_DECISION STOP`. No payment, booking
+or checkout was added; every paid action is still an email.
+
+### 17.5 The re-run at the final commit
+
+Recorded here rather than promised: see the commit that adds this line for the
+result, and `docs/improvement/LEDGER.md` N167 for why a figure measured before
+the commit it describes is not a figure about that commit.
+
+### 17.6 What this session did not do
+
+No push, no merge, no tag, no release, no deploy, no repository setting changed.
+Nothing was allowlisted, quarantined, suppressed, skipped, pinned or excluded to
+make a check pass: two guards were narrowed and each was proved able to fail on
+the defect it was written for, and the one claim the auditor would have flagged
+on `site/pricing.html` was given a real source rather than an allowlist entry.
+The untracked `marketing/` directory predates this session and was left alone.
