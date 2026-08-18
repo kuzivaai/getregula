@@ -3817,10 +3817,15 @@ right to doubt them. Retrieved 2026-08-17:
 programme's own rule, a pricing direction chosen on these three is Reasoned, not
 evidenced, and must be labelled so. It is also partly moot: prices are ALREADY
 published, at `site/pricing.html:369` and `:384`, GBP 950 for a fixed-scope
-starter assessment and GBP 650 per day for advisory work, landed by `b349531` and
-`4d922be`. The open question is therefore not whether to publish but whether the
-published direction has any evidence behind it, and the answer is that the three
-items offered do not supply any.
+starter assessment and GBP 650 per day for advisory work, introduced by
+`5786666` and revised by `b349531`. **Provenance corrected 2026-08-18:** this
+entry previously named `b349531` and `4d922be`. Verified against the full file
+list of each commit, `4d922be` does not touch `site/pricing.html`; it
+reconciled the prices the site published elsewhere (`site/index.html`, the two
+locale pages, `README.md`, `data/site_facts.json`). The commit that put the
+prices on the pricing page is `5786666`. The open question is therefore not
+whether to publish but whether the published direction has any evidence behind
+it, and the answer is that the three items offered do not supply any.
 
 **Verified and usable, by contrast, and recorded so the next session does not
 re-derive them:** Google deprecated FAQ rich results on 7 May 2026, confirmed in
@@ -5626,6 +5631,60 @@ not touch detection, so it moves no published precision or recall figure; and
 inspection, because an inert key component is exactly the blank gate measurement
 rule 4 warns about.
 
+
+**Measured 2026-08-18 (Phase 2): the two arguments converted into measurements.**
+
+Two things in this entry were arguments rather than measurements: that the three
+exempt parameters cannot change an entry, and what the fix costs.
+
+**The exemptions hold.** The real predicate, a cold cache per arm, one variable,
+comparing per-file entry VALUES for files present in both arms, with
+file-selection differences reported separately rather than conflated with them:
+
+```
+skip_tests         -> HOLDS (file selection only: 1 file differs in presence)
+declared_domains   -> HOLDS  (findings 4 -> 7, entry values unchanged)
+enrich_oversight   -> HOLDS
+CONTROL: in-key params that changed a common file's VALUE: ['respect_ignores']
+```
+
+The control ran both ways and discriminates: `respect_ignores` changed the
+stored value for 2 of 5 files. Without that arm every HOLDS would be a blank
+gate, which is the failure measurement rule 4 names. `min_tier`, also in-key,
+changed no value on this fixture because no finding in it sits below
+`high_risk`, so it drops nothing; its key still differs via the `scope`
+component. That is a limitation of the fixture, recorded rather than left as a
+silent non-result.
+
+**A first attempt was wrong and is withdrawn.** It compared whole cache files
+and reported `skip_tests` FALSIFIED on the strength of 2 entries against 1. That
+is exactly what the exemption predicts, since a skipped file writes no entry,
+and the claim under test is about entry content. The corrected comparison is the
+one above.
+
+**The cost, measured on the pinned repositories rather than a synthetic
+fixture.** The before-arm is a worktree at `d32c7be^` (v6, no params token); the
+after-arm is the branch tip (v7). A default scan first, then `--no-ignore`,
+timed, exactly as a user would meet it:
+
+| repository | files | BEFORE | AFTER | delta | cache |
+|---|---|---|---|---|---|
+| `ageitgey/face_recognition` 9f3061a | 106 | 0.22s | 0.36s | +0.14s | 3,153 to 6,306 B |
+| `open-webui/open-webui` 01f4282 | 5,031 | 3.20s | 29.17s | +25.97s (9.1 times) | 70,639 to 141,278 B |
+| `vercel/ai` 86892f3 | 7,992 | 2.38s | 61.29s | +58.90s (25.8 times) | 453,972 to 907,944 B |
+
+Third-party hashes name objects in the repository beside them, never in this one
+(N39c). "Two cold scans instead of one" is, on the largest pinned repository,
+61.29s instead of 2.38s, and twice the cache on disk.
+
+**It does not flatter the fix, and that is reported because the brief required
+it either way.** None of the three corpora contains a single `regula-ignore`
+annotation, verified by search. So on all three the correctness benefit cannot
+manifest and the measured cost buys nothing. The benefit is real and is asserted
+by tests against a fixture that does carry suppressions. The honest statement is
+that this fix costs up to 25.8 times on the `--no-ignore` invocation, doubles
+the cache on disk, and changes no answer on any real repository measured so far.
+
 ### N164. The branch has a pull request, CI has passed on it, and a push is already a publication
 
 **State:** OPEN
@@ -5726,3 +5785,92 @@ and nothing said so. This is the same shape as F21 and as N138.
 `main`-is-unprotected finding, the 2.0.0 verdict, or any standing verdict. **No
 push was made and none is recommended here**; it is an owner action and it is now
 described accurately enough for the owner to decide.
+
+
+---
+
+### N165. Two published releases carry no git tag
+
+**State:** OPEN
+
+Recorded and not acted on: tagging is a repository-changing act, and this
+session does not push, tag or release.
+
+**First raised:** 2026-08-18, Phase 0(c), reconciling every PyPI release for
+`regula-ai` against what this repository records.
+
+**Status:** OPEN. The strict phase test is NEGATIVE and the weaker one fails.
+
+The question the phase asked was whether any published release exists that no
+record here represents. It does not: every one of the 16 releases is represented
+by a release commit in `scripts/constants.py` history. What is missing is the
+tag.
+
+```
+reconciliation: 16 published = 14 tagged + 2 untagged
+
+  1.5.1  uploaded 2026-04-04T19:47:02  changelog=NO   version-commit=658c3ab
+      artefact: regula_ai-1.5.1-py3-none-any.whl
+      commit  : 658c3ab 2026-04-04 release: v1.5.1 - fix stale PyPI package,
+                add --version flag, connect domain
+  1.7.2  uploaded 2026-06-15T23:13:44  changelog=yes  version-commit=9cb1440
+      artefact: regula_ai-1.7.2-py3-none-any.whl, regula_ai-1.7.2.tar.gz
+      commit  : 9cb1440 2026-06-16 chore(release): v1.7.2 - MCP Registry
+                namespace + packaging metadata
+```
+
+`1.5.1` additionally has no `CHANGELOG.md` entry, and shipped a wheel with no
+sdist, which no other release did.
+
+**Why it matters.** A tag is how a published artefact is located after the fact.
+Two artefacts a user can install today cannot be checked out by tag, so the tree
+that produced them can only be found by reading `scripts/constants.py` history.
+The counts were produced by enumeration (`git tag --list`, a CHANGELOG heading
+predicate, and a walk of `git rev-list HEAD -- scripts/constants.py`), never by
+hand, per measurement rule 4c.
+
+---
+
+### N166. The public deploy preview injects a third-party script, and is not a proxy for production
+
+**State:** OPEN
+
+**First raised:** 2026-08-18, Phase 0(a), the first time the preview named in
+N164 has been fetched and enumerated rather than described.
+
+**Status:** OPEN. Two consequences, both unstated anywhere before this entry.
+
+All 62 pages serve 200 and all 62 differ from their git blobs at the commit the
+preview was built from. The divergence reconciles completely:
+
+```
+diff lines added   : 998        diff lines removed : 750
+attributed to Netlify CDP injection : 250
+attributed to href rewriting        : 1498
+UNEXPLAINED                          : 0
+reconciles: 1748 == 1748 -> True
+```
+
+**First consequence: a third-party script runs on every page.** Netlify injects
+a `data-netlify-deploy-id` div and an async script element loading
+`/.netlify/scripts/cdp` into all 62 pages. It exists nowhere in this repository
+and no page discloses it. Whatever the correct disposition, nothing currently
+states that a compliance product's public preview loads third-party analytics.
+
+**Second consequence: the preview is not evidence about production.** Production
+is GitHub Pages, deployed by the `deploy` job in `ci.yaml`, which is gated
+`if: github.ref == 'refs/heads/main' && github.event_name == 'push'`. The
+preview is Netlify, and Netlify post-processes the HTML while GitHub Pages does
+not. A check run against the preview tests a different artefact from the one
+users get. The 55 rewritten link targets were tested and all resolve 200, so
+nothing is broken; the point is that the served bytes are not the repository's
+bytes.
+
+**Related, and already closing itself.** The preview currently serves a
+compliance-state assertion at `site/blog/blog-does-ai-act-apply.html:475`, the
+phrase about generating compliant disclosure text, which the determination guard
+flags. The phrase is absent at the branch tip and the guard reports
+`scanned 559 tracked file(s) of 963, 0 finding(s)`, exit 0. So a push would
+REMOVE a live forbidden claim from a public surface rather than add one. Stated
+per measurement rule 5: the guard scans 559 of 963 tracked files, so its zero
+means none on the scanned surface, not none anywhere.
