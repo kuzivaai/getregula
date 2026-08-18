@@ -1513,11 +1513,42 @@ three standing verdicts it names are unchanged: `PAYMENT_GATE NOT_ACTIVE`,
 `WILLINGNESS_TO_PAY UNVALIDATED`, `VENTURE_DECISION STOP`. No payment, booking
 or checkout was added; every paid action is still an email.
 
-### 17.5 The re-run at the final commit
+### 17.5 The re-run at the final commit, and what it caught
 
-Recorded here rather than promised: see the commit that adds this line for the
-result, and `docs/improvement/LEDGER.md` N167 for why a figure measured before
-the commit it describes is not a figure about that commit.
+Run at `5022e65` with a clean working tree, each exit code written to a file in
+a directory that was empty beforehand. All twelve green:
+
+```
+pytest rc=0                      custom runner rc=0 (1464 passed, 0 failed)
+determination-guard rc=0         scanned 568 tracked file(s) of 973, 0 finding(s)
+ruff rc=0                        self-test rc=0
+doctor rc=0                      site-integrity rc=0
+locale-link-audit rc=0           claim-auditor rc=0 (0 unsourced)
+cascade_count --check rc=0       build_comparison --check rc=0
+update_sitemap + git diff --exit-code site/sitemap.xml rc=0
+```
+
+**The re-run earned its keep at the commit before this one.** At `9bde812`, two
+tests failed that had passed on the tree immediately preceding it:
+`test_public_surface_inventory` and `test_public_claim_integrity`.
+`scripts/public_surface_inventory.py` derives its corpus from `git ls-files`, so
+the three product pages that commit adds were invisible to it while they were
+untracked. Every regeneration run before the commit was correct and stale at the
+moment the commit landed. The determination guard's own scanned totals show the
+transition, `565 of 970` before and `568 of 973` after. Recorded as N176 items 6
+and 7.
+
+**That is the concrete answer to why this section exists.** N167 records a
+handover reporting a green chain measured two commits behind the tip. One day
+later, in the same session, a real class of failure appeared that no pre-commit
+run could have caught, because the predicate's input is the commit itself.
+
+**What changed after this measurement:** only the prose of this section,
+`docs/improvement/LEDGER.md` and `BRAIN-FEED.md`. No code, site file, test or
+data artefact, which the commit diff shows. The checks that read those three
+files, the ledger parsers, the handover-continuity check, the self-reference
+sourcing check, the claim auditor and the published-count manifest, were re-run
+against them separately and are recorded in that commit's message.
 
 ### 17.7 The second architecture change: page density
 
