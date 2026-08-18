@@ -1611,3 +1611,101 @@ make a check pass: two guards were narrowed and each was proved able to fail on
 the defect it was written for, and the one claim the auditor would have flagged
 on `site/pricing.html` was given a real source rather than an allowlist entry.
 The untracked `marketing/` directory predates this session and was left alone.
+
+---
+
+## 18. Addendum, 2026-08-18 (eighth session): a merge now removes an incorrect claim from a live page
+
+**Read this beside section 15.3 and section 16.** Those record that a push
+updates a public pull request and a public preview, and that the preview serves
+a forbidden claim this branch has already removed. This section adds a second
+thing a merge takes off a public surface, and this one is on production rather
+than on the preview.
+
+### 18.1 What getregula.com serves right now
+
+Fetched 2026-08-18 over the live domain, HTTP 200, 34,579 bytes:
+`https://getregula.com/blog/blog-aicdi-governance-gaps.html` serves all three
+of these strings, under a section heading reading **"Honest baselines
+(measured, reproducible)"**:
+
+```
+100% precision and recall on 13 synthetic fixtures
+100% / 100% on 13 hand-crafted fixtures
+reproduce with <code>python3 benchmarks/label.py score</code>
+```
+
+The synthetic corpus has held 38 fixtures since 28 July 2026
+(`benchmarks/synthetic/manifest.json`, version 2.0). The named synthetic
+command prints a different figure. `benchmarks/label.py score` with no flags
+scores a different corpus from the one the sentence beside it describes, and
+reports a different number, verified by running both commands. And
+`docs/benchmarks/PRECISION_RECALL_2026_04.md` has carried "STALE AND
+CONTRADICTED ... Do not cite the synthetic row" about that exact figure since
+28 July 2026, so the repository has known for three weeks.
+
+The full finding, with the two blind spots that let it stay, is **N177** in
+`docs/improvement/LEDGER.md`. It also closes **N151**.
+
+### 18.2 What that changes about the merge decision
+
+**It does not change the verdict, and it is not offered as a reason to merge.**
+Every commercial verdict in section 0 stands unchanged and none of this touches
+them. What it changes is one line in the ledger of consequences:
+
+- Section 16 recorded that a push REMOVES a live forbidden claim from the
+  preview and PUBLISHES prices for the first time, and that those are
+  separable. Both still hold.
+- This section adds that a merge also removes an incorrect published benchmark
+  claim from **production**, which the preview finding did not cover because
+  the two surfaces are different artefacts.
+- **The corollary is the uncomfortable one.** While this branch is unmerged,
+  the incorrect claim stays live. Nothing in this repository can correct a
+  published page without an outward-facing act, and that act is the owner's.
+
+### 18.3 The chain at this session's commit
+
+Run at the commit rather than at the tree before it, per N167. Every exit code
+read from a file that did not exist before its run, on a tree clean apart from
+the untracked `marketing/`:
+
+```
+pytest               rc=0   0 failed, in 598.30s (0:09:58)
+custom runner        rc=0   Results: 1464 passed, 0 failed, 0 skipped
+determination-guard  rc=0   scanned 568 tracked file(s) of 974, 0 finding(s)
+site-integrity       rc=0   RESULT: OK
+claim-auditor        rc=0   scanned 105 file(s), 0 unsourced
+claim-auditor -vf    rc=0   recall claims checked on 106 surfaces (was 8)
+locale-link-audit    rc=0
+merge-blockers       rc=0
+cascade_count --check rc=0
+update_sitemap --check rc=0
+self-test            rc=0
+doctor               rc=0
+ruff                 rc=0
+test_scanner_js      rc=0   58 tests, 58 passed
+```
+
+The collected total is deliberately not written here, for the reason the
+preamble to this file gives. Re-derive it with `python3 -m pytest tests/ -q`
+and confirm the published copies with `python3 scripts/cascade_count.py --check`.
+
+**Two measurements taken this session were discarded rather than reported.**
+Both were full-suite runs started before the work and left running while files
+were edited, which is measurement rule 2: two things changed between the run
+starting and the run finishing, so neither result attributes to anything. In
+particular **no clean baseline was established for the previous tip `ded1505`**;
+the run started for that purpose was invalidated by edits made while it ran, and
+the figures above are for `64e2c1f` only.
+
+### 18.4 What this session did not do
+
+No push, no merge, no tag, no release, no deploy, no repository setting changed.
+Nothing was allowlisted, quarantined, suppressed, skipped or excluded to make a
+check pass. Two things were deliberately NOT done and are recorded rather than
+half-built: the recall gate was not widened beyond the delivery-derived surface
+inventory, because what counts as a published surface is the owner's decision
+and 142 tracked prose files sit outside it; and no instrument was built to run a
+published reproduce-with command and compare its output to the figure beside it,
+which is the durable repair for the second half of N177. The untracked
+`marketing/` directory was left alone.
