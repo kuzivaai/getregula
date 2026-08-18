@@ -8506,6 +8506,39 @@
       "reason": "deployed reader or machine-readable content"
     },
     {
+      "stable_id": "website:d86e1ef1fff85030",
+      "channel": "website",
+      "source": "site/product-de.html",
+      "destination": "/product-de.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:70e14334c236bac9",
+      "channel": "website",
+      "source": "site/product-pt-br.html",
+      "destination": "/product-pt-br.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:5b74ad530a9d240d",
+      "channel": "website",
+      "source": "site/product.html",
+      "destination": "/product.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
       "stable_id": "website:95b81d903e81b9a6",
       "channel": "website",
       "source": "site/pt-br.html",
@@ -8744,10 +8777,10 @@
       "mcp": 3,
       "package": 2,
       "repository_docs": 39,
-      "website": 93
+      "website": 96
     },
     "classification": {
-      "active_product": 766,
+      "active_product": 769,
       "historical_record": 1,
       "internal_record": 1,
       "non_claim_asset": 26
