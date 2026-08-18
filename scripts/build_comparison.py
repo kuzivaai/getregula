@@ -59,11 +59,18 @@ def _host(url: str) -> str:
     host = parts[0]
     return f"{host}/{parts[1]}" if len(parts) > 1 and parts[1] else host
 
-# locale key -> shipped file
+# locale key -> shipped file.
+#
+# Moved off the three homepages on 2026-08-18 (LEDGER N176). The comparison is
+# product detail, not a routing decision, and it went to the product page with
+# the rest of it. This map is the generator's only statement of where the table
+# lives; tests/test_comparison_table.py checks the shipped pages against a fresh
+# render, so a stale entry here fails rather than silently leaving a table
+# behind on a page that no longer wants one.
 TARGETS = {
-    "en": REPO_ROOT / "site" / "index.html",
-    "de": REPO_ROOT / "site" / "locales" / "de.html",
-    "pt": REPO_ROOT / "site" / "locales" / "pt-br.html",
+    "en": REPO_ROOT / "site" / "product.html",
+    "de": REPO_ROOT / "site" / "product-de.html",
+    "pt": REPO_ROOT / "site" / "product-pt-br.html",
 }
 
 

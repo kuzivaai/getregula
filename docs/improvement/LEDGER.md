@@ -6271,3 +6271,118 @@ the truth was a missing specimen. The specimen moved to `site/pricing.html`,
 where `50%` is still a CSS length inside a `<style>` fence, and the test now
 asserts its own preconditions first with the instruction a future editor needs:
 **replace the specimen, never delete the branch.**
+
+### N176. The homepage asked for far more reading than its measured reader gives it, and eight of its twelve sections sat below the point that reader stops
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18 by the owner, after the first architecture change,
+asking whether the page was still too content-heavy and what the evidence said.
+
+**Status:** CLOSED as a change. The measurement is reproducible; the claim that
+it improves anything is not made, and cannot be at this traffic.
+
+**The measurement, before.** Method and every figure are in
+`docs/ux/USERS-JOURNEYS-IA-2026-08.md` section 4b. Reader-facing words with
+navigation, footer, script and style stripped: **3,233**, which is 13.5 minutes
+at 240 words per minute.
+Rendered height 9,925px at 1400x900, **11.0 screens**, and 15,531px at 390x844,
+**18.4 screens**. Twelve `h2` sections, 32 `h3` headings.
+
+Against that, this site's own reader, from the 91-day Plausible export recorded
+in `docs/venture/research-2026-08/b-stickiness-and-sample-size.md`: **23 seconds
+on the homepage, 29% median scroll depth**. On the before-page the 29% line fell
+at 2,878px, which put **eight of the twelve sections below the point the median
+reader stopped**. They were not "lower priority". On the measured behaviour they
+were delivered to nobody.
+
+**The outside evidence, and the one sentence the conclusion rests on.** Therese
+Fessenden, "Scrolling and Attention", Nielsen Norman Group, 15 April 2018, 120
+participants and over 130,000 fixations at 1920x1080: 57% of viewing time above
+the fold, "more than 42% of the viewing time fell within the top 20% of the
+page", "more than 65% of the time was spent in the top 40% of the page". The
+load-bearing sentence is the method, not the result: "To determine how people
+divide their fixations across the page (independent of how long the page is), we
+split the pages into 20% segments". **The distribution is proportional.** A
+longer page does not buy more attention; it spreads the same front-loaded
+distribution across more content. NN/g's own recommendation is quoted in
+`docs/ux/USERS-JOURNEYS-IA-2026-08.md` section 4b, together with their caveat
+that they publish no ideal length and call it a test.
+
+**What was refused**, with the reasoning in
+`docs/ux/USERS-JOURNEYS-IA-2026-08.md` section 4b: vendor scroll-depth
+"benchmarks" carrying no method, sample or population, and the visit-count figure
+that circulates attached to the 2013 Slate and Chartbeat piece, which that
+article does not state. N132 is why.
+
+**What changed.** Everything describing the product in detail moved, byte for
+byte and in all three languages, to `site/product.html`, `site/product-de.html`
+and `site/product-pt-br.html`. The duplicate closing call to action, a second
+`pipx install` block at the foot of the page, was removed rather than moved: the
+qualifier is the call to action now, and a terminal command at the bottom of the
+page was the original defect repeating itself. The FAQ moved above the reading
+list because its first question is question one of the five.
+
+| | before | after |
+|---|---|---|
+| words | 3,233 | 1,501 |
+| screens at 1400x900 | 11.0 | 5.6 |
+| screens at 390x844 | 18.4 | 9.2 |
+| `h2` sections | 12 | 6 |
+
+**Three defects the move produced, each caught by a gate rather than by me.**
+
+1. **The region template, for the second time in one session.** Adding the
+   product entry to the shared navigation edited the five generated region pages
+   directly; `site/site_integrity.py` reported five `regen` failures and
+   `build_regulations.py` reverted every edit from
+   `content/regulations/_template.html`. The same lesson as N169 and the same
+   guard caught it. A generated file is still not a place to apply a fix.
+2. **Dead critical CSS travelled with the new pages.** The product pages
+   inherited the homepage's pre-paint `.term-panel` rules while carrying no
+   terminal. `tests/test_site_critical_css.py` asserts both directions and
+   caught it; the rules, and the tab keyboard handlers that went with them, were
+   removed rather than the assertion relaxed.
+3. **A test named the page a link lived on rather than the rule about the
+   link.** `test_the_body_calls_to_action_carry_a_visible_cue` listed the two
+   localised pages it expected each English-only call to action on. The move
+   took the sample-report link to the product page, correctly cued, and the test
+   failed on the page it had just left. It now derives the set from `git
+   ls-files`, excludes navigation and footer per this module's own doctrine, and
+   compares decoded text rather than encoded markup, because the cue ships as
+   `(em ingl&ecirc;s)` in hand-written markup and as literal UTF-8 from the
+   generated copy tables. An entity-blind comparison reported a cue that was on
+   the page as missing, which is N107's failure mode recurring. A floor and a
+   control were added so the derivation cannot pass by finding nothing.
+
+**Two more, found by the full suite rather than by the fast gates, and both the
+same shape as the third above: a generated thing that recorded WHERE its output
+lives.**
+
+4. `scripts/build_comparison.py` held a locale-to-file map naming the three
+   homepages. The comparison table is product detail and went with the rest of
+   it, so the generator was still rendering into pages that no longer wanted a
+   table and `tests/test_comparison_table.py` failed four ways at once. The map
+   now names the product pages and carries the reason.
+5. The claim-quarantine taxonomy control lost its second specimen. `present` was
+   `("site/index.html", "13 frameworks")`, and that claim moved to the product
+   page. **The hardening added earlier in this session did its job**: instead of
+   failing as a taxonomy disagreement, it failed with "specimen
+   ('site/index.html', '13 frameworks') is stale: the classifier branch it
+   drives is still real, so pick another file and claim rather than removing the
+   case". A control that explains its own staleness costs one line and saves the
+   next reader from deleting a branch that is still needed.
+
+**The pattern across all five.** Every one is a place where something recorded
+*where content lives* rather than *what must be true of it*: a template, a
+critical-CSS block, a test's page list, a generator's target map, a control's
+specimen. Moving content is cheap; the copies of its address are not, and none
+of them is discoverable by reading the page being moved.
+
+**What is not claimed.** That any of this improves any outcome. At 188 visitors
+over 91 days the detection floor is about 1.7-fold, so no before-and-after claim
+about this site is establishable, and none is made. The assumption the split
+rests on is that a reader who wants the product detail will follow a named link
+to it; the observation that would overturn it is navigation data showing the
+product page is never reached, which is measurable in principle and not at 2.07
+visitors a day.

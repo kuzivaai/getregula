@@ -703,17 +703,20 @@ class TestQuarantineRatchet(unittest.TestCase):
         files, with only the pass results synthesised, so what is exercised is
         the decision procedure and not a copy of it.
         """
-        present = ("site/index.html", "13 frameworks")     # on the page
+        present = ("site/product.html", "13 frameworks")   # on the page
         blanked = ("site/pricing.html", "50%")             # inside a CSS fence
         absent = ("site/index.html", "99999 widgets")      # not on the page
 
-        # These three are specimens, not constants, and one has already gone
-        # stale: the blanked case used to be site/index.html "50%", a stop in
-        # the .final-glow radial gradient, and the 2026-08-18 information-
-        # architecture change deleted the decoration (LEDGER N169). The failure
-        # that produced read as a taxonomy disagreement rather than as a missing
-        # specimen. So the preconditions are asserted here, with the instruction
-        # a future editor needs: replace the specimen, never delete the branch.
+        # These three are specimens, not constants, and both have now gone
+        # stale once. The blanked case used to be site/index.html "50%", a stop
+        # in the .final-glow radial gradient, deleted with the decoration
+        # (LEDGER N169). The present case used to be site/index.html
+        # "13 frameworks", which moved to the product page when the detail came
+        # off the homepage (LEDGER N176). Each failure read as a taxonomy
+        # disagreement rather than as a missing specimen until the preconditions
+        # below were added; they now say which specimen went stale and give the
+        # instruction a future editor needs: replace the specimen, never delete
+        # the branch.
         for pair, must_be_present in ((present, True), (blanked, True),
                                       (absent, False)):
             body = (REPO / pair[0]).read_text(encoding="utf-8")
