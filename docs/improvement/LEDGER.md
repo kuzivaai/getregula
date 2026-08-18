@@ -6373,11 +6373,33 @@ lives.**
    case". A control that explains its own staleness costs one line and saves the
    next reader from deleting a branch that is still needed.
 
-**The pattern across all five.** Every one is a place where something recorded
+**Two more, and the second could only appear after the commit existed.**
+
+6. **The staging filter.** The file list for the commit was built from
+   `git status --porcelain` filtered on `$1 != "??"`, which excluded the three
+   brand-new pages because they were untracked. Staging that set would have
+   committed the *removal* of the detail from three homepages without the pages
+   that now carry it: a broken site, in three languages, in one commit. What
+   caught it was this repository's own rule requiring `git diff --cached --stat`
+   to be read before every commit, and arithmetic that did not add up for a
+   move: 628 insertions against 1,095 deletions.
+7. **The public-surface inventory, which no pre-commit run could have caught.**
+   `scripts/public_surface_inventory.py` derives its corpus from `git ls-files`,
+   so the three new pages were invisible to it while they were untracked. Every
+   pre-commit regeneration was therefore correct and stale at the same moment
+   the commit landed, and `test_public_surface_inventory` and
+   `test_public_claim_integrity` both failed at the commit. The determination
+   guard's own line shows the transition: `scanned 565 tracked file(s) of 970`
+   before, `568 of 973` after. **This is the entire reason the chain is re-run
+   at the commit rather than at the tree that preceded it**, which is N167's
+   discipline paying for itself in the same session that recorded it.
+
+**The pattern across all seven.** Every one is a place where something recorded
 *where content lives* rather than *what must be true of it*: a template, a
 critical-CSS block, a test's page list, a generator's target map, a control's
-specimen. Moving content is cheap; the copies of its address are not, and none
-of them is discoverable by reading the page being moved.
+specimen, a staging filter, and a git-derived inventory. Moving content is
+cheap; the copies of its address are not, and none of them is discoverable by
+reading the page being moved.
 
 **What is not claimed.** That any of this improves any outcome. At 188 visitors
 over 91 days the detection floor is about 1.7-fold, so no before-and-after claim
