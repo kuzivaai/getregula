@@ -159,6 +159,7 @@ these and the answer has not been encoded.
 | 6 | Approve or reject the agentic AI draft before publication | 2026-07-29 | **OPEN, and one of its two obstacles is gone.** `content/blog/article-agentic-ai-annex-xiv.md`, tracked, `published: false`, still never human-reviewed, which is the part only the owner can clear. **The count has now been done literally, 2026-07-30:** the regulation was retrieved in full from `eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202601744`, tags stripped and the text searched case-insensitively; the string `agentic` occurs **exactly once**, in the Annex XIV code table at AIH 0401, and the sentence immediately after that table puts the codes to work scoping conformity-assessment-body designation. **Two summarising fetches of the same URL reported that the word does not appear at all**, because both truncated before the annexes; one stopped mid-sentence in Article 63. A truncated retrieval is not evidence of absence, which is why the count was redone with the whole document in hand. |
 | 7 | Whether `docs/improvement/` belongs in the CI claim gate | 2026-07-29 | **WITHDRAWN by the owner, and the merge-base measurement now forces it back open.** It was withdrawn on the grounds that the gate repair's design would answer it. The measurement says the design cannot avoid it: 203 of 281 findings are `docs/improvement/` and every one is branch-introduced, so no introduced-claim condition excludes them. Only a scope condition does, and that condition is decision 7 restated. **Recommend reopening.** **2026-07-30: the missing input is now measured.** Main's published-surface debt is 168 with the citation-word arm on and **238 with it off**; see N29 and section 7 below for what each of N12's four options implies at 238. |
 | 8 | How CI should ever run on this branch | 2026-07-29 | **OPEN, and now understood.** `.github/workflows/ci.yaml` triggers only on push and pull request to `main` and has no `workflow_dispatch`. The rationale for not adding one, supplied by the owner 29 July: GitHub requires a `workflow_dispatch` workflow to be present **on the default branch** before the event can be triggered, so adding the trigger on this branch cannot enable dispatch, and the earlier HTTP 422 was the API reading main's copy. Getting it onto main requires a pull request, which is an owner decision. **No further engineering attempts should be made from this branch.** |
+| 9 | Lift `PRODUCT_BUILD STOP` and the out-of-scope list for the information-architecture work | 2026-08-18 | **RULED AND APPLIED, 2026-08-18.** The owner lifted `PRODUCT_BUILD STOP` and the previous out-of-scope list, which named "prequalifier" explicitly, for this work only, on the condition that everything is aligned to data-backed and research-backed best practice and that no claim outruns its evidence. **What was NOT lifted, and is unchanged:** `PAYMENT_GATE NOT_ACTIVE`, `WILLINGNESS_TO_PAY UNVALIDATED`, `VENTURE_DECISION STOP`, `PRODUCT_PILOT_STATUS NOT_APPROVED`, `TECHNICAL_EVIDENCE FAILED`, and the claim freeze. Two evidence constraints were carried into the work explicitly by the owner and are honoured in it: **N132 is OPEN**, so the published prices travel labelled Reasoned, not evidenced; and at 188 visitors over 91 days no before-and-after claim about this site is establishable, so the design work is a precondition and is never credited with a measured lift. Delivered under the lifting: N168 to N175. No payment, booking or checkout was added; every paid action on the site is still an email. |
 
 ---
 
@@ -5874,3 +5875,399 @@ flags. The phrase is absent at the branch tip and the guard reports
 REMOVE a live forbidden claim from a public surface rather than add one. Stated
 per measurement rule 5: the guard scans 559 of 963 tracked files, so its zero
 means none on the scanned surface, not none anywhere.
+
+### N167. The branch tip was red on the project's own hard rule, and the handover reported it green from a measurement taken one commit earlier
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18, by re-deriving the verification chain at the tip
+before starting work rather than reading the previous session's result.
+
+**Status:** CLOSED. Cause identified, fixed at the source rather than exempted,
+and the guard was observed failing before it was observed passing.
+
+**What was found.** At `c7b7e05`, `python3 scripts/determination_guard.py`
+exited 1 with `scanned 559 tracked file(s) of 963, 1 finding(s)`, and the custom
+runner reported `Results: 1464 passed, 2 failed`. `pytest` reported
+`2 failed, 3017 passed`. All three failures were one cause:
+
+```
+BRAIN-FEED.md:15: artefact asserted compliant
+```
+
+The sentence was added by `c7b7e05` itself, the previous session's final commit.
+It described the forbidden claim the deploy preview still serves, and in
+describing it, quoted it. The guard's `artefact asserted compliant` shape does
+not distinguish a mention from a use, and on this file it should not have to:
+`BRAIN-FEED.md` is read mechanically by an external process on a daily timer.
+
+**Why nobody saw it.** The consolidated handover for that session reports, under
+"Current state / Passing", the whole chain green including
+`determination rc=0 scanned 559 tracked file(s) of 963, 0 finding(s)`. That
+measurement is real and it was taken at `7f8f0a3e`. Two commits landed after it,
+one of them the commit that introduced the finding, and the chain was not
+re-run. The handover does not say the figures predate the tip.
+
+**This is measurement rule 3 in its documented form.** "A number in a handover
+is not evidence. A number you wrote yesterday is not evidence." The rule is
+usually cited about counts; it applies identically to exit codes. An exit code
+is a measurement of a tree, and the tree changed after the measurement.
+
+**The disposition, and why not an exemption.** `DECLARED_NOT_A_DETERMINATION`
+exists and already carries a mention-not-use entry for
+`site/blog/blog-startups-ignoring-ai-act.html`. It was not used here. The line
+in question is a single 20,000-character paragraph that is rewritten most
+sessions, so a line-anchored regex exemption on it would be brittle and would
+quietly widen every time the paragraph grew. The sentence was reworded to
+describe the claim without reproducing its shape, which is the practice
+`AGENTS.md` already prescribes for hook-blocked strings and which the previous
+session itself used for two Annex III and Article 5 fixture strings.
+
+**Control.** The guard was seen failing on this corpus, on this defect, before
+the edit, and passing after it, so its zero is not a blank gate:
+
+```
+before:  determination-guard: scanned 559 tracked file(s) of 963, 1 finding(s)   rc=1
+after:   determination-guard: scanned 565 tracked file(s) of 970, 0 finding(s)   rc=0
+```
+
+The scanned and tracked totals rise because this session adds tracked files.
+
+**What this does not claim.** That the gate is sufficient. Under measurement
+rule 5 its criterion is a set of regular expressions over folded text on 565 of
+970 tracked files; zero means no matching shape on the scanned surface, not that
+no surface asserts a compliance state.
+
+### N168. The site led with a terminal command for an audience that cannot run one
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18 by the owner, who reported after visiting the site
+that the information architecture does not serve the intended archetype: solo
+founders, non-technical founders, and small teams with a small technical
+function.
+
+**Status:** CLOSED as an architecture change. The measurement that would show
+whether it helps a reader cannot be run here, and that is stated rather than
+implied.
+
+**What was true.** At `c7b7e05` the first interactive element in the homepage
+hero, after the headline, was a button copying `pipx install regula-ai && regula`,
+and the right half of the hero was a four-tab terminal. The browser assessment
+behind it opens on Article 3(1) and asks the reader whether the subject "meets
+the EU AI Act definition of an AI system", which is the question a
+non-technical founder arrives to have answered. "What Regula does not do", the
+section that makes the tool trustworthy to a sceptical reader, sat ninth.
+
+**What changed.** The first view is now five plain-language qualifying
+questions on one card, each with a one-sentence explanation, with "Not sure" as
+a first-class answer. The result names what the answers point at, names what
+cannot be settled, and routes to three honestly-described paths. The limits
+section moved from ninth to third. The terminal moved to a named developer
+entry further down, with its transcript unchanged.
+
+**Where the evidence runs out, and where it does not.** Full reasoning,
+personas, journeys and provenance labels are in
+`docs/ux/USERS-JOURNEYS-IA-2026-08.md`. Three points belong here.
+
+1. **No persona is evidenced by observation of this site's users**, because no
+   interview, comprehension or usability test has ever been run on any surface
+   of this project. Each is anchored on primary law, on the verified market
+   anchors in `docs/venture/gtm-2026-08-14/MARKET-SIZING-2026-08-14.md`, or on
+   this site's own measured behaviour, and is labelled Reasoned.
+2. **This is a precondition, not an intervention.** At 188 visitors over 91 days
+   a year of split testing could not detect a change below about 1.7-fold
+   (`docs/venture/research-2026-08/b-stickiness-and-sample-size.md`). Nothing
+   here may ever be credited with a measured lift.
+3. **One prior assumption is falsified by measurement here.**
+   `docs/venture/research-2026-08/c-multi-step-form-completion.md` reasoned for
+   a single card on the assumption "that five questions fit above the fold on a
+   320px viewport, which is testable rather than arguable". It was tested. They
+   do not:
+
+   | viewport | questions fully visible |
+   |---|---|
+   | 1400x900 | 3 |
+   | 1280x720 | 2 |
+   | 390x844 | 1 |
+   | 320x568 | 0 |
+
+   Measured with the page served locally and the question blocks' bounding
+   rectangles read against the viewport height. The stated fallback was one
+   question per screen with a 1-of-5 counter. It was **not** taken, and the
+   reason is that the mechanism the card was chosen for survives the
+   assumption's failure: what the evidence supports is an encouraging first
+   frame rather than a creeping percentage, and the static `1/5` numeral on
+   each question delivers that without depending on the fold. Wrapping the
+   options instead of stacking them cut the card's height by 26% at 320px
+   (1964 CSS pixels against 2651), measured before and after.
+
+### N169. Design screening of the whole site, enumerated rather than eyeballed
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18, screening every tracked page against a supplied
+list of generic-looking design tropes.
+
+**Status:** CLOSED. Enumerated with `git ls-files`, not by reading, per
+measurement rule 4c. Findings and dispositions in full are in
+`docs/ux/USERS-JOURNEYS-IA-2026-08.md` section 4. Three are worth recording
+here because each carries a lesson rather than a preference.
+
+**Radial orbs.** `.hero-glow`, a 700px `radial-gradient(circle, ...)`, and
+`.final-glow`, an 800x600 ellipse. Removed with their rules and their inline
+critical-CSS overrides. They carried no information.
+
+**A gradient stripe band.** `#progress-bar`, a fixed 2px
+`linear-gradient(90deg, accent, purple)` at the top of 18 pages. Removed. It is
+also, read against the Conrad et al. result quoted in `N168`, a progress
+indicator rendered as decoration: it is the creeping-percentage shape whose
+badly-calibrated form measurably increased abandonment.
+
+**Removing it exposed the real defect, which was that five of those pages are
+generated.** The first pass deleted the markup from the shipped region pages by
+hand. `scripts/site_integrity.py` then reported five `regen` failures, and
+running `scripts/build_regulations.py` silently restored every deletion from
+`content/regulations/_template.html`. The fix belonged in the template. The
+same mistake would have reverted the navigation change on those pages at the
+next build with nothing to show for it. **A generated file is not a place to
+apply a fix, and the guard that says so is the one that caught it.**
+
+**Decorative terminal chrome.** The three coloured dots imitating a desktop
+window were removed with the hero; the transcript they framed is real output
+bound to a command re-run on every check (N135 to N142) and was kept and moved,
+not replaced.
+
+**Kept deliberately, with reasons**, so that "screened" does not silently mean
+"stripped": the risk-tier colours, which encode severity and always carry a text
+label as well; the three pricing cards, which are a free tool, a fixed-scope
+engagement and a time-based engagement rather than a good/better/best ladder,
+with the free one visually emphasised; and the typefaces, which are a deliberate
+three-role system rather than a default.
+
+**Deliberately not built:** a skeleton loader for the qualifier. It performs no
+asynchronous work and completes within a frame, so a skeleton would simulate
+latency that does not exist. The states that do exist were designed and
+exercised instead: initial, nothing-answered, partially-answered, answered,
+cleared, and no-JavaScript.
+
+### N170. A filled call-to-action failed the contrast criterion it was styled from
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18, computing contrast ratios for every colour pair in
+the new work rather than trusting the existing token palette.
+
+**Status:** CLOSED, and the reason it matters is that `--accent` is the site's
+established action colour and every other use of it passes.
+
+`--accent` is `#3b82f6`. Against white it is **3.68:1**, which fails WCAG 1.4.3
+for text below the large-text threshold; the button's label is 18px at weight
+600, which is not large text. The same token against the page background is
+5.45:1 and passes everywhere it is used as a foreground, which is why nothing
+had caught it.
+
+Two tokens were added rather than a one-off hex value: `--action: #2563eb`,
+measured at **5.17:1** with white and **3.88:1** against `--bg` so the control
+boundary also clears 1.4.11, and `--action-hover: #1d4ed8` at 6.70:1, keeping an
+`--accent` border so the boundary stays above 3:1 in the hover state. The
+measurements are recorded in the stylesheet beside the tokens.
+
+Sixteen other pairs in the new work were computed at the same time and all pass
+AA; the failing one was the only filled background in the set.
+
+**A second measured defect in the same pass, and the same lesson.** At 320px the
+short "No" option measured **43px wide against the 44px floor** in WCAG 2.5.8
+Target Size (Minimum), because the narrow-screen rule set `min-width: 0` and let
+the button size to its own two characters. One pixel is not a rounding error in
+a success criterion. Fixed by holding `min-width` at 44px, and re-measured at
+320, 360 and 390 with every target now clearing the floor and no horizontal
+overflow at any of them. Neither this nor the contrast failure was visible by
+looking; both were found by computing the number.
+
+**Control on the automated gate.** `axe-core` reported 0 violations over 96 runs
+on the initial state and 25 runs over the result and error states in all three
+languages. That result was only accepted after an `image-alt` violation was
+planted in the same page and axe was confirmed to report it. Under measurement
+rule 5, axe tests a fixed rule set and no automated tool establishes
+conformance; the manual checks run alongside it were keyboard traversal, arrow
+navigation within each radio group, the rendered focus ring, accessible names
+computed from the tree, the skip link's target, heading order, and horizontal
+overflow at four viewports.
+
+### N171. A generator this session added would not have parsed on two of the four supported Python versions
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18 by `ruff`, on `scripts/build_qualifier.py`.
+
+**Status:** CLOSED. Recorded because of what caught it and what could not.
+
+The generator built an attribute with a backslash escape inside an f-string. A
+backslash in an f-string expression is a syntax error before Python 3.12. The
+project supports 3.10 and up, CI runs four versions, and **only 3.12 exists on
+this machine**, so every local run passed and the file would have failed to
+import on 3.10 and 3.11.
+
+```
+invalid-syntax: Cannot use an escape sequence (backslash) in f-strings on
+Python 3.10 (syntax was added in Python 3.12)
+   --> scripts/build_qualifier.py:106:91
+```
+
+Fixed by computing the attribute in a named function instead. This is a concrete
+instance of the standing gap recorded in `MERGE-READINESS-2026-08.md` section 0
+item 2, "three of the four Python versions" are untested here, and it is the
+first time that gap has produced a defect rather than a caveat.
+
+### N172. The paid route had no entry point in the site navigation
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18, working out how each user reaches each of the
+three outcome routes.
+
+**Status:** CLOSED.
+
+`site/pricing.html` was reachable from body copy on three pages and from
+`site/sample-report.html`, and from **no page's navigation**. A reader arriving
+on a guide, a blog post or a region page had no route to the commercial offer at
+all. Enumerated rather than read: 48 tracked pages carry the shared navigation
+dialog, and none of them linked to it.
+
+A `Pricing` entry was added to all 48, localised (`Preise`, `Pre&ccedil;os`) and
+carrying `hreflang="en"` from the localised pages because the target is
+English-only. `scripts/locale_link_audit.py --check` reports 96 cross-language
+links across 8 localised pages, 0 unmarked, and it reported 6 unmarked before
+the fix, so the check is not vacuous.
+
+The five region pages take it from `content/regulations/_template.html` rather
+than from the shipped file, per N169.
+
+### N173. A published comparison with competitors carried no source at the point of use
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18, while routing readers to the paid path and
+re-reading what that path claims.
+
+**Status:** CLOSED by sourcing the claim, not by removing it.
+
+`site/pricing.html` stated that "most providers in this space quote on request
+rather than publishing a number". Two things about that sentence.
+
+**It is comparative advertising and it was unsourced.** The Business Protection
+from Misleading Marketing Regulations 2008 (SI 2008/1276), verified at
+legislation.gov.uk in its revised form and recorded in
+`docs/venture/research-2026-08/d-uk-comparative-advertising.md`, defines
+comparative advertising as advertising which "in any way, either explicitly or
+by implication, identifies a competitor or a product offered by a competitor".
+Naming nobody does not take a claim out of scope. Regulation 4 then permits it
+"only when" nine cumulative conditions are met, one of which, 4(d), requires
+that it "objectively compares one or more material, relevant, verifiable and
+representative features of those products, which may include price". A reader
+could not verify the sentence as written.
+
+**The evidence for it exists and was not cited.** Anchor A14 in
+`docs/venture/gtm-2026-08-14/MARKET-SIZING-2026-08-14.md`, dated 2026-08-14,
+records that two providers published a figure, Prighter and European Compliance
+Suite, and that the others found were quote-gated.
+
+The sentence now names the two exceptions, dates the check, bounds it to what
+was found rather than asserting a universal, and links the record. Naming the
+providers who do publish also moves it away from regulation 4(f), which forbids
+discrediting a competitor.
+
+### N174. A form element tripped a guard written for a form that transmits, and the analytics event carried a signal the privacy notice promises does not leave the device
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18, by `tests/test_content_freshness.py` failing on
+the new qualifier.
+
+**Status:** CLOSED on both halves. The guard was narrowed and proved able to
+fail; the analytics property was removed rather than disclosed.
+
+**The guard, and why it fired.** The test forbade the substring `<form` on every
+shipped page. It exists because the homepage once carried an email capture form
+posting to a third-party processor while the privacy notice said in all three
+languages that the site has no sign-up forms. The qualifier groups five radio
+questions in a `<form>` so that a keyboard and a screen reader treat them as one
+group with one submit action; it has no `action`, no `method`, and its handler
+calls `preventDefault`.
+
+**The substring was a proxy, and the proxy was costing something real.** What the
+notice promises is that no form submits data and that no processor beyond
+Plausible is involved. The check now tests exactly that: a `<form>` carrying
+`action`, `method`, `formaction` or `enctype`; an input of type email, tel or
+password; or a named third-party form processor. Deleting the element to satisfy
+a substring would have traded genuine assistive-technology semantics for a
+promise the element does not break.
+
+**Control, and a false negative found while establishing it.** A transmitting
+form with an email input and a `formspree` action was planted and the narrowed
+check was confirmed to report all three parts. The **first** attempt planted it
+on `site/404.html` and the test still passed: `shipped_pages()` skips any page
+carrying `content="noindex`, which 404 does. A control that plants a defect
+somewhere the predicate does not read proves nothing, and it very nearly
+certified a narrowing that had not been tested at all. Re-run on
+`site/about.html`, which the predicate does read, it fails as it should.
+
+**The analytics half, which is the more serious of the two.** The qualifier's
+completion event was written as
+`plausible('Qualifier Result', {props: {route: 'consultant-warranted' | 'standard'}})`.
+That property reports whether the reader's own answers named a use the Act treats
+most strictly. It carries no identifier, so it is not personal data on its face,
+and the published notice's own words are that the assessment "runs on your
+device and does not send your answers to us". A derived signal about the answers
+is still a signal about the answers. **The property was removed** and the event
+is now a bare count, which is the only question 2.07 visitors a day could
+support anyway. The three privacy notices were also extended to name the front
+page's five questions explicitly, and to say why a form element exists there and
+that it has no destination.
+
+**What this does not claim.** That the notice is now complete or that any lawful
+basis has been assessed. It claims that the three specific statements the notice
+already makes remain true of the new surface, and that one thing that would have
+made one of them false was removed before it shipped.
+
+### N175. Deleting decoration invalidated four burn-down records and a control specimen, in a file nobody would think to look at
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18, by `tests/test_claim_quarantine.py` failing after
+the decoration removal in N169.
+
+**Status:** CLOSED. Worth recording because the coupling is not obvious and the
+first enumeration of it was wrong.
+
+`.claim-quarantine.json` records, for each burned-down entry, *why* a quarantined
+claim is silent. Six entries on the homepage and its two locale copies were
+recorded as `blanked-by-strip-noise`: percentages such as `0%` and `50%` that
+were CSS lengths inside the page's own `<style>` block, which `strip_noise`
+blanks before the auditor scans. The entries named the line: the `.final-glow`
+radial-gradient stops.
+
+N169 deleted that gradient. The percentages are now absent rather than blanked,
+which is a different disposition with a different record, and the ratchet test
+says so precisely: "the text is gone, so the disposition should be 'removed'
+with silent_because 'text-absent'."
+
+**The enumeration was wrong the first time, and the reason is instructive.** A
+plain substring check over the burn-down records found **two** stale entries. The
+test uses `quarantine_liveness.claim_text_present`, which is not a substring
+check. Re-running the enumeration with the predicate the test itself uses found
+**four**. Fixing the two would have left the class open and the count wrong,
+which is the exact failure measurement rule 4c records twice already. **An
+enumeration is only as good as the predicate it enumerates with, and the right
+predicate is the one the gate uses.**
+
+**A control specimen went stale in the same stroke, and failed misleadingly.**
+`test_every_cause_in_the_taxonomy_can_actually_be_produced` drives the real
+classifier over three hard-coded specimens on real files, one of which was
+`("site/index.html", "50%")` for the blanked branch. With the gradient gone that
+specimen is text-absent, so the control reported a *taxonomy disagreement* when
+the truth was a missing specimen. The specimen moved to `site/pricing.html`,
+where `50%` is still a CSS length inside a `<style>` fence, and the test now
+asserts its own preconditions first with the instruction a future editor needs:
+**replace the specimen, never delete the branch.**
