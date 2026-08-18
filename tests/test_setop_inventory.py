@@ -169,6 +169,22 @@ INVENTORY: dict[tuple[str, str, str], tuple[str, str]] = {
         OUT_OF_SCOPE, "PageIdentity | None type annotation."),
     ("scripts/claim_auditor.py", "stale_number_verdict", "BinOp |"): (
         OUT_OF_SCOPE, "dict | None type annotation."),
+    ("scripts/claim_auditor.py", "_bind_metric", "BinOp |"): (
+        OUT_OF_SCOPE, "str | None type annotation."),
+    ("scripts/claim_auditor.py", "_bind_metric", "setcomp"): (
+        OUT_OF_SCOPE,
+        "SAFE. Single-state derivation of which metric words appear in ONE "
+        "sentence of ONE document. The key is the lower-cased word, and "
+        "collapsing a repeated 'recall' is the intent: the question is which "
+        "metrics are named, not how often. It compares neither commits nor "
+        "finding populations, and no attribution is taken from it beyond "
+        "'recall only', 'precision only' or 'both'."),
+    ("scripts/claim_auditor.py", "check_recall_percentages", "setcomp"): (
+        OUT_OF_SCOPE,
+        "SAFE. Single-state derivation of the metric words inside ONE table "
+        "cell, used to decide whether that cell's percentage is a recall "
+        "figure. Same key and same intent as _bind_metric above; multiplicity "
+        "within a cell carries no meaning here."),
     ("scripts/claim_auditor.py", "main", "BinOp |"): (
         OUT_OF_SCOPE, "list[str] | None type annotation."),
     ("scripts/claim_auditor.py", "human_report", "BinOp -"): (

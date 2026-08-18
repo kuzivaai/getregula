@@ -1302,10 +1302,47 @@ RECALL_WITHDRAWN_LABEL = re.compile(
     re.IGNORECASE,
 )
 
+# A recall figure written as a percentage. The fraction arm below could not
+# see one, and that is how a withdrawn "100% recall" claim stayed on a live
+# page for three weeks after the corpus that produced it was replaced, under
+# a heading reading "Honest baselines (measured, reproducible)". Ledger N177.
+RECALL_PERCENT_RE = re.compile(r"(?<![\w.])(\d{1,3}(?:[.,]\d)?)\s*%")
+
+# The artefact only knows the synthetic corpus, so only paragraphs about it
+# are in scope. Without this the arm would sweep every percentage that shares
+# a paragraph with the word "recall".
+RECALL_CORPUS_RE = re.compile(r"synthetic|fixture", re.IGNORECASE)
+
+# Which metric a percentage belongs to. Binding matters: "15.2% precision"
+# and "100% recall" can sit in one sentence, and a paragraph-level rule marks
+# both or neither. That is F30's granularity defect in a second instrument.
+RECALL_METRIC_RE = re.compile(r"\b(precision|recall)\b", re.IGNORECASE)
+
+# A markdown table separator row, e.g. |---|---:|
+_TABLE_SEP_RE = re.compile(r"^\s*\|?[\s:|-]*-{3,}[\s:|-]*\|?\s*$")
+
+# How far either side of a percentage to look for the metric word it belongs
+# to, before sentence boundaries clip it further. Sentence-length: wide enough
+# to bind "recall is 53%" to its own metric word, narrow enough that a long
+# paragraph does not bind everything to everything.
+RECALL_BIND_WINDOW = 60
+
+
 # Surfaces whose synthetic recall fractions are checked. Deliberately the
 # published ones plus the benchmark writeups that feed them; the
 # docs/improvement/ programme record is excluded because it quotes
 # superseded figures ON PURPOSE, as the record of how they were corrected.
+#
+# THIS LIST IS A FLOOR, NOT THE CORPUS. It was the whole corpus until
+# 2026-08-18, and being hand-maintained is why it never contained
+# site/blog/blog-aicdi-governance-gaps.html, which published a withdrawn
+# 100% recall figure, or docs/benchmarks/PRECISION_RECALL_2026_04.md, which
+# published two figures ledger N5 had withdrawn. `recall_checked_files()`
+# unions it with the delivery-derived surface inventory, per measurement
+# rule 4c: a completeness claim must come from enumeration. The list stays
+# so that a surface can be added by hand without waiting for the inventory
+# to be regenerated, and so removing one from the inventory cannot silently
+# narrow the gate.
 RECALL_CHECKED_FILES: list[str] = [
     "README.md",
     "docs/TRUST.md",
@@ -1316,6 +1353,187 @@ RECALL_CHECKED_FILES: list[str] = [
     "site/llms.txt",
     "site/llms-full.txt",
 ]
+
+
+SURFACE_INVENTORY_PATH = REPO_ROOT / "data" / "public_claim_surfaces.json"
+
+# Suffixes the recall arms can read. Binary and source files are excluded:
+# the arms reason about published prose.
+RECALL_SCANNED_SUFFIXES = (".md", ".markdown", ".html", ".htm", ".txt")
+
+
+def recall_checked_files() -> list[str]:
+    """Every surface whose recall claims are checked, by enumeration.
+
+    RECALL_CHECKED_FILES is the hand-maintained floor. The rest comes from
+    `data/public_claim_surfaces.json`, the repository-derived inventory of
+    delivery mechanisms, filtered to the active claim-capable ones. That
+    inventory classifies `docs/improvement/` as an internal record, so the
+    programme's deliberately superseded figures stay out of scope exactly as
+    the hand list intended, without anyone having to remember to keep them out.
+    """
+    files = set(RECALL_CHECKED_FILES)
+    try:
+        doc = json.loads(SURFACE_INVENTORY_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        # A missing or unreadable inventory must not silently shrink the gate
+        # back to the hand list without saying so.
+        print("claim-auditor: WARNING: data/public_claim_surfaces.json could "
+              "not be read; recall claims are checked only on the "
+              f"{len(files)} hand-listed surfaces.", file=sys.stderr)
+        return sorted(files)
+    for record in doc.get("records", []):
+        if not record.get("claim_capable"):
+            continue
+        if record.get("classification") != "active_product":
+            continue
+        source = str(record.get("source", "")).split("#")[0]
+        if source.endswith(RECALL_SCANNED_SUFFIXES):
+            files.add(source)
+    return sorted(files)
+
+
+def _table_rows(text: str):
+    """Yield (line_number, headers, cells) for every markdown table data row.
+
+    Table cells are handled apart from prose because a cell's metric is named
+    in its COLUMN HEADER, not next to the number. The headline table on
+    site/llms-full.txt put `100%` in a column headed `Recall`, several words
+    away from any metric term, and a prose-window rule cannot see it.
+    """
+    headers = None
+    in_table = False
+    for i, line in enumerate(text.split("\n"), start=1):
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            headers, in_table = None, False
+            continue
+        cells = [c.strip() for c in stripped.strip("|").split("|")]
+        if _TABLE_SEP_RE.match(line):
+            in_table = headers is not None
+            continue
+        if not in_table:
+            headers = cells
+            continue
+        yield i, headers or [], cells
+
+
+def _sentence_around(haystack: str, start: int, end: int) -> str:
+    """The sentence a match sits in, clipped to RECALL_BIND_WINDOW either side.
+
+    Binding is sentence-bounded rather than window-bounded because two
+    adjacent sentences each carrying their own metric is ordinary prose:
+    "Precision is 100%. Recall is reported per condition." A raw character
+    window reads both words and calls that ambiguous, which is over-reach,
+    and it was the first draft's behaviour.
+    """
+    lo = max(0, start - RECALL_BIND_WINDOW)
+    hi = min(len(haystack), end + RECALL_BIND_WINDOW)
+    left = haystack.rfind(". ", lo, start)
+    if left != -1:
+        lo = left + 2
+    left_nl = haystack.rfind("\n", lo, start)
+    if left_nl != -1:
+        lo = left_nl + 1
+    right = haystack.find(". ", end, hi)
+    if right != -1:
+        hi = right
+    right_nl = haystack.find("\n", end, hi)
+    if right_nl != -1:
+        hi = right_nl
+    return haystack[lo:hi]
+
+
+def _bind_metric(haystack: str, match) -> str | None:
+    """Which metric a percentage belongs to: recall, precision, or neither.
+
+    Returns "ambiguous" when both words are in the same sentence, which is a
+    finding in its own right: "precision and recall: 100% / 100%" tells a
+    reader which number is which for neither of them, and one half of that
+    exact pair was wrong on a live page for three weeks.
+    """
+    sentence = _sentence_around(haystack, match.start(), match.end())
+    words = {m.group(1).lower() for m in RECALL_METRIC_RE.finditer(sentence)}
+    if words == {"recall"}:
+        return "recall"
+    if words == {"precision"}:
+        return "precision"
+    if words:
+        return "ambiguous"
+    return None
+
+
+def check_recall_percentages(text: str, rel_path: str) -> list[tuple[int, str]]:
+    """Published recall PERCENTAGES that name no path and no gate condition.
+
+    The same rule `check_recall_claims` applies to fractions, applied to the
+    other form the same claim is written in. Ledger N177: the fraction-only
+    arm reported a clean sweep while two published surfaces carried a recall
+    figure the repository itself had marked superseded three weeks earlier.
+    """
+    problems: list[tuple[int, str]] = []
+
+    for line_no, headers, cells in _table_rows(text):
+        row = " | ".join(cells)
+        header_text = " ".join(headers)
+        if not RECALL_CORPUS_RE.search(row) and not RECALL_CORPUS_RE.search(header_text):
+            continue
+        if RECALL_WITHDRAWN_LABEL.search(row):
+            continue          # kept as the record of a correction
+        labelled = bool(RECALL_PATH_LABEL.search(row)) and bool(
+            RECALL_GATE_LABEL.search(row))
+        for index, cell in enumerate(cells):
+            head = headers[index].lower() if index < len(headers) else ""
+            within = {m.group(1).lower()
+                      for m in RECALL_METRIC_RE.finditer(cell)}
+            if within == {"precision"}:
+                continue
+            if within == {"recall"}:
+                kind = "recall"
+            elif "recall" in head and "precision" not in head:
+                kind = "recall"
+            else:
+                kind = None
+            if kind != "recall":
+                continue
+            for m in RECALL_PERCENT_RE.finditer(cell):
+                if labelled:
+                    continue
+                problems.append((
+                    line_no,
+                    f"recall percentage {m.group(0)} sits in a table cell "
+                    f"under column {headers[index] if index < len(headers) else '?'!r} "
+                    f"with no path and no gate condition in the row. On this "
+                    f"corpus the same tier scores differently on gates alone."))
+
+    for start, _end, para in split_paragraphs(strip_noise(text, ".md")):
+        if not RECALL_CONTEXT.search(para):
+            continue
+        if not RECALL_CORPUS_RE.search(para):
+            continue
+        if RECALL_WITHDRAWN_LABEL.search(para):
+            continue
+        if "|" in para:
+            continue          # table rows are handled above, on raw lines
+        labelled = bool(RECALL_PATH_LABEL.search(para)) and bool(
+            RECALL_GATE_LABEL.search(para))
+        for m in RECALL_PERCENT_RE.finditer(para):
+            kind = _bind_metric(para, m)
+            if kind in (None, "precision"):
+                continue
+            line = start + para.count("\n", 0, m.start())
+            if kind == "ambiguous":
+                problems.append((
+                    line,
+                    f"{m.group(0)} sits between the words 'precision' and "
+                    f"'recall' and is labelled as neither, so a reader cannot "
+                    f"tell which metric it reports."))
+            elif not labelled:
+                problems.append((
+                    line,
+                    f"recall percentage {m.group(0)} published without naming "
+                    f"a path (scanner or classifier) and a gate condition."))
+    return problems
 
 
 def load_recall_artefact() -> dict:
@@ -1682,7 +1900,8 @@ def verify_facts() -> int:
     # recall fraction must exist in benchmarks/synthetic/RECALL.json and
     # must name the path and gate condition it was measured under.
     recall_artefact = load_recall_artefact()
-    for rel_path in RECALL_CHECKED_FILES:
+    recall_files = recall_checked_files()
+    for rel_path in recall_files:
         fpath = REPO_ROOT / rel_path
         if not fpath.exists():
             continue
@@ -1690,7 +1909,15 @@ def verify_facts() -> int:
         for line_num, problem in check_recall_claims(text, rel_path,
                                                      recall_artefact):
             mismatches.append(f"  {rel_path}:L{line_num} — {problem}")
+        # The same rule applied to the percentage form of the same claim.
+        # Ledger N177: the fraction-only arm passed two surfaces that were
+        # publishing a superseded recall figure as a headline number.
+        for line_num, problem in check_recall_percentages(text, rel_path):
+            mismatches.append(f"  {rel_path}:L{line_num} — {problem}")
         checked += 1
+    print(f"claim-auditor: recall claims checked on {len(recall_files)} "
+          f"surfaces ({len(RECALL_CHECKED_FILES)} hand-listed, the rest "
+          f"enumerated from data/public_claim_surfaces.json)")
 
     # Banned-claim sweep: every HTML page under site/ (the purged
     # "zero false positives" claim must not return anywhere published).

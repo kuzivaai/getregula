@@ -4974,12 +4974,21 @@ fingerprint recognises; all three here import their domain's libraries.
 
 ### N151. The CI benchmark step reports a recall figure for a condition no user runs
 
-**State:** OPEN
+**State:** CLOSED
+
+**Resolved by:** N177
 
 **First raised:** 2026-08-17, reconciling the recall figure the CI step prints
 against the artefact's own conditions.
 
-**Status:** OPEN. Recorded, not changed.
+**Status:** CLOSED 2026-08-18 by N177, on both of the two options this entry
+named. The prose below is the record as written and is not rewritten. What
+changed: `benchmarks/synthetic/run.py` now prints its condition beside every
+fraction, prints every other measured condition quoted from `RECALL.json` with
+the scanner default named in a sentence of its own, and exits non-zero when its
+live figure disagrees with the committed artefact. Controlled both ways; see
+N177. The same work found that the gate meant to catch this class could not see
+`recall=53%` at all, which is N177's first cause.
 
 `.github/workflows/benchmark.yml`'s synthetic-recall job runs
 `python3 benchmarks/synthetic/run.py`, and that module calls
@@ -6408,3 +6417,204 @@ rests on is that a reader who wants the product detail will follow a named link
 to it; the observation that would overturn it is navigation data showing the
 product page is never reached, which is measurable in principle and not at 2.07
 visitors a day.
+
+---
+
+### N177. A withdrawn benchmark figure stayed on a live page for three weeks, under a heading reading "Honest baselines", because the gate that polices recall claims cannot read a percentage
+
+**State:** CLOSED
+
+**First raised:** 2026-08-18, reading `benchmarks/synthetic/run.py` to close
+N151 and noticing that the surfaces which quote it had never been enumerated.
+
+**Status:** CLOSED on both causes, with a two-way control on each, and with
+every instance corrected rather than exempted. N151 is closed by the same work
+and is marked so in its own row.
+
+**What was published.** `site/blog/blog-aicdi-governance-gaps.html`, tracked, in
+`site/sitemap.xml`, canonical `https://getregula.com/blog/blog-aicdi-governance-gaps.html`,
+and present at `main` so it is live now, carried this under a section heading
+reading **"Honest baselines (measured, reproducible)"**:
+
+```
+Synthetic benchmark precision and recall: 100% / 100% on 13 hand-crafted
+fixtures covering 5 prohibited (Article 5 categories a-e), 5 high-risk
+(Annex III categories), and 3 negative cases. Reproduce with
+python3 benchmarks/synthetic/run.py
+```
+
+Three things in that sentence were false at the moment it was read:
+
+1. **The corpus.** `benchmarks/synthetic/manifest.json` version 2.0 holds 38
+   fixtures, not 13. Counted by predicate over the manifest, not by reading:
+   `Counter({'high_risk': 30, 'prohibited': 5, 'not_high': 3})`, and
+   `git ls-files benchmarks/synthetic/fixtures | wc -l` is 38.
+2. **The recall figure.** `docs/benchmarks/PRECISION_RECALL_2026_04.md` has
+   carried, since 28 July 2026, a blockquote reading "**STALE AND CONTRADICTED
+   ... Do not cite the synthetic row.**" about this exact figure. The blog page
+   cites it.
+3. **The reproduction instruction.** Run at this tip, the named command prints
+   `high_risk ... recall=53%`. A reader following the published instruction
+   gets a different number from the published claim, which is the one failure
+   mode this project's own README invites readers to report.
+
+`site/llms-full.txt`, the file built for LLM agents, carried the same figure
+twice more: as a headline table row (`| **Synthetic** | all | 5 prohibited +
+5 high-risk | 0 | **100%** | **100%** |`) and as a published **"Expected
+output:"** block. Its citation block, 260 lines further down, already withdrew
+the claim in terms. **So the document withdrew the figure in one place and
+published it as a headline number in two others.** That is the hand-enumeration
+failure of measurement rule 4c, inside a single file.
+
+**Cause 1: the gate is fraction-only.** `claim_auditor.check_recall_claims`
+enforces the artefact's `_publication_rule` against `FRACTION_RE` alone.
+Demonstrated by running the real function, not by reading it:
+
+```
+check_recall_claims('... 100% / 100% on 13 hand-crafted fixtures.')  -> []
+check_recall_claims('The classifier reports recall=53% ...')         -> []
+check_recall_claims('Regula achieves 10/30 recall ...')              -> [(1, 'without naming a path')]
+```
+
+The second of those is the exact string `.github/workflows/benchmark.yml`
+uploads, so **N151's defect was also invisible to the gate built to catch it.**
+That is measurement rule 5 twice over: the instrument tests a narrower thing
+than its passing result reads as, and the narrower thing happened to exclude
+the more flattering form.
+
+**Cause 2: the corpus was a hand-maintained list of eight.**
+`RECALL_CHECKED_FILES` did not contain the blog page or
+`docs/benchmarks/PRECISION_RECALL_2026_04.md`. `claim_auditor.py`'s own comment
+block, forty lines above, already states the answer for a different list: "The
+durable answer to 'is this list complete?' is not a longer list. It is ...
+enumeration". It had never been applied to this one.
+
+**The repair, both causes.**
+
+- `recall_checked_files()` unions the hand list with the delivery-derived
+  inventory in `data/public_claim_surfaces.json`, filtered to active
+  claim-capable surfaces. Reach went from **8 surfaces to 106**. The hand list
+  is retained as a floor, never a ceiling, and a test asserts every hand-listed
+  entry survives enumeration. The inventory classifies `docs/improvement/` as
+  an internal record, so the programme's deliberately superseded figures stay
+  out of scope without anyone having to remember to keep them out; a test pins
+  that too.
+- `check_recall_percentages()` reads the percentage form, in prose and in
+  markdown table cells. **Table cells are handled separately because a cell's
+  metric is named in its column header**, several words away, which is the
+  shape the `llms-full.txt` defect actually took and which no prose-window rule
+  can see.
+- Binding is **sentence-bounded, not window-bounded**. The first draft used a
+  raw 60-character window and flagged every precision figure in a paragraph
+  that also said "recall", including four in `benchmarks/LABELLING_CRITERIA.md`
+  and one in `benchmarks/README.md`. Two adjacent sentences each carrying their
+  own metric is ordinary prose. That is F30's paragraph-granularity defect
+  reappearing in a new instrument, caught by measuring the false-positive rate
+  before landing rather than after.
+- An unlabelled `precision and recall: 100% / 100%` pair is a finding in its
+  own right: it says which number is which for neither metric, and one half of
+  that exact pair was wrong.
+
+**Control, both ways, run on the real files.** With the two pre-fix blobs
+restored into the tree, `claim_auditor.py --verify-facts` exits 1 with four
+mismatches at exactly the defective lines (blog `L254`, `L257` twice,
+`llms-full.txt` `L983`). With them fixed it exits 0 over 106 surfaces. A
+perturbed `RECALL.json` makes `benchmarks/synthetic/run.py` exit 1 naming the
+disagreement; restored, it exits 0.
+
+**N151 is closed by the same work.** `benchmarks/synthetic/run.py` now prints
+its condition beside every fraction, prints every other measured condition
+quoted from `RECALL.json` with the default named explicitly, and exits non-zero
+when its live figure disagrees with the committed artefact. **The exit code is
+a deliberate change:** the job previously could not fail. A gate that knows its
+own figure contradicts the artefact and returns success is measurement rule 4
+inside the gate. The repair is one command and the message names it.
+
+**Instances corrected, enumerated with `git ls-files` and a pattern match, not
+by reading:** `site/blog/blog-aicdi-governance-gaps.html` (three places, one of
+which the first pass missed and the enumeration found), `site/llms-full.txt`
+(four), `docs/benchmarks/PRECISION_RECALL_2026_04.md` (four, including two
+figures ledger N5 had **withdrawn** and which survived because they were
+written as `47%` and `63%` rather than as `14/30` and `19/30`),
+`benchmarks/LABELLING_CRITERIA.md`, `AGENTS.md`, `tests/test_scanner_js.js` and
+`benchmarks/synthetic/run.py`'s own docstring.
+
+**A second, separate finding fell out of the same sweep.** `AGENTS.md` told a
+future agent to verify the web scanner against the fixtures, "13 fixtures must
+match CLI tier". Correcting 13 to 38 would have made it an overstatement:
+`tests/test_scanner_js.js` really does check 13, being 5 prohibited, **5 of the
+30** high-risk, and 3 negative. **A green web-scanner parity run covers a sixth
+of the high-risk set.** Both files now say so with the denominator. The stale
+number was hiding a coverage claim nobody had stated.
+
+**What the site could not be told, and why.** The replacement recall fractions
+are **not** published on any `site/` surface. `10/30`, `16/30` and `23/30` are
+in `FROZEN_FIGURES` in `tests/test_content_freshness.py`, and the claim freeze
+was explicitly **not** lifted by the owner's 2026-08-18 ruling (row 9 of section
+1). The site copy therefore removes the overstatement, corrects the corpus size,
+and points at `benchmarks/synthetic/RECALL.json` for the figures. The first
+draft of this work published the fractions and would have failed
+`test_no_frozen_figure_is_published`; it was rewritten rather than the freeze
+narrowed.
+
+**A SECOND instance of the same class, found by the same sweep, in the bullet
+immediately below the first.** The blog page's other honest-baseline bullet
+reads "15.2% on 257 hand-labelled findings sampled from 5 OSS projects ...
+reproduce with `python3 benchmarks/label.py score`". Both halves were checked
+by running the commands rather than by reading them:
+
+```
+python3 benchmarks/label.py score                    -> Precision: 36.8% (measured), 446 labels
+python3 benchmarks/label.py score --corpus library   -> 39  218  257  15.2%
+```
+
+**The figure is right and the instruction is wrong.** `benchmarks/labels.json`
+held exactly those 257 findings when the claim was written; it now holds 446
+across 12 projects, because the app corpus was added to the same file. The
+five-project subset still scores 39 TP / 218 FP / 15.18%, reproduced here
+directly from the file as well as through the CLI, so nothing about the claim
+needs withdrawing. What needed fixing is that the published command scores a
+different corpus and prints a different number, and the offer standing at the
+foot of two of these documents is "if you can reproduce a different number with
+the same command, open an issue".
+
+Corrected on five surfaces by publishing `--corpus library` and saying why the
+flag is load-bearing: `site/blog/blog-aicdi-governance-gaps.html`,
+`site/llms-full.txt`, `docs/benchmarks/PRECISION_RECALL_2026_04.md` (twice, the
+reproduction block and the citation block) and `docs/cli-reference.md` (twice).
+`benchmarks/README.md` and `docs/TRUST.md` were already correct: both name the
+446-entry development corpus explicitly beside the bare command, which is why
+they are not in that list. **This one is not caught by any gate.** A reproduce-
+with instruction is prose, and no instrument here runs a published command and
+compares its output to the figure beside it. `scripts/verify_transcripts.py`
+does exactly that for CLI transcripts; extending it to benchmark commands is
+the durable repair and is NOT done here, because it is a new instrument rather
+than a correction, and recording it honestly is better than half-building it.
+
+**The April record's citation block was also still telling third parties how to
+cite the withdrawn synthetic figure**, in a document whose own headline table
+had carried "STALE AND CONTRADICTED, do not cite" since 28 July. A citation
+block is forward-looking instruction to other people, not a preserved record,
+so it now carries the withdrawal. `site/llms-full.txt`'s citation block had
+already been corrected; this one had not, which is the same
+correction-lands-on-one-copy pattern as the rest of this entry.
+
+**What this does not establish.** The gate reads 106 surfaces of the tracked
+tree; it says nothing about the 6 active claim-capable delivery surfaces the
+auditor cannot read at all (`.json`, `.py`, `.toml`, `.xml`, `.yml`), which it
+now names in its own output. **Nor does it reach 142 tracked `.md`/`.html`/
+`.txt` files that sit outside the delivery inventory altogether**, counted by
+enumeration over `git ls-files` minus the inventory's sources, excluding
+`docs/improvement/`. Most are working documents (`.claude/`, benchmark
+protocols, methodology notes) and are correctly out of scope, but at least one
+was not: `docs/DEMO.md`, the script a presenter reads aloud, carried four
+unlabelled recall fractions and described the corpus as 30 fixtures when 30 is
+the high-risk denominator and the corpus is 38. It is corrected here and it is
+still outside the gate, so the same drift can happen there again. Widening the
+corpus beyond the inventory is a scope decision about what counts as a
+published surface, and it is the owner's rather than mine. It does not check
+whether a recall figure is CORRECT, only whether it is labelled and known to
+the artefact; a wrong figure that names a path and a gate condition still
+passes. And no reader has been asked whether the corrected copy is clearer,
+which is the same gap section 17.3 records for every other surface in this
+branch.
