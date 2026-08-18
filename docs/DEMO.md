@@ -240,11 +240,16 @@ it drops into GitHub code scanning unmodified.
 
 Answer with the numbers, unrounded, and do not round them up.
 
-- **Default high-risk recall on the synthetic corpus: 10/30.** 16/30 with domains
-  declared. A third condition reaching 23/30 exists and was obtained by injecting
-  an AI import into every fixture, which is a modified corpus and not a scan of
-  the corpus as committed.
-- **Prohibited-practice recall: 5/5**, on the same 30-fixture synthetic corpus.
+- **High-risk recall on the synthetic corpus, scanner path, default scan with no
+  flags: 10/30.** 16/30 on the scanner path with all eight opt-in domains
+  declared. A third condition reaching 23/30 exists, on the scanner path with
+  domains declared, and was obtained by injecting an AI import into every
+  fixture, which is a modified corpus and not a scan of the corpus as
+  committed. Every condition is in `benchmarks/synthetic/RECALL.json`.
+- **Prohibited-practice recall: 5/5** on the scanner path with no flags, and on
+  every other measured condition. The corpus is 38 fixtures: 5 prohibited, 30
+  high-risk and 3 negative. The 30 above is the high-risk denominator, not the
+  corpus size.
 - **Precision 83.5% on N=115**, single-reviewer, dated, and **its corpus is not
   reconstructible** (ledger N51). It cannot be re-measured today.
 - **A pre-registered commercial benchmark scored 0/40** on evidence discovery

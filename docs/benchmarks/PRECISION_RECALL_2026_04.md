@@ -14,7 +14,10 @@
 > 1. **Synthetic corpus** — 13 hand-crafted fixtures covering 5 Article 5
 >    prohibited practices, 5 Annex III high-risk categories, and 3
 >    negative cases. Designed to measure recall on what Regula is built
->    to find.
+>    to find. **That is the April 2026 corpus and it is not the current
+>    one.** The high-risk set was expanded from 5 fixtures to 30 on
+>    28 July 2026, so the corpus is now 38 fixtures. Nothing measured on
+>    the 13-fixture corpus carries over.
 > 2. **OSS corpus** — 257 hand-labelled findings sampled from 5 mature
 >    open-source projects (instructor, pydantic-ai, langchain,
 >    scikit-learn, openai-python). Designed to measure precision on
@@ -29,18 +32,29 @@
 
 | Corpus | Tier | TP | FP | Precision | Recall |
 |---|---|---:|---:|---:|---:|
-| **Synthetic** | all | 5 prohibited + 5 high-risk | 0 | **100%** | **100%** |
+| **Synthetic** | all | 5 prohibited + 5 high-risk | 0 | **100%** | **100% [SUPERSEDED, see below]** |
 Historical source: [`benchmarks/synthetic/`](../../benchmarks/synthetic/). This row is superseded by the correction immediately below.
 
 > **STALE AND CONTRADICTED, flagged 28 July 2026. Do not cite the
 > synthetic row.** It was measured on a 5+5 fixture corpus. That corpus
 > was expanded to 5 prohibited + 30 high-risk on 28 Jul 2026 and
-> re-measured: prohibited recall holds at 5/5, but **high-risk recall is
-> 10/30 = 33% on a default scan** (47% with the domain declared, 63% with
-> both gates satisfied). See
+> re-measured: prohibited recall holds at 5/5, but on the scanner path
+> with no flags, which is the default a user gets, **high-risk recall is
+> 10/30 = 33%**. See
 > `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`. The 100%
 > recall figure above is not reproducible on the current corpus and a
 > correction is pending owner approval as finding **F23**.
+>
+> **Corrected August 2026.** This paragraph used to continue "(47% with
+> the domain declared, 63% with both gates satisfied)". Those two figures
+> are the percentage forms of 14/30 and 19/30, which ledger N5 WITHDREW
+> as not reproducible from any committed artefact. They are removed here
+> rather than restated. The reproducible per-condition figures, each with
+> its path and gate condition, are generated from an actual run into
+> `benchmarks/synthetic/RECALL.json` by
+> `scripts/build_recall_artefact.py`. They were missed by the July sweep
+> because that sweep looked for the fraction forms and these were written
+> as percentages: ledger N177.
 
 > **Labelling basis for the 83.5% production figure:** N=115, Python
 > only, labelled by a **single reviewer**; no inter-rater agreement
@@ -91,7 +105,14 @@ Expected output:
 synthetic: prohibited 100/100, high_risk 100/100 (5 TP each, 0 FP, 0 FN)
 ```
 
-The 13 fixtures are versioned at `benchmarks/synthetic/fixtures/`. Each
+> **This output is the April 2026 result and the command no longer prints
+> it.** It was produced on the 13-fixture corpus. On the current 38-fixture
+> corpus `benchmarks/synthetic/run.py` prints per-tier figures with the
+> condition named beside each one, and the high-risk tier is not complete.
+> The block is kept because a superseded figure is part of the record; it is
+> not a current expectation.
+
+The 13 fixtures of the April 2026 corpus are versioned at `benchmarks/synthetic/fixtures/`, which now holds 38. Each
 fixture is a minimal Python file constructed by hand to represent one
 Annex III category or one Article 5 prohibition. The "ground truth"
 labels are the directory structure (`prohibited/`, `high_risk/`,
@@ -101,7 +122,7 @@ the fixture text.
 ### OSS precision
 
 ```bash
-python3 benchmarks/label.py score
+python3 benchmarks/label.py score --corpus library
 ```
 
 Expected output:
@@ -109,6 +130,14 @@ Expected output:
 ```
 precision: 15.2% (tp=39, fp=218, n=257)
 ```
+
+> **The `--corpus library` flag was added to this block in August 2026 and it
+> is load-bearing.** When this document was written, `benchmarks/labels.json`
+> held exactly the 257 library-corpus findings, so the bare command
+> reproduced the figure above. The file now holds 446 labels across 12
+> projects, and the bare command scores all of them and reports 36.8% on a
+> different corpus. Verified by running both. The figure above is unchanged
+> and still reproduces; only the command needed to reach it did. Ledger N177.
 
 The 257 labels are at `benchmarks/labels.json`. Every entry has:
 
@@ -312,11 +341,16 @@ If you cite this benchmark in a research paper, vendor evaluation, or
 audit report, the recommended format is:
 
 > Regula precision/recall benchmark, April 2026 release.
-> Synthetic corpus: 100% precision, 100% recall (5 prohibited + 5 high-risk fixtures, 0 FP, 0 FN).
+> Synthetic corpus: WITHDRAWN. The 100% precision and 100% recall figures
+> this block used to give were measured on a 5 prohibited + 5 high-risk
+> corpus. The high-risk set was expanded to 30 fixtures on 28 July 2026 and
+> the recall figure does not reproduce; see the correction under "Headline
+> numbers" and the per-condition figures in
+> `benchmarks/synthetic/RECALL.json`.
 > OSS corpus: 15.2% precision overall (39 TP / 218 FP / n=257), 0% on BLOCK tier (0 findings),
 > 25.0% on WARN tier (n=8), 14.9% on INFO tier (n=249).
 > Reproducible from `github.com/kuzivaai/getregula` at v1.7.4 via
-> `python3 benchmarks/label.py score`.
+> `python3 benchmarks/label.py score --corpus library`.
 
 If anything in this document is unclear, ambiguous, or unverifiable —
 or if you can reproduce a different number with the same command — open

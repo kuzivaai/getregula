@@ -53,10 +53,10 @@ function loadFixture(name) {
 }
 
 // =====================================================================
-// 1. Benchmark parity tests — 13 fixtures
+// 1. Benchmark parity tests — 13 of the 38 synthetic fixtures
 // =====================================================================
 
-console.log('\n── Benchmark fixture parity (13 tests) ──\n');
+console.log('\n── Benchmark fixture parity (13 of 38 fixtures) ──\n');
 
 // Prohibited fixtures
 const prohibitedFixtures = [

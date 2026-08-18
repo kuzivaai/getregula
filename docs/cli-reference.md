@@ -300,7 +300,11 @@ regula benchmark --metrics labelled.csv                        # Precision/recal
 > published number covers ~6% of what the scanner currently emits, and
 > a comprehensive precision figure requires labelling that delta. That
 > is the next piece of work. Reproduce both numbers with
-> `python3 benchmarks/label.py score` and `python3 benchmarks/run_benchmark.py`.
+> `python3 benchmarks/label.py score --corpus library` and
+> `python3 benchmarks/run_benchmark.py`. The `--corpus library` flag was added
+> in August 2026 and is load-bearing: `benchmarks/labels.json` now holds 446
+> labels across 12 projects, and the bare command scores all of them and
+> reports 36.8% on a different corpus. Ledger N177.
 
 Hand-labelled 257 findings sampled across five OSS AI projects (`instructor`, `pydantic-ai`, `langchain`, `scikit-learn`, `openai-python`):
 
@@ -315,7 +319,7 @@ Hand-labelled 257 findings sampled across five OSS AI projects (`instructor`, `p
 
 This is the honest current state. The minimal_risk tier dominates the sample on general-purpose libraries and is noisy — that's the next pattern-tuning target. None of the five repos triggered `prohibited` or `high_risk` findings, so precision for the tiers that actually block merges cannot be estimated from this benchmark and is a separate piece of work.
 
-Recall is not estimable from labelled findings alone and is reported as `null`. **No "99%" claim is being made and none should be.** Full methodology, per-project breakdown, and limitations: [`../benchmarks/README.md`](../benchmarks/README.md). Reproduce with `python3 benchmarks/label.py score`.
+Recall is not estimable from labelled findings alone and is reported as `null`. **No "99%" claim is being made and none should be.** Full methodology, per-project breakdown, and limitations: [`../benchmarks/README.md`](../benchmarks/README.md). Reproduce with `python3 benchmarks/label.py score --corpus library`; without that flag the command scores all 446 labels in the file, which is a different corpus.
 
 ### Scan Time Benchmark
 
