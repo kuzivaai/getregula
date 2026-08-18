@@ -96,18 +96,74 @@ def test_frozen_figure_sweep_actually_reaches_machine_readable_files():
     assert {"llms.txt", "llms-full.txt"} <= names, sorted(names)
 
 
-def test_no_email_capture_or_third_party_form():
-    """The privacy notice says there are no sign-up forms. Keep that true."""
+# A <form> open tag, so its attributes can be judged rather than its existence.
+FORM_TAG_RE = re.compile(r"<form\b([^>]*)>", re.IGNORECASE)
+
+# The attributes that make a form able to send anything anywhere. A form with
+# none of them cannot transmit: submitting it can only reload the same URL, and
+# every form on this site calls preventDefault before even that.
+TRANSMITTING_ATTRS = ("action=", "method=", "formaction=", "enctype=")
+
+# Markers of capture or of a processor the privacy notice does not name.
+CAPTURE_MARKERS = ('type="email"', "type='email'", 'type="tel"', 'type="password"',
+                   "formspree", "unpkg.com", "mailchimp", "hsforms", "typeform")
+
+
+def transmitting_forms(text):
+    """Form open tags that could send data somewhere."""
+    return [tag.strip() for tag in FORM_TAG_RE.findall(text)
+            if any(a in tag.lower() for a in TRANSMITTING_ATTRS)]
+
+
+def test_no_email_capture_or_transmitting_form():
+    """The privacy notice says there are no sign-up forms and no form that
+    submits data to us. Keep that true.
+
+    NARROWED 2026-08-18, and the narrowing is the point. This used to forbid
+    the substring "<form" outright. That is a proxy for the real invariant, and
+    the front page now groups five radio questions in a form element so that a
+    keyboard and a screen reader treat them as one group with one submit
+    action; it has no action, no method, and its handler calls preventDefault.
+    Forbidding the tag would have cost real assistive-technology semantics to
+    protect a promise the tag does not break.
+
+    What the notice actually promises, in all three languages, is that no form
+    submits data to us and that no processor beyond Plausible is involved. That
+    is what is tested now: a form that can transmit, an input that captures an
+    identity, or a named third-party form processor. The narrowed check is
+    proved able to catch the original defect by
+    test_the_form_check_still_catches_the_defect_it_was_written_for.
+    """
     offenders = []
     for path, text in shipped_pages():
-        for marker in ("<form", 'type="email"', "formspree", "unpkg.com"):
+        for tag in transmitting_forms(text):
+            offenders.append(f"{path.relative_to(ROOT)}: <form {tag[:80]}>")
+        for marker in CAPTURE_MARKERS:
             if marker in text:
                 offenders.append(f"{path.relative_to(ROOT)}: {marker}")
     assert not offenders, (
-        "the published privacy notice states this site has no sign-up forms "
-        "and names no processor beyond Plausible; adding one means changing "
-        "that notice and resolving the lawful basis first:\n  "
+        "the published privacy notice states this site has no sign-up forms, "
+        "no form that submits data to us, and names no processor beyond "
+        "Plausible; adding one means changing that notice and resolving the "
+        "lawful basis first:\n  "
         + "\n  ".join(offenders))
+
+
+def test_the_form_check_still_catches_the_defect_it_was_written_for():
+    """Control. A narrowed check that cannot fail is worse than no check.
+
+    The defect this test was written for was an email capture form on the
+    homepage posting to a third-party processor. Both halves are replayed
+    against the real predicate, together with the shape that is now allowed, so
+    the narrowing is shown to be a narrowing and not a removal.
+    """
+    posted = '<form action="https://formspree.io/f/abc" method="POST">'
+    assert transmitting_forms(posted), "a form with an action is not detected"
+    assert transmitting_forms('<form method="get">'), "a method is not detected"
+    assert any(m in '<input type="email" name="email">' for m in CAPTURE_MARKERS), (
+        "an email input is not detected")
+    assert not transmitting_forms('<form id="qual-form" novalidate>'), (
+        "the client-side question group is misreported as transmitting")
 
 
 @pytest.mark.parametrize("subdir", DATED_SECTIONS)

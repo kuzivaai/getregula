@@ -704,8 +704,29 @@ class TestQuarantineRatchet(unittest.TestCase):
         the decision procedure and not a copy of it.
         """
         present = ("site/index.html", "13 frameworks")     # on the page
-        blanked = ("site/index.html", "50%")               # inside a CSS fence
+        blanked = ("site/pricing.html", "50%")             # inside a CSS fence
         absent = ("site/index.html", "99999 widgets")      # not on the page
+
+        # These three are specimens, not constants, and one has already gone
+        # stale: the blanked case used to be site/index.html "50%", a stop in
+        # the .final-glow radial gradient, and the 2026-08-18 information-
+        # architecture change deleted the decoration (LEDGER N169). The failure
+        # that produced read as a taxonomy disagreement rather than as a missing
+        # specimen. So the preconditions are asserted here, with the instruction
+        # a future editor needs: replace the specimen, never delete the branch.
+        for pair, must_be_present in ((present, True), (blanked, True),
+                                      (absent, False)):
+            body = (REPO / pair[0]).read_text(encoding="utf-8")
+            self.assertEqual(pair[1] in body, must_be_present,
+                             f"specimen {pair} is stale: the classifier branch "
+                             f"it drives is still real, so pick another file "
+                             f"and claim rather than removing the case")
+        fenced = re.findall(r"<style[^>]*>(.*?)</style>",
+                            (REPO / blanked[0]).read_text(encoding="utf-8"),
+                            re.DOTALL)
+        self.assertTrue(any(blanked[1] in block for block in fenced),
+                        f"{blanked} is no longer inside a <style> fence, so it "
+                        f"cannot exercise the blanked-by-strip-noise branch")
 
         def passes(**fired):
             return {name: {"fired": fired.get(name, set())}

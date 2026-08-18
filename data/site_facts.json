@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-17T20:07:44.528558+00:00",
+  "generated_at": "2026-08-18T17:37:08.763113+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 3019,
-      "total_functions": 2973,
+      "total_collected": 3039,
+      "total_functions": 2993,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -60,7 +60,7 @@
         "tests/test_comparison_table.py": 14,
         "tests/test_compliance_check.py": 64,
         "tests/test_conform.py": 124,
-        "tests/test_content_freshness.py": 6,
+        "tests/test_content_freshness.py": 7,
         "tests/test_coverage_critical.py": 47,
         "tests/test_cross_file_flow.py": 103,
         "tests/test_crosswalk_omnibus.py": 10,
@@ -121,6 +121,7 @@
         "tests/test_public_claim_integrity.py": 18,
         "tests/test_public_surface_inventory.py": 20,
         "tests/test_published_count_manifest.py": 30,
+        "tests/test_qualifier.py": 19,
         "tests/test_recall_artefact.py": 15,
         "tests/test_recall_decomposition.py": 5,
         "tests/test_redteam_coverage.py": 19,
@@ -156,7 +157,7 @@
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1330
+      "runner_functions": 1350
     }
   },
   "notes": {
