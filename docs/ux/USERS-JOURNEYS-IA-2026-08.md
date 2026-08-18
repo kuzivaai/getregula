@@ -463,6 +463,147 @@ row of three is an information structure rather than a layout habit.
 
 ---
 
+## 4b. Page density: the homepage asked for far more reading than its reader gives it
+
+Added after the first refactor, when the owner asked whether the page was still
+too heavy. It was, and the two numbers that settle it are in the table below,
+measured here and in
+`docs/venture/research-2026-08/b-stickiness-and-sample-size.md`. This section is the measurement, the outside evidence, and
+what each of them does and does not license.
+
+### What the page was, measured
+
+Measured on the tree at `5df7324`, with the page served locally and each
+question block's bounding rectangle read against the viewport, so every figure
+below is reproducible rather than estimated.
+
+| | homepage before | after |
+|---|---|---|
+| reader-facing words (nav, footer, script and style stripped) | 3,233 | 1,501 |
+| reading time at 240 words per minute | 13.5 min | 6.3 min |
+| rendered height, 1400x900 | 9,925px, 11.0 screens | 5,050px, 5.6 screens |
+| rendered height, 390x844 | 15,531px, 18.4 screens | 7,792px, 9.2 screens |
+| `h2` sections | 12 | 6 |
+| `h3` headings | 32 | 11 |
+
+**Set that against this site's own measured reader.** The 91-day Plausible
+export in `docs/venture/research-2026-08/b-stickiness-and-sample-size.md`
+records 23 seconds on the homepage and a 29% median scroll depth. The page was
+offering roughly 13.5 minutes of reading to a reader who gave it 23 seconds,
+and on the before-page the 29% line fell at 2,878px on desktop, which put
+**eight of the twelve sections below the point the median reader stopped**.
+
+That is the finding. Not "the page feels long": eight sections were, on this
+site's own measured behaviour recorded in
+`docs/venture/research-2026-08/b-stickiness-and-sample-size.md`, delivered to
+nobody. The 13.5 minutes and the 23 seconds are the two numbers to hold together.
+
+### What the outside evidence says, and what it does not
+
+**Primary, and the load-bearing source.** Therese Fessenden, "Scrolling and
+Attention", Nielsen Norman Group, published 15 April 2018, at
+https://www.nngroup.com/articles/scrolling-and-attention/. Method, quoted: 120
+participants, "over 130,000 eye fixations on a 1920x1080 screen" across news,
+ecommerce, blog, FAQ and encyclopedic pages. Findings, quoted:
+
+Quoted from https://www.nngroup.com/articles/scrolling-and-attention/ :
+"users spent about 57% of their page-viewing time above the fold"; "more than
+42% of the viewing time fell within the top 20% of the page"; "more than 65% of
+the time was spent in the top 40% of the page"; "74% of the viewing time was
+spent in the first two screenfuls, up to 2160px".
+
+**The methodological sentence is the one that matters here**, and it is quoted
+from the same page, https://www.nngroup.com/articles/scrolling-and-attention/ ,
+because the conclusion rests on it: "To determine how people divide their
+fixations across the page (independent of how long the page is), we split the
+pages into 20% segments". The distribution is **proportional**. A longer page
+does not buy more attention; it spreads the same front-loaded distribution over
+more content, so material added at the bottom is added where little attention
+goes, and material already there is pushed down into that region.
+
+NN/g's own recommendation, quoted: "Reserve the top of the page for
+high-priority content: key business and user goals. The lower parts of the page
+can accommodate secondary or related information." And, equally quoted because
+it is the caveat: "Test your design with representative users to determine the
+ideal page length and make sure that the information that users want can be
+easily seen." **NN/g do not publish an ideal length. They say it is a test.**
+
+**Primary, historical comparison.** Jakob Nielsen, "Scrolling and Attention
+(Original Research Study)", 21 March 2010, at
+https://www.nngroup.com/articles/scrolling-and-attention-original-research/:
+21 users, 541 pages, 57,453 fixations at 1024x768, "Above the fold: 80.3%",
+"Below the fold: 19.7%". The share above the fold fell from 80% to 57% between
+the two studies, so people scroll more than they did; the front-loading did not
+go away.
+
+**Secondary, with its primary named.** Farhad Manjoo, "You Won't Finish This
+Article", Slate, 6 June 2013, at
+https://slate.com/technology/2013/06/how-people-read-online-why-you-wont-finish-this-article.html,
+reporting an analysis by Josh Schwartz of Chartbeat: "most readers scroll to
+about the 50 percent mark, or the 1,000th pixel, in Slate stories"; on other
+sites "most people get to 60 percent of the article"; "Only 25 percent of
+readers make it past the 1,600th pixel of the page". **The article does not
+state how many visits the analysis covered**, so the "two billion visits" figure
+that circulates with it is not supported by the piece itself and is not used
+here.
+
+**Vendor benchmark, current, and carrying a real gap.** Contentsquare, "2026
+Digital Experience Benchmark", published 9 March 2026, at
+https://contentsquare.com/guides/digital-experience-benchmark/engagement/:
+"99 billion web and app sessions, looking at cross-device behavior on 6,500
+websites across 9 industries"; "Scroll rate is 5 percentage points higher: 50.5%
+on desktop vs. 45.2% on mobile"; "Overall user engagement rates dropped by -10%
+compared to last year", with "Time on site fell -7%" and "Scroll rate decreased
+-2%". **The page does not define what "scroll rate" measures**, and an undefined
+metric cannot carry a precise argument. It is used here only for direction, that
+scrolling engagement is falling rather than rising, and it is a vendor
+publishing about its own dataset, not an independent study.
+
+**What was searched for and not found.** No controlled experiment relating
+homepage word count, or section count, to comprehension or task completion for a
+developer tool or a professional service. What the searches returned was
+analytics-vendor glossary content offering scroll-depth "benchmarks" of 40-60%
+or 60-80% with no stated method, sample or population, which is why none of them
+appears above. This programme's ledger, `docs/improvement/LEDGER.md`, records at
+N132 that all three statistics previously supplied
+for a comparable decision failed at source, one of them attributed to a firm that
+had wound down before its stated publication year.
+
+### What follows, and how strong it is
+
+**Evidenced.** Attention is front-loaded and distributes proportionally, so the
+question is not "how long is the page" but "what fraction of the page is the
+thing the reader came for".
+
+**Reasoned, not evidenced.** A separate page is a stronger form of NN/g's own
+recommendation than a lower section is. Content a reader chooses to open has
+their attention aligned with it; content below the fold on a page they opened
+for something else does not. **Assumption:** that a reader who wants the product
+detail will follow a named link to it. **Overturned by:** navigation analytics
+showing the product page is never reached, which is measurable in principle and
+is not measurable here at 2.07 visitors a day.
+
+**Not claimed, and it cannot be.** That any of this improves any outcome. The
+1.7-fold detection floor in `b-stickiness-and-sample-size.md` applies to this
+change exactly as it applies to the first one.
+
+### What changed
+
+The homepage now carries the qualifier, the three routes, the limits, the
+developer entry, the questions a reader arrives with, and a short set of onward
+links. Everything describing the product in detail moved, byte for byte and in
+all three languages, to a page of its own: `site/product.html`,
+`site/product-de.html`, `site/product-pt-br.html`. The duplicate closing call to
+action, a second `pipx install` block at the foot of the page, was removed
+rather than moved: the qualifier is the call to action now, and a terminal
+command at the bottom was the original defect repeating itself.
+
+**One ordering change beyond the move.** The FAQ now sits above the onward
+links, because its questions are the ones the qualifier asks. Its first entry is
+"Does the EU AI Act apply to my company if I'm outside the EU?", which is
+question one of the five. A reader who wants to check the qualifier's reasoning
+should reach that before they reach a reading list.
+
 ## 5. What this work does not fix
 
 Recorded so it is not mistaken for complete.

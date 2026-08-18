@@ -218,3 +218,34 @@ def test_blog_index_dates_match_the_pages_they_link_to():
     assert not mismatches, (
         "the blog index must not advertise a date the target page contradicts:"
         "\n  " + "\n  ".join(mismatches))
+
+
+def test_the_homepage_reading_list_count_matches_the_index_it_links_to():
+    """"All N guides & M articles" must equal what that index actually links.
+
+    It did not. The homepage advertised 14 articles while
+    site/blog/writing.html linked 15, so a reader following the label was
+    told the wrong size of the thing they were about to open. Nothing caught
+    it because the figure is prose on one page describing a different page.
+
+    Both numbers are derived here from the index's own links rather than from
+    a list, so adding or removing an article moves the check rather than
+    breaking it silently.
+    """
+    index = (SITE / "blog" / "writing.html").read_text(encoding="utf-8")
+    guides = len(set(re.findall(r'href="/guides/[a-z0-9-]+\.html"', index)))
+    articles = len(set(re.findall(r'href="/blog/blog-[a-z0-9-]+\.html"', index)))
+    assert guides and articles, "the derivation stopped finding links"
+
+    label = re.compile(r"All (\d+) guides &(?:amp;)? (\d+) articles")
+    seen = 0
+    for path, text in shipped_pages():
+        for found_guides, found_articles in label.findall(text):
+            seen += 1
+            assert (int(found_guides), int(found_articles)) == (guides, articles), (
+                f"{path.relative_to(ROOT)} advertises {found_guides} guides and "
+                f"{found_articles} articles; site/blog/writing.html links "
+                f"{guides} and {articles}")
+    assert seen == 1, (
+        f"expected exactly one page to carry the reading-list label, found {seen}; "
+        f"a second carrier is a second thing to keep in sync")

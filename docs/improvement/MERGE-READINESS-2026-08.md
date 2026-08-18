@@ -1440,7 +1440,7 @@ Run sequentially on a frozen tree, each exit code written to a file in a
 directory that was empty beforehand:
 
 ```
-pytest               rc=0   3039 passed in 695.37s (0:11:35)
+pytest               rc=0   0 failed, in 695.37s (0:11:35)
 custom runner        rc=0   Results: 1464 passed, 0 failed, 0 skipped (1350 test functions)
 determination-guard  rc=0   scanned 565 tracked file(s) of 970, 0 finding(s)
 ruff                 rc=0   All checks passed!
@@ -1451,11 +1451,19 @@ locale-link-audit    rc=0   96 cross-language link(s) across 8 localised page(s)
 claim-auditor        rc=0   scanned 102 file(s), 447 claim(s), 0 unsourced
 ```
 
-The collected total reconciles with what is published: `data/site_facts.json`
-records 3,039, the live run collected 3,039, and `cascade_count.py --check`
-reports every manifest surface carrying it. Under measurement rule 5, the
-determination guard scans 565 of 970 tracked files, so its zero means none on
-the scanned surface, not none anywhere.
+**The suite's collected total is deliberately not written here, and the first
+draft of this section got that wrong.** It is generated into
+`data/site_facts.json` and carried only by the surfaces
+`data/published_count_manifest.json` authorises, so a copy in this file is a
+drift surface the next correction would miss. The first version of this block
+quoted the figure and `tests/test_published_count_manifest.py` rejected it, which
+is the same trap, in the same file, that the previous session recorded in its own
+handover one day earlier. The literal was removed rather than the manifest
+widened. Re-derive with `python3 -m pytest tests/ -q`, and confirm the published
+copies agree with `python3 scripts/cascade_count.py --check`.
+
+Under measurement rule 5, the determination guard scans 565 of 970 tracked
+files, so its zero means none on the scanned surface, not none anywhere.
 
 **What this measurement does not cover, and it is the same recursion this
 programme keeps hitting.** The figures above were taken on the tree that became
@@ -1510,6 +1518,59 @@ or checkout was added; every paid action is still an email.
 Recorded here rather than promised: see the commit that adds this line for the
 result, and `docs/improvement/LEDGER.md` N167 for why a figure measured before
 the commit it describes is not a figure about that commit.
+
+### 17.7 The second architecture change: page density
+
+The owner asked, after the first change, whether the homepage was still too
+content-heavy. It was, and the answer is a measurement rather than a view.
+
+| | before | after |
+|---|---|---|
+| reader-facing words | 3,233 | 1,501 |
+| reading time at 240 wpm | 13.5 min | 6.3 min |
+| screens at 1400x900 | 11.0 | 5.6 |
+| screens at 390x844 | 18.4 | 9.2 |
+| `h2` sections | 12 | 6 |
+
+**A comparison that is deliberately not made.** On the before-page the measured
+29% median scroll line fell at 2,878px and eight of the twelve sections sat below
+it. The same 29% on the after-page is a smaller absolute distance, so "how many
+sections are above the line" is not a like-for-like measure across two different
+page lengths and no improvement is claimed from it. What is claimed is what the
+table states: the page is half as long and asks for half as much reading, and
+nothing on it now sits where the before-page put eight sections. The reasoning,
+the verified external evidence and the empty searches are in
+`docs/ux/USERS-JOURNEYS-IA-2026-08.md` section 4b; the finding and the three
+defects the move produced are ledger **N176** in `docs/improvement/LEDGER.md`.
+
+The product detail moved, byte for byte and in three languages, to
+`site/product.html`, `site/product-de.html` and `site/product-pt-br.html`.
+
+`axe-core` (https://github.com/dequelabs/axe-core) re-run over the whole site
+after the change, with the repository's own runner `docs/accessibility/run-axe.js`
+as the CI job at `.github/workflows/accessibility.yml` invokes it: 51 canonical
+pages at two viewports, 102 runs, 0 violations, 0 errored runs, with the three
+new pages in scope. The same
+measurement-rule-5 caveat as 17.3 applies.
+
+**The chain after the second change**, run sequentially on a frozen tree with
+each exit code written to a file in a directory that was empty beforehand. The
+collected total is deliberately absent for the reason given in 17.2:
+
+```
+pytest rc=0   custom runner rc=0 (1464 passed, 0 failed, 1351 test functions)
+determination-guard rc=0 (scanned 565 tracked file(s) of 970, 0 finding(s))
+ruff rc=0   self-test rc=0   doctor rc=0   site-integrity rc=0
+locale-link-audit rc=0   claim-auditor rc=0   cascade_count --check rc=0
+build_comparison --check rc=0
+```
+
+Only `docs/improvement/LEDGER.md` changed after that measurement, to record the
+last two defects; no code, site file, test or data artefact did, which the
+commit diff shows.
+
+**Not claimed:** that this improves any outcome. The 1.7-fold detection floor
+applies to this change as it applies to the first.
 
 ### 17.6 What this session did not do
 

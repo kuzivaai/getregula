@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T17:37:08.763113+00:00",
+  "generated_at": "2026-08-18T18:47:53.567558+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 3039,
-      "total_functions": 2993,
+      "total_collected": 3041,
+      "total_functions": 2995,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -60,7 +60,7 @@
         "tests/test_comparison_table.py": 14,
         "tests/test_compliance_check.py": 64,
         "tests/test_conform.py": 124,
-        "tests/test_content_freshness.py": 7,
+        "tests/test_content_freshness.py": 8,
         "tests/test_coverage_critical.py": 47,
         "tests/test_cross_file_flow.py": 103,
         "tests/test_crosswalk_omnibus.py": 10,
@@ -102,7 +102,7 @@
         "tests/test_ledger_status.py": 13,
         "tests/test_lifecycle_phases.py": 13,
         "tests/test_lifecycle_visibility.py": 5,
-        "tests/test_locale_link_language.py": 6,
+        "tests/test_locale_link_language.py": 7,
         "tests/test_manifest_timestamp.py": 23,
         "tests/test_mcp_server.py": 14,
         "tests/test_merge_blockers.py": 17,
@@ -157,7 +157,7 @@
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1350
+      "runner_functions": 1351
     }
   },
   "notes": {
