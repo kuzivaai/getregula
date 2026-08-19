@@ -6797,3 +6797,14 @@ Self-test passed 6/6 and doctor reported 8 pass, 4 information, 0 warnings. The
 local Class B gate is therefore green; fresh PR-head CI and CodeQL remain
 pending until the commit is pushed. The bounded implementation and first
 evidence record are commit `9782a47`.
+
+Final pre-push correction at 2026-08-19T17:44:31Z: CI correctly found two
+generated-state omissions after that commit. `site/sitemap.xml` lacked the
+19 August `lastmod` dates for the two whitespace-corrected pages, and the new
+security inventory had not yet been added to the derived public-surface
+contract. Both canonical generators were run, the CI and experimental signing
+install floors were aligned to `cryptography>=50.0.0,<51`, and a regression
+test now prevents those workflow floors from dropping below the audited
+minimum. The final local gate passed 1,465 assertions across 1,405 legacy
+functions, all 3,112 pytest cases, self-test 6/6, and doctor 8 pass / 4 info /
+0 warnings. Fresh exact-head PR and CodeQL checks remain required.

@@ -7725,6 +7725,17 @@
       "reason": "README-reachable public documentation"
     },
     {
+      "stable_id": "repository_docs:90f0fd421a1dc8ba",
+      "channel": "repository_docs",
+      "source": "docs/security/SECURITY-FINDINGS-2026-08-19.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/security/SECURITY-FINDINGS-2026-08-19.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
       "stable_id": "repository_docs:afd25e69ba8910ab",
       "channel": "repository_docs",
       "source": "docs/self-scan-results.md",
@@ -8820,11 +8831,11 @@
       "cli": 639,
       "mcp": 3,
       "package": 2,
-      "repository_docs": 39,
+      "repository_docs": 40,
       "website": 96
     },
     "classification": {
-      "active_product": 773,
+      "active_product": 774,
       "historical_record": 1,
       "internal_record": 1,
       "non_claim_asset": 26
