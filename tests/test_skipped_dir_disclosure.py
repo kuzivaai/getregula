@@ -26,6 +26,7 @@ custom runner binds by scanning `dir(module)` for names beginning `test_`, and
 a class-based module exposes only its class names, so both modules added on
 2026-08-17 were imported, listed, and contributing nothing (ledger N134).
 """
+import os
 import subprocess
 import sys
 import tempfile
@@ -123,6 +124,24 @@ def test_a_pruned_symlink_cannot_inventory_files_outside_the_project():
         st = _stats(root)
         assert st["pruned_code_files"] == 0, st
         assert st["pruned_dirs"] == [], st
+
+
+def test_pruned_inventory_is_inexact_without_descriptor_relative_walk():
+    """Unsafe absolute-path fallback must not invent a complete inventory."""
+    with tempfile.TemporaryDirectory() as td:
+        root = _project(Path(td), {
+            "src/a.py": "print('inside')\n",
+            "examples/hidden.py": "print('skipped')\n",
+        })
+        original_fwalk = os.fwalk
+        del os.fwalk
+        try:
+            st = _stats(root)
+        finally:
+            os.fwalk = original_fwalk
+        assert st["pruned_code_files"] == 0, st
+        assert st["pruned_dirs"] == [], st
+        assert st["pruned_count_exact"] is False, st
 
 
 def test_every_reported_directory_name_is_actually_in_the_skip_list():
