@@ -148,7 +148,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -168,7 +170,7 @@
         <a href="/">Regula</a> / <a href="/guides/">Guides</a> / Python
     </div>
     <h1>EU AI Act compliance for <span class="hl">Python developers</span></h1>
-    <p class="standfirst">Python dominates AI development. If you use PyTorch, TensorFlow, scikit-learn, Hugging Face transformers, LangChain, or any ML framework in a product that reaches EU users, the EU AI Act applies to you. The regulation does not care which language you write in. It cares what your code does to people.</p>
+    <p class="standfirst">Importing PyTorch, TensorFlow, scikit-learn, Hugging Face transformers or LangChain does not by itself put you in scope of the EU AI Act. Scope turns on what the system is for, who it affects, and what role you take in placing it on the EU market, and none of those is settled by your import list. What the imports do tell you is where to look first. This guide covers the Python patterns Regula flags, why each is worth a second look, and the questions the code cannot answer for you.</p>
     <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
 </div>
 
@@ -202,7 +204,7 @@
 
 <h2>Quick start: scanning a Python project</h2>
 
-<pre><code>pipx install regula-ai
+<pre tabindex="0"><code>pipx install regula-ai
 regula check .                      # scan current directory
 regula check . --domain healthcare  # activate domain-specific patterns
 regula assess                       # interactive: does the AI Act apply?</code></pre>
@@ -217,13 +219,23 @@ regula assess                       # interactive: does the AI Act apply?</code>
 
 <p>A scan produces a verdict and a list of findings. Here is what a typical result looks like:</p>
 
-<pre><code>$ regula check .
+<pre tabindex="0"><code>$ regula check .
 
 Regula Scan: /home/dev/myproject
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project is classified as high-risk under EU AI Act Annex III.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
 
   Files scanned:      34
   High-risk:          1
@@ -251,7 +263,7 @@ Regula Scan: /home/dev/myproject
 
 <h3>Deserialisation with no input validation</h3>
 
-<pre><code># Flagged: pickle.load() / joblib.load() with no validation
+<pre tabindex="0"><code># Flagged: pickle.load() / joblib.load() with no validation
 model = pickle.load(open("model.pkl", "rb"))
 model = joblib.load("classifier.joblib")</code></pre>
 
@@ -259,7 +271,7 @@ model = joblib.load("classifier.joblib")</code></pre>
 
 <h3>Predictions with no logging</h3>
 
-<pre><code># Flagged: model.predict() with no record-keeping
+<pre tabindex="0"><code># Flagged: model.predict() with no record-keeping
 result = model.predict(user_data)
 send_decision(result)  # no log of what was predicted or why</code></pre>
 
@@ -267,7 +279,7 @@ send_decision(result)  # no log of what was predicted or why</code></pre>
 
 <h3>Sentiment analysis without disclosure</h3>
 
-<pre><code># Flagged: sentiment analysis on user content
+<pre tabindex="0"><code># Flagged: sentiment analysis on user content
 from transformers import pipeline
 classifier = pipeline("sentiment-analysis")
 result = classifier(user_message)</code></pre>
@@ -276,7 +288,7 @@ result = classifier(user_message)</code></pre>
 
 <h3>CV screening and candidate ranking</h3>
 
-<pre><code># Flagged: employment screening patterns
+<pre tabindex="0"><code># Flagged: employment screening patterns
 candidates = rank_candidates(applications, model)
 shortlist = [c for c in candidates if c.score > threshold]</code></pre>
 
@@ -297,7 +309,7 @@ shortlist = [c for c in candidates if c.score > threshold]</code></pre>
 
 <p>Add Regula to your GitHub Actions pipeline so every pull request gets scanned. Here is a minimal workflow:</p>
 
-<pre><code># .github/workflows/regula.yml
+<pre tabindex="0"><code># .github/workflows/regula.yml
 name: EU AI Act Scan
 
 on:
@@ -348,7 +360,7 @@ jobs:
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last verified:</strong> 25 June 2026 &middot;
+    <strong>Last reviewed:</strong> 14 August 2026 &middot;
     <strong>Author:</strong> Kuziva Muzondo &middot;
     <em>Not legal advice. Regula identifies risk indicators in code for developer review. It does not determine compliance or replace professional legal counsel.</em>
 </p>

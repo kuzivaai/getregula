@@ -34,6 +34,7 @@ RECORD_CLASSES = REPO / "data" / "count_record_classes.json"
 sys.path.insert(0, str(REPO / "scripts"))
 from count_record_policy import (  # noqa: E402
     classify_count_occurrences,
+    count_pattern,
     discover_tracked_files,
     read_tracked_files,
     validate_record_policy,
@@ -78,12 +79,15 @@ def _count_pattern(count: int):
     stable_id of the form `cli:NNNNfb52a8321880`: the count at the START
     of a hex run, which the leading lookbehind cannot see. Excluding only
     a trailing digit let hex letters follow the count.
+
+    MEASURED 2026-08-15: this helper used to REIMPLEMENT the pattern rather
+    than call it, and the copy drifted the moment the real one was corrected
+    for the OID collision (N111). The controls below then exercised the copy
+    and passed while the shipped guard behaved differently, which is the
+    silent drift `.claude/rules/quality-standards.md` forbids outright. It now
+    delegates, so the controls test the code that actually runs.
     """
-    grouped = f"{count:,}"
-    variants = {str(count), grouped, grouped.replace(",", ".")}
-    return re.compile(
-        r"(?<!\w)(" + "|".join(re.escape(v) for v in sorted(variants))
-        + r")(?!\w)")
+    return count_pattern(count)
 
 class TestPublishedCountManifest(unittest.TestCase):
     def _policy(self, *historical):
@@ -277,6 +281,26 @@ class TestPublishedCountManifest(unittest.TestCase):
             "the narrowed lookbehind stopped seeing a real published claim, "
             "so the guard has been blinded rather than corrected")
 
+        # N111. MEASURED 2026-08-15: the European rendering uses a full stop
+        # as the thousands separator, and at one canonical value the dot
+        # variant matched inside the PKCS#7 OIDs in scripts/timestamp.py, on
+        # the RSADSI arc. Cascading a count by text-replacing that would break
+        # RFC 3161 timestamping, which is measurement rule 4d's exact hazard.
+        # The colliding value is not written here, per the note above.
+        dotted = f"{count:,}".replace(",", ".")
+        self.assertEqual(
+            rx.findall(f'_OID_CONTENT_TYPE = "1.{dotted}.113549.1.9.3"'), [],
+            "the count matched inside a dotted OID arc; text-replacing that "
+            "would corrupt the timestamping OIDs")
+        self.assertEqual(
+            rx.findall(f"v1.{dotted}.1"), [],
+            "the count matched inside a dotted version string")
+        self.assertEqual(
+            rx.findall(f"<strong>{dotted}</strong> Tests"), [dotted],
+            "the dotted-run exclusion blinded the guard to the German "
+            "locale's own rendering of the published count, which is a real "
+            "claim and the reason the dot variant exists at all")
+
     def test_count_literal_appears_nowhere_outside_the_manifest(self):
         count = _canonical_count()
         m = _manifest()
@@ -399,6 +423,147 @@ class TestPublishedCountManifest(unittest.TestCase):
             f"the runner reproduction text in docs/TRUST.md names "
             f"{quoted.group(1)} test functions; the runner selects {total}. "
             f"A reader following that instruction sees a different number.")
+
+
+class TestOccurrenceExclusions(unittest.TestCase):
+    """The disposition N109 and N111 recorded as owed.
+
+    Four collisions in two weeks were each answered by widening a lookaround
+    in `count_pattern`. Those widenings are correct and stay, but they are
+    global, they can only express lexical facts, and the reason ends up in a
+    docstring detached from the occurrence it explains.
+
+    `not_a_count_claim` records a single occurrence in a live file as not a
+    claim, keyed on its surrounding context. Every branch is driven through
+    the REAL `classify_count_occurrences` on synthetic files, because the
+    registry is deliberately empty today: all four known collisions are still
+    handled lexically, so nothing was migrated to give the list something to
+    hold. Without these fixtures the mechanism would be an unexercised branch,
+    which is the state N109's own metrics artefacts were in.
+
+    Both rules that make this a disposition and not a bypass are controlled:
+    declaring a file does not exempt the file, and a record that matches
+    nothing fails.
+    """
+
+    COUNT = 2000 + 468
+
+    def _policy(self, *exclusions):
+        return {"schema_version": 1, "records": [],
+                "occurrence_exclusions": list(exclusions)}
+
+    def _exclusion(self, path, context, **over):
+        rec = {"path": path, "record_class": "not_a_count_claim",
+               "context_regex": context,
+               "rationale": "Synthetic non-claim token.",
+               "finding": "N111"}
+        rec.update(over)
+        return rec
+
+    def test_a_declared_non_claim_occurrence_is_not_a_violation(self):
+        # A timeout constant, chosen because it is the case the LEXICAL
+        # exclusions cannot reach: the digits are delimited by non-word
+        # characters on both sides, exactly as a published claim would be, so
+        # no lookaround can tell the two apart. This is why the disposition
+        # had to be contextual rather than a fifth regex.
+        body = f"DEFAULT_TIMEOUT_MS = {self.COUNT}\n"
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": body}, set(), set(),
+            self._policy(self._exclusion("net.py", r"DEFAULT_TIMEOUT_MS\s*=")))
+        self.assertEqual(violations, [])
+
+    def test_the_same_occurrence_undeclared_is_a_violation(self):
+        """Control. The fixture above must not pass for an unrelated reason."""
+        body = f"DEFAULT_TIMEOUT_MS = {self.COUNT}\n"
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": body}, set(), set(), self._policy())
+        self.assertEqual(violations, ["net.py"])
+
+    def test_declaring_a_file_does_not_exempt_the_rest_of_it(self):
+        """The objection N70 raised against broad path exclusions.
+
+        One declared hex colour and one genuine published claim in the same
+        file. A per-FILE exemption would swallow the claim; a per-OCCURRENCE
+        one must still report the file.
+        """
+        body = (f"DEFAULT_TIMEOUT_MS = {self.COUNT}\n"
+                f"# The suite currently runs {self.COUNT:,} tests.\n")
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": body}, set(), set(),
+            self._policy(self._exclusion("net.py", r"DEFAULT_TIMEOUT_MS\s*=")))
+        self.assertEqual(violations, ["net.py"])
+
+    def test_a_record_that_matches_nothing_is_reported_stale(self):
+        """An exclusion cannot outlive its premise.
+
+        The token was renamed, or the canonical count moved and no longer
+        collides. Either way the record now narrows the guard for nothing, and
+        silence here is how a registry grows past the problem it describes.
+        """
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": "DEFAULT_TIMEOUT_MS = 9999\n"}, set(), set(),
+            self._policy(self._exclusion("net.py", r"DEFAULT_TIMEOUT_MS\s*=")))
+        self.assertEqual(len(violations), 1, violations)
+        self.assertIn("stale exclusion", violations[0])
+
+    def test_a_context_that_matches_everything_is_refused(self):
+        """A broad exclusion wearing a narrow record's clothes.
+
+        `validate_record_policy` refuses `excluded_by_design` by name. A
+        context_regex matching the empty string vouches for every occurrence
+        in the file, which is the same thing spelled differently.
+        """
+        with self.assertRaises(ValueError) as ctx:
+            classify_count_occurrences(
+                self.COUNT, {"net.py": f"T = {self.COUNT}\n"}, set(), set(),
+                self._policy(self._exclusion("net.py", r"x*")))
+        self.assertIn("empty string", str(ctx.exception))
+
+    def test_an_exclusion_must_name_a_finding(self):
+        with self.assertRaises(ValueError) as ctx:
+            classify_count_occurrences(
+                self.COUNT, {"net.py": f"T = {self.COUNT}\n"}, set(), set(),
+                self._policy(self._exclusion("net.py", r"T\s*=", finding="")))
+        self.assertIn("finding is required", str(ctx.exception))
+
+    def test_a_current_surface_cannot_declare_the_count_not_a_claim(self):
+        """A page that publishes the count cannot also disown it."""
+        with self.assertRaises(ValueError) as ctx:
+            classify_count_occurrences(
+                self.COUNT, {"site/index.html": f"{self.COUNT:,} tests\n"},
+                {"site/index.html"}, set(),
+                self._policy(self._exclusion("site/index.html", r"\d+ tests")))
+        self.assertIn("cannot also", str(ctx.exception))
+
+    def test_context_is_scoped_to_the_hits_own_line(self):
+        """Otherwise a token elsewhere in the file vouches for a real claim.
+
+        The first implementation used a character window either side of the
+        hit, and this fixture is why it was replaced: in a short file every
+        line falls inside every other line's window, so the declared constant
+        below silently covered the published claim two lines down.
+
+        Both problems are reported here, deliberately: the claim is a
+        violation, and the exclusion is stale because it covered nothing.
+        Collapsing them would hide whichever was fixed second.
+        """
+        near = (f"DEFAULT_TIMEOUT_MS = 9999\n"
+                f"# The suite currently runs {self.COUNT:,} tests.\n")
+        violations = classify_count_occurrences(
+            self.COUNT, {"net.py": near}, set(), set(),
+            self._policy(self._exclusion("net.py", r"DEFAULT_TIMEOUT_MS\s*=")))
+        self.assertEqual(len(violations), 2, violations)
+        self.assertIn("net.py", violations)
+        self.assertTrue(any("stale exclusion" in v for v in violations),
+                        violations)
+
+    def test_the_shipped_registry_validates(self):
+        """The real data, not a fixture, through the real validator."""
+        policy = json.loads(RECORD_CLASSES.read_text(encoding="utf-8"))
+        self.assertIn("occurrence_exclusions", policy,
+                      "the registry lost its exclusion list")
+        for rec in policy["occurrence_exclusions"]:
+            self.assertEqual(rec.get("record_class"), "not_a_count_claim")
 
 
 if __name__ == "__main__":

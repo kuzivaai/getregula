@@ -58,12 +58,14 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Website-Navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/de.html" title="Kostenlose EU-KI-Verordnung-Risikobewertung">Bewertung</a>
+        <a href="/product-de.html">Was es tut</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html" hreflang="en">Preise</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="/regions/regulations.html">Regulierung</a>
-        <a href="/about.html">About</a>
-        <a href="/terms.html">EN</a>
-        <a href="/terms-pt-br.html">BR</a>
+        <a href="/regions/regulations.html" hreflang="en">Regulierung</a>
+        <a href="/about.html" hreflang="en">About</a>
+        <a href="/terms.html" hreflang="en">EN</a>
+        <a href="/terms-pt-br.html" hreflang="pt-BR">BR</a>
     </dialog>
 </nav>
 
@@ -81,7 +83,7 @@
 <div class="blog-body">
 
 <h2>Was diese Website ist</h2>
-<p>getregula.com ist die Website von Regula, einem Open-Source-Werkzeug, das Code auf Muster untersucht, die eine KI-Governance-Pr&uuml;fung erfordern k&ouml;nnten, und Einsatzfakten erfasst, die der Code nicht zeigen kann. Die Website bietet Informationen, Guides, eine Browser-Bewertung und Links zur Software. Sie wird vom Betreuer des Projekts betrieben (siehe die <a href="/about.html">About-Seite</a>).</p>
+<p>getregula.com ist die Website von Regula, einem Open-Source-Werkzeug, das Code auf Muster untersucht, die eine KI-Governance-Pr&uuml;fung erfordern k&ouml;nnten, und Einsatzfakten erfasst, die der Code nicht zeigen kann. Die Website bietet Informationen, Guides, eine Browser-Bewertung und Links zur Software. Sie wird vom Betreuer des Projekts betrieben (siehe die <a href="/about.html" hreflang="en">About-Seite</a>).</p>
 
 <h2>Keine Rechtsberatung</h2>
 <p>Nichts auf dieser Website ist Rechtsberatung, eine Compliance-Feststellung, eine Zertifizierung oder eine Konformit&auml;tsbewertung. Inhalte und Werkzeugausgaben zeigen an, was einer Pr&uuml;fung bed&uuml;rfen k&ouml;nnte; ob ein Gesetz auf ein reales System anwendbar ist und was es verlangt, sind Fragen f&uuml;r qualifizierte Fachleute mit Kenntnis Ihrer Umst&auml;nde. Wo eine Seite ein regulatorisches Datum oder eine Vorschrift nennt, geben wir die Quelle an; Regulierung kann sich nach Ver&ouml;ffentlichung einer Seite &auml;ndern.</p>
@@ -118,8 +120,8 @@
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
-                <a href="/regions/regulations.html">Regulierung</a>
-                <a href="/about.html">About</a>
+                <a href="/regions/regulations.html" hreflang="en">Regulierung</a>
+                <a href="/about.html" hreflang="en">About</a>
                 <a href="/privacy-de.html">Datenschutz</a>
                 <a href="/terms-de.html">Hinweise</a>
             </div>

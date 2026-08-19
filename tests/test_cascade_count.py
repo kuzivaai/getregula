@@ -520,3 +520,180 @@ class TestEveryPublishedSurfaceCarriesTheCanonicalCount(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestTheRunnerFunctionCountIsCascadedSeparately(unittest.TestCase):
+    """The SECOND published quantity, added 2026-08-14.
+
+    `docs/TRUST.md` publishes the custom runner's function count twice, three
+    lines from the collected count. It was outside the cascade, so it drifted
+    silently until `tests/test_published_count_manifest.py` was written to
+    catch it, and then drifted twice more in one session, each time costing a
+    full suite run to discover.
+
+    The danger in fixing it is conflation: two quantities on the same line,
+    written by one tool. These controls exist to prove they cannot cross.
+    """
+
+    LINE = ("| Test suite | `tests/` (2,808 unique tests, 2,808 "
+            "pytest-collected; the legacy `tests/test_classification.py` "
+            "runner executes 1,182 functions, 442 defined in-file) |")
+    PROSE = "The runner currently discovers 1,182 functions, a count machine-checked by"
+
+    def test_runner_templates_match_both_published_shapes(self):
+        for text in (self.LINE, self.PROSE):
+            self.assertTrue(
+                any(rx.search(text)
+                    for rx in cc._count_regexes(1182, cc.RUNNER_TEMPLATES)),
+                f"no RUNNER_TEMPLATE matched: {text!r}")
+
+    def test_runner_pass_never_nominates_the_collected_count(self):
+        """2,808 must not be visible to the runner templates."""
+        stale = cc._stale_values(self.LINE, 1182, cc.RUNNER_TEMPLATES)
+        self.assertNotIn(2808, stale, stale)
+
+    def test_collected_pass_never_nominates_the_runner_count(self):
+        """1,182 must not be visible to the collected-count templates."""
+        stale = cc._stale_values(self.LINE, 2808, cc.COUNT_TEMPLATES)
+        self.assertNotIn(1182, stale, stale)
+
+    def test_the_third_quantity_on_the_same_line_is_never_touched(self):
+        """`442 defined in-file` is neither a collected count nor a runner count.
+
+        The runner shapes are anchored on the verb for exactly this reason: a
+        template keyed on the word "functions" alone would reach it.
+        """
+        for canonical, templates in ((1182, cc.RUNNER_TEMPLATES),
+                                     (2808, cc.COUNT_TEMPLATES)):
+            self.assertNotIn(442, cc._stale_values(self.LINE, canonical, templates))
+
+    def test_a_stale_runner_count_is_nominated_and_rewritten(self):
+        """Positive control: the pass must be able to fire, not just abstain."""
+        stale_line = self.PROSE.replace("1,182", "1,175")
+        nominated = cc._stale_values(stale_line, 1182, cc.RUNNER_TEMPLATES)
+        self.assertIn(1175, nominated, nominated)
+        out = stale_line
+        for rx in cc._count_regexes(1175, cc.RUNNER_TEMPLATES):
+            out = rx.sub(lambda m: cc._swap(m.group(0), 1175, 1182), out)
+        self.assertIn("discovers 1,182 functions", out)
+        self.assertNotIn("1,175", out)
+
+    def test_canonical_runner_count_refuses_a_missing_field(self):
+        """Fail closed rather than cascade a quantity with no canonical source."""
+        original = cc.CANONICAL
+        try:
+            import tempfile
+            with tempfile.TemporaryDirectory() as d:
+                path = Path(d) / "site_facts.json"
+                path.write_text(json.dumps({"counts": {"tests": {"total_collected": 1}}}))
+                cc.CANONICAL = path
+                with self.assertRaises(cc.RefusedError):
+                    cc.canonical_runner_count()
+        finally:
+            cc.CANONICAL = original
+
+
+class TestTheCommandCountIsCascadedInThreeLanguages(unittest.TestCase):
+    """The FOURTH quantity, and the first that is published in three languages.
+
+    Ledger N131 recorded the command count as ungated: `claim_auditor
+    --verify-facts` could say a surface was wrong but never fix it, so every
+    command added or removed meant a hand-applied edit across English, German
+    and Brazilian Portuguese. N131's own enumeration named five locations.
+    Enumerated again on 2026-08-17 the live reader-facing set is TWELVE across
+    five files, and the one a plain adjacency grep does not find is
+    `site/about.html`, which reads "62 CLI commands" with a qualifier between
+    the number and its unit word. That is ledger N10's finding (the unit word is
+    not always adjacent) and measurement rule 4c's (hand enumeration
+    under-counts), in one cell.
+    """
+
+    def test_the_unit_word_is_matched_in_every_shipped_language(self):
+        """A pattern list written only in English is blind to a locale by
+        construction. This is N107's finding in a second instrument."""
+        for fragment, language in (("62 commands", "en"),
+                                   ("62 CLI commands", "en with a qualifier"),
+                                   ("62 Befehle", "de"),
+                                   ("62 comandos", "pt-BR")):
+            with self.subTest(language=language):
+                self.assertTrue(
+                    any(rx.search(fragment)
+                        for rx in cc._count_regexes(62, cc.COMMAND_TEMPLATES)),
+                    f"{language}: {fragment!r} matched no COMMAND_TEMPLATE")
+
+    def test_a_qualifier_between_number_and_unit_word_is_not_a_blind_spot(self):
+        """The exact shape that made a hand enumeration miss site/about.html."""
+        bare = [rx for rx in cc._count_regexes(62, [cc.COMMAND_TEMPLATES[0]])]
+        self.assertFalse(any(rx.search("62 CLI commands") for rx in bare),
+                         "the bare template should NOT reach the qualifier form; "
+                         "if it does, this test is no longer proving anything")
+        self.assertTrue(any(rx.search("62 CLI commands")
+                            for rx in cc._count_regexes(62, cc.COMMAND_TEMPLATES)))
+
+    def test_the_swap_keeps_the_locale_thousands_style(self):
+        """Writing 1,234 into a German page corrects the number and corrupts the
+        language. Exercised at four digits because the count is two today and a
+        two-digit value cannot demonstrate grouping at all."""
+        self.assertEqual(cc._swap("1.234 Befehle", 1234, 1300), "1.300 Befehle")
+        self.assertEqual(cc._swap("1,234 commands", 1234, 1300), "1,300 commands")
+        self.assertEqual(cc._swap("1234 commands", 1234, 1300), "1300 commands")
+
+    def test_a_two_digit_count_is_nominated_at_all(self):
+        """CANDIDATE_THOUSANDS structurally cannot nominate a number below 1,000.
+
+        That blindness is why `docs/architecture.md` published "112 test files"
+        while git tracked 113. The command count is two digits, so the wrong
+        candidate scanner would make this whole quantity permanently invisible
+        while reporting a clean check.
+        """
+        line = "Regula has 61 commands in total."
+        self.assertNotIn(61, cc._stale_values(line, 62, cc.COMMAND_TEMPLATES,
+                                              cc.CANDIDATE_THOUSANDS))
+        self.assertIn(61, cc._stale_values(line, 62, cc.COMMAND_TEMPLATES,
+                                           cc.CANDIDATE_ANY_INTEGER))
+
+    def test_an_unrelated_denominator_is_not_a_command_count(self):
+        """`site/llms-full.txt` carries "24 of 62" as a blind-label denominator.
+
+        Measured during the live cascade control: it is the only occurrence of
+        the value on that surface that must NOT move, and the unit-word anchor
+        leaves it alone without needing a declared exclusion.
+        """
+        line = "24 of 62 labels were reviewed"
+        self.assertEqual(
+            cc._stale_values(line, 63, cc.COMMAND_TEMPLATES,
+                             cc.CANDIDATE_ANY_INTEGER), set())
+
+    def test_the_two_derivations_must_agree_or_the_tool_refuses(self):
+        """A command registered with no handler must be a refusal, not a guess.
+
+        Live control on 2026-08-17: registering `zzcontrol` with no `cmd_`
+        function made the registry offer 63 while the handler scan gave 62, and
+        `canonical_command_count` refused by name rather than publishing
+        whichever function was called first.
+        """
+        import site_facts as sf
+        real = sf.count_commands_from_registry
+        try:
+            sf.count_commands_from_registry = lambda: sf.count_commands() + 1
+            with self.assertRaises(cc.RefusedError) as caught:
+                cc.canonical_command_count()
+            self.assertIn("disagree", str(caught.exception))
+        finally:
+            sf.count_commands_from_registry = real
+        # and it must pass again once restored, or the control proves nothing
+        self.assertEqual(cc.canonical_command_count(),
+                         sf.count_commands_from_registry())
+
+    def test_canonical_command_count_refuses_a_missing_field(self):
+        original = cc.CANONICAL
+        try:
+            import tempfile
+            with tempfile.TemporaryDirectory() as d:
+                path = Path(d) / "site_facts.json"
+                path.write_text(json.dumps({"counts": {"tests": {}}}))
+                cc.CANONICAL = path
+                with self.assertRaises(cc.RefusedError):
+                    cc.canonical_command_count()
+        finally:
+            cc.CANONICAL = original

@@ -149,7 +149,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -169,7 +171,7 @@
         <a href="/">Regula</a> / <a href="/guides/">Guides</a> / JavaScript &amp; TypeScript
     </div>
     <h1>EU AI Act compliance for <span class="hl">JavaScript and TypeScript developers</span></h1>
-    <p class="standfirst">JavaScript and TypeScript are the backbone of modern web applications, and increasingly the backbone of AI-powered ones. If you use the OpenAI SDK, Vercel AI SDK, LangChain, TensorFlow.js, or any AI library in a product that reaches EU users, the EU AI Act applies to you. The regulation does not care which language you write in. It cares what your code does to people.</p>
+    <p class="standfirst">Calling the OpenAI SDK, the Vercel AI SDK, LangChain or TensorFlow.js does not by itself put you in scope of the EU AI Act. Scope turns on what the system is for, who it affects, and what role you take in placing it on the EU market, and none of those is settled by your dependency tree. What the dependencies do tell you is where to look first. This guide covers the JavaScript and TypeScript patterns Regula flags, why each is worth a second look, and the questions the code cannot answer for you.</p>
     <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
 </div>
 
@@ -213,7 +215,7 @@
 
 <p>Regula strips comments before scanning, so commented-out code does not produce false positives. For JavaScript and TypeScript files, it handles both single-line comments (<code>//</code>) and block comments (<code>/* */</code>). This means:</p>
 
-<pre><code>// import OpenAI from 'openai'  &larr; not flagged (commented out)
+<pre tabindex="0"><code>// import OpenAI from 'openai'  &larr; not flagged (commented out)
 
 /*
 const anthropic = new Anthropic()
@@ -226,7 +228,7 @@ import OpenAI from 'openai'      &larr; flagged (live code)</code></pre>
 
 <h2>Quick start: scanning a JavaScript project</h2>
 
-<pre><code>pipx install regula-ai
+<pre tabindex="0"><code>pipx install regula-ai
 regula check .                      # scan current directory
 regula check . --domain employment  # activate domain-specific patterns
 regula assess                       # interactive: does the AI Act apply?</code></pre>
@@ -254,19 +256,36 @@ regula assess                       # interactive: does the AI Act apply?</code>
 
 <p>Here is what Regula produces when it classifies a JavaScript file with employment-related AI patterns:</p>
 
-<pre><code>$ regula classify --file hiring_scorer.js
+<pre tabindex="0"><code>$ regula classify --file hiring_scorer.js
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observation (not a legal classification):
 HIGH-RISK: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15</code></pre>
 
 <p>And a full check with the domain flag:</p>
 
-<pre><code>$ regula check sample_js_hiring.js --domain employment
+<pre tabindex="0"><code>$ regula check sample_js_hiring.js --domain employment
 
 Regula Scan: sample_js_hiring.js
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project is classified as high-risk under EU AI Act Annex III.
-  You must comply with Articles 9-15 before the enforcement deadline.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
 
   Why:
     1. sample_js_hiring.js:16 &mdash; Employment and workers management
@@ -292,7 +311,7 @@ Regula Scan: sample_js_hiring.js
 
 <h3>CV screening and candidate ranking</h3>
 
-<pre><code>// Flagged: employment screening patterns
+<pre tabindex="0"><code>// Flagged: employment screening patterns
 const ranked = scoreResume(applicant, model)
 const shortlist = candidates.filter(c =&gt; c.score &gt; threshold)
 const filtered = filterApplicants(applications, criteria)</code></pre>
@@ -301,7 +320,7 @@ const filtered = filterApplicants(applications, criteria)</code></pre>
 
 <h3>AI API calls with no logging</h3>
 
-<pre><code>// Flagged: API call with no record-keeping
+<pre tabindex="0"><code>// Flagged: API call with no record-keeping
 const response = await openai.chat.completions.create({
   model: 'gpt-4',
   messages: [{ role: 'user', content: userData }]
@@ -312,7 +331,7 @@ return response.choices[0].message.content  // no log</code></pre>
 
 <h3>Content generation without disclosure</h3>
 
-<pre><code>// Flagged: AI-generated content without transparency
+<pre tabindex="0"><code>// Flagged: AI-generated content without transparency
 const reply = await generateText({
   model: openai('gpt-4'),
   prompt: userMessage
@@ -323,7 +342,7 @@ res.json({ message: reply.text })  // user not told this is AI</code></pre>
 
 <h3>Sentiment analysis on user content</h3>
 
-<pre><code>// Flagged: emotion/sentiment inference
+<pre tabindex="0"><code>// Flagged: emotion/sentiment inference
 import { pipeline } from '@xenova/transformers'
 const classifier = await pipeline('sentiment-analysis')
 const result = await classifier(customerMessage)</code></pre>
@@ -348,7 +367,7 @@ const result = await classifier(customerMessage)</code></pre>
 
 <p>Add Regula to your GitHub Actions pipeline so every pull request gets scanned. Here is a minimal workflow for a JavaScript or TypeScript project:</p>
 
-<pre><code># .github/workflows/regula.yml
+<pre tabindex="0"><code># .github/workflows/regula.yml
 name: EU AI Act Scan
 
 on:
@@ -425,7 +444,7 @@ jobs:
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last verified:</strong> 25 June 2026 &middot;
+    <strong>Last reviewed:</strong> 14 August 2026 &middot;
     <strong>Author:</strong> Kuziva Muzondo &middot;
     <em>Not legal advice. Regula identifies risk indicators in code for developer review. It does not determine compliance or replace professional legal counsel.</em>
 </p>

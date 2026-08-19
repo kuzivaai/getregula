@@ -5,12 +5,14 @@ from __future__ import annotations
 import argparse
 import email.parser
 import hashlib
+import html
 import importlib
 import json
 import re
 import subprocess
 import sys
 import tarfile
+import unicodedata
 import zipfile
 from collections import Counter, deque
 from pathlib import Path
@@ -23,32 +25,200 @@ except ModuleNotFoundError:  # Python 3.10: only the project readme key is neede
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+from svg_text import SvgTextError, carries_text  # noqa: E402
+
 REPO = Path(__file__).resolve().parent.parent
 OUTPUT = REPO / "data/public_claim_surfaces.json"
 REPORT = REPO / "docs/improvement/PUBLIC-SURFACE-DISCOVERY.md"
 POLICY = REPO / "data/public_surface_policy.json"
 TEXT_SITE = {".html", ".htm", ".txt", ".xml", ".json"}
+
+# Suffixes whose claim-capability cannot be decided from the suffix, because the
+# same extension carries both kinds of file. An SVG may be a logo, which cannot
+# carry a claim, or a terminal recording, which is a whole transcript sitting in
+# `<text>` nodes. A suffix rule gets one of those wrong whichever way it is set:
+# excluding `.svg` classified a published transcript on the project's front page
+# as `non_claim_asset`, and including it unconditionally would classify the
+# VS Code sidebar icon as reader-facing text. Decided by content instead.
+CONTENT_DECIDED_SUFFIXES = {".svg"}
 LINK_RE = re.compile(r"(?<!!)\[[^]]*\]\(([^)#?]+)(?:#[^)]*)?\)")
+TAG_RE = re.compile(r"<[^>]+>")
+
+# Languages the site actually ships. Derived at test time from the lang
+# attribute of every tracked page (see tests/test_public_claim_integrity.py);
+# repeated here as the authoring contract for PROHIBITED_CLAIMS, which must
+# carry one arm per shipped language or the guard is blind to that locale.
+CLAIM_LANGUAGES = ("en", "de", "pt")
+
+
+def carries_readable_text(path: Path) -> bool:
+    """True if a content-decided file publishes words a reader can read.
+
+    Only consulted for `CONTENT_DECIDED_SUFFIXES`; every other suffix keeps its
+    suffix rule, so this cannot quietly reclassify anything else.
+
+    Fails CLOSED, which is the opposite of the obvious choice. An SVG that
+    cannot be parsed is treated as claim-capable, because "I could not read it"
+    and "it contains nothing" are different answers and only one of them is
+    safe to act on. Returning False on a parse failure would make an unreadable
+    file classify as a non-claim asset, which is precisely the state that let a
+    published transcript sit unaudited on the front page.
+    """
+    if path.suffix.lower() not in CONTENT_DECIDED_SUFFIXES:
+        return False
+    try:
+        return carries_text(path.read_text(encoding="utf-8", errors="replace"))
+    except SvgTextError:
+        return True
+    except OSError:
+        return True
+
+
+def fold_for_claim_match(text: str) -> str:
+    """Reduce copy to the form the prohibited-claim patterns are written against.
+
+    Three defects made the previous raw-text match unsound, each demonstrated
+    against shipped pages before this was written:
+
+    1. Inline markup split a phrase, so `zero <strong>network</strong> calls`
+       evaded the English pattern that exists precisely to catch it.
+    2. Accented copy is written with HTML entities, so `c&oacute;digo` never
+       matched a pattern containing `codigo`, let alone `código`.
+    3. Accents alone defeated matching even after decoding.
+
+    So: decode entities, fold to ASCII-compatible letters, casefold, and
+    collapse whitespace. Patterns are therefore authored lowercase and
+    unaccented; `test_claim_patterns_are_written_in_folded_form` enforces that.
+    """
+    decoded = html.unescape(text)
+    decomposed = unicodedata.normalize("NFKD", decoded)
+    stripped = "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+    return re.sub(r"\s+", " ", stripped.casefold())
+
+
+def claim_match_variants(text: str) -> tuple[str, ...]:
+    """Both readings of a source: markup kept, and markup replaced by space.
+
+    Matching only the tag-stripped form would lose claims that live in
+    attribute values (`aria-label`, `alt`, `content`), which the raw match used
+    to cover. Matching only the raw form is what let markup-split phrases
+    through. Each pattern is tried against both and the results unioned, so
+    coverage is a strict superset of the previous behaviour and no join
+    artefact can invent a match that neither reading contains.
+    """
+    return (fold_for_claim_match(text),
+            fold_for_claim_match(TAG_RE.sub(" ", html.unescape(text))))
+
+
+# claim class -> language -> pattern, matched against folded text.
+# Non-English arms are translations of the English claim, not quotations of
+# shipped copy; each is proved live by a planted negative control per
+# (class, language) pair in tests/test_public_claim_integrity.py. A hedged
+# statement must not match: the German and Portuguese homepages say the local
+# core does not upload scanned files, which is a bounded claim and stays green.
 PROHIBITED_CLAIMS = {
-    "legal classification": re.compile(
-        r"(?:(?:regula|scanner|tool|command)\s+(?:automatically\s+)?"
-        r"classif(?:y|ies)\b.{0,120}(?:system|snippet).{0,80}risk tier|"
-        r"classifies your system\b)",
-        re.I,
-    ),
-    "compliance scan": re.compile(r"(?:compliance scanner|compliance issues|assess compliance gaps)", re.I),
-    "obligation determination": re.compile(r"tells? you which obligations apply", re.I),
-    "universal network": re.compile(
-        r"(?:zero network calls|no API calls|no data leaves|"
-        r"zero data transmission|never leaves your machine)",
-        re.I,
-    ),
-    "DPA determination": re.compile(r"no DPA (?:is )?required", re.I),
-    "auditor completeness": re.compile(r"auditor.ready|audit.ready", re.I),
-    "universal reproducibility": re.compile(r"every (?:metric|number).*(?:reproduc|CI.enforced)", re.I),
-    "unbounded runtime": re.compile(r"(?:in|under|takes?) (?:10|30) seconds", re.I),
-    "zero security findings": re.compile(r"zero known security findings|0 known security findings", re.I),
+    "legal classification": {
+        "en": re.compile(
+            r"(?:(?:regula|scanner|tool|command)\s+(?:automatically\s+)?"
+            r"classif(?:y|ies)\b.{0,120}(?:system|snippet).{0,80}risk tier|"
+            r"classifies your system\b)",
+            re.I,
+        ),
+        "de": re.compile(
+            r"(?:(?:regula|scanner|tool|werkzeug)\s+(?:automatisch\s+)?"
+            r"(?:klassifiziert|stuft)\b.{0,120}(?:system|code).{0,80}"
+            r"risiko(?:stufe|klasse|kategorie)|"
+            r"klassifiziert ihr system\b|bestimmt die risiko(?:stufe|klasse))",
+            re.I,
+        ),
+        "pt": re.compile(
+            r"(?:(?:regula|scanner|ferramenta)\s+(?:automaticamente\s+)?"
+            r"classifica\b.{0,120}sistema.{0,80}(?:nivel|categoria|grau) de risco|"
+            r"classifica o seu sistema\b|determina o nivel de risco)",
+            re.I,
+        ),
+    },
+    "compliance scan": {
+        "en": re.compile(r"(?:compliance scanner|compliance issues|assess compliance gaps)", re.I),
+        "de": re.compile(
+            r"(?:compliance.scanner|konformitatsscanner|compliance.probleme|"
+            r"konformitatsprobleme|compliance.lucken bewerten)",
+            re.I,
+        ),
+        "pt": re.compile(
+            r"(?:scanner de conformidade|verificador de conformidade|"
+            r"problemas de conformidade|avalia(?:r)? lacunas de conformidade)",
+            re.I,
+        ),
+    },
+    "obligation determination": {
+        "en": re.compile(r"tells? you which obligations apply", re.I),
+        "de": re.compile(r"sagt ihnen,? welche pflichten (?:gelten|zutreffen|anwendbar sind)", re.I),
+        "pt": re.compile(r"diz(?: a voce)?,? quais obrigacoes se aplicam", re.I),
+    },
+    "universal network": {
+        "en": re.compile(
+            r"(?:zero network calls|no API calls|no data leaves|"
+            r"zero data transmission|never leaves your machine|"
+            r"your code never leaves|nothing leaves your machine)",
+            re.I,
+        ),
+        "de": re.compile(
+            r"(?:(?:null|keine) netzwerk(?:aufrufe|verbindungen|anfragen)|"
+            r"keine daten verlassen|"
+            r"verlasst (?:niemals|nie) (?:ihren|deinen|den) (?:rechner|computer)|"
+            r"ihr code verlasst (?:niemals|nie))",
+            re.I,
+        ),
+        "pt": re.compile(
+            r"(?:(?:zero|sem|nenhuma) chamadas? de rede|nenhum dado sai|"
+            r"nunca sa(?:i|em) d(?:a|o) (?:sua|seu) (?:maquina|computador)|"
+            r"seu codigo nunca sai)",
+            re.I,
+        ),
+    },
+    "DPA determination": {
+        "en": re.compile(r"no DPA (?:is )?required", re.I),
+        "de": re.compile(r"(?:kein avv|keine auftragsverarbeitung|kein auftragsverarbeitungsvertrag) (?:ist )?erforderlich", re.I),
+        "pt": re.compile(r"(?:nenhum|sem) (?:dpa|contrato de tratamento de dados)(?: e)? (?:necessario|exigido)", re.I),
+    },
+    "auditor completeness": {
+        "en": re.compile(r"auditor.ready|audit.ready", re.I),
+        "de": re.compile(r"(?:auditbereit|auditsicher|prufungsbereit|pruferfertig)", re.I),
+        "pt": re.compile(r"pront[oa]s? para auditoria", re.I),
+    },
+    # Bounded, not `.*`. Folding collapses newlines, so an unbounded run would
+    # span a whole document and pair an "every number" in the intro with a
+    # "reproducible" thousands of characters later. 200 characters is about two
+    # sentences, which is the range over which the two halves form one claim.
+    "universal reproducibility": {
+        "en": re.compile(r"every (?:metric|number).{0,200}?(?:reproduc|CI.enforced)", re.I),
+        "de": re.compile(r"jede (?:kennzahl|zahl|metrik).{0,200}?(?:reproduzierbar|ci.erzwungen)", re.I),
+        "pt": re.compile(r"(?:cada|toda) (?:metrica|numero).{0,200}?(?:reproduzivel|garantid[oa] (?:por|no) ci)", re.I),
+    },
+    "unbounded runtime": {
+        "en": re.compile(r"(?:in|under|takes?) (?:10|30) seconds", re.I),
+        "de": re.compile(r"(?:in|unter|dauert) (?:10|30) sekunden", re.I),
+        "pt": re.compile(r"(?:em|menos de|leva) (?:10|30) segundos", re.I),
+    },
+    "zero security findings": {
+        "en": re.compile(r"zero known security findings|0 known security findings", re.I),
+        "de": re.compile(r"(?:null|keine|0) bekannten? sicherheits(?:befunde|probleme)", re.I),
+        "pt": re.compile(
+            r"(?:zero|nenhum[a]?|0) (?:vulnerabilidades|falhas|problemas) de seguranca conhecid[oa]s",
+            re.I,
+        ),
+    },
 }
+
+
+def claim_violations(text: str) -> list[tuple[str, str]]:
+    """Every (claim class, language) prohibited claim present in ``text``."""
+    variants = claim_match_variants(text)
+    return [(name, language)
+            for name, arms in PROHIBITED_CLAIMS.items()
+            for language, pattern in sorted(arms.items())
+            if any(pattern.search(variant) for variant in variants)]
 
 
 class DiscoveryError(RuntimeError):
@@ -95,9 +265,14 @@ def website_records(root: Path, files: set[str]) -> list[dict[str, Any]]:
     rows = []
     for rel in sorted(p for p in files if p.startswith("site/")):
         suffix = Path(rel).suffix.lower()
-        claim = suffix in TEXT_SITE
+        # Resolved against the ROOT this call was given, never against the
+        # module-level REPO. A predicate that resolves paths against its own
+        # file location answers about the wrong tree, which is measurement
+        # rule 1 and is how the figures 185 and 168 were produced.
+        claim = suffix in TEXT_SITE or carries_readable_text(root / rel)
         kind = "web-page" if suffix in {".html", ".htm"} else (
-            "machine-readable" if suffix in {".txt", ".xml", ".json"} else "asset")
+            "machine-readable" if suffix in {".txt", ".xml", ".json"} else (
+                "machine-readable" if claim else "asset"))
         dest = "/" + rel.removeprefix("site/")
         if dest.endswith("/index.html"):
             dest = dest[:-10]
@@ -185,19 +360,28 @@ def _yaml_descriptors(path: Path) -> list[tuple[str, str, str]]:
         line = lines[i]
         top = re.match(r"^(inputs|outputs):\s*$", line)
         if top:
-            section = top.group(1); current = ""; i += 1; continue
+            section = top.group(1)
+            current = ""
+            i += 1
+            continue
         item = re.match(r"^  ([A-Za-z0-9_-]+):\s*$", line)
         if section in {"inputs", "outputs"} and item:
-            current = item.group(1); i += 1; continue
+            current = item.group(1)
+            i += 1
+            continue
         desc = re.match(r"^(\s*)(name|description):\s*(.*)$", line)
         if desc and (len(desc.group(1)) == 0 or section in {"inputs", "outputs"}):
             key, value = desc.group(2), desc.group(3).strip().strip("'\"")
             if value in {">-", "|", "|-", ">"}:
-                indent = len(desc.group(1)); parts = []; i += 1
+                indent = len(desc.group(1))
+                parts = []
+                i += 1
                 while i < len(lines) and (not lines[i].strip() or len(lines[i]) - len(lines[i].lstrip()) > indent):
-                    if lines[i].strip(): parts.append(lines[i].strip())
+                    if lines[i].strip():
+                        parts.append(lines[i].strip())
                     i += 1
-                value = " ".join(parts); i -= 1
+                value = " ".join(parts)
+                i -= 1
             rows.append((section, current if section != "metadata" else "action", key + ": " + value))
         i += 1
     if not rows:
@@ -248,7 +432,8 @@ def cli_records(root: Path, files: set[str]) -> list[dict[str, Any]]:
                            "registered parser description/help/epilogue and exit semantics"))
         for action in current._actions:
             if isinstance(action, argparse._SubParsersAction):
-                for name, child in sorted(action.choices.items()): queue.append((f"{path} {name}", child))
+                for name, child in sorted(action.choices.items()):
+                    queue.append((f"{path} {name}", child))
             else:
                 for option in action.option_strings:
                     rows.append(record("cli", source + ":" + option, f"{path} {option}",
@@ -280,9 +465,11 @@ def apply_policy(root: Path, rows: list[dict[str, Any]]) -> tuple[list[dict[str,
     seen = set()
     for entry in payload.get("dispositions", []):
         source = entry["source"]
-        if source in seen: raise DiscoveryError(f"duplicate policy source: {source}")
+        if source in seen:
+            raise DiscoveryError(f"duplicate policy source: {source}")
         seen.add(source)
-        if source not in by_source: raise DiscoveryError(f"stale policy entry: {source}")
+        if source not in by_source:
+            raise DiscoveryError(f"stale policy entry: {source}")
         if entry["classification"] not in {"historical_record", "internal_record", "non_claim_asset"}:
             raise DiscoveryError(f"invalid narrow policy disposition: {source}")
         row = by_source[source]
@@ -291,7 +478,8 @@ def apply_policy(root: Path, rows: list[dict[str, Any]]) -> tuple[list[dict[str,
         row["reason"] = entry["reason"]
         exclusions.append(row.copy())
     missing = sorted(row["source"] for row in rows if row["classification"] == "needs_policy")
-    if missing: raise DiscoveryError(f"missing policy disposition: {', '.join(missing)}")
+    if missing:
+        raise DiscoveryError(f"missing policy disposition: {', '.join(missing)}")
     return rows, exclusions
 
 
@@ -305,18 +493,22 @@ def verify_package_artifacts(root: Path, dist: Path) -> None:
     if not isinstance(readme, str):
         raise DiscoveryError("pyproject project.readme is missing or unsupported")
     expected_body = (root / readme).read_text(encoding="utf-8").strip()
-    wheels = sorted(dist.glob("*.whl")); sdists = sorted(dist.glob("*.tar.gz"))
+    wheels = sorted(dist.glob("*.whl"))
+    sdists = sorted(dist.glob("*.tar.gz"))
     if len(wheels) != 1 or len(sdists) != 1:
         raise DiscoveryError("package verification requires exactly one wheel and one sdist")
     with zipfile.ZipFile(wheels[0]) as archive:
         names = [name for name in archive.namelist() if name.endswith(".dist-info/METADATA")]
-        if len(names) != 1: raise DiscoveryError("wheel METADATA missing or ambiguous")
+        if len(names) != 1:
+            raise DiscoveryError("wheel METADATA missing or ambiguous")
         wheel_meta = archive.read(names[0]).decode("utf-8")
     with tarfile.open(sdists[0], "r:gz") as archive:
         members = [m for m in archive.getmembers() if m.name.count("/") == 1 and m.name.endswith("/PKG-INFO")]
-        if len(members) != 1: raise DiscoveryError("sdist PKG-INFO missing or ambiguous")
+        if len(members) != 1:
+            raise DiscoveryError("sdist PKG-INFO missing or ambiguous")
         stream = archive.extractfile(members[0])
-        if stream is None: raise DiscoveryError("sdist PKG-INFO unreadable")
+        if stream is None:
+            raise DiscoveryError("sdist PKG-INFO unreadable")
         sdist_meta = stream.read().decode("utf-8")
     for label, raw in (("wheel METADATA", wheel_meta), ("sdist PKG-INFO", sdist_meta)):
         message = email.parser.Parser().parsestr(raw)
@@ -334,16 +526,18 @@ def discover(root: Path = REPO) -> dict[str, Any]:
     rows, exclusions = apply_policy(root, rows)
     rows.sort(key=lambda row: (row["channel"], row["destination"], row["source"]))
     ids = [row["stable_id"] for row in rows]
-    if len(ids) != len(set(ids)): raise DiscoveryError("duplicate stable ID")
+    if len(ids) != len(set(ids)):
+        raise DiscoveryError("duplicate stable ID")
     claim_files = sorted({r["source"].split("#", 1)[0] for r in rows
                           if r["classification"] == "active_product" and r["claim_capable"]})
     residual = []
     for rel in claim_files:
         path = root / rel
-        if not path.is_file(): continue
+        if not path.is_file():
+            continue
         body = path.read_text(encoding="utf-8", errors="replace")
-        residual.extend({"source": rel, "claim_class": name}
-                        for name, pattern in PROHIBITED_CLAIMS.items() if pattern.search(body))
+        residual.extend({"source": rel, "claim_class": name, "language": language}
+                        for name, language in claim_violations(body))
     return {"schema_version": 2, "authority": "repository-derived delivery mechanisms",
             "records": rows,
             "totals": {"channel": dict(sorted(Counter(r["channel"] for r in rows).items())),
@@ -397,7 +591,8 @@ def main(argv: list[str] | None = None) -> int:
             raise DiscoveryError("generated public-surface inventory/report is stale")
     if args.verify_dist:
         verify_package_artifacts(REPO, args.verify_dist)
-    if not args.write and not args.check and not args.verify_dist: print(encoded, end="")
+    if not args.write and not args.check and not args.verify_dist:
+        print(encoded, end="")
     return 0
 
 

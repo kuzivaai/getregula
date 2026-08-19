@@ -1,7 +1,7 @@
 [
   {
     "date": "2026-04-20",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 1295,
       "without_mirrors": 479
@@ -14,11 +14,13 @@
       "3.11": 5,
       "3.12": 28,
       "3.13": 4
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-04-27",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 1453,
       "without_mirrors": 511
@@ -32,11 +34,13 @@
       "3.11": 13,
       "3.12": 28,
       "3.13": 4
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-05-04",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 1796,
       "without_mirrors": 638
@@ -51,11 +55,13 @@
       "3.11": 16,
       "3.12": 38,
       "3.13": 6
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-05-11",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {},
     "by_system": {
       "Darwin": 10,
@@ -68,11 +74,13 @@
       "3.12": 40,
       "3.13": 6,
       "3.14": 2
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-05-18",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 2161,
       "without_mirrors": 745
@@ -88,11 +96,13 @@
       "3.12": 40,
       "3.13": 6,
       "3.14": 2
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-05-25",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 2222,
       "without_mirrors": 768
@@ -108,11 +118,13 @@
       "3.12": 40,
       "3.13": 6,
       "3.14": 2
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-06-01",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {},
     "by_system": {
       "Darwin": 20,
@@ -125,11 +137,13 @@
       "3.12": 40,
       "3.13": 6,
       "3.14": 2
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-06-08",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 2391,
       "without_mirrors": 836
@@ -145,11 +159,13 @@
       "3.12": 40,
       "3.13": 6,
       "3.14": 2
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-06-15",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 2436,
       "without_mirrors": 839
@@ -165,11 +181,13 @@
       "3.12": 40,
       "3.13": 6,
       "3.14": 2
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-06-22",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 3059,
       "without_mirrors": 1003
@@ -185,11 +203,13 @@
       "3.12": 52,
       "3.13": 6,
       "3.14": 2
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-06-29",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {},
     "by_system": {
       "Darwin": 24,
@@ -202,11 +222,13 @@
       "3.12": 52,
       "3.13": 6,
       "3.14": 2
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-07-06",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 3636,
       "without_mirrors": 1132
@@ -222,11 +244,13 @@
       "3.12": 62,
       "3.13": 6,
       "3.14": 2
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-07-13",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 4181,
       "without_mirrors": 1282
@@ -242,11 +266,13 @@
       "3.12": 80,
       "3.13": 6,
       "3.14": 4
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-07-20",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 4667,
       "without_mirrors": 1407
@@ -262,11 +288,13 @@
       "3.12": 91,
       "3.13": 6,
       "3.14": 4
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-07-27",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 6124,
       "without_mirrors": 1920
@@ -282,11 +310,13 @@
       "3.12": 148,
       "3.13": 6,
       "3.14": 4
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-08-03",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 6946,
       "without_mirrors": 2177
@@ -302,11 +332,13 @@
       "3.12": 174,
       "3.13": 6,
       "3.14": 6
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-08-10",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 7259,
       "without_mirrors": 2211
@@ -322,11 +354,13 @@
       "3.12": 174,
       "3.13": 6,
       "3.14": 6
-    }
+    },
+    "period_label_corrected": "2026-08-14",
+    "correction_note": "Recorded as last_7_days by the collector, but the value is a whole-period cumulative total. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   },
   {
     "date": "2026-08-17",
-    "period": "last_7_days",
+    "period": "all_time_to_collection_date",
     "downloads": {
       "with_mirrors": 7426,
       "without_mirrors": 2238
@@ -342,6 +376,8 @@
       "3.12": 176,
       "3.13": 16,
       "3.14": 6
-    }
+    },
+    "period_label_corrected": "2026-08-19",
+    "correction_note": "Recorded as last_7_days by the collector without window bounds. The values are cumulative totals, consistent with the previously measured collector defect. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
   }
 ]

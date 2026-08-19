@@ -35,15 +35,18 @@ def _site_root(tmp_path: Path) -> tuple[Path, set[str]]:
 ])
 def test_new_web_delivery_candidates_are_discovered(tmp_path, rel):
     root, files = _site_root(tmp_path)
-    path = root / rel; path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text("public", encoding="utf-8"); files.add(rel)
+    path = root / rel
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("public", encoding="utf-8")
+    files.add(rel)
     rows = psi.website_records(root, files)
     assert any(row["source"] == rel and row["classification"] == "active_product" for row in rows)
 
 
 def test_readme_link_addition_and_rename_are_bidirectional(tmp_path):
     (tmp_path / "README.md").write_text("[Guide](docs/guide.md)\n", encoding="utf-8")
-    (tmp_path / "docs").mkdir(); (tmp_path / "docs/guide.md").write_text("guide", encoding="utf-8")
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "docs/guide.md").write_text("guide", encoding="utf-8")
     files = {"README.md", "docs/guide.md"}
     assert {r["source"] for r in psi.docs_records(tmp_path, files)} == files
     (tmp_path / "README.md").write_text("[Guide](docs/renamed.md)\n", encoding="utf-8")
@@ -63,6 +66,63 @@ def test_binary_asset_is_non_claim_asset(tmp_path):
     rows = psi.website_records(root, files | {"site/image.png"})
     row = next(r for r in rows if r["source"] == "site/image.png")
     assert row["classification"] == "non_claim_asset" and not row["claim_capable"]
+
+
+def test_a_terminal_recording_svg_is_claim_capable_and_a_logo_is_not(tmp_path):
+    """The classification a suffix rule gets wrong whichever way it is set.
+
+    MEASURED 2026-08-17: `site/assets/demo/regula-check.svg` was recorded
+    `content_kind: asset, claim_capable: False, classification: non_claim_asset`
+    purely because `.svg` was absent from TEXT_SITE, while `README.md:32`
+    rendered it as the project's first visual and its `<text>` nodes published
+    `Confidence scores: 0-100`, the framing retired across nine surfaces. Adding
+    `.svg` to TEXT_SITE unconditionally would have made the opposite error on
+    `vscode-extension/resources/regula-sidebar.svg`, which is a drawing. The
+    decision is made from content, and both directions are asserted here because
+    a rule that only ever says yes is not a classifier.
+    """
+    root, files = _site_root(tmp_path)
+    (root / "site/recording.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg">'
+        '<text x="0" y="1">Files</text><text x="40" y="1">scanned:</text>'
+        '<text x="90" y="1">1</text></svg>', encoding="utf-8")
+    (root / "site/logo.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h10v10H0z"/></svg>',
+        encoding="utf-8")
+    rows = psi.website_records(root, files | {"site/recording.svg", "site/logo.svg"})
+
+    recording = next(r for r in rows if r["source"] == "site/recording.svg")
+    assert recording["claim_capable"] is True
+    assert recording["classification"] == "active_product"
+
+    logo = next(r for r in rows if r["source"] == "site/logo.svg")
+    assert logo["claim_capable"] is False
+    assert logo["classification"] == "non_claim_asset"
+    assert logo["content_kind"] == "asset"
+
+
+def test_an_unreadable_svg_is_classified_claim_capable_rather_than_ignored(tmp_path):
+    """Fails closed, which is the opposite of the obvious choice.
+
+    "I could not read it" and "it contains nothing" are different answers, and
+    only one of them is safe to act on. Reading a parse failure as a non-claim
+    asset would reproduce exactly the state this fix exists to end.
+    """
+    root, files = _site_root(tmp_path)
+    (root / "site/broken.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg"><text>unclosed', encoding="utf-8")
+    rows = psi.website_records(root, files | {"site/broken.svg"})
+    row = next(r for r in rows if r["source"] == "site/broken.svg")
+    assert row["claim_capable"] is True
+
+
+def test_content_decision_is_scoped_and_cannot_reclassify_other_suffixes(tmp_path):
+    """A `.png` full of bytes that happen to look like markup stays an asset."""
+    (tmp_path / "x.png").write_bytes(
+        b'<svg xmlns="http://www.w3.org/2000/svg"><text y="1">words</text></svg>')
+    assert psi.carries_readable_text(tmp_path / "x.png") is False
+    assert ".svg" in psi.CONTENT_DECIDED_SUFFIXES
+    assert ".png" not in psi.CONTENT_DECIDED_SUFFIXES
 
 
 def test_cli_registry_mutation_is_detected(monkeypatch):
@@ -124,7 +184,9 @@ def test_package_readme_discovery_supports_python_310(tmp_path, monkeypatch, rea
 def test_wheel_metadata_and_sdist_pkg_info_are_verified(tmp_path, monkeypatch, python_310_fallback):
     if python_310_fallback:
         monkeypatch.setattr(psi, "tomllib", None)
-    root = tmp_path / "repo"; dist = root / "dist"; dist.mkdir(parents=True)
+    root = tmp_path / "repo"
+    dist = root / "dist"
+    dist.mkdir(parents=True)
     (root / "README.md").write_text("Long description\n", encoding="utf-8")
     (root / "pyproject.toml").write_text(
         '[project]\nname="x"\nversion="1"\ndescription="Summary"\nreadme="README.md"\n', encoding="utf-8")
@@ -132,7 +194,8 @@ def test_wheel_metadata_and_sdist_pkg_info_are_verified(tmp_path, monkeypatch, p
     with zipfile.ZipFile(dist / "x-1-py3-none-any.whl", "w") as archive:
         archive.writestr("x-1.dist-info/METADATA", metadata)
     with tarfile.open(dist / "x-1.tar.gz", "w:gz") as archive:
-        info = tarfile.TarInfo("x-1/PKG-INFO"); info.size = len(metadata)
+        info = tarfile.TarInfo("x-1/PKG-INFO")
+        info.size = len(metadata)
         archive.addfile(info, io.BytesIO(metadata))
     psi.verify_package_artifacts(root, dist)
     (root / "README.md").write_text("Changed\n", encoding="utf-8")
@@ -149,7 +212,8 @@ def test_stale_duplicate_and_invalid_policy_dispositions_fail(tmp_path):
         ([{"source": "site/x.html", "classification": "active_product", "reason": "x"}], "invalid"),
     ]:
         (tmp_path / "data/public_surface_policy.json").write_text(json.dumps({"dispositions": dispositions}), encoding="utf-8")
-        with pytest.raises(psi.DiscoveryError, match=match): psi.apply_policy(tmp_path, [row.copy()])
+        with pytest.raises(psi.DiscoveryError, match=match):
+            psi.apply_policy(tmp_path, [row.copy()])
 
 
 def test_missing_policy_disposition_fails(tmp_path):
@@ -170,9 +234,11 @@ def test_duplicate_stable_id_control():
 
 
 def test_git_unavailable_and_ignored_or_untracked_inputs_fail_safe(monkeypatch, tmp_path):
-    def unavailable(*args, **kwargs): raise OSError("missing git")
+    def unavailable(*args, **kwargs):
+        raise OSError("missing git")
     monkeypatch.setattr(subprocess, "run", unavailable)
-    with pytest.raises(psi.DiscoveryError, match="git unavailable"): psi.tracked(tmp_path)
+    with pytest.raises(psi.DiscoveryError, match="git unavailable"):
+        psi.tracked(tmp_path)
     root, files = _site_root(tmp_path)
     (root / "site/untracked.html").write_text("not shipped", encoding="utf-8")
     assert not any(r["source"] == "site/untracked.html" for r in psi.website_records(root, files))

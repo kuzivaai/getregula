@@ -7,6 +7,8 @@ model card validation, regulation overlap, and output formatters.
 import sys
 import tempfile
 import shutil
+import json
+import subprocess
 from pathlib import Path
 
 _scripts_dir = str(Path(__file__).resolve().parent.parent / "scripts")
@@ -16,6 +18,10 @@ if _scripts_dir not in sys.path:
 _tests_dir = str(Path(__file__).resolve().parent)
 if _tests_dir not in sys.path:
     sys.path.insert(0, _tests_dir)
+
+_root_dir = str(Path(__file__).resolve().parent.parent)
+if _root_dir not in sys.path:
+    sys.path.insert(0, _root_dir)
 
 from helpers import assert_eq, assert_true, assert_false, assert_in, assert_gte, assert_lte
 
@@ -45,6 +51,10 @@ from compliance_check import (
     _check_article_15,
     _check_article_17,
 )
+from article50_evidence import scan_article50
+from decision_kernel import DecisionKernel
+from benchmarks.article50.evaluate import render_results
+from transparency import generate_disclosure
 
 
 # ---------------------------------------------------------------------------
@@ -74,6 +84,307 @@ def _cleanup(path: str):
 def _build_index(project_path: str) -> list:
     """Build the file index the same way assess_compliance does."""
     return list(_walk_project(project_path))
+
+
+# ======================================================================
+# Article 50 technical observations (no legal determination)
+# ======================================================================
+
+def test_article50_direct_interaction_keeps_traceable_trigger_and_control():
+    tmp = _make_project({
+        "app.py": (
+            "class CustomerChatbot:\n"
+            "    notice = 'You are interacting with an AI assistant'\n"
+        )
+    })
+    try:
+        result = scan_article50(tmp)
+    finally:
+        _cleanup(tmp)
+
+    branch = result["branches"]["50(1)"]
+    assert branch["observation_state"] == "trigger_and_control_signals_observed"
+    assert branch["trigger_observations"][0]["file"] == "app.py"
+    assert branch["trigger_observations"][0]["line"] == 1
+    assert branch["control_observations"]
+    assert result["result_type"] == "technical_observations"
+    assert all("score" not in key.lower() for key in result)
+
+
+def test_article50_synthetic_generation_does_not_invent_a_control():
+    tmp = _make_project({
+        "generate.py": "def text_to_image(prompt):\n    return diffusion_model(prompt)\n"
+    })
+    try:
+        result = scan_article50(tmp)
+    finally:
+        _cleanup(tmp)
+
+    branch = result["branches"]["50(2)"]
+    assert branch["observation_state"] == "trigger_signal_observed_control_not_observed"
+    assert branch["trigger_observations"]
+    assert branch["control_observations"] == []
+
+
+def test_article50_generic_sentiment_is_not_biometric_emotion_recognition():
+    tmp = _make_project({
+        "reviews.py": "def sentiment_analysis(review_text):\n    return 'positive'\n"
+    })
+    try:
+        result = scan_article50(tmp)
+    finally:
+        _cleanup(tmp)
+
+    branch = result["branches"]["50(3)"]
+    assert branch["observation_state"] == "trigger_not_observed"
+    assert branch["trigger_observations"] == []
+
+
+def test_article50_scanner_uses_the_canonical_skip_set():
+    tmp = _make_project({
+        "app.py": "print('ordinary application')\n",
+        "node_modules/example/index.js": "const kind = 'chatbot';\n",
+    })
+    try:
+        result = scan_article50(tmp)
+    finally:
+        _cleanup(tmp)
+
+    assert result["scanned_file_count"] == 1
+    assert result["branches"]["50(1)"]["trigger_observations"] == []
+
+
+def test_article50_empty_project_reports_limits_and_unresolved_scope():
+    tmp = _make_project({})
+    try:
+        result = scan_article50(tmp)
+    finally:
+        _cleanup(tmp)
+
+    assert result["scanned_file_count"] == 0
+    assert result["limitations"]
+    fact_ids = {item["fact_id"] for item in result["unresolved_facts"]}
+    assert fact_ids == {"jurisdiction_in_scope", "is_ai_system"}
+    assert result["runtime_review_questions"] == []
+    assert result["branches"]["50(5)"]["observation_state"] == "upstream_trigger_not_observed"
+
+
+def test_article50_scanner_emits_only_canonical_facts_and_separate_runtime_reviews():
+    tmp = _make_project({"app.py": "kind = 'chatbot'\n"})
+    try:
+        result = scan_article50(tmp)
+    finally:
+        _cleanup(tmp)
+
+    canonical = set(DecisionKernel().model["fact_definitions"])
+    assert {item["fact_id"] for item in result["unresolved_facts"]} <= canonical
+    assert all("fact_id" not in item
+               for item in result["runtime_review_questions"])
+    review_ids = {
+        item["review_id"] for item in result["runtime_review_questions"]
+    }
+    assert "article50_5_first_interaction_or_exposure" in review_ids
+    assert "article50_5_accessibility" in review_ids
+
+
+def test_comply_article50_json_exposes_observations_without_a_determination():
+    tmp = _make_project({"app.py": "kind = 'chatbot'\n"})
+    expected = str(Path(tmp).resolve())
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "scripts.cli", "comply", tmp,
+             "--article", "50", "--format", "json"],
+            cwd=Path(__file__).resolve().parent.parent,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    finally:
+        _cleanup(tmp)
+
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    data = payload["data"]
+    assert data["decision"]["result_type"] == "insufficient_information"
+    evidence = data["evidence"]
+    assert evidence["project_path"] == expected
+    assert evidence["not_assessed_article_count"] == 1
+    assert evidence["article_observations"] == {}
+    assert evidence["technical_observations"]["50"]["branches"]["50(1)"]["trigger_observations"]
+
+
+def test_comply_article50_accepts_declared_facts_and_resolves_an_obligation():
+    tmp = _make_project({"app.py": "kind = 'chatbot'\n"})
+    try:
+        proc = subprocess.run(
+            [
+                sys.executable, "-m", "scripts.cli", "comply", tmp,
+                "--article", "50", "--format", "json",
+                "--fact", "jurisdiction_in_scope=yes",
+                "--fact", "is_ai_system=yes",
+                "--fact", "role_provider=yes",
+                "--fact", "eu_direct_interaction=yes",
+                "--fact", "eu_interaction_obvious=no",
+                "--fact", "eu_50_1_criminal_law_exception=no",
+            ],
+            cwd=Path(__file__).resolve().parent.parent,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    finally:
+        _cleanup(tmp)
+
+    assert proc.returncode == 0, proc.stderr
+    data = json.loads(proc.stdout)["data"]
+    assert data["decision"]["result_type"] == "indication"
+    assert data["evidence"]["applicability_resolution"] == "resolved_applicable"
+    assert data["evidence"]["not_assessed_article_count"] == 0
+    assert "eu_notice_50_1" in {
+        item["obligation_id"]
+        for item in data["evidence"]["resolved_article50_obligations"]
+    }
+    unresolved_static_context = {
+        item["fact_id"]
+        for item in data["evidence"]["technical_observations"]["50"][
+            "unresolved_facts"
+        ]
+    }
+    assert "jurisdiction_in_scope" not in unresolved_static_context
+    assert "is_ai_system" not in unresolved_static_context
+    assert "role_provider" not in unresolved_static_context
+    assert "eu_direct_interaction" not in unresolved_static_context
+    assert "eu_interaction_obvious" not in unresolved_static_context
+    assert "eu_50_1_criminal_law_exception" not in unresolved_static_context
+    assert "eu_50_1_public_crime_reporting" in unresolved_static_context
+    assert all(
+        value["provenance"]["source_ref"] == "cli:comply --fact"
+        for entry in data["declared_facts"].values()
+        for value in entry["values"]
+    )
+
+
+def test_comply_fact_catalogue_and_unknown_fact_are_actionable():
+    listed = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "comply", "--list-facts"],
+        cwd=Path(__file__).resolve().parent.parent,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert listed.returncode == 0, listed.stderr
+    assert "regula comply . --fact <id>=<state>" in listed.stdout
+    assert "eu_50_3_persons_exposed" in listed.stdout
+
+    rejected = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "comply", ".",
+         "--article", "50", "--fact", "invented_fact=yes"],
+        cwd=Path(__file__).resolve().parent.parent,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert rejected.returncode == 2
+    assert "not defined by decision model" in rejected.stderr
+    assert "regula comply --list-facts" in rejected.stderr
+
+
+def test_article50_synthetic_regression_results_are_current_and_bounded():
+    results_path = (
+        Path(__file__).resolve().parent.parent
+        / "benchmarks" / "article50" / "results.json"
+    )
+    assert results_path.read_text(encoding="utf-8") == render_results()
+    results = json.loads(results_path.read_text(encoding="utf-8"))
+    assert results["corpus_kind"] == "synthetic_regression"
+    assert results["label_status"] == "maintainer_labelled_not_independent"
+    assert results["representative_of_production_code"] is False
+    assert results["legal_accuracy_benchmark"] is False
+    assert results["error_count"] == 0
+
+
+def test_article50_disclosure_templates_do_not_invent_rights_or_exceptions():
+    disclosures = generate_disclosure("all", "all")
+    rendered = json.dumps(disclosures).lower()
+    assert "a human representative is available" not in rendered
+    assert "you have the right to object" not in rendered
+    emotion = disclosures["emotion_recognition"]
+    assert "medical or safety use is not an article 50(3) exception" in (
+        emotion["exceptions"].lower()
+    )
+    deepfake = disclosures["deepfake"]
+    assert "is not exempt" in deepfake["exceptions"].lower()
+    assert "without hampering display or enjoyment" in (
+        deepfake["exceptions"].lower()
+    )
+
+
+def test_article50_disclosures_fail_open_questions_not_compliance_ready():
+    disclosures = generate_disclosure("all", "all")
+    for disclosure in disclosures.values():
+        assert disclosure["limitations"]
+        assert disclosure["runtime_review"]
+        assert all(item["status"] == "not_verified"
+                   for item in disclosure["runtime_review"])
+        review_ids = {item["review_id"]
+                      for item in disclosure["runtime_review"]}
+        assert {
+            "article50_5_first_interaction_or_exposure",
+            "article50_5_clear_and_distinguishable",
+            "article50_5_accessibility",
+            "control_failure_state",
+        } == review_ids
+    chatbot_html = disclosures["chatbot"]["html"]
+    assert 'role="note"' in chatbot_html
+    assert 'aria-labelledby="ai-disclosure-title"' in chatbot_html
+    assert 'id="ai-disclosure-title"' in chatbot_html
+    assert "illustrative-not-standard" in disclosures["synthetic_text"]["html"]
+
+
+def test_assess_scanner_failure_state_is_localised_and_recovers_controls():
+    root = Path(__file__).resolve().parent.parent
+    expected = {
+        "site/assess/index.html": "Scan could not complete.",
+        "site/assess/de.html": "Der Scan konnte nicht abgeschlossen werden.",
+        "site/assess/pt-br.html": "Não foi possível concluir a análise.",
+    }
+    for relative, message in expected.items():
+        text = (root / relative).read_text(encoding="utf-8")
+        assert 'id="scanError" role="alert" tabindex="-1"' in text
+        assert message in text
+        assert 'errorElement.focus();' in text
+        assert '} finally {' in text
+        assert 'document.getElementById("scanBtn").disabled = false;' in text
+
+
+def test_comply_rejects_an_unsupported_article_instead_of_succeeding_empty():
+    tmp = _make_project({"app.py": "print('hello')\n"})
+    try:
+        proc = subprocess.run(
+            [sys.executable, "-m", "scripts.cli", "comply", tmp,
+             "--article", "99", "--format", "json"],
+            cwd=Path(__file__).resolve().parent.parent,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    finally:
+        _cleanup(tmp)
+
+    assert proc.returncode == 2
+    assert "unsupported article '99'" in proc.stderr
+    assert proc.stdout == ""
+
+
+def test_compliance_assessment_carries_the_resolved_project_path():
+    tmp = _make_project({"app.py": "print('hello')\n"})
+    expected = str(Path(tmp).resolve())
+    try:
+        result = assess_compliance(tmp, articles=["9"])
+    finally:
+        _cleanup(tmp)
+
+    assert result["project_path"] == expected
 
 
 # ======================================================================

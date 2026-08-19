@@ -26,10 +26,11 @@ ontology later renames or removes would silently emit a dangling IRI.
 import json
 import re
 import sys
-import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+
+from safe_io import urlopen_https
 
 # OWL distribution hosted by the Publications Office (found via the EU
 # Vocabularies ELI page, op.europa.eu/en/web/eu-vocabularies/eli).
@@ -53,7 +54,9 @@ def parse_terms(owl_text: str) -> dict:
 
 
 def fetch_terms(url: str = SOURCE_OWL) -> dict:
-    with urllib.request.urlopen(url, timeout=60) as resp:
+    with urlopen_https(
+        url, allowed_hosts=frozenset({"op.europa.eu"}), timeout=60
+    ) as resp:
         return parse_terms(resp.read().decode("utf-8", errors="replace"))
 
 

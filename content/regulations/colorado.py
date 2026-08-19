@@ -108,9 +108,9 @@ REGION = {
         "consumer correction and human-review rights, from 1 Jan 2027."
     ),
 
-    "last_updated": "2026-07-27",
+    "last_updated": "14 August 2026",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-07-27T00:00:00+00:00",
+    "modified_time": "2026-08-14T00:00:00+00:00",
 
     "lede": (
         "Colorado was the first US state to pass a comprehensive, horizontal "
@@ -234,7 +234,7 @@ REGION = {
             "heading": "Where Regula fits for Colorado teams",
             "body": """
 <p>Regula was built primarily against the EU AI Act, but SB 26-189's documentation and human-review concepts map onto work Regula already does. Practical starting commands:</p>
-<pre><code>pip install regula-ai
+<pre tabindex="0"><code>pip install regula-ai
 
 regula discover .              # AI systems present in the project
 regula check . --jurisdictions eu,colorado   # Risk indicators + Colorado obligation mapping

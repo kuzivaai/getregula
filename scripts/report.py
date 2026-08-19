@@ -34,7 +34,7 @@ from log_event import collect_audit_trail
 from credential_check import check_secrets
 from remediation import get_remediation
 from agent_monitor import detect_autonomous_actions
-from scan_cache import ScanCache
+from scan_cache import FULL_SCOPE, ScanCache
 
 
 # ---------------------------------------------------------------------------
@@ -228,6 +228,87 @@ def classify_provenance(filepath: Path) -> str:
     if suffix in (".md", ".rst", ".txt", ".adoc"):
         return "documentation"
     return "production"
+
+
+def path_context_token(filepath) -> str:
+    """Every classification input this module derives from the FULL path.
+
+    The scan cache keys on the path RELATIVE to the scan root, so two
+    byte-identical files sitting at the same relative path under different
+    roots produce the same path component. Provenance and the example/init
+    confidence penalties are derived from the FULL path instead, so without
+    this token the cached entry written for one can be served for the other,
+    and whichever ran first decides what the other one reports.
+
+    That is a correctness defect, not only a reproducibility one: `--scope
+    production` filters on provenance, so a production file served an entry
+    written by an `examples/` copy is classified "example" and its finding
+    disappears from the scan. Measured both ways, LEDGER N112.
+
+    Any NEW classifier derived from the full path must be added here, or the
+    cache will serve its result across the boundary that classifier draws.
+    """
+    fp = Path(filepath)
+    return (
+        f"{classify_provenance(fp)}"
+        f"|t{int(_is_test_file(fp))}"
+        f"|e{int(_is_example_file(fp))}"
+        f"|i{int(_is_init_file(fp))}"
+    )
+
+
+# Every parameter of scan_files, classified against the scan cache. LEDGER N163.
+#
+# The classification exists because `respect_ignores` was absent from the cache
+# key for as long as the cache has existed, and nothing could have told anyone:
+# there was no list to be missing from. N112 (full-path classifiers) and N147
+# (scan completeness) are the same omission in two other axes. The guard in
+# tests/test_scan_cache.py reads `inspect.signature(scan_files)`, so a
+# parameter added later fails the suite until it is ruled on here.
+#
+# The test to apply to a new parameter is one question: **can two scans that
+# differ only in this parameter produce different findings FOR THE SAME FILE?**
+# If yes it belongs in the key. Changing which files are visited is not the
+# same thing and does not.
+CACHE_KEY_SCAN_PARAMS = {
+    "project_path": "identity of the file: the key's `path` component, plus "
+                    "`path_context` for the classifiers derived from the full "
+                    "path (N112)",
+    "respect_ignores": "decides whether a finding is emitted with "
+                       "`suppressed: True`, via _parse_suppression_rules and "
+                       "_scan_agent_autonomy: the `params` component (N163)",
+    "min_tier": "skips whole detector passes, so the entry is partial: the "
+                "`scope` component, `mintier-<level>` (N147)",
+}
+
+CACHE_EXEMPT_SCAN_PARAMS = {
+    "skip_tests": "file selection, not entry content. A skipped test file is "
+                  "`continue`d before any cache read or write, so it neither "
+                  "reads nor writes an entry.",
+    "declared_domains": "applied to cached findings on the READ path, not "
+                        "baked into them: the entry stores the finding ungated "
+                        "and _check_domain_gated re-gates it per scan. "
+                        "test_domain_gated_finding_survives_cache pins this.",
+    "enrich_oversight": "post-processing over the whole finding list after the "
+                        "walk has ended and the cache has been flushed, so it "
+                        "is applied identically to cached and freshly scanned "
+                        "findings and never enters an entry.",
+}
+
+
+def scan_params_token(respect_ignores: bool = True) -> str:
+    """The `params` component of the scan cache key.
+
+    Carries every scan parameter that changes what a per-file entry CONTAINS
+    and is not already carried by another component. `min_tier` is the `scope`
+    component and is deliberately not repeated here; everything else is
+    accounted for in CACHE_KEY_SCAN_PARAMS and CACHE_EXEMPT_SCAN_PARAMS above.
+
+    Any NEW parameter that can change a file's findings must be added here and
+    to CACHE_KEY_SCAN_PARAMS, or the cache will serve one setting's result to
+    the other, which is what LEDGER N163 records.
+    """
+    return f"ri{int(bool(respect_ignores))}"
 
 
 def _is_open_question(finding: dict) -> bool:
@@ -595,6 +676,94 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         except ValueError:
             rel = str(fp)
         _skipped.append((rel, reason))
+
+    # Directories the default skip list removed from the walk, and how many
+    # code files sit under them. Counting is bounded: a developer machine can
+    # hold a `node_modules` with hundreds of thousands of entries, and a
+    # disclosure line must never cost more than the scan it describes. When
+    # the budget is exhausted the count is reported as a floor rather than as
+    # a total, because an exhausted budget and a small directory must not
+    # produce the same-looking number (measurement rule 4).
+    _PRUNE_ENTRY_BUDGET = 20000
+    _pruned_dirs: list = []          # list[{"path", "skipped_because"}]
+    _pruned_code_files = 0
+    _prune_budget_left = _PRUNE_ENTRY_BUDGET
+
+    def _count_pruned_code_files(dirname: str, parent_fd=None) -> int:
+        """Count code-extension files under a pruned directory, under budget.
+
+        This is an inventory of names, not a scan: it never reads a file.
+        Returns the count for THIS directory so the caller can drop directories
+        that held no code at all; `.git` is pruned on every scan and reporting
+        it as "files not scanned" would imply a loss where there was none.
+
+        On POSIX, enumerate relative to the descriptor yielded by ``fwalk``.
+        Opening every descendant with ``O_NOFOLLOW`` keeps a repository from
+        swapping a skipped directory for a symlink to somewhere outside the
+        project between discovery and inventory. Where that primitive is not
+        available, decline to inventory and mark the count inexact rather than
+        walk a user-controlled absolute path.
+        """
+        nonlocal _pruned_code_files, _prune_budget_left
+        if _prune_budget_left <= 0:
+            return 0
+        here = 0
+
+        def _count_from_fd(start_fd: int) -> None:
+            nonlocal here, _prune_budget_left
+            pending = [start_fd]
+            flags = os.O_RDONLY
+            if hasattr(os, "O_DIRECTORY"):
+                flags |= os.O_DIRECTORY
+            if hasattr(os, "O_NOFOLLOW"):
+                flags |= os.O_NOFOLLOW
+            if hasattr(os, "O_CLOEXEC"):
+                flags |= os.O_CLOEXEC
+            try:
+                while pending and _prune_budget_left > 0:
+                    current_fd = pending.pop()
+                    try:
+                        with os.scandir(current_fd) as entries:
+                            for entry in entries:
+                                _prune_budget_left -= 1
+                                try:
+                                    if entry.is_file(follow_symlinks=False):
+                                        if Path(entry.name).suffix in CODE_EXTENSIONS:
+                                            here += 1
+                                    elif (entry.is_dir(follow_symlinks=False)
+                                          and _prune_budget_left > 0):
+                                        child_fd = os.open(
+                                            entry.name, flags, dir_fd=current_fd)
+                                        pending.append(child_fd)
+                                except OSError:
+                                    _prune_budget_left = 0
+                                    break
+                                if _prune_budget_left <= 0:
+                                    break
+                    finally:
+                        os.close(current_fd)
+            finally:
+                for open_fd in pending:
+                    os.close(open_fd)
+
+        if parent_fd is None or not hasattr(os, "O_NOFOLLOW"):
+            _prune_budget_left = 0
+            return 0
+        try:
+            root_flags = os.O_RDONLY
+            if hasattr(os, "O_DIRECTORY"):
+                root_flags |= os.O_DIRECTORY
+            root_flags |= os.O_NOFOLLOW
+            if hasattr(os, "O_CLOEXEC"):
+                root_flags |= os.O_CLOEXEC
+            root_fd = os.open(dirname, root_flags, dir_fd=parent_fd)
+            _count_from_fd(root_fd)
+        except OSError:
+            # An unreadable pruned directory is not a scan failure. It is
+            # simply not countable, and the exact flag below says so.
+            _prune_budget_left = 0
+        _pruned_code_files += here
+        return here
     # Track how many findings were suppressed by domain gating and which
     # opt-in categories were involved. Used by cmd_check to show an
     # INFO message explaining the --domain flag.
@@ -627,19 +796,45 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     }
     min_tier_level = _TIER_ORDER.get(min_tier, 0)
 
-    def _cache_put(rel_path: str, content: str, file_findings: list) -> None:
-        """Write a per-file cache entry — full scans only.
+    # How complete an entry this scan may write, and which entries it may read.
+    #
+    # A --min-tier scan skips whole detector passes (credentials, ai_security)
+    # and drops classify findings below the threshold, so its result is a
+    # partial one. Until 2026-08-17 the answer was that a partial scan wrote
+    # nothing, which is sound about completeness and left `regula check`, whose
+    # own `min_tier` default is `limited_risk`, reading a cache it could never
+    # fill (LEDGER N147). The scope component in the cache key lets a partial
+    # scan contribute what it read without any full scan trusting it as
+    # complete.
+    #
+    # Read order matters and is not arbitrary: a `full` entry is a superset and
+    # the read path below filters it by tier, so a partial reader prefers one
+    # and falls back to its own scope. A full scan reads `full` only.
+    _cache_scope = (FULL_SCOPE if min_tier_level == 0
+                    else f"mintier-{min_tier_level}")
+    _cache_read_scopes = ((FULL_SCOPE,) if min_tier_level == 0
+                          else (FULL_SCOPE, _cache_scope))
 
-        A --min-tier scan skips whole detector passes (credentials,
-        ai_security) and drops classify findings below the threshold, so
-        an entry written under min_tier would be silently incomplete for
-        every later full scan of the same content. Partial scans read
-        the cache but never populate it.
+    # Every remaining scan parameter that changes what an entry contains.
+    # Unlike the scope component this has no fallback: a differently
+    # parameterised entry is a different answer, not a superset. LEDGER N163.
+    _cache_params = scan_params_token(respect_ignores=respect_ignores)
+
+    def _cache_put(filepath, content: str, file_findings: list) -> None:
+        """Write a per-file cache entry under this scan's own scope.
+
+        Takes the FULL path, not the relative one. The relative path is what
+        the key uses to identify the file, but the cached findings embed
+        provenance and the context penalty, both derived from the full path,
+        so the key needs both or entries cross that boundary (LEDGER N112).
         """
-        if cache is None or min_tier_level > 0:
+        if cache is None:
             return
         try:
-            cache.put(rel_path, content, file_findings, context=_cache_ctx)
+            cache.put(str(filepath.relative_to(project)), content,
+                      file_findings, context=_cache_ctx,
+                      path_context=path_context_token(filepath),
+                      scope=_cache_scope, params=_cache_params)
         except Exception:
             pass  # Cache write is best-effort
 
@@ -662,6 +857,39 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         walk_iter = ((r, d, f, None) for r, d, f in os.walk(project))
 
     for root, dirs, files, _dirfd in walk_iter:
+        # Record what the default skip list removes BEFORE removing it.
+        #
+        # MEASURED 2026-08-17 on ageitgey/face_recognition at 9f3061a:
+        # `regula check . --scope all` reported "Files scanned: 6" and three
+        # high-risk findings, while the same command pointed at each
+        # subdirectory in turn reported fourteen over twenty-eight files. The
+        # difference is this line: twenty-three of that repository's files
+        # live under `examples/`, and `examples` is in SKIP_DIRS. Eleven of
+        # fourteen findings, 79%, were invisible at the default invocation and
+        # no line of the output said a directory had been skipped.
+        #
+        # The pruning itself is a deliberate design decision with a stated
+        # rationale on SKIP_DIRS and is NOT changed here. What changes is that
+        # the scan can no longer report a file count without also being able
+        # to report what it declined to read. That is the N138 remedy applied
+        # to a second instrument: an instrument that cannot see part of its
+        # population declares the gap at the point of use rather than leaving
+        # it silent.
+        # Keep the value that reaches descriptor-relative open() sourced from
+        # the trusted allowlist, not from the untrusted repository walk. The
+        # repository-provided names participate only in the membership test.
+        _pruned_here = [safe_name for safe_name in sorted(SKIP_DIRS)
+                        if safe_name in dirs]
+        for _d in _pruned_here:
+            _p = Path(root) / _d
+            try:
+                _rel = str(_p.relative_to(project))
+            except ValueError:
+                _rel = str(_p)
+            _here = _count_pruned_code_files(_d, _dirfd)
+            if _here:
+                _pruned_dirs.append({"path": _rel, "skipped_because": _d,
+                                     "code_files": _here})
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
         for filename in files:
             filepath = Path(root) / filename
@@ -827,7 +1055,10 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # Check scan cache — if content unchanged, reuse cached findings
             try:
                 if cache is not None:
-                    cached_raw = cache.get(rel_path, content, context=_cache_ctx)
+                    cached_raw = cache.get(
+                        rel_path, content, context=_cache_ctx,
+                        path_context=path_context_token(filepath),
+                        scopes=_cache_read_scopes, params=_cache_params)
                     if cached_raw is not None:
                         cached = cached_raw
                         if min_tier_level > 0:
@@ -898,7 +1129,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         }
                         finding["open_question"] = _is_open_question(finding)
                         findings.append(finding)
-                        _cache_put(rel_path, content, findings[file_findings_start:])
+                        _cache_put(filepath, content, findings[file_findings_start:])
                         continue
 
             if not _is_ai:
@@ -920,7 +1151,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                             "provenance": provenance,
                             "lifecycle_phases": ["develop"],
                         })
-                _cache_put(rel_path, content, findings[file_findings_start:])
+                _cache_put(filepath, content, findings[file_findings_start:])
                 continue
 
             suppressed_rules, file_decisions = _parse_suppression_rules(lines, respect_ignores, rel_path)
@@ -942,13 +1173,13 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 # count these files for a single summary line. This
                 # eliminates 94% of false positives from the corpus.
                 _ai_files_no_indicators += 1
-                _cache_put(rel_path, content, findings[file_findings_start:])
+                _cache_put(filepath, content, findings[file_findings_start:])
                 continue
 
             # Skip findings below min_tier threshold
             tier_level = _TIER_ORDER.get(result.tier.value, 0)
             if tier_level < min_tier_level:
-                _cache_put(rel_path, content, findings[file_findings_start:])
+                _cache_put(filepath, content, findings[file_findings_start:])
                 continue
 
             is_suppressed = "*" in suppressed_rules
@@ -1056,7 +1287,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 if _lines_in_strings == len(result.match_lines):
                     # Every match was inside a string literal — skip entirely.
                     # Deterministic given content, so the cache entry is safe.
-                    _cache_put(rel_path, content, findings[file_findings_start:])
+                    _cache_put(filepath, content, findings[file_findings_start:])
                     continue
                 elif _lines_in_strings > 0:
                     # Some matches in strings — penalise confidence
@@ -1110,7 +1341,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             # evidence and is noise (205 FPs at 16% precision in dev benchmark).
             if result.tier.value == "minimal_risk" and confidence_score < 20:
                 # Deterministic given content — safe to cache the exclusion.
-                _cache_put(rel_path, content, findings[file_findings_start:])
+                _cache_put(filepath, content, findings[file_findings_start:])
                 continue
 
             # Domain gating: suppress opt-in high_risk findings unless
@@ -1131,7 +1362,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     # cache hit. Skipping the write here would just leave
                     # gated files permanently uncached.
                     finding["open_question"] = _is_open_question(finding)
-                    _cache_put(rel_path, content,
+                    _cache_put(filepath, content,
                                findings[file_findings_start:] + [finding])
                     continue  # suppress: all indicators are opt-in without activation
 
@@ -1139,7 +1370,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             findings.append(finding)
 
             # Cache findings collected for this file
-            _cache_put(rel_path, content, findings[file_findings_start:])
+            _cache_put(filepath, content, findings[file_findings_start:])
 
     # Flush cache to disk
     try:
@@ -1200,6 +1431,17 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         # {"path", "reason"}. Legitimate exclusions are NOT listed here.
         "skipped_files": [{"path": p, "reason": r} for p, r in _skipped],
         "skipped_total": len(_skipped),
+        # Directories the default skip list removed from the walk. These are
+        # NOT scan failures and they do not make a scan partial: the pruning
+        # is deliberate. They are here so that "Files scanned: N" can never
+        # again be printed without the population it excluded being available
+        # to the caller that prints it.
+        "pruned_dirs": _pruned_dirs,
+        "pruned_dirs_total": len(_pruned_dirs),
+        "pruned_code_files": _pruned_code_files,
+        # False when the counting budget was exhausted or a pruned directory
+        # was unreadable, in which case pruned_code_files is a floor.
+        "pruned_count_exact": _prune_budget_left > 0,
     }
 
     return findings

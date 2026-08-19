@@ -122,6 +122,15 @@ def _generate_pack_contents(
 
     # --- 01: Scan results ---
     findings = scan_files(str(project))
+    # What the scan actually read, captured immediately from the side-channel
+    # before any later call can overwrite it. N146 established that a scan must
+    # not report how many files it read without the excluded population being
+    # available to the caller that prints it, and fixed that in `check`. The
+    # pack is the artefact a prospect KEEPS and forwards, and it is the one most
+    # likely to be read by somebody who never saw the tool run, so the same
+    # remedy belongs here (measurement rule 5: the fix reached one instrument
+    # and the class was wider).
+    scan_stats = dict(getattr(scan_files, "last_stats", {}) or {})
     decision = empty_decision("eu", "evidence-pack:no-declared-facts")
     scan_json = json.dumps(detector_findings(findings), indent=2, default=str)
     _write_and_record(pack_dir, "01-scan-results.json", scan_json, file_records)
@@ -241,7 +250,7 @@ def _generate_pack_contents(
             include_dpv = False  # section absent; README must not advertise it
 
     # --- 00: Executive summary (written last, uses data from above) ---
-    summary = _generate_summary(name, now, findings, decision)
+    summary = _generate_summary(name, now, findings, decision, scan_stats)
     _write_and_record(pack_dir, "00-summary.md", summary, file_records)
 
     # --- README ---
@@ -313,13 +322,64 @@ def _write_and_record(pack_dir: Path, filename: str, content: str, records: list
     })
 
 
-def _generate_summary(name, now, findings, decision):
+
+def _coverage_section(stats: dict) -> str:
+    """What the scan read, and what it declined to read, before any counts.
+
+    A count of observations with no statement of the population it was drawn
+    from invites a reader to treat "3 observations" as "3 things in this
+    project". On ageitgey/face_recognition the default scan reads 6 of 30 Python
+    files, because 23 live under `examples/`, which `constants.SKIP_DIRS` prunes
+    (N146). Nothing in the pack said so until 2026-08-17.
+
+    A pruned directory holding no code is deliberately not listed: `.git` is
+    pruned on every scan and naming it would imply a loss where there was none.
+    """
+    if not stats:
+        return ("## Scan coverage\n\n"
+                "**Not recorded.** This pack was generated without scan statistics, "
+                "so it cannot say how many files were read or what was excluded. "
+                "Treat the observation counts below as drawn from an unstated "
+                "population.\n\n")
+
+    scanned = stats.get("files_scanned", 0)
+    # Entries are {"path", "skipped_because"}; read the same field
+    # `cli_scan` reads rather than assuming a shape.
+    pruned_dirs = sorted({d["path"] for d in (stats.get("pruned_dirs") or [])})
+    pruned_code = stats.get("pruned_code_files", 0) or 0
+    unreadable = stats.get("skipped_total", 0) or 0
+
+    lines = ["## Scan coverage", "",
+             f"**Files read:** {scanned}", ""]
+    if pruned_code:
+        lines.append(
+            f"**Not read:** {pruned_code} code file(s) in "
+            f"{len(pruned_dirs)} excluded director(ies): "
+            + ", ".join(pruned_dirs) + ".")
+        lines.append(
+            "These directory names are excluded by default (examples, test "
+            "caches, vendored code). To include one, scan it directly. "
+            "**Observations below are drawn only from the files read.**")
+        lines.append("")
+    if unreadable:
+        lines.append(
+            f"**Unreadable:** {unreadable} eligible file(s) could not be "
+            "analysed, so this scan is PARTIAL. See `01-scan-results.json`.")
+        lines.append("")
+    if not pruned_code and not unreadable:
+        lines.append("No code file was excluded by the default directory list "
+                     "and every eligible file was analysed.")
+        lines.append("")
+    return "\n".join(lines)
+
+def _generate_summary(name, now, findings, decision, scan_stats=None):
     """Put the reliance qualification before every supporting artefact."""
     total_findings = len(findings)
     prohibited_count = sum(1 for f in findings if f.get("tier") == "prohibited")
     high_risk_count = sum(1 for f in findings if f.get("tier") == "high_risk")
     limited_count = sum(1 for f in findings if f.get("tier") == "limited_risk")
     unresolved_count = len(decision.get("unresolved_predicates", []))
+    coverage = _coverage_section(scan_stats or {})
 
     return f"""# Evidence Pack: Review Handoff
 
@@ -339,6 +399,7 @@ is emitted because the generator received no sourced decision facts. Resolve
 the questions in `06-resolvable-facts.md` before relying on an applicability
 conclusion.
 
+{coverage}
 ## Detector observations
 
 | Category | Count |

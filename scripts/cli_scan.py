@@ -249,9 +249,92 @@ def _write_analysis_manifest(
     print(f"Analysis manifest written to {out}", file=sys.stderr)
 
 
+def _declared_facts(args, project: str, jurisdiction: str,
+                    source_ref: str = "cli:check --fact") -> tuple:
+    """Facts a person declared about this project, from the store and the flags.
+
+    N149 closed: `check` names the facts it needs and now has somewhere to
+    receive them. Precedence is store, then `--facts-file`, then `--fact`, so a
+    one-off on the command line overrides a file without editing it.
+
+    Returns `(facts, notices)`. Fails closed on an unreadable store: a fact map
+    that quietly came back empty is indistinguishable from a user who declared
+    nothing, which would discard the answers silently and is the exact defect
+    this route exists to remove.
+    """
+    from decision_kernel import DecisionKernel
+    import fact_store as fs
+
+    if getattr(args, "no_facts", False):
+        if getattr(args, "fact", None) or getattr(args, "facts_file", None):
+            # Refusing beats picking. "Ignore every declared fact" and "here is
+            # a declared fact" are contradictory instructions, and silently
+            # honouring one would discard an answer without saying so, which is
+            # the defect this whole route exists to remove.
+            raise fs.FactStoreError(
+                "--no-facts contradicts --fact/--facts-file. --no-facts ignores "
+                "every declared fact including the project store; drop it to "
+                "declare facts, or drop the declarations to ignore the store.")
+        return {}, ["declared facts ignored for this run (--no-facts)"]
+
+    model = DecisionKernel().model
+    notices: list = []
+    sources: list = []
+
+    default_store = fs.store_path(project)
+    explicit = getattr(args, "facts_file", None)
+    for path, required in ((default_store, False), (Path(explicit) if explicit else None, True)):
+        if path is None:
+            continue
+        if not path.is_file():
+            if required:
+                raise fs.FactStoreError(f"{path}: --facts-file names no readable file")
+            continue
+        loaded = fs.load(path, model)
+        notices.extend(loaded["notices"])
+        notices.append(f"read {len(loaded['facts'])} declared fact(s) from {loaded['path']}")
+        sources.append(loaded["facts"])
+
+    cli_facts = fs.collect_cli_facts(
+        getattr(args, "fact", None), jurisdiction, model,
+        source_ref=source_ref,
+    )
+    if cli_facts:
+        notices.append(f"read {len(cli_facts)} declared fact(s) from --fact")
+        sources.append(cli_facts)
+
+    return fs.merge(*sources), notices
+
+
+def _print_fact_catalogue(jurisdiction: str = "eu",
+                          command: str = "check") -> None:
+    """Every fact id the model defines, printed from the model.
+
+    `--fact` used to name ids nothing enumerated, so a user's only route to the
+    vocabulary was to run the command and read what it happened to ask for.
+    """
+    from decision_kernel import DecisionKernel
+
+    kernel = DecisionKernel()
+    definitions = kernel.model.get("fact_definitions", {})
+    print(f"Decision model {kernel.model_version}: "
+          f"{len(definitions)} fact id(s) defined")
+    print(f"Declare any of them with: regula {command} . --fact <id>=<state>")
+    print("States: yes, no, unknown, not_applicable. "
+          "`unknown` is an answer and is never read as `no`.\n")
+    for fact_id in sorted(definitions):
+        print(f"  {fact_id}")
+        question = definitions[fact_id].get("question")
+        if question:
+            print(f"      {question}")
+
+
 def cmd_check(args) -> None:
     """Scan files for risk indicators."""
     from datetime import datetime, timezone
+    if getattr(args, "list_facts", False):
+        _print_fact_catalogue()
+        return
     _manifest_started_at = datetime.now(timezone.utc).isoformat()
     _sarif_written_path = None
     from cli import (
@@ -293,7 +376,17 @@ def cmd_check(args) -> None:
         min_tier=getattr(args, "min_tier", "") or "",
         declared_domains=declared_domains,
     )
-    decision = empty_decision("eu", "cli:check")
+    # N149: the decision block names the facts it needs. Until 2026-08-17 there
+    # was no route by which anyone could supply them, so the same two facts were
+    # named on every run forever. Declared facts arrive from two places, both of
+    # them a person: the project-local store `assess --save-facts` writes, and
+    # `--fact id=state` on this command. Regula establishes none of them.
+    declared_facts, fact_notices = _declared_facts(args, project, "eu")
+    if declared_facts:
+        from decision_adapters import evaluate_payload
+        decision = evaluate_payload({"jurisdiction": "eu", "facts": declared_facts})
+    else:
+        decision = empty_decision("eu", "cli:check")
     jurisdiction_decisions = {"eu": decision}
     # Capture scan statistics immediately (side-channel on the function).
     # Used to record honest scanned/skipped counts in the completion
@@ -473,6 +566,8 @@ def cmd_check(args) -> None:
                     "detector_findings": detector_findings(findings),
                     "detector_explanations": explained,
                     "decision": decision,
+                    "declared_facts": declared_facts,
+                    "declared_facts_notices": fact_notices,
                     "jurisdiction_decisions": jurisdiction_decisions,
                 },
                 exit_code=_exit_code,
@@ -487,6 +582,8 @@ def cmd_check(args) -> None:
                 {
                     "detector_findings": detector_findings(findings),
                     "decision": decision,
+                    "declared_facts": declared_facts,
+                    "declared_facts_notices": fact_notices,
                     "jurisdiction_decisions": jurisdiction_decisions,
                 },
                 exit_code=_exit_code,
@@ -508,7 +605,7 @@ def cmd_check(args) -> None:
     else:
         # Human-readable output
         from i18n import t
-        from term_style import red, yellow, blue, magenta
+        from term_style import red, yellow, blue, magenta, plain
         print(f"\n{t('scan_header', path=project)}")
         print(f"{'=' * 60}")
 
@@ -516,6 +613,27 @@ def cmd_check(args) -> None:
         # territorial scope, or the other facts required for a legal result.
         for jurisdiction_decision in jurisdiction_decisions.values():
             print("\n" + format_decision_text(jurisdiction_decision))
+        # A decision that moved because somebody said so must show that somebody
+        # said so, next to the decision it moved (N149). Provenance is printed
+        # in full rather than summarised: `declared by a user` is the load-bearing
+        # word in every line of it.
+        if declared_facts:
+            import fact_store as _fs
+            print(f"\nDeclared facts: {len(declared_facts)} "
+                  f"(asserted by a person, not established by Regula)")
+            for line in _fs.describe(declared_facts):
+                print(line)
+        for _notice in fact_notices:
+            print(f"  INFO: {_notice}", file=sys.stderr)
+        if not declared_facts and not getattr(args, "no_facts", False):
+            print("\n  No facts are declared for this project, so the decision "
+                  "above cannot resolve.", file=sys.stderr)
+            print("  Supply them either way round:", file=sys.stderr)
+            print("    regula check . --fact is_ai_system=yes "
+                  "--fact jurisdiction_in_scope=yes", file=sys.stderr)
+            print("    regula assess --save-facts        "
+                  "# answers the questions, then writes .regula/facts.json",
+                  file=sys.stderr)
         print("\nDetector observations (not legal facts):")
         if prohibited:
             verdict_tier = "ARTICLE 5 PATTERNS"
@@ -542,7 +660,7 @@ def cmd_check(args) -> None:
                 "This is not a legal classification. Review intended purpose, "
                 "Articles 4 and 5, and other context-dependent duties."
             )
-            verdict_color = lambda x: x  # identity function — no color applied
+            verdict_color = plain
         else:
             _pre_stats = getattr(scan_files, "last_stats", {}) or {}
             _pre_gated = _pre_stats.get("domain_gated_count", 0)
@@ -569,7 +687,7 @@ def cmd_check(args) -> None:
                 verdict_tier = "NO DETECTOR PATTERNS"
                 verdict_desc = "The scanner found no code patterns in the scanned files."
                 verdict_action = "This does not establish that the subject is not an AI system or outside scope."
-            verdict_color = lambda x: x  # identity function — no color applied
+            verdict_color = plain
 
         print(f"\n  {verdict_color('Detector summary')}: {verdict_color(verdict_tier)}")
         print(f"  {verdict_desc}")
@@ -642,6 +760,31 @@ def cmd_check(args) -> None:
         if phase_counts:
             phase_str = ", ".join(f"{p}: {c}" for p, c in sorted(phase_counts.items()))
             print(f"  {'Lifecycle:':<20}{phase_str}")
+
+        # Skipped-directory disclosure.
+        #
+        # "Files scanned: N" is true and incomplete on its own. MEASURED
+        # 2026-08-17 on ageitgey/face_recognition at 9f3061a: the default
+        # invocation read 6 of 30 Python files and reported 3 high-risk
+        # findings, while the same tool pointed at each subdirectory reported
+        # 14, because 23 files live under `examples/` and `examples` is in
+        # SKIP_DIRS. The pruning is deliberate and is unchanged; what was
+        # wrong was reporting a count over a population without saying which
+        # population. Same remedy as N138's coverage register: declare the
+        # gap at the point of use.
+        pruned_dirs = stats.get("pruned_dirs", []) or []
+        pruned_files = int(stats.get("pruned_code_files", 0))
+        if pruned_files > 0:
+            approx = "" if stats.get("pruned_count_exact", True) else "at least "
+            names = sorted({d["path"] for d in pruned_dirs})
+            shown = ", ".join(names[:6])
+            more = f", and {len(names) - 6} more" if len(names) > 6 else ""
+            print(f"\n  INFO: {approx}{pruned_files} code file(s) in "
+                  f"{len(pruned_dirs)} skipped director(ies) were not scanned")
+            print(f"        {shown}{more}")
+            print("        These directory names are excluded by default "
+                  "(examples, tests caches, vendored code).")
+            print("        To scan one, pass it as the path: regula check <dir>")
 
         # Domain gating INFO: tell users about --domain when findings were suppressed
         gated_count = stats.get("domain_gated_count", 0)

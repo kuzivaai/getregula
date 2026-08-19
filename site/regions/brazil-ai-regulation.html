@@ -45,7 +45,7 @@
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-04-25T00:00:00-03:00">
-    <meta property="article:modified_time" content="2026-08-04T00:00:00-03:00">
+    <meta property="article:modified_time" content="2026-08-14T00:00:00+00:00">
     <meta property="article:section" content="AI Governance">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -250,14 +250,15 @@
 </head>
 <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <div id="progress-bar" aria-hidden="true"></div>
 
     <nav class="nav" id="nav" aria-label="Main navigation">
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
         <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
             <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+            <a href="/product.html">What it does</a>
             <a href="/guides/">Guides</a>
+            <a href="/pricing.html">Pricing</a>
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
             <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -277,7 +278,7 @@
         <span class="status-badge "><span class="status-dot"></span>In committee &middot; Chamber of Deputies</span>
         <h1>Brazil AI Regulation &mdash; <span class="hl">LGPD &amp; Marco Legal da IA</span></h1>
         <p class="lede">Brazil's Marco Legal da Inteligencia Artificial (PL 2338/2023) passed the Senate on 10 December 2024 and is now in a Special Commission at the Chamber of Deputies. It is not yet law. In the meantime, the LGPD already applies to AI systems that process personal data, including automated decision-making under Article 20. This page is the live reference &mdash; what is in force, what is pending, and what developers building for the Brazilian market should do now.</p>
-        <p class="last-updated"><strong>Last updated:</strong> 4 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+        <p class="last-updated"><strong>Last reviewed:</strong> 14 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
 
 
 <div class="tracker">
@@ -404,7 +405,7 @@
 
             <p>For a team building AI for the Brazilian market, the practically useful commands are:</p>
 
-<pre><code><span class="term-comment"># Install</span>
+<pre tabindex="0"><code><span class="term-comment"># Install</span>
 <span class="term-cmd">pipx install regula-ai</span>
 
 <span class="term-comment"># Scan for risk indicators with Brazil-specific mapping</span>
@@ -517,14 +518,19 @@
 
 
 
+    <section aria-label="Next step" style="max-width:720px;margin:48px auto 8px;padding:28px 24px;border:1px solid var(--border);border-radius:12px;text-align:center;background:var(--bg-elev);">
+        <h2 style="margin:0 0 8px;">Where does your own system stand?</h2>
+        <p style="color:var(--text-2);margin:0 0 18px;">The browser assessment is free, needs no account, and runs on your device. When the answer turns on something it cannot see, it says so and names the fact, rather than rounding the gap into a score. That makes it a starting point for review, not a legal determination.</p>
+        <a href="/assess/" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;text-decoration:none;min-height:44px;box-sizing:border-box;" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'region-next'}})">Start the free assessment &rarr;</a>
+    </section>
     </main>
 
 
     <div style="max-width:760px;margin:var(--s7) auto var(--s5);padding:0 var(--s5);">
         <h3 style="font-size:18px;color:var(--text);margin-bottom:var(--s3);">Related reading</h3>
         <ul style="list-style:none;padding:0;margin:0;">
-            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Extraterritorial reach and cross-border applicability</span></li>
-            <li style="margin-bottom:var(--s2);"><a href="/regions/south-africa-ai-policy.html" style="color:var(--accent);">South Africa Draft National AI Policy</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Another emerging-market AI governance framework</span></li>
+            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);text-decoration:underline;">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Extraterritorial reach and cross-border applicability</span></li>
+            <li style="margin-bottom:var(--s2);"><a href="/regions/south-africa-ai-policy.html" style="color:var(--accent);text-decoration:underline;">South Africa Draft National AI Policy</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Another emerging-market AI governance framework</span></li>
         </ul>
     </div>
 
@@ -554,13 +560,8 @@
 </footer>
 
     <script>
-        const progressBar = document.getElementById('progress-bar');
         const nav = document.getElementById('nav');
         function onScroll() {
-            const scrollTop = document.documentElement.scrollTop;
-            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-            progressBar.style.width = pct + '%';
             nav.classList.toggle('scrolled', window.scrollY > 20);
         }
         window.addEventListener('scroll', onScroll, { passive: true });

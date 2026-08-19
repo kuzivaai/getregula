@@ -17,6 +17,10 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+
+from safe_io import parse_xml_file, urlopen_https
+
 SITE_DIR = Path(__file__).resolve().parent.parent / "site"
 KEY = os.environ.get("INDEXNOW_KEY", "")
 HOST = "getregula.com"
@@ -25,6 +29,7 @@ INDEXNOW_ENDPOINTS = [
     "https://www.bing.com/indexnow",
     "https://yandex.com/indexnow",
 ]
+INDEXNOW_HOSTS = frozenset({"api.indexnow.org", "www.bing.com", "yandex.com"})
 
 
 def submit_urls(urls: list[str]) -> dict:
@@ -44,7 +49,7 @@ def submit_urls(urls: list[str]) -> dict:
                 headers={"Content-Type": "application/json; charset=utf-8"},
                 method="POST",
             )
-            resp = urllib.request.urlopen(req, timeout=15)
+            resp = urlopen_https(req, allowed_hosts=INDEXNOW_HOSTS, timeout=15)
             results[endpoint] = f"OK ({resp.status})"
         except urllib.error.HTTPError as e:
             results[endpoint] = f"HTTP {e.code}"
@@ -63,11 +68,10 @@ def get_blog_urls() -> list[str]:
 
 def get_sitemap_urls() -> list[str]:
     """Parse sitemap.xml for all URLs."""
-    import xml.etree.ElementTree as ET
     sitemap = SITE_DIR / "sitemap.xml"
-    tree = ET.parse(sitemap)
+    root = parse_xml_file(sitemap)
     ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-    return [loc.text for loc in tree.findall(".//sm:loc", ns)]
+    return [loc.text for loc in root.findall(".//sm:loc", ns)]
 
 
 def main():

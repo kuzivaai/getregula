@@ -2,19 +2,14 @@
 """
 Regula Multi-Platform Installer
 
-Generates platform-specific configuration to enable Regula hooks across
-AI coding assistants and development tools.
+Generates configuration for the supported pre-commit integrations.
 
 Supported platforms:
-  claude-code  - Claude Code PreToolUse/PostToolUse hooks
-  copilot-cli  - GitHub Copilot CLI hooks (GA Feb 2026)
-  windsurf     - Windsurf Cascade hooks
   pre-commit   - pre-commit framework hook
   git-hooks    - Direct git pre-commit hook
 """
 
 import argparse
-import json
 import shlex
 import stat
 import sys
@@ -54,118 +49,6 @@ def _hook_cmd(python: str, script: Path) -> str:
     a command-injection primitive.
     """
     return f"{shlex.quote(python)} {shlex.quote(str(script))}"
-
-
-def install_claude_code(regula_root: Path, project_dir: Path) -> None:
-    """Generate Claude Code hooks configuration."""
-    hooks_dir = regula_root / "hooks"
-    python = _find_python()
-
-    config = {
-        "hooks": {
-            "PreToolUse": [{
-                "matcher": "Bash|Write|Edit|MultiEdit",
-                "hooks": [{
-                    "type": "command",
-                    "command": _hook_cmd(python, hooks_dir / 'pre_tool_use.py'),
-                }],
-            }],
-            "PostToolUse": [{
-                "matcher": "Bash|Write|Edit|MultiEdit",
-                "hooks": [{
-                    "type": "command",
-                    "command": _hook_cmd(python, hooks_dir / 'post_tool_use.py'),
-                }],
-            }],
-        }
-    }
-
-    # Write to project .claude directory
-    settings_dir = project_dir / ".claude"
-    settings_dir.mkdir(parents=True, exist_ok=True)
-    settings_file = settings_dir / "settings.local.json"
-
-    if settings_file.exists():
-        try:
-            existing = json.loads(settings_file.read_text(encoding="utf-8"))
-            if "hooks" in existing:
-                print(f"WARNING: {settings_file} already has hooks configured.")
-                print("Existing hooks will be preserved. Regula hooks will be merged.")
-                # Merge hooks
-                for event, hook_list in config["hooks"].items():
-                    if event not in existing["hooks"]:
-                        existing["hooks"][event] = hook_list
-                    else:
-                        # Check if regula hooks already present
-                        existing_cmds = [h.get("hooks", [{}])[0].get("command", "") for h in existing["hooks"][event]]
-                        for hook in hook_list:
-                            if not any("regula" in ec for ec in existing_cmds):
-                                existing["hooks"][event].append(hook)
-                config = existing
-        except (json.JSONDecodeError, KeyError) as e:
-            print(f"regula: existing config malformed, overwriting: {e}", file=sys.stderr)
-
-    settings_file.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
-    print(f"Claude Code hooks written to {settings_file}")
-
-
-def install_copilot_cli(regula_root: Path, project_dir: Path) -> None:
-    """Generate GitHub Copilot CLI hooks configuration."""
-    hooks_dir = regula_root / "hooks"
-    python = _find_python()
-
-    config = {
-        "version": 1,
-        "hooks": {
-            "preToolUse": {
-                "command": _hook_cmd(python, hooks_dir / 'pre_tool_use.py'),
-                "description": "Regula AI governance risk indication",
-            },
-            "postToolUse": {
-                "command": _hook_cmd(python, hooks_dir / 'post_tool_use.py'),
-                "description": "Regula audit trail logging",
-            },
-        },
-    }
-
-    hooks_dir_out = project_dir / ".github" / "hooks"
-    hooks_dir_out.mkdir(parents=True, exist_ok=True)
-    config_file = hooks_dir_out / "regula.json"
-
-    config_file.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
-    print(f"Copilot CLI hooks written to {config_file}")
-
-
-def install_windsurf(regula_root: Path, project_dir: Path) -> None:
-    """Generate Windsurf Cascade hooks configuration."""
-    hooks_dir = regula_root / "hooks"
-    python = _find_python()
-
-    config = {
-        "hooks": {
-            "PreToolUse": [{
-                "matcher": "Bash|Write|Edit",
-                "hooks": [{
-                    "type": "command",
-                    "command": _hook_cmd(python, hooks_dir / 'pre_tool_use.py'),
-                }],
-            }],
-            "PostToolUse": [{
-                "matcher": "Bash|Write|Edit",
-                "hooks": [{
-                    "type": "command",
-                    "command": _hook_cmd(python, hooks_dir / 'post_tool_use.py'),
-                }],
-            }],
-        },
-    }
-
-    config_dir = project_dir / ".windsurf"
-    config_dir.mkdir(parents=True, exist_ok=True)
-    config_file = config_dir / "hooks.json"
-
-    config_file.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
-    print(f"Windsurf hooks written to {config_file}")
 
 
 def install_pre_commit(regula_root: Path, project_dir: Path) -> None:
@@ -254,9 +137,6 @@ echo "Regula: No prohibited indicators found."
 
 
 PLATFORMS = {
-    "claude-code": install_claude_code,
-    "copilot-cli": install_copilot_cli,
-    "windsurf": install_windsurf,
     "pre-commit": install_pre_commit,
     "git-hooks": install_git_hooks,
 }
@@ -265,16 +145,13 @@ PLATFORMS = {
 def list_platforms() -> None:
     """List available platforms."""
     print("Available platforms:")
-    print("  claude-code  — Claude Code PreToolUse/PostToolUse hooks")
-    print("  copilot-cli  — GitHub Copilot CLI hooks")
-    print("  windsurf     — Windsurf Cascade hooks")
     print("  pre-commit   — pre-commit framework hook")
     print("  git-hooks    — Direct git pre-commit hook")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Install Regula hooks for AI coding platforms"
+        description="Install Regula pre-commit integration"
     )
     parser.add_argument(
         "platform",

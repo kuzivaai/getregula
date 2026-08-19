@@ -144,7 +144,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -163,7 +165,7 @@
         <a href="/">Regula</a> / <a href="/guides/">Guides</a> / Healthcare AI
     </div>
     <h1>EU AI Act and Healthcare: What AI in Medicine <span class="hl">Must Comply With</span></h1>
-    <p class="standfirst">AI in healthcare hits the EU AI Act from two directions. If the software is a medical device (or part of one), it is high-risk under Annex I, Section A via Regulation (EU) 2017/745 (MDR) and 2017/746 (IVDR). If it determines patient access to healthcare services &mdash; emergency dispatch, triage, priority queuing &mdash; it is high-risk under Annex III, Category 5 (&ldquo;Access to and enjoyment of essential public services and essential private services&rdquo;). The two pathways have different deadlines, different conformity procedures, and different implications for your code.</p>
+    <p class="standfirst">AI in healthcare hits the EU AI Act from two directions. If the software is a medical device (or part of one), it is high-risk under Annex I, Section A via Regulation (EU) 2017/745 (MDR) and 2017/746 (IVDR). If it determines patient access to healthcare services &mdash; emergency dispatch, triage, priority queuing &mdash; it is high-risk under Annex III, Category 5 (&ldquo;Access to and enjoyment of essential private services and essential public services and benefits&rdquo;). The two pathways have different deadlines, different conformity procedures, and different implications for your code.</p>
     <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
 </div>
 
@@ -224,7 +226,7 @@
 <p>A qualified human must be able to understand the AI&rsquo;s output, intervene, and override it. For healthcare, this typically means a clinician reviews AI-generated diagnoses or recommendations before they are acted on. An AI system that autonomously makes treatment decisions without clinical review does not meet <a href="/guides/article-14-human-oversight.html">Article 14</a>. The human must have the competence and authority to override, and the system must be designed to support that override.</p>
 
 <h3>Article 15: Accuracy, robustness, and cybersecurity</h3>
-<p>The system must achieve appropriate levels of accuracy for its intended purpose, be resilient to errors, and be protected against adversarial attacks. For healthcare AI, the accuracy requirement has direct patient safety implications. Consider a hypothetical model with 95% accuracy overall but 70% accuracy for a specific demographic subgroup: that gap is an Article 15 problem. Robustness testing must include realistic failure scenarios &mdash; what happens when the input data is noisy, incomplete, or from an edge case the model has not seen before.</p>
+<p><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Article 15 of Regulation (EU) 2024/1689</a> requires high-risk systems to achieve an appropriate level of accuracy for their intended purpose, to be resilient to errors, and to be protected against attempts to alter their use or performance. For healthcare AI the accuracy requirement has direct patient safety implications, and an aggregate figure can conceal the thing that matters: a model that performs well across a population as a whole may perform materially worse for one demographic subgroup, and that gap is an Article&nbsp;15 problem even when the headline number looks acceptable. Robustness testing must include realistic failure scenarios, such as noisy or incomplete input, or an edge case the model has not seen before.</p>
 
 <h2>What Regula can detect</h2>
 
@@ -232,14 +234,23 @@
 
 <p>Here is what the scan looks like on a medical AI file:</p>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check sample_medical.py
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check sample_medical.py
 
 Regula Scan: sample_medical.py
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project is classified as high-risk under EU AI Act Annex III.
-  You must comply with Articles 9-15 before the enforcement deadline.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
 
   Why:
     1. sample_medical.py:13 — Access to essential services
@@ -251,7 +262,7 @@ Regula Scan: sample_medical.py
     [WARN] [ 70] sample_medical.py — Access to essential services [plan]
       Add explainability and human override for credit/financial decisions</code></pre>
 
-<p>The output identifies the file as high-risk under the &ldquo;Access to essential services&rdquo; category. The remediation text references &ldquo;credit/financial decisions&rdquo; because this Annex III category covers both healthcare and financial services &mdash; Regula uses a generic suggestion for the category. The underlying obligation (explainability and human override) applies equally to healthcare AI under Articles 13 and 14.</p>
+<p>The output names &ldquo;Access to essential services&rdquo; as the candidate Annex&nbsp;III category for that file, and reports that it has not resolved whether the Act applies at all. The remediation text references &ldquo;credit/financial decisions&rdquo; because this Annex III category covers both healthcare and financial services &mdash; Regula uses a generic suggestion for the category. The underlying obligation (explainability and human override) applies equally to healthcare AI under Articles 13 and 14.</p>
 
 <p>If you are not sure whether your AI system falls under the EU AI Act at all, the <a href="/assess/">web assessment tool</a> walks through the scope questions without requiring a CLI installation. For installation and usage instructions, see the <a href="/">Regula homepage</a>. For a broader look at <a href="/guides/eu-ai-act-python.html">scanning Python projects</a> with Regula, see the Python-specific guide.</p>
 
@@ -326,7 +337,7 @@ Regula Scan: sample_medical.py
 </p>
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last verified:</strong> 25 June 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+    <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
     <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
     <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
 </p>

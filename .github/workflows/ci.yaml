@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install pyyaml "pytest~=9.0" "jsonschema~=4.0" "cryptography>=41,<51" "asn1crypto>=1.5.1,<2"
+      - run: pip install pyyaml "pytest~=9.0" "jsonschema~=4.0" "cryptography>=50.0.0,<51" "asn1crypto>=1.5.1,<2"
       - name: Custom test runner (manual list — asserts every test is registered)
         run: python3 tests/test_classification.py
       - name: pytest discovery (catches anything not in the manual list)
@@ -34,6 +34,24 @@ jobs:
         run: python3 -m scripts.cli doctor
       - name: Security self-check (blocks unexpected findings in Regula's own source)
         run: python3 -m scripts.cli security-self-check
+      - name: Quoted regulatory passages are verbatim
+        # A quotation is a promise that the source says exactly this. The site
+        # shipped one that was not (Article 3(4), "any" for "a", exclusion
+        # dropped) and six more were found when this check was first run.
+        # Corpora are cached under references/corpora, so this runs offline.
+        run: python3 scripts/verify_quotations.py
+      - name: Published CLI transcripts reproduce
+        # Nine tracked surfaces published a `Verdict:` line as CLI output while
+        # no command emitted `Verdict:` at all, and two guides published a
+        # per-article `Overall score: NN%` from a formatter no CLI path
+        # reaches. Both asserted conclusions the tool does not make. This runs
+        # the command each page documents and compares.
+        run: python3 scripts/verify_transcripts.py
+      - name: Browser questionnaire contract test
+        # This file existed but no runner executed it, so it drifted from the
+        # pages it guards (LEDGER F15). It is wired in here because the browser
+        # assessment has no other regression gate.
+        run: node tests/test_questionnaire_scoring.js
 
   lint:
     name: Lint (ruff)
@@ -44,8 +62,65 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install ruff
-      - name: Check for genuine code issues (not style)
-        run: ruff check scripts/ tests/ --select F821,F811 --ignore E402 --exclude "tests/fixtures"
+      # Gate history, because each widening was paid for.
+      #
+      # F401/F841 joined F821/F811 on 2026-08-15. They had been left ungated as
+      # "style", and 18 accumulated. Four of them were not style at all: three
+      # names in classify_risk.py were re-exports that seven call sites import
+      # FROM that module, so `ruff --fix`, which offered to remove them, would
+      # have broken the build. Gating them keeps the count at zero, which is
+      # the only level at which the distinction stays cheap to make.
+      #
+      # E4/E7/E9 joined the same day. 32 findings sat outside both the old and
+      # the new gate and were declared as "formatting-class, deliberate scope
+      # decision". Leaving a class ungated is how the previous 18 accumulated,
+      # and the same reasoning applied twice would have kept it going, so they
+      # were cleared instead: two E731 lambdas became `term_style.plain`, and
+      # 28 compound statements were expanded. The public-surface generator's
+      # output was diffed before and after to prove the expansion inert.
+      #
+      # The set is named explicitly rather than left to ruff's default so a
+      # ruff upgrade cannot silently widen or narrow what this gate tests.
+      # E402 stays ignored: every scripts/ module does sys.path.insert before
+      # its imports by design (.claude/rules/python-scripts.md).
+      - name: Check for genuine code issues
+        run: ruff check scripts/ tests/ --select E4,E7,E9,F --ignore E402 --exclude "tests/fixtures"
+
+  locale-links:
+    name: Cross-language links declare their language
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      # A German or Brazilian page linking to an English-only page said
+      # nothing about it. The audit found one instance, on /pricing.html;
+      # enumeration found 82 across 8 localised pages, and hand-reading had
+      # found 4 pages. This keeps the count at zero rather than re-deriving
+      # it after the next page is added. Not a WCAG conformance check: see the
+      # module docstring for what is and is not claimed.
+      - name: Check hreflang on cross-language links
+        run: python3 scripts/locale_link_audit.py --check
+
+  determination-guard:
+    name: No output asserts a compliance state
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      # The project's hard rule, gated. Three shipped paths stated a compliance
+      # determination and none of the guards that existed could see it: the
+      # multilingual claim guard had arms for four claim classes and none for
+      # asserting a state, and the transcript guard's retired-marker list does
+      # not contain the word. LEDGER N125. The corpus includes .svg, which the
+      # delivery inventory, the claim auditor and the transcript guard all skip.
+      - name: Prove the guard can fail before trusting it
+        run: python3 scripts/determination_guard.py --control
+      - name: Check no scanned surface asserts a compliance state
+        run: python3 scripts/determination_guard.py --check
 
   html-wellformed:
     name: HTML well-formedness (landing pages)
@@ -101,7 +176,7 @@ jobs:
       # site_facts measures total_collected via pytest --collect-only, and
       # collection imports the test modules — install the same deps as the
       # test matrix or the count is unmeasurable (site_facts then exits 1).
-      - run: pip install pyyaml "pytest~=9.0" "jsonschema~=4.0" "cryptography>=41,<51" "asn1crypto>=1.5.1,<2"
+      - run: pip install pyyaml "pytest~=9.0" "jsonschema~=4.0" "cryptography>=50.0.0,<51" "asn1crypto>=1.5.1,<2"
       - name: Scan modified Markdown/HTML for unverified claims
         env:
           # Passed via env, never interpolated into the shell. `base_ref` is

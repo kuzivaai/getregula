@@ -1,0 +1,300 @@
+{
+  "lang": "de",
+  "audience": "Für Gründerinnen, Gründer und Verantwortliche eines KI-Produkts",
+  "h1": "Erreicht die KI-Regulierung Ihr Unternehmen?",
+  "sub": "Fünf Fragen in einfacher Sprache. Kein Konto, keine Installation, und nichts, was Sie hier eingeben, verlässt Ihren Browser. Am Ende erhalten Sie eine Liste dessen, worauf Ihre Antworten hindeuten, und dessen, was ein Mensch noch klären muss.",
+  "meta": "Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Dies ist keine Rechtsberatung.",
+  "questions": [
+    {
+      "id": "q1",
+      "legend": "Verkaufen Sie in die EU oder haben Sie Nutzerinnen und Nutzer in der EU?",
+      "help": "Die Regeln können ein Unternehmen mit Sitz an jedem Ort erreichen. Entscheidend ist, ob Ihr Produkt, oder das, was Ihr Produkt hervorbringt, von Menschen in der EU genutzt wird.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Ja"
+        },
+        {
+          "value": "no",
+          "label": "Nein"
+        },
+        {
+          "value": "unsure",
+          "label": "Nicht sicher"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "legend": "Nutzt Ihr Produkt überhaupt KI?",
+      "help": "Dazu zählt auch KI, die Sie nicht selbst gebaut haben: ein Chatbot, ein Modell, das Sie über den Dienst eines Dritten aufrufen, oder eine Funktion, die ein No-Code-Werkzeug für Sie ergänzt hat.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Ja"
+        },
+        {
+          "value": "no",
+          "label": "Nein"
+        },
+        {
+          "value": "unsure",
+          "label": "Nicht sicher"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "legend": "Haben Sie die KI selbst gebaut, oder nutzen Sie die eines Dritten?",
+      "help": "Die Regeln legen der Organisation, die ein KI-System in Verkehr bringt, andere Pflichten auf als der Organisation, die eines verwendet. Beides zugleich ist möglich.",
+      "options": [
+        {
+          "value": "built",
+          "label": "Wir haben sie gebaut oder trainiert"
+        },
+        {
+          "value": "using",
+          "label": "Wir nutzen die eines Dritten"
+        },
+        {
+          "value": "both",
+          "label": "Beides"
+        },
+        {
+          "value": "unsure",
+          "label": "Nicht sicher"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "legend": "Sehen Menschen von Ihrer KI erzeugte Inhalte oder sprechen sie direkt mit ihr?",
+      "help": "Text, Bilder, Audio, Video oder ein Chatbot. Es bestehen Transparenzpflichten, wenn jemand nicht erkennen könnte, dass er es mit KI oder mit etwas von KI Erzeugtem zu tun hat.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Ja"
+        },
+        {
+          "value": "no",
+          "label": "Nein"
+        },
+        {
+          "value": "unsure",
+          "label": "Nicht sicher"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "legend": "Hilft KI dabei, etwas über eine Person zu entscheiden?",
+      "help": "Einstellung, Kredit, Versicherung, ein Studienplatz, Zugang zu Gesundheitsversorgung oder eine Sozialleistung. Es zählt auch dann, wenn am Ende ein Mensch die Entscheidung freigibt.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Ja"
+        },
+        {
+          "value": "no",
+          "label": "Nein"
+        },
+        {
+          "value": "unsure",
+          "label": "Nicht sicher"
+        }
+      ]
+    }
+  ],
+  "submit": "Zeigen, worauf das hindeutet",
+  "reset": "Neu beginnen",
+  "nojsTitle": "Diese fünf Fragen brauchen JavaScript, um auszuwerten, worauf sie hindeuten.",
+  "nojsLead": "Die Fragen selbst stehen oben und lohnen das Lesen ohnehin. Ohne JavaScript kommen Sie so weiter:",
+  "nojsItems": [
+    {
+      "text": "Den Leitfaden dazu lesen, ob die KI-Verordnung für Ihre Anwendung gilt. (auf Englisch)",
+      "href": "/blog/blog-does-ai-act-apply.html"
+    },
+    {
+      "text": "Nachlesen, was in einer kostenpflichtigen Bewertung enthalten ist, mit den Preisen. (auf Englisch)",
+      "href": "/pricing.html"
+    },
+    {
+      "text": "Uns schreiben und Ihre Lage in eigenen Worten schildern.",
+      "href": "mailto:support@getregula.com?subject=Where%20do%20I%20stand"
+    }
+  ],
+  "months": [
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember"
+  ],
+  "dateFormat": "{d}. {month} {y}",
+  "dates": {
+    "prohibited": "2025-02-02",
+    "article50": "2026-08-02",
+    "marking": "2026-12-02",
+    "annexIII": "2027-12-02"
+  },
+  "errorOne": "Eine Frage ist noch unbeantwortet. Sie ist unten hervorgehoben, und „Nicht sicher“ ist eine echte Antwort, wenn Sie es nicht wissen.",
+  "errorMany": "{n} Fragen sind noch unbeantwortet. Sie sind unten hervorgehoben, und „Nicht sicher“ ist eine echte Antwort, wenn Sie es nicht wissen.",
+  "clearedNotice": "Ihre Antworten wurden gelöscht. Die fünf Fragen stehen wieder bereit.",
+  "resultHeading": "Worauf Ihre Antworten hindeuten",
+  "ledeIn": "Nachfolgend steht, worauf Ihre eigenen Antworten hindeuten und was sie nicht klären können. Nichts davon ist eine Entscheidung über Ihre Risikoklasse oder Ihre Pflichten, denn diese hängen von Tatsachen ab, die fünf Fragen nicht erreichen.",
+  "ledeNoEu": "Nichts von dem, was Sie angegeben haben, verbindet Sie mit dem EU-Markt. Die KI-Verordnung ist daher vielleicht nicht das Erste, worauf Sie schauen sollten. Das ist eine Frage des Anwendungsbereichs und keine Schlussfolgerung; nachfolgend steht, warum sie nicht geklärt ist.",
+  "ledeNoAi": "Sie haben angegeben, dass Ihr Produkt keine KI nutzt. Die Verordnung arbeitet mit einer eigenen Definition, die weiter reicht als die meisten erwarten. Das lohnt eine Prüfung statt einer Annahme.",
+  "pointsHeading": "Lesenswert, ausgehend von Ihren Angaben",
+  "unsettledHeading": "Was dies nicht klären kann",
+  "routesHeading": "Was Sie als Nächstes tun können",
+  "points": {
+    "scope": {
+      "title": "Die Regeln können Sie auch von außerhalb der EU erreichen",
+      "body": "Sie haben angegeben, dass Menschen in der EU Ihr Produkt nutzen. Artikel 2 legt fest, für wen die Verordnung gilt, und erfasst Anbieter und Betreiber mit Sitz in einem Drittland, wenn die vom KI-System hervorgebrachte Ausgabe in der Union verwendet wird. Der Ort Ihrer Eintragung ist nicht der Maßstab.",
+      "cite": "Verordnung (EU) 2024/1689, Artikel 2 Absatz 1 Buchstabe c",
+      "href": "/blog/blog-does-ai-act-apply.html",
+      "linkText": "Gilt die KI-Verordnung für Ihre Anwendung? (auf Englisch)"
+    },
+    "scopeUnsure": {
+      "title": "Ob die Regeln Sie erreichen, ist zuerst zu klären",
+      "body": "Sie sind sich nicht sicher, ob Menschen in der EU Ihr Produkt nutzen. Das ist die erste zu beantwortende Frage, denn Artikel 2 erfasst Anbieter und Betreiber mit Sitz in einem Drittland, wenn die vom KI-System hervorgebrachte Ausgabe in der Union verwendet wird. Es kommt darauf an, wo Ihre Nutzerinnen und Nutzer sind und wo Ihre Ausgabe landet.",
+      "cite": "Verordnung (EU) 2024/1689, Artikel 2 Absatz 1 Buchstabe c",
+      "href": "/blog/blog-does-ai-act-apply.html",
+      "linkText": "Gilt die KI-Verordnung für Ihre Anwendung? (auf Englisch)"
+    },
+    "noEu": {
+      "title": "Nichts von Ihren Angaben verbindet Sie mit dem EU-Markt",
+      "body": "Sie haben angegeben, dass Ihr Produkt nicht in die EU verkauft und nicht von Menschen in der EU genutzt wird. Artikel 2 kann eine Organisation mit Sitz in einem Drittland dennoch erreichen, wenn die vom KI-System hervorgebrachte Ausgabe in der Union verwendet wird; es lohnt sich also zu wissen, wo Ihre Ausgabe landet. Auch andere Länder regulieren, und diese Website verfolgt mehrere davon.",
+      "cite": "Verordnung (EU) 2024/1689, Artikel 2 Absatz 1 Buchstabe c",
+      "href": "/regions/regulations.html",
+      "linkText": "Regeln in anderen Ländern (auf Englisch)"
+    },
+    "noAi": {
+      "title": "Die Definition reicht weiter, als die meisten erwarten",
+      "body": "Sie haben angegeben, dass Ihr Produkt keine KI nutzt. Die Verordnung arbeitet mit ihrer eigenen Definition in Artikel 3 Nummer 1, die darauf abstellt, was ein System mit den erhaltenen Eingaben macht, und nicht darauf, mit welcher Technik es gebaut wurde. Wenn irgendetwas in Ihrem Produkt ableitet, vorhersagt, empfiehlt oder erzeugt, prüfen Sie es an der Definition, statt es anzunehmen.",
+      "cite": "Artikel 3 Nummer 1",
+      "href": "/blog/blog-classify-ai-system.html",
+      "linkText": "Wie die Definition funktioniert (auf Englisch)"
+    },
+    "definition": {
+      "title": "Ob es ein KI-System im Sinne der Verordnung ist",
+      "body": "Das ist das Erste, was ein Mensch klären muss, und fünf einfache Fragen können es nicht klären. Artikel 3 Nummer 1 stellt darauf ab, was das System mit den erhaltenen Eingaben macht, nicht auf die Produktbezeichnung, die eingebundene Bibliothek oder darauf, ob jemand es KI nennt.",
+      "cite": "Artikel 3 Nummer 1",
+      "href": "/blog/blog-classify-ai-system.html",
+      "linkText": "Wie die Definition funktioniert (auf Englisch)"
+    },
+    "roleProvider": {
+      "title": "Sie würden die Anbieterpflichten lesen",
+      "body": "Sie haben angegeben, die KI selbst gebaut oder trainiert zu haben. Die Organisation, die ein KI-System entwickelt und unter eigenem Namen oder eigener Handelsmarke in Verkehr bringt oder in Betrieb nimmt, trägt die schwereren Pflichten. Ob Sie Anbieter eines bestimmten Systems sind, ist eine Rechtsfrage danach, wie es seine Nutzerinnen und Nutzer erreicht, keine Beschreibung Ihrer Entwicklungsarbeit.",
+      "cite": "Artikel 3 Nummer 3",
+      "href": "/guides/",
+      "linkText": "Leitfäden nach Artikel (auf Englisch)"
+    },
+    "roleDeployer": {
+      "title": "Sie würden die Betreiberpflichten lesen",
+      "body": "Sie haben angegeben, die KI eines Dritten zu nutzen. Eine Organisation, die ein KI-System in eigener Verantwortung verwendet, hat eigene Pflichten. Sie sind leichter als die eines Anbieters, aber sie sind nicht nichts. Das Modell eines Dritten in einem Produkt zu betreiben, das Sie anbieten, ist keine persönliche, nicht berufliche Tätigkeit.",
+      "cite": "Artikel 3 Nummer 4",
+      "href": "/guides/",
+      "linkText": "Leitfäden nach Artikel (auf Englisch)"
+    },
+    "roleBoth": {
+      "title": "Sie können beides sein, und die Grenze kann sich verschieben",
+      "body": "Sie haben beides angegeben, und beide Pflichtenkreise können dieselbe Organisation treffen. Artikel 25 legt zudem fest, wann ein Betreiber, Händler oder Einführer zum Anbieter eines Hochrisiko-Systems wird: wenn er seinen Namen oder seine Handelsmarke darauf anbringt, eine wesentliche Änderung daran vornimmt oder die Zweckbestimmung eines Systems so ändert, dass es zum Hochrisiko-System wird.",
+      "cite": "Artikel 3 Nummern 3 und 4 sowie Artikel 25 Absatz 1",
+      "href": "/guides/",
+      "linkText": "Leitfäden nach Artikel (auf Englisch)"
+    },
+    "roleUnsure": {
+      "title": "Ihre Rolle gehört zu den zuerst zu klärenden Tatsachen",
+      "body": "Sie sind sich nicht sicher. Die Verordnung unterscheidet die Organisation, die ein KI-System unter eigenem Namen in Verkehr bringt oder in Betrieb nimmt, von der Organisation, die eines in eigener Verantwortung verwendet, und legt beiden unterschiedliche Pflichten auf. Artikel 25 regelt außerdem, wann die Nutzung oder Änderung eines fremden Hochrisiko-Systems Sie zu dessen Anbieter macht.",
+      "cite": "Artikel 3 Nummern 3 und 4 sowie Artikel 25 Absatz 1",
+      "href": "/guides/",
+      "linkText": "Leitfäden nach Artikel (auf Englisch)"
+    },
+    "transparency": {
+      "title": "Den Menschen sagen, dass sie es mit KI zu tun haben",
+      "body": "Sie haben angegeben, dass Menschen von KI erzeugte Inhalte sehen oder direkt mit Ihrem System sprechen. Artikel 50 enthält mehrere Transparenzpflichten mit unterschiedlichen Adressaten, Voraussetzungen und Ausnahmen. Sie gelten seit dem {article50}, und für die Kennzeichnungsanforderungen läuft eine Übergangsfrist bis zum {marking}. Ein fehlender Hinweis ist etwas zu Prüfendes, kein Beleg dafür, dass jede Pflicht aus Artikel 50 für Sie gilt.",
+      "cite": "Artikel 50",
+      "href": "/guides/article-50-transparency.html",
+      "linkText": "Artikel 50 Transparenz, im Detail (auf Englisch)"
+    },
+    "decisions": {
+      "title": "Entscheidungen über Menschen sind der strengste Teil",
+      "body": "Sie haben angegeben, dass KI dabei hilft, etwas über eine Person zu entscheiden. Anhang III listet die als hochriskant behandelten Verwendungen auf, und Artikel 6 regelt, wie ein System in einem dieser Bereiche eingestuft wird; diese Pflichten gelten ab dem {annexIII}. Artikel 6 Absatz 3 nennt zudem Voraussetzungen, unter denen ein solches System nicht hochriskant ist, etwa eine eng gefasste verfahrenstechnische Aufgabe oder die Verbesserung des Ergebnisses einer zuvor abgeschlossenen menschlichen Tätigkeit, und bestimmt, dass ein System, das ein Profiling natürlicher Personen vornimmt, stets hochriskant ist. Was davon auf Sie zutrifft, kann diese Seite gerade nicht beantworten.",
+      "cite": "Artikel 6 Absätze 2 und 3, Anhang III",
+      "href": "/guides/article-9-risk-management.html",
+      "linkText": "Was hochriskant tatsächlich verlangt (auf Englisch)"
+    },
+    "prohibited": {
+      "title": "Einige Verwendungen sind vollständig verboten",
+      "body": "Manche Praktiken sind verboten statt reguliert, und die Verbote gelten seit dem {prohibited}. Diese Seite hat nicht danach gefragt; lesen Sie daher die Liste, statt anzunehmen, dass sie Sie nicht betrifft.",
+      "cite": "Artikel 5",
+      "href": "/guides/article-5-prohibited-practices.html",
+      "linkText": "Die verbotenen Praktiken, aufgelistet (auf Englisch)"
+    }
+  },
+  "unsettled": [
+    "Ob das, was Sie haben, die eigene Definition eines KI-Systems der Verordnung erfüllt. Artikel 3 Nummer 1 ist der Maßstab, und er ist nicht dasselbe wie die Frage, ob Sie es KI nennen.",
+    "Welche Rolle oder Rollen Sie einnehmen. Das hängt davon ab, wie das System die Menschen erreicht, die es nutzen, nicht davon, wer den Code geschrieben hat.",
+    "Ihre Zweckbestimmung. Die meiste Einstufung hängt daran, und sie ist eine Erklärung, die Sie abgeben, nicht etwas, das ein Werkzeug auslesen kann.",
+    "Ob eine der Voraussetzungen des Artikels 6 Absatz 3 auf Sie zutrifft und ob etwas an Ihrem Vorgehen sie entfallen lässt.",
+    "Alles, was in Ihren Verträgen, Ihrer Governance und im Verhalten des Systems im Betrieb steckt. Kein Scanner kann davon etwas sehen, und fünf Fragen können es auch nicht."
+  ],
+  "routes": {
+    "free": {
+      "title": "Kostenlos weitermachen",
+      "price": "Kostenlos, und bleibt kostenlos",
+      "body": "Arbeiten Sie die ausführlichere Bewertung im Browser durch. Sie deckt dasselbe Feld in den Begriffen des Rechtstextes ab und zeigt, woher jede Frage stammt. Kein Konto, und nichts, was Sie eingeben, wird hochgeladen. Wenn Sie mit einem Terminal vertraut sind, stehen dieselben Indikatoren auf Ihrem eigenen Rechner zur Verfügung, und der Scanner lädt Ihren Code nicht hoch.",
+      "cmd": "pipx install regula-ai && regula check .",
+      "cta": "Kostenlose Bewertung öffnen (auf Englisch)",
+      "href": "/assess/",
+      "short": "Kostenlos, im Browser oder im Terminal. Kein Konto, nichts wird hochgeladen."
+    },
+    "paid": {
+      "title": "Eine schriftliche Bewertung",
+      "price": "GBP 950, fester Umfang",
+      "body": "Eine Codebasis, ein Produktumfang, aus der Ferne, etwa eine Woche Kalenderzeit. Der Scan wird mit Ihnen Indikator für Indikator durchgegangen, dazu eine schriftliche Liste der noch zu klärenden Tatsachen und ein priorisiertes Kurzdokument, das Sie behalten. Es ist keine Konformitätsfeststellung, keine Zertifizierung und keine Rechtsberatung. Auf dieser Website läuft keine Zahlung; es beginnt mit einer E-Mail.",
+      "cta": "Nachlesen, was enthalten ist (auf Englisch)",
+      "href": "/pricing.html",
+      "short": "Eine schriftliche Bewertung zu einem veröffentlichten Festpreis. Sie ist keine Feststellung."
+    },
+    "consultant": {
+      "title": "Mit einer Beratung sprechen",
+      "price": "GBP 650 pro Tag",
+      "body": "Eine Live-Sitzung mit einer unabhängigen KI-Governance-Beratung. Es ist keine Zertifizierung, und die Beratung erteilt keine Rechtsberatung, sofern sie nicht gesondert qualifiziert und beauftragt ist. Eine Buchung ist noch nicht möglich: Zuerst werden die benannte Person, die Dauer und die vollständigen Bedingungen veröffentlicht. Bis dahin ist es eine E-Mail, und Reden kostet nichts.",
+      "cta": "Wegen einer Durchsicht schreiben",
+      "href": "mailto:support@getregula.com?subject=Consultant%20review%20enquiry",
+      "short": "Ein Gespräch mit einer unabhängigen Beratung. Keine Zertifizierung und noch nicht buchbar."
+    }
+  },
+  "consultantWarranted": "Ihre Antworten benennen eine Verwendung, die die Verordnung am strengsten behandelt, oder ein System, das Sie bauen und noch nicht einordnen können. Das ist der Fall, in dem ein Gespräch mit einem Menschen mehr wert ist als ein weiteres Werkzeug.",
+  "limits": [
+    "Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Über Konformität entscheiden Behörden und notifizierte Stellen, nicht ein Fragebogen, und „nicht markiert“ bedeutet niemals „rechtskonform“.",
+    "Nichts hiervon ist Rechtsberatung. Hinter diesem Angebot steht keine EU-Rechtsperson, und es besteht keine Berufshaftpflichtversicherung. Alles, was von einer rechtlichen Schlussfolgerung abhängt, braucht eine entsprechend qualifizierte Fachperson."
+  ],
+  "shareLabel": "Link zu diesen Antworten kopieren",
+  "shareDone": "Link kopiert",
+  "afterHeading": "Was nach Ihren Antworten passiert",
+  "afterLead": "Drei Wege, und jeder wird hier als das beschrieben, was er tatsächlich ist.",
+  "devHeading": "Wenn Sie mit einem Terminal vertraut sind",
+  "devBody": "Dieselben Indikatoren gibt es als lokalen Befehl. Er liest Dateien auf Ihrem Rechner und lädt sie nicht hoch. Unten steht echte Ausgabe aus der eingecheckten Testvorlage, bei jedem Build von den eigenen Prüfungen des Projekts reproduziert, keine Nachbildung. Beachten Sie, wie er mit einer ungeklärten Frage umgeht: Er benennt die benötigten Tatsachen, statt eine Klasse zu raten.",
+  "errorNone": "Sie haben noch nichts beantwortet. Beginnen Sie mit der ersten Frage; „Nicht sicher“ ist eine echte Antwort, wenn Sie es nicht wissen.",
+  "nothingToBuy": "Nach diesen Antworten gibt es hier wahrscheinlich nichts, was Sie kaufen müssten, und das zu sagen nützt Ihnen mehr, als Ihnen etwas zu verkaufen. Die kostenlosen Werkzeuge bleiben verfügbar, falls sich Ihre Lage ändert, und eine E-Mail kostet nichts, wenn Sie eine zweite Meinung möchten.",
+  "englishOnlyCue": "(auf Englisch)",
+  "thousandsSep": ".",
+  "proof": {
+    "tests": "{tests} Tests, bei jeder Änderung erneut ausgeführt",
+    "security": "Sicherheitsbefunde nach Werkzeug und Umfang offengelegt",
+    "deps": "null Abhängigkeiten im Kern",
+    "upload": "der lokale Kern lädt gescannte Dateien nicht hoch",
+    "trustLabel": "Trust Pack",
+    "trustHref": "https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md"
+  }
+}

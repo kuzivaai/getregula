@@ -98,7 +98,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -129,7 +131,7 @@
 
 <p>It works on two fronts:</p>
 <ul>
-    <li><strong>Code scanning</strong> : 419 regex patterns across Articles 5&ndash;15, with a 6-layer precision architecture (AST context gating, domain exclusions, library fingerprinting, confidence floors) to reduce false positives. Published precision on a random corpus: 83.5% (N=115, Python only, labelled by a single reviewer with no inter-rater agreement measurement : <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md">methodology and limits</a>).</li>
+    <li><strong>Code scanning</strong> : 419 regex patterns across Articles 5&ndash;15, with a 6-layer precision architecture (AST context gating, domain exclusions, library fingerprinting, confidence floors) to reduce false positives. The precision and recall measurements are under review and are not quoted here as current figures; the <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md">methodology and its limits</a> are published in full.</li>
     <li><strong>Governance questionnaires</strong> : structured self-assessments for organisational obligations that code cannot verify, including risk management (Article 9), quality management (Article 17), and fundamental rights impact assessments (Article 27).</li>
 </ul>
 

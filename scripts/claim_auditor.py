@@ -40,6 +40,7 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass, field, asdict
+from html.parser import HTMLParser
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -323,9 +324,112 @@ def load_allowlist() -> list[re.Pattern[str]]:
     return patterns
 
 
+class _LiveRegionFinder(HTMLParser):
+    """Locate the character spans of ARIA live regions and progressbars.
+
+    Nesting matters and regex cannot count it, so this walks the tags with
+    stdlib `html.parser` and records the outermost matching subtree only.
+    Malformed or unclosed markup leaves a region open; `spans()` discards
+    anything still open at EOF rather than blanking to end of file, because
+    over-blanking silently narrows the gate and that is the failure mode this
+    whole module exists to avoid.
+    """
+
+    _VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+             "link", "meta", "param", "source", "track", "wbr"}
+
+    def __init__(self, text: str):
+        super().__init__(convert_charrefs=False)
+        self._text = text
+        # Offset of the first character of each 1-based line.
+        self._line_start = [0, 0]
+        for line in text.splitlines(keepends=True):
+            self._line_start.append(self._line_start[-1] + len(line))
+        self._open_depth = 0     # depth inside the region currently tracked
+        self._start = None       # offset where that region began
+        self._spans: list[tuple[int, int]] = []
+
+    def _offset(self) -> int:
+        line, col = self.getpos()
+        return self._line_start[line] + col
+
+    @staticmethod
+    def _is_live(attrs) -> bool:
+        for name, value in attrs:
+            lowered = (name or "").lower()
+            if lowered == "aria-live" and (value or "").strip():
+                return True
+            if lowered == "role" and (value or "").strip().lower() == "progressbar":
+                return True
+        return False
+
+    def handle_starttag(self, tag, attrs):
+        if tag in self._VOID:
+            return
+        if self._start is not None:
+            self._open_depth += 1
+        elif self._is_live(attrs):
+            self._start = self._offset()
+            self._open_depth = 1
+
+    def handle_startendtag(self, tag, attrs):
+        return  # self-closing: opens and closes, so it cannot contain text
+
+    def handle_endtag(self, tag):
+        if self._start is None or tag in self._VOID:
+            return
+        self._open_depth -= 1
+        if self._open_depth == 0:
+            end = self._text.find(">", self._offset())
+            self._spans.append(
+                (self._start, end + 1 if end != -1 else len(self._text)))
+            self._start = None
+
+    def spans(self) -> list[tuple[int, int]]:
+        self.feed(self._text)
+        self.close()
+        return self._spans  # an unclosed region is deliberately dropped
+
+
+def _blank_live_regions(text: str) -> str:
+    """Blank the text inside ARIA live regions and progressbars.
+
+    The content of `aria-live="..."` and `role="progressbar"` elements is
+    replaced by script at runtime, so the value sitting in the file is a
+    placeholder rather than a published claim. `<span id="progressPct">0%</span>`
+    on the three assess pages was reported as an unsourced numeric claim on
+    that basis, and three of the nineteen quarantine entries were that one
+    placeholder in three locales.
+
+    This is a semantic rule, not a special case for those pages: any future
+    status or progress readout is covered, because the markup already has to
+    declare itself as a live region for assistive technology.
+
+    What the gate now does NOT test, stated plainly per measurement rule 5: a
+    genuine claim written inside a live region is no longer audited. That is
+    accepted, because static editorial prose does not belong in a region
+    declared to assistive technology as machine-updated. Line counts are
+    preserved, as everywhere else in this function.
+    """
+    if "aria-live" not in text.lower() and "progressbar" not in text.lower():
+        return text
+    try:
+        spans = _LiveRegionFinder(text).spans()
+    except Exception:
+        return text  # unparseable markup: audit it rather than skip it
+    if not spans:
+        return text
+    out = list(text)
+    for start, end in spans:
+        for i in range(start, min(end, len(out))):
+            if out[i] != "\n":
+                out[i] = " "
+    return "".join(out)
+
+
 def strip_noise(text: str, suffix: str) -> str:
     """Remove code fences, inline code, HTML script/style, HTML comments,
-    and historical CHANGELOG sections.
+    ARIA live-region content, and historical CHANGELOG sections.
 
     Preserves newline counts so line numbers continue to map to the
     original file — each stripped region is replaced with the same number
@@ -379,6 +483,8 @@ def strip_noise(text: str, suffix: str) -> str:
 
     text = re.sub(r"<pre\b[^>]*>.*?</pre\s*>", _join_pre, text,
                   flags=re.DOTALL | re.IGNORECASE)
+
+    text = _blank_live_regions(text)
 
     if suffix in (".md", ".markdown"):
         text = re.sub(r"```.*?```", _blank, text, flags=re.DOTALL)
@@ -717,10 +823,7 @@ def scan_file(path: Path, allowlist: list[re.Pattern[str]]) -> FileReport:
         if has_src:
             continue  # paragraph sourced → all claims inside are fine
 
-        raw_lines = raw.splitlines()
         for claim in para_claims:
-            idx = claim.line - 1
-            claim_line = raw_lines[idx] if 0 <= idx < len(raw_lines) else ""
             if any(p.search(claim.snippet) for p in allowlist):
                 continue
             if is_quarantined(report.path, claim.snippet):
@@ -782,6 +885,109 @@ def delivery_surface_paths() -> set[str]:
     if not paths:
         raise RuntimeError("delivery inventory has no active claim-capable paths")
     return paths
+
+
+CLAIM_SCAN_COVERAGE_PATH = REPO_ROOT / "data/claim_scan_coverage.json"
+
+
+class CoverageError(RuntimeError):
+    """The declared scan-coverage register is missing, unreadable or stale."""
+
+
+def load_scan_coverage() -> dict:
+    """The declared record of who reads the surfaces this module cannot.
+
+    Fatal on failure, for the same reason `delivery_surface_paths` is fatal: an
+    unknown coverage population must never become a green audit.
+    """
+    try:
+        payload = json.loads(CLAIM_SCAN_COVERAGE_PATH.read_text(encoding="utf-8"))
+        coverage = payload["coverage"]
+    except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise CoverageError(
+            f"cannot load {CLAIM_SCAN_COVERAGE_PATH.name}: {exc}") from exc
+    if not isinstance(coverage, dict):
+        raise CoverageError("coverage must be a mapping of suffix to record")
+    return coverage
+
+
+def unscannable_delivery_surfaces() -> dict[str, list[str]]:
+    """Active claim-capable delivery surfaces this module cannot read, by suffix.
+
+    MEASURED 2026-08-17 at `bc36b66`: 6 of 108. `main` filtered its reports with
+    `if r.scanned` and printed nothing about the remainder, so a suffix outside
+    SCANNED_SUFFIXES became an invisible hole in exactly the instrument built to
+    close invisible holes.
+    """
+    by_suffix: dict[str, list[str]] = {}
+    for rel in sorted(delivery_surface_paths()):
+        suffix = Path(rel).suffix.lower()
+        if suffix in SCANNED_SUFFIXES:
+            continue
+        by_suffix.setdefault(suffix, []).append(rel)
+    return by_suffix
+
+
+def audit_scan_coverage() -> list[str]:
+    """Both directions: no undeclared hole, and no record that has gone stale."""
+    problems = []
+    unscannable = unscannable_delivery_surfaces()
+    coverage = load_scan_coverage()
+
+    for suffix, paths in sorted(unscannable.items()):
+        if suffix not in coverage:
+            problems.append(
+                f"{suffix}: {len(paths)} active claim-capable delivery "
+                f"surface(s) this auditor cannot read, with no declared "
+                f"coverage record: {', '.join(paths)}. Add a record to "
+                f"{CLAIM_SCAN_COVERAGE_PATH.name} naming which claim class is "
+                f"covered elsewhere and which is not covered at all, or bring "
+                f"the suffix into SCANNED_SUFFIXES.")
+            continue
+        record = coverage[suffix]
+        for required in ("covered_for", "covered_by", "not_covered_for"):
+            if required not in record:
+                problems.append(f"{suffix}: coverage record has no {required!r}")
+        if record.get("covered_for") and not record.get("covered_by"):
+            problems.append(
+                f"{suffix}: claims a covered class with no instrument named. "
+                f"A class is covered by an instrument or it is not covered.")
+
+    for suffix in sorted(coverage):
+        if suffix not in unscannable:
+            problems.append(
+                f"{suffix}: declared in {CLAIM_SCAN_COVERAGE_PATH.name} but no "
+                f"active claim-capable delivery surface has that suffix. The "
+                f"record has outlived its premise and must be removed; an "
+                f"exclusion that matches nothing is how a stale disposition "
+                f"survives a change nobody re-measured.")
+    return problems
+
+
+def format_scan_coverage() -> str:
+    """The coverage statement printed beside a delivery-surface result.
+
+    Measurement rule 5 in the report itself: state what the gate tested and, in
+    the same breath, what it did not.
+    """
+    unscannable = unscannable_delivery_surfaces()
+    if not unscannable:
+        return ""
+    coverage = load_scan_coverage()
+    total = sum(len(v) for v in unscannable.values())
+    lines = [
+        f"  NOT READ BY THIS AUDITOR: {total} active claim-capable delivery "
+        f"surface(s) across {len(unscannable)} suffix(es). This result says "
+        f"nothing about them."
+    ]
+    for suffix, paths in sorted(unscannable.items()):
+        record = coverage.get(suffix, {})
+        by = ", ".join(record.get("covered_by") or ["nothing"])
+        gap = ", ".join(record.get("not_covered_for") or [])
+        lines.append(f"    {suffix} ({len(paths)}): {', '.join(paths)}")
+        lines.append(f"        covered by  : {by}")
+        lines.append(f"        NOT covered : {gap or 'nothing stated'}")
+    return "\n".join(lines)
 
 
 def delivered_targets(paths: list[Path]) -> list[Path]:
@@ -1096,10 +1302,47 @@ RECALL_WITHDRAWN_LABEL = re.compile(
     re.IGNORECASE,
 )
 
+# A recall figure written as a percentage. The fraction arm below could not
+# see one, and that is how a withdrawn "100% recall" claim stayed on a live
+# page for three weeks after the corpus that produced it was replaced, under
+# a heading reading "Honest baselines (measured, reproducible)". Ledger N177.
+RECALL_PERCENT_RE = re.compile(r"(?<![\w.])(\d{1,3}(?:[.,]\d)?)\s*%")
+
+# The artefact only knows the synthetic corpus, so only paragraphs about it
+# are in scope. Without this the arm would sweep every percentage that shares
+# a paragraph with the word "recall".
+RECALL_CORPUS_RE = re.compile(r"synthetic|fixture", re.IGNORECASE)
+
+# Which metric a percentage belongs to. Binding matters: "15.2% precision"
+# and "100% recall" can sit in one sentence, and a paragraph-level rule marks
+# both or neither. That is F30's granularity defect in a second instrument.
+RECALL_METRIC_RE = re.compile(r"\b(precision|recall)\b", re.IGNORECASE)
+
+# A markdown table separator row, e.g. |---|---:|
+_TABLE_SEP_RE = re.compile(r"^\s*\|?[\s:|-]*-{3,}[\s:|-]*\|?\s*$")
+
+# How far either side of a percentage to look for the metric word it belongs
+# to, before sentence boundaries clip it further. Sentence-length: wide enough
+# to bind "recall is 53%" to its own metric word, narrow enough that a long
+# paragraph does not bind everything to everything.
+RECALL_BIND_WINDOW = 60
+
+
 # Surfaces whose synthetic recall fractions are checked. Deliberately the
 # published ones plus the benchmark writeups that feed them; the
 # docs/improvement/ programme record is excluded because it quotes
 # superseded figures ON PURPOSE, as the record of how they were corrected.
+#
+# THIS LIST IS A FLOOR, NOT THE CORPUS. It was the whole corpus until
+# 2026-08-18, and being hand-maintained is why it never contained
+# site/blog/blog-aicdi-governance-gaps.html, which published a withdrawn
+# 100% recall figure, or docs/benchmarks/PRECISION_RECALL_2026_04.md, which
+# published two figures ledger N5 had withdrawn. `recall_checked_files()`
+# unions it with the delivery-derived surface inventory, per measurement
+# rule 4c: a completeness claim must come from enumeration. The list stays
+# so that a surface can be added by hand without waiting for the inventory
+# to be regenerated, and so removing one from the inventory cannot silently
+# narrow the gate.
 RECALL_CHECKED_FILES: list[str] = [
     "README.md",
     "docs/TRUST.md",
@@ -1110,6 +1353,187 @@ RECALL_CHECKED_FILES: list[str] = [
     "site/llms.txt",
     "site/llms-full.txt",
 ]
+
+
+SURFACE_INVENTORY_PATH = REPO_ROOT / "data" / "public_claim_surfaces.json"
+
+# Suffixes the recall arms can read. Binary and source files are excluded:
+# the arms reason about published prose.
+RECALL_SCANNED_SUFFIXES = (".md", ".markdown", ".html", ".htm", ".txt")
+
+
+def recall_checked_files() -> list[str]:
+    """Every surface whose recall claims are checked, by enumeration.
+
+    RECALL_CHECKED_FILES is the hand-maintained floor. The rest comes from
+    `data/public_claim_surfaces.json`, the repository-derived inventory of
+    delivery mechanisms, filtered to the active claim-capable ones. That
+    inventory classifies `docs/improvement/` as an internal record, so the
+    programme's deliberately superseded figures stay out of scope exactly as
+    the hand list intended, without anyone having to remember to keep them out.
+    """
+    files = set(RECALL_CHECKED_FILES)
+    try:
+        doc = json.loads(SURFACE_INVENTORY_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        # A missing or unreadable inventory must not silently shrink the gate
+        # back to the hand list without saying so.
+        print("claim-auditor: WARNING: data/public_claim_surfaces.json could "
+              "not be read; recall claims are checked only on the "
+              f"{len(files)} hand-listed surfaces.", file=sys.stderr)
+        return sorted(files)
+    for record in doc.get("records", []):
+        if not record.get("claim_capable"):
+            continue
+        if record.get("classification") != "active_product":
+            continue
+        source = str(record.get("source", "")).split("#")[0]
+        if source.endswith(RECALL_SCANNED_SUFFIXES):
+            files.add(source)
+    return sorted(files)
+
+
+def _table_rows(text: str):
+    """Yield (line_number, headers, cells) for every markdown table data row.
+
+    Table cells are handled apart from prose because a cell's metric is named
+    in its COLUMN HEADER, not next to the number. The headline table on
+    site/llms-full.txt put `100%` in a column headed `Recall`, several words
+    away from any metric term, and a prose-window rule cannot see it.
+    """
+    headers = None
+    in_table = False
+    for i, line in enumerate(text.split("\n"), start=1):
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            headers, in_table = None, False
+            continue
+        cells = [c.strip() for c in stripped.strip("|").split("|")]
+        if _TABLE_SEP_RE.match(line):
+            in_table = headers is not None
+            continue
+        if not in_table:
+            headers = cells
+            continue
+        yield i, headers or [], cells
+
+
+def _sentence_around(haystack: str, start: int, end: int) -> str:
+    """The sentence a match sits in, clipped to RECALL_BIND_WINDOW either side.
+
+    Binding is sentence-bounded rather than window-bounded because two
+    adjacent sentences each carrying their own metric is ordinary prose:
+    "Precision is 100%. Recall is reported per condition." A raw character
+    window reads both words and calls that ambiguous, which is over-reach,
+    and it was the first draft's behaviour.
+    """
+    lo = max(0, start - RECALL_BIND_WINDOW)
+    hi = min(len(haystack), end + RECALL_BIND_WINDOW)
+    left = haystack.rfind(". ", lo, start)
+    if left != -1:
+        lo = left + 2
+    left_nl = haystack.rfind("\n", lo, start)
+    if left_nl != -1:
+        lo = left_nl + 1
+    right = haystack.find(". ", end, hi)
+    if right != -1:
+        hi = right
+    right_nl = haystack.find("\n", end, hi)
+    if right_nl != -1:
+        hi = right_nl
+    return haystack[lo:hi]
+
+
+def _bind_metric(haystack: str, match) -> str | None:
+    """Which metric a percentage belongs to: recall, precision, or neither.
+
+    Returns "ambiguous" when both words are in the same sentence, which is a
+    finding in its own right: "precision and recall: 100% / 100%" tells a
+    reader which number is which for neither of them, and one half of that
+    exact pair was wrong on a live page for three weeks.
+    """
+    sentence = _sentence_around(haystack, match.start(), match.end())
+    words = {m.group(1).lower() for m in RECALL_METRIC_RE.finditer(sentence)}
+    if words == {"recall"}:
+        return "recall"
+    if words == {"precision"}:
+        return "precision"
+    if words:
+        return "ambiguous"
+    return None
+
+
+def check_recall_percentages(text: str, rel_path: str) -> list[tuple[int, str]]:
+    """Published recall PERCENTAGES that name no path and no gate condition.
+
+    The same rule `check_recall_claims` applies to fractions, applied to the
+    other form the same claim is written in. Ledger N177: the fraction-only
+    arm reported a clean sweep while two published surfaces carried a recall
+    figure the repository itself had marked superseded three weeks earlier.
+    """
+    problems: list[tuple[int, str]] = []
+
+    for line_no, headers, cells in _table_rows(text):
+        row = " | ".join(cells)
+        header_text = " ".join(headers)
+        if not RECALL_CORPUS_RE.search(row) and not RECALL_CORPUS_RE.search(header_text):
+            continue
+        if RECALL_WITHDRAWN_LABEL.search(row):
+            continue          # kept as the record of a correction
+        labelled = bool(RECALL_PATH_LABEL.search(row)) and bool(
+            RECALL_GATE_LABEL.search(row))
+        for index, cell in enumerate(cells):
+            head = headers[index].lower() if index < len(headers) else ""
+            within = {m.group(1).lower()
+                      for m in RECALL_METRIC_RE.finditer(cell)}
+            if within == {"precision"}:
+                continue
+            if within == {"recall"}:
+                kind = "recall"
+            elif "recall" in head and "precision" not in head:
+                kind = "recall"
+            else:
+                kind = None
+            if kind != "recall":
+                continue
+            for m in RECALL_PERCENT_RE.finditer(cell):
+                if labelled:
+                    continue
+                problems.append((
+                    line_no,
+                    f"recall percentage {m.group(0)} sits in a table cell "
+                    f"under column {headers[index] if index < len(headers) else '?'!r} "
+                    f"with no path and no gate condition in the row. On this "
+                    f"corpus the same tier scores differently on gates alone."))
+
+    for start, _end, para in split_paragraphs(strip_noise(text, ".md")):
+        if not RECALL_CONTEXT.search(para):
+            continue
+        if not RECALL_CORPUS_RE.search(para):
+            continue
+        if RECALL_WITHDRAWN_LABEL.search(para):
+            continue
+        if "|" in para:
+            continue          # table rows are handled above, on raw lines
+        labelled = bool(RECALL_PATH_LABEL.search(para)) and bool(
+            RECALL_GATE_LABEL.search(para))
+        for m in RECALL_PERCENT_RE.finditer(para):
+            kind = _bind_metric(para, m)
+            if kind in (None, "precision"):
+                continue
+            line = start + para.count("\n", 0, m.start())
+            if kind == "ambiguous":
+                problems.append((
+                    line,
+                    f"{m.group(0)} sits between the words 'precision' and "
+                    f"'recall' and is labelled as neither, so a reader cannot "
+                    f"tell which metric it reports."))
+            elif not labelled:
+                problems.append((
+                    line,
+                    f"recall percentage {m.group(0)} published without naming "
+                    f"a path (scanner or classifier) and a gate condition."))
+    return problems
 
 
 def load_recall_artefact() -> dict:
@@ -1476,7 +1900,8 @@ def verify_facts() -> int:
     # recall fraction must exist in benchmarks/synthetic/RECALL.json and
     # must name the path and gate condition it was measured under.
     recall_artefact = load_recall_artefact()
-    for rel_path in RECALL_CHECKED_FILES:
+    recall_files = recall_checked_files()
+    for rel_path in recall_files:
         fpath = REPO_ROOT / rel_path
         if not fpath.exists():
             continue
@@ -1484,7 +1909,15 @@ def verify_facts() -> int:
         for line_num, problem in check_recall_claims(text, rel_path,
                                                      recall_artefact):
             mismatches.append(f"  {rel_path}:L{line_num} — {problem}")
+        # The same rule applied to the percentage form of the same claim.
+        # Ledger N177: the fraction-only arm passed two surfaces that were
+        # publishing a superseded recall figure as a headline number.
+        for line_num, problem in check_recall_percentages(text, rel_path):
+            mismatches.append(f"  {rel_path}:L{line_num} — {problem}")
         checked += 1
+    print(f"claim-auditor: recall claims checked on {len(recall_files)} "
+          f"surfaces ({len(RECALL_CHECKED_FILES)} hand-listed, the rest "
+          f"enumerated from data/public_claim_surfaces.json)")
 
     # Banned-claim sweep: every HTML page under site/ (the purged
     # "zero false positives" claim must not return anywhere published).
@@ -1562,8 +1995,20 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print(human_report(scanned_reports))
 
+    coverage_problems: list[str] = []
+    if args.delivery_surfaces:
+        # The whole population is in view here, so this is the one mode where a
+        # green result could be mistaken for "every delivered claim is sourced".
+        coverage_problems = audit_scan_coverage()
+        if args.format != "json":
+            statement = format_scan_coverage()
+            if statement:
+                print(statement)
+        for problem in coverage_problems:
+            print(f"claim-auditor: coverage: {problem}", file=sys.stderr)
+
     has_findings = any(r.findings for r in scanned_reports)
-    return 1 if has_findings else 0
+    return 1 if (has_findings or coverage_problems) else 0
 
 
 if __name__ == "__main__":

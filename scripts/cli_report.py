@@ -325,8 +325,39 @@ def cmd_inventory(args) -> None:
         print(content)
 
 
+# A badge is the one output designed to be pasted into a third party's README,
+# where it travels with no disclaimer and carries an implied endorsement from
+# this project. Until 2026-08-17 this function put the REGULATION's name in the
+# label and a COMPLIANCE STATE in the message, coloured brightgreen, whenever a
+# scan produced no prohibited and no high-risk findings. On a directory
+# containing only `print('hello')` that rendered a pasteable badge asserting EU
+# AI Act compliance, which is the exact claim CLAUDE.md forbids twice. LEDGER
+# N125 carries the verbatim old output; it is described and not quoted here,
+# because quoting it reintroduces it. `determination_guard.py` fired on the
+# first draft of this very comment, which is the third occurrence of the
+# self-inflicted trap N109 and N111 both record.
+#
+# The determination never came from the badge mechanism. It came from two
+# choices: naming the REGULATION in the label, and naming a COMPLIANCE STATE in
+# the message. Both are removed. The label names the tool, so the badge can only
+# say what this scan did, and the message reports an indicator count, which is a
+# fact about the scan rather than a conclusion about the law.
+#
+# BADGE_CAVEAT_URL is load-bearing rather than decorative. The objection to a
+# badge is that it detaches from every qualification on the page that generated
+# it, so the qualification is attached to the badge itself, as its link target.
+BADGE_LABEL = "regula"
+BADGE_CAVEAT_URL = (
+    "https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md"
+)
+# Deliberately NOT brightgreen for the zero case. A green badge beside a
+# regulation's name is read as a pass whatever the message says, and green is
+# what made the old output dangerous. Grey reports without commending.
+BADGE_NEUTRAL_COLOUR = "lightgrey"
+
+
 def cmd_badge(args) -> None:
-    """Generate compliance badge from scan results."""
+    """Render a scan-result badge: an indicator count, never a compliance state."""
     from cli import _validate_path
     from report import scan_files
     from findings_view import partition_findings
@@ -339,31 +370,45 @@ def cmd_badge(args) -> None:
     prohibited = view["prohibited"]
     high_risk = view["high_risk"]
 
+    def _plural(n: int) -> str:
+        return "indicator" if n == 1 else "indicators"
+
     if prohibited:
         color = "red"
-        message = f"{len(prohibited)} prohibited"
+        message = f"{len(prohibited)} prohibited-pattern {_plural(len(prohibited))}"
     elif high_risk:
         color = "orange"
-        message = f"{len(high_risk)} high-risk"
+        message = f"{len(high_risk)} high-risk-pattern {_plural(len(high_risk))}"
     else:
-        color = "brightgreen"
-        message = "compliant"
+        color = BADGE_NEUTRAL_COLOUR
+        message = "no indicators found"
 
     if args.format == "endpoint":
         badge = {
             "schemaVersion": 1,
-            "label": "EU AI Act",
+            "label": BADGE_LABEL,
             "message": message,
             "color": color,
         }
         print(json.dumps(badge, indent=2))
     elif args.format == "svg":
-        label = "EU AI Act"
+        label = BADGE_LABEL
         label_width = len(label) * 7 + 10
         msg_width = len(message) * 7 + 10
         total_width = label_width + msg_width
-        colors = {"brightgreen": "#4c1", "orange": "#fe7d37", "red": "#e05d44"}
-        fill = colors.get(color, "#9f9f9f")
+        # Only the three states this function can produce. The green entry was
+        # still in this map after the message stopped asserting a state, so the
+        # capability to render a green pass outlived the removal of the words,
+        # and BADGE_NEUTRAL_COLOUR was resolving through the fallback by accident
+        # rather than by name. `fill = colors[color]` now raises on an unknown
+        # state instead of quietly substituting grey. Caught by
+        # tests/test_determination_guard.py, not by reading.
+        colors = {
+            BADGE_NEUTRAL_COLOUR: "#9f9f9f",
+            "orange": "#fe7d37",
+            "red": "#e05d44",
+        }
+        fill = colors[color]
         svg = (
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{total_width}" height="20">\n'
             f'  <linearGradient id="b" x2="0" y2="100%">'
@@ -386,11 +431,14 @@ def cmd_badge(args) -> None:
         )
         print(svg)
     else:
-        # Markdown snippet
+        # Markdown snippet. The link goes to the limitations document, not the
+        # marketing homepage, so a reader who clicks the badge in someone else's
+        # README lands on what Regula does not do.
         shield_url = (
-            f"https://img.shields.io/badge/EU%20AI%20Act-{message.replace(' ', '%20')}-{color}"
+            f"https://img.shields.io/badge/{BADGE_LABEL}-"
+            f"{message.replace(' ', '%20')}-{color}"
         )
-        print(f"[![EU AI Act]({shield_url})](https://getregula.com)")
+        print(f"[![{BADGE_LABEL} scan result]({shield_url})]({BADGE_CAVEAT_URL})")
 
 
 def cmd_aibom(args) -> None:

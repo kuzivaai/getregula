@@ -107,7 +107,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -223,7 +225,7 @@
 <p>If your system generates synthetic content, run <code>regula check . --min-tier limited_risk</code> to detect generative AI patterns and <code>regula gap . --framework eu-ai-act</code> to check for transparency gaps. Article 50 obligations apply from 2 August 2026 for all systems. Watermarking for systems already on the market is required by 2 December 2026 (Digital Omnibus; EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in the OJ 24 Jul 2026, in force from 27 Jul 2026).</p>
 <p>If you generate synthetic content (images, audio, video, text that could be mistaken for human-created), run:</p>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>regula check . --min-tier limited_risk
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>regula check . --min-tier limited_risk
 regula gap . --framework eu-ai-act</code></pre>
 
 <p>Regula will flag the <em>presence</em> of generative AI patterns in your codebase. It will not verify that your watermarking implementation is effective &mdash; that requires a separate testing step (consider <a href="https://giskard.ai">Giskard</a> or manual adversarial testing).</p>
@@ -233,7 +235,7 @@ regula gap . --framework eu-ai-act</code></pre>
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last verified:</strong> 11 June 2026 &middot;
+    <strong>Last reviewed:</strong> 14 August 2026 &middot;
     <strong>Author:</strong> Kuziva Muzondo &middot;
     <strong>Source:</strong> <a href="https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content" style="color:var(--text-dim);">EC Code of Practice on AI content marking (10 June 2026)</a> &middot;
     <em>Not legal advice. Regula identifies risk indicators for developer review.</em>

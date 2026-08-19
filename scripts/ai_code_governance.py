@@ -340,7 +340,21 @@ def scan_ai_generated_code(project_path: str, include_git: bool = True) -> dict:
             "files_with_markers": files_with_markers,
             "total_files_scanned": total_files,
             "governance_score": governance["score"],
-            "transparency_compliant": governance["has_ai_policy"] and governance["has_disclosure"],
+            # RENAMED 2026-08-17, LEDGER N125. This key was
+            # `transparency_compliant`, a JSON key asserting a compliance state
+            # whose entire predicate is two files existing on disk. Neither file
+            # is opened, and Article 50 governs how a system behaves towards the
+            # people using it, not whether a repository contains documentation.
+            # A key name is a claim: consumers read `transparency_compliant:
+            # true` as a determination, and no disclaimer elsewhere in the
+            # payload reaches them. The name now states the observable.
+            #
+            # This is a BREAKING change to the `ai-codegen` data payload and is
+            # deliberately not aliased: keeping the old key would keep shipping
+            # the claim this change exists to remove.
+            "transparency_documents_present": (
+                governance["has_ai_policy"] and governance["has_disclosure"]
+            ),
         },
         "limitations": (
             "This scanner detects explicit markers only. "
@@ -398,27 +412,45 @@ def format_ai_codegen_text(result: dict) -> str:
             lines.append(f"  {g['commit']}: [{g['generator']}] {g['message_excerpt']}")
         lines.append("")
 
-    # Governance score
+    # Documentation presence. Reported as a count of the four documents this
+    # function looks for, NOT as a graded verdict.
+    #
+    # Until 2026-08-17 this printed "Governance Score: 70/100 (GOOD)". Both
+    # halves were unsupportable from the same predicate: GOOD/PARTIAL/LOW passes
+    # a quality judgement on a project's governance, and an N/100 score invites
+    # reading a documentation-presence tally as a governance measurement, when
+    # what was measured is whether four filenames exist. The four booleans below
+    # were always the honest content of this block. LEDGER N125.
     score = gov["score"]
-    if score >= 70:
-        score_label = "GOOD"
-    elif score >= 40:
-        score_label = "PARTIAL"
-    else:
-        score_label = "LOW"
-    lines.append(f"Governance Score: {score}/100 ({score_label})")
+    present = sum(1 for k in ("has_ai_policy", "has_disclosure",
+                              "has_model_card", "has_tool_inventory") if gov[k])
+    lines.append(f"Governance documents present: {present} of 4")
+    lines.append(f"  (file-presence score {score}/100; no file is read, and "
+                 f"presence is not compliance)")
     lines.append(f"  AI usage policy:    {'Yes' if gov['has_ai_policy'] else 'No'}")
     lines.append(f"  AI code disclosure: {'Yes' if gov['has_disclosure'] else 'No'}")
     lines.append(f"  Model card:         {'Yes' if gov['has_model_card'] else 'No'}")
     lines.append(f"  Tool inventory:     {'Yes' if gov['has_tool_inventory'] else 'No'}")
     lines.append("")
 
-    # Transparency compliance
-    if summary["transparency_compliant"]:
-        lines.append("EU AI Act Transparency (Art 50/52): COMPLIANT")
-        lines.append("  AI usage policy and disclosure documentation found.")
+    # Article 50/52 transparency DOCUMENTS, reported as file presence.
+    #
+    # Until 2026-08-17 this printed the Article 50/52 heading followed by a
+    # capitalised compliance state. LEDGER N125 carries the verbatim string;
+    # it is not quoted here, because quoting it reintroduces it. Reproduced then
+    # on a project created by two `echo` commands totalling 34 bytes, which is
+    # the whole of the evidence the claim rested on.
+    # Article 50 duties attach to disclosing AI interaction and marking
+    # synthetic content in the running system; no arrangement of files in a
+    # repository can discharge them, and this function does not read the files
+    # it counts. LEDGER N125.
+    if summary["transparency_documents_present"]:
+        lines.append("Article 50/52 transparency documents: both present")
+        lines.append("  An AI usage policy and an AI code disclosure file were found.")
+        lines.append("  Neither was read. Presence of a document is not compliance")
+        lines.append("  with Article 50, which governs system behaviour.")
     else:
-        lines.append("EU AI Act Transparency (Art 50/52): GAPS FOUND")
+        lines.append("Article 50/52 transparency documents: not both present")
         if not gov["has_ai_policy"]:
             lines.append("  Missing: AI usage policy — create docs/AI_USAGE_POLICY.md documenting")
             lines.append("    which AI tools are used, for what purposes, and review procedures.")

@@ -213,7 +213,6 @@
 </head>
 <body>
 
-<div id="progress-bar" aria-hidden="true"></div>
 <a class="skip-link" href="#main">Skip to content</a>
 
 <nav class="nav" id="nav" aria-label="Main navigation">
@@ -221,7 +220,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -264,7 +265,7 @@
     <section id="short-answer">
         <h2>The short answer</h2>
 
-        <p>If your product uses AI and you have users in the EU, the EU AI Act applies to you. Full stop.</p>
+        <p>Using AI and having users in the EU is usually enough to make the question live, but it does not settle it. Scope turns on the role you hold, what the system is for, and whether one of the Article 2 exclusions catches you. The rest of this page walks the actual test rather than assuming the answer.</p>
 
         <p>Article 2(1) defines three categories of entity that fall within scope:</p>
 
@@ -292,7 +293,7 @@
                 <div class="dt-num">1</div>
                 <div class="dt-body">
                     <h4>Does your product use AI?</h4>
-                    <p>Article 3(1) defines an AI system as "a machine-based system that is designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment and that, for explicit or implicit objectives, infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments." If you call an LLM API, run an ML model, or have a system that learns from data &mdash; yes, this is AI under the regulation. If no: you are not in scope. Stop here.</p>
+                    <p>Article 3(1) defines an AI system as "a machine-based system that is designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, and that, for explicit or implicit objectives, infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments." If you call an LLM API, run an ML model, or have a system that learns from data &mdash; yes, this is AI under the regulation. If no: you are not in scope. Stop here.</p>
                 </div>
             </div>
             <div class="dt-step">
@@ -333,7 +334,7 @@
         <p>Yes. The mechanism is Article 2(1)(c), which states that the regulation applies to:</p>
 
         <blockquote>
-            <p>"providers and deployers of AI systems that are established in a third country, where the output produced by the AI system is used in the Union"</p>
+            <p>"providers and deployers of AI systems that have their place of establishment or are located in a third country, where the output produced by the AI system is used in the Union"</p>
         </blockquote>
 
         <p>This is deliberately modelled on GDPR's extraterritorial reach (Article 3(2) of the GDPR). The regulation does not require you to have an office in the EU, a legal entity in the EU, or even a contract with an EU customer. If the <em>output</em> of your AI system is used by someone in the EU, you are in scope.</p>
@@ -353,7 +354,7 @@
 
         <p><strong>You are almost certainly a deployer.</strong></p>
 
-        <p>Article 3(4) defines a deployer as "any natural or legal person, public authority, agency or other body using an AI system under its authority." If you integrate OpenAI's GPT, Anthropic's Claude, Google's Gemini, or any other hosted model into your product, you are using that AI system under your authority. You are the deployer.</p>
+        <p>Article 3(4) defines a deployer as "a natural or legal person, public authority, agency or other body using an AI system under its authority except where the AI system is used in the course of a personal non-professional activity". If you integrate OpenAI's GPT, Anthropic's Claude, Google's Gemini, or any other hosted model into your product, you are using that AI system under your authority, and using it in a product you ship is not personal non-professional use. You are the deployer.</p>
 
         <p>OpenAI (or Anthropic, or Google) is the <strong>GPAI model provider</strong> under Article 3(63). They have their own obligations under Articles 53&ndash;55, which have been in force since 2 August 2025.</p>
 
@@ -472,7 +473,7 @@
             <li><strong>Need a structured starting point?</strong> Run <code>regula assess</code> to record context for human review.</li>
             <li><strong>Want to scan your code?</strong> Run <code>regula check .</code> to identify risk patterns against 419 detections across 8 languages.</li>
             <li><strong>High-risk?</strong> Run <code>regula gap .</code> for an Articles 9&ndash;15 gap assessment, then <code>regula plan .</code> for a prioritised remediation list.</li>
-            <li><strong>Limited-risk?</strong> Run <code>regula disclose .</code> to generate compliant disclosure text for your chatbot or AI-generated content.</li>
+            <li><strong>Limited-risk?</strong> Run <code>regula disclose .</code> to draft disclosure text to review for your chatbot or AI-generated content.</li>
             <li><strong>Want the full picture?</strong> Install and run:</li>
         </ul>
 
@@ -492,7 +493,7 @@
     </section>
 
     <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
-        <strong>Last verified:</strong> 10 April 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+        <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
         <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
     </p>
 
@@ -546,14 +547,6 @@
 </footer>
 
 <script>
-// Scroll progress bar
-window.addEventListener('scroll', () => {
-    const bar = document.getElementById('progress-bar');
-    if (!bar) return;
-    const h = document.documentElement;
-    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
-    bar.style.width = Math.min(pct, 100) + '%';
-});
 // Nav scroll effect
 window.addEventListener('scroll', () => {
     const nav = document.querySelector('.nav');

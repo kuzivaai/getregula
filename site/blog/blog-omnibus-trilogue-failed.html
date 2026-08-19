@@ -170,14 +170,15 @@
 <body>
 
 <a href="#main" class="skip-link">Skip to content</a>
-<div id="progress-bar" aria-hidden="true"></div>
 
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -257,7 +258,7 @@
         <li>
             <div>
                 <strong>Run a gap assessment against Articles 9&ndash;15</strong>
-                <p>If you are high-risk, run <code>regula gap .</code> to see which obligations you currently meet and which you do not. The output shows per-article compliance scores with effort estimates. This gives you a concrete scope of work, not a vague sense of exposure. See our <a href="/blog/blog-omnibus-decision-framework.html">decision framework</a> for how to prioritise across the three compliance tracks.</p>
+                <p>Run <code>regula gap .</code> to see where the evidence sits. It reports a decision of <code>insufficient_information</code> until the applicability facts are settled, names the facts it still needs, and attaches article evidence only where the decision kernel resolved the matching obligation. It does not score you per article and it does not estimate effort, because neither follows from reading code. See our <a href="/blog/blog-omnibus-decision-framework.html">decision framework</a> for how to prioritise across the three compliance tracks.</p>
             </div>
         </li>
         <li>
@@ -288,7 +289,7 @@
     <p>Regula is a static code scanner that identifies regulatory risk indicators and generates documentation scaffolds. It does not determine legal classification, decide which obligations apply, replace legal advice, or monitor legislation in real time. It provides code-level evidence for contextual review. For historical background on the proposal, see: <a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus Delay: What Developers Actually Need to Know</a>.</p>
 
     <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
-        <strong>Last verified:</strong> 2 May 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+        <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
         <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
     </p>
 
@@ -343,22 +344,12 @@
 </footer>
 
 <script>
-    // Scroll progress bar
-    const progressBar = document.getElementById('progress-bar');
-    function updateProgress() {
-        const scrollTop = document.documentElement.scrollTop;
-        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        progressBar.style.width = pct + '%';
-    }
-
     // Nav scroll
     function updateNav() {
         document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
     }
 
     window.addEventListener('scroll', () => {
-        updateProgress();
         updateNav();
     }, { passive: true });
 

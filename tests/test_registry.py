@@ -154,9 +154,9 @@ def test_discover_sync_rescans():
     """--sync re-scans all previously registered projects."""
     with tempfile.TemporaryDirectory() as tmp:
         # Register a real fixture project
-        fixtures = str(Path(__file__).parent / "fixtures" / "sample_compliant")
+        fixtures = str(Path(__file__).parent / "fixtures" / "sample_no_findings")
         reg_path = _make_registry(tmp, systems={
-            "sample_compliant": {
+            "sample_no_findings": {
                 **SAMPLE_SYSTEM,
                 "project_path": fixtures,
                 "last_scanned": "2026-01-01T00:00:00+00:00",
@@ -166,7 +166,7 @@ def test_discover_sync_rescans():
         assert_eq(r.returncode, 0, f"sync should exit 0, got {r.returncode}: {r.stderr[:200]}")
         # Read updated registry
         updated = json.loads(Path(reg_path).read_text(encoding="utf-8"))
-        system = updated["systems"].get("sample_compliant", {})
+        system = updated["systems"].get("sample_no_findings", {})
         assert_true(system.get("last_scanned", "") > "2026-01-01",
                     f"last_scanned should be updated, got: {system.get('last_scanned')}")
     print("\u2713 Registry: --sync re-scans and updates timestamps")
@@ -179,10 +179,10 @@ def test_risk_trend_tracking():
     """Re-registering tracks previous_highest_risk for trend detection."""
     with tempfile.TemporaryDirectory() as tmp:
         reg_path = _make_registry(tmp, systems={
-            "sample_compliant": {
+            "sample_no_findings": {
                 **SAMPLE_SYSTEM,
                 "highest_risk": "high_risk",
-                "project_path": str(Path(__file__).parent / "fixtures" / "sample_compliant"),
+                "project_path": str(Path(__file__).parent / "fixtures" / "sample_no_findings"),
             }
         })
         # Re-scan the compliant fixture (should be minimal_risk now)
@@ -190,14 +190,14 @@ def test_risk_trend_tracking():
         env["REGULA_REGISTRY"] = reg_path
         r = subprocess.run(
             [sys.executable, "scripts/cli.py", "discover", "--register",
-             "--project", "tests/fixtures/sample_compliant/"],
+             "--project", "tests/fixtures/sample_no_findings/"],
             capture_output=True, text=True, timeout=30,
             cwd=str(Path(__file__).parent.parent),
             env=env,
         )
         assert_eq(r.returncode, 0, f"re-register should exit 0: {r.stderr[:200]}")
         updated = json.loads(Path(reg_path).read_text(encoding="utf-8"))
-        system = updated["systems"].get("sample_compliant", {})
+        system = updated["systems"].get("sample_no_findings", {})
         assert_true("previous_highest_risk" in system,
                     f"should track previous_highest_risk, got keys: {list(system.keys())}")
         assert_eq(system["previous_highest_risk"], "high_risk",

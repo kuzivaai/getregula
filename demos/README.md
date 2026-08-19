@@ -13,19 +13,30 @@ landing page and in the Trust Pack.
 
 ## What the demo shows
 
-The shortest possible path from "I just installed this tool" to "I have
-a categorised, article-cited finding I can act on":
+The shortest path from "I just installed this tool" to "I have a
+code-observable indicator and a named list of what I still have to
+settle myself":
 
 1. `pipx install regula-ai`
-2. `regula quickstart` — runs the first scan automatically and prints
-   the top findings inline (the value-first UX added in v1.6.0)
-3. `regula classify --file demo.py` — confirms the file is HIGH-RISK
-   under Annex III, Category 4 (Employment and workers management)
-   with the relevant article numbers
+2. `regula quickstart` — creates a policy file and runs the first scan
+   automatically (the value-first UX added in v1.6.0)
+3. `regula classify --file demo.py` — reports
+   `Decision: insufficient_information`, names the facts still needed,
+   and prints the Annex III Category 4 pattern match underneath as a
+   detector observation, explicitly labelled as not a legal
+   classification
 
-Total elapsed time in the cast: under 10 seconds. On a real laptop the
-real timing is 3–8 seconds for the install and well under a second for
-the scan.
+**What it does not show, because the tool does not do it.** Nothing here
+determines a risk tier, and the transcript must not be read as doing so.
+An earlier version of `regula-cli.txt` printed the `HIGH-RISK:` line on
+its own, without the decision block or the label above it. That was a
+determination attributed to the tool, and the same text had been copied
+onto a published site page. It is corrected, and
+`scripts/verify_transcripts.py` now fails the build if a published
+surface shows that line without its qualifier.
+
+Elapsed time is deliberately not quoted. It is machine-dependent and
+nothing in this repository measures it.
 
 The demo target is a literal `classify_resume()` function — the
 canonical motivating example for the Annex III recall expansion shipped
@@ -65,11 +76,25 @@ $ pipx install regula-ai
 </pre>
 ```
 
+## Provenance, stated plainly
+
+`regula-cli.txt` is real output. Every block in it was produced by
+running the command shown against the `demo.py` listed above, on
+2026-08-17 against v1.9.0, and pasted unedited apart from replacing the
+absolute temporary path in the `Created:` line with `./`.
+
+`regula-cli.cast` is **hand-authored**, not recorded, and has been since
+it was written. It is kept because it is the only asciinema-format
+artefact here and it is referenced by the changelog, but it must not be
+cited as a recording of a session that happened. Nothing generates it
+from the tool, nothing checks it against the tool, and its version and
+figures are those of whatever release it was written for. If it is ever
+needed as evidence rather than as decoration, re-record it from a real
+session first.
+
 ## Recording new versions
 
-The current cast was hand-authored to match the actual output of
-Regula against the canonical `demo.py` fixture. To re-record from
-a real session:
+To re-record from a real session:
 
 ```bash
 asciinema rec demos/regula-cli.cast --overwrite \

@@ -167,14 +167,15 @@
 </head>
 <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <div id="progress-bar" aria-hidden="true"></div>
 
     <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -436,11 +437,11 @@
         <a class="art-item" href="/regions/south-africa-ai-policy.html">
             <div class="art-meta">
                 <span class="tag status-live">Live tracker</span>
-                <span>Last updated: 8 April 2026</span>
+                <span>Last updated: 17 August 2026</span>
                 <span>Topic: South Africa</span>
             </div>
             <h2>South Africa's draft National AI Policy: what Cabinet approved, and what it means for code</h2>
-            <p>The draft National Artificial Intelligence Policy was gazetted on 10 April 2026 and later withdrawn after fictitious references were identified; Cabinet confirmed the withdrawal on 5 June. The tracker separates that withdrawn document from the existing POPIA and governance baseline.</p>
+            <p>The draft National Artificial Intelligence Policy was gazetted on 10 April 2026. After fictitious references were identified the Minister announced the withdrawal on 26 April 2026, Cabinet approved it on 5 June, and Notice 3880 was withdrawn by gazette on 12 June 2026. The tracker separates that withdrawn document from the existing POPIA and governance baseline.</p>
         </a>
 
         <a class="art-item" href="/blog/blog-aicdi-governance-gaps.html">
@@ -462,7 +463,9 @@
             <p>The same South Africa content as the live landing page, rendered as markdown on GitHub. Useful if you want to diff the page against the git history, or if you are reading in a context where the live site is not convenient.</p>
         </a>
 
-    </main>
+    <p style="max-width:720px;margin:32px auto 8px;color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 14 August 2026 &middot; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+
+</main>
 
     <footer>
         <div class="foot-inner">
@@ -490,13 +493,8 @@
     </footer>
 
     <script>
-        const progressBar = document.getElementById('progress-bar');
         const nav = document.getElementById('nav');
         function onScroll() {
-            const scrollTop = document.documentElement.scrollTop;
-            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-            progressBar.style.width = pct + '%';
             nav.classList.toggle('scrolled', window.scrollY > 20);
         }
         window.addEventListener('scroll', onScroll, { passive: true });

@@ -15,6 +15,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from remediation import CATEGORY_REMEDIATIONS
+from errors import UsageError
 
 
 # ---------------------------------------------------------------------------
@@ -227,8 +228,31 @@ def save_plan_status(project_path: str, status: dict) -> None:
     )
 
 
-def mark_task_done(project_path: str, task_id: str) -> dict:
-    """Mark a task as completed in the status file."""
+def plan_task_ids(plan: dict) -> set:
+    """Return the id set of a plan produced by generate_plan()."""
+    return {t["id"] for t in plan.get("tasks", []) if "id" in t}
+
+
+def mark_task_done(project_path: str, task_id: str, known_task_ids) -> dict:
+    """Mark a task as completed in the status file.
+
+    ``known_task_ids`` is the id set of the plan the mark belongs to, and it
+    is required rather than optional. A completion record whose id appears in
+    no plan is a record with no referent, and `.regula/` artefacts are read as
+    evidence, so writing one is worse than writing nothing. Callers holding a
+    plan should pass ``plan_task_ids(plan)``; callers that cannot produce a
+    plan have nothing to mark and must not call this.
+
+    Raises:
+        UsageError: if task_id is not in known_task_ids.
+    """
+    known = set(known_task_ids)
+    if task_id not in known:
+        if known:
+            hint = "Known task ids: " + ", ".join(sorted(known)) + "."
+        else:
+            hint = "The plan for this project contains no tasks."
+        raise UsageError(f"No task {task_id!r} in this plan. {hint}")
     status = load_plan_status(project_path)
     status[task_id] = {
         "status": "completed",

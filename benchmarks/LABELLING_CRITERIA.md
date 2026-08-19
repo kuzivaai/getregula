@@ -209,6 +209,6 @@ TN counts.
 | **Random corpus** | Precision on 50 randomly selected AI repos (blind-labelled) | 201 labels, 51.2% precision |
 | **Library corpus** | Precision on OSS AI libraries (development reference) | 257 labels, 15.2% precision |
 | **App corpus** | Precision on hand-picked AI apps (development reference) | 189 labels, 66.1% precision |
-| **Synthetic corpus** | Recall on controlled fixtures with known issues | 13 fixtures in `benchmarks/synthetic/` |
+| **Synthetic corpus** | Recall on controlled fixtures with known issues | 38 fixtures in `benchmarks/synthetic/` |
 | **Planted corpus** | Recall on real code with seeded issues | Not yet built |
 Sources: [`benchmarks/labels.json`](labels.json), [`benchmarks/results/random_corpus/`](results/random_corpus/), and [`benchmarks/synthetic/`](synthetic/).

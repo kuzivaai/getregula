@@ -83,7 +83,7 @@ def run_quickstart(project_dir: str = ".", org: str = "My Organisation",
     next_steps.append("Run 'regula doctor' to verify your setup")
     if blocks:
         next_steps.append(f"Review {len(blocks)} BLOCK finding(s) — these would fail CI")
-    next_steps.append("Run 'regula install claude-code' to add pre-commit hooks")
+    next_steps.append("Run 'regula install pre-commit' to add scanning before commits")
     next_steps.append("Run 'regula gap --project .' for compliance gap analysis")
     next_steps.append("Run 'regula bias' to evaluate model stereotype bias (requires Ollama)")
 
