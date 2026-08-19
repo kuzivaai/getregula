@@ -48,7 +48,7 @@ The homepage must support that task before presenting the developer CLI.
 2. Use `python3 scripts/ledger_review.py` to obtain two independent, evidenced reviews for each REVIEW_REQUIRED row; adjudicate disagreements outside the bot.
 3. Verify the founder homepage at desktop, 390 px mobile, keyboard-only, zoom/reflow, success, validation-error, and scanner-error states.
 4. Run the full project verification command from `AGENTS.md`.
-5. Present the local result and limitations before authorising push, preview publication, merge, release, or production deployment.
+5. Re-derive publication status from Git and GitHub. If a pull request exists, require green checks and preview evidence before deciding whether to merge; merge, release, and production deployment remain separate decisions.
 
 ## Source-of-truth commands
 

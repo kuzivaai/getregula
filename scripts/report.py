@@ -689,27 +689,91 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     _pruned_code_files = 0
     _prune_budget_left = _PRUNE_ENTRY_BUDGET
 
-    def _count_pruned_code_files(directory: Path) -> int:
+    def _count_pruned_code_files(directory: Path, dirname: str,
+                                 parent_fd=None) -> int:
         """Count code-extension files under a pruned directory, under budget.
 
-        Uses os.walk without reading any file: this is an inventory of what
-        was not scanned, not a scan. Returns the count for THIS directory so
-        the caller can drop directories that held no code at all; `.git` is
-        pruned on every scan and reporting it as "files not scanned" would be
-        noise that implies a loss where there was none.
+        This is an inventory of names, not a scan: it never reads a file.
+        Returns the count for THIS directory so the caller can drop directories
+        that held no code at all; `.git` is pruned on every scan and reporting
+        it as "files not scanned" would imply a loss where there was none.
+
+        On POSIX, enumerate relative to the descriptor yielded by ``fwalk``.
+        Opening every descendant with ``O_NOFOLLOW`` keeps a repository from
+        swapping a skipped directory for a symlink to somewhere outside the
+        project between discovery and inventory. The fallback re-validates
+        containment and never follows directory symlinks.
         """
         nonlocal _pruned_code_files, _prune_budget_left
         if _prune_budget_left <= 0:
             return 0
         here = 0
+
+        def _count_from_fd(start_fd: int) -> None:
+            nonlocal here, _prune_budget_left
+            pending = [start_fd]
+            flags = os.O_RDONLY
+            if hasattr(os, "O_DIRECTORY"):
+                flags |= os.O_DIRECTORY
+            if hasattr(os, "O_NOFOLLOW"):
+                flags |= os.O_NOFOLLOW
+            if hasattr(os, "O_CLOEXEC"):
+                flags |= os.O_CLOEXEC
+            try:
+                while pending and _prune_budget_left > 0:
+                    current_fd = pending.pop()
+                    try:
+                        with os.scandir(current_fd) as entries:
+                            for entry in entries:
+                                _prune_budget_left -= 1
+                                try:
+                                    if entry.is_file(follow_symlinks=False):
+                                        if Path(entry.name).suffix in CODE_EXTENSIONS:
+                                            here += 1
+                                    elif (entry.is_dir(follow_symlinks=False)
+                                          and _prune_budget_left > 0):
+                                        child_fd = os.open(
+                                            entry.name, flags, dir_fd=current_fd)
+                                        pending.append(child_fd)
+                                except OSError:
+                                    _prune_budget_left = 0
+                                    break
+                                if _prune_budget_left <= 0:
+                                    break
+                    finally:
+                        os.close(current_fd)
+            finally:
+                for open_fd in pending:
+                    os.close(open_fd)
+
         try:
-            for _r, _d, _f in os.walk(directory):
-                _prune_budget_left -= len(_f) + len(_d)
-                for _name in _f:
-                    if Path(_name).suffix in CODE_EXTENSIONS:
-                        here += 1
-                if _prune_budget_left <= 0:
-                    break
+            if parent_fd is not None and hasattr(os, "O_NOFOLLOW"):
+                root_flags = os.O_RDONLY
+                if hasattr(os, "O_DIRECTORY"):
+                    root_flags |= os.O_DIRECTORY
+                root_flags |= os.O_NOFOLLOW
+                if hasattr(os, "O_CLOEXEC"):
+                    root_flags |= os.O_CLOEXEC
+                root_fd = os.open(dirname, root_flags, dir_fd=parent_fd)
+                _count_from_fd(root_fd)
+            else:
+                resolved = directory.resolve(strict=True)
+                resolved.relative_to(project)
+                if directory.is_symlink() or not resolved.is_dir():
+                    return 0
+                for _r, _d, _f in os.walk(resolved, followlinks=False):
+                    _d[:] = [name for name in _d
+                              if not (Path(_r) / name).is_symlink()]
+                    _prune_budget_left -= len(_f) + len(_d)
+                    for _name in _f:
+                        if Path(_name).suffix in CODE_EXTENSIONS:
+                            here += 1
+                    if _prune_budget_left <= 0:
+                        break
+        except (ValueError, FileNotFoundError):
+            # An escape or a raced-away directory contains no project files
+            # that this inventory is allowed to count.
+            return 0
         except OSError:
             # An unreadable pruned directory is not a scan failure. It is
             # simply not countable, and the exact flag below says so.
@@ -834,7 +898,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 _rel = str(_p.relative_to(project))
             except ValueError:
                 _rel = str(_p)
-            _here = _count_pruned_code_files(_p)
+            _here = _count_pruned_code_files(_p, _d, _dirfd)
             if _here:
                 _pruned_dirs.append({"path": _rel, "skipped_because": _d,
                                      "code_files": _here})

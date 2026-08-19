@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T09:05:44.521342+00:00",
+  "generated_at": "2026-08-19T09:59:29.957578+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 3096,
-      "total_functions": 3043,
+      "total_collected": 3098,
+      "total_functions": 3045,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -118,7 +118,7 @@
         "tests/test_policy_config.py": 5,
         "tests/test_precision_provenance.py": 7,
         "tests/test_project_fingerprint.py": 79,
-        "tests/test_public_claim_integrity.py": 18,
+        "tests/test_public_claim_integrity.py": 19,
         "tests/test_public_surface_inventory.py": 20,
         "tests/test_published_count_manifest.py": 30,
         "tests/test_qualifier.py": 19,
@@ -147,7 +147,7 @@
         "tests/test_signing.py": 21,
         "tests/test_site_critical_css.py": 7,
         "tests/test_site_facts.py": 24,
-        "tests/test_skipped_dir_disclosure.py": 7,
+        "tests/test_skipped_dir_disclosure.py": 8,
         "tests/test_source_of_truth.py": 10,
         "tests/test_stale_number_floor.py": 14,
         "tests/test_surface_agreement.py": 4,
@@ -158,7 +158,7 @@
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1389
+      "runner_functions": 1391
     }
   },
   "notes": {

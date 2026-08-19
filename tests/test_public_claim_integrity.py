@@ -16,6 +16,7 @@ from public_surface_inventory import (
     discover,
     fold_for_claim_match,
 )
+from verify_quotations import visible_text
 
 REPO = Path(__file__).resolve().parent.parent
 CONTRACT = REPO / "data" / "public_claim_surfaces.json"
@@ -69,6 +70,13 @@ HEDGED_COPY = (
     "0 unerwartete Sicherheitsbefunde",
     "0 vulnerabilidades inesperadas",
 )
+
+
+def test_quotation_visible_text_uses_html_parsing_not_end_tag_regexes():
+    source = ("<p>Keep &amp; show</p><script type='text/javascript'>"
+              "hidden claim</script ><style>hidden style</style >"
+              "<p>Visible conclusion</p>")
+    assert visible_text(source) == "Keep & show Visible conclusion"
 
 
 def shipped_languages(root: Path = REPO) -> set[str]:
