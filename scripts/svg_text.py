@@ -45,9 +45,10 @@ from __future__ import annotations
 import sys
 from html import unescape
 from pathlib import Path
-from xml.etree import ElementTree
 
 sys.path.insert(0, str(Path(__file__).parent))
+
+from safe_io import UnsafeXmlError, parse_xml_text
 
 SVG_NS = "{http://www.w3.org/2000/svg}"
 TEXT_TAG = SVG_NS + "text"
@@ -93,8 +94,8 @@ def rendered_lines(source: str) -> list[str]:
     Raises SvgTextError if the document cannot be parsed.
     """
     try:
-        root = ElementTree.fromstring(source)
-    except ElementTree.ParseError as exc:
+        root = parse_xml_text(source)
+    except (UnsafeXmlError, ValueError) as exc:
         raise SvgTextError(f"SVG could not be parsed: {exc}") from exc
 
     parent_of = {}

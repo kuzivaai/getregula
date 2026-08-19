@@ -6740,3 +6740,59 @@ mapping. The output says so. The 72 legacy ledger rows remain outside the
 heading-state totals, but `ledger_status --legacy` now classifies every row
 conservatively: explicit declarations only, with mixed prose reported as
 `REVIEW_REQUIRED` rather than guessed.
+
+---
+
+### N180. The owner authorised evidence-gated release and distribution, while preserving the privacy, payment and legal hard stops
+
+**State:** PARTIAL
+
+**First raised:** 2026-08-19, from the signed-off owner directive supplied as
+`Regula_Codex_Distribution_Directive_2026-08-19.docx` (SHA-256
+`054f5dbc5ef70f15e85baade470cc81c33ebe6ec28558dd49de270c5dcd190dc`).
+
+**Status:** The directive supersedes earlier repository decisions only where
+it expressly changes owner authorisation. The machine-readable policy is
+`data/distribution_execution_policy.json`. Safe local implementation, tests and
+documentation are authorised. Commit/push, PR update, merge, production deploy
+and package release are conditionally authorised when their recorded machine
+gates pass. Payment remains inactive; consultant booking is unavailable;
+personal-data web forms and customer source upload remain disabled; legal
+advice and compliance certification are not offered.
+
+The first security reconciliation found that the public zero-finding language
+was not supportable across scopes. On the branch, Bandit moved from 14 findings
+(3 low, 11 medium, 0 high) to zero after exact-host HTTPS/redirect controls,
+bounded XML parsing and two narrow denylist-literal annotations. The locked
+all-extras dependency audit moved from five advisories in two packages to one
+advisory in WeasyPrint 68.1; the four `cryptography` advisories were removed by
+locking 50.0.0. The residual WeasyPrint advisory has no fixed release and the
+known affected option is not enabled by Regula. This is mitigation evidence,
+not a claim that the package is vulnerability-free.
+
+The default branch still exposes 43 CodeQL alerts from analysis commit
+`fcdbcc51bdb59645202084c14ffe76dbaa8a1138`. The exact pre-change PR 55
+merge-ref analysis returned zero results. Those facts are deliberately kept
+separate: the default alerts cannot be called closed until the updated PR and a
+post-merge default-branch run both reach terminal state. The complete snapshot
+and dispositions are in
+`docs/security/SECURITY-FINDINGS-2026-08-19.md`.
+
+What remains outstanding: commit and push the locally gated security truth,
+wait for the fresh exact-head PR checks, merge only if policy
+passes, verify the deployed production page in a browser, then build and
+verify a newly versioned package before publication. External distribution is
+separately conditional on platform and evidence gates. Research involving
+people cannot start until its privacy/consent gate is evidenced. Payment,
+booking and transmitting forms are hard stops, not backlog items an agent may
+silently activate.
+
+Local-gate update at 2026-08-19T17:06:12Z: the first prescribed legacy-runner
+attempt exposed the missing sibling-import setup and failed (1,464 assertions,
+1 failure). After that defect was fixed, the complete runner passed 1,464
+assertions across 1,404 functions. The first pytest attempt reached 3,103
+passes and 8 timestamp-test errors because the sandbox denied localhost socket
+creation; with the required local-socket permission, all 3,111 tests passed.
+Self-test passed 6/6 and doctor reported 8 pass, 4 information, 0 warnings. The
+local Class B gate is therefore green; fresh PR-head CI and CodeQL remain
+pending until the commit is pushed.

@@ -19,8 +19,8 @@ The homepage must support that task before presenting the developer CLI.
 
 ## Reproducible current measurements
 
-- Machine-state ledger: 118 entries = 25 OPEN + 26 PARTIAL + 67 CLOSED.
-- Anything outstanding in that population: 51 entries; substantively unfinished: 25.
+- Machine-state ledger: 119 entries = 25 OPEN + 27 PARTIAL + 67 CLOSED.
+- Anything outstanding in that population: 52 entries; substantively unfinished: 25.
 - Historical table: 72 rows = 14 OPEN + 1 PARTIAL + 25 CLOSED + 32 REVIEW_REQUIRED.
 - Ledger review queue: 32 rows require independent human review; the bot does not infer their state.
 - Browser/Python scanner parity gate: all 38 canonical fixtures execute, including all 30 high-risk fixtures.

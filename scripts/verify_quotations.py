@@ -35,6 +35,10 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).parent))
+
+from safe_io import urlopen_https
+
 SITE = ROOT / "site"
 CORPORA = ROOT / "references" / "corpora"
 
@@ -175,7 +179,11 @@ def refresh_corpora() -> int:
             headers={"Accept": "application/xhtml+xml",
                      "Accept-Language": meta["lang"]},
         )
-        with urllib.request.urlopen(request, timeout=180) as response:
+        with urlopen_https(
+            request,
+            allowed_hosts=frozenset({"publications.europa.eu"}),
+            timeout=180,
+        ) as response:
             raw = response.read().decode("utf-8", errors="replace")
         text = visible_text(raw)
         with gzip.open(CORPORA / f"{key}.txt.gz", "wt", encoding="utf-8") as out:

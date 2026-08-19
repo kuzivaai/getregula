@@ -291,7 +291,7 @@
   "thousandsSep": ".",
   "proof": {
     "tests": "{tests} testes, executados de novo a cada mudança",
-    "security": "0 vulnerabilidades inesperadas",
+    "security": "achados de segurança divulgados por ferramenta e escopo",
     "deps": "zero dependências no núcleo",
     "upload": "o núcleo local não envia os arquivos analisados",
     "trustLabel": "trust pack",
