@@ -151,7 +151,8 @@
         "SECURITY.md",
         "docs/TRUST.md",
         "pyproject.toml",
-        "uv.lock"
+        "uv.lock",
+        "Implementation commit 6f18cc8"
       ],
       "counterevidence": [
         "Default branch has 43 open CodeQL alerts",

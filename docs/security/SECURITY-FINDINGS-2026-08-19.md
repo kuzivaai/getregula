@@ -8,6 +8,7 @@ measure different things.
 
 - Starting branch: `feat/engagement-fixes`
 - Audited starting head: `8d1aa3b9b1335290d154c5cf80d6fd6eb750cc23`
+- Security reconciliation implementation commit: `6f18cc8`
 - Default-branch CodeQL analysis commit:
   `fcdbcc51bdb59645202084c14ffe76dbaa8a1138`
 - PR 55 merge-ref CodeQL analysis commit:

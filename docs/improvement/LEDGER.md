@@ -6795,4 +6795,5 @@ passes and 8 timestamp-test errors because the sandbox denied localhost socket
 creation; with the required local-socket permission, all 3,111 tests passed.
 Self-test passed 6/6 and doctor reported 8 pass, 4 information, 0 warnings. The
 local Class B gate is therefore green; fresh PR-head CI and CodeQL remain
-pending until the commit is pushed.
+pending until the commit is pushed. The bounded implementation and first
+evidence record are commit `6f18cc8`.
