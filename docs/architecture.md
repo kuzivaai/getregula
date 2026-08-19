@@ -6,13 +6,12 @@ Internal layout of the `scripts/` package, design principles, and language suppo
 
 ```
 regula/
-├── .claude/skills/regula/SKILL.md  # Core skill file (Claude Code)
 ├── scripts/
 │   ├── cli.py                     # Unified CLI entry point
 │   ├── classify_risk.py           # Risk indication engine (confidence scoring)
 │   ├── log_event.py               # Audit trail (hash-chained, file-locked)
 │   ├── report.py                  # HTML + SARIF report generator
-│   ├── install.py                 # Multi-platform hook installer
+│   ├── install.py                 # Pre-commit integration installer
 │   ├── feed.py                    # Governance news aggregator (7 sources)
 │   ├── questionnaire.py           # Context-driven risk assessment
 │   ├── session.py                 # Session-level risk aggregation
@@ -43,14 +42,10 @@ regula/
 │   ├── adoption_pulse.py          # Passive PyPI + GitHub signal tracker
 │   ├── monitor.py                 # Article 12 runtime monitoring SDK (MonitorSession, Trace)
 │   └── cli_monitor.py             # CLI: regula monitor status|report|verify|prune|export
-├── hooks/
-│   ├── pre_tool_use.py            # PreToolUse hook (CC/Copilot/Windsurf)
-│   ├── post_tool_use.py           # PostToolUse logging hook
-│   └── stop_hook.py               # Session summary hook
 ├── references/                    # Regulatory reference documents
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
-├── tests/                         # 127 test files, 3,099 tests (pytest --collect-only)
+├── tests/                         # 127 test files, 3,102 tests (pytest --collect-only)
 │   ├── test_classification.py     # Core classification tests (main test file)
 │   └── ...                        # See tests/ for full list
 ├── docs/
@@ -75,7 +70,7 @@ regula/
 ### Design Principles
 
 - **Core engine + thin adapters.** One classification engine, multiple platform integrations.
-- **Same hook protocol.** Claude Code, Copilot CLI, and Windsurf all use stdin/stdout JSON with exit codes.
+- **Tracked integration targets.** The pre-commit framework and direct Git hook both invoke the shipped scanner; editor and coding-assistant access uses the MCP server.
 - **Detector priority, not binary labels.** 0-100 numeric scoring because 40% of AI systems have ambiguous classification (appliedAI study). The number counts how many code patterns matched; it is not a confidence and not a probability that the finding is correct.
 - **Inline suppression with audit trail.** `# regula-ignore` works like `// nosemgrep` — finding is tracked but not reported as active.
 - **SARIF for CI/CD.** Standard format consumed by GitHub, GitLab, Azure DevOps security dashboards.

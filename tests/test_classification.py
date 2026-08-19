@@ -3703,7 +3703,8 @@ def test_smoke_install_help():
     """Smoke test: regula install --help runs and exits 0."""
     r = _run_cli("install", "--help")
     assert_eq(r.returncode, 0, f"install --help exit {r.returncode}")
-    assert_true("platform" in r.stdout.lower(), "install help should mention platform")
+    assert_true("integration" in r.stdout.lower(),
+                "install help should describe the supported integration")
     print("\u2713 Smoke: install --help exits 0")
 
 

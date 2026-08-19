@@ -133,22 +133,29 @@ def _check_audit_directory():
 
 
 def _check_hooks():
-    """Detect hooks in common AI coding assistant directories."""
-    hook_dirs = [
-        (Path.cwd() / ".claude" / "hooks", "Claude Code"),
-        (Path.cwd() / ".cursor", "Cursor"),
-        (Path.cwd() / ".windsurf", "Windsurf"),
+    """Detect supported Regula pre-commit integrations by their contents."""
+    candidates = [
+        (Path.cwd() / ".pre-commit-config.yaml", "regula-check",
+         "pre-commit framework"),
+        (Path.cwd() / ".git" / "hooks" / "pre-commit",
+         "Regula AI Governance", "Git pre-commit hook"),
     ]
     found = []
-    for d, name in hook_dirs:
-        if d.exists():
-            found.append(name)
+    for path, marker, name in candidates:
+        try:
+            if (path.is_file() and not path.is_symlink()
+                    and path.stat().st_size <= 1_000_000
+                    and marker in path.read_text(encoding="utf-8")):
+                found.append(name)
+        except (OSError, UnicodeError):
+            continue
 
     if found:
-        return {"name": "Hooks detected", "status": "PASS",
+        return {"name": "Pre-commit integration", "status": "PASS",
                 "detail": f"Found: {', '.join(found)}"}
-    return {"name": "Hooks detected", "status": "INFO",
-            "detail": "No hooks installed. Run 'regula install <platform>' to set up."}
+    return {"name": "Pre-commit integration", "status": "INFO",
+            "detail": "Not detected. Run 'regula install pre-commit' or "
+                      "'regula install git-hooks' to set up."}
 
 
 def _check_config_validation():
