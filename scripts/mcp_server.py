@@ -40,7 +40,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 _BLOCKED_EXACT = {Path(p) for p in ("/", "/home", "/root")}
 _BLOCKED_PREFIXES = [
     Path(p) for p in (
-        "/etc", "/usr", "/var", "/bin", "/sbin", "/tmp",
+        "/etc", "/usr", "/var", "/bin", "/sbin",
+        # Denied scan prefix, not a temporary-file destination.
+        "/tmp",  # nosec B108
         "/proc", "/sys", "/dev", "/boot",
     )
 ]

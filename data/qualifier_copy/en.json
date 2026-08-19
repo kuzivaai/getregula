@@ -291,7 +291,7 @@
   "thousandsSep": ",",
   "proof": {
     "tests": "{tests} tests, re-run on every change",
-    "security": "0 unexpected security findings",
+    "security": "security findings disclosed by tool and scope",
     "deps": "zero dependencies in the core",
     "upload": "the local core does not upload scanned files",
     "trustLabel": "trust pack",

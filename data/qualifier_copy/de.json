@@ -291,7 +291,7 @@
   "thousandsSep": ".",
   "proof": {
     "tests": "{tests} Tests, bei jeder Änderung erneut ausgeführt",
-    "security": "0 unerwartete Sicherheitsbefunde",
+    "security": "Sicherheitsbefunde nach Werkzeug und Umfang offengelegt",
     "deps": "null Abhängigkeiten im Kern",
     "upload": "der lokale Kern lädt gescannte Dateien nicht hoch",
     "trustLabel": "Trust Pack",

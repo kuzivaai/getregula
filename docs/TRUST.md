@@ -61,7 +61,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 3,102 unique tests (3,102 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
+| 3,111 unique tests (3,111 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -88,14 +88,14 @@ your lawyer's job, not Regula's.
 > is pending and tracked as ledger row N43 in
 > [`docs/improvement/LEDGER.md`](improvement/LEDGER.md).
 
-### 3.1 Internal test suite — 3,102 [unique](../tests/) / 3,102 pytest-collected cases
+### 3.1 Internal test suite — 3,111 [unique](../tests/) / 3,111 pytest-collected cases
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ --collect-only -q
-# Expected: 3102 collected. This command measures collection only.
-# 3,102 unique tests (sort -u of test IDs equals collected count).
+# Expected: 3111 collected. This command measures collection only.
+# 3,111 unique tests (sort -u of test IDs equals collected count).
 
 # Execute the full suite separately. Do not infer its result from collection.
 python3 -m pytest tests/ -q
@@ -103,7 +103,7 @@ python3 -m pytest tests/ -q
 
 Regula also ships a legacy auto-discovery runner for the classification
 suite — run `python3 tests/test_classification.py` for its current output.
-The runner currently discovers 1,395 functions, a count machine-checked by
+The runner currently discovers 1,404 functions, a count machine-checked by
 `tests/test_published_count_manifest.py`. **Read that line carefully:
 `1386 passed` is not a count of tests.** The runner's counter is incremented by
 the `assert_true` / `assert_eq` / `assert_false` helpers in `tests/helpers.py`,
@@ -277,25 +277,24 @@ Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 ### 3.6 Security posture — bandit, semgrep, pip-audit
 
 ```bash
-# Bandit and pip-audit are lightweight:
+# Audit source paths with the repository's documented Bandit policy:
 pip install bandit pip-audit
 bandit -c pyproject.toml -r scripts/ hooks/
-# Expected: 0 low / 0 medium / 0 high
-pip-audit
-# Expected: 0 vulnerabilities (zero runtime deps)
+# 2026-08-19 branch result: 0 findings after URL/XML hardening.
 
-# Semgrep is heavier (~150 MB) and optional. Skip if you only have
-# capacity for the quick pass:
-pip install semgrep
-semgrep --config p/security-audit --config p/python scripts/ hooks/
-# Expected: 0 findings (200 rules, 129 files)
+# Export the lock with every optional extra, then audit that export:
+uv export --all-extras --no-dev --no-emit-project -o /tmp/regula-all-extras.txt
+pip-audit -r /tmp/regula-all-extras.txt
+# 2026-08-19 result: 1 advisory in WeasyPrint 68.1. The advisory has
+# no fixed release; Regula does not enable the affected
+# presentational_hints=True path. See SECURITY.md for the bounded residual.
 ```
 
-Per the [comparative SAST research](https://semgrep.dev/blog/2021/python-static-analysis-comparison-bandit-semgrep/),
-running both bandit and semgrep is the standard hardened-Python audit.
-Regula passes both at the published version. Bandit's project config
-is in `pyproject.toml [tool.bandit]` with every project-level skip
-documented and rationalised.
+The core dependency declaration is empty. That does not imply that optional
+PDF, signing, YAML, AST or telemetry extras have no advisories. Semgrep was not
+re-run in the 2026-08-19 audit, so no current Semgrep pass is claimed. Dated,
+ref-specific findings and dispositions are in
+[`docs/security/SECURITY-FINDINGS-2026-08-19.md`](security/SECURITY-FINDINGS-2026-08-19.md).
 
 Bandit project config in `pyproject.toml [tool.bandit]` documents every
 project-level skip with rationale. Hard checks (B101 assert, B102 exec,
@@ -402,7 +401,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (3,102 unique tests, 3,102 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,395 functions, 442 defined in-file) |
+| Test suite | `tests/` (3,111 unique tests, 3,111 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,404 functions, 442 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit integration source | `scripts/install.py` |
@@ -496,12 +495,12 @@ is provenance-verifiable before you run it.
   offline. Network calls are scoped to opt-in commands: `regula feed`
   (governance news), `regula audit anchor` (RFC 3161 TSA), and
   `regula bias` (CrowS-Pairs dataset download, when network is available).
-- **All `urllib.urlopen` call sites enforce `http(s)` only.** The
-  `_require_http_url()` guard rejects `file://`, `ftp://`, `data://`
-  schemes before any network call. Verified by semgrep
-  `dynamic-urllib-use-detected` rule.
-- **XML feed parsing prefers `defusedxml`** when available, falls back
-  to `xml.etree` with a 10 MiB size cap to defuse XML-bomb vectors.
+- **Network-enabled maintenance fetchers are bounded.** The shared
+  `safe_io` path permits exact HTTPS hosts, rejects credentials and
+  non-default ports, and revalidates redirects. Other opt-in runtime network
+  paths retain their own scheme guards and remain separately testable.
+- **Maintenance XML parsing is bounded.** The shared path caps downloads at
+  2 MiB and rejects DTD/entity declarations before standard-library parsing.
 - **Credential detection has tested heuristics.** See `tests/`
   `test_classification.py::test_credentials_*` for the regression set.
 
@@ -512,7 +511,7 @@ currently is:
 
 | Question | Answer |
 |---|---|
-| Do you have a SOC 2 Type II report? | No. Regula is an open-source CLI tool, not a hosted service. There is no Regula infrastructure to audit. The equivalent is the open-source code itself plus the bandit/semgrep/pip-audit clean state. |
+| Do you have a SOC 2 Type II report? | No. Regula is an open-source CLI tool, not a hosted service. There is no SOC 2 report or equivalent certification. Source, tests and dated security-tool outputs provide review evidence, not assurance equivalence. |
 | Have you had a third-party penetration test? | No. The attack surface is the user's local machine + opt-in network calls listed above. The code is open for review. |
 | Do you have a CVE program? | Yes — [`SECURITY.md`](../SECURITY.md) defines the disclosure flow, supported versions, and target response times. Private disclosure via GitHub Security Advisory or `support@getregula.com`. The next public CVE we receive will also be the moment we register as a CNA. |
 | Do you sign releases with Sigstore? | Not yet. Releases are reproducible from source via `python3 -m build`. |
@@ -740,7 +739,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 3,102 unique tests (3,102 pytest-collected) |
+| Test suite | `tests/` | 3,111 unique tests (3,111 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |

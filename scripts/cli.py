@@ -100,7 +100,9 @@ def _validate_path(path_str: str) -> Path:
     # hangs indefinitely and is never the user's intent.
     _blocked = {Path("/"), Path("/etc"), Path("/usr"), Path("/var"),
                 Path("/bin"), Path("/sbin"), Path("/proc"), Path("/sys"),
-                Path("/dev"), Path("/boot"), Path("/tmp")}
+                Path("/dev"), Path("/boot"),
+                # Denied scan target, not a temporary-file destination.
+                Path("/tmp")}  # nosec B108
     if p in _blocked:
         raise PathError(
             f"Scanning {p} is not permitted — specify a project directory.\n"

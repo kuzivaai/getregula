@@ -30,6 +30,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).parent))
+
+from safe_io import urlopen_https
+
 REPO = Path(__file__).resolve().parent.parent
 OUT_DIR = REPO / "data" / "sentiment"
 
@@ -48,7 +52,9 @@ def _fetch_json(url: str, timeout: int = 15) -> dict[str, Any]:
         url,
         headers={"User-Agent": "regula-dev-sentiment/0.1 (+getregula.com)"},
     )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
+    with urlopen_https(
+        req, allowed_hosts=frozenset({"hn.algolia.com"}), timeout=timeout
+    ) as resp:
         return json.loads(resp.read().decode("utf-8", errors="replace"))
 
 
