@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import importlib.util
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -137,3 +138,17 @@ if __name__ == "__main__":
 def test_scanner_js_in_sync_with_risk_patterns():
     """site/assess/scanner.js pattern counts must match risk_patterns.py."""
     assert main() == 0, "scanner.js has drifted from risk_patterns.py — see stdout"
+
+
+def test_complete_scanner_js_parity_gate_runs():
+    """The required suite executes the Node gate, not merely its data-count check."""
+    proc = subprocess.run(
+        ["node", "tests/test_scanner_js.js"],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert "Runtime parity: 38/38 fixtures compared" in proc.stdout
+    assert "including all 30 high-risk fixtures" in proc.stdout

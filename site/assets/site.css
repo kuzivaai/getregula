@@ -1707,6 +1707,16 @@ footer p a:hover {
     margin: 0 auto;
     padding: var(--s9) var(--s6) var(--s9);
 }
+.qual-audience {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-hover);
+    margin: 0 0 var(--s3);
+}
 .qual h1 {
     font-family: var(--font-serif);
     font-size: clamp(1.75rem, 4.6vw, 2.6rem);

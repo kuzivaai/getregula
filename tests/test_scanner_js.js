@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // test_scanner_js.js — Tests for site/assess/scanner.js (648 detection patterns)
-// Verifies parity with Python CLI classifications on all 13 benchmark fixtures.
+// Verifies Python↔browser parity across the complete canonical benchmark corpus.
 // Run: node tests/test_scanner_js.js
 
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const scannerPath = path.join(__dirname, '..', 'site', 'assess', 'scanner.js');
 const { classifyCode, scanCode, isAiRelated, detectLanguage, stripComments } = require(scannerPath);
@@ -47,74 +48,117 @@ function assertIn(value, list, msg) {
 // =====================================================================
 
 const fixturesDir = path.join(__dirname, '..', 'benchmarks', 'synthetic', 'fixtures');
+const manifestPath = path.join(__dirname, '..', 'benchmarks', 'synthetic', 'manifest.json');
+const repoRoot = path.join(__dirname, '..');
 
 function loadFixture(name) {
   return fs.readFileSync(path.join(fixturesDir, name), 'utf-8');
 }
 
 // =====================================================================
-// 1. Benchmark parity tests — 13 of the 38 synthetic fixtures
+// 1. Complete-corpus parity and label-fidelity measurement
 // =====================================================================
 
-console.log('\n── Benchmark fixture parity (13 of 38 fixtures) ──\n');
+console.log('\n── Complete benchmark parity (manifest-derived) ──\n');
 
-// Prohibited fixtures
-const prohibitedFixtures = [
-  'prohibited_art5_1a.py',
-  'prohibited_art5_1b.py',
-  'prohibited_art5_1c.py',
-  'prohibited_art5_1d.py',
-  'prohibited_art5_1e.py',
-];
+const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
+const expectations = manifest.expectations;
+const fixtureNames = Object.keys(expectations).sort();
+const filesOnDisk = fs.readdirSync(fixturesDir).filter(name => name.endsWith('.py')).sort();
 
-for (const fixture of prohibitedFixtures) {
-  const code = loadFixture(fixture);
-  const result = classifyCode(code, 'python');
-  assertEq(result.detector_class, 'article_5_pattern', `${fixture} → article_5_pattern`);
-  console.log(`  ${result.detector_class === 'article_5_pattern' ? 'PASS' : 'FAIL'}  ${fixture} → ${result.detector_class}`);
+assertEq(fixtureNames.length, 38, 'canonical corpus size');
+assertEq(fixtureNames.filter(name => expectations[name] === 'high_risk').length, 30, 'high-risk corpus size');
+assertEq(fixtureNames.filter(name => expectations[name] === 'prohibited').length, 5, 'prohibited corpus size');
+assertEq(fixtureNames.filter(name => expectations[name] === 'not_high').length, 3, 'negative corpus size');
+assertEq(JSON.stringify(filesOnDisk), JSON.stringify(fixtureNames), 'manifest and fixture directory enumerate the same corpus');
+
+const pythonProbe = String.raw`
+import json
+import sys
+from pathlib import Path
+
+root = Path.cwd()
+sys.path.insert(0, str(root / "scripts"))
+from classify_risk import classify
+
+manifest = json.loads((root / "benchmarks/synthetic/manifest.json").read_text(encoding="utf-8"))
+fixtures = root / "benchmarks/synthetic/fixtures"
+out = {}
+for name in sorted(manifest["expectations"]):
+    result = classify((fixtures / name).read_text(encoding="utf-8"), "python")
+    out[name] = {
+        "tier": result.tier.value,
+        "indicators": sorted(result.indicators_matched),
+    }
+print(json.dumps(out, sort_keys=True))
+`;
+const pythonRun = spawnSync('python3', ['-c', pythonProbe], {
+  cwd: repoRoot,
+  encoding: 'utf-8',
+  env: { ...process.env, REGULA_POLICY: path.join(repoRoot, 'configs', 'regula-policy.yaml') },
+});
+assertEq(pythonRun.status, 0, `Python parity probe exits successfully${pythonRun.stderr ? ` (${pythonRun.stderr.trim()})` : ''}`);
+let pythonResults = {};
+try {
+  pythonResults = JSON.parse(pythonRun.stdout);
+} catch (error) {
+  assert(false, `Python parity probe emitted valid JSON: ${error.message}`);
 }
 
-// High-risk fixtures
-const highRiskFixtures = [
-  'highrisk_biometrics.py',
-  'highrisk_credit.py',
-  'highrisk_employment.py',
-  'highrisk_medical.py',
-  'highrisk_migration.py',
-];
+const pythonTierToDetector = {
+  prohibited: 'article_5_pattern',
+  high_risk: 'annex_iii_pattern',
+  limited_risk: 'article_50_pattern',
+  minimal_risk: 'no_elevated_pattern',
+  not_ai: 'no_ai_pattern',
+};
+const labelExpectedClass = {
+  prohibited: 'article_5_pattern',
+  high_risk: 'annex_iii_pattern',
+};
+const labelStats = {
+  prohibited: { exact: 0, total: 0 },
+  high_risk: { exact: 0, total: 0, article5: 0, noAi: 0, other: 0 },
+  not_high: { correct: 0, total: 0 },
+};
 
-for (const fixture of highRiskFixtures) {
-  const code = loadFixture(fixture);
-  const result = classifyCode(code, 'python');
-  assertEq(result.detector_class, 'annex_iii_pattern', `${fixture} → annex_iii_pattern`);
-  console.log(`  ${result.detector_class === 'annex_iii_pattern' ? 'PASS' : 'FAIL'}  ${fixture} → ${result.detector_class}`);
+for (const fixture of fixtureNames) {
+  const expectedLabel = expectations[fixture];
+  const result = classifyCode(loadFixture(fixture), 'python');
+  const python = pythonResults[fixture];
+  const expectedDetector = pythonTierToDetector[python.tier];
+  const jsIndicators = [...result.indicators_matched].sort();
+
+  assertEq(result.detector_class, expectedDetector, `${fixture} Python↔JavaScript detector class`);
+  assertEq(JSON.stringify(jsIndicators), JSON.stringify(python.indicators), `${fixture} Python↔JavaScript indicators`);
+
+  if (expectedLabel === 'not_high') {
+    labelStats.not_high.total++;
+    const correct = !['article_5_pattern', 'annex_iii_pattern'].includes(result.detector_class);
+    if (correct) labelStats.not_high.correct++;
+    assert(correct, `${fixture} negative fixture has no elevated detector class`);
+  } else {
+    const stats = labelStats[expectedLabel];
+    stats.total++;
+    if (result.detector_class === labelExpectedClass[expectedLabel]) stats.exact++;
+    if (expectedLabel === 'high_risk' && result.detector_class !== 'annex_iii_pattern') {
+      if (result.detector_class === 'article_5_pattern') stats.article5++;
+      else if (result.detector_class === 'no_ai_pattern') stats.noAi++;
+      else stats.other++;
+    }
+  }
+  console.log(`  PARITY  ${fixture}: label=${expectedLabel}, detector=${result.detector_class}`);
 }
 
-// Negative: chatbot → article_50_pattern
-{
-  const code = loadFixture('negative_chatbot.py');
-  const result = classifyCode(code, 'python');
-  assertEq(result.detector_class, 'article_50_pattern', 'negative_chatbot.py → article_50_pattern');
-  console.log(`  ${result.detector_class === 'article_50_pattern' ? 'PASS' : 'FAIL'}  negative_chatbot.py → ${result.detector_class}`);
-}
+// This is a non-regression floor, not an accuracy claim. The corpus is small,
+// synthetic, and maintained by this project. Improvements may raise the count;
+// a representative independently-labelled corpus is still required.
+assert(labelStats.high_risk.exact >= 18, 'high-risk label fidelity has not regressed below the measured 18/30 synthetic baseline');
+assertEq(labelStats.prohibited.exact, labelStats.prohibited.total, 'all prohibited labels retain exact detector agreement');
 
-// Negative: minimal_ai → no_elevated_pattern or article_50_pattern
-{
-  const code = loadFixture('negative_minimal_ai.py');
-  const result = classifyCode(code, 'python');
-  assertIn(result.detector_class, ['no_elevated_pattern', 'article_50_pattern'], 'negative_minimal_ai.py → minimal/limited');
-  console.log(`  ${['no_elevated_pattern', 'article_50_pattern'].includes(result.detector_class) ? 'PASS' : 'FAIL'}  negative_minimal_ai.py → ${result.detector_class}`);
-}
-
-// Negative: pure utility → not article_5_pattern or annex_iii_pattern (fixture allows no_ai_pattern or no_elevated_pattern)
-{
-  const code = loadFixture('negative_pure_utility.py');
-  const result = classifyCode(code, 'python');
-  assertIn(result.detector_class, ['no_ai_pattern', 'no_elevated_pattern'], 'negative_pure_utility.py → no_ai_pattern/minimal');
-  assert(result.detector_class !== 'article_5_pattern', 'negative_pure_utility.py not article_5_pattern');
-  assert(result.detector_class !== 'annex_iii_pattern', 'negative_pure_utility.py not annex_iii_pattern');
-  console.log(`  ${!['article_5_pattern', 'annex_iii_pattern'].includes(result.detector_class) ? 'PASS' : 'FAIL'}  negative_pure_utility.py → ${result.detector_class}`);
-}
+console.log('\n  Runtime parity: 38/38 fixtures compared, including all 30 high-risk fixtures');
+console.log(`  Label fidelity (not real-world accuracy): prohibited ${labelStats.prohibited.exact}/${labelStats.prohibited.total}; high-risk ${labelStats.high_risk.exact}/${labelStats.high_risk.total}; negatives ${labelStats.not_high.correct}/${labelStats.not_high.total}`);
+console.log(`  High-risk disagreements: ${labelStats.high_risk.article5} article_5_pattern; ${labelStats.high_risk.noAi} no_ai_pattern; ${labelStats.high_risk.other} other`);
 
 // =====================================================================
 // 2. scanCode() integration tests

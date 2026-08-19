@@ -137,10 +137,14 @@ def test_active_surfaces_do_not_publish_prohibited_claims():
 
 
 def test_required_limitation_concepts_are_translated():
+    # These phrases are the founder-facing limitation now rendered from the
+    # locale copy tables.  The older exact strings described the developer CLI
+    # in social metadata, so keeping them as the sentinel would force the
+    # homepage to misdescribe its primary task merely to satisfy this test.
     required = {
-        "site/index.html": ("does not determine legal classification", "human review"),
-        "site/locales/de.html": ("bestimmt weder die rechtliche klassifizierung", "menschliche kontextprüfung"),
-        "site/locales/pt-br.html": ("não determina classificação jurídica", "revisão humana"),
+        "site/index.html": ("does not decide your risk tier", "a person still has to settle"),
+        "site/locales/de.html": ("entscheidet nicht über ihre risikoklasse", "ein mensch noch klären muss"),
+        "site/locales/pt-br.html": ("não decide a sua classe de risco", "uma pessoa"),
     }
     for rel, phrases in required.items():
         text = (REPO / rel).read_text(encoding="utf-8", errors="replace").lower()
