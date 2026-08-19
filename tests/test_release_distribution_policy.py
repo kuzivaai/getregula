@@ -103,3 +103,14 @@ def test_svg_reader_fails_closed_on_refused_xml_declarations():
 def test_pdf_export_does_not_enable_vulnerable_presentational_hints():
     source = (ROOT / "scripts" / "pdf_export.py").read_text(encoding="utf-8")
     assert "presentational_hints=True" not in source
+
+
+def test_ci_signing_dependency_cannot_fall_below_the_audited_floor():
+    workflows = (
+        ROOT / ".github" / "workflows" / "ci.yaml",
+        ROOT / ".github" / "workflows" / "test-parallel-experiment.yml",
+    )
+    for workflow in workflows:
+        source = workflow.read_text(encoding="utf-8")
+        assert "cryptography>=41,<51" not in source
+        assert "cryptography>=50.0.0,<51" in source
