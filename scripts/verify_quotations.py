@@ -27,11 +27,11 @@ Exit codes: 0 = no mismatches, 1 = at least one mismatch or missing corpus.
 """
 import argparse
 import gzip
-import html
 import json
 import re
 import sys
 import unicodedata
+from html.parser import HTMLParser
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -102,10 +102,32 @@ def normalise(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+class _VisibleTextParser(HTMLParser):
+    """Collect reader-visible text without treating HTML as a regex language."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self._hidden_depth = 0
+        self.parts = []
+
+    def handle_starttag(self, tag: str, attrs) -> None:
+        if tag.lower() in {"script", "style"}:
+            self._hidden_depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() in {"script", "style"} and self._hidden_depth:
+            self._hidden_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if not self._hidden_depth:
+            self.parts.append(data)
+
+
 def visible_text(raw_html: str) -> str:
-    body = re.sub(r"<script.*?</script>|<style.*?</style>", " ", raw_html,
-                  flags=re.S | re.I)
-    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", body)))
+    parser = _VisibleTextParser()
+    parser.feed(raw_html)
+    parser.close()
+    return re.sub(r"\s+", " ", " ".join(parser.parts)).strip()
 
 
 ANCHOR_WORDS = 6

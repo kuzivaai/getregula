@@ -106,6 +106,25 @@ def test_a_pruned_directory_holding_no_code_is_not_reported():
         assert [d["path"] for d in st["pruned_dirs"]] == [], st["pruned_dirs"]
 
 
+def test_a_pruned_symlink_cannot_inventory_files_outside_the_project():
+    """The disclosure walk must obey the same containment boundary as scans."""
+    with tempfile.TemporaryDirectory() as td:
+        base = Path(td)
+        outside = base / "outside"
+        outside.mkdir()
+        (outside / "secret_name.py").write_text("print('outside')\n",
+                                                 encoding="utf-8")
+        root = _project(base / "inside", {"src/a.py": "print('inside')\n"})
+        try:
+            (root / "examples").symlink_to(outside, target_is_directory=True)
+        except OSError:
+            # Windows may require an explicit developer-mode privilege.
+            return
+        st = _stats(root)
+        assert st["pruned_code_files"] == 0, st
+        assert st["pruned_dirs"] == [], st
+
+
 def test_every_reported_directory_name_is_actually_in_the_skip_list():
     """The disclosure must not blame the skip list for an unrelated absence."""
     with tempfile.TemporaryDirectory() as td:

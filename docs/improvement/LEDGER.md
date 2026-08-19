@@ -2219,8 +2219,9 @@ venture, contact, data-collection and pilot verdicts are unchanged.
 **State:** CLOSED
 
 **First raised:** 2026-08-14. **Status:** IMPLEMENTED for the enumerated
-defects. Commits `HELD:acba619` and `HELD:6588377`, held on
-`feat/engagement-fixes` with `HELD:b3163e4`; nothing is on main.
+defects. Commits `PUSHED:acba619` and `PUSHED:6588377`, published on
+`feat/engagement-fixes` with `PUSHED:b3163e4` through PR #55; nothing is on
+main.
 
 `PROHIBITED_CLAIMS` in `scripts/public_surface_inventory.py` is the guard that
 stops the project publishing the claims its own hard rule forbids. Every
@@ -2300,7 +2301,8 @@ unchanged.
 
 **First raised:** 2026-08-14. **Status:** IMPLEMENTED for the enumerated
 surfaces; the non-reproducible detector reading below is OPEN and undiagnosed.
-Commit `HELD:4de7541`, held on `feat/engagement-fixes`; nothing is on main.
+Commit `PUSHED:4de7541`, published on `feat/engagement-fixes` through PR #55;
+nothing is on main.
 
 Nine tracked surfaces published a `Verdict:` line as CLI output. No command
 emits `Verdict:` at all. Six went further and printed "Your project is
@@ -3159,11 +3161,12 @@ transcripts with real command output, took the longest line inside those
 runner's fixed 1400px viewport. A correctness fix to one claim broke an
 accessibility criterion on the same page, and the two had no gate in common.
 
-**Why nothing caught it.** `.github/workflows/accessibility.yml` triggers on
-`pull_request` for `site/**`. These fifteen commits have never been pushed, so
-the job had never run against them. The gate is correct and wired to the right
-paths; **it is blind to work that stays local.** That is the finding worth
-keeping.
+**Why nothing caught it at first.** `.github/workflows/accessibility.yml`
+triggers on `pull_request` for `site/**`. At the time this defect was found,
+these fifteen commits had never been pushed, so the job had never run against
+them. They have since been published through PR #55 and the accessibility job
+has run there. The gate is correct and wired to the right paths; **it is blind
+to work that stays local.** That is the finding worth keeping.
 
 The fix completes a pattern the site already used inconsistently: 22 of 73
 `<pre>` elements carried `tabindex="0"` and 51 did not. All 73 now do. An
