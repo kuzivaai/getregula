@@ -205,14 +205,15 @@
 </head>
 <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <div id="progress-bar" aria-hidden="true"></div>
 
     <nav class="nav" id="nav" aria-label="Main navigation">
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
         <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
             <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+            <a href="/product.html">What it does</a>
             <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
             <span class="active">Regulations</span>
@@ -239,8 +240,8 @@
                     <div class="reg-status status-live">Live tracker</div>
                 </div>
                 <h2>South Africa — Draft National AI Policy</h2>
-                <div class="reg-sub">Gazetted 10 Apr 2026 · withdrawn 26 Apr 2026 · revised draft reported for Jan 2027</div>
-                <p class="reg-body">The draft National AI Policy was gazetted on 10 April 2026 and subsequently withdrawn after fictitious references were identified; Cabinet confirmed withdrawal on 5 June. The tracker separates that withdrawn draft from existing law, including POPIA.</p>
+                <div class="reg-sub">Gazetted 10 Apr 2026 · withdrawal announced 26 Apr 2026 · gazetted 12 Jun 2026 · revised draft reported for Jan 2027</div>
+                <p class="reg-body">The draft National AI Policy was gazetted on 10 April 2026. After fictitious references were identified the Minister announced the withdrawal on 26 April 2026, Cabinet approved it on 5 June, and Notice 3880 was withdrawn by gazette on 12 June 2026, which is the operative act. The tracker separates that withdrawn draft from existing law, including POPIA.</p>
                 <span class="reg-cta">Read the tracker &rarr;</span>
             </a>
 
@@ -339,7 +340,9 @@
             <p>Every claim on this site about regulation is either (a) checkable against the actual legislation or an official government source, or (b) explicitly labelled as secondary reporting with the secondary source named. Where a jurisdiction's text is not in the public domain, we say so, label the claim, and commit to verifying it against the primary source as soon as it publishes. We would rather publish a short page with clear provenance than a long page with silent assumptions.</p>
             <p>If a jurisdiction matters to you and it is not yet on this list, <a href="https://github.com/kuzivaai/getregula/issues">open an issue</a>. We prioritise coverage by reader demand and by the quality of the primary source we can cite.</p>
         </div>
-    </main>
+    <p style="max-width:720px;margin:32px auto 8px;color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 14 August 2026 &middot; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+
+</main>
 
     <footer>
     <div class="foot-inner">
@@ -367,13 +370,8 @@
 </footer>
 
     <script>
-        const progressBar = document.getElementById('progress-bar');
         const nav = document.getElementById('nav');
         function onScroll() {
-            const scrollTop = document.documentElement.scrollTop;
-            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-            progressBar.style.width = pct + '%';
             nav.classList.toggle('scrolled', window.scrollY > 20);
         }
         window.addEventListener('scroll', onScroll, { passive: true });

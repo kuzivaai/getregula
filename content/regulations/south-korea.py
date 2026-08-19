@@ -56,9 +56,9 @@ REGION = {
         "Korea AI Basic Act \u2014 in force 22 Jan 2026. Regula's live coverage."
     ),
 
-    "last_updated": "2026-08-04",
+    "last_updated": "14 August 2026",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-08-04T00:00:00+00:00",
+    "modified_time": "2026-08-14T00:00:00+00:00",
 
     "lede": (
         "South Korea is the second major jurisdiction after the European Union "
@@ -339,7 +339,7 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
     <div style="max-width:760px;margin:var(--s7) auto var(--s5);padding:0 var(--s5);">
         <h3 style="font-size:18px;color:var(--text);margin-bottom:var(--s3);">Related reading</h3>
         <ul style="list-style:none;padding:0;margin:0;">
-            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">— Extraterritorial reach and cross-border applicability</span></li>
+            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);text-decoration:underline;">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">— Extraterritorial reach and cross-border applicability</span></li>
         </ul>
     </div>
 """,

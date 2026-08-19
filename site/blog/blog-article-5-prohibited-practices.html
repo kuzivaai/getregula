@@ -185,14 +185,15 @@
 <body>
 
 <a href="#main" class="skip-link">Skip to content</a>
-<div id="progress-bar" aria-hidden="true"></div>
 
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -318,9 +319,18 @@
   <span class="cli-dim">Regula v1.7.0 &mdash; EU AI Act code-risk indicator</span>
 ============================================================
 
-  <span class="cli-red">Verdict</span>: <span class="cli-red">PROHIBITED</span>
-  Your project contains AI practices prohibited under EU AI Act Article 5.
-  These must be removed before deployment in the EU.
+Decision: <span class="cli-red">insufficient_information</span>
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  <span class="cli-red">Detector summary: ARTICLE 5 PATTERNS</span>
+  The scanner found patterns relevant to Article 5 review.
+  Resolve the facts listed above before treating any of them as a prohibited practice.
 
   Why:
     1. hr_analytics.py:42 &mdash; Emotion inference in workplace or educational settings
@@ -388,7 +398,7 @@
 
     <p>A suppression with rationale looks like this in your code:</p>
 
-    <pre><code># regula-ignore: social_score is a gamification leaderboard,
+    <pre tabindex="0"><code># regula-ignore: social_score is a gamification leaderboard,
 # not public authority social scoring per Article 5(1)(c).
 user_social_score = calculate_engagement_points(activity_log)</code></pre>
 
@@ -430,7 +440,7 @@ user_social_score = calculate_engagement_points(activity_log)</code></pre>
     <div class="blog-sep" style="max-width:100%;"></div>
 
     <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
-        <strong>Last verified:</strong> 25 April 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+        <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
         <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
     </p>
 
@@ -483,22 +493,12 @@ user_social_score = calculate_engagement_points(activity_log)</code></pre>
 </footer>
 
 <script>
-    // Scroll progress bar
-    const progressBar = document.getElementById('progress-bar');
-    function updateProgress() {
-        const scrollTop = document.documentElement.scrollTop;
-        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-        progressBar.style.width = pct + '%';
-    }
-
     // Nav scroll
     function updateNav() {
         document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
     }
 
     window.addEventListener('scroll', () => {
-        updateProgress();
         updateNav();
     }, { passive: true });
 

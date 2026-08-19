@@ -143,7 +143,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -195,13 +197,23 @@
 
 <p>Example: scanning a healthcare project for high-risk indicators.</p>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check --domain healthcare .
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check --domain healthcare .
 
 Regula Scan: /home/dev/myproject
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project is classified as high-risk under EU AI Act Annex III.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
   Files scanned:      34
   High-risk:          2
 
@@ -224,36 +236,42 @@ Regula Scan: /home/dev/myproject
     <li><strong>Whether risk assessments involve the right stakeholders.</strong> Article&nbsp;9 expects input from domain experts, affected communities, and deployers. A code scanner has no visibility into your process.</li>
     <li><strong>Whether the RMS covers the full AI lifecycle.</strong> Article&nbsp;9(1) requires coverage from design through post-market monitoring. Code scanning sees a snapshot of the current codebase. It does not know what happened during training or what your post-deployment monitoring looks like.</li>
     <li><strong>Whether identified risks have been communicated to deployers.</strong> Article&nbsp;9(5) requires that residual risks be communicated to deployers with information per Article&nbsp;13 and appropriate training. This is a documentation and process requirement, not a code pattern.</li>
-    <li><strong>Whether testing is sufficient.</strong> Article&nbsp;9(5) requires testing "at appropriate times throughout the development process, and, in any event, prior to the placing on the market." Regula can check for test files but cannot evaluate whether the testing regime is adequate.</li>
+    <li><strong>Whether testing is sufficient.</strong> Article&nbsp;9(5) requires testing "at any time throughout the development process, and, in any event, prior to their being placed on the market or put into service". Regula can check for test files but cannot evaluate whether the testing regime is adequate.</li>
 </ul>
 
 <p>The gap between what code scanning covers and what Article&nbsp;9 requires is large. Code scanning is a partial input into a broader compliance process.</p>
 
 <h2>Gap analysis with Regula</h2>
 
-<p>The <code>regula gap</code> command scores your project against each applicable article, including Article&nbsp;9. Run it against your project root:</p>
+<p>The <code>regula gap</code> command reports which article obligations it can attach evidence to, and which it is holding back. Run it against your project root:</p>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project .
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project .
 
-EU AI Act Compliance Gap Assessment: myproject
-Overall score:     29%
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
 
-Article 9   Risk Management                     [ 60%] MODERATE
-  Evidence: Risk management content in: README.md
-  Gap:      Risk documentation lacks structured mitigations
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</code></pre>
 
-Article 10  Data Governance                     [ 30%] PARTIAL
-Article 11  Technical Documentation             [  0%] NOT FOUND
-Article 13  Transparency                        [  0%] NOT FOUND
-Article 14  Human Oversight                     [ 45%] PARTIAL</code></pre>
+<p style="color:var(--text-dim);font-size:0.85rem;margin-top:8px;"><em>Output is illustrative. Counts depend on your codebase.</em></p>
 
-<p style="color:var(--text-dim);font-size:0.85rem;margin-top:8px;"><em>Scores reflect only the technical components Regula can measure.</em></p>
-
-<p>The Article&nbsp;9 score reflects only the technical components Regula can measure. A moderate score means your codebase has some evidence of risk management artefacts but significant gaps remain. It does not mean your overall Article&nbsp;9 compliance is at that level, because the organisational components (which Regula cannot assess) also matter. A project could score highly on the code scan and still fail Article&nbsp;9 if no risk management process exists.</p>
+<p>Until the two facts above are settled by a person, Regula holds the article
+observations rather than emitting them. Earlier versions of this page showed a
+percentage beside each article. That output has been removed from the tool: a
+percentage against Article&nbsp;9 reads as a measure of Article&nbsp;9
+compliance, and it is not one. The organisational components of Article&nbsp;9,
+which are where a risk management process actually lives, are not visible to a
+code scan at all, so a codebase can look well covered and still have no risk
+management process behind it.</p>
 
 <p>To focus on Article&nbsp;9 specifically:</p>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project . --article 9</code></pre>
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project . --article 9</code></pre>
 
 <h2>Practical next steps</h2>
 
@@ -271,7 +289,7 @@ Article 14  Human Oversight                     [ 45%] PARTIAL</code></pre>
 <h3>Use the organisational questionnaire</h3>
 <p>Regula includes a questionnaire mode that covers the organisational components a code scanner cannot detect:</p>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula conform --organisational
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula conform --organisational
 
 Organisational compliance questionnaire
 ========================================
@@ -294,7 +312,7 @@ Q3: Have residual risks been communicated to deployers? [y/n]
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last verified:</strong> 25 June 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+    <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
     <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689, Article 9</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
     <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
 </p>

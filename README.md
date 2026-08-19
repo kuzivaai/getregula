@@ -7,7 +7,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2787%20collected-blue.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-3112%20collected-blue.svg)](#verified-numbers)
 [![Accessibility target: WCAG 2.2 AA](https://img.shields.io/badge/accessibility%20target-WCAG%202.2%20AA-blue.svg)](docs/accessibility/README.md)
 
 ---
@@ -29,7 +29,36 @@
 
 ---
 
-![Regula check demo](site/assets/demo/regula-check.svg)
+```console
+$ regula check examples/cv-screening-app --scope all
+
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
+  Files scanned:      1
+  High-risk:          1
+  INFO tier:          1
+
+  HIGH-RISK INDICATORS:
+    [INFO] [ 43] app.py — Employment and workers management [plan]
+
+  Detector priority: 0-100 (higher = more code patterns matched; not a correctness probability)
+```
+
+*Excerpt from the real output of the command shown, against the tracked fixture
+[`examples/cv-screening-app`](examples/cv-screening-app/). The per-category
+counts that read zero and the next-steps footer are omitted for length; nothing
+else is edited. `scripts/verify_transcripts.py` re-runs this command on every
+check and fails if any line above stops appearing in its output.*
 
 ---
 
@@ -60,7 +89,24 @@ pipx install regula-ai      # or: pip install regula-ai / uv pip install regula-
 **Not sure if the AI Act applies?** No code needed:
 ```bash
 regula assess               # record declared context for human review
+regula assess --save-facts  # and write the answers where `regula check` reads them
 ```
+
+The scan tells you which facts it needs and cannot get from code. You supply
+them, and the decision moves:
+
+```bash
+regula check . --list-facts                     # every fact id the model defines
+regula check . --fact is_ai_system=yes \
+               --fact jurisdiction_in_scope=yes # declare them for one run
+```
+
+Declared facts are **yours**, not Regula's. Each is stored with who declared it,
+through which command, in answer to which question, and when, in
+`.regula/facts.json`, and the scan prints that provenance beside the decision.
+`unknown` is an answer and is never read as `no`. A declared fact can move a
+decision from `insufficient_information` to an indication; it does not produce a
+risk tier, a compliance score, a readiness percentage or an effort estimate.
 
 **Want to scan your code?**
 ```bash
@@ -163,7 +209,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 |---------|-------------|
 | `regula` | Scan the current directory, show an indicator summary and next steps |
 | `regula check .` | Detailed risk scan with per-file findings |
-| `regula comply` | EU AI Act obligation checklist with completion status |
+| `regula comply` | EU AI Act obligation evidence and unresolved facts; `--article 50` separates declared applicability facts from static implementation signals |
 | `regula gap --project .` | Compliance gap assessment against Articles 9-15 |
 | `regula plan --project .` | Prioritised remediation plan based on gap results |
 | `regula fix --project .` | Generate compliance fix scaffolds for findings |
@@ -184,7 +230,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula gdpr` | GDPR cross-reference scan ([14 focused checks](scripts/gdpr_scan.py), 4 AI Act/GDPR hotspots) |
 | `regula bias` | CrowS-Pairs bias evaluation (1,508 sentence pairs) with optional BBQ benchmark. Aligned with Digital Omnibus bias-testing safeguards (Article 4a, COM(2025)836). |
 | `regula mcp-server` | MCP server (JSON-RPC stdio) exposing three tools :  `regula_check`, `regula_classify`, `regula_gap` :  for Claude Code, Cursor, and other MCP clients |
-| `regula install <platform>` | Set up pre-commit hooks, git hooks, or Claude Code/Copilot/Windsurf integration |
+| `regula install <integration>` | Set up the pre-commit framework or direct Git hook integration |
 
 Regula has 62 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
 
@@ -275,7 +321,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 419 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 13 |
-| Tests (pytest --collect-only) | 2,787 |
+| Tests (pytest --collect-only) | 3,112 |
 | Required production dependencies | 0 |
 
 For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md). What version numbers promise, the public API they cover, and the deprecation policy: [`docs/VERSIONING.md`](docs/VERSIONING.md).

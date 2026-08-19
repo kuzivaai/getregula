@@ -148,7 +148,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -195,7 +197,7 @@
 
 <p>Consider a loan approval system. The AI model scores an application. If that score directly triggers an approval or rejection email with no human in the loop, Article 14 has a problem. If the score goes into a queue for a credit officer to review before the decision is communicated, that is an oversight pattern.</p>
 
-<pre><code># No human oversight (Article 14 problem)
+<pre tabindex="0"><code># No human oversight (Article 14 problem)
 def process_application(app):
     score = model.predict(app.features)
     if score > threshold:
@@ -216,7 +218,7 @@ def process_application(app):
 
 <p>Regula's <code>oversight</code> command performs cross-file data-flow analysis. It traces AI model outputs toward endpoints and checks for code patterns associated with a human review gate. The example below is illustrative; behavior is defined in <a href="https://github.com/kuzivaai/getregula/blob/main/scripts/oversight.py">the implementation</a>.</p>
 
-<pre><code>$ regula oversight .
+<pre tabindex="0"><code>$ regula oversight .
 
 Article 14 Human Oversight Analysis
 ====================================
@@ -259,7 +261,7 @@ Flow 3: model.py:predict() -> dashboard.py:display_score()
 
 <p>The gap analysis scores Article 14 based on detected oversight patterns:</p>
 
-<pre><code>$ regula gap --project .
+<pre tabindex="0"><code>$ regula gap --project .
 
 Article 14 — Human oversight
   Score:    45 / 100
@@ -299,7 +301,7 @@ Article 14 — Human oversight
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last verified:</strong> 25 June 2026 &middot;
+    <strong>Last reviewed:</strong> 14 August 2026 &middot;
     <strong>Author:</strong> Kuziva Muzondo &middot;
     <em>Not legal advice. Regula identifies risk indicators in code for developer review. It does not determine compliance or replace professional legal counsel.</em>
 </p>

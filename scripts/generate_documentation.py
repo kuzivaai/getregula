@@ -254,7 +254,15 @@ _[TO BE COMPLETED — configure in regula-policy.yaml]_
 
 
 def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> str:
-    """Generate Annex IV compliant documentation."""
+    """Generate an Annex IV technical-documentation scaffold for human completion.
+
+    Until 2026-08-17 this docstring described the output as Annex IV
+    documentation carrying a compliance state, while the document the function
+    emits opens by saying it is "an auto-generated scaffold, NOT complete
+    compliance documentation". The implementation was right and its own docstring
+    contradicted it. LEDGER N125 carries the verbatim old line; it is described
+    rather than quoted, because quoting it reintroduces the claim.
+    """
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     highest = findings["highest_risk"]
     if isinstance(highest, RiskTier):

@@ -18,38 +18,82 @@ def _run(*args, timeout=120):
 # --- badge ---
 
 def test_badge_endpoint_format():
-    result = _run("badge", "tests/fixtures/sample_compliant/", "--format", "endpoint")
+    result = _run("badge", "tests/fixtures/sample_no_findings/", "--format", "endpoint")
     assert result.returncode == 0
     data = json.loads(result.stdout)
     assert data["schemaVersion"] == 1
-    assert data["label"] == "EU AI Act"
-    assert data["color"] in ("brightgreen", "orange", "red")
-    assert "message" in data
+    # The label names the TOOL, not the regulation. It read "EU AI Act" until
+    # 2026-08-17, which is half of what made this badge a compliance
+    # determination; the other half was message="compliant". LEDGER N125.
+    assert data["label"] == "regula"
+    assert data["message"] == "no indicators found"
+    # Never brightgreen: a green badge beside a regulation reads as a pass.
+    assert data["color"] == "lightgrey"
 
 
 def test_badge_svg_format():
-    result = _run("badge", "tests/fixtures/sample_compliant/", "--format", "svg")
+    result = _run("badge", "tests/fixtures/sample_no_findings/", "--format", "svg")
     assert result.returncode == 0
     assert "<svg" in result.stdout
-    assert "EU AI Act" in result.stdout
+    assert "regula" in result.stdout
+    assert "EU AI Act" not in result.stdout
 
 
-def test_badge_high_risk_shows_orange():
-    # The fixture lives inside tests/ — with --scope production (the default),
-    # it's classified as test provenance and excluded. The badge correctly shows
-    # "brightgreen" (no production-scope findings). This test validates that the
-    # badge command produces valid output, not a specific colour, since the
-    # fixture's path makes colour assertions path-dependent.
+def test_badge_markdown_carries_its_own_caveat_and_no_determination():
+    """The badge is the output built to travel into someone else's README.
+
+    The objection to it is that it detaches from every qualification on the page
+    that produced it, so the qualification is the link target. This asserts both
+    halves: the claim is gone, and the caveat travels.
+    """
+    result = _run("badge", "tests/fixtures/sample_no_findings/", "--format", "markdown")
+    assert result.returncode == 0
+    out = result.stdout
+    assert "compliant" not in out.lower()
+    assert "EU%20AI%20Act" not in out and "EU AI Act" not in out
+    assert "brightgreen" not in out
+    assert "docs/what-regula-does-not-do.md" in out
+
+
+def test_badge_on_a_trivial_project_claims_nothing():
+    """The N125 reproduction, kept as a regression.
+
+    A directory whose only content is print('hello') produced
+    `[![EU AI Act](...EU%20AI%20Act-compliant-brightgreen)](https://getregula.com)`.
+    This is the same input; the assertion is that no compliance state is emitted
+    in any of the three formats.
+    """
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        with open(os.path.join(td, "hello.py"), "w", encoding="utf-8") as fh:
+            fh.write("print('hello')\n")
+        for fmt in ("endpoint", "svg", "markdown"):
+            result = _run("badge", td, "--format", fmt)
+            assert result.returncode == 0, f"{fmt}: rc={result.returncode}"
+            assert "compliant" not in result.stdout.lower(), fmt
+            assert "brightgreen" not in result.stdout, fmt
+
+
+def test_badge_high_risk_reports_an_indicator_count():
+    # The fixture lives inside tests/, so under --scope production (the default)
+    # it is test provenance and excluded, which is why no colour can be asserted
+    # from the path. The old version of this test recorded that the badge
+    # "correctly shows brightgreen (no production-scope findings)" for a fixture
+    # named sample_high_risk: the defect stated in a test comment and accepted.
+    # What is assertable in every case is that the message is a count of
+    # indicators or their absence, never a state.
     result = _run("badge", "tests/fixtures/sample_high_risk/", "--format", "endpoint")
     assert result.returncode == 0
     data = json.loads(result.stdout)
-    assert data["color"] in ("brightgreen", "orange", "red")
+    assert data["color"] in ("lightgrey", "orange", "red")
+    assert "compliant" not in data["message"].lower()
+    assert "indicator" in data["message"]
 
 
 # --- attest ---
 
 def test_attest_intoto_format():
-    result = _run("attest", "tests/fixtures/sample_compliant/")
+    result = _run("attest", "tests/fixtures/sample_no_findings/")
     assert result.returncode == 0
     data = json.loads(result.stdout)
     assert data["_type"] == "https://in-toto.io/Statement/v1"
@@ -60,7 +104,7 @@ def test_attest_intoto_format():
 
 
 def test_attest_with_signing():
-    result = _run("attest", "tests/fixtures/sample_compliant/", "--sign-key", "test-key-123")
+    result = _run("attest", "tests/fixtures/sample_no_findings/", "--sign-key", "test-key-123")
     assert result.returncode == 0
     data = json.loads(result.stdout)
     assert "signatures" in data
@@ -69,7 +113,7 @@ def test_attest_with_signing():
 
 def test_attest_output_file(tmp_path):
     out = str(tmp_path / "attestation.json")
-    result = _run("attest", "tests/fixtures/sample_compliant/", "--output", out)
+    result = _run("attest", "tests/fixtures/sample_no_findings/", "--output", out)
     assert result.returncode == 0
     with open(out) as f:
         data = json.load(f)
@@ -112,7 +156,7 @@ def test_env_regula_format():
     env = os.environ.copy()
     env["REGULA_FORMAT"] = "json"
     result = subprocess.run(
-        [sys.executable, "-m", "scripts.cli", "check", "tests/fixtures/sample_compliant/"],
+        [sys.executable, "-m", "scripts.cli", "check", "tests/fixtures/sample_no_findings/"],
         capture_output=True, text=True, timeout=30, env=env,
         cwd=os.path.join(os.path.dirname(__file__), ".."),
     )

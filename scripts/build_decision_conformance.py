@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Build the checked-in cross-runtime decision conformance corpus."""
 
-import copy
 import hashlib
 import json
 import sys

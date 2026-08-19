@@ -1,0 +1,300 @@
+{
+  "lang": "pt-BR",
+  "audience": "Para fundadores e responsáveis por um produto de IA",
+  "h1": "A regulação de IA alcança o seu negócio?",
+  "sub": "Cinco perguntas, em linguagem simples. Sem conta, sem instalar nada, e nada do que você digitar aqui sai do seu navegador. No final você recebe uma lista do que as suas respostas indicam e do que ainda precisa ser resolvido por uma pessoa.",
+  "meta": "O Regula indica onde olhar. Ele não decide a sua classe de risco, as suas obrigações nem se você está em conformidade. Isto não é aconselhamento jurídico.",
+  "questions": [
+    {
+      "id": "q1",
+      "legend": "Você vende para a UE ou tem usuários na UE?",
+      "help": "As regras podem alcançar um negócio sediado em qualquer lugar. O que importa é se o seu produto, ou aquilo que o seu produto gera, é usado por pessoas na UE.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Sim"
+        },
+        {
+          "value": "no",
+          "label": "Não"
+        },
+        {
+          "value": "unsure",
+          "label": "Não tenho certeza"
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "legend": "O seu produto usa IA de alguma forma?",
+      "help": "Isso inclui IA que você não construiu: um chatbot, um modelo que você chama pelo serviço de terceiros, ou um recurso que uma ferramenta no-code acrescentou para você.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Sim"
+        },
+        {
+          "value": "no",
+          "label": "Não"
+        },
+        {
+          "value": "unsure",
+          "label": "Não tenho certeza"
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "legend": "Você construiu a IA ou está usando a de outra pessoa?",
+      "help": "As regras impõem deveres diferentes à organização que coloca um sistema de IA no mercado e à organização que usa um. É possível ser as duas coisas.",
+      "options": [
+        {
+          "value": "built",
+          "label": "Nós construímos ou treinamos"
+        },
+        {
+          "value": "using",
+          "label": "Usamos a de outra pessoa"
+        },
+        {
+          "value": "both",
+          "label": "As duas coisas"
+        },
+        {
+          "value": "unsure",
+          "label": "Não tenho certeza"
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "legend": "As pessoas veem conteúdo gerado pela sua IA ou falam diretamente com ela?",
+      "help": "Texto, imagens, áudio, vídeo ou um chatbot. Existem deveres de divulgação quando alguém pode não perceber que está lidando com IA, ou com algo feito por IA.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Sim"
+        },
+        {
+          "value": "no",
+          "label": "Não"
+        },
+        {
+          "value": "unsure",
+          "label": "Não tenho certeza"
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "legend": "A IA ajuda a decidir algo sobre uma pessoa?",
+      "help": "Contratação, crédito, seguro, uma vaga em um curso, acesso a cuidados de saúde ou um benefício. Conta mesmo quando uma pessoa aprova a decisão no final.",
+      "options": [
+        {
+          "value": "yes",
+          "label": "Sim"
+        },
+        {
+          "value": "no",
+          "label": "Não"
+        },
+        {
+          "value": "unsure",
+          "label": "Não tenho certeza"
+        }
+      ]
+    }
+  ],
+  "submit": "Mostrar o que isso indica",
+  "reset": "Começar de novo",
+  "nojsTitle": "Estas cinco perguntas precisam de JavaScript para calcular o que indicam.",
+  "nojsLead": "As perguntas em si estão acima e valem a leitura de qualquer forma. Sem JavaScript, siga por aqui:",
+  "nojsItems": [
+    {
+      "text": "Leia o guia sobre se a Lei de IA da UE se aplica ao seu aplicativo. (em inglês)",
+      "href": "/blog/blog-does-ai-act-apply.html"
+    },
+    {
+      "text": "Veja o que está incluído em uma avaliação paga, com os preços. (em inglês)",
+      "href": "/pricing.html"
+    },
+    {
+      "text": "Escreva para nós e descreva a sua situação com as suas palavras.",
+      "href": "mailto:support@getregula.com?subject=Where%20do%20I%20stand"
+    }
+  ],
+  "months": [
+    "janeiro",
+    "fevereiro",
+    "março",
+    "abril",
+    "maio",
+    "junho",
+    "julho",
+    "agosto",
+    "setembro",
+    "outubro",
+    "novembro",
+    "dezembro"
+  ],
+  "dateFormat": "{d} de {month} de {y}",
+  "dates": {
+    "prohibited": "2025-02-02",
+    "article50": "2026-08-02",
+    "marking": "2026-12-02",
+    "annexIII": "2027-12-02"
+  },
+  "errorOne": "Uma pergunta continua sem resposta. Ela está destacada abaixo, e “Não tenho certeza” é uma resposta legítima se você não souber.",
+  "errorMany": "{n} perguntas continuam sem resposta. Elas estão destacadas abaixo, e “Não tenho certeza” é uma resposta legítima se você não souber.",
+  "clearedNotice": "As suas respostas foram apagadas. As cinco perguntas estão prontas de novo.",
+  "resultHeading": "O que as suas respostas indicam",
+  "ledeIn": "Abaixo está o que as suas próprias respostas indicam e o que elas não conseguem resolver. Nada disso é uma decisão sobre a sua classe de risco ou as suas obrigações, porque essas dependem de fatos que cinco perguntas não alcançam.",
+  "ledeNoEu": "Nada do que você informou conecta você ao mercado da UE, então a Lei de IA da UE talvez não seja a primeira coisa a examinar. Isso é uma questão de âmbito, não uma conclusão, e o que vem a seguir explica por que não está resolvida.",
+  "ledeNoAi": "Você disse que o seu produto não usa IA. A Lei trabalha com uma definição própria, mais ampla do que a maioria espera, então vale verificar em vez de presumir.",
+  "pointsHeading": "Vale a leitura, a partir do que você respondeu",
+  "unsettledHeading": "O que isto não consegue resolver",
+  "routesHeading": "O que você pode fazer a seguir",
+  "points": {
+    "scope": {
+      "title": "As regras podem alcançar você de fora da UE",
+      "body": "Você disse que pessoas na UE usam o seu produto. O Artigo 2 estabelece a quem a Lei se aplica e abrange fornecedores e implantadores estabelecidos em um país terceiro quando a saída produzida pelo sistema de IA é usada na União. O lugar do seu registro não é o critério.",
+      "cite": "Regulamento (UE) 2024/1689, Artigo 2(1)(c)",
+      "href": "/blog/blog-does-ai-act-apply.html",
+      "linkText": "A Lei de IA da UE se aplica ao seu aplicativo? (em inglês)"
+    },
+    "scopeUnsure": {
+      "title": "Se as regras alcançam você é o primeiro ponto a resolver",
+      "body": "Você não tem certeza se pessoas na UE usam o seu produto. Essa é a primeira pergunta a responder, porque o Artigo 2 abrange fornecedores e implantadores estabelecidos em um país terceiro quando a saída produzida pelo sistema de IA é usada na União. Depende de onde estão os seus usuários e de onde a sua saída vai parar.",
+      "cite": "Regulamento (UE) 2024/1689, Artigo 2(1)(c)",
+      "href": "/blog/blog-does-ai-act-apply.html",
+      "linkText": "A Lei de IA da UE se aplica ao seu aplicativo? (em inglês)"
+    },
+    "noEu": {
+      "title": "Nada do que você informou conecta você ao mercado da UE",
+      "body": "Você disse que o seu produto não é vendido para a UE nem usado por pessoas na UE. O Artigo 2 ainda pode alcançar uma organização estabelecida em país terceiro quando a saída produzida pelo sistema de IA é usada na União, então vale saber onde a sua saída vai parar. Outros países também estão legislando, e este site acompanha vários deles.",
+      "cite": "Regulamento (UE) 2024/1689, Artigo 2(1)(c)",
+      "href": "/regions/regulations.html",
+      "linkText": "Regras em outros países (em inglês)"
+    },
+    "noAi": {
+      "title": "A definição é mais ampla do que a maioria espera",
+      "body": "Você disse que o seu produto não usa IA. A Lei trabalha com a definição própria do Artigo 3(1), que se baseia no que um sistema faz com a entrada que recebe, e não na tecnologia usada para construí-lo. Se algo no seu produto infere, prevê, recomenda ou gera, verifique contra a definição em vez de presumir.",
+      "cite": "Artigo 3(1)",
+      "href": "/blog/blog-classify-ai-system.html",
+      "linkText": "Como a definição funciona (em inglês)"
+    },
+    "definition": {
+      "title": "Se é um sistema de IA no sentido da própria Lei",
+      "body": "Esse é o primeiro ponto que uma pessoa precisa resolver, e cinco perguntas simples não o resolvem. O Artigo 3(1) se baseia no que o sistema faz com a entrada que recebe, não no rótulo do produto, na biblioteca importada ou em alguém chamar aquilo de IA.",
+      "cite": "Artigo 3(1)",
+      "href": "/blog/blog-classify-ai-system.html",
+      "linkText": "Como a definição funciona (em inglês)"
+    },
+    "roleProvider": {
+      "title": "Você leria os deveres do fornecedor",
+      "body": "Você disse que construiu ou treinou a IA. A organização que desenvolve um sistema de IA e o coloca no mercado, ou o coloca em serviço sob o próprio nome ou marca, carrega o conjunto mais pesado de deveres. Se você é o fornecedor de um determinado sistema é uma questão jurídica sobre como ele chega aos seus usuários, não uma descrição da sua engenharia.",
+      "cite": "Artigo 3(3)",
+      "href": "/guides/",
+      "linkText": "Guias por artigo (em inglês)"
+    },
+    "roleDeployer": {
+      "title": "Você leria os deveres do implantador",
+      "body": "Você disse que usa a IA de outra pessoa. Uma organização que usa um sistema de IA sob a sua própria autoridade tem deveres próprios, mais leves que os de um fornecedor, mas não inexistentes. Rodar o modelo de terceiros dentro de um produto que você oferece não é uso pessoal e não profissional.",
+      "cite": "Artigo 3(4)",
+      "href": "/guides/",
+      "linkText": "Guias por artigo (em inglês)"
+    },
+    "roleBoth": {
+      "title": "Você pode ser as duas coisas, e a linha pode se mover",
+      "body": "Você disse as duas coisas, e os dois conjuntos de deveres podem recair sobre a mesma organização. O Artigo 25 também estabelece quando um implantador, distribuidor ou importador passa a ser o fornecedor de um sistema de alto risco: ao apor o próprio nome ou marca, ao fazer uma modificação substancial, ou ao alterar a finalidade prevista de um sistema de modo que ele passe a ser de alto risco.",
+      "cite": "Artigos 3(3), 3(4) e 25(1)",
+      "href": "/guides/",
+      "linkText": "Guias por artigo (em inglês)"
+    },
+    "roleUnsure": {
+      "title": "O seu papel é um dos fatos a resolver primeiro",
+      "body": "Você não tem certeza. A Lei distingue a organização que coloca um sistema de IA no mercado ou em serviço sob o próprio nome daquela que usa um sob a sua própria autoridade, e impõe deveres diferentes a cada uma. O Artigo 25 também define quando usar ou modificar o sistema de alto risco de outra pessoa faz de você o seu fornecedor.",
+      "cite": "Artigos 3(3), 3(4) e 25(1)",
+      "href": "/guides/",
+      "linkText": "Guias por artigo (em inglês)"
+    },
+    "transparency": {
+      "title": "Dizer às pessoas que elas estão lidando com IA",
+      "body": "Você disse que as pessoas veem conteúdo gerado por IA ou falam diretamente com o seu sistema. O Artigo 50 traz vários deveres de transparência, com atores, condições e exceções diferentes. Eles se aplicam desde {article50}, e os requisitos de marcação têm um período de tolerância até {marking}. Uma divulgação ausente é algo a revisar, não prova de que todo dever do Artigo 50 se aplica a você.",
+      "cite": "Artigo 50",
+      "href": "/guides/article-50-transparency.html",
+      "linkText": "Artigo 50, transparência em detalhe (em inglês)"
+    },
+    "decisions": {
+      "title": "Decisões sobre pessoas são a parte mais rigorosa",
+      "body": "Você disse que a IA ajuda a decidir algo sobre uma pessoa. O Anexo III lista os usos tratados como de alto risco e o Artigo 6 define como um sistema em uma dessas áreas é classificado; essas obrigações se aplicam a partir de {annexIII}. O Artigo 6(3) também traz condições em que tal sistema não é de alto risco, entre elas executar uma tarefa procedimental restrita ou melhorar o resultado de uma atividade humana já concluída, e determina que um sistema que faz definição de perfis de pessoas naturais é sempre de alto risco. Qual dessas descreve você é exatamente o que esta página não pode responder.",
+      "cite": "Artigo 6(2) e 6(3), Anexo III",
+      "href": "/guides/article-9-risk-management.html",
+      "linkText": "O que alto risco realmente exige (em inglês)"
+    },
+    "prohibited": {
+      "title": "Alguns usos são proibidos por completo",
+      "body": "Algumas práticas são proibidas, e não reguladas, e as proibições se aplicam desde {prohibited}. Esta página não perguntou sobre elas, então leia a lista em vez de presumir que não alcança você.",
+      "cite": "Artigo 5",
+      "href": "/guides/article-5-prohibited-practices.html",
+      "linkText": "As práticas proibidas, listadas (em inglês)"
+    }
+  },
+  "unsettled": [
+    "Se aquilo que você tem atende à definição de sistema de IA da própria Lei. O Artigo 3(1) é o critério, e ele não é a mesma coisa que você chamar aquilo de IA.",
+    "Qual papel ou papéis você ocupa. Isso depende de como o sistema chega às pessoas que o usam, não de quem escreveu o código.",
+    "A sua finalidade prevista. A maior parte da classificação depende dela, e ela é uma declaração que você faz, não algo que uma ferramenta consiga ler.",
+    "Se alguma das condições do Artigo 6(3) se aplica a você, e se algo que você faz a elimina.",
+    "Tudo o que vive nos seus contratos, na sua governança e no comportamento do sistema em produção. Nenhum scanner enxerga nada disso, e cinco perguntas também não."
+  ],
+  "routes": {
+    "free": {
+      "title": "Continuar de graça",
+      "price": "Gratuito, e continua gratuito",
+      "body": "Percorra a avaliação mais completa no navegador. Ela cobre o mesmo terreno nos termos da própria lei e mostra de onde vem cada pergunta. Sem conta, e nada do que você digitar é enviado. Se você tem familiaridade com um terminal, os mesmos indicadores estão disponíveis na sua própria máquina, e o scanner não envia o seu código.",
+      "cmd": "pipx install regula-ai && regula check .",
+      "cta": "Abrir a avaliação gratuita (em inglês)",
+      "href": "/assess/",
+      "short": "Gratuito, no navegador ou no terminal. Sem conta, nada é enviado."
+    },
+    "paid": {
+      "title": "Uma avaliação por escrito",
+      "price": "GBP 950, escopo fixo",
+      "body": "Uma base de código, um escopo de produto, remoto, cerca de uma semana de tempo corrido. O resultado do scan lido com você, indicador por indicador, uma lista escrita dos fatos ainda a resolver e um resumo priorizado que fica com você. Não é uma determinação de conformidade, não é certificação e não é aconselhamento jurídico. Nenhum pagamento ocorre neste site; começa com um e-mail.",
+      "cta": "Ver o que está incluído (em inglês)",
+      "href": "/pricing.html",
+      "short": "Uma avaliação por escrito a um preço fixo publicado. Não é uma determinação."
+    },
+    "consultant": {
+      "title": "Falar com uma consultoria",
+      "price": "GBP 650 por dia",
+      "body": "Uma sessão ao vivo com uma consultoria independente de governança de IA. Não é uma certificação, e a consultoria não presta aconselhamento jurídico a menos que esteja separadamente qualificada e contratada para isso. A reserva ainda não está aberta: o nome da pessoa, a duração e os termos completos serão publicados antes. Até lá é um e-mail, e conversar não custa nada.",
+      "cta": "Escrever sobre uma revisão",
+      "href": "mailto:support@getregula.com?subject=Consultant%20review%20enquiry",
+      "short": "Uma conversa com uma consultoria independente. Não é certificação e ainda não é reservável."
+    }
+  },
+  "consultantWarranted": "As suas respostas apontam um uso que a Lei trata com o maior rigor, ou um sistema que você constrói e ainda não consegue enquadrar. É o caso em que uma conversa com uma pessoa vale mais do que outra ferramenta.",
+  "limits": [
+    "O Regula indica onde olhar. Ele não decide a sua classe de risco, as suas obrigações nem se você está em conformidade. A conformidade é determinada por autoridades reguladoras e organismos notificados, não por um questionário, e “não sinalizado” nunca significa “em conformidade”.",
+    "Nada aqui é aconselhamento jurídico. Não há pessoa jurídica na UE por trás desta oferta e não existe seguro de responsabilidade profissional. Qualquer coisa que dependa de uma conclusão jurídica precisa de um profissional devidamente qualificado."
+  ],
+  "shareLabel": "Copiar um link para estas respostas",
+  "shareDone": "Link copiado",
+  "afterHeading": "O que acontece depois que você responde",
+  "afterLead": "Três caminhos, e cada um é descrito aqui como aquilo que realmente é.",
+  "devHeading": "Se você tem familiaridade com um terminal",
+  "devBody": "Os mesmos indicadores existem como um comando local. Ele lê arquivos na sua máquina e não os envia. Abaixo está a saída real da fixture de teste versionada, reproduzida a cada build pelas próprias verificações do projeto, e não uma simulação. Repare no que ele faz com uma pergunta não resolvida: nomeia os fatos de que precisa em vez de adivinhar uma classe.",
+  "errorNone": "Você ainda não respondeu nada. Comece pela primeira pergunta, e “Não tenho certeza” é uma resposta legítima se você não souber.",
+  "nothingToBuy": "Com estas respostas provavelmente não há nada aqui para você comprar, e dizer isso é mais útil do que lhe vender algo. As ferramentas gratuitas continuam disponíveis se a sua situação mudar, e um e-mail não custa nada se você quiser uma segunda opinião.",
+  "englishOnlyCue": "(em inglês)",
+  "thousandsSep": ".",
+  "proof": {
+    "tests": "{tests} testes, executados de novo a cada mudança",
+    "security": "achados de segurança divulgados por ferramenta e escopo",
+    "deps": "zero dependências no núcleo",
+    "upload": "o núcleo local não envia os arquivos analisados",
+    "trustLabel": "trust pack",
+    "trustHref": "https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md"
+  }
+}

@@ -179,6 +179,16 @@
       .ans-btn.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
       .ans-btn.selected-no { border-color: var(--red); background: var(--red-dim); color: var(--red); }
       .ans-btn.selected-unsure { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
+      /* "Not applicable" resolves the fact just as "No" does, so it is styled
+         as a decisive answer. Only "Not sure" carries the open-question amber. */
+      .ans-btn.selected-na { border-color: var(--text-dim); background: var(--bg-hover); color: var(--text); }
+      .answer-legend { font-size: 0.78rem; color: var(--text-dim); margin: 12px 0 0 0; line-height: 1.5; }
+      .q-banner { background: var(--accent-dim); border: 1px solid var(--border-active); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; font-size: 0.87rem; line-height: 1.55; color: var(--text); }
+      .early-exit { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+      .early-exit .btn { min-height: 44px; }
+      .early-exit-note { font-size: 0.78rem; color: var(--text-dim); }
+      .early-exit-final { display: block; background: var(--green-dim); border: 1px solid var(--green); border-radius: var(--radius); padding: 16px; }
+      .early-exit-final p { margin: 0 0 12px 0; font-size: 0.9rem; line-height: 1.55; }
 
       /* Navigation buttons */
       .nav-buttons {
@@ -188,6 +198,9 @@
         padding: 10px 24px; border-radius: 8px; font-family: var(--font);
         font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none;
         transition: all 0.15s;
+        /* Project standard is a 44px minimum touch target; the export and
+           start-over controls previously rendered at 40px. */
+        min-height: 44px;
       }
       .btn-primary { background: #1d4ed8; color: #fff; }
       .btn-primary:hover { background: #1e40af; }
@@ -365,13 +378,15 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" class="active">Assess</a>
+        <a href="/product-pt-br.html">O que ele faz</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html" hreflang="en">Pre&ccedil;os</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="/regions/regulations.html">Regulations</a>
-        <a href="/blog/writing.html">Blog</a>
-        <a href="/about.html">About</a>
+        <a href="/regions/regulations.html" hreflang="en">Regulations</a>
+        <a href="/blog/writing.html" hreflang="en">Blog</a>
+        <a href="/about.html" hreflang="en">About</a>
         <a href="/assess/">EN</a>
-        <a href="/assess/de.html">DE</a>
+        <a href="/assess/de.html" hreflang="de">DE</a>
         <span class="active">BR</span>
     </dialog>
 </nav>
@@ -405,20 +420,9 @@
   <!-- QUESTIONNAIRE -->
   <div id="questionnaireSection" style="display:none;">
     <div id="assessIntro" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;font-size:0.9rem;line-height:1.6;color:var(--text-dim);"></div>
-    <script>
-    function updateAssessIntro() {
-      const intros = {
-        eu: "A Lei de IA da UE classifica sistemas de IA em n\u00edveis de risco : de risco m\u00ednimo a proibido : com diferentes obriga\u00e7\u00f5es legais para cada um. Esta avalia\u00e7\u00e3o determina qual n\u00edvel se aplica ao seu sistema e o que voc\u00ea precisa fazer a seguir.",
-        kr: "A Lei B\u00e1sica de IA da Coreia do Sul classifica sistemas de IA como de alto impacto ou alto desempenho, com obriga\u00e7\u00f5es de gest\u00e3o de risco, transpar\u00eancia e explicabilidade. Esta avalia\u00e7\u00e3o determina se o seu sistema \u00e9 abrangido e o que voc\u00ea precisa fazer.",
-        co: "Colorado SB 26-189 regulamenta tecnologia de tomada de decis\u00e3o automatizada (ADMT) que toma decis\u00f5es consequentes sobre indiv\u00edduos em dom\u00ednios espec\u00edficos. Esta avalia\u00e7\u00e3o determina se o seu sistema \u00e9 abrangido e quais obriga\u00e7\u00f5es de divulga\u00e7\u00e3o se aplicam."
-      };
-      const el = document.getElementById("assessIntro");
-      if (el) el.innerHTML = '<p style="margin:0 0 8px 0;">' + (intros[activeJurisdiction] || intros.eu) + '</p><p style="margin:0 0 0 0;font-size:0.8rem;color:var(--text-muted);">Isto n\u00e3o \u00e9 aconselhamento jur\u00eddico. Suas respostas n\u00e3o s\u00e3o armazenadas nem transmitidas. Os resultados podem ser compartilhados via URL sem estado.</p>';
-    }
-    </script>
     <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da avaliação" id="progressWrap">
       <div class="progress-label" aria-live="polite">
-        <span id="progressText">Pergunta 1 de 15</span>
+        <span id="progressText">Pergunta 1</span>
         <span id="progressPct">0%</span>
       </div>
       <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
@@ -429,6 +433,7 @@
       <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled title="Selecione uma resposta para continuar">Próxima</button>
     </div>
     <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;" aria-hidden="true">Teclado: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">S</kbd> sim &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> não &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">I</kbd> incerto &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">A</kbd> não se aplica &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> próxima</div>
+    <div id="earlyExit" style="display:none;"></div>
   </div>
 
   <!-- CODE SCANNER -->
@@ -469,6 +474,10 @@
 
     <div id="scanProgress" style="display:none;text-align:center;padding:24px;color:var(--text-dim);" aria-live="polite">
       Analisando padrões...
+    </div>
+
+    <div id="scanError" role="alert" tabindex="-1" style="display:none;margin:16px 0;padding:14px 16px;border:1px solid var(--red);border-radius:var(--radius);background:var(--red-dim);color:var(--text);line-height:1.5;">
+      <strong>Não foi possível concluir a análise.</strong> Seu código não saiu deste navegador. Verifique se a página carregou por completo e tente novamente ou use a CLI. Nenhum resultado foi produzido.
     </div>
 
     <div id="scanResults" style="display:none;"></div>
@@ -514,9 +523,9 @@
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
                 <a href="https://pypi.org/project/regula-ai/">PyPI</a>
-                <a href="/blog/writing.html">Blog</a>
-                <a href="/regions/regulations.html">Regulations</a>
-                <a href="/about.html">About</a>
+                <a href="/blog/writing.html" hreflang="en">Blog</a>
+                <a href="/regions/regulations.html" hreflang="en">Regulations</a>
+                <a href="/about.html" hreflang="en">About</a>
                 <a href="/privacy-pt-br.html">Privacidade</a>
                 <a href="/terms-pt-br.html">Termos</a>
             </div>
@@ -524,7 +533,7 @@
         </div>
         <div class="foot-right">
             <div class="foot-legal">
-                <strong>Not legal advice.</strong> This tool identifies regulatory risk indicators for review. It does not determine compliance. Consult a qualified legal professional for legal questions.
+                <strong>N&atilde;o &eacute; aconselhamento jur&iacute;dico.</strong> Esta ferramenta identifica indicadores de risco regulat&oacute;rio para revis&atilde;o. N&atilde;o determina conformidade. Consulte um advogado qualificado para quest&otilde;es jur&iacute;dicas.
             </div>
         </div>
     </div>
@@ -535,6 +544,7 @@
 <script src="decision-kernel.js"></script>
 <script src="decision-adapters.js"></script>
 <script src="decision-ui.js"></script>
+<script src="assess-flow.js"></script>
 <script>
 // =====================================================================
 // Regula Web Assessment :  ported from scripts/questionnaire.py
@@ -546,35 +556,15 @@
 // Multi-jurisdiction support
 // =====================================================================
 
-let activeJurisdiction = "eu";
+
 
 const JURISDICTION_INFO = {
-  eu: { name: "Lei de IA da UE", law: "Regulamento (UE) 2024/1689", status: "Em vigor (aplicação faseada)", questionCount: 18 },
-  kr: { name: "Lei Básica de IA da Coreia do Sul", law: "Lei Nº 20676", status: "Em vigor", questionCount: 16 },
-  co: { name: "Colorado SB 26-189", law: "C.R.S. Título 6, Artigo 1, Parte 17", status: "Promulgada, vigência em 1º de janeiro de 2027", questionCount: 14 },
+  eu: { name: "Lei de IA da UE", law: "Regulamento (UE) 2024/1689", status: "Em vigor (aplicação faseada)" },
+  kr: { name: "Lei Básica de IA da Coreia do Sul", law: "Lei Nº 20676", status: "Em vigor" },
+  co: { name: "Colorado SB 26-189", law: "C.R.S. Título 6, Artigo 1, Parte 17", status: "Promulgada, vigência em 1º de janeiro de 2027" },
 };
 
-function selectJurisdiction(jur) {
-  activeJurisdiction = jur;
-  if (window.plausible) plausible("Assess Jurisdiction", { props: { jurisdiction: jur } });
-  document.querySelectorAll(".jurisdiction-btn").forEach(b => {
-    b.style.border = "1px solid var(--border)";
-    b.style.background = "transparent";
-    b.style.color = "var(--text-dim)";
-    b.classList.remove("selected");
-    b.setAttribute("aria-pressed", "false");
-  });
-  const btn = document.getElementById("jur-" + jur);
-  btn.style.border = "1px solid var(--border-active)";
-  btn.style.background = "var(--accent-dim)";
-  btn.style.color = "var(--accent)";
-  btn.classList.add("selected");
-  btn.setAttribute("aria-pressed", "true");
 
-  const info = JURISDICTION_INFO[jur];
-  document.getElementById("jurisdictionInfo").textContent =
-    info.law + " :  " + info.status + " :  " + info.questionCount + " perguntas";
-}
 
 // Korea questions (mapped from south-korea-mapping.md research)
 const QUESTIONS_KR = [
@@ -640,7 +630,6 @@ const QUESTIONS_KR = [
     article: "Artigo 36",
   },
 ];
-const DISPLAY_ORDER_KR = QUESTIONS_KR.map((_, index) => index);
 
 // Colorado questions (mapped from colorado-mapping.md research)
 const QUESTIONS_CO = [
@@ -699,7 +688,6 @@ const QUESTIONS_CO = [
     article: "Seção 6-1-1705",
   },
 ];
-const DISPLAY_ORDER_CO = QUESTIONS_CO.map((_, index) => index);
 
 // QUESTIONS array: positions 0-11 are the original 12 questions (stable for URL encoding).
 // Positions 12-14 are new questions appended to preserve backward compatibility.
@@ -712,9 +700,9 @@ const QUESTIONS = [
     help: "A Lei de IA da UE se aplica a sistemas de IA colocados no mercado da UE ou cujo output é usado na UE, independentemente de onde o fornecedor está sediado (Artigo 2).",
     article: "Artigo 2",
   },
-  { id: "is_ai_system", text: "O objeto atende à definição de sistema de IA da Lei de IA da UE?", help: "Resolva isso pelo Artigo 3(1). Um padrão de código, sozinho, não comprova a definição jurídica.", article: "Artigo 3(1)" },
-  { id: "role_provider", text: "A organização atua como fornecedora deste sistema?", help: "Obrigações específicas da fornecedora exigem que essa função esteja estabelecida.", article: "Artigos 3 e 17" },
-  { id: "role_deployer", text: "A organização usa ou implanta o sistema sob sua autoridade?", help: "Obrigações específicas da implantadora exigem que essa função esteja estabelecida.", article: "Artigo 3" },
+  { id: "is_ai_system", text: "O objeto atende à definição de sistema de IA da Lei de IA da UE?", help: "O Artigo 3.º, ponto 1, define «Sistema de IA» como «um sistema baseado em máquinas concebido para funcionar com níveis de autonomia variáveis, e que pode apresentar capacidade de adaptação após a implantação e que, para objetivos explícitos ou implícitos, e com base nos dados de entrada que recebe, infere a forma de gerar resultados, tais como previsões, conteúdos, recomendações ou decisões que podem influenciar ambientes físicos ou virtuais» (texto oficial em português europeu). O que importa é o que o sistema faz com os dados de entrada, não a tecnologia usada. Um padrão de código, sozinho, não comprova a definição.", article: "Artigo 3(1)" },
+  { id: "role_provider", text: "A organização atua como fornecedora deste sistema?", help: "O Artigo 3.º, ponto 3, define «Prestador» como «uma pessoa singular ou coletiva, autoridade pública, agência ou outro organismo que desenvolva, ou mande desenvolver, um sistema de IA ou um modelo de IA de finalidade geral e o coloque no mercado, ou coloque o sistema de IA em serviço sob o seu próprio nome ou a sua própria marca, a título oneroso ou gratuito» (texto oficial em português europeu). Você pode ser ao mesmo tempo prestador e responsável pela implantação; esta pergunta e a seguinte são respondidas separadamente.", article: "Artigos 3 e 17" },
+  { id: "role_deployer", text: "A organização usa ou implanta o sistema sob sua autoridade?", help: "O Artigo 3.º, ponto 4, define «Responsável pela implantação» como «uma pessoa singular ou coletiva, autoridade pública, agência ou outro organismo que utilize um sistema de IA sob a sua própria autoridade, salvo se o sistema de IA for utilizado no âmbito de uma atividade pessoal de caráter não profissional» (texto oficial em português europeu). Usar o sistema dentro de um produto ou serviço que você opera não é atividade pessoal de caráter não profissional.", article: "Artigo 3" },
   {
     id: "affected_domain",
     text: "Este sistema opera em algum destes domínios: identificação biométrica, infraestrutura crítica, educação, emprego/contratação, serviços essenciais (crédito, seguros, saúde, benefícios sociais), aplicação da lei, migração/controle de fronteiras, justiça/processos democráticos?",
@@ -806,230 +794,48 @@ const QUESTIONS = [
 // Profiling (Q12 in array) is shown before exemptions (Q8-9) so users
 // understand the gate before answering exemption questions.
 // Array indices into QUESTIONS:
-const DISPLAY_ORDER = QUESTIONS.map((_, index) => index);
+// Flow control lives in assess-flow.js so the three locale pages share one
+// implementation. Only question data and display strings are page-local.
+RegulaAssessFlow.install({
+  questions: { eu: QUESTIONS, kr: QUESTIONS_KR, co: QUESTIONS_CO },
+  jurisdictionInfo: JURISDICTION_INFO,
+  scopeQuestionId: { eu: "deployment_eu", kr: "kr_scope", co: "co_scope" },
+  copy: {
+    jurisdictionMeta: (info, questions, minutes) =>
+      `${info.law} : ${info.status} : ${questions} perguntas, cerca de ${minutes} minutos`,
+    progress: (n, total) => `Pergunta ${n} de ${total}`,
+    optionalProgress: (n, total) => `Pergunta opcional ${n} de ${total}`,
+    questionEyebrow: (n, total) => `PERGUNTA ${n} DE ${total}`,
+    optionalEyebrow: (n, total) => `PERGUNTA OPCIONAL ${n} DE ${total}`,
+    next: "Próxima",
+    seeResults: "Ver resultados",
+    answerGroupLabel: "Selecione sua resposta",
+    answers: {
+      yes: "Sim",
+      no: "Não",
+      unsure: "Não tenho certeza",
+      notApplicable: "Não se aplica",
+    },
+    answerLegend: "Sim, Não e Não se aplica são registrados como respostas e podem resolver um teste jurídico. Não tenho certeza é registrado como desconhecido explícito e nunca é contado como não.",
+    keys: { yes: "s", no: "n", unsure: "u", notApplicable: "a" },
+    readiness: {
+      title: "O resultado regulatório já está determinado.",
+      body: "As perguntas restantes registram os seus controles atuais. Elas são úteis para as suas próprias anotações e para quem for revisar, mas não alteram o resultado acima. Você pode parar a qualquer momento.",
+    },
+    earlyExit: {
+      seeResult: "Ver resultados agora",
+      note: "Você pode parar a qualquer momento. Perguntas não respondidas são relatadas como em aberto, nunca como não.",
+      finalBody: "Você respondeu não à pergunta de escopo, portanto esta regulamentação não parece ser acionada. As perguntas restantes não podem alterar esse resultado.",
+    },
+    storageNotice: "Isto não é aconselhamento jurídico. Suas respostas permanecem neste navegador: ficam no armazenamento de sessão para que você possa retomar, são apagadas ao recomeçar e nunca são enviadas a um servidor. Os resultados podem ser compartilhados via URL sem estado.",
+    intros: {
+      eu: "A Lei de IA da UE considera a finalidade pretendida e o contexto de implantação ao determinar obrigações legais. Este questionário apresenta indicadores para revisão humana; ele não determina sua classificação jurídica, conformidade ou obrigações aplicáveis.",
+      kr: "A Lei Básica de IA da Coreia do Sul regula sistemas de IA especificados. Este questionário apresenta indicadores para revisão humana; ele não determina se o seu sistema é legalmente abrangido ou conforme.",
+      co: "Colorado SB 26-189 regula tecnologia de tomada de decisão automatizada especificada. Este questionário apresenta indicadores para revisão humana; ele não determina abrangência legal, conformidade ou obrigações de divulgação aplicáveis.",
+    },
+  },
+});
 
-// Applicability and obligations come exclusively from the canonical decision model.
-
-// Helper: get active questions and order for current jurisdiction
-function getActiveQuestions() {
-  if (activeJurisdiction === "kr") return QUESTIONS_KR;
-  if (activeJurisdiction === "co") return QUESTIONS_CO;
-  return QUESTIONS;
-}
-function getActiveDisplayOrder() {
-  if (activeJurisdiction === "kr") return DISPLAY_ORDER_KR;
-  if (activeJurisdiction === "co") return DISPLAY_ORDER_CO;
-  return DISPLAY_ORDER;
-}
-
-// =====================================================================
-// State (with sessionStorage persistence)
-// =====================================================================
-let currentQuestion = 0;
-let answers = {};
-let assessmentStarted = false;
-
-function saveProgress() {
-  try {
-    sessionStorage.setItem("regula_assess", JSON.stringify({
-      currentQuestion, answers, assessmentStarted, activeJurisdiction
-    }));
-  } catch (e) { /* quota or private browsing */ }
-}
-
-function loadProgress() {
-  try {
-    const saved = sessionStorage.getItem("regula_assess");
-    if (saved) {
-      const data = JSON.parse(saved);
-      currentQuestion = data.currentQuestion || 0;
-      answers = data.answers || {};
-      assessmentStarted = data.assessmentStarted || false;
-      if (data.activeJurisdiction) {
-        activeJurisdiction = data.activeJurisdiction;
-        selectJurisdiction(activeJurisdiction);
-      }
-      if (assessmentStarted) {
-        document.getElementById("heroSection").style.display = "none";
-        document.getElementById("questionnaireSection").style.display = "block";
-        document.getElementById("assessIntro").style.display = "block";
-        renderQuestion();
-      }
-    }
-  } catch (e) { /* ignore */ }
-}
-
-// =====================================================================
-// Questionnaire logic
-// =====================================================================
-
-function startAssessment() {
-  assessmentStarted = true;
-  document.getElementById("heroSection").style.display = "none";
-  document.getElementById("questionnaireSection").style.display = "block";
-  document.getElementById("resultsSection").classList.remove("active");
-  document.getElementById("assessIntro").style.display = "block";
-  updateAssessIntro();
-  renderQuestion();
-  if (window.plausible) plausible("Assessment Started");
-}
-
-function renderQuestion() {
-  const activeQ = getActiveQuestions();
-  const activeOrder = getActiveDisplayOrder();
-  const q = activeQ[activeOrder[currentQuestion]];
-  const existing = answers[q.id] || null;
-  const container = document.getElementById("questionContainer");
-  const qId = "q-" + q.id;
-
-  container.innerHTML = `
-    <div class="q-card" role="group" aria-labelledby="${qId}-text">
-      <div class="q-number" aria-hidden="true">PERGUNTA ${currentQuestion + 1} DE ${activeOrder.length}</div>
-      <div class="q-text" id="${qId}-text">${q.text}</div>
-      <div class="q-help" id="${qId}-help">${q.help}</div>
-      <div class="q-article">${q.article}</div>
-      <div class="answers" role="group" aria-label="Selecione sua resposta" aria-describedby="${qId}-help">
-        <button type="button" class="ans-btn ${existing === 'yes' ? 'selected' : ''}" onclick="answer('yes', this)" aria-pressed="${existing === 'yes'}">Sim</button>
-        <button type="button" class="ans-btn ${existing === 'no' ? 'selected-no' : ''}" onclick="answer('no', this)" aria-pressed="${existing === 'no'}">Não</button>
-        <button type="button" class="ans-btn ${existing === 'unsure' ? 'selected-unsure' : ''}" onclick="answer('unsure', this)" aria-pressed="${existing === 'unsure'}">Não tenho certeza</button>
-        <button type="button" class="ans-btn ${existing === 'not_applicable' ? 'selected-unsure' : ''}" onclick="answer('not_applicable', this)" aria-pressed="${existing === 'not_applicable'}">Não se aplica</button>
-      </div>
-    </div>
-  `;
-
-  // Hide intro after first question
-  if (currentQuestion > 0) {
-    const intro = document.getElementById("assessIntro");
-    if (intro) intro.style.display = "none";
-  }
-
-  // Update progress
-  const pct = Math.round((currentQuestion / activeOrder.length) * 100);
-  document.getElementById("progressBar").style.width = pct + "%";
-  document.getElementById("progressPct").textContent = pct + "%";
-  document.getElementById("progressText").textContent = `Pergunta ${currentQuestion + 1} de ${activeOrder.length}`;
-  document.getElementById("progressWrap").setAttribute("aria-valuenow", pct);
-
-  // Button states
-  document.getElementById("prevBtn").disabled = currentQuestion === 0;
-  document.getElementById("nextBtn").disabled = !existing;
-  document.getElementById("nextBtn").textContent = currentQuestion === activeOrder.length - 1 ? "Ver resultados" : "Próxima";
-
-  // Focus management: move focus to the question text for screen readers
-  const qText = document.getElementById(qId + "-text");
-  if (qText) { qText.setAttribute("tabindex", "-1"); qText.focus(); }
-}
-
-function answer(value, btn) {
-  const activeQ = getActiveQuestions();
-  const activeOrder = getActiveDisplayOrder();
-  const q = activeQ[activeOrder[currentQuestion]];
-  answers[q.id] = value;
-
-  // Update button states visually and aria-pressed
-  btn.parentElement.querySelectorAll(".ans-btn").forEach(b => {
-    b.className = "ans-btn";
-    b.setAttribute("aria-pressed", "false");
-  });
-  btn.setAttribute("aria-pressed", "true");
-  if (value === "yes") btn.className = "ans-btn selected";
-  else if (value === "no") btn.className = "ans-btn selected-no";
-  else btn.className = "ans-btn selected-unsure";
-
-  document.getElementById("nextBtn").disabled = false;
-  saveProgress();
-}
-
-function nextQuestion() {
-  if (window.plausible) plausible("Assess Question", { props: { step: currentQuestion + 1, jurisdiction: activeJurisdiction } });
-  if (currentQuestion < getActiveDisplayOrder().length - 1) {
-    currentQuestion++;
-    renderQuestion();
-    saveProgress();
-  } else {
-    showResults();
-  }
-}
-
-function prevQuestion() {
-  if (currentQuestion > 0) {
-    currentQuestion--;
-    renderQuestion();
-    saveProgress();
-  }
-}
-
-// =====================================================================
-// Scoring :  ported from questionnaire.py evaluate_questionnaire()
-// =====================================================================
-
-function calculateResults() {
-  return RegulaDecisionAdapters.evaluateQuestionnaireDecision(activeJurisdiction, answers);
-}
-
-// =====================================================================
-// Results rendering
-// =====================================================================
-
-function showResults() {
-  document.getElementById("questionnaireSection").style.display = "none";
-  const results = calculateResults();
-  document.getElementById("resultsSection").classList.add("active");
-  RegulaDecisionUI.renderQuestionnaireResult(results, {
-    locale: document.documentElement.lang,
-    questions: getActiveQuestions(),
-    tierElement: document.getElementById("tierResult"),
-    detailsElement: document.getElementById("obligationsList"),
-    nextElement: document.getElementById("nextStepsSection"),
-  });
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  if (window.plausible) plausible("Assessment Complete", { props: { result_type: results.result_type, jurisdiction: activeJurisdiction } });
-}
-
-// =====================================================================
-// URL encoding (stateless, like EuroComply)
-// =====================================================================
-
-function encodeAnswers() {
-  return RegulaDecisionAdapters.encodeAnswers(activeJurisdiction, answers, getActiveQuestions());
-}
-
-function decodeAnswers(code) {
-  return RegulaDecisionAdapters.decodeAnswers(activeJurisdiction, code, getActiveQuestions());
-}
-
-function copyShareLink() {
-  if (window.plausible) plausible("Assess Export", { props: { type: "share-link" } });
-  const code = encodeAnswers();
-  const jurParam = activeJurisdiction !== "eu" ? "&j=" + activeJurisdiction : "";
-  const url = window.location.origin + window.location.pathname + "?r=" + code + jurParam;
-  const input = document.getElementById("shareUrl");
-  input.value = url;
-  document.getElementById("shareSection").style.display = "block";
-  input.select();
-  navigator.clipboard.writeText(url).catch(() => {});
-}
-
-function exportJSON() {
-  if (window.plausible) plausible("Assess Export", { props: { type: "json" } });
-  RegulaDecisionUI.exportResult(calculateResults(), {
-    locale: document.documentElement.lang,
-    answers: answers,
-  });
-}
-
-function resetAssessment() {
-  currentQuestion = 0;
-  answers = {};
-  assessmentStarted = false;
-  activeJurisdiction = "eu";
-  selectJurisdiction("eu");
-  document.getElementById("resultsSection").classList.remove("active");
-  document.getElementById("heroSection").style.display = "block";
-  document.getElementById("questionnaireSection").style.display = "none";
-  window.history.replaceState(null, "", window.location.pathname);
-  try { sessionStorage.removeItem("regula_assess"); } catch (e) {}
-}
 
 // =====================================================================
 // Code Scanner UI
@@ -1051,6 +857,7 @@ function startScanner() {
   document.getElementById("questionnaireSection").style.display = "none";
   document.getElementById("resultsSection").classList.remove("active");
   document.getElementById("scannerSection").style.display = "block";
+  document.getElementById("scanError").style.display = "none";
   document.getElementById("codeInput").focus();
   if (window.plausible) plausible("Scanner Started");
 }
@@ -1065,38 +872,14 @@ function resetScanner() {
   document.getElementById("fileName").textContent = "";
   document.getElementById("scanResults").style.display = "none";
   document.getElementById("scanResults").innerHTML = "";
+  document.getElementById("scanError").style.display = "none";
   document.getElementById("scanBtn").disabled = true;
   uploadedFileName = null;
   scanResult = null;
 }
 
 // Keyboard navigation for questionnaire
-document.addEventListener("keydown", function(e) {
-  if (!assessmentStarted) return;
-  const section = document.getElementById("questionnaireSection");
-  if (section.style.display === "none") return;
-  const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
 
-  if (key === "ArrowRight" || key === "ArrowDown") {
-    e.preventDefault();
-    if (!document.getElementById("nextBtn").disabled) nextQuestion();
-  } else if (key === "ArrowLeft" || key === "ArrowUp") {
-    e.preventDefault();
-    if (!document.getElementById("prevBtn").disabled) prevQuestion();
-  } else if (key === "1" || key === "y" || key === "s") {
-    const btns = document.querySelectorAll(".ans-btn");
-    if (btns.length >= 1) { btns[0].click(); btns[0].focus(); }
-  } else if (key === "2" || key === "n") {
-    const btns = document.querySelectorAll(".ans-btn");
-    if (btns.length >= 2) { btns[1].click(); btns[1].focus(); }
-  } else if (key === "3" || key === "u" || key === "i") {
-    const btns = document.querySelectorAll(".ans-btn");
-    if (btns.length >= 3) { btns[2].click(); btns[2].focus(); }
-  } else if (key === "4" || key === "a") {
-    const btns = document.querySelectorAll(".ans-btn");
-    if (btns.length >= 4) { btns[3].click(); btns[3].focus(); }
-  }
-});
 
 // Enable scan button when code is entered
 document.getElementById("codeInput").addEventListener("input", function() {
@@ -1131,29 +914,39 @@ function runScan() {
   // Show progress
   document.getElementById("scanProgress").style.display = "block";
   document.getElementById("scanResults").style.display = "none";
+  document.getElementById("scanError").style.display = "none";
   document.getElementById("scanBtn").disabled = true;
 
   // Run scan asynchronously to allow UI to update
   setTimeout(function() {
-    scanResult = scanCode(code, filename);
-    scanResult.decision = RegulaDecisionAdapters.evaluateQuestionnaireDecision(
-      activeJurisdiction, {}
-    );
+    try {
+      scanResult = scanCode(code, filename);
+      scanResult.decision = RegulaDecisionAdapters.evaluateQuestionnaireDecision(
+        activeJurisdiction, {}
+      );
 
     // Override language if user selected one
-    if (langSelect) {
-      scanResult.language = langSelect;
-      scanResult.classification = classifyCode(code, langSelect);
+      if (langSelect) {
+        scanResult.language = langSelect;
+        scanResult.classification = classifyCode(code, langSelect);
+      }
+
+      renderScanResults(scanResult);
+      document.getElementById("scanResults").style.display = "block";
+
+      if (window.plausible) plausible("Scan Complete", {
+        props: { detector_class: scanResult.classification.detector_class, result_type: scanResult.decision.result_type, language: scanResult.language }
+      });
+    } catch (error) {
+      scanResult = null;
+      const errorElement = document.getElementById("scanError");
+      errorElement.style.display = "block";
+      errorElement.focus();
+      console.error("Regula browser scan failed", error);
+    } finally {
+      document.getElementById("scanProgress").style.display = "none";
+      document.getElementById("scanBtn").disabled = false;
     }
-
-    renderScanResults(scanResult);
-    document.getElementById("scanProgress").style.display = "none";
-    document.getElementById("scanResults").style.display = "block";
-    document.getElementById("scanBtn").disabled = false;
-
-    if (window.plausible) plausible("Scan Complete", {
-      props: { detector_class: scanResult.classification.detector_class, result_type: scanResult.decision.result_type, language: scanResult.language }
-    });
   }, 50);
 }
 
@@ -1396,34 +1189,7 @@ function exportScanJSON() {
 // Init: check for shared results in URL
 // =====================================================================
 
-(function init() {
-  const params = new URLSearchParams(window.location.search);
 
-  // Parse jurisdiction from URL
-  const jurParam = params.get("j");
-  if (jurParam && JURISDICTION_INFO[jurParam]) {
-    activeJurisdiction = jurParam;
-    selectJurisdiction(jurParam);
-  }
-
-  const code = params.get("r");
-  if (code) {
-    // Strip the encoded answers from the address bar once decoded: the
-    // analytics script reads location.href for pageviews, and the r=
-    // payload is user-derived data that should not leave the browser.
-    try { history.replaceState(null, "", location.pathname); } catch (e) {}
-    const decoded = decodeAnswers(code);
-    if (decoded) {
-      answers = decoded;
-      assessmentStarted = true;
-      document.getElementById("heroSection").style.display = "none";
-      showResults();
-      return;
-    }
-  }
-  // Restore in-progress assessment from sessionStorage
-  loadProgress();
-})();
 </script>
 <script>
 // Nav scroll effect

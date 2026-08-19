@@ -144,7 +144,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -161,14 +163,14 @@
 <div class="blog-hero" style="padding-bottom:24px;">
     <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
     <h1 style="margin:8px 0 16px;">EU AI Act for Recruitment and Hiring AI: What Developers Need</h1>
-    <p class="standfirst" style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">Software intended to screen CVs, rank candidates, score interviews, or automate hiring decisions may follow the high-risk path under Article 6 and Annex III point 4(a): <em>&ldquo;AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to screen or filter applications, and to evaluate candidates.&rdquo;</em> Intended purpose, Article 6 conditions, and exceptions must be assessed in context.</p>
+    <p class="standfirst" style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">Software intended to screen CVs, rank candidates, score interviews, or automate hiring decisions may follow the high-risk path under Article 6 and Annex III point 4(a): <em>&ldquo;AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates&rdquo;.</em> Intended purpose, Article 6 conditions, and exceptions must be assessed in context.</p>
 </div>
 
 <div class="blog-body">
 
 <h2>Why recruitment AI is high-risk</h2>
 
-<p>Annex III of the <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">EU AI Act (Regulation (EU) 2024/1689)</a> lists eight domains where AI systems are considered high-risk by their intended purpose. Category 4, &ldquo;Employment, workers management and access to self-employment,&rdquo; covers the full hiring pipeline: job advertisement targeting, application screening and filtering, candidate evaluation, and interview assessment.</p>
+<p>Annex III of the <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">EU AI Act (Regulation (EU) 2024/1689)</a> lists eight domains where AI systems are considered high-risk by their intended purpose. Category 4, &ldquo;Employment, workers&rsquo; management and access to self-employment&rdquo; covers the full hiring pipeline: job advertisement targeting, application screening and filtering, candidate evaluation, and interview assessment.</p>
 
 <p>The model type alone does not settle classification. Intended purpose is central, but the complete Article 6 test and Annex III wording still apply. Recruitment-related code is evidence to review, not a legal conclusion by itself.</p>
 
@@ -195,22 +197,42 @@
 Regula Scan: examples/cv-screening-app
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project is classified as high-risk under EU AI Act Annex III.
-  You must comply with Articles 9-15 before the enforcement deadline.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
+
   Files scanned:      1
   High-risk:          1
+  BLOCK tier:         0
+  WARN tier:          0
   INFO tier:          1
 
   HIGH-RISK INDICATORS:
     [INFO] [ 43] app.py — Employment and workers management [plan]
-
-  Questions for human review (1):
-    ? app.py:1 — Annex III, Category 4
-      Employment and workers management (confidence: 43%)
 ============================================================</code></pre>
 
-<p>The confidence score of 43% tells you how many indicators matched. In this case the example is deliberately small, so the score is low. A production hiring tool with richer patterns (named entity extraction on CVs, interview scoring pipelines, applicant tracking integrations) will score higher.</p>
+<p>Read the two halves separately. The decision block says
+<code>insufficient_information</code>: the tool has not concluded that the Act
+applies, and it names the two facts a person still has to establish before any
+Article 9 to 15 duty can be attached. The detector block is evidence for that
+person, not a finding of law, which is why it is labelled "not legal facts".</p>
+
+<p>The number in brackets is a detector priority, not a probability and not a
+compliance score. 63 places this finding in the WARN band (50 to 79). It counts
+how many patterns matched, so a deliberately small example scores lower than a
+production hiring tool with named entity extraction on CVs, interview scoring
+pipelines and applicant tracking integrations. Earlier versions of this page
+labelled it a confidence percentage, which invited reading a pattern count as a
+likelihood; the tool no longer emits that wording.</p>
 
 <p>The <code>--domain employment</code> flag activates employment-specific patterns that might not fire under the default scan. If you know your system is used for hiring, pass this flag.</p>
 
@@ -278,39 +300,30 @@ Regula Scan: examples/cv-screening-app
 
 <pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check examples/cv-screening-app --domain employment --scope all</code></pre>
 
-<p>This tells you whether Regula detects high-risk patterns and which Annex III category they fall under. The output above shows it: Verdict HIGH-RISK, Annex III Category 4.</p>
+<p>This tells you which Annex III category the detected patterns point at. The output above shows Annex III Category 4 as a candidate, alongside the facts that remain unresolved. It is not a determination that the system is high-risk.</p>
 
 <h3>Step 2: Gap analysis against Articles 9-15</h3>
 
 <pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project examples/cv-screening-app
 
-EU AI Act Compliance Gap Assessment: cv-screening-app
-Example source: https://github.com/kuzivaai/getregula/tree/main/examples/cv-screening-app
-Highest risk tier: high_risk
-Overall score:     29%
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
 
-Article 9   Risk Management                     [ 60%] MODERATE
-  Gap: Risk documentation lacks structured mitigations
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</code></pre>
 
-Article 10  Data Governance                     [ 30%] PARTIAL
-  Gap: No bias detection or fairness checking libraries found
-
-Article 11  Technical Documentation             [  0%] NOT FOUND
-  Gap: No Annex IV technical documentation found
-
-Article 12  Record-Keeping                      [ 30%] PARTIAL
-  Gap: No structured or auditable logging format detected
-
-Article 13  Transparency                        [  0%] NOT FOUND
-  Gap: No user-facing AI disclosure found in code
-
-Article 14  Human Oversight                     [ 45%] PARTIAL
-  Gap: No evidence that AI outputs are reviewed before action
-
-Article 15  Accuracy, Robustness, Cybersecurity [ 40%] PARTIAL
-  Gap: No test files found</code></pre>
-
-<p>This illustrative gap report shows how code-observable evidence and missing evidence are presented article by article. It is an example, not a benchmark or a legal assessment. <a href="https://github.com/kuzivaai/getregula/tree/main/examples/cv-screening-app">Example source</a>.</p>
+<p>Eight article observations are held, not emitted. That is the point of this
+command: until someone establishes that the subject is an AI system and that the
+jurisdiction applies, Regula will not attach Article 9 to 15 evidence to it. An
+earlier version of this page showed a percentage score per article. That output
+no longer exists, and it should not: a percentage against an article reads as a
+compliance measurement, which is a determination Regula does not make.
+<a href="https://github.com/kuzivaai/getregula/tree/main/examples/cv-screening-app">Example source</a>.</p>
 
 <h3>Step 3: Organisational conformity check</h3>
 
@@ -324,7 +337,7 @@ Article 15  Accuracy, Robustness, Cybersecurity [ 40%] PARTIAL
 
 <p><strong>Probably do not need to worry about yet:</strong> conformity assessment procedures (those come at deployment, not development), notified body involvement (Annex III systems use self-assessment unless they also fall under Annex I), or post-market monitoring systems (required, but you need a working system first).</p>
 
-<p><strong>Start now regardless of the deadline:</strong> the gap between 29% and compliant is not closed in a sprint. Data governance and technical documentation take months to get right, and retrofitting logging into an existing system is harder than building it in from the start.</p>
+<p><strong>Start now regardless of the deadline:</strong> the distance between a codebase with no documented data governance and one that could survive scrutiny is not closed in a sprint. Data governance and technical documentation take months to get right, and retrofitting logging into an existing system is harder than building it in from the start.</p>
 
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
@@ -333,7 +346,7 @@ Article 15  Accuracy, Robustness, Cybersecurity [ 40%] PARTIAL
 </p>
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last verified:</strong> 25 June 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+    <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
     <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
     <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
 </p>

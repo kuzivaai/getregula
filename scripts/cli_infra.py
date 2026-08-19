@@ -51,7 +51,7 @@ def cmd_config(args) -> None:
 
 
 def cmd_install(args) -> None:
-    """Install hooks for a platform."""
+    """Install a supported pre-commit integration."""
     from install import PLATFORMS, list_platforms, _find_regula_root
 
     if not args.platform or args.platform == "list":

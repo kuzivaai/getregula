@@ -22,10 +22,11 @@ import io
 import json
 import re
 import sys
-import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+
+from safe_io import urlopen_https
 
 SOURCE_CSV = (
     "https://raw.githubusercontent.com/w3c/dpv/master/"
@@ -38,7 +39,9 @@ SNAPSHOT_PATH = Path(__file__).parent / "dpv_data" / "dpv_aiact_terms.json"
 
 def fetch_terms(url: str = SOURCE_CSV) -> dict:
     """Download and parse the upstream vocabulary CSV into a term map."""
-    with urllib.request.urlopen(url, timeout=60) as resp:  # noqa: S310 (trusted host)
+    with urlopen_https(
+        url, allowed_hosts=frozenset({"raw.githubusercontent.com"}), timeout=60
+    ) as resp:
         text = resp.read().decode("utf-8")
     terms = {}
     for row in csv.DictReader(io.StringIO(text)):

@@ -64,7 +64,14 @@ EXCLUDED = {
     "register": "writes to a registry outside the scan root",
     "attest": "requires signing keys; covered by test_signing.py",
     "quickstart": "interactive walkthrough, not a scanner",
-    "badge": "renders a badge from a prior scan; performs no walk",
+    # `badge` was excluded here on the stated ground that it "renders a badge
+    # from a prior scan; performs no walk". The implementation contradicts that:
+    # `cli_report.cmd_badge` calls `scan_files(project)`, which walks the tree.
+    # A path-taking command that walks was therefore exempt from the hostile
+    # sweep on a false premise, so the FIFO, symlink-escape and skip-dir bait in
+    # this fixture never reached it. Removed 2026-08-17 so it is swept. Found by
+    # reading the implementation against the exclusion's own justification, not
+    # by the sweep, which had no way to notice its own blind spot.
 }
 
 # Per-command timeout. The fixture is tiny, so anything approaching this is

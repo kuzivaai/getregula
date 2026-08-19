@@ -21,6 +21,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from constants import VERSION
+from safe_io import urlopen_https
 
 # --- endpoints (all public, no auth required) ---
 PYPI_STATS_URL = "https://pypistats.org/api/packages/regula-ai/recent"
@@ -29,13 +30,16 @@ PYPI_PKG_URL = "https://pypi.org/pypi/regula-ai/json"
 
 ADOPTION_FILE = Path.home() / ".regula" / "adoption.json"
 REQUEST_TIMEOUT = 15  # seconds
+_PUBLIC_API_HOSTS = frozenset({"pypistats.org", "api.github.com", "pypi.org"})
 
 
 def _get_json(url):
     """Fetch JSON from a URL. Returns parsed dict or None on failure."""
     req = urllib.request.Request(url, headers={"User-Agent": "regula-adoption-pulse"})
     try:
-        with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT) as resp:
+        with urlopen_https(
+            req, allowed_hosts=_PUBLIC_API_HOSTS, timeout=REQUEST_TIMEOUT
+        ) as resp:
             return json.loads(resp.read().decode("utf-8"))
     except (urllib.error.URLError, urllib.error.HTTPError, OSError, ValueError) as exc:
         print(f"  warning: {url} — {exc}", file=sys.stderr)

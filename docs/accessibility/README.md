@@ -2,8 +2,43 @@
 
 **Target:** WCAG 2.2 Level AA<br>
 **Conformance status:** not claimed<br>
-**Last completed automated audit:** 4 August 2026, 42 canonical pages, zero axe violations<br>
+**Last completed automated audit:** 15 August 2026, 48 canonical pages, zero axe
+violations, on the working tree of `feat/engagement-fixes` (unpushed)<br>
+**Previous:** 4 August 2026, 42 canonical pages, zero axe violations<br>
 **Audit tools:** Playwright 1.62.1 and axe-core 4.12.1
+
+**The 15 August run found two violations before it found none.** Both were
+`scrollable-region-focusable`, impact serious: a horizontally scrolling `<pre>`
+that a keyboard user cannot scroll, on `/guides/article-9-risk-management.html`
+and `/guides/eu-ai-act-healthcare.html`. That is WCAG 2.1.1 Keyboard, a Level A
+criterion, on a site whose target is AA.
+
+They were a regression on this branch, established by measurement rather than
+inference: the audit was re-run in a worktree at `688d1a7`, where both pages
+were in scope and both returned zero. Commit `4de7541`, the N108 correction
+that replaced published CLI transcripts with real command output, took the
+longest line inside those `<pre>` blocks from 68 and 74 characters to 121. At
+the runner's fixed 1400px viewport that is the width at which the block starts
+to scroll.
+
+**Why nothing caught it.** `.github/workflows/accessibility.yml` triggers on
+`pull_request` for `site/**`. The branch carrying the regression has never been
+pushed, so the job had never run against it. The gate is correct and it is
+wired to the right paths; it is blind to work that stays local. Run it locally
+before relying on it (see below).
+
+The fix completes a pattern the site already used inconsistently: 22 of 73
+`<pre>` elements carried `tabindex="0"` and 51 did not. All 73 now do, so the
+next transcript that grows past the container is focusable before anyone
+notices it scrolls. An accessible name was deliberately not added: `role` plus
+`aria-label` on 73 code blocks would add 73 landmarks and make screen-reader
+navigation worse, and the axe rule asks for focusability.
+
+**Thirteen pages return `incomplete` results**, which axe reports when it
+cannot decide and a human must. Those are not counted as passes here, and
+automated checks reach only part of WCAG in any case. Zero violations means
+zero violations of the rules this tool can evaluate. It is not conformance,
+and nothing in this file should be read as claiming it.
 
 Regula treats accessibility and usability as acceptance criteria. Automated
 results are evidence about the rules a tool can evaluate. They are not proof
@@ -76,10 +111,21 @@ npm install --prefix /tmp/regula-a11y-audit \
 /tmp/regula-a11y-audit/node_modules/.bin/playwright install chromium
 
 cd /path/to/getregula
-python3 -m http.server 8790 --bind 127.0.0.1 --directory site
+# Background the server, or it blocks and the audit below never runs. The
+# port is hardcoded in run-axe.js, so it must be 8790.
+python3 -m http.server 8790 --bind 127.0.0.1 --directory site &
+server_pid=$!
+trap 'kill "$server_pid"' EXIT
+
 A11Y_NODE_MODULES=/tmp/regula-a11y-audit/node_modules \
   AXE_REPORT=/tmp/regula-axe.json node docs/accessibility/run-axe.js
+echo "exit: $?"   # 0 = no violations. Read it; a blank gate is not a green gate.
 ```
+
+Do NOT use `playwright install --with-deps` outside CI: it escalates to root to
+install system packages and fails on a workstation without a sudo terminal.
+Plain `playwright install chromium` is what the local instruction above uses,
+and it is sufficient where a browser's shared libraries are already present.
 
 ## Required manual evaluation
 

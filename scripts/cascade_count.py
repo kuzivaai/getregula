@@ -110,6 +110,26 @@ _SPACE_ENTITY = (
 _HTML_COMMENT = r"<!--.*?-->"
 GAP = rf"(?:[ \t]|{_INLINE_TAG}|{_SPACE_ENTITY}|{_HTML_COMMENT})+"
 
+
+# Which numbers are even NOMINATED as possibly-stale. Membership in a template
+# shape is the real filter; this only decides what gets offered to it.
+#
+# CANDIDATE_THOUSANDS is the original and stays the default: four digits, or
+# three-or-fewer grouped by a comma or a full stop (both, because the German
+# and Brazilian pages group with a full stop). It cannot nominate a bare
+# three-digit number, so **no published count below 1,000 could ever be found
+# stale**. That is how `docs/architecture.md` published "112 test files" while
+# git tracked 113 on the same commit: the number was not merely unmatched, it
+# was never a candidate. The docstring on _stale_values already records the
+# same class of blindness being closed once for dot-grouping.
+#
+# CANDIDATE_ANY_INTEGER nominates two digits and up. It is NOT safe for
+# COUNT_TEMPLATES, which contains a bare table-cell shape (`| {n} |`) that any
+# three-digit number in any table would match. Use it only with templates
+# anchored on unit words specific enough to carry the whole filter themselves.
+CANDIDATE_THOUSANDS = r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{4})(?![\w,.])"
+CANDIDATE_ANY_INTEGER = r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{2,})(?![\w,.])"
+
 COUNT_TEMPLATES = [
     # Shields.io badge forms, one per unit word, named explicitly.
     #
@@ -146,6 +166,90 @@ COUNT_TEMPLATES = [
     r"total_collected\s*=\s*{n}",
     r"\|\s*{n}\s*\|",
     r"\({n}\s+pytest-collected\)",
+]
+
+
+# The SECOND published quantity: how many functions the legacy custom runner
+# selects. docs/TRUST.md publishes it twice, three lines from the collected
+# count, and it moves whenever a test module is wired into
+# tests/test_classification.py, which .claude/rules/tests.md requires.
+#
+# It was deliberately excluded from COUNT_TEMPLATES above, whose comment records
+# that "963 test functions" is "a different quantity that docs/TRUST.md
+# publishes three lines away". That exclusion was right and stays right: these
+# templates are a separate list applied in a separate pass against a separate
+# canonical, so neither quantity can ever be written with the other's value.
+#
+# WHY IT IS HERE NOW. Leaving it uncascaded cost two full suite runs to
+# discover on 2026-08-14 alone, once for the content-freshness module and once
+# for the documented-transcripts module. tests/test_published_count_manifest.py
+# catches the drift and names the cause, so it failed closed rather than
+# publishing a wrong number, but "fails closed twice in one session" is a
+# recurring manual step, which is what this module exists to remove.
+#
+# The shapes are anchored on the VERB, not on the unit word. "functions" alone
+# would nominate "442 defined in-file", a third quantity on the same line.
+RUNNER_TEMPLATES = [
+    rf"discovers{GAP}{{n}}{GAP}functions",
+    rf"executes{GAP}{{n}}{GAP}functions",
+]
+
+
+# The THIRD published quantity: how many test FILES there are.
+#
+# WHY IT IS HERE. `docs/architecture.md` publishes one line carrying the test
+# FILE count and the collected count together. The collected half was
+# cascade-managed and correct; the file half was managed by nobody and was
+# already wrong by one at `ea64ffe`. It is the exact shape measurement rule 5
+# warns about: half a line carries a guarantee and the whole line reads as
+# though it does. (The figures are deliberately not written here. Derive them
+# with `python3 scripts/cascade_count.py --check`; a canonical count written as
+# a literal into a living document is what tests/test_published_count_manifest
+# exists to refuse, and this comment failed that check on its first draft.)
+#
+# Anchored on the unit words "test files", which no other quantity in the
+# corpus uses, and applied in its own pass against its own canonical so it can
+# never be written with the collected or runner value.
+TEST_FILE_TEMPLATES = [
+    rf"{{n}}{GAP}test files",
+]
+
+
+# The FOURTH published quantity: how many commands the CLI registers.
+#
+# WHY IT IS HERE. Ledger N131 recorded it as a fourth ungated quantity and it is
+# the worst of the four, for two reasons the other three do not have. It is
+# published in THREE LANGUAGES, so a miss is invisible to a reader of the
+# language that was updated. And `claim_auditor --verify-facts` was the only
+# thing standing between a miss and a published wrong number, which makes it a
+# reader rather than a writer: it can say "this is wrong" but never fix it, so
+# every command added or removed meant a hand-applied edit across three locales.
+#
+# N131's own enumeration named five locations. Enumerated again on 2026-08-17
+# the live reader-facing set is TWELVE, across five files and three languages,
+# and the one N131 named that a plain adjacency grep does NOT find is
+# `site/about.html`, which reads "62 CLI commands" with a qualifier between the
+# number and its unit word. That is measurement rule 4c's own failure mode
+# (hand enumeration under-counting, now the sixth occurrence in this programme)
+# and simultaneously ledger N10's (the unit word is not always adjacent). Both
+# are why the qualifier form below exists as its own template rather than being
+# assumed away.
+#
+# CANDIDATE_ANY_INTEGER is required: the count is two digits, and
+# CANDIDATE_THOUSANDS structurally cannot nominate a number below 1,000, which
+# is the blindness that let "112 test files" stand while git tracked 113.
+COMMAND_TEMPLATES = [
+    # English, bare and with a qualifier between the number and the unit word.
+    rf"{{n}}{GAP}commands",
+    rf"{{n}}{GAP}CLI{GAP}commands",
+    # German. The site ships de-DE and the unit word is inflected, not translated
+    # word-for-word, so a pattern list written only in English is blind to it by
+    # construction. This is N107's finding in a second instrument.
+    rf"{{n}}{GAP}Befehle",
+    # Brazilian Portuguese.
+    rf"{{n}}{GAP}comandos",
+    # The README's own summary table, where the number follows its unit words.
+    rf"CLI commands{GAP}?\|{GAP}?{{n}}",
 ]
 
 
@@ -186,6 +290,108 @@ def canonical_count() -> int:
             f"cascade a cached number, and refusing to report a clean check "
             f"against one."
         )
+    return cached
+
+
+def canonical_runner_count() -> int:
+    """The published runner function count, cached then cross-checked.
+
+    Same contract as `canonical_count`: the value comes from committed data so
+    a typo cannot become the published number, and a stale cache is a refusal
+    rather than a silent pass. The live side calls
+    `site_facts.count_runner_functions()` directly rather than `compute()`,
+    because `compute()` re-runs pytest collection and this pass does not need
+    it.
+    """
+    facts = json.loads(CANONICAL.read_text(encoding="utf-8"))
+    tests = facts["counts"]["tests"]
+    if "runner_functions" not in tests:
+        raise RefusedError(
+            "data/site_facts.json has no counts.tests.runner_functions. "
+            "Regenerate it with `python3 scripts/site_facts.py`. Refusing to "
+            "cascade a quantity with no canonical source.")
+    cached = int(tests["runner_functions"])
+
+    import site_facts
+    live = int(site_facts.count_runner_functions())
+    if cached != live:
+        raise RefusedError(
+            f"data/site_facts.json is stale: it records {cached:,} runner "
+            f"functions, the runner currently selects {live:,}. Regenerate it "
+            f"with `python3 scripts/site_facts.py` and re-run.")
+    return cached
+
+
+def canonical_test_file_count() -> int:
+    """The published test-FILE count, cached then cross-checked.
+
+    Same contract as the other two canonicals. The population is the keys of
+    `counts.tests.per_file`, which `site_facts.count_tests` builds by the same
+    recursive walk pytest collects from, and whose tracking is already policed
+    (`untracked_test_contributors` warns at generation, `tests/test_site_facts`
+    fails at rest). Deriving the count from that dict rather than re-walking
+    means it cannot disagree with the per-file inventory it is a summary of.
+    """
+    facts = json.loads(CANONICAL.read_text(encoding="utf-8"))
+    tests = facts["counts"]["tests"]
+    if "per_file" not in tests:
+        raise RefusedError(
+            "data/site_facts.json has no counts.tests.per_file. Regenerate it "
+            "with `python3 scripts/site_facts.py`. Refusing to cascade a "
+            "quantity with no canonical source.")
+    cached = len(tests["per_file"])
+
+    import site_facts
+    live = len(site_facts.count_tests()["per_file"])
+    if cached != live:
+        raise RefusedError(
+            f"data/site_facts.json is stale: it records {cached:,} test files, "
+            f"the tree currently has {live:,}. Regenerate it with "
+            f"`python3 scripts/site_facts.py` and re-run.")
+    return cached
+
+
+def canonical_command_count() -> int:
+    """The published command count, cached then cross-checked TWICE.
+
+    Same contract as the other three canonicals: the value comes from committed
+    data so a typo cannot become the published number, and a stale cache is a
+    refusal rather than a silent pass.
+
+    This one is cross-checked against two independent derivations rather than
+    one, and that is deliberate. `site_facts.count_commands` counts `def cmd_*`
+    definitions with a hand-written compensation for the `monitor` sub-command
+    group; `site_facts.count_commands_from_registry` reads the argparse registry,
+    which is the population the published claim is actually about, because "62
+    commands" promises a reader what they can type. Requiring the two to agree
+    turns that compensation from a coincidence into a checked invariant: a
+    command registered with no handler, or a handler nothing registers, becomes
+    a refusal here instead of a number that depends on which function was called.
+    """
+    facts = json.loads(CANONICAL.read_text(encoding="utf-8"))
+    counts = facts["counts"]
+    if "commands" not in counts:
+        raise RefusedError(
+            "data/site_facts.json has no counts.commands. Regenerate it with "
+            "`python3 scripts/site_facts.py`. Refusing to cascade a quantity "
+            "with no canonical source.")
+    cached = int(counts["commands"])
+
+    import site_facts
+    registry = int(site_facts.count_commands_from_registry())
+    handlers = int(site_facts.count_commands())
+    if registry != handlers:
+        raise RefusedError(
+            f"the two command derivations disagree: the argparse registry "
+            f"offers {registry:,} commands and {handlers:,} are derived from "
+            f"`cmd_` handlers. One of them is wrong and this tool will not "
+            f"pick. Either a command is registered with no handler, or a "
+            f"handler exists that nothing registers.")
+    if cached != registry:
+        raise RefusedError(
+            f"data/site_facts.json is stale: it records {cached:,} commands, "
+            f"the CLI currently registers {registry:,}. Regenerate it with "
+            f"`python3 scripts/site_facts.py` and re-run.")
     return cached
 
 
@@ -269,7 +475,9 @@ def _swap(fragment: str, old: int, new: int) -> str:
     return fragment[:at] + now + fragment[at + len(was):]
 
 
-def propagate(new: int, apply: bool) -> int:
+def propagate(new: int, apply: bool, templates=None, label: str = "count",
+              candidates: str = None) -> int:
+    templates = templates or COUNT_TEMPLATES
     changed, drift = 0, []
     for rel in manifest_surfaces():
         assert_permitted(rel)
@@ -279,8 +487,8 @@ def propagate(new: int, apply: bool) -> int:
             continue
         text = p.read_text(encoding="utf-8")
         updated = text
-        for old in _stale_values(text, new):
-            for rx in _count_regexes(old):
+        for old in _stale_values(text, new, templates, candidates):
+            for rx in _count_regexes(old, templates):
                 updated = rx.sub(
                     lambda m: _swap(m.group(0), old, new), updated)
         if updated != text:
@@ -290,31 +498,41 @@ def propagate(new: int, apply: bool) -> int:
                 changed += 1
     if drift:
         verb = "updated" if apply else "would update"
-        print(f"  {verb}: {len(drift)} surface(s)")
+        print(f"  {verb} ({label}): {len(drift)} surface(s)")
         for rel in drift:
             print(f"    {rel}")
     else:
-        print("  all manifest surfaces already carry the canonical value")
+        print(f"  all manifest surfaces already carry the canonical {label}")
     return changed if apply else len(drift)
 
 
-def _count_regexes(value: int):
+def _count_regexes(value: int, templates=None):
     """Compiled regexes for every sanctioned shape of `value`.
 
     Three renderings of the same number are sanctioned: bare (`2612`),
     comma-grouped (`2,612`) and dot-grouped (`2.612`). The third exists
     because site/locales/de.html and site/locales/pt-br.html are manifest
     surfaces and both group thousands with a full stop.
+
+    The alternation carries a LEFT boundary so a shorter value cannot match
+    inside a longer one. Without it, `14` matches the tail of `114` and the
+    tool reports permanent drift on a file it has just corrected: observed
+    2026-08-15 on `docs/architecture.md` the moment two-digit values became
+    nominatable. There is deliberately NO right boundary: one template is the
+    JSON shape `"total_collected": {n}`, where the next character is a comma,
+    and a trailing `(?![\\d.,])` would stop the tool seeing its own canonical.
     """
+    templates = templates or COUNT_TEMPLATES
     plain, comma, dot = str(value), f"{value:,}", _dotted(value)
-    alt = "(?:{})".format(
+    alt = r"(?<![\d.,])(?:{})".format(
         "|".join(re.escape(s) for s in (comma, dot, plain)))
-    for tpl in COUNT_TEMPLATES:
+    for tpl in templates:
         yield re.compile(
             tpl.replace("{n}", alt).replace("{g}", GAP), re.IGNORECASE)
 
 
-def _stale_values(text: str, new: int) -> set:
+def _stale_values(text: str, new: int, templates=None,
+                  candidates: str = None) -> set:
     """Values appearing in a sanctioned count shape but differing from
     canonical. Nothing outside COUNT_TEMPLATES is ever a candidate.
 
@@ -332,13 +550,13 @@ def _stale_values(text: str, new: int) -> set:
     shape and differs from canonical is stale whatever its magnitude, and
     a magnitude the templates never match cannot be nominated anyway.
     """
+    templates = templates or COUNT_TEMPLATES
     out = set()
-    for m in re.finditer(
-            r"(?<![\w,.])(\d{1,3}[.,]\d{3}|\d{4})(?![\w,.])", text):
+    for m in re.finditer(candidates or CANDIDATE_THOUSANDS, text):
         val = int(m.group(1).replace(",", "").replace(".", ""))
         if val == new:
             continue
-        for rx in _count_regexes(val):
+        for rx in _count_regexes(val, templates):
             if rx.search(text):
                 out.add(val)
                 break
@@ -353,9 +571,22 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     new = canonical_count()
+    runner = canonical_runner_count()
+    test_files = canonical_test_file_count()
+    commands = canonical_command_count()
     print(f"canonical count (data/site_facts.json): {new:,}")
+    print(f"canonical runner functions: {runner:,}")
+    print(f"canonical test files: {test_files:,}")
+    print(f"canonical commands: {commands:,}")
     print(f"manifest surfaces: {len(manifest_surfaces())}")
-    n = propagate(new, apply=args.apply)
+    n = propagate(new, apply=args.apply, templates=COUNT_TEMPLATES,
+                  label="collected count")
+    n += propagate(runner, apply=args.apply, templates=RUNNER_TEMPLATES,
+                   label="runner functions")
+    n += propagate(test_files, apply=args.apply, templates=TEST_FILE_TEMPLATES,
+                   label="test files", candidates=CANDIDATE_ANY_INTEGER)
+    n += propagate(commands, apply=args.apply, templates=COMMAND_TEMPLATES,
+                   label="commands", candidates=CANDIDATE_ANY_INTEGER)
     if args.check and n:
         print("\nDRIFT. Run with --apply.")
         return 1

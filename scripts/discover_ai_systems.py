@@ -25,7 +25,16 @@ from classify_risk import classify, RiskTier, is_ai_related, AI_INDICATORS
 
 REGISTRY_PATH = Path(os.environ.get("REGULA_REGISTRY", Path.home() / ".regula" / "registry.json"))
 
-# Compliance status workflow
+# SELF-RECORDED compliance status workflow.
+#
+# These are labels the USER sets on their own systems in their own registry at
+# ~/.regula/registry.json. Regula never assigns one: `discover` always writes
+# not_started, and `register_system` preserves an existing value. The terminal
+# state is therefore a declaration by the person who typed it, which is why it
+# is not in the determination class LEDGER N125 closed. The owner ruled on
+# 2026-08-17 to keep these stored values rather than rename them, because a
+# rename is a migration of registry files on users' machines; the framing at
+# every point Regula PRINTS them was corrected instead.
 # not_started → assessment → implementing → compliant → review_due
 COMPLIANCE_STATUSES = ["not_started", "assessment", "implementing", "compliant", "review_due"]
 COMPLIANCE_TRANSITIONS = {
@@ -558,7 +567,11 @@ def main():
             print(f"\n  System: {name}")
             print(f"  Current status: {current}")
             print(f"  Allowed transitions: {', '.join(allowed)}")
-            print("\n  Workflow: not_started → assessment → implementing → compliant → review_due")
+            # Self-recorded labels, not a Regula determination. See the same
+            # correction in cli_compliance.py `workflow`. LEDGER N125.
+            print("\n  Self-recorded status labels (yours to set, not checked by"
+                  " Regula):")
+            print("  not_started → assessment → implementing → compliant → review_due")
             history = system.get("compliance_history", [])
             if history:
                 print("\n  History:")

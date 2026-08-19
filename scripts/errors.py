@@ -31,3 +31,13 @@ class ParseError(RegulaError):
 class DependencyError(RegulaError):
     """Optional dependency missing and needed for requested operation."""
     exit_code = 2
+
+
+class UsageError(RegulaError):
+    """The arguments name something that does not exist, or an unavailable path.
+
+    Distinct from ConfigError: nothing is wrong with the configuration, the
+    request itself cannot be satisfied. Raise this rather than reporting a
+    success the tool did not achieve.
+    """
+    exit_code = 2

@@ -148,7 +148,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -168,7 +170,7 @@
         <a href="/">Regula</a> / <a href="/guides/">Guides</a> / Article 50
     </div>
     <h1>Article 50: transparency for <span class="hl">limited-risk AI</span></h1>
-    <p class="standfirst">If your AI system talks to people, generates synthetic content, or produces deepfakes, you need to tell someone. Article 50 of Regulation (EU) 2024/1689 sets out transparency obligations that apply regardless of risk level. Unlike the high-risk rules in Chapter III, these took effect on 2 August 2026 with no deferral from the Digital Omnibus.</p>
+    <p class="standfirst">If your AI system talks to people, generates synthetic content, or produces deepfakes, you need to tell someone. Article 50 of Regulation (EU) 2024/1689 sets out transparency obligations that apply regardless of risk level. Unlike the high-risk rules in Chapter III, which Regulation (EU) 2026/1744 moved to 2 December 2027, Article 50 has generally applied since 2 August 2026. One carve-out remains: providers of Article 50(2) systems already on the market before that date have until 2 December 2026 under the amendment's transition rule.</p>
     <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Kuziva Muzondo</p>
 </div>
 
@@ -182,7 +184,7 @@
 
 <h3>Article 50(1) &mdash; AI systems interacting with persons</h3>
 
-<p>Providers must design AI systems that interact directly with natural persons so that the persons are informed they are interacting with an AI system. This applies "unless this is obvious from the circumstances and the context of use." The obligation sits with the provider at the design stage: the disclosure mechanism must be built into the system, not bolted on by the deployer afterwards.</p>
+<p>Providers must design AI systems that interact directly with natural persons so that the persons are informed they are interacting with an AI system. This applies "unless this is obvious from the point of view of a natural person who is reasonably well-informed, observant and circumspect, taking into account the circumstances and the context of use". The obligation sits with the provider at the design stage: the disclosure mechanism must be built into the system, not bolted on by the deployer afterwards.</p>
 
 <p>There is an exception for AI systems authorised by law for the detection, prevention, investigation, or prosecution of criminal offences, subject to appropriate safeguards for the rights of third parties.</p>
 
@@ -242,21 +244,30 @@
 
 <p>Regula's <code>check</code> command scans your codebase for patterns that indicate limited-risk AI components subject to Article 50. When it finds chatbot frameworks, conversational AI patterns, or content generation code, it flags them as limited-risk.</p>
 
-<pre><code>$ regula check sample_chatbot.py
+<pre tabindex="0"><code>$ regula check sample_chatbot.py
 
 Regula Scan: sample_chatbot.py
 ============================================================
 
-  Verdict: LIMITED-RISK
-  Your project has limited-risk AI components (Article 50 transparency).
-  You must disclose AI usage to users.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ARTICLE 50 PATTERNS
+  The scanner found patterns relevant to Article 50 review.
+  Resolve the facts listed above before attaching a transparency duty.
   Files scanned:      1
   Limited-risk:       1
 
   LIMITED-RISK (Article 50):
     [INFO] [ 47] sample_chatbot.py:9 &mdash; Chatbots and conversational AI [develop]</code></pre>
 
-<p>The output tells you two things. First, the system has been classified as limited-risk under Article 50. Second, the specific line of code that triggered the detection. The <code>[develop]</code> tag indicates this is a development-phase pattern, meaning you are building the system (provider role).</p>
+<p>The output tells you two things. First, that Article&nbsp;50 is a candidate review path, with the applicability facts still unresolved: this is not a classification. Second, the specific line of code that triggered the detection. The <code>[develop]</code> tag indicates this is a development-phase pattern, meaning you are building the system (provider role).</p>
 
 <p>Regula detects patterns, not compliance. A detection means your code has characteristics that match Article 50 obligations. Whether you have actually satisfied those obligations requires checking that your disclosure mechanisms are in place, clear, and presented at first interaction.</p>
 
@@ -285,7 +296,7 @@ Regula Scan: sample_chatbot.py
 
 <p>Article 50(1) compliance at the code level typically looks like a disclosure check at the start of an interaction. Here is a minimal example:</p>
 
-<pre><code># No transparency disclosure (Article 50 problem)
+<pre tabindex="0"><code># No transparency disclosure (Article 50 problem)
 def handle_message(user_input):
     response = model.generate(user_input)
     return response
@@ -300,7 +311,7 @@ def handle_message(user_input, session):
 
 <p>For Article 50(2), synthetic content marking is typically metadata embedded in the output:</p>
 
-<pre><code># Synthetic image without provenance (Article 50 problem)
+<pre tabindex="0"><code># Synthetic image without provenance (Article 50 problem)
 def generate_image(prompt):
     image = model.generate(prompt)
     return image
@@ -360,7 +371,7 @@ def generate_image(prompt):
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last verified:</strong> 25 June 2026 &middot;
+    <strong>Last reviewed:</strong> 14 August 2026 &middot;
     <strong>Author:</strong> Kuziva Muzondo &middot;
     <em>Not legal advice. Regula identifies risk indicators in code for developer review. It does not determine compliance or replace professional legal counsel.</em>
 </p>

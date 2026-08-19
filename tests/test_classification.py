@@ -54,6 +54,25 @@ import test_decision_conformance as _test_decision_conformance  # noqa: F401
 import test_documentation as _test_documentation  # noqa: F401
 import test_recall_artefact as _test_recall_artefact  # noqa: F401
 import test_bare_scan_decision as _test_bare_scan_decision  # noqa: F401
+import test_content_freshness as _test_content_freshness  # noqa: F401
+import test_documented_transcripts as _test_documented_transcripts  # noqa: F401
+import test_metrics_artefacts as _test_metrics_artefacts  # noqa: F401
+import test_comparison_table as _test_comparison_table  # noqa: F401
+import test_ledger_enumeration as _test_ledger_enumeration  # noqa: F401
+import test_remediation_plan_integrity as _test_remediation_plan_integrity  # noqa: F401
+import test_hook_fail_open as _test_hook_fail_open  # noqa: F401
+import test_locale_link_language as _test_locale_link_language  # noqa: F401
+import test_determination_guard as _test_determination_guard  # noqa: F401
+import test_sa_withdrawal_dates as _test_sa_withdrawal_dates  # noqa: F401
+import test_svg_text as _test_svg_text  # noqa: F401
+import test_claim_scan_coverage as _test_claim_scan_coverage  # noqa: F401
+import test_skipped_dir_disclosure as _test_skipped_dir_disclosure  # noqa: F401
+import test_installed_artefact as _test_installed_artefact  # noqa: F401
+import test_fact_loop as _test_fact_loop  # noqa: F401
+import test_demo_doc as _test_demo_doc  # noqa: F401
+import test_qualifier as _test_qualifier  # noqa: F401
+import test_pattern_sync as _test_pattern_sync  # noqa: F401
+import test_release_distribution_policy as _test_release_distribution_policy  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -101,6 +120,63 @@ globals()[RUNNER_ALIAS_PREFIX + "recall_unknown_check_envelope"] = (
     _recall_unknown_case.test_unexpected_check_envelope_cannot_become_zero_recall
 )
 
+# N109's metrics guards are unittest methods, so the generic alias loop cannot
+# see them either. None of these classes defines setUp: binding a method here
+# calls it directly and would skip setUp entirely, which is why
+# test_metrics_artefacts loads the artefact per-method via artefact_rows().
+for _metrics_cls in (
+    _test_metrics_artefacts.TestPypiWeeklyArtefact,
+    _test_metrics_artefacts.TestWindowChecksDetectPlantedDefects,
+    _test_metrics_artefacts.TestCollectorDoesNotHardcodeThePeriod,
+    _test_comparison_table.TestSourceOfTruth,
+    _test_comparison_table.TestFreshness,
+    _test_comparison_table.TestCellIntegrity,
+    _test_comparison_table.TestPriceAgreesWithThePricingPage,
+):
+    # `hasattr` is useless here: unittest.TestCase always supplies a default
+    # setUp. Only a setUp defined on the class itself would be skipped.
+    assert "setUp" not in _metrics_cls.__dict__, (
+        f"{_metrics_cls.__name__} grew a setUp; direct binding would skip it"
+    )
+    for _metrics_name in _inspect.getmembers(_metrics_cls, _inspect.isfunction):
+        if not _metrics_name[0].startswith("test_"):
+            continue
+        globals()[RUNNER_ALIAS_PREFIX + "metrics_" + _metrics_name[0][5:]] = (
+            getattr(_metrics_cls(_metrics_name[0]), _metrics_name[0])
+        )
+del _metrics_cls, _metrics_name
+
+# Same problem, 2026-08-17, and worth naming because it is a trap rather than an
+# oversight. `.claude/rules/tests.md` says to wire a new test file into this
+# module, and adding the import plus the `_mod` tuple entry LOOKS like wiring.
+# It is not, for a module whose tests are all TestCase methods: the generic loop
+# below scans `dir(_mod)` for names starting with `test_`, and a class-based
+# module exposes only class names. Both modules added on 2026-08-17 were imported,
+# listed in the tuple, and contributed nothing, which is invisible unless you
+# watch the published function count fail to move. Bound explicitly here.
+for _n129_cls in (
+    _test_determination_guard.TestTheGuardCanFail,
+    _test_determination_guard.TestTheCorpusIsRealAndReaches,
+    _test_determination_guard.TestQuietingMechanismsAreBounded,
+    _test_determination_guard.TestDeclaredExemptions,
+    _test_determination_guard.TestTheShippedTreeIsClean,
+    _test_determination_guard.TestTheBadgeSpecifically,
+    _test_sa_withdrawal_dates.TestTheOperativeActIsRecorded,
+    _test_sa_withdrawal_dates.TestNoSurfaceMisdatesTheWithdrawal,
+    _test_sa_withdrawal_dates.TestTheFallbackAgreesWithTheJson,
+    _test_sa_withdrawal_dates.TestTheChecksCanFail,
+):
+    assert "setUp" not in _n129_cls.__dict__, (
+        f"{_n129_cls.__name__} grew a setUp; direct binding would skip it"
+    )
+    for _n129_name in _inspect.getmembers(_n129_cls, _inspect.isfunction):
+        if not _n129_name[0].startswith("test_"):
+            continue
+        globals()[RUNNER_ALIAS_PREFIX + "claims_" + _n129_name[0][5:]] = (
+            getattr(_n129_cls(_n129_name[0]), _n129_name[0])
+        )
+del _n129_cls, _n129_name
+
 _PYTEST_FIXTURES = {"monkeypatch", "tmp_path", "capsys", "tmpdir", "request"}
 
 
@@ -115,7 +191,7 @@ def _bind_runner_case(target, kwargs, case_id):
     return runner_case
 
 
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_ledger_enumeration, _test_remediation_plan_integrity, _test_hook_fail_open, _test_locale_link_language, _test_determination_guard, _test_sa_withdrawal_dates, _test_svg_text, _test_claim_scan_coverage, _test_skipped_dir_disclosure, _test_installed_artefact, _test_fact_loop, _test_demo_doc, _test_qualifier, _test_pattern_sync, _test_release_distribution_policy):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -172,7 +248,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
                 continue
             _alias = f"{RUNNER_ALIAS_PREFIX}{_name}_{_case_index}"
             globals()[_alias] = _bind_runner_case(_fn, _kwargs, _case_index)
-del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision
+del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_ledger_status, _test_merge_blockers, _test_crosswalk_omnibus, _test_f25_exposure, _test_gate_probe, _test_tree_guard, _test_tracked_inputs, _test_commercial_benchmark, _test_check_decompositions, _test_setop_inventory, _test_handover_continuity, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_validation_readiness, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
@@ -2108,12 +2184,16 @@ def test_dep_scan_compromised_detection():
     findings = check_compromised(deps)
     # Requires pyyaml for complex advisory YAML parsing — skip if not available
     if len(findings) == 0:
-        try:
-            import yaml
-            assert_true(False, "pyyaml installed but no advisories loaded — real failure")
-        except ImportError:
+        # find_spec, not a bare `import yaml` in a try: the import form reads to
+        # any linter as an unused import, and "fix" it and this stops
+        # distinguishing "pyyaml absent, skip" from "pyyaml present, real
+        # failure": it would skip either way. Same semantics, not removable by
+        # accident.
+        import importlib.util
+        if importlib.util.find_spec("yaml") is None:
             print("⊘ Dependency scan: detects known compromised versions (SKIPPED — pyyaml required)")
             return
+        assert_true(False, "pyyaml installed but no advisories loaded — real failure")
     assert_true(len(findings) > 0, "finds compromised litellm")
     assert_eq(findings[0]["package"], "litellm", "identifies litellm")
     assert_eq(findings[0]["version"], "1.82.7", "identifies version")
@@ -2468,7 +2548,7 @@ def test_integration_high_risk_project():
 def test_integration_compliant_project():
     """Full scan of compliant fixture project"""
     from compliance_check import assess_compliance
-    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_compliant")
+    fixture_path = str(Path(__file__).parent / "fixtures" / "sample_no_findings")
     if not Path(fixture_path).exists():
         print("⊘ Integration: compliant fixture (SKIPPED — fixture not found)")
         return
@@ -3502,7 +3582,7 @@ def test_ci_flag_compliant_exits_0():
     """--ci flag on compliant code exits 0."""
     import subprocess
     r = subprocess.run(["python3", "scripts/cli.py", "check",
-                        "tests/fixtures/sample_compliant/", "--ci"],
+                        "tests/fixtures/sample_no_findings/", "--ci"],
                        capture_output=True, text=True)
     assert_eq(r.returncode, 0, f"--ci compliant should exit 0, got {r.returncode}")
     print("\u2713 --ci flag: compliant code exits 0")
@@ -3549,7 +3629,7 @@ def test_ci_flag_before_subcommand():
     """--ci flag works when placed before the subcommand (global position)."""
     import subprocess
     r = subprocess.run(["python3", "scripts/cli.py", "--ci", "check",
-                        "tests/fixtures/sample_compliant/"],
+                        "tests/fixtures/sample_no_findings/"],
                        capture_output=True, text=True)
     assert_eq(r.returncode, 0,
               f"--ci before subcommand should exit 0 for compliant, got {r.returncode}")
@@ -3606,7 +3686,7 @@ def _assert_json_envelope(stdout, command_name):
 
 def test_smoke_report():
     """Smoke test: regula report --format json runs and exits 0."""
-    r = _run_cli("report", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("report", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_true(r.returncode in (0, 1), f"report exit {r.returncode}: {r.stderr[:200]}")
     assert_true(len(r.stdout) > 10, "report should produce output")
     print("\u2713 Smoke: report --format json exits 0 with output")
@@ -3614,7 +3694,7 @@ def test_smoke_report():
 
 def test_smoke_discover():
     """Smoke test: regula discover runs and exits 0."""
-    r = _run_cli("discover", "--project", "tests/fixtures/sample_compliant/")
+    r = _run_cli("discover", "--project", "tests/fixtures/sample_no_findings/")
     assert_true(r.returncode in (0, 1), f"discover exit {r.returncode}: {r.stderr[:200]}")
     assert_true(len(r.stdout) > 10, "discover should produce output")
     print("\u2713 Smoke: discover exits 0 with output")
@@ -3624,7 +3704,8 @@ def test_smoke_install_help():
     """Smoke test: regula install --help runs and exits 0."""
     r = _run_cli("install", "--help")
     assert_eq(r.returncode, 0, f"install --help exit {r.returncode}")
-    assert_true("platform" in r.stdout.lower(), "install help should mention platform")
+    assert_true("integration" in r.stdout.lower(),
+                "install help should describe the supported integration")
     print("\u2713 Smoke: install --help exits 0")
 
 
@@ -3752,7 +3833,7 @@ def test_smoke_compliance():
 
 def test_smoke_gap():
     """Smoke test: regula gap --format json runs and exits 0."""
-    r = _run_cli("gap", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("gap", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_eq(r.returncode, 0, f"gap exit {r.returncode}: {r.stderr[:200]}")
     data = _assert_json_envelope(r.stdout, "gap")
     assert_true("data" in data, "gap: missing data field")
@@ -3761,7 +3842,7 @@ def test_smoke_gap():
 
 def test_smoke_benchmark():
     """Smoke test: regula benchmark --format json runs and exits 0."""
-    r = _run_cli("benchmark", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("benchmark", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_eq(r.returncode, 0, f"benchmark exit {r.returncode}: {r.stderr[:200]}")
     assert_true(len(r.stdout) > 10, "benchmark should produce output")
     print("\u2713 Smoke: benchmark --format json exits 0 with output")
@@ -3778,7 +3859,7 @@ def test_smoke_timeline():
 
 def test_smoke_deps():
     """Smoke test: regula deps --format json runs and exits 0."""
-    r = _run_cli("deps", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("deps", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_eq(r.returncode, 0, f"deps exit {r.returncode}: {r.stderr[:200]}")
     data = _assert_json_envelope(r.stdout, "deps")
     assert_true("data" in data, "deps: missing data field")
@@ -3787,7 +3868,7 @@ def test_smoke_deps():
 
 def test_smoke_sbom():
     """Smoke test: regula sbom --format json runs and exits 0."""
-    r = _run_cli("sbom", "--project", "tests/fixtures/sample_compliant/", "--format", "json")
+    r = _run_cli("sbom", "--project", "tests/fixtures/sample_no_findings/", "--format", "json")
     assert_eq(r.returncode, 0, f"sbom exit {r.returncode}: {r.stderr[:200]}")
     data = json.loads(r.stdout)
     assert_true("bomFormat" in data, "sbom: missing bomFormat (CycloneDX)")
@@ -3827,7 +3908,7 @@ main()
 
 def test_framework_flag_removed():
     """Test that the unused --framework flag has been removed."""
-    r = _run_cli("--framework", "eu-ai-act", "check", "tests/fixtures/sample_compliant/")
+    r = _run_cli("--framework", "eu-ai-act", "check", "tests/fixtures/sample_no_findings/")
     assert_eq(r.returncode, 2, f"--framework should be unrecognized, got exit {r.returncode}")
     assert_true("unrecognized" in r.stderr.lower() or "error" in r.stderr.lower(),
                 f"Should show error for --framework, got: {r.stderr[:200]}")
@@ -6325,11 +6406,27 @@ def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
             '<script src="decision-kernel.js"></script>',
             '<script src="decision-adapters.js"></script>',
             '<script src="decision-ui.js"></script>',
+            '<script src="assess-flow.js"></script>',
         ):
             assert source in text, f"{filename} missing shared source {source!r}"
-        assert (
-            'const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;' in text
-        ), f"{filename} must make the advertised letter shortcuts case-insensitive"
+        # Flow control is shared, so a page that re-declares it has forked.
+        for forked in (
+            "function renderQuestion(",
+            "function nextQuestion(",
+            "function showResults(",
+        ):
+            assert forked not in text, (
+                f"{filename} re-declares {forked!r}; flow lives in assess-flow.js"
+            )
+
+    # The keyboard shortcuts moved into the shared flow module with the rest of
+    # the questionnaire control. Asserting it here keeps the guarantee while
+    # letting one implementation serve all three locales.
+    shared_flow = (assess_dir / "assess-flow.js").read_text(encoding="utf-8")
+    assert (
+        "const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;"
+        in shared_flow
+    ), "assess-flow.js must make the advertised letter shortcuts case-insensitive"
 
     shared_ui = (assess_dir / "decision-ui.js").read_text(encoding="utf-8")
     assert 'querySelector(".result-tier")' in shared_ui

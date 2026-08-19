@@ -24,6 +24,8 @@ Exit codes:
 """
 from __future__ import annotations
 
+import argparse
+import ast
 import importlib.util
 import json
 import re
@@ -79,6 +81,40 @@ def count_commands() -> int:
     # than hardcoding +1 — so if monitor is ever removed the count doesn't
     # silently overcount by one.
     return total + (1 if has_monitor else 0)
+
+
+def count_commands_from_registry() -> int:
+    """Count what a user can actually type, from the argparse registry itself.
+
+    `count_commands` above counts `def cmd_*` definitions and then compensates by
+    hand: it drops the six `cmd_monitor_*` sub-handlers and `cmd_feedback_summary`
+    and adds one back for the `monitor` group. That compensation is correct today
+    and is a hand-maintained mapping between two populations that nothing
+    reconciles.
+
+    This function measures the population the published claim is actually about.
+    "62 commands" on the landing page is a promise about what a reader can run,
+    and the subparser registry is the only artefact that knows. If a command is
+    ever registered without a `cmd_` handler, or a handler exists that nothing
+    registers, the two derivations diverge and `cascade_count.canonical_command_count`
+    refuses rather than publishing whichever happens to be read first.
+
+    MEASURED 2026-08-17 at `537d37b`: both derivations return 62, and the
+    registry's set differs from the normalised handler set by exactly `monitor`
+    on one side and the six `monitor-*` sub-handlers plus `feedback-summary` on
+    the other, which is what the compensation encodes.
+    """
+    parser = argparse.ArgumentParser(prog="regula")
+    subparsers = parser.add_subparsers(dest="command")
+    cli = _load_module(REPO / "scripts" / "cli.py", "cli")
+    if cli is None or not hasattr(cli, "_build_subparsers"):
+        raise RuntimeError(
+            "scripts/cli.py did not expose _build_subparsers, so the command "
+            "registry could not be read. Refusing to fall back to a count "
+            "derived from function names: an unknown registry must not become "
+            "a published number.")
+    cli._build_subparsers(subparsers)
+    return len(subparsers.choices)
 
 
 def count_patterns() -> dict:
@@ -281,6 +317,75 @@ def missing_tracked_contributors(per_file, tracked=None) -> list[str]:
         and name not in per_file)
 
 
+def count_test_functions(source: str) -> int:
+    """Count the `test_*` functions pytest would collect from one file.
+
+    Module-level functions, plus methods declared directly inside a class.
+    A function nested inside another function is NOT collected by pytest and
+    is not counted here.
+
+    Uses `ast` because the regex this replaced counted `def test_...` inside
+    a triple-quoted code sample as a real test, and the widened form of the
+    same regex produced a per-file count higher than pytest's own collection,
+    which is how the string-literal hit was found at all.
+
+    A file that will not parse raises. A test file that cannot be parsed is a
+    broken test file, and silently scoring it 0 would understate a published
+    count, which is the defect this function exists to fix.
+    """
+    tree = ast.parse(source)
+    _DEFS = (ast.FunctionDef, ast.AsyncFunctionDef)
+    total = 0
+    for node in tree.body:
+        if isinstance(node, _DEFS) and node.name.startswith("test_"):
+            total += 1
+        elif isinstance(node, ast.ClassDef):
+            total += sum(1 for child in node.body
+                         if isinstance(child, _DEFS)
+                         and child.name.startswith("test_"))
+    return total
+
+
+def count_runner_functions() -> int:
+    """How many functions the legacy custom runner selects.
+
+    `docs/TRUST.md` publishes this alongside the pytest-collected count, in two
+    places, and it moves whenever a test module is wired into
+    `tests/test_classification.py`, which `.claude/rules/tests.md` requires.
+    `scripts/cascade_count.py` propagated only the collected count, so this one
+    drifted silently until `tests/test_published_count_manifest.py` was written
+    to catch it. It then drifted TWICE MORE in the single session of
+    2026-08-14, once for the content-freshness module and once for the
+    documented-transcripts module, each time costing a full suite run to
+    discover. Making it canonical here is what lets the cascade carry it.
+
+    Computed in a subprocess: importing the whole test tree into this module's
+    namespace to count names would be a side effect in a script whose output is
+    published, and a failure to import must fail closed rather than yield a
+    plausible smaller number.
+    """
+    code = (
+        "import sys; sys.path.insert(0, 'tests');"
+        "import test_classification as tc;"
+        "print(len([n for n, o in vars(tc).items()"
+        " if (n.startswith('test_') or n.startswith(tc.RUNNER_ALIAS_PREFIX))"
+        " and callable(o)]))"
+    )
+    try:
+        proc = subprocess.run([sys.executable, "-c", code], cwd=str(REPO),
+                              capture_output=True, text=True, check=False,
+                              timeout=300)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise RuntimeError(f"runner function count did not run: {exc}") from exc
+    value = proc.stdout.strip()
+    if proc.returncode != 0 or not value.isdigit():
+        detail = (proc.stderr or proc.stdout).strip().splitlines()
+        raise RuntimeError(
+            "refusing to publish an unmeasured runner function count "
+            f"(rc={proc.returncode}: {detail[-1] if detail else 'no output'})")
+    return int(value)
+
+
 def count_tests() -> dict:
     """Return a breakdown of test functions and per-file counts."""
     # Use actual pytest collection to get the truthful executable count,
@@ -318,12 +423,32 @@ def count_tests() -> dict:
     # per_file key for the provenance predicates to see. Keys are
     # repo-relative posix paths because basenames cannot be compared soundly
     # against tracked paths (see untracked_test_contributors).
+    # N117. `^def (test_\w+)` counted MODULE-LEVEL functions only, so every
+    # test written as a `unittest.TestCase` method was invisible: 565 of them
+    # across 22 files, against a published label reading "Test functions (all
+    # files)". The values were never wrong, the population was, which is the
+    # N109 shape again: a label naming a quantity wider than the one measured.
+    #
+    # Found because a new test file counted 0 while containing six tests.
+    # Nothing had flagged it, because nothing compared this figure to the
+    # collection it sits beside; `test_site_facts.py` now does, per file.
+    #
+    # Counted with `ast`, not a regex, and that is not a refinement.
+    # Widening the regex to `^[ \t]*def test_` immediately produced a count
+    # ABOVE what pytest collects for `test_classification.py`, because
+    # `def test_model_accuracy():` appears inside a triple-quoted code sample
+    # fed to the AST parser under test. The OLD regex matched that string too,
+    # so the previous figure was one function that does not exist plus a whole
+    # category that does. A regex cannot see the difference between source and
+    # a string literal; `ast` never confuses them.
+    #
+    # Collected the way pytest collects: a `test_*` function at module level,
+    # or a `test_*` method directly inside a class. A function nested inside
+    # another function is not collected and is not counted.
     per_file: dict[str, int] = {}
     for path in sorted(tests_dir.rglob("test_*.py")):
-        text = path.read_text(encoding="utf-8")
-        per_file[path.relative_to(REPO).as_posix()] = len(
-            re.findall(r"^def (test_\w+)", text, re.MULTILINE)
-        )
+        per_file[path.relative_to(REPO).as_posix()] = count_test_functions(
+            path.read_text(encoding="utf-8"))
 
     # N52. Both counts above read the WORKING TREE: the walk reads it, and
     # `pytest --collect-only` collects from it. An untracked test file is
@@ -389,7 +514,11 @@ def compute() -> dict:
             "patterns": patterns,
             "frameworks": count_frameworks(),
             "languages": count_languages(),
-            "tests": count_tests(),
+            # The runner count is folded in here rather than inside
+            # count_tests(), which is scoped to pytest collection and whose
+            # sandboxed tests fake subprocess.run for that one call.
+            "tests": {**count_tests(),
+                      "runner_functions": count_runner_functions()},
         },
         "notes": {
             "pattern_count_methodology": (

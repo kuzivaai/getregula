@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Set, Tuple
+from typing import Any, Dict, Iterable, Mapping, Optional, Set, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent))
 

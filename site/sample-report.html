@@ -89,7 +89,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -117,9 +119,21 @@
 Regula Scan: /home/USER/getregula/examples/cv-screening-app
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project shows indicators of high-risk AI under EU AI Act Annex III.
-  Human review must determine whether Article 6 conditions apply; this scan reports code indicators only.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
+  Why:
+    1. app.py:1 — Employment and workers management
+       (Art. 9, Art. 10)
   Files scanned:      1
   Prohibited:         0
   Credentials:        0
@@ -137,7 +151,7 @@ Regula Scan: /home/USER/getregula/examples/cv-screening-app
 
   Questions for human review (1):
     ? app.py:1 — Annex III, Category 4
-      Employment and workers management (confidence: 43%)
+      Employment and workers management (detector priority: 43)
 ============================================================
   Detector priority: 0-100 (higher = more code patterns matched; not a correctness probability)
   Tiers: BLOCK (&gt;=80 or prohibited), WARN (50-79), INFO (&lt;50)

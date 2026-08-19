@@ -13,7 +13,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2787%20collected-blue.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-3112%20collected-blue.svg)](#verified-numbers)
 [![Accessibility target: WCAG 2.2 AA](https://img.shields.io/badge/accessibility%20target-WCAG%202.2%20AA-blue.svg)](docs/accessibility/README.md)
 
 ---
@@ -34,7 +34,36 @@
 
 ---
 
-![Regula check demo](site/assets/demo/regula-check.svg)
+```console
+$ regula check examples/cv-screening-app --scope all
+
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
+  Files scanned:      1
+  High-risk:          1
+  INFO tier:          1
+
+  HIGH-RISK INDICATORS:
+    [INFO] [ 43] app.py — Employment and workers management [plan]
+
+  Detector priority: 0-100 (higher = more code patterns matched; not a correctness probability)
+```
+
+*Excerpt from the real output of the command shown, against the tracked fixture
+`examples/cv-screening-app`. The per-category counts that read zero and the
+next-steps footer are omitted for length; nothing else is edited.
+`scripts/verify_transcripts.py` re-runs this command on every check and fails if
+any line above stops appearing in its output.*
 
 ---
 
@@ -50,7 +79,7 @@ pipx install regula-ai      # or: pip install regula-ai / uv pip install regula-
 
 **Not sure if the AI Act applies?** No code needed:
 ```bash
-regula assess               # 5 yes/no questions → your risk tier
+regula assess               # record declared context for human review
 ```
 
 **Want to scan your code?**
@@ -134,9 +163,9 @@ Every finding includes the relevant Article reference and explains when exceptio
 
 | Command | What it does |
 |---------|-------------|
-| `regula` | Scan current directory, show compliance score and next steps |
+| `regula` | Scan the current directory, show an indicator summary and next steps |
 | `regula check .` | Detailed risk scan with per-file findings |
-| `regula comply` | EU AI Act obligation checklist with completion status |
+| `regula comply` | EU AI Act obligation evidence and unresolved facts; `--article 50` separates declared applicability facts from static implementation signals |
 | `regula gap --project .` | Compliance gap assessment against Articles 9-15 |
 | `regula plan --project .` | Prioritised remediation plan based on gap results |
 | `regula fix --project .` | Generate compliance fix scaffolds for findings |
@@ -156,7 +185,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula monitor` | Runtime monitoring for AI applications (Article 12) |
 | `regula gdpr` | GDPR cross-reference scan (14 focused checks, 4 AI Act/GDPR hotspots) |
 | `regula mcp-server` | MCP server for Claude Code, Cursor, and other MCP clients |
-| `regula install <platform>` | Set up pre-commit hooks, git hooks, or Claude Code/Copilot/Windsurf integration |
+| `regula install <integration>` | Set up the pre-commit framework or direct Git hook integration |
 
 Regula has 62 commands in total. Run `regula --help-all` for the full list, or see [`docs/cli-reference.md`](docs/cli-reference.md).
 
@@ -230,7 +259,7 @@ documentation, not a production fairness monitor — see "What Regula is
 Regula performs **pattern-based risk indication**, not legal risk classification.
 
 - The EU AI Act classifies risk based on intended purpose and deployment context (Article 6), not code patterns. Regula's findings are indicators that warrant human review.
-- **False positives will occur.** Blind-labelled benchmark on 50 randomly selected Python AI repos measured **83.5% precision on production code** (N=115, measured on v1.7.0, labelled by a single reviewer with no inter-rater agreement measurement). Per-tier: `ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%), `minimal_risk` (100%). The `high_risk` tier (33%, N=6) is statistically unmeasurable at this sample size. Full methodology, corpus selection, and reproduction steps: [`benchmarks/README.md`](benchmarks/README.md).
+- **False positives will occur.** Regula matches patterns in source code and does not read intent, so it flags things that turn out to be fine. Its precision and recall measurements, overall and per tier, are under review and are not quoted here as current figures. Full methodology, corpus selection, limits and reproduction steps: [`benchmarks/README.md`](benchmarks/README.md).
 - **False negatives will occur.** Novel risk patterns not in the database will be missed.
 - Article 5 prohibitions have conditions and exceptions that require human judgment.
 - The audit trail is self-attesting (locally verifiable, not externally witnessed).
@@ -244,7 +273,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 419 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Compliance frameworks mapped | 13 |
-| Tests (pytest --collect-only) | 2,787 |
+| Tests (pytest --collect-only) | 3,112 |
 | Required production dependencies | 0 |
 
 For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md).
@@ -505,7 +534,7 @@ Regula provides a starting point for contextual human review; runtime varies by 
 
 ---
 
-## Step 1: Find Out Your Risk Tier
+## Step 1: See which risk tiers the code has indicators for
 
 ```bash
 pipx install regula-ai
@@ -533,11 +562,15 @@ Those examples are indicators, not determinations. Intended purpose, provider or
 regula check --explain .
 ```
 
-This tells you in plain English:
-- Which risk tier and why
-- Which EU AI Act articles apply to your system
-- What each article actually requires
-- Whether you're the **provider** (built it) or **deployer** (using someone else's model)
+This reports, in plain English:
+- Which risk tier the detected patterns are *candidates* for, and which patterns
+  led there. It does not determine the tier: where the facts needed to decide
+  applicability are unresolved, it reports `insufficient_information` and names
+  them.
+- Which EU AI Act articles would be relevant *if* that candidate tier is
+  confirmed by a person, and what each of those articles requires
+- Which role questions (provider, built it; or deployer, using someone else's
+  model) change the answer, so you can settle them
 
 ---
 
@@ -929,10 +962,12 @@ All three remove only Regula. They do not remove the optional policy file at `~/
 >
 > The benchmark deliberately includes **two distinct corpora**:
 >
-> 1. **Synthetic corpus** — 13 hand-crafted fixtures covering 5 Article 5
->    prohibited practices, 5 Annex III high-risk categories, and 3
+> 1. **Synthetic corpus** — 38 hand-crafted fixtures covering 5 Article 5
+>    prohibited practices, 30 Annex III high-risk categories, and 3
 >    negative cases. Designed to measure recall on what Regula is built
->    to find.
+>    to find. The high-risk set was 5 fixtures until 28 July 2026 and is
+>    30 now, so a figure measured on the earlier corpus does not carry
+>    over to this one.
 > 2. **OSS corpus** — 257 hand-labelled findings sampled from 5 mature
 >    open-source projects (instructor, pydantic-ai, langchain,
 >    scikit-learn, openai-python). Designed to measure precision on
@@ -947,12 +982,33 @@ All three remove only Regula. They do not remove the optional policy file at `~/
 
 | Corpus | Tier | TP | FP | Precision | Recall |
 |---|---|---:|---:|---:|---:|
-| **Synthetic** | all | 5 prohibited + 5 high-risk | 0 | **100%** | **100%** |
+| **Synthetic** | all | 5 prohibited + 30 high-risk | 0 | **100%** | **WITHDRAWN, see the correction below** |
 | OSS (5 projects, 257 findings) | **BLOCK (≥80)** | 0 | **0** | **N/A — 0 findings** | n/a |
 | OSS | WARN (50–79) | 2 | 6 | 25.0% | n/a |
 | OSS | INFO (<50) | 37 | 212 | 14.9% | n/a |
 | OSS — overall | all tiers | 39 | 218 | **15.2%** | n/a |
 Source: [`benchmarks/labels.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/labels.json).
+
+**Correction (August 2026): the synthetic recall figure is withdrawn.** This
+row previously read `5 prohibited + 5 high-risk` with `100%` recall. That was
+measured on a 13-fixture corpus. The high-risk set was expanded from 5 fixtures
+to 30 on 28 July 2026 and re-measured, and 100% high-risk recall does not
+reproduce on the current corpus. Prohibited-tier recall still holds. Precision
+on this corpus is unchanged: no fixture produces a false positive. The corpus
+and its expected tier per fixture are in
+[`benchmarks/synthetic/manifest.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/synthetic/manifest.json),
+and the measurement is in
+[`benchmarks/synthetic/RECALL.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/synthetic/RECALL.json).
+
+**The replacement figures are deliberately not printed here.** Recall on this
+corpus depends on which code path runs and which gates are satisfied, and the
+answers differ by more than twenty percentage points on gates alone, so a
+single number would misdescribe the tool whichever one was chosen. Every
+condition, with its path, its gate condition, its invocation and the fixtures
+it misses by name, is generated from an actual run into
+[`benchmarks/synthetic/RECALL.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/synthetic/RECALL.json)
+by `scripts/build_recall_artefact.py`. Read the figures there, and note which
+condition you are reading.
 
 **The most important row is the third one.** Regula's CI default gate
 is BLOCK tier. **0 BLOCK findings fired across 257 sampled findings on
@@ -990,10 +1046,20 @@ python3 benchmarks/synthetic/run.py
 Expected output:
 
 ```
-synthetic: prohibited 100/100, high_risk 100/100 (5 TP each, 0 FP, 0 FN)
+per-tier precision and recall for the condition the runner names,
+followed by every other measured condition quoted from RECALL.json
 ```
 
-The 13 fixtures are versioned at `benchmarks/synthetic/fixtures/`. Each
+The runner prints the condition beside every figure, because this corpus
+gives different recall on the classifier path and on the default scanner
+path and a bare fraction would not say which one you were reading. The
+figure this command printed before 28 July 2026, on the 13-fixture corpus,
+was 100% in both tiers; it does not reproduce on the current corpus and is
+withdrawn. See the correction under "Headline numbers" above, and
+[`benchmarks/synthetic/RECALL.json`](https://github.com/kuzivaai/getregula/blob/main/benchmarks/synthetic/RECALL.json)
+for the current per-condition figures.
+
+The 38 fixtures are versioned at `benchmarks/synthetic/fixtures/`. Each
 fixture is a minimal Python file constructed by hand to represent one
 Annex III category or one Article 5 prohibition. The "ground truth"
 labels are the directory structure (`prohibited/`, `high_risk/`,
@@ -1003,14 +1069,20 @@ the fixture text.
 ### OSS precision
 
 ```bash
-python3 benchmarks/label.py score
+# Reproduce the 15.2% overall library-corpus precision:
+python3 benchmarks/label.py score --corpus library
 ```
 
 Expected output:
 
 ```
-precision result derived from the checked-in labels
+precision result derived from the checked-in library-corpus labels
 ```
+
+The `--corpus library` flag is load-bearing. `benchmarks/labels.json` now
+holds 446 labels across 12 projects, and the same command without the flag
+scores all of them and reports a different figure, on a different corpus.
+The five-project library subset is the one the headline row above reports.
 
 The 257 labels are at `benchmarks/labels.json`. Every entry has:
 
@@ -1211,8 +1283,9 @@ audit report, the recommended format is:
 > WITHDRAWN historical claim: a superseded small synthetic corpus reported complete detection in both positive categories. It is not current external buyer-job accuracy; retained raw figures are in the dated benchmark record.
 > OSS corpus: 15.2% precision overall (39 TP / 218 FP / n=257), 0% on BLOCK tier (0 findings),
 > 25.0% on WARN tier (n=8), 14.9% on INFO tier (n=249).
-> Reproducible from `github.com/kuzivaai/getregula` at v1.7.4 via
-> `python3 benchmarks/label.py score`.
+> Reproduce the 15.2% overall OSS-library result from
+> `github.com/kuzivaai/getregula` at v1.7.4 with
+> `python3 benchmarks/label.py score --corpus library`.
 
 If anything in this document is unclear, ambiguous, or unverifiable —
 or if you can reproduce a different number with the same command — open

@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "_purpose": "Exact central classifications for immutable dated records that may quote a test count current at capture time. A file cannot classify itself. Paths, provenance and hashes fail closed on edits or renames.",
+  "_occurrence_exclusions_purpose": "THE DISPOSITION N109 AND N111 SAID WAS OWED. `records` above freeze a whole FILE whose count literal was true when it was written. This list is the other case: a single OCCURRENCE inside a LIVE file that is not a claim about the test count at all, such as a hex colour, an OID arc, a byte size or a port. Four such collisions in two weeks were each answered by widening a lookaround in count_pattern, which is global, only expresses lexical facts, and detaches the reason from the occurrence. Each entry carries `path`, `record_class` (not_a_count_claim), `context_regex`, `rationale` and `finding` (a ledger row). Two rules make it a disposition and not a bypass, both enforced in scripts/count_record_policy.py and controlled in tests/test_published_count_manifest.py: declaring a file does NOT exempt the file, because every occurrence must be covered by a declared context or the file is still a violation; and a record that matches nothing FAILS as stale, so an exclusion cannot outlive its premise. EMPTY IS THE CORRECT STATE TODAY: all four known collisions are handled lexically and correctly by count_pattern, and nothing has been migrated to this list to give it something to hold. It exists so the fifth collision is a data entry with a re-measured premise rather than a fifth global regex.",
   "records": [
     {
       "path": "docs/improvement/HANDOVER-TRANSACTION-EVIDENCE-2026-08-05-111235.md",
@@ -66,5 +67,6 @@
       "immutable_sha256": "4667b74f0a022f74997913554b00c825ce261049c25bc99bf646e2493f8ddc76",
       "rationale": "Dated source register whose row R02 records what data/site_facts.json reported when the register was generated on 2026-08-04, phrased as '2,690 collected tests'. Surfaced on 2026-08-06 when the at-rest matcher gained the bare 'collected' unit word; it had been invisible to every instrument until then, not exempted by any of them. Rewriting the figure would falsify a source register, so it is classified rather than corrected."
     }
-  ]
+  ],
+  "occurrence_exclusions": []
 }

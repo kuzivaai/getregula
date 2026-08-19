@@ -1,0 +1,268 @@
+{
+  "format_version": 1,
+  "policy_id": "regula-release-distribution-2026-08-19",
+  "effective_date": "2026-08-19",
+  "owner_authorisation": {
+    "source_file": "Regula_Codex_Distribution_Directive_2026-08-19.docx",
+    "sha256": "054f5dbc5ef70f15e85baade470cc81c33ebe6ec28558dd49de270c5dcd190dc",
+    "scope": "Evidence-gated release, distribution and commercial validation",
+    "supersedes": "Earlier repository verdicts only where this policy states a different owner decision"
+  },
+  "repository": {
+    "name": "kuzivaai/getregula",
+    "expected_branch": "feat/engagement-fixes",
+    "expected_pull_request": 55,
+    "expected_audited_head": "8d1aa3b9b1335290d154c5cf80d6fd6eb750cc23",
+    "default_branch": "main",
+    "public_site": "https://getregula.com/",
+    "package": "regula-ai",
+    "observations_must_be_reverified": true
+  },
+  "effective_states": {
+    "SAFE_LOCAL_IMPLEMENTATION": "AUTHORISED",
+    "TEST_AND_DOCUMENTATION_CHANGES": "AUTHORISED",
+    "COMMIT_AND_PUSH_WHEN_GATES_PASS": "AUTHORISED",
+    "PR_UPDATE": "AUTHORISED",
+    "PR_AUTO_MERGE_WHEN_POLICY_PASSES": "AUTHORISED",
+    "PRODUCTION_SITE_DEPLOYMENT_WHEN_POLICY_PASSES": "AUTHORISED",
+    "PACKAGE_RELEASE_WHEN_RELEASE_POLICY_PASSES": "AUTHORISED",
+    "OWNED_CHANNEL_DISTRIBUTION": "AUTHORISED",
+    "PUBLIC_DIRECTORY_AND_REGISTRY_SUBMISSION": "AUTHORISED_WITH_PLATFORM_CHECKS",
+    "CORPORATE_B2B_OUTREACH": "AUTHORISED_WITH_COMPLIANCE_POLICY",
+    "EDITORIAL_SUBMISSIONS": "AUTHORISED_WITH_EVIDENCE_POLICY",
+    "MODERATED_USER_RESEARCH": "AUTHORISED_AFTER_RESEARCH_PRIVACY_GATE",
+    "ANONYMOUS_PRODUCT_ANALYTICS": "AUTHORISED",
+    "PERSONAL_DATA_WEB_FORM": "DISABLED_UNTIL_PRIVACY_GATE",
+    "PAYMENT_GATE": "NOT_ACTIVE",
+    "CONSULTANT_BOOKING": "NOT_AVAILABLE",
+    "LEGAL_ADVICE": "NOT_OFFERED",
+    "COMPLIANCE_CERTIFICATION": "NOT_OFFERED",
+    "CUSTOMER_SOURCE_UPLOAD": "NOT_ACCEPTED"
+  },
+  "action_classes": {
+    "A": {
+      "name": "automatic_local_execution",
+      "external_side_effect": false,
+      "requires_machine_gates": false
+    },
+    "B": {
+      "name": "automatic_commit_and_push",
+      "external_side_effect": true,
+      "requires_machine_gates": true
+    },
+    "C": {
+      "name": "automatic_merge_deploy_or_irreversible_registry_publish",
+      "external_side_effect": true,
+      "requires_machine_gates": true
+    },
+    "D": {
+      "name": "controlled_external_distribution",
+      "external_side_effect": true,
+      "requires_machine_gates": true
+    },
+    "E": {
+      "name": "hard_stop",
+      "external_side_effect": true,
+      "requires_machine_gates": true
+    }
+  },
+  "manifest_required_fields": [
+    "action_id",
+    "action_type",
+    "risk_class",
+    "scope",
+    "reversibility",
+    "current_primary_sources",
+    "repository_evidence",
+    "counterevidence",
+    "security_delta",
+    "privacy_delta",
+    "legal_or_commercial_delta",
+    "tests_required",
+    "tests_run",
+    "generated_artefacts",
+    "rollback",
+    "observability",
+    "owner_fact_required",
+    "decision",
+    "decision_reason",
+    "executed_at",
+    "result"
+  ],
+  "actions": [
+    {
+      "action_id": "phase-zero-reverification-2026-08-19",
+      "action_type": "state_reverification",
+      "risk_class": "A",
+      "scope": "Repository, PR 55, production site, PyPI, ledger and scanner parity",
+      "reversibility": "Read-only",
+      "current_primary_sources": [
+        "Git object graph",
+        "GitHub PR and checks APIs",
+        "https://getregula.com/",
+        "https://pypi.org/pypi/regula-ai/json"
+      ],
+      "repository_evidence": [
+        "scripts/ledger_status.py",
+        "scripts/ledger_review.py",
+        "tests/test_scanner_js.js",
+        "scripts/current_state.py"
+      ],
+      "counterevidence": [
+        "Production remains on the developer-first homepage",
+        "PyPI 1.9.0 contains superseded decision language",
+        "git diff --check reports three whitespace errors"
+      ],
+      "security_delta": "None; read-only",
+      "privacy_delta": "None; read-only",
+      "legal_or_commercial_delta": "None; observations only",
+      "tests_required": [
+        "ledger status",
+        "ledger review summary",
+        "JavaScript parity",
+        "generated current-state check"
+      ],
+      "tests_run": [
+        "118 machine-state rows: 25 OPEN, 26 PARTIAL, 67 CLOSED",
+        "32 legacy rows awaiting independent reviews",
+        "JavaScript 130/130 and runtime parity 38/38",
+        "generated current state matches"
+      ],
+      "generated_artefacts": [],
+      "rollback": "Not applicable",
+      "observability": "Command outputs and live URLs",
+      "owner_fact_required": false,
+      "decision": "EXECUTED",
+      "decision_reason": "Class A read-only verification completed",
+      "executed_at": "2026-08-19T16:10:02Z",
+      "result": "Expected branch and audited head confirmed; downstream gates remain conditional"
+    },
+    {
+      "action_id": "security-truth-reconciliation-2026-08-19",
+      "action_type": "security_reconciliation",
+      "risk_class": "A",
+      "scope": "CodeQL, Bandit, optional dependencies and public security claims",
+      "reversibility": "Git-revertible",
+      "current_primary_sources": [
+        "GitHub code-scanning API",
+        "PyPA advisory database via pip-audit"
+      ],
+      "repository_evidence": [
+        "SECURITY.md",
+        "docs/TRUST.md",
+        "pyproject.toml",
+        "uv.lock",
+        "Implementation commit 6f18cc8"
+      ],
+      "counterevidence": [
+        "Default branch has 43 open CodeQL alerts",
+        "Pre-change Bandit run found 14 findings",
+        "Pre-change all-extras audit found five advisories in two packages"
+      ],
+      "security_delta": "Exact-host HTTPS redirect controls and bounded XML parsing added; cryptography raised to 50.0.0; unqualified zero-finding claims removed",
+      "privacy_delta": "No personal-data collection",
+      "legal_or_commercial_delta": "Removes unsupported public security assurances",
+      "tests_required": [
+        "Bandit",
+        "locked all-extras pip-audit",
+        "CodeQL at exact PR merge ref",
+        "full project gate"
+      ],
+      "tests_run": [
+        "Pre-change Bandit inventory",
+        "Pre-change and post-cryptography dependency audits",
+        "Post-change Bandit: 0 findings",
+        "Post-change all-extras dependency audit: 1 advisory in WeasyPrint 68.1",
+        "Focused policy and XML tests: 17 passed",
+        "PR merge-ref CodeQL analysis at the pre-change head: 0 results",
+        "Legacy runner after fix: 1464 assertions across 1404 functions, 0 failed",
+        "Pytest with localhost permitted: 3111 passed",
+        "Self-test: 6/6 passed",
+        "Doctor: 8 passed, 4 info, 0 warnings"
+      ],
+      "generated_artefacts": [
+        "data/distribution_execution_policy.json",
+        "docs/security/SECURITY-FINDINGS-2026-08-19.md"
+      ],
+      "rollback": "Revert the bounded security-truth commit",
+      "observability": "CI, CodeQL analysis results and dated security inventory",
+      "owner_fact_required": false,
+      "decision": "AUTO_APPROVED_PENDING_MACHINE_CONDITION",
+      "decision_reason": "Security truth must pass before Class B or C execution",
+      "executed_at": "2026-08-19T17:06:12Z",
+      "result": "LOCAL_RECONCILIATION_AND_FULL_GATE_PASSED; FRESH_PR_ANALYSIS_PENDING"
+    },
+    {
+      "action_id": "merge-deploy-release-2026-08-19",
+      "action_type": "merge_deploy_release",
+      "risk_class": "C",
+      "scope": "PR 55, production site and next package release",
+      "reversibility": "Merge and release are durable; site rollback must be recorded",
+      "current_primary_sources": [
+        "GitHub PR, Actions, Releases and deployment records",
+        "Netlify production response",
+        "PyPI package and attestation APIs"
+      ],
+      "repository_evidence": [
+        ".github/workflows/ci.yaml",
+        ".github/workflows/release.yml",
+        "scripts/release_gate.py"
+      ],
+      "counterevidence": [
+        "Fresh CI and CodeQL results do not yet exist for the unpushed security commit",
+        "Production and PyPI do not yet contain branch behaviour"
+      ],
+      "security_delta": "Must not proceed with unresolved reachable high or critical risk",
+      "privacy_delta": "Must not activate a transmitting form",
+      "legal_or_commercial_delta": "Must retain product and service limitations",
+      "tests_required": [
+        "Complete project gate",
+        "clean-clone verification",
+        "production smoke tests",
+        "installed wheel and sdist verification"
+      ],
+      "tests_run": [
+        "Final local legacy runner: 1464 assertions across 1405 functions, 0 failed",
+        "Final local pytest passed with localhost socket permission; the collected-test total is recorded in data/site_facts.json",
+        "Local self-test: 6/6 passed",
+        "Local doctor: 8 passed, 4 info, 0 warnings"
+      ],
+      "generated_artefacts": [],
+      "rollback": "Record exact production rollback before deployment; releases are not overwritten",
+      "observability": "PR checks, deployment terminal state, production fingerprint and PyPI hashes",
+      "owner_fact_required": false,
+      "decision": "AUTO_APPROVED_PENDING_MACHINE_CONDITION",
+      "decision_reason": "Standing owner authorisation applies only after all Class C predicates pass",
+      "executed_at": null,
+      "result": "LOCAL_GATE_PASSED; FRESH_PR_CHECKS_PENDING"
+    },
+    {
+      "action_id": "payment-booking-and-transmitting-form-2026-08-19",
+      "action_type": "commercial_activation",
+      "risk_class": "E",
+      "scope": "Payment, consultant booking and personal-data web forms",
+      "reversibility": "Not safely reversible after data or money is accepted",
+      "current_primary_sources": [],
+      "repository_evidence": [
+        "docs/commercial/PAID-CONSULTANT-GATE-2026-08-13.md",
+        "site/privacy.html"
+      ],
+      "counterevidence": [
+        "Seller, tax, service, privacy, fulfilment and validated-price facts remain incomplete"
+      ],
+      "security_delta": "No activation permitted",
+      "privacy_delta": "No personal-data transmission permitted",
+      "legal_or_commercial_delta": "No payment or booking permitted",
+      "tests_required": [],
+      "tests_run": [],
+      "generated_artefacts": [],
+      "rollback": "Not applicable because activation is prohibited",
+      "observability": "Public controls remain disabled or absent",
+      "owner_fact_required": true,
+      "decision": "HARD_STOP",
+      "decision_reason": "The directive expressly preserves these P0 gates",
+      "executed_at": null,
+      "result": "NOT_ACTIVATED"
+    }
+  ]
+}

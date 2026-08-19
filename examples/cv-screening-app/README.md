@@ -37,15 +37,28 @@ cd getregula
 regula check examples/cv-screening-app --scope all
 ```
 
-Expected output (verified against Regula v1.7.6 on 2026-07-20):
+Expected output (verified against Regula v1.9.0 on 2026-08-14):
 
 ```
 Regula Scan: /home/you/getregula/examples/cv-screening-app
 ============================================================
 
-  Verdict: HIGH-RISK
-  Your project shows indicators of high-risk AI under EU AI Act Annex III.
-  If confirmed high-risk (Article 6), Articles 9-15 obligations apply before the enforcement deadline.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
+
+  Why:
+    1. app.py:1 — Employment and workers management
+       (Art. 9, Art. 10)
   Files scanned:      1
   Prohibited:         0
   Credentials:        0
@@ -63,9 +76,27 @@ Regula Scan: /home/you/getregula/examples/cv-screening-app
 
   Questions for human review (1):
     ? app.py:1 — Annex III, Category 4
-      Employment and workers management (confidence: 43%)
+      Employment and workers management (detector priority: 43)
 ============================================================
 ```
+
+`--scope all` is required. This fixture lives under `examples/`, which the
+default production scope excludes, so the plain command reports
+`NO ACTIVE PRODUCTION-SCOPE PATTERNS` and shows nothing. The bracketed 43 is a
+detector priority, not a probability and not a compliance score; earlier
+versions of this file wrote it as a confidence percentage, and the tool no
+longer emits that wording.
+
+**Living under `examples/` costs this finding 20 points, and that is worth
+understanding before you read the number across to your own code.**
+`classify_provenance` treats any path containing an `example`, `demo`,
+`sample`, `tutorial` or `cookbook` segment as example provenance, and example
+provenance subtracts a flat 20. The published tier bands are BLOCK at 80 or
+above, WARN from 50 to 79, and INFO below 50, so the deduction also moves this
+finding from WARN to INFO. The same directory copied to a path without such a
+segment scores 63 and prints WARN. Verified on 2026-08-15 by scanning
+`examples/cv-screening-app` and a byte-identical copy at a neutral path, and
+recorded as ledger N110. **In a real project, this code would score 63.**
 
 **What to notice — three things, and two of them are precision features:**
 
@@ -134,30 +165,29 @@ Article 17 QMS gap). Use this to populate your own JIRA / Linear backlog.
 regula gap --project examples/cv-screening-app
 ```
 
-Expected output (excerpt; verified against Regula v1.7.6 on 2026-07-20):
+Expected output (verified against Regula v1.9.0 on 2026-08-14):
 
 ```
-EU AI Act Compliance Gap Assessment: cv-screening-app
-Highest risk tier: high_risk
-Overall score:     29%
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
 
-  NOTE: This score measures the PRESENCE of compliance
-  documentation and infrastructure — it does not assess code
-  risk and cannot offset scan findings.
-
-Article 9   Risk Management                     [ 60%] MODERATE
-Article 10  Data Governance                     [ 30%] PARTIAL
-Article 11  Technical Documentation             [  0%] NOT FOUND
-Article 12  Record-Keeping                      [ 30%] PARTIAL
-Article 13  Transparency                        [  0%] NOT FOUND
-Article 14  Human Oversight                     [ 45%] PARTIAL
-Article 15  Accuracy, Robustness, Cybersecurity [ 40%] PARTIAL
-Article 17  Quality Management System           [ 30%] PARTIAL
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8
 ```
 
-**What to notice:** the cross-framework mapping (ISO 42001, NIST AI RMF,
-SOC 2, GDPR, DORA, NIS2) is in the full text output — see
-`docs/cli-reference.md` for the column key.
+**What to notice:** eight article observations are *held*, not emitted. Until a
+person establishes that the subject is an AI system and that the jurisdiction
+applies, Regula attaches no Article 9 to 15 evidence to it.
+
+Earlier versions of this file showed a per-article percentage and an overall
+score. That output has been removed from the tool, not just from this page: a
+percentage against an article reads as a compliance measurement, and Regula does
+not make compliance determinations.
 
 ---
 

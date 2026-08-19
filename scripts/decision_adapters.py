@@ -159,7 +159,7 @@ def format_detector_explanation(result: Mapping[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def format_decision_text(result: Mapping[str, Any]) -> str:
+def format_decision_text(result: Mapping[str, Any], command: str = "check") -> str:
     """Render a compact decision without introducing adapter conclusions."""
     lines = [
         f"Decision: {result['result_type']}",
@@ -171,11 +171,20 @@ def format_decision_text(result: Mapping[str, Any]) -> str:
         unresolved = result.get("unresolved_predicates", [])
         lines.append(f"Facts needed to resolve the next decision: {len(unresolved)}")
         for item in unresolved[:5]:
+            # The kernel already ranks by leverage; the count was simply never
+            # shown, so a list of 46 read as a wall rather than as an ordering.
+            # Every figure here is the kernel's own (N149).
+            advances = len(item.get("would_resolve", []) or [])
+            suffix = (f"  [answering this advances {advances} provision"
+                      f"{'' if advances == 1 else 's'}]") if advances else ""
             lines.append(
-                f"  - {item['fact_id']}: {item.get('question', 'Resolve this fact.')}"
+                f"  - {item['fact_id']}: {item.get('question', 'Resolve this fact.')}{suffix}"
             )
         if len(unresolved) > 5:
             lines.append(f"  - {len(unresolved) - 5} additional unresolved facts in JSON output")
+        if unresolved:
+            lines.append(f"  Declare one with: regula {command} . --fact "
+                         f"{unresolved[0]['fact_id']}=yes|no|unknown|not_applicable")
     elif result["result_type"] == "indication":
         for item in result.get("indications", []):
             lines.append(

@@ -14,9 +14,15 @@ static rows below as SEO/no-JS fallback — keep both in sync
 (source of truth: content/regulations/sa-tracker.json, copied to
 site/sa-tracker.json).
 
-Key verified facts: draft gazetted 10 Apr 2026 (No. 54477, Notice
-3880 — gov.za); Cabinet-approved withdrawal confirmed 5 Jun 2026
-(SAnews). No replacement date is asserted without an official record."""
+Key verified facts, and the three-event distinction this page got wrong
+until 17 Aug 2026. Draft gazetted 10 Apr 2026 (No. 54477, Notice 3880 —
+gov.za). Withdrawal ANNOUNCED by the Minister 26 Apr 2026 (SAnews).
+Withdrawal APPROVED BY CABINET 5 Jun 2026 (SAnews, post-Cabinet briefing).
+Withdrawal GAZETTED 12 Jun 2026, which is the operative act and was recorded
+nowhere in this repository before 17 Aug 2026. Every surface previously dated
+the withdrawal by when it was announced or approved rather than by when it
+took effect, which for a compliance tool is the wrong kind of date to publish.
+No replacement date is asserted without an official record."""
 
 import json
 
@@ -30,19 +36,19 @@ REGION = {
     "geo_region": "ZA",
     "geo_placename": "South Africa",
     "status_cls": "",
-    "status_text": "Withdrawn &mdash; official confirmation 5 June 2026",
+    "status_text": "Withdrawn by gazette, 12 June 2026",
     "title_tag": "South Africa Draft AI Policy 2026 &mdash; Regula",
     "title_html": "South Africa's <span class=\"hl\">draft National AI Policy</span>: gazetted, then withdrawn",
     "meta_description": "South Africa AI policy tracker. Cabinet-approved draft National AI Policy, data protection under POPIA, and readiness for global AI regulation.",
     "meta_keywords": "South Africa AI Policy, National AI Policy South Africa, DCDT AI Policy, South Africa AI Act, POPIA AI compliance, South Africa AI regulation 2026, Khumbudzo Ntshavheni AI, AI governance South Africa, AI policy framework South Africa, sector-specific AI regulation South Africa",
     "og_title": "South Africa Draft AI Policy 2026 — Regula",
-    "og_description": "South Africa's draft National AI Policy was gazetted on 10 April 2026 and its withdrawal was officially confirmed on 5 June 2026. The draft is not current policy or law.",
+    "og_description": "South Africa's draft National AI Policy was gazetted on 10 April 2026, its withdrawal was announced on 26 April, approved by Cabinet on 5 June and gazetted on 12 June 2026. The draft is not current policy or law.",
     "twitter_title": "South Africa Draft AI Policy 2026 — Regula",
     "twitter_description": "Official publication and withdrawal records, plus a qualified summary of the existing South African legal baseline.",
-    "last_updated": "4 August 2026",
+    "last_updated": "17 August 2026",
     "published_time": "2026-04-07T00:00:00+02:00",
-    "modified_time": "2026-08-04T00:00:00+01:00",
-    "lede": "South Africa's draft National Artificial Intelligence Policy was published in <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf\">Government Gazette No. 54477 on 10 April 2026</a>. Cabinet later approved its withdrawal after fictitious references were identified, as the <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.sanews.gov.za/node/81987\">official government news service confirmed on 5 June 2026</a>. The withdrawn draft is historical material, not current policy or law. Existing legislation may still apply within its own scope.",
+    "modified_time": "2026-08-17T00:00:00+00:00",
+    "lede": "South Africa's draft National Artificial Intelligence Policy was published in <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf\">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy\">announced the withdrawal on 26 April 2026</a>, Cabinet <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.sanews.gov.za/node/81987\">approved it on 5 June 2026</a>, and <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz\">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. The withdrawn draft is historical material, not current policy or law. Existing legislation may still apply within its own scope.",
     # Bespoke tracker (verbatim from the reviewed page) — used instead
     # of builder-rendered tracker_rows.
     "tracker_html": """
@@ -51,11 +57,11 @@ REGION = {
             <div id="tracker-rows">
                 <div class="tracker-row">
                     <div class="lbl">Cabinet approval</div>
-                    <div class="val">2 April 2026 — draft approved for public comment by Minister in the Presidency Khumbudzo Ntshavheni at a post-Cabinet briefing &nbsp;<span class="ok">CONFIRMED</span></div>
+                    <div class="val">25 March 2026, combined with the Special Sitting of 1 April 2026 — draft approved for public comment; announced by Minister in the Presidency Khumbudzo Ntshavheni at a post-Cabinet briefing &nbsp;<span class="ok">VERIFIED</span></div>
                 </div>
                 <div class="tracker-row">
                     <div class="lbl">Gazette publication</div>
-                    <div class="val"><a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Gazetted 10 April 2026</a>; Cabinet-approved withdrawal <a href="https://www.sanews.gov.za/node/81987">confirmed 5 June 2026</a> &nbsp;<span class="pend">WITHDRAWN</span></div>
+                    <div class="val"><a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Gazetted 10 April 2026</a> as Notice 3880 in Gazette No. 54477; withdrawal <a href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced 26 April 2026</a>, <a href="https://www.sanews.gov.za/node/81987">approved by Cabinet 5 June 2026</a>, and <a href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">gazetted 12 June 2026</a>, the operative act &nbsp;<span class="pend">WITHDRAWN</span></div>
                 </div>
                 <div class="tracker-row">
                     <div class="lbl">Public comment window</div>
@@ -86,7 +92,7 @@ REGION = {
             "id": "what-cabinet-approved",
             "heading": "What was published and then withdrawn",
             "body": """\
-            <p>The Draft National Artificial Intelligence Policy was published in <a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. Cabinet later approved its withdrawal, <a href="https://www.sanews.gov.za/node/81987">confirmed by the official government news service on 5 June 2026</a>, after fictitious references were identified. The withdrawn draft is public historical material, not current policy or law.</p>
+            <p>The Draft National Artificial Intelligence Policy was published in <a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced the withdrawal on 26 April 2026</a>, Cabinet <a href="https://www.sanews.gov.za/node/81987">approved it on 5 June 2026</a>, and <a href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. The withdrawn draft is public historical material, not current policy or law.</p>
 
             <p>The withdrawn text described the following policy direction:</p>
 
@@ -138,7 +144,7 @@ REGION = {
 
             <p>For a South African team, the practically useful starting commands are:</p>
 
-<pre><code><span class="term-comment"># Install</span>
+<pre tabindex="0"><code><span class="term-comment"># Install</span>
 <span class="term-cmd">pipx install regula-ai</span>
 
 <span class="term-comment"># Inventory what you have</span>
@@ -185,11 +191,11 @@ REGION = {
             <div class="faq">
                 <details>
                     <summary>What did Cabinet approve on 2 April 2026?</summary>
-                    <p>The draft National Artificial Intelligence Policy was published in <a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. Cabinet later approved its withdrawal, <a href="https://www.sanews.gov.za/node/81987">officially confirmed on 5 June 2026</a>, after fictitious references were identified. It is not current policy or law.</p>
+                    <p>The draft National Artificial Intelligence Policy was published in <a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced the withdrawal on 26 April 2026</a>, Cabinet <a href="https://www.sanews.gov.za/node/81987">approved it on 5 June 2026</a>, and <a href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. It is not current policy or law.</p>
                 </details>
                 <details>
                     <summary>Has South Africa's draft AI policy been gazetted?</summary>
-                    <p>It was gazetted on 10 April 2026 (No. 54477, Notice 3880) and then withdrawn later that month after fabricated citations were found in the draft. No replacement consultation date is treated here as authoritative until the responsible department publishes it.</p>
+                    <p>It was gazetted on 10 April 2026 (No. 54477, Notice 3880). The Minister announced its withdrawal on 26 April 2026 after fabricated citations were found, Cabinet approved the withdrawal on 5 June 2026, and the notice was withdrawn by gazette on 12 June 2026. No replacement consultation date is treated here as authoritative until the responsible department publishes it.</p>
                 </details>
                 <details>
                     <summary>Does South Africa have an AI Act?</summary>
@@ -201,7 +207,7 @@ REGION = {
                 </details>
                 <details>
                     <summary>When does the public comment window open and close?</summary>
-                    <p>The comment window opened with the 10 April 2026 gazette and was due to close on 10 June 2026, but withdrawal of the draft superseded it. Check the responsible department for any replacement consultation.</p>
+                    <p>The comment window opened with the 10 April 2026 gazette and closed on 10 June 2026 at 16h00. The Minister had already announced the withdrawal on 26 April 2026, so submissions made after that date were made against a draft the department had said it would withdraw, and the withdrawal notice was gazetted on 12 June 2026, two days after the window closed. Check the responsible department for any replacement consultation.</p>
                 </details>
                 <details>
                     <summary>How does POPIA apply to AI systems?</summary>
@@ -261,12 +267,12 @@ REGION = {
         # hand-maintained page, incl. PT-BR pairs for search).
         {
             "q": "What did Cabinet approve on 2 April 2026?",
-            "a": "The draft National Artificial Intelligence Policy was published in Government Gazette No. 54477 on 10 April 2026. Cabinet later approved its withdrawal, officially confirmed on 5 June 2026, after fictitious references were identified. It is not current policy or law.",
+            "a": "The draft National Artificial Intelligence Policy was published in Government Gazette No. 54477 on 10 April 2026. After fictitious references were identified, the Minister announced the withdrawal on 26 April 2026, Cabinet approved it on 5 June 2026, and Notice 3880 was withdrawn by gazette on 12 June 2026, which is the act that withdrew it. It is not current policy or law.",
             "jsonld_only": True,
         },
         {
             "q": "What happened to South Africa's draft AI policy?",
-            "a": "The draft was gazetted on 10 April 2026. Cabinet later approved its withdrawal after fictitious references were identified, officially confirmed on 5 June 2026. The proposed comment window was superseded by withdrawal; no replacement date is asserted here without an official record.",
+            "a": "The draft was gazetted on 10 April 2026. After fictitious references were identified, the Minister announced the withdrawal on 26 April 2026, Cabinet approved it on 5 June 2026, and Notice 3880 was withdrawn by gazette on 12 June 2026, which is the act that withdrew it. The proposed comment window was superseded by withdrawal; no replacement date is asserted here without an official record.",
             "jsonld_only": True,
         },
         {
@@ -376,7 +382,7 @@ REGION = {
     <div style="max-width:760px;margin:var(--s7) auto var(--s5);padding:0 var(--s5);">
         <h3 style="font-size:18px;color:var(--text);margin-bottom:var(--s3);">Related reading</h3>
         <ul style="list-style:none;padding:0;margin:0;">
-            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">— Extraterritorial reach and cross-border applicability</span></li>
+            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);text-decoration:underline;">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">— Extraterritorial reach and cross-border applicability</span></li>
         </ul>
     </div>
 """,

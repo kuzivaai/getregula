@@ -12,15 +12,24 @@ regula check examples/customer-chatbot --scope all
 (`--scope all` includes example-provenance findings, which the default
 production scope deliberately excludes — see `examples/README.md`.)
 
-Expected output (captured against Regula v1.7.6 on 2026-07-20):
+Expected output (captured against Regula v1.9.0 on 2026-08-14):
 
 ```
 Regula Scan: examples/customer-chatbot
 ============================================================
 
-  Verdict: LIMITED-RISK
-  Your project has indicators of limited-risk AI components (Article 50 transparency).
-  If confirmed, Article 50 requires disclosing AI usage to users.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ARTICLE 50 PATTERNS
+  The scanner found patterns relevant to Article 50 review.
+  Resolve the facts listed above before attaching a transparency duty.
   Files scanned:      1
   Prohibited:         0
   Credentials:        0
@@ -38,11 +47,15 @@ Regula Scan: examples/customer-chatbot
 
   Questions for human review (2):
     ? app.py:66 — AI Security (LLM06)
-      AI API call detected — verify error handling is in place (confidence: 40%)
+      AI API call detected — verify error handling is in place (detector priority: 40)
     ? app.py:29 — Limited Risk (Article 50)
-      Chatbots and conversational AI (confidence: 20%)
+      Chatbots and conversational AI (detector priority: 20)
 ============================================================
 ```
+
+The bracketed numbers are detector priorities, not probabilities. Earlier
+versions of this file labelled them as a confidence percentage, which invited
+reading a pattern count as a likelihood. The tool no longer emits that wording.
 
 ## Why Regula flags this
 

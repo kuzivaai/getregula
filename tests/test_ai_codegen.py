@@ -208,7 +208,9 @@ class TestFullScan:
             assert result["git_signals"] == []
             assert result["summary"]["generators_detected"] == []
             assert result["summary"]["files_with_markers"] == 0
-            assert result["summary"]["transparency_compliant"] is False
+            assert result["summary"]["transparency_documents_present"] is False
+            # The key asserting a compliance state is gone, not aliased.
+            assert "transparency_compliant" not in result["summary"]
             assert "limitations" in result
             assert "explicit markers only" in result["limitations"]
 
@@ -238,7 +240,8 @@ class TestFullScan:
             Path(td, "AI_TOOLS.md").write_text("# Tools")
             result = scan_ai_generated_code(td, include_git=False)
             assert result["summary"]["governance_score"] == 100
-            assert result["summary"]["transparency_compliant"] is True
+            assert result["summary"]["transparency_documents_present"] is True
+            assert "transparency_compliant" not in result["summary"]
 
     def test_limitations_always_present(self):
         with tempfile.TemporaryDirectory() as td:
@@ -266,10 +269,18 @@ class TestTextFormat:
             result = scan_ai_generated_code(td, include_git=False)
             text = format_ai_codegen_text(result)
             assert "GitHub Copilot" in text
-            assert "Governance Score:" in text
-            assert "Art 50/52" in text
+            assert "Governance documents present:" in text
+            assert "Art 50/52" in text or "Article 50/52" in text
 
-    def test_format_governance_good(self):
+    def test_format_all_four_documents_present_asserts_no_compliance(self):
+        """The fully-documented case is where the old output was worst.
+
+        It printed "Governance Score: 100/100 (GOOD)" and "EU AI Act
+        Transparency (Art 50/52): COMPLIANT" for four files whose contents were
+        never read. This test replaces the two assertions that required exactly
+        that wording. It is the same scenario, asserting the opposite property:
+        that no compliance state is claimed. LEDGER N125.
+        """
         with tempfile.TemporaryDirectory() as td:
             Path(td, "ai-policy.md").write_text("# Policy")
             Path(td, "AI_DISCLOSURE.md").write_text("# D")
@@ -277,8 +288,17 @@ class TestTextFormat:
             Path(td, "AI_TOOLS.md").write_text("# T")
             result = scan_ai_generated_code(td, include_git=False)
             text = format_ai_codegen_text(result)
-            assert "100/100 (GOOD)" in text
-            assert "COMPLIANT" in text
+            # The observable is reported.
+            assert "Governance documents present: 4 of 4" in text
+            assert "both present" in text
+            # The determination is not, in any casing.
+            assert "COMPLIANT" not in text
+            assert "compliant" not in text.lower()
+            # And the graded verdict on someone's governance is gone.
+            assert "(GOOD)" not in text
+            assert "100/100 (" not in text
+            # The qualification travels with the finding, not in a footer.
+            assert "Neither was read" in text
 
     def test_format_recommendations(self):
         with tempfile.TemporaryDirectory() as td:

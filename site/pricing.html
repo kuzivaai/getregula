@@ -199,38 +199,6 @@
             border: 1px solid rgba(59,130,246,0.3);
         }
 
-        .pricing-card .interest-btn {
-            display: block;
-            width: 100%;
-            min-height: 44px;
-            margin-top: var(--s3);
-            padding: 10px var(--s4);
-            background: transparent;
-            color: var(--text-dim);
-            border: 1px dashed var(--border-strong);
-            border-radius: 8px;
-            font-family: var(--font-body);
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
-        .pricing-card .interest-btn:hover {
-            color: var(--text-2);
-            border-color: var(--accent);
-        }
-        .pricing-card .interest-btn:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-        .pricing-card .interest-btn[disabled] {
-            cursor: default;
-            opacity: 0.7;
-        }
-        .pricing-card .interest-note {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-            margin-top: var(--s2);
-            min-height: 1em;
-        }
 
         .pricing-card code {
             font-family: var(--font-mono);
@@ -358,7 +326,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -373,17 +343,17 @@
 <main id="main">
 
 <div class="pricing-hero">
-    <h1>Questions are free. Human review is the paid service.</h1>
-    <p class="subtitle">Use Regula to identify code indicators and the facts you still need. A planned consultant review will help teams interpret that evidence and turn it into an accountable action plan. It is not yet bookable.</p>
+    <h1>Start free. Talk to a human when you want one.</h1>
+    <p class="subtitle">The assessment and the scanner are free and stay free. The paid work is priced on this page rather than quoted on request, so you can decide whether it is worth a conversation before you have one. Nothing here takes payment; every paid action is an email, and talking costs nothing.</p>
 </div>
 
-<div class="pricing-cards">
+<div class="pricing-cards" style="grid-template-columns:repeat(3, 1fr);max-width:1120px;">
 
     <!-- Free tier -->
-    <div class="pricing-card">
+    <div class="pricing-card featured">
         <h3>Self-assessment</h3>
-        <div class="price">EUR 0</div>
-        <div class="price-note">Free and available now</div>
+        <div class="price">Free</div>
+        <div class="price-note">Free and open source. Runs on your machine. Your code is never uploaded.</div>
         <ul>
             <li>Browser questions with an unresolved-facts path</li>
             <li>Local code indicators for human review</li>
@@ -395,11 +365,26 @@
         <a class="cta-btn free" href="/assess/">Start free assessment</a>
     </div>
 
-    <!-- Starter tier -->
-    <div class="pricing-card featured">
-        <h3>Consultant review</h3>
-        <div class="price">Price TBC</div>
-        <div class="price-note">Planned one-off review; not yet bookable</div>
+    <!-- Fixed-price starter assessment -->
+    <div class="pricing-card">
+        <h3>Starter assessment</h3>
+        <div class="price">GBP 950</div>
+        <div class="price-note">Fixed price, fixed scope, remote. Turnaround is about a week; that is elapsed time, not days billed. Payment gate not active; email first.</div>
+        <ul>
+            <li>One codebase and one product scope</li>
+            <li>Scan output read with you, indicator by indicator</li>
+            <li>Written list of the facts still to be settled</li>
+            <li>Prioritised action brief you keep</li>
+            <li>Referral boundary for qualified legal advice</li>
+        </ul>
+        <a class="cta-btn free" href="mailto:support@getregula.com?subject=Starter%20assessment%20enquiry" onclick="if(window.plausible)plausible('Contact Click',{props:{source:'pricing-starter'}})">Email about a starter assessment</a>
+    </div>
+
+    <!-- Advisory day rate -->
+    <div class="pricing-card">
+        <h3>Advisory day</h3>
+        <div class="price">GBP 650</div>
+        <div class="price-note">Per day, published rather than quoted. Payment gate not active; talking is free.</div>
         <ul>
             <li>One live session with an AI governance consultant</li>
             <li>Fact and scope review before interpretation</li>
@@ -407,61 +392,19 @@
             <li>Prioritised action brief with named open questions</li>
             <li>Clear referral boundary for qualified legal advice</li>
         </ul>
-        <span class="cta-btn coming" aria-disabled="true">Payment gate not active</span>
-        <button type="button" class="interest-btn" data-plan="consultant-review">Register anonymous interest</button>
-        <p class="interest-note" role="status">One click adds one anonymous count. No personal data is collected.</p>
-    </div>
-
-    <!-- Professional tier -->
-    <div class="pricing-card">
-        <h3>Organisation review</h3>
-        <div class="price">Scoped quote</div>
-        <div class="price-note">Planned engagement; not yet available</div>
-        <ul>
-            <li>Everything in Consultant review</li>
-            <li>Multi-system or multi-team evidence review</li>
-            <li>Decision and evidence register workshop</li>
-            <li>Governance ownership and remediation planning</li>
-            <li>Re-scan and review cadence design</li>
-        </ul>
-        <span class="cta-btn coming" aria-disabled="true">Scoping not yet open</span>
-        <button type="button" class="interest-btn" data-plan="organisation-review">Register anonymous interest</button>
-        <p class="interest-note" role="status">One click adds one anonymous count. No personal data is collected.</p>
+        <a class="cta-btn free" href="mailto:support@getregula.com?subject=Consultant%20review%20enquiry" onclick="if(window.plausible)plausible('Contact Click',{props:{source:'pricing-consultant'}})">Email us about a review</a>
     </div>
 
 </div>
 
-<div class="trust-note" style="background:rgba(245,158,11,0.08);border-left:3px solid #f59e0b;padding:16px 20px;margin:0 0 24px;border-radius:0 8px 8px 0;">
-    <p><strong>Paid support is not yet available.</strong> No payment is currently processed, no booking is accepted, and no consultant has been assigned through this site. Disabled labels are intentional: they prevent a visitor mistaking a roadmap item for a purchasable service.</p>
+<div class="trust-note" style="max-width:1120px;">
+    <p><strong>Why the prices are on the page.</strong> A focused, fixed-scope assessment for founders and small teams is a different thing from an enterprise readiness programme, and we do not claim it is equivalent to one. What we can say plainly is that our price is published. In a check of published EU AI Act representation and assessment prices on 14 August 2026, two providers we found did publish a figure, Prighter and European Compliance Suite, and the others quoted on request; the check, its sources and its date are recorded in <a href="https://github.com/kuzivaai/getregula/blob/main/docs/venture/gtm-2026-08-14/MARKET-SIZING-2026-08-14.md">the repository</a> so you can read it rather than take our word for it. Where a price is quoted on request, a small team cannot budget without first entering a sales conversation. If a fixed scope is the wrong shape for your situation, say so by email and we will tell you honestly rather than stretch it.</p>
 </div>
+
 <div class="trust-note">
-    <p><strong>The core scanner processes files locally and does not upload them.</strong> A future consultant engagement will need a separately agreed evidence-sharing method, scope, privacy notice, retention rule, cancellation terms, and professional boundary before payment is enabled.</p>
+    <p><strong>No payment or booking runs on this site today.</strong> Every paid action on this page is an email. There is no checkout, no card capture and no booking flow, and the named consultant and full terms will be published before anything can be bought. If your team needs a multi-system or organisation-wide review, the same email reaches us: <a href="mailto:support@getregula.com?subject=Organisation%20review%20enquiry" onclick="if(window.plausible)plausible('Contact Click',{props:{source:'pricing-organisation'}})">support@getregula.com</a>. The core scanner processes files locally and does not upload them; optional commands such as the governance news feed, vocabulary refresh and RFC 3161 timestamping do make outbound requests, and the timestamping command sends hashes rather than code.</p>
+    <p><strong>What we are, stated plainly.</strong> There is no EU legal entity behind this offer and no professional indemnity cover is in place. Nothing on this site, and nothing produced by the tool or by a paid session, is legal advice. Regula indicates where a person should look; it does not determine your risk tier, your obligations or your compliance, and a qualified professional must settle anything that turns on a legal conclusion.</p>
 </div>
-
-<section class="service-boundary" aria-labelledby="service-boundary-title">
-    <h2 id="service-boundary-title">What stays free, and what paid support adds</h2>
-    <p>The payment boundary is expert time and accountability, not access to basic safety information. Regula will continue to show what it observed, what remains unknown, and why it cannot make a determination.</p>
-    <div class="boundary-grid">
-        <div class="boundary-panel">
-            <h3>Free product</h3>
-            <ul>
-                <li>Questions, code indicators, and unresolved facts</li>
-                <li>Transparent rule and evidence paths</li>
-                <li>Local generation of reviewer-completable scaffolds</li>
-                <li>Clear limitations and referral cues</li>
-            </ul>
-        </div>
-        <div class="boundary-panel">
-            <h3>Paid human work</h3>
-            <ul>
-                <li>Context gathering and evidence-quality review</li>
-                <li>Interpretation by a named consultant within a stated scope</li>
-                <li>Prioritisation, workshop time, and documented follow-up</li>
-                <li>Escalation to qualified legal or specialist advice where needed</li>
-            </ul>
-        </div>
-    </div>
-</section>
 
 <div class="pricing-faq">
     <h2>Questions</h2>
@@ -473,12 +416,12 @@
 
     <details>
         <summary>What would a consultant review provide?</summary>
-        <p>The proposed service includes a scoped evidence review, one live walkthrough, a prioritised action brief, and a written list of facts or specialist decisions still required. The exact service, consultant, duration, price, and terms will be published before booking opens.</p>
+        <p>The proposed service includes a scoped evidence review, one live walkthrough, a prioritised action brief, and a written list of facts or specialist decisions still required. The prices are now published on this page: GBP 950 for the fixed-scope starter assessment and GBP 650 per day for advisory work. The named consultant, the duration and the full terms will be published before booking opens.</p>
     </details>
 
     <details>
         <summary>Can I pay or book now?</summary>
-        <p>No. There is no live checkout or booking flow. Payment will not be enabled until fulfillment, availability, privacy, tax, cancellation, refund, and professional-boundary controls are ready and tested.</p>
+        <p>No. There is no live checkout or booking flow. Payment will not be enabled until fulfillment, availability, privacy, tax, cancellation, refund, and professional-boundary controls are ready and tested. You can email us at any time; a conversation costs nothing and commits you to nothing.</p>
     </details>
 
     <details>
@@ -520,19 +463,6 @@
         document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
     }
     window.addEventListener('scroll', updateNav, { passive: true });
-
-    // Anonymous paid-interest counter. Sends only an event name and a plan
-    // label; no cookies, no identifiers, no personal data. Measured
-    // separately from assessment completion, as the commercial gate record
-    // requires (docs/commercial/PAID-CONSULTANT-GATE-2026-08-13.md, P1).
-    document.querySelectorAll('.interest-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            if (window.plausible) plausible('Paid Interest', { props: { plan: btn.getAttribute('data-plan') } });
-            btn.disabled = true;
-            var note = btn.nextElementSibling;
-            if (note) note.textContent = 'Thank you. Recorded as one anonymous count.';
-        });
-    });
 
     // FAQ engagement, counted only when a question is opened.
     document.querySelectorAll('.pricing-faq details').forEach(function (d) {

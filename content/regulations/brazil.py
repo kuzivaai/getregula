@@ -36,9 +36,9 @@ REGION = {
     "og_description": "PL 2338/2023 in committee. LGPD already applies to AI. Live tracker covering legislative status, ANPD enforcement, and developer guidance.",
     "twitter_title": "Brazil AI Regulation — LGPD & Marco Legal da IA | Regula",
     "twitter_description": "PL 2338/2023 in committee. LGPD already applies. Legislative tracker, ANPD enforcement priorities, developer checklist.",
-    "last_updated": "4 August 2026",
+    "last_updated": "14 August 2026",
     "published_time": "2026-04-25T00:00:00-03:00",
-    "modified_time": "2026-08-04T00:00:00-03:00",
+    "modified_time": "2026-08-14T00:00:00+00:00",
     "lede": "Brazil's Marco Legal da Inteligencia Artificial (PL 2338/2023) passed the Senate on 10 December 2024 and is now in a Special Commission at the Chamber of Deputies. It is not yet law. In the meantime, the LGPD already applies to AI systems that process personal data, including automated decision-making under Article 20. This page is the live reference &mdash; what is in force, what is pending, and what developers building for the Brazilian market should do now.",
     # Bespoke tracker (verbatim from the reviewed page) — used instead
     # of builder-rendered tracker_rows.
@@ -177,7 +177,7 @@ REGION = {
 
             <p>For a team building AI for the Brazilian market, the practically useful commands are:</p>
 
-<pre><code><span class="term-comment"># Install</span>
+<pre tabindex="0"><code><span class="term-comment"># Install</span>
 <span class="term-cmd">pipx install regula-ai</span>
 
 <span class="term-comment"># Scan for risk indicators with Brazil-specific mapping</span>
@@ -425,8 +425,8 @@ REGION = {
     <div style="max-width:760px;margin:var(--s7) auto var(--s5);padding:0 var(--s5);">
         <h3 style="font-size:18px;color:var(--text);margin-bottom:var(--s3);">Related reading</h3>
         <ul style="list-style:none;padding:0;margin:0;">
-            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Extraterritorial reach and cross-border applicability</span></li>
-            <li style="margin-bottom:var(--s2);"><a href="/regions/south-africa-ai-policy.html" style="color:var(--accent);">South Africa Draft National AI Policy</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Another emerging-market AI governance framework</span></li>
+            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);text-decoration:underline;">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Extraterritorial reach and cross-border applicability</span></li>
+            <li style="margin-bottom:var(--s2);"><a href="/regions/south-africa-ai-policy.html" style="color:var(--accent);text-decoration:underline;">South Africa Draft National AI Policy</a> <span style="color:var(--text-dim);font-size:14px;">&mdash; Another emerging-market AI governance framework</span></li>
         </ul>
     </div>
 """,

@@ -1,0 +1,74 @@
+{
+  "_what_this_is": "For every suffix that appears among ACTIVE, CLAIM-CAPABLE delivery surfaces but sits outside claim_auditor.SCANNED_SUFFIXES, a declared record naming exactly which claim class is covered elsewhere and which is not covered at all. scripts/claim_auditor.py --delivery-surfaces reads this and prints it at the point of use, and refuses to report a green result over a suffix with no record here.",
+  "_why": "MEASURED 2026-08-17 at commit 537d37b: the delivery inventory listed 108 active claim-capable surfaces and claim_auditor.scan_file returned scanned=False for 6 of them, because `main` filters the reports with `if r.scanned` and drops the rest without a word. The instrument N64 built to stop a green diff audit while an unchanged delivery surface carries an unsourced claim was reporting green over a population it could not read. That is measurement rule 4's blank gate and measurement rule 5's narrower-than-the-claim gate at once.",
+  "_why_not_just_widen_the_suffix_set": "Because it was measured, on the real files, by toggling one variable on the real module. With .py and .yml added, action.yml produced 5 findings and scripts/cli.py produced 14, and almost all of them are ATTRIBUTED_CLAIM matching the verb `write` inside `write(f\"` in shell and Python code. That is the same false-positive class N34 recorded when the regex read the tool name `Write` as an attribution verb. The auditor's unit is a prose paragraph with in-paragraph provenance; code and workflow files have neither, and the only ways to absorb the false positives would be the allowlist or the quarantine, both of which are prohibited as a way to make a check pass. The honest move is to state the coverage gap, not to scan blind and then suppress.",
+  "_rule": "A record whose suffix appears in NO unscannable active claim-capable delivery surface FAILS AS STALE, following the discipline scripts/count_record_policy.py applies to not_a_count_claim and .claim-quarantine.json applies to its burn-downs: an exclusion must not outlive its premise. Declaring a suffix does not exempt a file from anything; it records who else is looking and what nobody is looking for.",
+  "coverage": {
+    ".yml": {
+      "covered_for": [
+        "compliance-state assertion",
+        "retired CLI output marker",
+        "current output published without its qualifier"
+      ],
+      "covered_by": [
+        "scripts/determination_guard.py",
+        "scripts/verify_transcripts.py"
+      ],
+      "not_covered_for": [
+        "unsourced numeric or superlative claim"
+      ],
+      "note": "action.yml is a GitHub Action descriptor. Its `description` and step summaries are reader-facing on the Marketplace listing."
+    },
+    ".toml": {
+      "covered_for": [
+        "version drift against scripts/constants.py"
+      ],
+      "covered_by": [
+        "tests/test_source_of_truth.py"
+      ],
+      "not_covered_for": [
+        "unsourced numeric or superlative claim",
+        "compliance-state assertion",
+        "retired CLI output marker"
+      ],
+      "note": "pyproject.toml's `description` and `keywords` are what PyPI renders on the project page, so they are read by more people than most site pages. NOTHING audits their content today. Measured 2026-08-17: the auditor finds 0 claims in it, so the gap is currently harmless and is recorded because a future edit to that description would not be seen by any claim instrument."
+    },
+    ".py": {
+      "covered_for": [
+        "compliance-state assertion"
+      ],
+      "covered_by": [
+        "scripts/determination_guard.py"
+      ],
+      "not_covered_for": [
+        "unsourced numeric or superlative claim",
+        "retired CLI output marker"
+      ],
+      "note": "scripts/cli.py and scripts/mcp_server.py are claim-capable because argparse help text and MCP tool descriptions are printed to users. Measured 2026-08-17: scanning scripts/cli.py with the auditor surfaces `200 KB` and `12 months` in help text as genuine numeric claims, alongside twelve ATTRIBUTED_CLAIM false positives on the verb `write`. The two genuine ones are recorded here rather than fixed, because sourcing a help string is a product change and PRODUCT_BUILD is STOP."
+    },
+    ".json": {
+      "covered_for": [
+        "compliance-state assertion",
+        "South African withdrawal-date integrity"
+      ],
+      "covered_by": [
+        "scripts/determination_guard.py",
+        "tests/test_sa_withdrawal_dates.py"
+      ],
+      "not_covered_for": [
+        "unsourced numeric or superlative claim"
+      ],
+      "note": "site/sa-tracker.json is regulatory tracker data served to the browser. Measured 2026-08-17: the auditor finds 2 claims and 0 unsourced in it, so widening to .json would be inert today; it is left out because the auditor's paragraph unit does not exist in JSON and a green result from a unit that cannot apply is not evidence."
+    },
+    ".xml": {
+      "covered_for": [],
+      "covered_by": [],
+      "not_covered_for": [
+        "unsourced numeric or superlative claim",
+        "compliance-state assertion",
+        "retired CLI output marker"
+      ],
+      "note": "site/sitemap.xml contains <loc> URLs and <lastmod> dates and no prose. Measured 2026-08-17: the auditor finds 0 claims in it. This is a declared EMPTY coverage entry rather than a silent omission: no instrument reads it, and the reason it is acceptable is that its grammar has nowhere to put a claim, not that anybody checked."
+    }
+  }
+}

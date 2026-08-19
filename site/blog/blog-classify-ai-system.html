@@ -157,7 +157,9 @@
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
         <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
@@ -247,7 +249,7 @@
 <p>To prepare a contextual human review, run three Regula commands in sequence: <code>regula assess</code> to record intended purpose and deployment context, <code>regula check .</code> to scan for code-observable indicators, and <code>regula gap .</code> to identify documentation evidence for review. These outputs do not determine legal classification, compliance, or applicable obligations.</p>
 <p>Start with the guided assessment, then scan your code, then check for gaps:</p>
 
-<pre style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code># 1. Guided assessment: 5 questions, no code needed
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code># 1. Guided assessment: 5 questions, no code needed
 regula assess
 
 # 2. Scan your codebase for risk indicators
@@ -265,7 +267,7 @@ regula gap .</code></pre>
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last verified:</strong> 11 June 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
+    <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Kuziva Muzondo &middot;
     <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
     <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
 </p>

@@ -40,9 +40,9 @@ REGION = {
         "ICO + DSIT-led, principles-based, sector-specific. Regula's live coverage."
     ),
 
-    "last_updated": "2026-07-16",
+    "last_updated": "14 August 2026",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-07-16T00:00:00+00:00",
+    "modified_time": "2026-08-14T00:00:00+00:00",
 
     "lede": (
         "The United Kingdom has taken a deliberately different path to the EU. "

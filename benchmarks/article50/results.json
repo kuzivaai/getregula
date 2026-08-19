@@ -1,0 +1,1256 @@
+{
+  "case_count": 20,
+  "case_results": [
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "direct-chatbot"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "direct-voice-assistant"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "direct-obvious-code-autocomplete"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(1)",
+          "expected": true,
+          "kind": "control",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "direct-perceivable-notice"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": true,
+          "kind": "control",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "direct-machine-mark-alone"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "synthetic-text-generator"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "synthetic-image-diffusion"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "synthetic-standard-crop"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": true,
+          "kind": "control",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "synthetic-machine-readable-mark"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "emotion-biometric-system"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "biometric-categorisation-system"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "text-sentiment-not-emotion-biometric"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(3)",
+          "expected": true,
+          "kind": "control",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "emotion-exposure-notice"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "deepfake-generator"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "face-swap-generator"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "cosmetic-filter-not-deepfake"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(4)",
+          "expected": true,
+          "kind": "control",
+          "observed": true,
+          "outcome": "true_positive"
+        }
+      ],
+      "id": "deepfake-visible-disclosure"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": true,
+          "kind": "trigger",
+          "observed": true,
+          "outcome": "true_positive"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "public-interest-generated-text"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "private-news-summary"
+    },
+    {
+      "checks": [
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(1)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(2)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(3)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "trigger",
+          "observed": false,
+          "outcome": "true_negative"
+        },
+        {
+          "branch": "50(4)",
+          "expected": false,
+          "kind": "control",
+          "observed": false,
+          "outcome": "true_negative"
+        }
+      ],
+      "id": "ordinary-application"
+    }
+  ],
+  "corpus_kind": "synthetic_regression",
+  "error_count": 0,
+  "errors": [],
+  "label_status": "maintainer_labelled_not_independent",
+  "legal_accuracy_benchmark": false,
+  "limitations": [
+    "Synthetic regression fixtures are not representative production code.",
+    "Labels were not independently annotated.",
+    "Metrics describe lexical signal detection, not legal or compliance accuracy.",
+    "A control string does not establish runtime timing, visibility, accessibility, robustness, or effectiveness."
+  ],
+  "metrics": {
+    "control": {
+      "false_negative": 0,
+      "false_positive": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "true_negative": 75,
+      "true_positive": 5
+    },
+    "trigger": {
+      "false_negative": 0,
+      "false_positive": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "true_negative": 68,
+      "true_positive": 12
+    }
+  },
+  "representative_of_production_code": false,
+  "schema_version": "1.0"
+}

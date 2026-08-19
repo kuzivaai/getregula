@@ -76,15 +76,19 @@ disclosure, etc.), include that in your initial report.
 
 ## Current security posture
 
-| Check | Last verified | Status |
+Security results are scoped by tool, dependency set and Git ref. A green result
+for one scope is not described as a clean bill of health for another.
+
+| Check | Last verified | Result and scope |
 |---|---|---|
-| `bandit -c pyproject.toml -r scripts/ hooks/` | Each release | 0 low / 0 medium / 0 high |
-| `semgrep --config p/security-audit --config p/python` | Each release | 0 findings on 200 rules / 129 files |
-| `pip-audit` | Each release | 0 vulnerabilities (zero runtime deps) |
-| `regula self-test` | Each commit | 6 / 6 |
-| Custom regression suite | Each commit | 2,787 pytest-collected tests |
-| PyPI provenance attestation (PEP 740, Trusted Publishing) | Each release | ✅ attached to wheel + sdist, Sigstore-backed |
-| CodeQL static analysis | Each push | workflow green; open alerts triaged below, never suppressed |
+| `bandit -c pyproject.toml -r scripts/ hooks/` | 2026-08-19, working tree based on `8d1aa3b` | 0 findings after bounded URL/XML hardening; the pre-change run found 14 (3 low, 11 medium, 0 high) |
+| `pip-audit -r <locked-all-extras-export>` | 2026-08-19, all optional extras | 1 advisory in WeasyPrint 68.1 with no fixed release; four `cryptography` 46.0.7 advisories were removed by locking 50.0.0 |
+| Core dependency declaration | 2026-08-19 | No required third-party packages; this does not describe optional extras |
+| Semgrep | 2026-08-19 | Not re-run in this audit; no current zero-finding claim is made |
+| `regula self-test` | Release gate | Final branch result is recorded by CI before merge/release |
+| Custom regression suite | Collection manifest | 3,112 pytest-collected tests; collection count is not a pass result |
+| PyPI provenance attestation (PEP 740, Trusted Publishing) | Each release | Expected on wheel and sdist; verify the individual release rather than infer it |
+| CodeQL static analysis | 2026-08-19 | PR 55 merge-ref analysis returned 0 results; default branch still exposes 43 open alerts from its last analysed commit |
 Source: reproducible commands and evidence are documented in [`docs/TRUST.md`](docs/TRUST.md); live workflow state is available in [GitHub Actions](https://github.com/kuzivaai/getregula/actions).
 
 The full posture is in [`docs/TRUST.md`](docs/TRUST.md), Section 7.
@@ -105,12 +109,14 @@ Honest list, also recorded in `docs/TRUST.md`:
 
 ## CodeQL static-analysis alerts (open, triaged, not suppressed)
 
-CodeQL runs on every push. The dated snapshot recorded **42 open high-severity
-alerts**; use the [live code-scanning list](https://github.com/kuzivaai/getregula/security/code-scanning) for current state.
-They are listed here in full, with the reasoning for each, and left open in the
-GitHub Security tab. We do not dismiss or suppress security alerts:
-a compliance tool that clears its own dashboard by waving alerts away is not one
-you should trust. The CodeQL *workflow* passes; these alerts do not gate it.
+At the 2026-08-19 snapshot, the default branch exposed **43 open alerts** from
+analysis commit `fcdbcc51bdb59645202084c14ffe76dbaa8a1138`. The exact PR 55
+merge-ref analysis (`dbefebfaee3403145d6736c42b6c809c795f69d6`) returned zero
+results. That is evidence about two different refs: the default-branch alerts
+are not represented as closed until a post-merge default-branch analysis says
+so. Use the [live code-scanning list](https://github.com/kuzivaai/getregula/security/code-scanning)
+for current state and the dated [finding inventory](docs/security/SECURITY-FINDINGS-2026-08-19.md)
+for the exact snapshot and dispositions.
 
 **37 × `py/path-injection` (across 8 files).** A code scanner's job is to read
 files from a folder the user points it at, so its file-reading paths are tainted
@@ -122,19 +128,20 @@ bodies at 1 MB. CodeQL does not model these containment checks as sanitisers, so
 the taint path is reported even though the guard is present. `tests/test_hostile_sweep.py`
 exercises this whole class against a deliberately hostile directory tree.
 
-**5 × other rules, each reviewed individually:**
+**6 × other rules, each reviewed individually:**
 
 | Alert | Location | Assessment |
 |---|---|---|
 | `py/polynomial-redos` | `classify_risk.py` | Reachable only via *user-supplied* custom-rule patterns, which already pass `_compile_custom_pattern` (rejects nested quantifiers and patterns over 500 chars; unit-tested). Polynomial, not exponential; self-inflicted. Low risk, mitigated. |
 | `py/bad-tag-filter` | `claim_auditor.py` | A genuine minor robustness gap in an internal docs-audit tool — **fixed**: the `<script>` / `<style>` blanking regex now tolerates whitespace and attributes in the closing tag. |
 | `py/clear-text-logging-sensitive-data` | `tests/helpers.py` | Test helper that prints an assertion failure; the "secret" is a synthetic, char-code-constructed test credential. Test-only false positive. |
+| `py/redos` | `tests/test_security_hardening.py` | A deliberately hostile regex used to exercise the scanner's ReDoS reporting. Test-only fixture, not an executed application regex. |
 | `py/redos` | `tests/test_classification.py` | A regex inside the test that *asserts* ReDoS protection works. Test-only. |
 | `py/incomplete-url-substring-sanitization` | `tests/test_build_regulations.py` | A test asserting rendered HTML contains a URL substring, not a security check. Test-only false positive. |
 
-If you are evaluating Regula: its own scanner is held to the same standard it
-applies to your code. Every alert is visible, triaged in public, and either
-explained or fixed — never silenced.
+Regula's own PR scan also reports one high-risk biometrics *product indicator*
+in `scripts/cli_scan.py`. It is not a CodeQL vulnerability and must not be
+counted as one; it remains visible for separate product-governance review.
 
 ## How to verify a release independently
 

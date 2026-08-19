@@ -85,7 +85,7 @@ def _facts(ts: str, collected: int) -> dict:
         "counts": {
             "commands": 61,
             "patterns": {
-                "historical_330_bucket": 479,
+                "historical_330_bucket": 478,
                 "grand_total": 722,
                 "tier_groups": 57,
             },
@@ -333,3 +333,103 @@ def test_committed_artefact_keys_are_repo_relative_paths():
                  if not k.startswith("tests/") or "\\" in k]
     assert offenders == [], (
         f"artefact keys are not repo-relative posix paths: {offenders[:5]}")
+
+
+# ---------------------------------------------------------------------------
+# N117: the published test-function count measured a narrower population than
+# its own label named.
+# ---------------------------------------------------------------------------
+
+def test_count_test_functions_counts_methods_not_just_module_functions():
+    """The defect. `^def test_` saw module level only.
+
+    565 tests across 22 files were written as `unittest.TestCase` methods and
+    counted zero, against a published label reading "Test functions (all
+    files)". The values were never wrong, the population was.
+    """
+    source = (
+        "def test_module_level():\n    pass\n\n"
+        "class TestThing:\n"
+        "    def test_method_one(self):\n        pass\n"
+        "    def test_method_two(self):\n        pass\n"
+    )
+    assert site_facts.count_test_functions(source) == 3
+
+
+def test_count_test_functions_ignores_a_def_inside_a_string_literal():
+    """The false positive that exposed the whole thing.
+
+    `tests/test_classification.py` feeds a code sample to the AST parser under
+    test, and that sample contains `def test_model_accuracy():` at column 0
+    inside a triple-quoted string. The regex counted it, so the old figure
+    included one function that does not exist. A regex cannot tell source from
+    a string literal; this is why the counter uses `ast`.
+    """
+    source = (
+        'SAMPLE = """\n'
+        'def test_not_a_real_test():\n'
+        '    assert True\n'
+        '"""\n\n'
+        "def test_real():\n    pass\n"
+    )
+    assert site_facts.count_test_functions(source) == 1
+
+
+def test_count_test_functions_ignores_a_nested_def():
+    """pytest does not collect a function defined inside another function."""
+    source = (
+        "def test_outer():\n"
+        "    def test_inner():\n        pass\n"
+        "    test_inner()\n"
+    )
+    assert site_facts.count_test_functions(source) == 1
+
+
+def test_count_test_functions_refuses_a_file_it_cannot_parse():
+    """Scoring an unparseable test file 0 would understate a published count."""
+    try:
+        site_facts.count_test_functions("def test_(:\n")
+    except SyntaxError:
+        pass
+    else:
+        raise AssertionError(
+            "count_test_functions silently accepted unparseable source, so a "
+            "broken test file would quietly reduce the published total")
+
+
+def test_no_file_claims_more_test_functions_than_pytest_collects():
+    """The guard that would have caught N117, and caught the string literal.
+
+    A source function may expand into several collected items under
+    parametrisation, so the invariant is one-directional: per-file static
+    count must be AT MOST the per-file collected count. Exceeding it means the
+    counter is seeing something pytest does not, which is how the code sample
+    inside a string was found.
+
+    Compares against the real collection rather than a recorded number, so it
+    cannot pass on a stale artefact.
+    """
+    import collections
+    proc = subprocess.run(
+        [sys.executable, "-m", "pytest", "tests/", "--collect-only", "-q",
+         "--no-header"],
+        cwd=str(REPO_ROOT), capture_output=True, text=True, timeout=1800)
+    assert proc.returncode == 0, (
+        f"pytest collection failed, so this check has no subject: "
+        f"{(proc.stderr or proc.stdout)[-400:]}")
+    collected = collections.Counter()
+    for line in proc.stdout.splitlines():
+        if line.startswith("tests/") and "::" in line:
+            collected[line.split("::")[0]] += 1
+    assert collected, "collected nothing; the parse of pytest output is broken"
+
+    over = []
+    for path in sorted((REPO_ROOT / "tests").rglob("test_*.py")):
+        rel = path.relative_to(REPO_ROOT).as_posix()
+        static = site_facts.count_test_functions(
+            path.read_text(encoding="utf-8"))
+        if static > collected.get(rel, 0):
+            over.append((rel, static, collected.get(rel, 0)))
+    assert over == [], (
+        "these files report more test functions than pytest collects, so the "
+        f"counter is seeing something that is not a test: {over}")

@@ -39,7 +39,7 @@ const ALL_QUESTION_IDS = {
     "affected_domain", "significant_harm", "profiling", "narrow_procedural",
     "improves_human_activity", "pattern_detection", "preparatory_task",
     "social_scoring", "emotion_recognition", "public_facing", "biometric_data",
-    "risk_documentation", "logging_active"],
+    "risk_documentation", "logging_active", "autonomous_decisions"],
   kr: ["kr_scope", "kr_is_ai_system", "kr_operator", "kr_provides",
     "kr_high_impact_domain", "kr_significant_impact", "kr_high_performance",
     "kr_transparency", "kr_generative", "kr_virtual_media", "kr_explanation",
@@ -160,10 +160,40 @@ equal(outside.result_type, "outside_scope_candidate",
 check(!Object.prototype.hasOwnProperty.call(outside, "obligations"),
   "not an AI system receives no Article 9 to 17 obligations");
 
+// The question ids below are a copy of what the pages declare. A copy drifts:
+// this list was missing autonomous_decisions while all three pages shipped it,
+// and nothing caught that because no runner executed this file. The sync check
+// compares the copy against the pages on every run so it cannot drift silently.
+const QUESTION_ID_PATTERN = /\bid:\s*"([a-z0-9_]+)"/g;
+const localeQuestionIds = {};
 for (const localeFile of ["index.html", "de.html", "pt-br.html"]) {
   const html = fs.readFileSync(path.join(root, "site", "assess", localeFile), "utf8");
+  localeQuestionIds[localeFile] = [...html.matchAll(QUESTION_ID_PATTERN)].map(m => m[1]);
+}
+const declaredIds = new Set(Object.values(ALL_QUESTION_IDS).flat());
+const shippedIds = new Set(localeQuestionIds["index.html"]);
+for (const id of shippedIds) {
+  check(declaredIds.has(id), `test list covers shipped question id ${id}`);
+}
+for (const id of declaredIds) {
+  check(shippedIds.has(id), `test list has no stale question id ${id}`);
+}
+// Locale parity: the same questions in the same order in all three pages.
+for (const localeFile of ["de.html", "pt-br.html"]) {
+  check(localeQuestionIds[localeFile].join(",") === localeQuestionIds["index.html"].join(","),
+    `${localeFile} declares the same question ids in the same order as index.html`);
+}
+
+for (const localeFile of ["index.html", "de.html", "pt-br.html"]) {
+  const html = fs.readFileSync(path.join(root, "site", "assess", localeFile), "utf8");
+  // Flow control is shared. A page that re-declares it has forked again.
+  for (const forked of ["function renderQuestion(", "function nextQuestion(",
+    "function showResults(", "function saveProgress("]) {
+    check(!html.includes(forked),
+      `${localeFile} does not re-declare ${forked.slice(9, -1)} (shared in assess-flow.js)`);
+  }
   for (const script of ["decision-model.js", "decision-kernel.js",
-    "decision-adapters.js", "decision-ui.js"]) {
+    "decision-adapters.js", "decision-ui.js", "assess-flow.js"]) {
     check(html.includes(`<script src="${script}"></script>`),
       `${localeFile} loads ${script}`);
   }

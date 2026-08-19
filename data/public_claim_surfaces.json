@@ -517,7 +517,7 @@
       "content_kind": "cli-option",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "Exit 1 if transparency not compliant"
+      "reason": "Exit 1 if either Article 50/52 transparency document is absent (file presence only)"
     },
     {
       "stable_id": "cli:484cda1cedb7b86e",
@@ -738,6 +738,17 @@
       "claim_capable": true,
       "classification": "active_product",
       "reason": "Jurisdiction to assess against (default: eu). Aliases: kr=korea, co=colorado. Korea and Colorado assessments are available via the web tool at https://getregula.com/assess/?j=kr or ?j=co"
+    },
+    {
+      "stable_id": "cli:1d01b565582bc728",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula assess:--save-facts",
+      "destination": "regula assess --save-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Write the answers that map to a decision-model fact into <PROJECT>/.regula/facts.json, where `regula check` reads them. Defaults to the current directory. Only answers that correspond exactly to one fact are written, and the command says which answers were not written and why."
     },
     {
       "stable_id": "cli:7d6474c5c1726cfe",
@@ -1510,6 +1521,28 @@
       "reason": "Show detailed classification reasoning, obligation roadmap, and effort estimates"
     },
     {
+      "stable_id": "cli:e0cb2c2adf84b43f",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula check:--fact",
+      "destination": "regula check --fact",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Declare one fact for this run, e.g. --fact is_ai_system=yes. States: yes, no, unknown, not_applicable. `unknown` is a real answer and is never read as `no`. Repeatable; overrides the store."
+    },
+    {
+      "stable_id": "cli:8646f5421db5c103",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula check:--facts-file",
+      "destination": "regula check --facts-file",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Read declared facts from an explicit file instead of only the project store at .regula/facts.json"
+    },
+    {
       "stable_id": "cli:b8fa557b8d5067df",
       "channel": "cli",
       "source": "scripts/cli.py#regula check:--format",
@@ -1587,6 +1620,17 @@
       "reason": "Filter findings to a specific lifecycle phase"
     },
     {
+      "stable_id": "cli:92a776668d2ebd4a",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula check:--list-facts",
+      "destination": "regula check --list-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Print every fact id this jurisdiction's decision model defines, with its question, and exit. The ids --fact accepts, listed from the model rather than from documentation."
+    },
+    {
       "stable_id": "cli:21ae86035b3df274",
       "channel": "cli",
       "source": "scripts/cli.py#regula check:--manifest",
@@ -1618,6 +1662,17 @@
       "claim_capable": true,
       "classification": "active_product",
       "reason": "Project name for SARIF output"
+    },
+    {
+      "stable_id": "cli:c293feebfb47d192",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula check:--no-facts",
+      "destination": "regula check --no-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Ignore any declared facts, including the project store, for this run"
     },
     {
       "stable_id": "cli:561a9980a1d4a0e9",
@@ -1994,6 +2049,28 @@
       "reason": "Deep-dive into a specific article (e.g. 9, 14)"
     },
     {
+      "stable_id": "cli:51f70d18745e7ff0",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula comply:--fact",
+      "destination": "regula comply --fact",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Declare one decision fact for this run. States: yes, no, unknown, not_applicable. Repeatable; overrides the project fact store."
+    },
+    {
+      "stable_id": "cli:ee63e1a701b1f678",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula comply:--facts-file",
+      "destination": "regula comply --facts-file",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Read declared facts from an explicit fact-store file"
+    },
+    {
       "stable_id": "cli:30eb9e78ca5ecc1b",
       "channel": "cli",
       "source": "scripts/cli.py#regula comply:--format",
@@ -2014,6 +2091,28 @@
       "claim_capable": true,
       "classification": "active_product",
       "reason": "show this help message and exit"
+    },
+    {
+      "stable_id": "cli:6bdaf3061769633f",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula comply:--list-facts",
+      "destination": "regula comply --list-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Print every fact id accepted by --fact and exit"
+    },
+    {
+      "stable_id": "cli:b5d52a50c57f64e2",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula comply:--no-facts",
+      "destination": "regula comply --no-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Ignore all declared facts, including the project store"
     },
     {
       "stable_id": "cli:20d2283bfe15f630",
@@ -5665,7 +5764,7 @@
       "content_kind": "cli-option",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "Mark a task as completed"
+      "reason": "Mark a task as completed (unavailable until applicability resolves)"
     },
     {
       "stable_id": "cli:70453e18d84e6e26",
@@ -5731,7 +5830,7 @@
       "content_kind": "cli-option",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "Show completion progress"
+      "reason": "Show completion progress (unavailable until applicability resolves)"
     },
     {
       "stable_id": "cli:8ef87e06e2f7fbb2",
@@ -7626,6 +7725,17 @@
       "reason": "README-reachable public documentation"
     },
     {
+      "stable_id": "repository_docs:90f0fd421a1dc8ba",
+      "channel": "repository_docs",
+      "source": "docs/security/SECURITY-FINDINGS-2026-08-19.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/security/SECURITY-FINDINGS-2026-08-19.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
       "stable_id": "repository_docs:afd25e69ba8910ab",
       "channel": "repository_docs",
       "source": "docs/self-scan-results.md",
@@ -7714,6 +7824,17 @@
       "reason": "deployed reader or machine-readable content"
     },
     {
+      "stable_id": "website:786d3184c461225d",
+      "channel": "website",
+      "source": "site/assess/assess-flow.js",
+      "destination": "/assess/assess-flow.js",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "asset",
+      "claim_capable": false,
+      "classification": "non_claim_asset",
+      "reason": "deployed non-claim asset"
+    },
+    {
       "stable_id": "website:4eddf4cf98c36939",
       "channel": "website",
       "source": "site/assess/de.html",
@@ -7800,39 +7921,6 @@
       "claim_capable": false,
       "classification": "non_claim_asset",
       "reason": "Tracked binary screenshot deployed by Pages; pixels are not scanned as public copy."
-    },
-    {
-      "stable_id": "website:9aadcb8b6fab7bb6",
-      "channel": "website",
-      "source": "site/assets/demo/regula-bare.svg",
-      "destination": "/assets/demo/regula-bare.svg",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "deployed non-claim asset"
-    },
-    {
-      "stable_id": "website:535cc8d2e39e6806",
-      "channel": "website",
-      "source": "site/assets/demo/regula-check.svg",
-      "destination": "/assets/demo/regula-check.svg",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "deployed non-claim asset"
-    },
-    {
-      "stable_id": "website:32220af22b79a708",
-      "channel": "website",
-      "source": "site/assets/demo/regula-comply.svg",
-      "destination": "/assets/demo/regula-comply.svg",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "deployed non-claim asset"
     },
     {
       "stable_id": "website:30f8fdea8360590f",
@@ -7982,6 +8070,17 @@
       "channel": "website",
       "source": "site/assets/og-uae.png",
       "destination": "/assets/og-uae.png",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "asset",
+      "claim_capable": false,
+      "classification": "non_claim_asset",
+      "reason": "deployed non-claim asset"
+    },
+    {
+      "stable_id": "website:004e357d92415b9e",
+      "channel": "website",
+      "source": "site/assets/qualifier.js",
+      "destination": "/assets/qualifier.js",
       "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
       "content_kind": "asset",
       "claim_capable": false,
@@ -8462,6 +8561,39 @@
       "reason": "deployed reader or machine-readable content"
     },
     {
+      "stable_id": "website:d86e1ef1fff85030",
+      "channel": "website",
+      "source": "site/product-de.html",
+      "destination": "/product-de.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:70e14334c236bac9",
+      "channel": "website",
+      "source": "site/product-pt-br.html",
+      "destination": "/product-pt-br.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:5b74ad530a9d240d",
+      "channel": "website",
+      "source": "site/product.html",
+      "destination": "/product.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
       "stable_id": "website:95b81d903e81b9a6",
       "channel": "website",
       "source": "site/pt-br.html",
@@ -8696,17 +8828,17 @@
   "totals": {
     "channel": {
       "action": 22,
-      "cli": 630,
+      "cli": 639,
       "mcp": 3,
       "package": 2,
-      "repository_docs": 39,
-      "website": 94
+      "repository_docs": 40,
+      "website": 96
     },
     "classification": {
-      "active_product": 761,
+      "active_product": 774,
       "historical_record": 1,
       "internal_record": 1,
-      "non_claim_asset": 27
+      "non_claim_asset": 26
     }
   },
   "exclusions": [

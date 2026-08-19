@@ -50,6 +50,14 @@ KNOWN_SURFACES = [
     "site/regions/uae.html",
     "site/examples/sample-exec-summary.html",
     "benchmarks/README.md",
+    # Added 2026-08-17 with docs/DEMO.md. Registering a surface here does
+    # NOT exempt it: every entry is then required to carry N=115 and the
+    # labeller route in the same section, so this list makes a file more
+    # checked rather than less. The full-suite run at 10b63d7 caught the
+    # omission, which is the guard working: a demonstration page is the
+    # surface most likely to be read aloud, and the figure must not travel
+    # on it without its basis.
+    "docs/DEMO.md",
 ]
 
 # Excluded with a stated reason each, never a blanket directory sweep.

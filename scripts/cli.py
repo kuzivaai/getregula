@@ -10,7 +10,7 @@ Usage:
     regula report [--format html]    Generate reports (HTML, SARIF, JSON)
     regula audit [verify|export]     Manage audit trail
     regula discover [--project .]    Discover AI systems
-    regula install [platform]        Install hooks for a platform
+    regula install [platform]        Install a pre-commit integration
     regula status                    Show registry status
 """
 
@@ -100,7 +100,9 @@ def _validate_path(path_str: str) -> Path:
     # hangs indefinitely and is never the user's intent.
     _blocked = {Path("/"), Path("/etc"), Path("/usr"), Path("/var"),
                 Path("/bin"), Path("/sbin"), Path("/proc"), Path("/sys"),
-                Path("/dev"), Path("/boot"), Path("/tmp")}
+                Path("/dev"), Path("/boot"),
+                # Denied scan target, not a temporary-file destination.
+                Path("/tmp")}  # nosec B108
     if p in _blocked:
         raise PathError(
             f"Scanning {p} is not permitted — specify a project directory.\n"
@@ -688,9 +690,9 @@ def _print_metrics_text(stats: dict) -> None:
 
 _MAIN_EPILOG = """
 Quick start:
-  regula                                  Scan current directory + compliance score
+  regula                                  Scan current directory + indicator summary
   regula check .                          Detailed risk scan
-  regula comply                           EU AI Act obligation checklist
+  regula comply                           Obligation evidence + unresolved facts
   regula check --ci .                     CI/CD mode (exit codes + SARIF)
 
 Examples:
@@ -887,6 +889,26 @@ def _build_subparsers(subparsers):
              "for --format text/json/sarif (not html or --audit-suppressions). "
              "Optional; omit for legacy behaviour.",
     )
+    # N149: the decision block names the facts it needs and, until 2026-08-17,
+    # nothing could supply them. These three flags are that route. Regula
+    # establishes no fact; every value is a person's declaration and carries the
+    # provenance saying so.
+    p_check.add_argument("--fact", action="append", metavar="ID=STATE",
+                         help="Declare one fact for this run, e.g. "
+                              "--fact is_ai_system=yes. States: yes, no, unknown, "
+                              "not_applicable. `unknown` is a real answer and is "
+                              "never read as `no`. Repeatable; overrides the store.")
+    p_check.add_argument("--facts-file", metavar="PATH",
+                         help="Read declared facts from an explicit file instead of "
+                              "only the project store at .regula/facts.json")
+    p_check.add_argument("--no-facts", action="store_true",
+                         help="Ignore any declared facts, including the project "
+                              "store, for this run")
+    p_check.add_argument("--list-facts", action="store_true",
+                         help="Print every fact id this jurisdiction's decision "
+                              "model defines, with its question, and exit. The "
+                              "ids --fact accepts, listed from the model rather "
+                              "than from documentation.")
     p_check.add_argument("--no-ignore", action="store_true", help="Don't respect regula-ignore comments")
     p_check.add_argument("--audit-suppressions", action="store_true",
                          help="List all regula-ignore and regula-accept annotations with status (ISO 42001 9.1)")
@@ -928,14 +950,25 @@ def _build_subparsers(subparsers):
     p_check.set_defaults(func=cmd_check)
 
     # --- comply ---
-    p_comply = subparsers.add_parser("comply",
-                                     help="EU AI Act obligation checklist with status")
+    p_comply = subparsers.add_parser(
+        "comply", help="EU AI Act obligation evidence and unresolved facts"
+    )
     p_comply.add_argument("--project", "-p", default=".", help="Project directory")
     p_comply.add_argument("project_path_positional", nargs="?", default=None,
                           metavar="path", help="Project path (same as --project)")
     p_comply.add_argument("--article", "-a", help="Deep-dive into a specific article (e.g. 9, 14)")
     p_comply.add_argument("--all", action="store_true",
                           help="Show full Articles 9-15 assessment regardless of detected risk tier")
+    p_comply.add_argument("--fact", action="append", metavar="ID=STATE",
+                          help="Declare one decision fact for this run. States: "
+                               "yes, no, unknown, not_applicable. Repeatable; "
+                               "overrides the project fact store.")
+    p_comply.add_argument("--facts-file", metavar="PATH",
+                          help="Read declared facts from an explicit fact-store file")
+    p_comply.add_argument("--no-facts", action="store_true",
+                          help="Ignore all declared facts, including the project store")
+    p_comply.add_argument("--list-facts", action="store_true",
+                          help="Print every fact id accepted by --fact and exit")
     p_comply.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_comply.set_defaults(func=cmd_comply)
 
@@ -1053,8 +1086,12 @@ def _build_subparsers(subparsers):
     p_discover.set_defaults(func=cmd_discover)
 
     # --- install ---
-    p_install = subparsers.add_parser("install", help="Install hooks for a platform")
-    p_install.add_argument("platform", nargs="?", help="Platform (claude-code, copilot-cli, windsurf, pre-commit, git-hooks)")
+    p_install = subparsers.add_parser(
+        "install", help="Install a pre-commit integration")
+    p_install.add_argument(
+        "platform", nargs="?",
+        choices=("list", "pre-commit", "git-hooks"),
+        help="Integration (pre-commit or git-hooks)")
     p_install.add_argument("--project", "-p", default=".")
     p_install.set_defaults(func=cmd_install)
 
@@ -1149,8 +1186,10 @@ def _build_subparsers(subparsers):
     p_plan.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_plan.add_argument("--output", "-o", help="Write plan to file")
     p_plan.add_argument("--name", "-n", help="Project name")
-    p_plan.add_argument("--status", action="store_true", help="Show completion progress")
-    p_plan.add_argument("--done", metavar="TASK-ID", help="Mark a task as completed")
+    p_plan.add_argument("--status", action="store_true",
+                       help="Show completion progress (unavailable until applicability resolves)")
+    p_plan.add_argument("--done", metavar="TASK-ID",
+                       help="Mark a task as completed (unavailable until applicability resolves)")
     p_plan.set_defaults(func=cmd_plan)
 
     # --- roadmap ---
@@ -1511,6 +1550,17 @@ def _build_subparsers(subparsers):
             "else transparency_trigger)."
         ),
     )
+    # N149: assess asked questions that answer the facts `check` says it needs,
+    # and discarded them. This writes them where `check` reads. Opt-in, because
+    # writing into somebody's project is a side effect they should ask for.
+    p_assess.add_argument(
+        "--save-facts", nargs="?", const=".", metavar="PROJECT",
+        help="Write the answers that map to a decision-model fact into "
+             "<PROJECT>/.regula/facts.json, where `regula check` reads them. "
+             "Defaults to the current directory. Only answers that correspond "
+             "exactly to one fact are written, and the command says which "
+             "answers were not written and why.",
+    )
     p_assess.add_argument(
         "--jurisdiction", type=_normalise_jurisdiction,
         choices=["eu", "korea", "colorado"], default="eu",
@@ -1640,12 +1690,20 @@ def _build_subparsers(subparsers):
                            metavar="path", help="Project path (same as --project)")
     p_codegen.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_codegen.add_argument("--no-git", action="store_true", help="Skip git log scanning")
+    # The help text used to read "Exit 1 if transparency not compliant", which
+    # advertised a compliance determination the tool does not make and cannot
+    # make: the predicate is two files existing on disk and neither is read.
+    # It now names the observable the flag actually keys on. LEDGER N125.
     p_codegen.add_argument("--strict", action="store_true",
-                           help="Exit 1 if transparency not compliant")
+                           help="Exit 1 if either Article 50/52 transparency "
+                                "document is absent (file presence only)")
     p_codegen.set_defaults(func=cmd_ai_codegen)
 
     # --- badge ---
-    p_badge = subparsers.add_parser("badge", help="Generate compliance badge")
+    p_badge = subparsers.add_parser(
+        "badge",
+        help="Render a scan-result badge (indicator counts, not a compliance state)",
+    )
     p_badge.add_argument("path", nargs="?", default=".", help="Path to scan")
     p_badge.add_argument("--format", "-f", choices=["endpoint", "svg", "markdown"], default="endpoint")
     p_badge.set_defaults(func=cmd_badge)
@@ -1823,7 +1881,7 @@ def _make_progressive_help(parser, subparsers):
         # Primary commands with descriptions
         primary_descs = [
             ("check", "Scan files for risk indicators"),
-            ("comply", "EU AI Act obligation checklist with status"),
+            ("comply", "EU AI Act obligation evidence and unresolved facts"),
             ("gap", "Compliance gap assessment (Articles 9-15)"),
             ("plan", "Prioritised remediation plan"),
             ("init", "Guided setup wizard"),
@@ -1847,9 +1905,9 @@ def _make_progressive_help(parser, subparsers):
         lines.append("")
         # Epilog
         lines.append("Quick start:")
-        lines.append("  regula                                  Scan + compliance score")
+        lines.append("  regula                                  Scan + indicator summary")
         lines.append("  regula check .                          Detailed risk scan")
-        lines.append("  regula comply                           Obligation checklist")
+        lines.append("  regula comply                           Obligation evidence + unresolved facts")
         lines.append("  regula check --ci .                     CI/CD mode")
         lines.append("")
         return "\n".join(lines)

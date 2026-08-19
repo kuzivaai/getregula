@@ -59,16 +59,14 @@ web = ["flask~=3.1"]
 # TimeStampToken parser at verify time; the stdlib-only DER encoder still
 # handles the request path.
 #
-# Ceiling raised from <50 to <51 on 2026-08-06 so that cryptography 50.0.0 is
-# admitted. pip-audit over all nine extras groups resolved the old range to
-# 49.0.0 and reported PYSEC-2026-3552 / CVE-2026-69247, a Bleichenbacher
-# oracle in PKCS#7 EnvelopedData, fixed in 50.0.0 and excluded by this
-# extra's own ceiling. Recorded as permitted-version hygiene, NOT as an
-# active-exposure fix: Regula calls ed25519, x509 and hashes only, and never
-# the PKCS#7 EnvelopedData path (grep-verified). The bound stays bounded
-# rather than becoming open-ended, which keeps it a `bounded-range` pin.
-signing = ["cryptography>=41,<51", "asn1crypto>=1.5.1,<2"]
-all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=41,<51", "asn1crypto>=1.5.1,<2"]
+# The 50.0.0 floor excludes four advisories present in the previously locked
+# 46.0.7 wheel (PYSEC-2026-3552, PYSEC-2026-3553, PYSEC-2026-3554 and
+# GHSA-537c-gmf6-5ccf). Regula does not call the affected PKCS#7 decrypt or
+# PolicyBuilder paths, but its RFC 3161 verifier does parse untrusted
+# certificates, so carrying the vulnerable wheel would be needless residual
+# risk. The upper bound remains explicit for release reproducibility.
+signing = ["cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
+all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
 
 [project.urls]
 Homepage = "https://getregula.com"
@@ -98,7 +96,19 @@ exclude = ["tools*", "benchmarks*", "tests*"]
 # BBQ bias-eval sample: without it, `regula conform` in an installed
 # context prints "BBQ eval failed" (found 16 Jul 2026 running the
 # evaluation journey against the published 1.7.5 wheel).
-"scripts" = ["bias_data/*.json", "dpv_data/*.json", "eli_data/*.json"]
+#
+# dashboard/index.html: `regula api-server` registers as "Start the REST API
+# server with web dashboard" and `_handle_dashboard` serves this file at
+# /v1/dashboard. It was not packaged, so the installed product answered that
+# endpoint with a 302-byte JSON message advising the user to "Place index.html
+# in scripts/dashboard/", which is an instruction to edit site-packages. The
+# tree served 52,443 bytes of HTML for the same request. Found 2026-08-17 by
+# building a wheel from this tree and diffing its behaviour against the tree,
+# which no session had done; same class as the 1.7.6 `regula dpv` break above.
+# Coverage is enforced at rest by tests/test_installed_artefact.py, which reads
+# REQUIRED_PACKAGED_DATA rather than restating this list.
+"scripts" = ["bias_data/*.json", "dpv_data/*.json", "eli_data/*.json",
+             "dashboard/*.html"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

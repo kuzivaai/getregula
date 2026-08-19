@@ -84,9 +84,18 @@ $ regula check .
   Regula v1.7.0 -- EU AI Act compliance scanner
 ============================================================
 
-  Verdict: PROHIBITED
-  Your project contains AI practices prohibited under EU AI Act Article 5.
-  These must be removed before deployment in the EU.
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ARTICLE 5 PATTERNS
+  The scanner found patterns relevant to Article 5 review.
+  Resolve the facts listed above before treating any of them as a prohibited practice.
 
   Why:
     1. hr_analytics.py:42 -- Emotion inference in workplace or educational settings
