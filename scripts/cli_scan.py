@@ -249,7 +249,8 @@ def _write_analysis_manifest(
     print(f"Analysis manifest written to {out}", file=sys.stderr)
 
 
-def _declared_facts(args, project: str, jurisdiction: str) -> tuple:
+def _declared_facts(args, project: str, jurisdiction: str,
+                    source_ref: str = "cli:check --fact") -> tuple:
     """Facts a person declared about this project, from the store and the flags.
 
     N149 closed: `check` names the facts it needs and now has somewhere to
@@ -294,7 +295,10 @@ def _declared_facts(args, project: str, jurisdiction: str) -> tuple:
         notices.append(f"read {len(loaded['facts'])} declared fact(s) from {loaded['path']}")
         sources.append(loaded["facts"])
 
-    cli_facts = fs.collect_cli_facts(getattr(args, "fact", None), jurisdiction, model)
+    cli_facts = fs.collect_cli_facts(
+        getattr(args, "fact", None), jurisdiction, model,
+        source_ref=source_ref,
+    )
     if cli_facts:
         notices.append(f"read {len(cli_facts)} declared fact(s) from --fact")
         sources.append(cli_facts)
@@ -302,7 +306,8 @@ def _declared_facts(args, project: str, jurisdiction: str) -> tuple:
     return fs.merge(*sources), notices
 
 
-def _print_fact_catalogue(jurisdiction: str = "eu") -> None:
+def _print_fact_catalogue(jurisdiction: str = "eu",
+                          command: str = "check") -> None:
     """Every fact id the model defines, printed from the model.
 
     `--fact` used to name ids nothing enumerated, so a user's only route to the
@@ -314,7 +319,7 @@ def _print_fact_catalogue(jurisdiction: str = "eu") -> None:
     definitions = kernel.model.get("fact_definitions", {})
     print(f"Decision model {kernel.model_version}: "
           f"{len(definitions)} fact id(s) defined")
-    print("Declare any of them with: regula check . --fact <id>=<state>")
+    print(f"Declare any of them with: regula {command} . --fact <id>=<state>")
     print("States: yes, no, unknown, not_applicable. "
           "`unknown` is an answer and is never read as `no`.\n")
     for fact_id in sorted(definitions):

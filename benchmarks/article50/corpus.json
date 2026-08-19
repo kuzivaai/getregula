@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "corpus_kind": "synthetic_regression",
+  "label_status": "maintainer_labelled_not_independent",
+  "representative_of_production_code": false,
+  "legal_accuracy_benchmark": false,
+  "source": "European Commission final Article 50 guidelines, 20 July 2026",
+  "source_url": "https://digital-strategy.ec.europa.eu/en/library/guidelines-obligations-ai-act-art50",
+  "cases": [
+    {
+      "id": "direct-chatbot",
+      "guideline_section": "3.1.1",
+      "content": "class CustomerChatbot:\n    pass\n",
+      "expected": {"50(1)": {"trigger": true, "control": false}}
+    },
+    {
+      "id": "direct-voice-assistant",
+      "guideline_section": "3.1.1",
+      "content": "const mode = 'virtual assistant';\n",
+      "expected": {"50(1)": {"trigger": true, "control": false}}
+    },
+    {
+      "id": "direct-obvious-code-autocomplete",
+      "guideline_section": "3.1.1 and 3.2.1",
+      "content": "def code_autocomplete(prefix):\n    return prefix\n",
+      "expected": {"50(1)": {"trigger": false, "control": false}}
+    },
+    {
+      "id": "direct-perceivable-notice",
+      "guideline_section": "3.1.2",
+      "content": "notice = 'You are interacting with an AI assistant'\n",
+      "expected": {"50(1)": {"trigger": true, "control": true}}
+    },
+    {
+      "id": "direct-machine-mark-alone",
+      "guideline_section": "3.1.2, paragraph 39",
+      "content": "metadata = {'digitalSourceType': 'trainedAlgorithmicMedia'}\n",
+      "expected": {"50(1)": {"trigger": false, "control": false}, "50(2)": {"trigger": false, "control": true}}
+    },
+    {
+      "id": "synthetic-text-generator",
+      "guideline_section": "4.1.1–4.1.2",
+      "content": "def text_generation(prompt):\n    return model(prompt)\n",
+      "expected": {"50(2)": {"trigger": true, "control": false}}
+    },
+    {
+      "id": "synthetic-image-diffusion",
+      "guideline_section": "4.1.1–4.1.2",
+      "content": "pipeline = stable_diffusion(model_id)\n",
+      "expected": {"50(2)": {"trigger": true, "control": false}}
+    },
+    {
+      "id": "synthetic-standard-crop",
+      "guideline_section": "4.1.3 and 4.3",
+      "content": "def crop_and_resize(photo, box):\n    return photo.crop(box).resize((640, 480))\n",
+      "expected": {"50(2)": {"trigger": false, "control": false}}
+    },
+    {
+      "id": "synthetic-machine-readable-mark",
+      "guideline_section": "4.2.1",
+      "content": "output_metadata = {'c2pa': manifest, 'digitalSourceType': source_type}\n",
+      "expected": {"50(2)": {"trigger": false, "control": true}}
+    },
+    {
+      "id": "emotion-biometric-system",
+      "guideline_section": "5.1.1",
+      "content": "emotion_recognition = FacialExpressionClassifier()\n",
+      "expected": {"50(3)": {"trigger": true, "control": false}}
+    },
+    {
+      "id": "biometric-categorisation-system",
+      "guideline_section": "5.1.2",
+      "content": "pipeline = biometric_categorisation(camera)\n",
+      "expected": {"50(3)": {"trigger": true, "control": false}}
+    },
+    {
+      "id": "text-sentiment-not-emotion-biometric",
+      "guideline_section": "5.1.1",
+      "content": "def sentiment_analysis(review_text):\n    return text_classifier(review_text)\n",
+      "expected": {"50(3)": {"trigger": false, "control": false}}
+    },
+    {
+      "id": "emotion-exposure-notice",
+      "guideline_section": "5.1.3",
+      "content": "notice = 'This emotion recognition system records facial expressions'\n",
+      "expected": {"50(3)": {"trigger": true, "control": true}}
+    },
+    {
+      "id": "deepfake-generator",
+      "guideline_section": "6.1.1",
+      "content": "video = generate_deepfake(source, target)\n",
+      "expected": {"50(4)": {"trigger": true, "control": false}}
+    },
+    {
+      "id": "face-swap-generator",
+      "guideline_section": "6.1.1",
+      "content": "result = face_swap(source_face, target_video)\n",
+      "expected": {"50(4)": {"trigger": true, "control": false}}
+    },
+    {
+      "id": "cosmetic-filter-not-deepfake",
+      "guideline_section": "6.1.1, paragraph 119",
+      "content": "result = remove_background_noise(photo)\n",
+      "expected": {"50(4)": {"trigger": false, "control": false}}
+    },
+    {
+      "id": "deepfake-visible-disclosure",
+      "guideline_section": "6.1.2",
+      "content": "label = 'Deep fake disclosure: this video was artificially generated'\n",
+      "expected": {"50(4)": {"trigger": true, "control": true}}
+    },
+    {
+      "id": "public-interest-generated-text",
+      "guideline_section": "6.2.1–6.2.2",
+      "content": "mode = 'public_interest_generated_text'\n",
+      "expected": {"50(4)": {"trigger": true, "control": false}}
+    },
+    {
+      "id": "private-news-summary",
+      "guideline_section": "6.2.1, paragraph 132",
+      "content": "def private_news_summary_for_requesting_user(items):\n    return summarize(items)\n",
+      "expected": {"50(4)": {"trigger": false, "control": false}}
+    },
+    {
+      "id": "ordinary-application",
+      "guideline_section": "negative control",
+      "content": "def calculate_invoice_total(lines):\n    return sum(line.total for line in lines)\n",
+      "expected": {}
+    }
+  ]
+}

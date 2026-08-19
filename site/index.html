@@ -446,7 +446,7 @@
 <div class="sec reveal" id="terminal">
     <h2 class="sec-head">If you are comfortable with a terminal</h2>
     <p class="sec-sub">The same indicators are available as a local command. It reads files on your machine and does not upload them. Below is real output from the committed test fixture, reproduced on every build by the project&#x27;s own checks, not a mock-up. Note what it does with an unresolved question: it names the facts it needs rather than guessing a tier.</p>
-    <ul class="qual-proof"><li>3,055 tests, re-run on every change</li><li>0 unexpected security findings</li><li>zero dependencies in the core</li><li>the local core does not upload scanned files</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">trust pack</a></li></ul>
+    <ul class="qual-proof"><li>3,090 tests, re-run on every change</li><li>0 unexpected security findings</li><li>zero dependencies in the core</li><li>the local core does not upload scanned files</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">trust pack</a></li></ul>
     <div class="term-wrap" role="region" aria-label="Interactive Regula CLI demo. Switch tabs to see example output of regula check, plan, gap, and comply commands">
             <div class="term-bar" aria-hidden="true">
                 <div class="term-dot td-r"></div>
@@ -464,7 +464,7 @@
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check tests/fixtures/sample_high_risk --explain</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-12.4
+Model: 2026-08-19.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -478,7 +478,7 @@ Detector observations are reported separately and do not create obligations.</pr
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula plan --project tests/fixtures/sample_high_risk</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-12.4
+Model: 2026-08-19.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -492,7 +492,7 @@ No obligation plan or effort estimate was emitted because applicability is unres
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula gap tests/fixtures/sample_high_risk</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-12.4
+Model: 2026-08-19.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -508,7 +508,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-12.4
+Model: 2026-08-19.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2

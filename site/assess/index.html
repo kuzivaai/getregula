@@ -477,6 +477,10 @@
       Scanning patterns...
     </div>
 
+    <div id="scanError" role="alert" tabindex="-1" style="display:none;margin:16px 0;padding:14px 16px;border:1px solid var(--red);border-radius:var(--radius);background:var(--red-dim);color:var(--text);line-height:1.5;">
+      <strong>Scan could not complete.</strong> Your code has not left this browser. Check that the page loaded fully, then try again or use the CLI. No result was produced.
+    </div>
+
     <div id="scanResults" style="display:none;"></div>
 
     <div style="margin-top:16px;display:flex;gap:10px;">
@@ -933,6 +937,7 @@ function startScanner() {
   document.getElementById("questionnaireSection").style.display = "none";
   document.getElementById("resultsSection").classList.remove("active");
   document.getElementById("scannerSection").style.display = "block";
+  document.getElementById("scanError").style.display = "none";
   document.getElementById("codeInput").focus();
   if (window.plausible) plausible("Scanner Started");
 }
@@ -947,6 +952,7 @@ function resetScanner() {
   document.getElementById("fileName").textContent = "";
   document.getElementById("scanResults").style.display = "none";
   document.getElementById("scanResults").innerHTML = "";
+  document.getElementById("scanError").style.display = "none";
   document.getElementById("scanBtn").disabled = true;
   uploadedFileName = null;
   scanResult = null;
@@ -988,29 +994,39 @@ function runScan() {
   // Show progress
   document.getElementById("scanProgress").style.display = "block";
   document.getElementById("scanResults").style.display = "none";
+  document.getElementById("scanError").style.display = "none";
   document.getElementById("scanBtn").disabled = true;
 
   // Run scan asynchronously to allow UI to update
   setTimeout(function() {
-    scanResult = scanCode(code, filename);
-    scanResult.decision = RegulaDecisionAdapters.evaluateQuestionnaireDecision(
-      activeJurisdiction, {}
-    );
+    try {
+      scanResult = scanCode(code, filename);
+      scanResult.decision = RegulaDecisionAdapters.evaluateQuestionnaireDecision(
+        activeJurisdiction, {}
+      );
 
     // Override language if user selected one
-    if (langSelect) {
-      scanResult.language = langSelect;
-      scanResult.classification = classifyCode(code, langSelect);
+      if (langSelect) {
+        scanResult.language = langSelect;
+        scanResult.classification = classifyCode(code, langSelect);
+      }
+
+      renderScanResults(scanResult);
+      document.getElementById("scanResults").style.display = "block";
+
+      if (window.plausible) plausible("Scan Complete", {
+        props: { detector_class: scanResult.classification.detector_class, result_type: scanResult.decision.result_type, language: scanResult.language }
+      });
+    } catch (error) {
+      scanResult = null;
+      const errorElement = document.getElementById("scanError");
+      errorElement.style.display = "block";
+      errorElement.focus();
+      console.error("Regula browser scan failed", error);
+    } finally {
+      document.getElementById("scanProgress").style.display = "none";
+      document.getElementById("scanBtn").disabled = false;
     }
-
-    renderScanResults(scanResult);
-    document.getElementById("scanProgress").style.display = "none";
-    document.getElementById("scanResults").style.display = "block";
-    document.getElementById("scanBtn").disabled = false;
-
-    if (window.plausible) plausible("Scan Complete", {
-      props: { detector_class: scanResult.classification.detector_class, result_type: scanResult.decision.result_type, language: scanResult.language }
-    });
   }, 50);
 }
 

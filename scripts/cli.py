@@ -688,9 +688,9 @@ def _print_metrics_text(stats: dict) -> None:
 
 _MAIN_EPILOG = """
 Quick start:
-  regula                                  Scan current directory + compliance score
+  regula                                  Scan current directory + indicator summary
   regula check .                          Detailed risk scan
-  regula comply                           EU AI Act obligation checklist
+  regula comply                           Obligation evidence + unresolved facts
   regula check --ci .                     CI/CD mode (exit codes + SARIF)
 
 Examples:
@@ -948,14 +948,25 @@ def _build_subparsers(subparsers):
     p_check.set_defaults(func=cmd_check)
 
     # --- comply ---
-    p_comply = subparsers.add_parser("comply",
-                                     help="EU AI Act obligation checklist with status")
+    p_comply = subparsers.add_parser(
+        "comply", help="EU AI Act obligation evidence and unresolved facts"
+    )
     p_comply.add_argument("--project", "-p", default=".", help="Project directory")
     p_comply.add_argument("project_path_positional", nargs="?", default=None,
                           metavar="path", help="Project path (same as --project)")
     p_comply.add_argument("--article", "-a", help="Deep-dive into a specific article (e.g. 9, 14)")
     p_comply.add_argument("--all", action="store_true",
                           help="Show full Articles 9-15 assessment regardless of detected risk tier")
+    p_comply.add_argument("--fact", action="append", metavar="ID=STATE",
+                          help="Declare one decision fact for this run. States: "
+                               "yes, no, unknown, not_applicable. Repeatable; "
+                               "overrides the project fact store.")
+    p_comply.add_argument("--facts-file", metavar="PATH",
+                          help="Read declared facts from an explicit fact-store file")
+    p_comply.add_argument("--no-facts", action="store_true",
+                          help="Ignore all declared facts, including the project store")
+    p_comply.add_argument("--list-facts", action="store_true",
+                          help="Print every fact id accepted by --fact and exit")
     p_comply.add_argument("--format", "-f", choices=["text", "json"], default="text")
     p_comply.set_defaults(func=cmd_comply)
 
@@ -1864,7 +1875,7 @@ def _make_progressive_help(parser, subparsers):
         # Primary commands with descriptions
         primary_descs = [
             ("check", "Scan files for risk indicators"),
-            ("comply", "EU AI Act obligation checklist with status"),
+            ("comply", "EU AI Act obligation evidence and unresolved facts"),
             ("gap", "Compliance gap assessment (Articles 9-15)"),
             ("plan", "Prioritised remediation plan"),
             ("init", "Guided setup wizard"),
@@ -1888,9 +1899,9 @@ def _make_progressive_help(parser, subparsers):
         lines.append("")
         # Epilog
         lines.append("Quick start:")
-        lines.append("  regula                                  Scan + compliance score")
+        lines.append("  regula                                  Scan + indicator summary")
         lines.append("  regula check .                          Detailed risk scan")
-        lines.append("  regula comply                           Obligation checklist")
+        lines.append("  regula comply                           Obligation evidence + unresolved facts")
         lines.append("  regula check --ci .                     CI/CD mode")
         lines.append("")
         return "\n".join(lines)

@@ -122,6 +122,7 @@ the fixture text.
 ### OSS precision
 
 ```bash
+# Reproduce the 15.2% overall library-corpus precision:
 python3 benchmarks/label.py score --corpus library
 ```
 
@@ -349,7 +350,8 @@ audit report, the recommended format is:
 > `benchmarks/synthetic/RECALL.json`.
 > OSS corpus: 15.2% precision overall (39 TP / 218 FP / n=257), 0% on BLOCK tier (0 findings),
 > 25.0% on WARN tier (n=8), 14.9% on INFO tier (n=249).
-> Reproducible from `github.com/kuzivaai/getregula` at v1.7.4 via
+> Reproduce the 15.2% overall OSS-library result from
+> `github.com/kuzivaai/getregula` at v1.7.4 with
 > `python3 benchmarks/label.py score --corpus library`.
 
 If anything in this document is unclear, ambiguous, or unverifiable —

@@ -75,7 +75,7 @@ AI-generated outputs in Regula carry specific risks. These are documented honest
 
 ### How the initial pattern set was selected
 
-The original curation covered 330 patterns — the `historical_330_bucket` computation in `scripts/site_facts.py` at the time: tiered risk regexes (279) + architecture detectors (38) + credential detectors (9) + oversight detectors (4). The same bucket computes 479 on the current codebase (419 + 38 + 18 + 4); regenerate with `python3 scripts/site_facts.py`. The selection methodology below applies to every pattern added since.
+The original curation covered 330 patterns — the `historical_330_bucket` computation in `scripts/site_facts.py` at the time: tiered risk regexes (279) + architecture detectors (38) + credential detectors (9) + oversight detectors (4). The same bucket computes 478 on the current codebase (418 + 38 + 18 + 4); regenerate with `python3 scripts/site_facts.py`. The selection methodology below applies to every pattern added since.
 
 Pattern sources:
 

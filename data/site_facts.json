@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T20:25:20.005843+00:00",
+  "generated_at": "2026-08-19T07:18:15.755930+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 3055,
-      "total_functions": 3009,
+      "total_collected": 3090,
+      "total_functions": 3037,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -58,14 +58,14 @@
         "tests/test_command_citation.py": 8,
         "tests/test_commercial_benchmark.py": 11,
         "tests/test_comparison_table.py": 14,
-        "tests/test_compliance_check.py": 64,
+        "tests/test_compliance_check.py": 79,
         "tests/test_conform.py": 124,
         "tests/test_content_freshness.py": 8,
         "tests/test_coverage_critical.py": 47,
         "tests/test_cross_file_flow.py": 103,
         "tests/test_crosswalk_omnibus.py": 10,
         "tests/test_decision_conformance.py": 5,
-        "tests/test_decision_kernel.py": 19,
+        "tests/test_decision_kernel.py": 23,
         "tests/test_delta_dataset.py": 10,
         "tests/test_delta_log_schema.py": 3,
         "tests/test_demo_doc.py": 7,
@@ -75,7 +75,7 @@
         "tests/test_determination_guard.py": 18,
         "tests/test_doc_audit.py": 10,
         "tests/test_documentation.py": 17,
-        "tests/test_documented_transcripts.py": 15,
+        "tests/test_documented_transcripts.py": 21,
         "tests/test_domain_scoring.py": 52,
         "tests/test_dpv_export.py": 19,
         "tests/test_engagement.py": 19,
@@ -98,7 +98,7 @@
         "tests/test_hooks_audit.py": 50,
         "tests/test_hostile_sweep.py": 4,
         "tests/test_installed_artefact.py": 15,
-        "tests/test_ledger_enumeration.py": 10,
+        "tests/test_ledger_enumeration.py": 13,
         "tests/test_ledger_status.py": 13,
         "tests/test_lifecycle_phases.py": 13,
         "tests/test_lifecycle_visibility.py": 5,
@@ -158,7 +158,7 @@
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1351
+      "runner_functions": 1382
     }
   },
   "notes": {

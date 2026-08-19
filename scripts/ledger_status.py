@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Enumerate the open-items ledger.
+"""Enumerate machine-state entries and disclose the ledger coverage boundary.
 
 Why this exists. The ledger recorded each entry's state only as prose, so no
 count of it could be produced by enumeration, only by hand. On 2026-08-15 a
@@ -9,8 +9,8 @@ two lists agreed on 22, and neither was reproducible. Measurement rule 4c says
 a completeness claim is a measurement and must come from an executed
 enumeration. This is that enumeration.
 
-Each entry carries `**State:** OPEN | PARTIAL | CLOSED`, assigned from the
-entry's own Status prose by one rule:
+Each heading-form entry in the machine-state section carries `**State:** OPEN
+| PARTIAL | CLOSED`, assigned from the entry's own Status prose by one rule:
 
     CLOSED   the status names no residual work at all
     PARTIAL  the substantive work is done but the status names something
@@ -21,6 +21,11 @@ The distinction matters because the two figures above were not disagreeing
 about facts, they were using different definitions. "Open" alone is ambiguous
 here: the OPEN count and the OPEN + PARTIAL count differ by more than twenty,
 so state which you mean or the number carries no information.
+
+The older table remains outside those heading-form totals. It is now also
+enumerated through a conservative migration view: only explicit, unambiguous
+opening declarations map to OPEN/PARTIAL/CLOSED; mixed or non-state prose maps
+to REVIEW_REQUIRED rather than being guessed.
 
 WHEN A LATER ENTRY RESOLVES AN EARLIER ONE. The rule above reads each entry's
 own Status prose, and that prose is the historical record: it is never
@@ -50,6 +55,7 @@ Usage:
     python3 scripts/ledger_status.py            # counts
     python3 scripts/ledger_status.py --list     # every entry and its state
     python3 scripts/ledger_status.py --state OPEN
+    python3 scripts/ledger_status.py --legacy  # conservative legacy view
 """
 import argparse
 import re
@@ -61,11 +67,19 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 LEDGER = REPO_ROOT / "docs" / "improvement" / "LEDGER.md"
 
 VALID_STATES = ("OPEN", "PARTIAL", "CLOSED")
+VALID_LEGACY_STATES = ("OPEN", "PARTIAL", "CLOSED", "REVIEW_REQUIRED")
 
 _HEADING = re.compile(r'^#{2,3} \*?\*?N(\d+)[.\s—-]', re.M)
 _STATE = re.compile(r'^\*\*State:\*\* *(\w+) *$', re.M)
 _RESOLVED_BY = re.compile(r'^\*\*Resolved by:\*\* *(.+?) *$', re.M)
 _NID = re.compile(r'N\d+')
+_LEGACY_ROW = re.compile(
+    r'^\|\s+\*{0,2}([FN]\d+)\*{0,2}\s+\|', re.MULTILINE)
+_LEGACY_LINE = re.compile(
+    r'^\|\s+\*{0,2}([FN]\d+)\*{0,2}\s+\|.*$', re.MULTILINE)
+_LEGACY_STATUS_AFTER_DATE = re.compile(
+    r'\|\s+\*{0,2}2026-[^|]*?\*{0,2}\s+\|\s*(.*)\|\s*$')
+_OPENING_BOLD = re.compile(r'^\*\*(.+?)\*\*', re.S)
 
 # Read against the Status prose only, and only from its opening clause: the
 # body of an entry legitimately discusses what was open at the time. The
@@ -86,7 +100,7 @@ _READS_OUTSTANDING = re.compile(
 
 
 def parse(text: str = None) -> list:
-    """Return [(id, state)] for every N-entry, in file order.
+    """Return [(id, state)] for every heading-form N-entry, in file order.
 
     Raises ValueError if any entry lacks exactly one State token, so a new
     entry cannot be added without one and quietly fall out of every count.
@@ -95,7 +109,7 @@ def parse(text: str = None) -> list:
 
 
 def parse_full(text: str = None) -> list:
-    """Return [(id, state, body)] for every N-entry, in file order."""
+    """Return [(id, state, body)] for heading-form N-entries, in file order."""
     text = LEDGER.read_text(encoding="utf-8") if text is None else text
     marks = list(_HEADING.finditer(text))
     entries = []
@@ -120,6 +134,77 @@ def parse_full(text: str = None) -> list:
     if dupes:
         raise ValueError(f"duplicate ledger ids: {sorted(dupes)}")
     return entries
+
+
+def legacy_rows(text: str = None) -> list[str]:
+    """Return ids in the historical findings table, which has no State token.
+
+    They remain separate from heading-form machine-state totals. Use
+    `legacy_classifications()` for the conservative migration view.
+    """
+    text = LEDGER.read_text(encoding="utf-8") if text is None else text
+    return _LEGACY_ROW.findall(text)
+
+
+def legacy_classifications(text: str = None) -> list[dict]:
+    """Classify every historical table row without inferring from prose.
+
+    The table predates machine-state tokens. Its status cells often mix a
+    closed measurement defect with an open product defect, or use words such
+    as "measured", "built" and "settled" that do not unambiguously declare a
+    state. Only an explicit opening declaration is migrated automatically:
+
+    * OPEN -> OPEN
+    * PARTIALLY CLOSED / PARTIAL -> PARTIAL
+    * CLOSED -> CLOSED only when the same status cell does not also declare
+      residual OPEN/PENDING/OUTSTANDING/UNRESOLVED work
+    * everything else -> REVIEW_REQUIRED
+
+    REVIEW_REQUIRED is a classification, not a guess. It makes the coverage
+    boundary enumerable while preserving the need for a human ruling.
+    """
+    text = LEDGER.read_text(encoding="utf-8") if text is None else text
+    rows = []
+    for match in _LEGACY_LINE.finditer(text):
+        nid = match.group(1)
+        line = match.group(0)
+        status_match = _LEGACY_STATUS_AFTER_DATE.search(line)
+        if not status_match:
+            rows.append({
+                "id": nid,
+                "state": "REVIEW_REQUIRED",
+                "basis": "status cell could not be isolated without guessing",
+            })
+            continue
+        status = status_match.group(1).strip()
+        opening_match = _OPENING_BOLD.match(status)
+        opening = (opening_match.group(1) if opening_match else status).strip()
+        normalised = opening.upper()
+        full_status = re.sub(r'[`*_~]', '', status).upper()
+        if normalised.startswith("OPEN"):
+            state = "OPEN"
+            basis = "status opens with an explicit OPEN declaration"
+        elif normalised.startswith(("PARTIALLY CLOSED", "PARTIAL")):
+            state = "PARTIAL"
+            basis = "status opens with an explicit partial-closure declaration"
+        elif normalised.startswith("CLOSED") and not _READS_OUTSTANDING.search(
+                full_status):
+            state = "CLOSED"
+            basis = "status opens CLOSED and declares no residual work"
+        elif not opening_match and normalised.startswith("CLOSED") \
+                and not _READS_OUTSTANDING.search(full_status):
+            state = "CLOSED"
+            basis = "status cell opens CLOSED and declares no residual work"
+        else:
+            state = "REVIEW_REQUIRED"
+            basis = (
+                "status does not make one unambiguous machine-state declaration"
+            )
+        rows.append({"id": nid, "state": state, "basis": basis})
+    ids = [row["id"] for row in rows]
+    if len(ids) != len(set(ids)):
+        raise ValueError("duplicate legacy row ids")
+    return rows
 
 
 def resolved_by(body: str) -> list:
@@ -150,6 +235,10 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--list", action="store_true", help="print every entry")
     ap.add_argument("--state", choices=VALID_STATES, help="print ids in a state")
+    ap.add_argument(
+        "--legacy", action="store_true",
+        help="list every legacy table row with its conservative migration state",
+    )
     args = ap.parse_args()
 
     try:
@@ -163,18 +252,33 @@ def main() -> int:
         print(" ".join(sorted(ids, key=lambda x: int(x[1:]))))
         return 0
 
+    if args.legacy:
+        for row in legacy_classifications():
+            print(f"{row['id']}\t{row['state']}\t{row['basis']}")
+        return 0
+
     if args.list:
         for nid, state in entries:
             print(f"{nid}\t{state}")
         return 0
 
     counts = Counter(s for _, s in entries)
-    print(f"ledger-status: {len(entries)} entries in {LEDGER.name}")
+    legacy = legacy_classifications()
+    legacy_counts = Counter(row["state"] for row in legacy)
+    print(
+        f"ledger-status: {len(entries)} machine-state entries in {LEDGER.name}"
+    )
     for state in VALID_STATES:
         print(f"  {state:8s} {counts[state]}")
     print(f"  substantive work outstanding (OPEN)          : {counts['OPEN']}")
     print(f"  anything outstanding at all (OPEN + PARTIAL) : "
           f"{counts['OPEN'] + counts['PARTIAL']}")
+    print(
+        f"  legacy migration view: {len(legacy)} table rows are excluded from "
+        "the machine-state totals above"
+    )
+    for state in VALID_LEGACY_STATES:
+        print(f"    {state:15s} {legacy_counts[state]}")
     return 0
 
 

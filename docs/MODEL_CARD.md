@@ -42,7 +42,7 @@ resolved evidence path for the relevant obligation.
 
 ### Decision meaning and evidence contract
 
-Decision model `2026-08-12.4` is stored in
+Decision model `2026-08-19.1` is stored in
 `references/decision_model.v1.json`. A decision-critical fact has one or more
 sourced values, each with `yes`, `no`, `unknown`, or `not_applicable` state,
 provenance, jurisdiction, and timestamp. Absence, explicit unknown, no, and
@@ -211,7 +211,7 @@ Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scri
 
 ### Continuous validation
 
-- 3,055 pytest-collected tests, produced by collection rather than
+- 3,090 pytest-collected tests, produced by collection rather than
   hand-maintained (measured 2026-08-13). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 48 CLI integration tests (`tests/test_cli_integration.py`), enumerated by

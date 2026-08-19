@@ -23,23 +23,29 @@ re-run at all, so those are covered by proving the vocabulary they use is dead.
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 from verify_transcripts import (  # noqa: E402
+    BenchmarkContract,
     QUALIFIED_OUTPUT,
     RETIRED_MARKERS,
     STRUCTURED_TEXT_SUFFIXES,
     SURFACE_SUFFIXES,
+    discover_benchmark_contracts,
     load_manifest,
     normalise,
+    public_benchmark_surfaces,
     qualified_output_is_really_emitted,
     retired_marker_hits,
     retired_markers_are_unreachable,
     surface_text,
     tracked_surfaces,
     unqualified_output_hits,
+    verify_benchmark_contracts,
+    verify_published_benchmarks,
     verify,
 )
 
@@ -98,6 +104,122 @@ def test_manifest_is_non_vacuous_and_covers_the_fixture_bound_pages():
     assert {"examples/cv-screening-app/README.md",
             "examples/customer-chatbot/README.md",
             "site/sample-report.html"} <= covered, sorted(covered)
+
+
+# ---------------------------------------------------------------------------
+# Published benchmark commands and the figures beside them
+# ---------------------------------------------------------------------------
+
+def test_every_published_benchmark_instruction_reproduces_in_isolation():
+    """Run the discovered commands and prove their writes stay out of the tree."""
+    result = REPO / "benchmarks/results/PRECISION.json"
+    before = result.read_bytes()
+    problems, checked = verify_published_benchmarks()
+    after = result.read_bytes()
+
+    assert checked >= 8, (
+        f"only {checked} benchmark contracts were found; the public-surface "
+        "enumeration or block parser has narrowed")
+    assert not problems, (
+        "published benchmark instructions that do not reproduce:\n  "
+        + "\n  ".join(problems))
+    assert after == before, (
+        "a benchmark verifier changed benchmarks/results/PRECISION.json in the "
+        "working tree instead of containing the write in its isolated checkout")
+
+
+def test_benchmark_surface_corpus_comes_from_the_delivery_inventory():
+    surfaces = public_benchmark_surfaces()
+    assert len(surfaces) > 80, len(surfaces)
+    for expected in (
+            "docs/benchmarks/PRECISION_RECALL_2026_04.md",
+            "docs/cli-reference.md",
+            "site/blog/blog-aicdi-governance-gaps.html",
+            "site/llms-full.txt"):
+        assert expected in surfaces, expected
+    assert "docs/improvement/LEDGER.md" not in surfaces, (
+        "the ledger is an internal historical record, not an active product "
+        "promise; the inventory classification has been ignored")
+
+
+def _benchmark_fixture(tmp_path, prose: str):
+    root = tmp_path / "repo"
+    surface = root / "docs/result.md"
+    script = root / "benchmarks/label.py"
+    surface.parent.mkdir(parents=True)
+    script.parent.mkdir(parents=True)
+    surface.write_text(prose, encoding="utf-8")
+    script.write_text("# local fixture\n", encoding="utf-8")
+    inventory = root / "inventory.json"
+    inventory.write_text(json.dumps({"records": [{
+        "source": "docs/result.md",
+        "classification": "active_product",
+        "claim_capable": True,
+    }]}), encoding="utf-8")
+    contracts = discover_benchmark_contracts(inventory, root)
+    assert len(contracts) == 1, contracts
+    return root, contracts
+
+
+def test_control_a_wrong_figure_beside_the_right_command_fails(tmp_path):
+    root, contracts = _benchmark_fixture(
+        tmp_path,
+        "Reproduce the 99.9% primary precision with "
+        "`python3 benchmarks/label.py score --corpus library`.\n",
+    )
+    real_output = "Precision: 15.2% (measured)\n"
+    problems = verify_benchmark_contracts(
+        contracts, runner=lambda _command: (real_output, 0), root=root)
+    assert problems and "99.9%" in problems[0], problems
+
+
+def test_control_a_wrong_command_fails_even_if_a_breakdown_has_the_figure(
+        tmp_path):
+    """The exact weak check the dossier proposed must not be reintroduced."""
+    root, contracts = _benchmark_fixture(
+        tmp_path,
+        "Reproduce the 15.2% primary precision with "
+        "`python3 benchmarks/label.py score`.\n",
+    )
+    wrong_command_output = (
+        "Precision by Corpus Type\n"
+        "library 39 218 257 15.2%\n"
+        "Precision: 36.8% (measured)\n"
+    )
+    problems = verify_benchmark_contracts(
+        contracts, runner=lambda _command: (wrong_command_output, 0), root=root)
+    assert problems, "a secondary 15.2% breakdown was accepted as the result"
+    assert "secondary breakdown" in problems[0], problems
+
+
+def test_control_the_right_primary_result_passes(tmp_path):
+    root, contracts = _benchmark_fixture(
+        tmp_path,
+        "Reproduce the 15.2% primary precision with "
+        "`python3 benchmarks/label.py score --corpus library`.\n",
+    )
+    problems = verify_benchmark_contracts(
+        contracts,
+        runner=lambda _command: ("Precision: 15.2% (measured)\n", 0),
+        root=root,
+    )
+    assert not problems, problems
+
+
+def test_benchmark_executor_refuses_shell_syntax(tmp_path):
+    root = tmp_path / "repo"
+    script = root / "benchmarks/label.py"
+    script.parent.mkdir(parents=True)
+    script.write_text("# local fixture\n", encoding="utf-8")
+    contract = BenchmarkContract(
+        surface="docs/result.md",
+        command=("python3", "benchmarks/label.py", "score", ";", "touch"),
+        figure="15.2%",
+        context="planted unsafe command",
+    )
+    problems = verify_benchmark_contracts([contract], runner=lambda _c: ("", 0),
+                                          root=root)
+    assert problems and "unsafe argument refused" in problems[0], problems
 
 
 def test_marker_matching_survives_markup_and_entities():
@@ -239,3 +361,5 @@ def test_every_qualified_output_rule_is_completely_declared():
         assert rule["qualifiers"], name
         assert rule["window"] > 0, name
         assert len(rule["why"]) > 30, name
+    discover_benchmark_contracts,
+    public_benchmark_surfaces,

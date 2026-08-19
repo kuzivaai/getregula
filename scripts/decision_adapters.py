@@ -159,7 +159,7 @@ def format_detector_explanation(result: Mapping[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def format_decision_text(result: Mapping[str, Any]) -> str:
+def format_decision_text(result: Mapping[str, Any], command: str = "check") -> str:
     """Render a compact decision without introducing adapter conclusions."""
     lines = [
         f"Decision: {result['result_type']}",
@@ -183,7 +183,7 @@ def format_decision_text(result: Mapping[str, Any]) -> str:
         if len(unresolved) > 5:
             lines.append(f"  - {len(unresolved) - 5} additional unresolved facts in JSON output")
         if unresolved:
-            lines.append("  Declare one with: regula check . --fact "
+            lines.append(f"  Declare one with: regula {command} . --fact "
                          f"{unresolved[0]['fact_id']}=yes|no|unknown|not_applicable")
     elif result["result_type"] == "indication":
         for item in result.get("indications", []):

@@ -6618,3 +6618,122 @@ the artefact; a wrong figure that names a path and a gate condition still
 passes. And no reader has been asked whether the corrected copy is clearer,
 which is the same gap section 17.3 records for every other surface in this
 branch.
+
+---
+
+### N178. The proposed reproduce-with gate would have approved the wrong command, and one correction N177 recorded as complete was still absent
+
+**State:** CLOSED
+
+**First raised:** 2026-08-19, executing the current-state dossier's first
+unblocked engineering recommendation rather than accepting its proposed
+acceptance rule as sufficient.
+
+**Status:** CLOSED for the measured class. `scripts/verify_transcripts.py` now
+derives readable, active, claim-capable surfaces from
+`data/public_claim_surfaces.json`, discovers percentage claims explicitly bound
+to local `python3 benchmarks/...` reproduction instructions, runs each unique
+command in an isolated copy of the tracked checkout, and compares the published
+figure with the command's primary result. Shell syntax, absolute paths, parent
+traversal and scripts outside `benchmarks/` are refused before execution.
+
+The primary-result rule is load-bearing. The dossier proposed asserting only
+that the published figure appears in stdout. Both commands below were executed
+on the same isolated checkout:
+
+```
+python3 benchmarks/label.py score --corpus library
+    primary Precision: 15.2% (measured)
+
+python3 benchmarks/label.py score
+    primary Precision: 36.8% (measured)
+    secondary library breakdown: 15.2%
+```
+
+A substring check therefore approves the wrong bare command. The control in
+`tests/test_documented_transcripts.py` plants that exact state and requires it
+to fail even though the claimed percentage is present in the output. The
+opposite controls plant a wrong figure beside the right command and a right
+figure beside the right command. The first fails and the second passes. The
+real check also hashes the working-tree precision result before and after its
+run, because `benchmarks/label.py score` writes that result and a verifier must
+not alter the tree it is measuring.
+
+Enumeration found a surviving defect in `site/llms-full.txt`. N177 states that
+the load-bearing `--corpus library` flag was corrected twice on that surface.
+The reproduction block had the flag, but the citation block still published
+the bare command. It is corrected here rather than rewriting N177's historical
+record. The same sweep found that `docs/cli-reference.md` said
+`benchmarks/run_benchmark.py` reproduced a dated rescan figure. From a clean
+checkout the command exits non-zero because the source-project checkouts it
+expects are not committed. The page now labels that figure as a dated record
+instead of offering a command that cannot reproduce it.
+
+The verified run covers percentage contracts expressed in readable Markdown,
+HTML and text surfaces. It does not establish correctness of non-percentage
+figures, commands separated from their claim by another semantic block,
+active claim surfaces in other file types, or any benchmark requiring absent
+or network-fetched inputs. Those are stated limits, not implied coverage. No
+payment, booking, release, push, merge, tag or product detection behaviour
+changed.
+
+---
+
+### N179. `comply --article 50` silently returned an empty successful assessment, and the planning checker referenced a deleted backlog
+
+**State:** PARTIAL
+
+**First raised:** 2026-08-19, by executing the dossier priorities against the
+current CLI and integrity tools rather than accepting their documented shape.
+
+**Status:** IMPLEMENTATION DEFECTS CLOSED; empirical accuracy and legal review
+remain OUTSTANDING. `regula comply <project> --article 50 --format json`
+previously exited 0 with `article_observations: {}`,
+`not_assessed_article_count: 0` and `project_path: null`. The Article 50 helper
+in `scripts/cli_compliance.py` was unreachable, treated generic sentiment
+analysis as emotion recognition and reduced project-wide strings to
+`found`/`not_found` without file or line evidence. It is replaced by
+`scripts/article50_evidence.py`: a safe-walker, branch-specific observation
+layer for Article 50(1)-(5) that reports traceable trigger and control signals,
+keeps the canonical decision `insufficient_information`, lists unresolved
+role/scope/definition/exception/runtime facts, emits no compliance score and
+states five limitations. Control signals exclude prose-only formats after the
+real customer-chatbot fixture showed that a README quoting the obligation
+could otherwise masquerade as an implemented notice. An unsupported article
+now exits 2 instead of succeeding with an empty assessment, and ordinary gap
+assessments now carry their resolved project path.
+
+Eight cases in the already-wired `tests/test_compliance_check.py` cover
+positive and negative paths, the generic-sentiment false positive, canonical
+directory skipping, empty-project limitations, CLI JSON semantics,
+invalid-article failure and project-path propagation.
+
+Separately, `scripts/planning_consistency.py` crashed because it unconditionally
+opened the deleted `planning/BACKLOG.md`. It now validates the current ledger.
+`scripts/ledger_status.py` no longer describes its heading-only population as
+the whole ledger: it reports machine-state counts and separately discloses the
+historical table rows whose free-form status cannot be classified without
+guessing. This session deliberately does not invent states for those rows.
+The stale generated pattern-bucket claim in `docs/AI_GOVERNANCE.md` was also
+corrected from 479 to the generator's 478 (418 + 38 + 18 + 4).
+
+Follow-up on 2026-08-19: the Article 50 signal scanner now has a 20-case,
+maintainer-labelled synthetic regression corpus with 160 branch/control checks.
+It found two identifier-boundary false negatives, both repaired; the checked-in
+result now has zero known errors. The corpus explicitly says it is neither
+independently labelled nor representative and is not a legal-accuracy
+benchmark. Browser execution exercised the real success path and an injected
+scanner-failure path at desktop and 390 x 844 mobile width. The failure is now
+an accessible, focused alert in EN, DE and PT-BR, retry is re-enabled, and no
+result is implied. The disclosure generator's unsupported human-availability,
+universal objection-right, medical/safety Article 50(3) exception, and artistic
+deep-fake exemption claims were removed; every generated template now carries
+`not_verified` runtime-review questions.
+
+What is not closed: the corpus is not an independently labelled representative
+sample; runtime controls have not been tested with representative users or
+assistive technology; and no qualified legal reviewer has confirmed the branch
+mapping. The output says so. The 72 legacy ledger rows remain outside the
+heading-state totals, but `ledger_status --legacy` now classifies every row
+conservatively: explicit declarations only, with mixed prose reported as
+`REVIEW_REQUIRED` rather than guessed.

@@ -32,7 +32,7 @@ Regula Quickstart
 
 $ regula classify --file demo.py
 Decision: insufficient_information
-Model: 2026-08-12.4
+Model: 2026-08-19.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
