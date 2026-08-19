@@ -875,7 +875,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         # to a second instrument: an instrument that cannot see part of its
         # population declares the gap at the point of use rather than leaving
         # it silent.
-        _pruned_here = [d for d in dirs if d in SKIP_DIRS]
+        # Keep the value that reaches descriptor-relative open() sourced from
+        # the trusted allowlist, not from the untrusted repository walk. The
+        # repository-provided names participate only in the membership test.
+        _pruned_here = [safe_name for safe_name in sorted(SKIP_DIRS)
+                        if safe_name in dirs]
         for _d in _pruned_here:
             _p = Path(root) / _d
             try:
