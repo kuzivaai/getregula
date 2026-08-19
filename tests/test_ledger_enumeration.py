@@ -17,6 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
 import ledger_status  # noqa: E402
+import ledger_review  # noqa: E402
 
 
 def test_every_machine_state_entry_has_exactly_one_state_token():
@@ -72,6 +73,47 @@ def test_legacy_migration_refuses_to_guess_mixed_or_non_state_prose():
         "OPEN", "PARTIAL", "CLOSED", "REVIEW_REQUIRED", "REVIEW_REQUIRED"
     ]
     print("  PASS  legacy migration preserves mixed states for human review")
+
+
+def test_review_bot_enumerates_every_ambiguous_legacy_row_without_guessing():
+    queue = ledger_review.review_queue()
+    classified = ledger_status.legacy_classifications()
+    expected = [row["id"] for row in classified
+                if row["state"] == "REVIEW_REQUIRED"]
+    assert [row["id"] for row in queue] == expected
+    assert all(row["status"] and row["source_hash"] for row in queue)
+    assert all(row["migration_state"] == "REVIEW_REQUIRED" for row in queue)
+    print(f"  PASS  review bot exposes evidence for all {len(queue)} ambiguous rows")
+
+
+def test_review_bot_requires_two_distinct_reviewers_and_flags_conflict():
+    row = ledger_review.review_queue()[0]
+    register = ledger_review.empty_register()
+    ledger_review.append_decision(
+        register, row, "reviewer-a", "OPEN", "source status", "work remains", "2026-01-01T00:00:00+00:00")
+    assert ledger_review.review_state(row, register)["status"] == (
+        "AWAITING_INDEPENDENT_REVIEWS")
+    ledger_review.append_decision(
+        register, row, "reviewer-b", "CLOSED", "later evidence", "work resolved", "2026-01-02T00:00:00+00:00")
+    assert ledger_review.review_state(row, register)["status"] == (
+        "ADJUDICATION_REQUIRED")
+    ledger_review.append_decision(
+        register, row, "reviewer-b", "OPEN", "rechecked evidence", "work remains", "2026-01-03T00:00:00+00:00")
+    state = ledger_review.review_state(row, register)
+    assert state["status"] == "CONSENSUS_PROPOSED"
+    assert state["proposed_state"] == "OPEN"
+    assert state["active_reviews"] == 2
+    print("  PASS  review bot requires independent agreement and preserves revisions")
+
+
+def test_review_bot_excludes_decisions_when_the_source_row_changes():
+    row = ledger_review.review_queue()[0]
+    register = ledger_review.empty_register()
+    ledger_review.append_decision(
+        register, row, "reviewer-a", "OPEN", "source status", "work remains", "2026-01-01T00:00:00+00:00")
+    changed = dict(row, source_hash="different")
+    assert ledger_review.review_state(changed, register)["active_reviews"] == 0
+    print("  PASS  review bot never carries a decision across changed source evidence")
 
 
 def test_parse_refuses_an_entry_with_no_state_token():
@@ -209,6 +251,9 @@ if __name__ == "__main__":
               test_legacy_rows_are_disclosed_as_a_separate_population,
               test_every_legacy_row_has_a_conservative_migration_classification,
               test_legacy_migration_refuses_to_guess_mixed_or_non_state_prose,
+              test_review_bot_enumerates_every_ambiguous_legacy_row_without_guessing,
+              test_review_bot_requires_two_distinct_reviewers_and_flags_conflict,
+              test_review_bot_excludes_decisions_when_the_source_row_changes,
               test_parse_refuses_an_entry_with_no_state_token,
               test_parse_refuses_an_unknown_state,
               test_parse_refuses_two_tokens_in_one_entry,

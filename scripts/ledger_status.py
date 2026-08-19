@@ -58,6 +58,7 @@ Usage:
     python3 scripts/ledger_status.py --legacy  # conservative legacy view
 """
 import argparse
+import hashlib
 import re
 import sys
 from collections import Counter
@@ -79,6 +80,9 @@ _LEGACY_LINE = re.compile(
     r'^\|\s+\*{0,2}([FN]\d+)\*{0,2}\s+\|.*$', re.MULTILINE)
 _LEGACY_STATUS_AFTER_DATE = re.compile(
     r'\|\s+\*{0,2}2026-[^|]*?\*{0,2}\s+\|\s*(.*)\|\s*$')
+_LEGACY_COLUMNS = re.compile(
+    r'^\|\s+\*{0,2}([FN]\d+)\*{0,2}\s+\|\s*(.*?)\|\s+'
+    r'\*{0,2}(2026-[^|]*?)\*{0,2}\s+\|\s*(.*)\|\s*$')
 _OPENING_BOLD = re.compile(r'^\*\*(.+?)\*\*', re.S)
 
 # Read against the Status prose only, and only from its opening clause: the
@@ -146,6 +150,29 @@ def legacy_rows(text: str = None) -> list[str]:
     return _LEGACY_ROW.findall(text)
 
 
+def legacy_records(text: str = None) -> list[dict]:
+    """Return source evidence for each historical row without classifying it."""
+    text = LEDGER.read_text(encoding="utf-8") if text is None else text
+    records = []
+    for match in _LEGACY_LINE.finditer(text):
+        line = match.group(0)
+        nid = match.group(1)
+        columns = _LEGACY_COLUMNS.match(line)
+        status_match = _LEGACY_STATUS_AFTER_DATE.search(line)
+        records.append({
+            "id": nid,
+            "finding": columns.group(2).strip() if columns else "",
+            "date": columns.group(3).strip() if columns else "",
+            "status": status_match.group(1).strip() if status_match else "",
+            "source_hash": hashlib.sha256(line.encode("utf-8")).hexdigest(),
+            "source_line": line,
+        })
+    ids = [row["id"] for row in records]
+    if len(ids) != len(set(ids)):
+        raise ValueError("duplicate legacy row ids")
+    return records
+
+
 def legacy_classifications(text: str = None) -> list[dict]:
     """Classify every historical table row without inferring from prose.
 
@@ -163,20 +190,17 @@ def legacy_classifications(text: str = None) -> list[dict]:
     REVIEW_REQUIRED is a classification, not a guess. It makes the coverage
     boundary enumerable while preserving the need for a human ruling.
     """
-    text = LEDGER.read_text(encoding="utf-8") if text is None else text
     rows = []
-    for match in _LEGACY_LINE.finditer(text):
-        nid = match.group(1)
-        line = match.group(0)
-        status_match = _LEGACY_STATUS_AFTER_DATE.search(line)
-        if not status_match:
+    for record in legacy_records(text):
+        nid = record["id"]
+        status = record["status"]
+        if not status:
             rows.append({
                 "id": nid,
                 "state": "REVIEW_REQUIRED",
                 "basis": "status cell could not be isolated without guessing",
             })
             continue
-        status = status_match.group(1).strip()
         opening_match = _OPENING_BOLD.match(status)
         opening = (opening_match.group(1) if opening_match else status).strip()
         normalised = opening.upper()
@@ -201,9 +225,6 @@ def legacy_classifications(text: str = None) -> list[dict]:
                 "status does not make one unambiguous machine-state declaration"
             )
         rows.append({"id": nid, "state": state, "basis": basis})
-    ids = [row["id"] for row in rows]
-    if len(ids) != len(set(ids)):
-        raise ValueError("duplicate legacy row ids")
     return rows
 
 

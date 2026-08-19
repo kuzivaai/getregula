@@ -136,6 +136,7 @@ def render(key: str, copy: dict) -> str:
 {GENERATED_NOTE.format(key=key)}
 <section class="qual-wrap" aria-labelledby="qual-h1">
   <div class="qual">
+    <p class="qual-audience">{esc(copy["audience"])}</p>
     <h1 id="qual-h1">{esc(copy["h1"])}</h1>
     <p class="qual-sub">{esc(copy["sub"])}</p>
     <p class="qual-meta">{esc(copy["meta"])}</p>
