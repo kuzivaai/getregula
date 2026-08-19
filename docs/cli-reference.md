@@ -107,6 +107,33 @@ regula api-server --port 9000
 regula api-server --host 0.0.0.0 --port 8487
 ```
 
+### Article 50 applicability facts and technical observations
+
+`comply --article 50` keeps two different forms of evidence separate. Human-
+declared facts are evaluated by the decision kernel and retain their
+provenance. Static source matches identify implementation vocabulary for review;
+they do not become legal facts, a compliance score, or proof that a runtime
+notice or marking works.
+
+```bash
+regula comply . --article 50                  # unresolved facts + static signals
+regula comply --list-facts                    # canonical fact ids and questions
+regula comply . --article 50 --format json \
+  --fact jurisdiction_in_scope=yes \
+  --fact is_ai_system=yes \
+  --fact role_provider=yes \
+  --fact eu_direct_interaction=yes \
+  --fact eu_interaction_obvious=no \
+  --fact eu_50_1_criminal_law_exception=no
+```
+
+Use `--facts-file PATH` to read an explicit fact store or `--no-facts` to ignore
+all stores. `yes`, `no`, `unknown`, and `not_applicable` are distinct declared
+states. A resolved Article 50 path identifies the obligation that follows from
+the supplied facts; it does not establish that the implementation satisfies
+that obligation. Runtime timing, clarity, accessibility, robustness, and
+effectiveness remain review questions.
+
 ### Compliance Gap Assessment
 
 AST-powered compliance gap analysis checks whether your project has the required compliance infrastructure for Articles 9-15. Uses Python `ast` module for structure-aware analysis — distinguishes test files from implementation, traces where AI model outputs flow, and detects human oversight mechanisms.
@@ -299,9 +326,12 @@ regula benchmark --metrics labelled.csv                        # Precision/recal
 > rescan also produced 3,927 new findings that have no labels yet — the
 > published number covers ~6% of what the scanner currently emits, and
 > a comprehensive precision figure requires labelling that delta. That
-> is the next piece of work. Reproduce both numbers with
-> `python3 benchmarks/label.py score --corpus library` and
-> `python3 benchmarks/run_benchmark.py`. The `--corpus library` flag was added
+> is the next piece of work. Reproduce the 15.2% overall library-corpus
+> precision with `python3 benchmarks/label.py score --corpus library`.
+> The re-validation and unlabelled-rescan figures are dated records, not clean
+> checkout reproduction claims: the source-project checkouts and commits used
+> by `benchmarks/run_benchmark.py` were not preserved in this repository. The
+> `--corpus library` flag was added
 > in August 2026 and is load-bearing: `benchmarks/labels.json` now holds 446
 > labels across 12 projects, and the bare command scores all of them and
 > reports 36.8% on a different corpus. Ledger N177.
@@ -319,7 +349,7 @@ Hand-labelled 257 findings sampled across five OSS AI projects (`instructor`, `p
 
 This is the honest current state. The minimal_risk tier dominates the sample on general-purpose libraries and is noisy — that's the next pattern-tuning target. None of the five repos triggered `prohibited` or `high_risk` findings, so precision for the tiers that actually block merges cannot be estimated from this benchmark and is a separate piece of work.
 
-Recall is not estimable from labelled findings alone and is reported as `null`. **No "99%" claim is being made and none should be.** Full methodology, per-project breakdown, and limitations: [`../benchmarks/README.md`](../benchmarks/README.md). Reproduce with `python3 benchmarks/label.py score --corpus library`; without that flag the command scores all 446 labels in the file, which is a different corpus.
+Recall is not estimable from labelled findings alone and is reported as `null`. Full methodology, per-project breakdown, and limitations: [`../benchmarks/README.md`](../benchmarks/README.md). Reproduce the 15.2% overall library-corpus precision with `python3 benchmarks/label.py score --corpus library`; without that flag the command scores all 446 labels in the file, which is a different corpus.
 
 ### Scan Time Benchmark
 

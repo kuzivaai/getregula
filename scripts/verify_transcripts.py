@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # regula-ignore
-"""Every CLI transcript this project publishes must reproduce.
+"""Every executable result this project publishes must reproduce.
 
 A transcript is a promise that running the command shown produces the output
 shown. Three ways that promise was broken, all measured on 2026-08-14 against
@@ -74,13 +74,28 @@ re-runnable command, so `.svg` currently matches nothing here. That is the
 correct state and not a reason to narrow the scan: the scope has to outlive the
 files that motivated it.
 
-Each anchor is checked in both directions:
+Each CLI transcript anchor is checked in both directions:
 
   - it must appear in the surface file, so the manifest cannot assert a line
     the page does not contain and drift into fiction; and
   - it must appear in the real command output.
 
-Either half missing is a failure. Stdlib only; no network.
+Benchmark instructions are discovered from the active, claim-capable delivery
+surfaces in ``data/public_claim_surfaces.json``. A prose block that tells the
+reader to reproduce a percentage with a local ``python3 benchmarks/...``
+command is a contract: the command is run in an isolated copy of the tracked
+checkout and its primary result must contain that percentage. The primary
+result distinction matters. ``benchmarks/label.py score`` without a corpus
+flag prints the library percentage in a secondary breakdown, even when its
+headline result is for a different corpus. A substring check would therefore
+approve the exact wrong-command defect this gate exists to catch.
+
+Only local benchmark scripts are executable through this path. Shell syntax,
+absolute paths and parent traversal are refused; commands are passed directly
+to ``subprocess`` without a shell. The isolated copy prevents a benchmark that
+writes a result file from modifying the working tree. Stdlib only. The verifier
+itself makes no network requests; it runs only local, allowlisted commands from
+the tracked checkout.
 
 Usage:
     python3 scripts/verify_transcripts.py          # verify, exit 1 on drift
@@ -93,10 +108,14 @@ import html
 import json
 import os
 import re
+import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Callable
 
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -104,7 +123,20 @@ from svg_text import SvgTextError, text_of  # noqa: E402
 
 REPO = Path(__file__).resolve().parent.parent
 MANIFEST = REPO / "data/documented_transcripts.json"
+PUBLIC_SURFACE_INVENTORY = REPO / "data/public_claim_surfaces.json"
 TAG_RE = re.compile(r"<[^>]+>")
+PERCENT_RE = re.compile(r"(?<![\w.])(\d+(?:\.\d+)?%)")
+BENCHMARK_SURFACE_SUFFIXES = {".html", ".md", ".txt"}
+
+
+@dataclass(frozen=True)
+class BenchmarkContract:
+    """One published percentage bound to the command offered to reproduce it."""
+
+    surface: str
+    command: tuple[str, ...]
+    figure: str
+    context: str
 
 # Output vocabulary the CLI once emitted and no longer does. Every one was
 # replaced by wording that does not assert a legal conclusion, which is why a
@@ -317,6 +349,236 @@ def verify() -> tuple[list[str], int]:
     return problems, checked
 
 
+def public_benchmark_surfaces(
+        inventory_path: Path = PUBLIC_SURFACE_INVENTORY,
+        root: Path = REPO) -> list[str]:
+    """Return readable public claim surfaces from the generated inventory.
+
+    The inventory is the ceiling as well as the floor. Internal programme
+    records intentionally preserve superseded measurements and must not become
+    current product promises merely because they are tracked files.
+    """
+    payload = json.loads(inventory_path.read_text(encoding="utf-8"))
+    found = set()
+    for record in payload.get("records", []):
+        if record.get("classification") != "active_product":
+            continue
+        if not record.get("claim_capable"):
+            continue
+        rel = record.get("source", "").split("#", 1)[0]
+        path = root / rel
+        if path.suffix.lower() in BENCHMARK_SURFACE_SUFFIXES and path.is_file():
+            found.add(rel)
+    return sorted(found)
+
+
+def _semantic_blocks(path: Path) -> list[str]:
+    """Split a surface at reader-visible block boundaries.
+
+    Binding at block level is deliberate. A raw character window can let a
+    caveat or figure in the next paragraph qualify the wrong command. HTML
+    paragraphs and list items are explicit blocks; Markdown and text use blank
+    lines, including blank blockquote lines.
+    """
+    raw = path.read_text(encoding="utf-8", errors="replace")
+    if path.suffix.lower() == ".html":
+        pattern = re.compile(
+            r"<(?P<tag>p|li|blockquote|pre)\b[^>]*>.*?</(?P=tag)>",
+            re.IGNORECASE | re.DOTALL,
+        )
+        return [m.group(0) for m in pattern.finditer(raw)]
+    return [part for part in re.split(r"\n[ \t]*(?:>[ \t]*)?\n", raw)
+            if part.strip()]
+
+
+def _code_commands(block: str) -> list[tuple[str, ...]]:
+    """Extract local benchmark commands only from code-formatted text."""
+    candidates = []
+    patterns = (
+        re.compile(r"<code\b[^>]*>(.*?)</code>", re.IGNORECASE | re.DOTALL),
+        re.compile(r"`([^`\n]+)`"),
+        re.compile(r"(?m)^\s*(python3\s+benchmarks/[^\n#]+?)\s*$"),
+    )
+    for pattern in patterns:
+        for match in pattern.finditer(block):
+            candidate = normalise(match.group(1)).rstrip(".")
+            if not candidate.startswith("python3 benchmarks/"):
+                continue
+            try:
+                argv = tuple(shlex.split(candidate))
+            except ValueError:
+                continue
+            if argv not in candidates:
+                candidates.append(argv)
+    return candidates
+
+
+def discover_benchmark_contracts(
+        inventory_path: Path = PUBLIC_SURFACE_INVENTORY,
+        root: Path = REPO) -> list[BenchmarkContract]:
+    """Discover reproduce-with percentage contracts on public surfaces.
+
+    The percentage nearest the reproduction cue that is nearest the command is
+    the claimed result. That rule is simple enough to control and inspect, and
+    avoids selecting an earlier historical figure or a later comparison figure
+    merely because the command happens to print it.
+    Blocks with several benchmark commands are refused during verification:
+    one prose claim cannot unambiguously bind different programs to one result.
+    """
+    contracts = []
+    for rel in public_benchmark_surfaces(inventory_path, root):
+        for block in _semantic_blocks(root / rel):
+            reader = normalise(block)
+            if "reproduc" not in reader.casefold():
+                continue
+            figure_matches = list(PERCENT_RE.finditer(reader))
+            cue_positions = [m.start() for m in re.finditer(
+                r"reproduc", reader, re.IGNORECASE)]
+            if not figure_matches or not cue_positions:
+                continue
+            for command in _code_commands(block):
+                command_pos = reader.find(" ".join(command))
+                cue_pos = min(cue_positions,
+                              key=lambda pos: abs(pos - command_pos))
+                figure_match = min(
+                    figure_matches,
+                    key=lambda match: abs(match.start() - cue_pos),
+                )
+                contracts.append(BenchmarkContract(
+                    surface=rel,
+                    command=command,
+                    figure=figure_match.group(1),
+                    context=reader[:500],
+                ))
+    return contracts
+
+
+def validate_benchmark_command(argv: tuple[str, ...], root: Path = REPO) -> str | None:
+    """Return a reason when a published command is unsafe or not local."""
+    if len(argv) < 2 or argv[0] != "python3":
+        return "command must begin with `python3`"
+    script = Path(argv[1])
+    if (script.is_absolute() or ".." in script.parts
+            or script.suffix != ".py" or not script.parts
+            or script.parts[0] != "benchmarks"):
+        return "only repository-relative Python scripts under benchmarks/ may run"
+    if not (root / script).is_file():
+        return f"script does not exist: {argv[1]}"
+    for token in argv[2:]:
+        if (any(ch in token for ch in "|;&><`$\n\r")
+                or Path(token).is_absolute() or ".." in Path(token).parts):
+            return f"unsafe argument refused: {token!r}"
+    return None
+
+
+def benchmark_primary_result_has_figure(
+        argv: tuple[str, ...], figure: str, output: str) -> bool:
+    """Match a figure to the command's primary result, not any breakdown row."""
+    escaped = re.escape(figure)
+    script = argv[1] if len(argv) > 1 else ""
+    if script == "benchmarks/label.py" and "score" in argv[2:]:
+        if "--corpus" in argv:
+            corpus_index = argv.index("--corpus") + 1
+            if corpus_index < len(argv) and argv[corpus_index] == "random":
+                return bool(re.search(
+                    rf"(?m)^Headline:\s*{escaped}\s+precision\b", output))
+        return bool(re.search(
+            rf"(?m)^Precision:\s*{escaped}\s*\(measured\)\s*$", output))
+    if script == "benchmarks/synthetic/run.py":
+        return bool(re.search(rf"\bprecision\s*=\s*{escaped}(?![\d.])", output))
+    return normalise(figure) in normalise(output)
+
+
+def _copy_tracked_checkout(destination: Path, root: Path = REPO) -> None:
+    """Copy the current contents of every tracked file into an isolated tree."""
+    listed = subprocess.run(
+        ["git", "ls-files", "-z"], cwd=root, capture_output=True,
+        check=True,
+    ).stdout.decode("utf-8", errors="surrogateescape")
+    for rel in filter(None, listed.split("\0")):
+        source = root / rel
+        if not source.is_file():
+            continue
+        target = destination / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+
+
+BenchmarkRunner = Callable[[tuple[str, ...]], tuple[str, int]]
+
+
+def verify_benchmark_contracts(
+        contracts: list[BenchmarkContract],
+        runner: BenchmarkRunner | None = None,
+        root: Path = REPO) -> list[str]:
+    """Execute discovered contracts and return every reproducibility defect."""
+    problems = []
+    grouped: dict[tuple[str, str, str], set[tuple[str, ...]]] = {}
+    for contract in contracts:
+        key = (contract.surface, contract.context, contract.figure)
+        grouped.setdefault(key, set()).add(contract.command)
+    for (surface, _context, figure), commands in grouped.items():
+        if len(commands) > 1:
+            rendered = ", ".join(f"`{' '.join(c)}`" for c in sorted(commands))
+            problems.append(
+                f"{surface}: one prose block binds {figure} to several commands "
+                f"({rendered}); split the claims so each result has one "
+                f"unambiguous reproduction instruction.")
+    for contract in contracts:
+        reason = validate_benchmark_command(contract.command, root)
+        if reason:
+            problems.append(
+                f"{contract.surface}: `{' '.join(contract.command)}` cannot run: "
+                f"{reason}")
+    if problems:
+        return problems
+
+    outputs: dict[tuple[str, ...], tuple[str, int]] = {}
+    if runner is not None:
+        for command in {contract.command for contract in contracts}:
+            outputs[command] = runner(command)
+    else:
+        with tempfile.TemporaryDirectory(prefix="regula-benchmark-checkout-") as tmp:
+            checkout = Path(tmp) / "repo"
+            _copy_tracked_checkout(checkout, root)
+            env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1",
+                       REGULA_CACHE_DIR=str(Path(tmp) / "cache"))
+            for command in {contract.command for contract in contracts}:
+                run = subprocess.run(
+                    [sys.executable, *command[1:]], cwd=checkout,
+                    capture_output=True, text=True, check=False, timeout=180,
+                    env=env,
+                )
+                outputs[command] = (run.stdout + run.stderr, run.returncode)
+
+    for contract in contracts:
+        output, returncode = outputs[contract.command]
+        printable = " ".join(contract.command)
+        if returncode:
+            tail = normalise(output)[-300:]
+            problems.append(
+                f"{contract.surface}: `{printable}` exited {returncode}; "
+                f"published reproduction instructions must run from a clean "
+                f"checkout. Output: {tail!r}")
+            continue
+        if not benchmark_primary_result_has_figure(
+                contract.command, contract.figure, output):
+            problems.append(
+                f"{contract.surface}: the prose binds {contract.figure} to "
+                f"`{printable}`, but that is not the command's primary result. "
+                f"A secondary breakdown containing the same number does not "
+                f"reproduce the claim.")
+    return problems
+
+
+def verify_published_benchmarks(
+        inventory_path: Path = PUBLIC_SURFACE_INVENTORY,
+        root: Path = REPO,
+        runner: BenchmarkRunner | None = None) -> tuple[list[str], int]:
+    contracts = discover_benchmark_contracts(inventory_path, root)
+    return verify_benchmark_contracts(contracts, runner, root), len(contracts)
+
+
 def tracked_surfaces() -> list[str]:
     """Published, human-readable tracked files, enumerated from git.
 
@@ -461,9 +723,16 @@ def main(argv=None) -> int:
         for entry in load_manifest():
             print(f"{entry['surface']}\n    regula {' '.join(entry['command'])}"
                   f"  ({len(entry['anchors'])} anchor(s))")
+        for contract in discover_benchmark_contracts():
+            print(f"{contract.surface}\n    {' '.join(contract.command)}"
+                  f"  (primary result: {contract.figure})")
         return 0
 
     problems, checked = verify()
+    benchmark_contracts = discover_benchmark_contracts()
+    benchmark_checked = len(benchmark_contracts)
+    benchmark_problems = verify_benchmark_contracts(benchmark_contracts)
+    problems += benchmark_problems
     problems += retired_marker_hits()
     problems += retired_markers_are_unreachable()
     problems += unqualified_output_hits()
@@ -473,15 +742,25 @@ def main(argv=None) -> int:
               "proved nothing. Either the manifest is empty or it stopped "
               "being read.", file=sys.stderr)
         return 1
+    if not benchmark_checked:
+        print("transcript-check: FAIL - no published benchmark contracts were "
+              "checked, so benchmark reproducibility proved nothing.",
+              file=sys.stderr)
+        return 1
     if problems:
-        print(f"transcript-check: FAIL — {len(problems)} problem(s) "
-              f"across {checked} anchor(s):", file=sys.stderr)
+        print(f"transcript-check: FAIL - {len(problems)} problem(s) across "
+              f"{checked} CLI anchor(s) and {benchmark_checked} benchmark "
+              "contract(s):", file=sys.stderr)
         for p in problems:
             print(f"  - {p}", file=sys.stderr)
         return 1
-    print(f"transcript-check: {checked} anchor(s) across "
-          f"{len(load_manifest())} surface(s); every published transcript "
-          f"reproduces from the command its page documents")
+    covered_surfaces = {
+        entry["surface"] for entry in load_manifest()
+    } | {contract.surface for contract in benchmark_contracts}
+    print(f"transcript-check: {checked} CLI anchor(s) and "
+          f"{benchmark_checked} benchmark contract(s) across "
+          f"{len(covered_surfaces)} surface(s); every published transcript "
+          f"and benchmark result reproduces from the command its page documents")
     return 0
 
 

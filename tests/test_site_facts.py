@@ -85,7 +85,7 @@ def _facts(ts: str, collected: int) -> dict:
         "counts": {
             "commands": 61,
             "patterns": {
-                "historical_330_bucket": 479,
+                "historical_330_bucket": 478,
                 "grand_total": 722,
                 "tier_groups": 57,
             },

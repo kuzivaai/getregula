@@ -76,7 +76,7 @@ def test_fact_state_contract_and_model_version_are_explicit():
         "yes", "no", "unknown", "not_applicable"
     }
     assert kernel.model["schema_version"] == "1.0"
-    assert kernel.model_version == "2026-08-12.4"
+    assert kernel.model_version == "2026-08-19.1"
 
 
 @pytest.mark.parametrize("jurisdiction", ["eu", "kr", "co"])
@@ -225,6 +225,138 @@ def test_eu_deployer_gets_article_26_not_provider_requirements():
     }.issubset(obligation_ids)
     assert not ({f"eu_requirement_{article}" for article in range(9, 16)}
                 | {"eu_provider_qms_17"}) & obligation_ids
+
+
+def test_article_50_1_public_crime_reporting_carve_back_is_modelled():
+    kernel = DecisionKernel()
+    facts = _resolved_map(kernel, "eu")
+    facts.update({
+        "jurisdiction_in_scope": _value("yes", "eu"),
+        "is_ai_system": _value("yes", "eu"),
+        "role_provider": _value("yes", "eu"),
+        "eu_direct_interaction": _value("yes", "eu"),
+        "eu_interaction_obvious": _value("no", "eu"),
+        "eu_50_1_criminal_law_exception": _value("yes", "eu"),
+        "eu_50_1_public_crime_reporting": _value("yes", "eu"),
+    })
+    result = kernel.evaluate(_request(kernel, "eu", facts))
+    assert "eu_transparency_direct_interaction" in {
+        item["predicate_id"] for item in result["indications"]
+    }
+    assert "eu_notice_50_1" in _obligation_ids(result)
+
+
+def test_article_50_1_criminal_exception_excludes_non_public_system():
+    kernel = DecisionKernel()
+    facts = _resolved_map(kernel, "eu")
+    facts.update({
+        "jurisdiction_in_scope": _value("yes", "eu"),
+        "is_ai_system": _value("yes", "eu"),
+        "role_provider": _value("yes", "eu"),
+        "eu_direct_interaction": _value("yes", "eu"),
+        "eu_interaction_obvious": _value("no", "eu"),
+        "eu_50_1_criminal_law_exception": _value("yes", "eu"),
+        "eu_50_1_public_crime_reporting": _value("no", "eu"),
+    })
+    result = kernel.evaluate(_request(kernel, "eu", facts))
+    assert "eu_transparency_direct_interaction" not in {
+        item["predicate_id"] for item in result.get("indications", [])
+    }
+    assert "eu_notice_50_1" not in _obligation_ids(result)
+
+
+@pytest.mark.parametrize(
+    ("assignments", "excluded_obligation"),
+    [
+        ({
+            "role_provider": "yes",
+            "eu_generates_synthetic_content": "yes",
+            "eu_standard_editing_assistance_only": "no",
+            "eu_50_2_criminal_law_exception": "yes",
+        }, "eu_marking_50_2"),
+        ({
+            "role_deployer": "yes",
+            "eu_emotion_recognition": "yes",
+            "eu_50_3_persons_exposed": "no",
+            "eu_50_3_criminal_law_exception": "no",
+        }, "eu_notice_50_3"),
+        ({
+            "role_deployer": "yes",
+            "eu_biometric_categorisation": "yes",
+            "eu_50_3_persons_exposed": "yes",
+            "eu_50_3_criminal_law_exception": "yes",
+        }, "eu_notice_50_3"),
+        ({
+            "role_deployer": "yes",
+            "eu_deepfake_content": "yes",
+            "eu_50_4_criminal_law_exception": "yes",
+        }, "eu_disclosure_50_4_deepfake"),
+        ({
+            "role_deployer": "yes",
+            "eu_public_interest_text": "yes",
+            "eu_human_review_or_editorial_control": "no",
+            "eu_50_4_criminal_law_exception": "yes",
+        }, "eu_disclosure_50_4_text"),
+    ],
+)
+def test_article_50_paragraph_specific_exclusions_are_modelled(
+        assignments, excluded_obligation):
+    kernel = DecisionKernel()
+    facts = _resolved_map(kernel, "eu")
+    facts.update({
+        "jurisdiction_in_scope": _value("yes", "eu"),
+        "is_ai_system": _value("yes", "eu"),
+    })
+    facts.update({
+        fact_id: _value(state, "eu")
+        for fact_id, state in assignments.items()
+    })
+    result = kernel.evaluate(_request(kernel, "eu", facts))
+    assert excluded_obligation not in _obligation_ids(result)
+
+
+@pytest.mark.parametrize(
+    ("assignments", "expected_obligation"),
+    [
+        ({
+            "role_provider": "yes",
+            "eu_generates_synthetic_content": "yes",
+            "eu_standard_editing_assistance_only": "no",
+            "eu_50_2_criminal_law_exception": "no",
+        }, "eu_marking_50_2"),
+        ({
+            "role_deployer": "yes",
+            "eu_emotion_recognition": "yes",
+            "eu_50_3_persons_exposed": "yes",
+            "eu_50_3_criminal_law_exception": "no",
+        }, "eu_notice_50_3"),
+        ({
+            "role_deployer": "yes",
+            "eu_deepfake_content": "yes",
+            "eu_50_4_criminal_law_exception": "no",
+        }, "eu_disclosure_50_4_deepfake"),
+        ({
+            "role_deployer": "yes",
+            "eu_public_interest_text": "yes",
+            "eu_human_review_or_editorial_control": "no",
+            "eu_50_4_criminal_law_exception": "no",
+        }, "eu_disclosure_50_4_text"),
+    ],
+)
+def test_article_50_positive_paths_emit_the_expected_obligation(
+        assignments, expected_obligation):
+    kernel = DecisionKernel()
+    facts = _resolved_map(kernel, "eu")
+    facts.update({
+        "jurisdiction_in_scope": _value("yes", "eu"),
+        "is_ai_system": _value("yes", "eu"),
+    })
+    facts.update({
+        fact_id: _value(state, "eu")
+        for fact_id, state in assignments.items()
+    })
+    result = kernel.evaluate(_request(kernel, "eu", facts))
+    assert expected_obligation in _obligation_ids(result)
 
 
 def test_korea_high_impact_indication_and_article_33_review():

@@ -3,7 +3,7 @@
   "_why_it_exists": "The block it replaces was invented output shown behind a $ prompt. A visitor reads that as a real scan.",
   "check": {
     "command": "regula check tests/fixtures/sample_high_risk --explain",
-    "model_version": "2026-08-12.4",
+    "model_version": "2026-08-19.1",
     "result_type": "insufficient_information",
     "rule_resolution": "unresolved",
     "unresolved_count": 2,
@@ -16,7 +16,7 @@
     "article_observations_emitted": 0,
     "article_observations_held": 8,
     "command": "regula comply tests/fixtures/sample_high_risk --all",
-    "model_version": "2026-08-12.4",
+    "model_version": "2026-08-19.1",
     "result_type": "insufficient_information",
     "rule_resolution": "unresolved",
     "unresolved_count": 2,
@@ -30,7 +30,7 @@
     "article_observations_emitted": 0,
     "article_observations_held": 8,
     "command": "regula gap tests/fixtures/sample_high_risk",
-    "model_version": "2026-08-12.4",
+    "model_version": "2026-08-19.1",
     "result_type": "insufficient_information",
     "rule_resolution": "unresolved",
     "unresolved_count": 2,
@@ -39,10 +39,10 @@
       "jurisdiction_in_scope"
     ]
   },
-  "generated_at": "2026-08-12T13:42:05.192740+00:00",
+  "generated_at": "2026-08-19T07:56:16.708383+00:00",
   "plan": {
     "command": "regula plan --project tests/fixtures/sample_high_risk",
-    "model_version": "2026-08-12.4",
+    "model_version": "2026-08-19.1",
     "result_type": "insufficient_information",
     "rule_resolution": "unresolved",
     "unresolved_count": 2,

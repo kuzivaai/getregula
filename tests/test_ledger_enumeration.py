@@ -19,15 +19,59 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 import ledger_status  # noqa: E402
 
 
-def test_every_entry_has_exactly_one_state_token():
-    """A new entry without a token is invisible to every count of this file."""
+def test_every_machine_state_entry_has_exactly_one_state_token():
+    """A new heading entry without a token cannot vanish from state counts."""
     entries = ledger_status.parse()
     assert entries, "no ledger entries parsed"
     ids = [n for n, _ in entries]
     assert len(ids) == len(set(ids)), f"duplicate ids: {ids}"
     for nid, state in entries:
         assert state in ledger_status.VALID_STATES, f"{nid}: {state}"
-    print(f"  PASS  every one of {len(entries)} ledger entries carries a state")
+    print(f"  PASS  all {len(entries)} machine-state entries carry a state")
+
+
+def test_legacy_rows_are_disclosed_as_a_separate_population():
+    """Historical table rows must never disappear behind a heading-only total."""
+    legacy = ledger_status.legacy_rows()
+    machine = {nid for nid, _state in ledger_status.parse()}
+    assert legacy, "the known historical table population was not detected"
+    assert len(legacy) == len(set(legacy)), f"duplicate legacy ids: {legacy}"
+    assert machine.isdisjoint(legacy), (
+        "an id occurs in both populations, so separate counts would double-count it"
+    )
+    print(
+        f"  PASS  {len(legacy)} legacy rows are disclosed separately from "
+        f"{len(machine)} machine-state entries"
+    )
+
+
+def test_every_legacy_row_has_a_conservative_migration_classification():
+    legacy = ledger_status.legacy_rows()
+    classified = ledger_status.legacy_classifications()
+    assert [row["id"] for row in classified] == legacy
+    assert all(row["state"] in ledger_status.VALID_LEGACY_STATES
+               for row in classified)
+    assert any(row["state"] == "REVIEW_REQUIRED" for row in classified), (
+        "mixed historical prose was silently forced into a resolved state"
+    )
+    assert all(row["basis"] for row in classified)
+    print(f"  PASS  all {len(classified)} legacy rows have an explicit "
+          "migration state or REVIEW_REQUIRED boundary")
+
+
+def test_legacy_migration_refuses_to_guess_mixed_or_non_state_prose():
+    sample = (
+        "| F1 | finding | 2026-01-01 | **OPEN.** work remains |\n"
+        "| F2 | finding | 2026-01-01 | **PARTIALLY CLOSED.** one item open |\n"
+        "| F3 | finding | 2026-01-01 | **CLOSED.** verified |\n"
+        "| F4 | finding | 2026-01-01 | **CLOSED as measurement; underlying "
+        "defect OPEN.** |\n"
+        "| F5 | finding | 2026-01-01 | **MEASURED.** owner ruling needed |\n"
+    )
+    assert [row["state"] for row in ledger_status.legacy_classifications(sample)] == [
+        "OPEN", "PARTIAL", "CLOSED", "REVIEW_REQUIRED", "REVIEW_REQUIRED"
+    ]
+    print("  PASS  legacy migration preserves mixed states for human review")
 
 
 def test_parse_refuses_an_entry_with_no_state_token():
@@ -161,7 +205,10 @@ def test_control_the_outstanding_marker_does_not_fire_on_standing_verdicts(
 
 
 if __name__ == "__main__":
-    for t in (test_every_entry_has_exactly_one_state_token,
+    for t in (test_every_machine_state_entry_has_exactly_one_state_token,
+              test_legacy_rows_are_disclosed_as_a_separate_population,
+              test_every_legacy_row_has_a_conservative_migration_classification,
+              test_legacy_migration_refuses_to_guess_mixed_or_non_state_prose,
               test_parse_refuses_an_entry_with_no_state_token,
               test_parse_refuses_an_unknown_state,
               test_parse_refuses_two_tokens_in_one_entry,

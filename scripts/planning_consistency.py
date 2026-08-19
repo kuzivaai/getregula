@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Planning document consistency checker.
+"""Repository planning-record consistency checker.
 
-Catches the class of defect where summary counts disagree with the
-underlying data — the "BACKLOG arithmetic" defect class from Session 9.
+Catches the class of defect where planning summaries or integrity claims
+disagree with the records they describe.
 
 Run: python3 scripts/planning_consistency.py
 Exit 0 = all consistent, exit 1 = defects found.
@@ -12,62 +12,57 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BACKLOG = ROOT / "planning" / "BACKLOG.md"
 
 
-def check_backlog_status_counts() -> list[str]:
-    """Recompute BACKLOG.md status counts from status lines and compare to summary table."""
+def check_ledger_integrity() -> list[str]:
+    """Validate the current ledger instead of opening a deleted backlog."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import ledger_status
+
     errors = []
-    text = BACKLOG.read_text(encoding="utf-8")
-    lines = text.splitlines()
+    try:
+        entries = ledger_status.parse_full()
+    except (OSError, ValueError) as exc:
+        return [f"LEDGER cannot be enumerated: {exc}"]
 
-    # Extract actual statuses from **Status:** lines
-    status_counts: dict[str, int] = {}
-    for line in lines:
-        m = re.match(r'^\*\*Status:\*\*\s+(\w[\w ]*)', line)
-        if m:
-            raw = m.group(1).strip().split(" — ")[0].split(" (")[0]
-            status_counts[raw] = status_counts.get(raw, 0) + 1
-
-    # Extract summary table counts
-    in_summary = False
-    table_counts: dict[str, int] = {}
-    for line in lines:
-        if "## Summary Statistics" in line:
-            in_summary = True
-            continue
-        if in_summary and line.startswith("| ") and "DONE" in line.upper() or \
-           in_summary and line.startswith("| ") and "PARTIAL" in line.upper() or \
-           in_summary and line.startswith("| ") and "NOT STARTED" in line.upper() or \
-           in_summary and line.startswith("| ") and "NOT SUBMITTED" in line.upper() or \
-           in_summary and line.startswith("| ") and "GATED" in line.upper():
-            parts = [p.strip() for p in line.split("|") if p.strip()]
-            if len(parts) >= 2:
-                label = parts[0].strip("* ")
-                try:
-                    count = int(parts[1])
-                    table_counts[label] = count
-                except ValueError:
-                    pass
-
-    # Compare
-    for label, actual in status_counts.items():
-        table_val = table_counts.get(label)
-        if table_val is not None and table_val != actual:
+    known = {nid for nid, _state, _body in entries}
+    for nid, refs in ledger_status.divergences(entries):
+        if not refs:
             errors.append(
-                f"BACKLOG summary '{label}': table says {table_val}, "
-                f"actual status lines = {actual}"
+                f"LEDGER {nid} is CLOSED while its status reads outstanding "
+                "and has no Resolved by declaration"
             )
+    for nid, _state, body in entries:
+        for ref in ledger_status.resolved_by(body):
+            if ref not in known:
+                errors.append(f"LEDGER {nid} has missing Resolved by target {ref}")
+            elif ref == nid:
+                errors.append(f"LEDGER {nid} cannot resolve itself")
 
-    # Check total
-    total_actual = sum(status_counts.values())
-    total_tasks = len(re.findall(r'^### [A-H]\d+', text, re.MULTILINE))
-    if total_actual != total_tasks:
+    legacy = ledger_status.legacy_rows()
+    overlap = known.intersection(legacy)
+    if overlap:
         errors.append(
-            f"BACKLOG: {total_tasks} task headings but {total_actual} status lines"
+            "LEDGER ids occur in both legacy and machine-state populations: "
+            + ", ".join(sorted(overlap))
         )
-
     return errors
+
+
+def planning_notes() -> list[str]:
+    """Coverage limits that are important but not fabricated as defects."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import ledger_status
+
+    classifications = ledger_status.legacy_classifications()
+    review_required = sum(
+        row["state"] == "REVIEW_REQUIRED" for row in classifications
+    )
+    return [
+        f"LEDGER has {len(classifications)} legacy table rows outside the "
+        f"heading-state totals; {review_required} conservatively remain "
+        "REVIEW_REQUIRED and ledger_status --legacy enumerates every row"
+    ] if classifications else []
 
 
 def check_pattern_count_consistency() -> list[str]:
@@ -154,7 +149,7 @@ def check_blog_index_completeness() -> list[str]:
 
 def main() -> int:
     all_errors: list[str] = []
-    all_errors.extend(check_backlog_status_counts())
+    all_errors.extend(check_ledger_integrity())
     all_errors.extend(check_pattern_count_consistency())
     all_errors.extend(check_stale_regulatory_terms())
     all_errors.extend(check_blog_index_completeness())
@@ -165,7 +160,9 @@ def main() -> int:
             print(f"  FAIL  {e}")
         return 1
     else:
-        print("planning-consistency: all checks passed")
+        print("planning-consistency: all executable checks passed")
+        for note in planning_notes():
+            print(f"  NOTE  {note}")
         return 0
 
 

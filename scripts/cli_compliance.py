@@ -12,139 +12,142 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 
-def _check_article_50(project_path: str) -> list:
-    """Check Article 50 transparency obligations for limited-risk systems.
-
-    Returns a list of dicts with check name, status, and detail.
-    Based on EU AI Act Article 50(1)-(5), verified against the
-    EC AI Act Service Desk (ai-act-service-desk.ec.europa.eu).
-    """
-    import os
-    # Canonical skip set + shared path guard. constants.py states the
-    # invariant explicitly: every scanner path must import THIS set and
-    # never define its own ("six independently-drifted copies shipped
-    # once"). This module had drifted — its inline set omitted 12 entries
-    # including examples/, benchmarks/ and site-packages/, so `regula
-    # comply` walked directories every other scanner skips.
-    from constants import SKIP_DIRS
-    from scan_safety import read_bytes_if_safe
-    import re
-
-    project = Path(project_path).resolve()
-    checks = []
-
-    # Gather all code content
-    code_content = ""
-    doc_content = ""
-    _root_resolved = Path(project).resolve()
-    for root, dirs, files in os.walk(project):
-        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
-        for fn in files:
-            fp = Path(root) / fn
-            if fp.suffix.lower() in (".py", ".js", ".ts", ".java", ".go", ".rs"):
-                _raw, _ = read_bytes_if_safe(fp, _root_resolved)
-                if _raw is not None:
-                    code_content += _raw.decode("utf-8", errors="ignore")
-            elif fp.suffix.lower() in (".md", ".txt", ".html", ".yaml", ".yml"):
-                _raw, _ = read_bytes_if_safe(fp, _root_resolved)
-                if _raw is not None:
-                    doc_content += _raw.decode("utf-8", errors="ignore")
-
-    all_content = (code_content + doc_content).lower()
-
-    # Art 50(1): AI interaction disclosure
-    ai_disclosure_patterns = [
-        r"ai.?disclos", r"ai.?system.?notice", r"interacting.?with.?ai",
-        r"powered.?by.?ai", r"ai.?generated", r"this.?is.?an?.?ai",
-        r"automated.?system", r"bot.?disclosure", r"ai.?transparency",
-    ]
-    has_disclosure = any(re.search(p, all_content) for p in ai_disclosure_patterns)
-    checks.append({
-        "article": "50(1)",
-        "title": "AI interaction disclosure",
-        "obligation": "Users must be informed they are interacting with an AI system",
-        "status": "found" if has_disclosure else "not_found",
-    })
-
-    # Art 50(2): Synthetic content marking
-    marking_patterns = [
-        r"content.?mark", r"watermark", r"c2pa", r"content.?credentials",
-        r"synthetic.?label", r"ai.?generated.?mark", r"provenance",
-        r"content.?authenticity", r"machine.?readable.?mark",
-    ]
-    has_marking = any(re.search(p, all_content) for p in marking_patterns)
-    checks.append({
-        "article": "50(2)",
-        "title": "Synthetic content marking",
-        "obligation": "AI-generated content must be marked in machine-readable format",
-        "status": "found" if has_marking else "not_found",
-    })
-
-    # Art 50(3): Emotion recognition / biometric notice
-    emotion_patterns = [
-        r"emotion.?recogn", r"sentiment.?analy", r"affect.?detect",
-        r"biometric.?categori", r"age.?estimat", r"gender.?detect",
-    ]
-    has_emotion_system = any(re.search(p, code_content.lower()) for p in emotion_patterns)
-    if has_emotion_system:
-        inform_patterns = [
-            r"inform.{0,30}(emotion|biometric|categori)",
-            r"(emotion|biometric).{0,30}(notice|disclos|consent|inform)",
-        ]
-        has_inform = any(re.search(p, all_content) for p in inform_patterns)
-        checks.append({
-            "article": "50(3)",
-            "title": "Emotion/biometric system notice",
-            "obligation": "Persons exposed must be informed of system operation",
-            "status": "found" if has_inform else "not_found",
-        })
-
-    # Art 50(4): Deep fake / synthetic media disclosure
-    deepfake_patterns = [
-        r"deepfake", r"face.?swap", r"voice.?clon",
-        r"synthetic.?media", r"image.?generat",
-    ]
-    has_deepfake = any(re.search(p, code_content.lower()) for p in deepfake_patterns)
-    if has_deepfake:
-        disclosure_patterns = [
-            r"(deepfake|synthetic|generated).{0,30}(disclos|label|notice|warn)",
-            r"(disclos|label|notice).{0,30}(deepfake|synthetic|generated)",
-        ]
-        has_df_disclosure = any(re.search(p, all_content) for p in disclosure_patterns)
-        checks.append({
-            "article": "50(4)",
-            "title": "Deep fake / synthetic media disclosure",
-            "obligation": "Content must be disclosed as artificially generated or manipulated",
-            "status": "found" if has_df_disclosure else "not_found",
-        })
-
-    return checks
-
-
 def cmd_comply(args) -> None:
     """Report evidence only for obligations resolved by the decision kernel."""
     from cli import json_output
-    from compliance_check import assess_compliance
+    from compliance_check import ARTICLE_NUMBERS, assess_compliance
+    from cli_scan import _declared_facts, _print_fact_catalogue
+
+    if getattr(args, "list_facts", False):
+        _print_fact_catalogue(command="comply")
+        return
 
     project = str(Path(getattr(args, "project", ".")).resolve())
     # If --article specified, show deep-dive for that article
     article_filter = getattr(args, "article", None)
     articles = [article_filter] if article_filter else None
 
+    from decision_adapters import empty_decision, evaluate_payload, format_decision_text
+    declared_facts, fact_notices = _declared_facts(
+        args, project, "eu", source_ref="cli:comply --fact"
+    )
+    decision = (
+        evaluate_payload({"jurisdiction": "eu", "facts": declared_facts})
+        if declared_facts else empty_decision("eu", "cli:comply")
+    )
+
+    if article_filter == "50":
+        from article50_evidence import format_article50_text, scan_article50
+        resolved_declared_fact_ids = set()
+        for fact_id, entry in declared_facts.items():
+            decisive_states = {
+                value.get("state") for value in entry.get("values", [])
+                if value.get("state") != "unknown"
+            }
+            if len(decisive_states) == 1:
+                resolved_declared_fact_ids.add(fact_id)
+        observations = scan_article50(
+            project, resolved_fact_ids=resolved_declared_fact_ids
+        )
+        scope_trace = next(
+            (trace for trace in decision.get("decision_trace", [])
+             if trace.get("predicate_id") == "eu_scope"),
+            None,
+        )
+        article50_traces = [
+            trace for trace in decision.get("decision_trace", [])
+            if trace.get("predicate_id", "").startswith("eu_transparency_")
+        ]
+        article50_obligations = [
+            obligation for obligation in decision.get("obligations", [])
+            if "Article 50(" in obligation.get("provision", "")
+        ]
+        resolved_outside_scope = bool(
+            scope_trace and scope_trace.get("state") == "false"
+        )
+        all_paths_resolved = (
+            scope_trace is not None
+            and scope_trace.get("state") == "true"
+            and len(article50_traces) == 5
+            and all(trace.get("state") != "unresolved"
+                    for trace in article50_traces)
+        )
+        applicability_resolution = (
+            "resolved_applicable" if article50_obligations
+            else "resolved_not_applicable"
+            if resolved_outside_scope or all_paths_resolved
+            else "unresolved"
+        )
+        evidence = {
+            "project_path": project,
+            "article_observations": {},
+            "not_assessed_article_count": (
+                1 if applicability_resolution == "unresolved" else 0
+            ),
+            "applicability_resolution": applicability_resolution,
+            "resolved_article50_obligations": article50_obligations,
+            "technical_observations": {"50": observations},
+            "note": (
+                "Article 50 applicability is evaluated only from declared "
+                "facts. Static trigger and control signals remain separate "
+                "review leads and are not treated as legal facts or a "
+                "compliance score."
+            ),
+        }
+        if getattr(args, "format", "text") == "json":
+            json_output("comply", {
+                "decision": decision,
+                "declared_facts": declared_facts,
+                "declared_facts_notices": fact_notices,
+                "evidence": evidence,
+            })
+            return
+        print(format_decision_text(decision, command="comply"))
+        if declared_facts:
+            import fact_store as fs
+            print(f"\nDeclared facts: {len(declared_facts)} "
+                  "(asserted by a person, not established by Regula)")
+            for line in fs.describe(declared_facts):
+                print(line)
+        for notice in fact_notices:
+            print(f"  INFO: {notice}", file=sys.stderr)
+        print()
+        print(format_article50_text(observations))
+        return
+
+    if article_filter and article_filter not in ARTICLE_NUMBERS:
+        valid = ", ".join(ARTICLE_NUMBERS + ["50"])
+        print(
+            f"Error: unsupported article {article_filter!r}. "
+            f"Supported article filters: {valid}.",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
+
     assessment = assess_compliance(project, articles=articles)
     from decision_adapters import (
-        empty_decision,
-        format_decision_text,
         resolved_gap_evidence,
     )
-    decision = empty_decision("eu", "cli:comply")
     evidence = resolved_gap_evidence(assessment, decision)
 
     if getattr(args, "format", "text") == "json":
-        json_output("comply", {"decision": decision, "evidence": evidence})
+        json_output("comply", {
+            "decision": decision,
+            "declared_facts": declared_facts,
+            "declared_facts_notices": fact_notices,
+            "evidence": evidence,
+        })
         return
 
-    print(format_decision_text(decision))
+    print(format_decision_text(decision, command="comply"))
+    if declared_facts:
+        import fact_store as fs
+        print(f"\nDeclared facts: {len(declared_facts)} "
+              "(asserted by a person, not established by Regula)")
+        for line in fs.describe(declared_facts):
+            print(line)
+    for notice in fact_notices:
+        print(f"  INFO: {notice}", file=sys.stderr)
     print("\nEvidence scan:")
     print(evidence["note"])
     print(

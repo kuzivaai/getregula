@@ -1348,6 +1348,7 @@ def assess_compliance(
 
     return {
         "project": project_name,
+        "project_path": str(project),
         "highest_risk": highest_risk,
         "assessment_date": datetime.now(timezone.utc).isoformat(),
         "articles": article_results,

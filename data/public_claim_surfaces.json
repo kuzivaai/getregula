@@ -2049,6 +2049,28 @@
       "reason": "Deep-dive into a specific article (e.g. 9, 14)"
     },
     {
+      "stable_id": "cli:51f70d18745e7ff0",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula comply:--fact",
+      "destination": "regula comply --fact",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Declare one decision fact for this run. States: yes, no, unknown, not_applicable. Repeatable; overrides the project fact store."
+    },
+    {
+      "stable_id": "cli:ee63e1a701b1f678",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula comply:--facts-file",
+      "destination": "regula comply --facts-file",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Read declared facts from an explicit fact-store file"
+    },
+    {
       "stable_id": "cli:30eb9e78ca5ecc1b",
       "channel": "cli",
       "source": "scripts/cli.py#regula comply:--format",
@@ -2069,6 +2091,28 @@
       "claim_capable": true,
       "classification": "active_product",
       "reason": "show this help message and exit"
+    },
+    {
+      "stable_id": "cli:6bdaf3061769633f",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula comply:--list-facts",
+      "destination": "regula comply --list-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Print every fact id accepted by --fact and exit"
+    },
+    {
+      "stable_id": "cli:b5d52a50c57f64e2",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula comply:--no-facts",
+      "destination": "regula comply --no-facts",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Ignore all declared facts, including the project store"
     },
     {
       "stable_id": "cli:20d2283bfe15f630",
@@ -8773,14 +8817,14 @@
   "totals": {
     "channel": {
       "action": 22,
-      "cli": 635,
+      "cli": 639,
       "mcp": 3,
       "package": 2,
       "repository_docs": 39,
       "website": 96
     },
     "classification": {
-      "active_product": 769,
+      "active_product": 773,
       "historical_record": 1,
       "internal_record": 1,
       "non_claim_asset": 26

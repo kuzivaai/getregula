@@ -312,19 +312,24 @@ def source_types(facts: Mapping[str, Any]) -> set:
 
 
 def collect_cli_facts(raw_args: Iterable[str], jurisdiction: str,
-                      model: Mapping[str, Any]) -> dict:
+                      model: Mapping[str, Any],
+                      source_ref: str = "cli:check --fact") -> dict:
     """Turn `--fact id=state` arguments into a canonical fact map."""
     known = known_fact_ids(model)
     facts: dict[str, dict] = {}
     for raw in raw_args or ():
         fact_id, state = parse_fact_argument(raw)
         if fact_id not in known:
+            catalogue_command = (
+                "comply" if source_ref.startswith("cli:comply") else "check"
+            )
             raise FactStoreError(
                 f"--fact {fact_id!r} is not defined by decision model "
                 f"{model.get('model_version')!r}. "
-                f"Run `regula check --list-facts` to see the ids this model uses.")
+                f"Run `regula {catalogue_command} --list-facts` to see the ids "
+                "this model uses.")
         facts[fact_id] = {"values": [build_value(
-            state, jurisdiction, "cli:check --fact",
+            state, jurisdiction, source_ref,
             source_type=SOURCE_USER_ATTESTATION,
             question=(model["fact_definitions"][fact_id].get("question")),
         )]}
