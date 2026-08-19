@@ -242,7 +242,7 @@
             <li><strong>Cross-file Article 14 oversight detection</strong> &mdash; <code>regula oversight</code> traces AI model outputs through call chains to detect missing human-in-the-loop gates.</li>
             <li><strong>AI Bill of Materials (CycloneDX 1.7 ML-BOM)</strong> &mdash; see model registry row above.</li>
             <li><strong>Audit trail with hash chain</strong> &mdash; <code>regula audit</code> maintains a tamper-evident log of compliance scans.</li>
-            <li><strong>Pre-commit hook for prohibited patterns</strong> &mdash; <code>hooks/pre_tool_use.py</code> blocks Bash/Write/Edit operations that touch Article 5 prohibited patterns. Prevention layer that complements detection.</li>
+            <li><strong>Pre-commit scanning</strong> &mdash; <code>regula install pre-commit</code> or <code>regula install git-hooks</code> configures the tracked scanner to run before commits. This is pattern-based detection, not a legal determination.</li>
             <li><strong>MCP server</strong> &mdash; <code>regula mcp-server</code> exposes <code>regula_check</code>, <code>regula_classify</code>, and <code>regula_gap</code> as tools an AI coding assistant can call directly. Documented for Claude Code, Cursor, and Windsurf.</li>
         </ul>
     </section>

@@ -23,8 +23,11 @@ name the try block imports must have a stub in the except block. Two did not
 (`is_training_activity`, `generate_observations`), and fail-open worked only
 because both call sites happen to sit inside a bare `except Exception: pass`.
 
-hooks/ is gitignored, so this file is the only tracked artefact that
-exercises it. That is the point: untracked is not unused. See LEDGER N114.
+hooks/ is gitignored local development tooling and is not distributed in the
+public repository or package. These four tests therefore run only when the
+local hook is present and are explicitly skipped in a clean checkout. Public
+installer coverage below separately prevents the CLI from advertising that
+unshipped file. See LEDGER N114.
 """
 import ast
 import json
@@ -36,7 +39,23 @@ import tempfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
 HOOK = REPO_ROOT / "hooks" / "pre_tool_use.py"
+
+
+class SkippedLocalHook(Exception):
+    """Fallback skip signal when pytest is unavailable to the custom runner."""
+
+
+def _require_local_hook():
+    if HOOK.is_file():
+        return
+    reason = "hooks/pre_tool_use.py is local tooling and is not distributed"
+    try:
+        import pytest
+    except ImportError:
+        raise SkippedLocalHook(reason)
+    pytest.skip(reason)
 
 # The fixture is built from character codes rather than written out, following
 # the convention in .claude/rules/tests.md for synthetic values that would
@@ -63,6 +82,7 @@ def _run(hook_path, payload, env=None, cwd=None):
 
 def test_hook_denies_a_prohibited_practice_on_the_normal_path():
     """The control must work before its degraded mode is worth discussing."""
+    _require_local_hook()
     proc = _run(HOOK, PAYLOAD, cwd=str(REPO_ROOT))
     assert proc.stdout.strip(), f"the hook printed nothing: {proc.stderr!r}"
     out = json.loads(proc.stdout)
@@ -87,6 +107,7 @@ def test_hook_fails_open_and_says_so_when_scripts_cannot_be_imported():
     the only signal a user gets that the control is off, so it is part of the
     contract rather than decoration.
     """
+    _require_local_hook()
     with tempfile.TemporaryDirectory() as d:
         broken = Path(d) / "hooks"
         broken.mkdir()
@@ -136,6 +157,7 @@ def test_every_imported_name_has_a_fail_open_stub():
     it surfaces at all depends on whether its call site happens to sit inside
     a broad except.
     """
+    _require_local_hook()
     _, guarded, imported = _guarded_import_block()
 
     stubbed = set()
@@ -167,6 +189,7 @@ def test_the_hook_imports_no_name_it_never_uses():
     never needed. Nothing in this file exercised it, so nothing here failed
     when it was wrong: the failure surfaced seven tests away.
     """
+    _require_local_hook()
     tree, _, imported = _guarded_import_block()
     used = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
     used |= {n.attr for n in ast.walk(tree) if isinstance(n, ast.Attribute)}
@@ -177,6 +200,58 @@ def test_the_hook_imports_no_name_it_never_uses():
         "to scripts/ that nothing in this hook tests, and hooks/ is gitignored "
         "so scripts/ cannot see the consumer either. Import only what is called.")
     print(f"  PASS  all {len(imported)} guarded imports are actually used")
+
+
+def test_public_installer_advertises_only_shipped_integrations():
+    """Public install routes must not point to gitignored local hook files."""
+    from install import PLATFORMS
+
+    assert set(PLATFORMS) == {"pre-commit", "git-hooks"}, (
+        "installer advertised an unsupported route: "
+        f"{sorted(PLATFORMS)}")
+    print("  PASS  public installer advertises only shipped integrations")
+
+
+def test_cli_rejects_unshipped_hook_platform_without_a_traceback():
+    """A removed hook route is a usage error, not a KeyError or false success."""
+    proc = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "install", "claude-code"],
+        capture_output=True, text=True, timeout=120, cwd=str(REPO_ROOT))
+    assert proc.returncode == 2, proc
+    assert "invalid choice" in proc.stderr, proc.stderr
+    assert "Traceback" not in proc.stderr, proc.stderr
+    assert not proc.stdout.strip(), proc.stdout
+    print("  PASS  unshipped hook platform is rejected as a usage error")
+
+
+def test_doctor_detects_regula_content_not_editor_directories():
+    """An editor directory alone is not evidence that Regula is installed."""
+    from doctor import _check_hooks
+
+    previous = Path.cwd()
+    with tempfile.TemporaryDirectory() as empty_dir:
+        empty = Path(empty_dir)
+        (empty / ".claude" / "hooks").mkdir(parents=True)
+        try:
+            os.chdir(empty)
+            absent = _check_hooks()
+        finally:
+            os.chdir(previous)
+    assert absent["status"] == "INFO", absent
+
+    with tempfile.TemporaryDirectory() as configured_dir:
+        configured = Path(configured_dir)
+        (configured / ".pre-commit-config.yaml").write_text(
+            "repos:\n  - repo: local\n    hooks:\n      - id: regula-check\n",
+            encoding="utf-8")
+        try:
+            os.chdir(configured)
+            present = _check_hooks()
+        finally:
+            os.chdir(previous)
+    assert present["status"] == "PASS", present
+    assert "pre-commit framework" in present["detail"], present
+    print("  PASS  doctor requires actual Regula integration content")
 
 
 if __name__ == "__main__":

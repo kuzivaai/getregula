@@ -96,9 +96,9 @@ regula aibom --project .
 regula aibom --project . --format cyclonedx   # CycloneDX output
 regula aibom --project . --format markdown     # Markdown table
 
-# Install hooks for a platform
-regula install claude-code
-regula install copilot-cli
+# Install scanning before commits
+regula install pre-commit
+regula install git-hooks
 regula install list
 
 # Start the REST API server with web dashboard

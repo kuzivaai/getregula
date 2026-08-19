@@ -10,7 +10,7 @@ Usage:
     regula report [--format html]    Generate reports (HTML, SARIF, JSON)
     regula audit [verify|export]     Manage audit trail
     regula discover [--project .]    Discover AI systems
-    regula install [platform]        Install hooks for a platform
+    regula install [platform]        Install a pre-commit integration
     regula status                    Show registry status
 """
 
@@ -1084,8 +1084,12 @@ def _build_subparsers(subparsers):
     p_discover.set_defaults(func=cmd_discover)
 
     # --- install ---
-    p_install = subparsers.add_parser("install", help="Install hooks for a platform")
-    p_install.add_argument("platform", nargs="?", help="Platform (claude-code, copilot-cli, windsurf, pre-commit, git-hooks)")
+    p_install = subparsers.add_parser(
+        "install", help="Install a pre-commit integration")
+    p_install.add_argument(
+        "platform", nargs="?",
+        choices=("list", "pre-commit", "git-hooks"),
+        help="Integration (pre-commit or git-hooks)")
     p_install.add_argument("--project", "-p", default=".")
     p_install.set_defaults(func=cmd_install)
 
