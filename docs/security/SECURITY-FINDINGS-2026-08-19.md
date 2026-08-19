@@ -40,7 +40,10 @@ bandit -c pyproject.toml -r scripts/ hooks/ -f json
 It reported B310 at the network fetchers in `adoption_pulse.py`,
 `dev_sentiment.py`, `indexnow.py`, `refresh_dpv_vocab.py`,
 `refresh_eli_vocab.py` and `verify_quotations.py`; B405/B314 in XML consumers;
-and two B108 reports on denylist literals in `cli.py` and `mcp_server.py`.
+and two B108 reports on denylist literals in `cli.py` and `mcp_server.py`. The
+[audited starting tree](https://github.com/kuzivaai/getregula/tree/edeeb32a8e340a877041e528ba09b3e2105ea90d)
+preserves those call sites, while the replacement boundaries are exercised by
+[`tests/test_release_distribution_policy.py`](../../tests/test_release_distribution_policy.py).
 
 The branch adds `scripts/safe_io.py`, which permits only exact HTTPS hosts,
 rejects credentials and non-default ports, and revalidates every redirect.
