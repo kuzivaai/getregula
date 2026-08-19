@@ -6805,6 +6805,7 @@ security inventory had not yet been added to the derived public-surface
 contract. Both canonical generators were run, the CI and experimental signing
 install floors were aligned to `cryptography>=50.0.0,<51`, and a regression
 test now prevents those workflow floors from dropping below the audited
-minimum. The final local gate passed 1,465 assertions across 1,405 legacy
-functions, all 3,112 pytest cases, self-test 6/6, and doctor 8 pass / 4 info /
-0 warnings. Fresh exact-head PR and CodeQL checks remain required.
+minimum. The final local gate passed 1,464 assertions across 1,405 legacy
+functions, the full canonical pytest suite, self-test 6/6, and doctor 8 pass /
+4 info / 0 warnings. The collected-test total is maintained in
+`data/site_facts.json`; fresh exact-head PR and CodeQL checks remain required.
