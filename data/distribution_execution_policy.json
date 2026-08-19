@@ -222,8 +222,8 @@
         "installed wheel and sdist verification"
       ],
       "tests_run": [
-        "Final local legacy runner: 1465 assertions across 1405 functions, 0 failed",
-        "Final local pytest: 3112 passed with localhost socket permission",
+        "Final local legacy runner: 1464 assertions across 1405 functions, 0 failed",
+        "Final local pytest passed with localhost socket permission; the collected-test total is recorded in data/site_facts.json",
         "Local self-test: 6/6 passed",
         "Local doctor: 8 passed, 4 info, 0 warnings"
       ],
