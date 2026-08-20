@@ -5,86 +5,106 @@ All notable changes to Regula are documented in this file.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [2.0.0] - 2026-08-19
 
-### Fixed
-- **The published test count was overstated by 18.5%, and is corrected to
-  the figure pytest actually collects.** `2,821` — and briefly `2,849`,
-  published during the same session — both double-counted the **same 527
-  test functions**. `tests/test_classification.py` rebinds fixture-less
-  tests from 22 sibling modules into its own namespace so the custom
-  runner, which discovers tests by walking `globals()`, can execute them.
-  pytest also collects module-level `test_*` names, so every rebound
-  function was collected twice: once in its home module, once again here.
-  The count is now produced by collection rather than maintained by hand,
-  and reads **2,349** at the time of this correction.
+This release changes Regula from a scanner that printed apparent legal
+verdicts and compliance scores into an evidence-gated indicator tool. It also
+replaces the public homepage with a founder-first questionnaire and closes the
+release, security-claim and measurement gaps documented during the August
+audit. The major version is required because several declared CLI and JSON
+contracts are intentionally incompatible with 1.9.0.
 
-  Aliases are bound under a prefix pytest does not collect, so discovery
-  stays automatic and no manual list is reintroduced (one was deliberately
-  removed as tech debt because it drifted silently). Custom-runner
-  coverage is unchanged at 1,386 passed / 963 functions, verified across
-  ten consecutive captured runs. `tests/test_collection_integrity.py`
-  fails if any test function is ever collected twice again, whatever the
-  cause, and asserts the configured `python_functions` patterns cannot
-  match the alias prefix.
+### Removed
 
-  `data/published_count_manifest.json` now records every file permitted to
-  carry the number, and `tests/test_published_count_manifest.py` fails if
-  the literal appears anywhere else — in bare, comma-grouped or
-  dot-grouped form, the last being the locale variant that defeated a
-  manual sweep previously.
-
+- The `check --format json` payload is no longer a bare list, and findings no
+  longer expose the ambiguous `tier` field. Consumers must read
+  `data.detector_findings` and `detector_class`; the outer versioned JSON
+  envelope is unchanged.
+- The `ai-codegen` payload key `transparency_compliant` has been replaced by
+  `transparency_documents_present`, the observable it actually measures,
+  without a compatibility alias.
+- `regula plan --done` no longer reports success for a task absent from the
+  plan; that path now refuses the operation with exit code 2.
+- `regula badge` no longer emits a green EU AI Act compliance badge. It now
+  reports Regula indicator counts and links to the limitations of that claim.
+- Project-local `regula-rules.yaml` regexes are no longer executed merely
+  because Regula is launched inside a repository. Use
+  `--rules ./regula-rules.yaml` to opt in explicitly, or keep a user-owned
+  default at `~/.regula/regula-rules.yaml`.
 
 ### Added
-- **Machine-readable delta-log dataset (JSON-LD):**
-  `content/regulations/delta-log/dataset/regula-aiact-delta-log.jsonld`,
-  generated from the delta-log entries by
-  `scripts/build_delta_dataset.py`. Dataset metadata in W3C DCAT and
-  Dublin Core; legal acts identified by EUR-Lex ELI IRIs with the
-  amendment relation expressed via the ELI ontology's `eli:amends`;
-  every `eli:` term validated at build time against a checked-in
-  ontology snapshot (`scripts/eli_data/`, refreshed by
-  `scripts/refresh_eli_vocab.py`) so a fabricated IRI cannot ship.
-  Delta-log entries gain an optional `jurisdiction` field (default EU).
-- **Multi-annotator corpus tooling:** Fleiss' kappa for >= 3 raters
-  (`benchmarks/annotation_stats.py`, self-tested against a hand-computed
-  example), duplicate detection (`benchmarks/dedup_check.py`),
-  chronological project-level splitting (`benchmarks/temporal_split.py`),
-  the upgraded protocol (`benchmarks/MULTI_ANNOTATOR_PROTOCOL.md`) and a
-  dataset-paper skeleton (`benchmarks/PAPER_OUTLINE.md`). The dedup tool
-  found 2 exact-duplicate keys and 14 intra-project clusters in the
-  existing blind-label set, queued for adjudication in the corpus
-  upgrade.
-- **Head-to-head benchmark harness** (`benchmarks/headtohead/`):
-  FP-penalising scoring explicitly adapted from the CASTLE Score
-  (arXiv:2503.09433, Section 3.3; tier bonus replaces the MITRE-rank
-  bonus, difference stated), a working Regula adapter, refuse-to-guess
-  competitor adapter stubs, and a pre-registration document that locks
-  corpus and metric before any comparative run and gates the run on
-  multi-rater ground truth.
+
+- An evidence-gated decision kernel shared by CLI, REST and browser surfaces.
+  Missing applicability facts produce `insufficient_information` with the
+  unresolved facts named; detector observations do not create legal duties.
+- `--decision-input` and `--save-facts` workflows for recording deployment
+  context separately from code observations.
+- A founder-first, five-question website entry path in English, German and
+  Brazilian Portuguese, with plain-language outcomes, free and human-review
+  routes, no enabled payment or booking path, keyboard/focus handling and
+  JavaScript-disabled recovery.
+- Complete JavaScript execution-parity coverage for all 38 committed synthetic
+  fixtures, plus separate label-fidelity reporting. Execution parity is not
+  represented as real-world recall.
+- A machine-readable legacy-ledger review bot, generated current-state
+  narrative, distribution execution policy and release/distribution evidence
+  records.
+- Published fixed-scope pricing, privacy and terms pages, official MCP registry
+  metadata and GitHub Marketplace preparation/verification records.
+- Machine-readable regulatory delta-log data, multi-annotator corpus tooling
+  and a preregistered head-to-head benchmark harness. These are research
+  infrastructure, not claims of completed external validation.
 
 ### Changed
-- **Colorado page:** xAI v. Weiser docket precision added (D. Colo.
-  No. 1:26-cv-01515; complaint 9 Apr, DOJ intervention motion 24 Apr,
-  enforcement suspension granted 27 Apr 2026) with the Civil Rights
-  Litigation Clearinghouse case page as a source.
-- **South Korea page:** MSIT one-year enforcement grace period (fines up
-  to KRW 30 million deferred except serious-harm cases) and the
-  National AI Strategy Committee's 99-task action plan (Feb 2026),
-  verified against the US ITA market-intelligence summary.
-- **Delta-log OJ entry upgraded to verified-primary:** the EUR-Lex ELI
-  page for Regulation (EU) 2026/1744 was retrieved and its recitals
-  38/40/46 and amended articles corroborate every date the entry
-  carries; retrieval method recorded in the entry.
-- **Bare-run summary clarity:** when BLOCK findings coexist with a
-  `not_ai` classification or a 100/100 score, the summary now explains
-  the relationship (score = applicable obligations for the
-  classification; counts = raw pattern hits) instead of appearing
-  self-contradictory (docs/UX-REVIEW-2026-07.md, finding H1).
-- Test count 2,821 -> 2,849 cascaded across all claim-audited surfaces,
-  including the auditor-blind-spot surfaces (index.html number split
-  from its unit by markup; DE/PT-BR dot-format "2.821") caught by a
-  manual sweep per the known-blind-spots note in the handover.
+
+- Bare `regula` and `regula check` output now separates code observations from
+  applicability decisions. It does not print a legal risk-tier verdict,
+  article obligations or readiness percentage while the required facts remain
+  unresolved.
+- Evidence packs carry scan scope, skipped-path disclosure, unresolved facts
+  and decision provenance. They remain reviewer-completable scaffolds, not
+  compliance determinations or certifications.
+- Scan-cache identity now includes the parameters that materially change a
+  scan, preventing results produced with ignore handling from being reused for
+  `--no-ignore`. Existing cache entries are invalidated, so the first scan
+  after upgrade is cold.
+- Public test counts are derived from collection and restricted to a generated
+  source-of-truth manifest; duplicate collection aliases and markup/locale
+  blind spots now fail CI.
+- Public claims, CLI transcripts, pricing, regulatory dates and sitemap
+  freshness are checked across active English, German and Brazilian Portuguese
+  surfaces.
+
+### Fixed
+
+- The browser scanner now runs the full high-risk fixture corpus instead of a
+  five-fixture subset, while reporting execution reach separately from exact
+  label fidelity.
+- Cache keys now distinguish `--no-ignore`, tier and scan-context parameters;
+  evidence packs state what was actually scanned and skipped.
+- The website's contradictory prices, stale demonstration outputs, withdrawn
+  benchmark wording and developer-first homepage were replaced with
+  source-bound, task-oriented content.
+- The REST API validates a requested path against its launch-directory root
+  before testing whether that path exists or is a file/directory, removing an
+  outside-root filesystem existence/type oracle.
+- The claim auditor recognises browser-tolerated whitespace and trailing text
+  in script/style closing tags, closing a claim-hiding robustness gap.
+
+### Security
+
+- Custom regex rules reject backreferences, lookarounds, quantified groups,
+  unbounded repeats, excessive bounds and multiple variable repeats. Invalid
+  rules are skipped with a visible warning rather than silently accepted.
+- Network maintenance fetchers use exact-host HTTPS allowlists, revalidate
+  redirects and cap XML input before rejecting DTD/entity declarations.
+- The optional cryptography range is raised to the audited major line. The
+  standard-library core still has no runtime dependencies; the all-extras
+  environment is reported separately and retains the dated WeasyPrint 68.1
+  advisory for which the advisory feed provides no fixed release.
+- Bandit, CodeQL, dependency-advisory and Regula self-scan results are now
+  disclosed as separate populations with dates, refs and limitations. No
+  penetration test is claimed.
 
 ## [1.9.0] - 2026-07-27
 

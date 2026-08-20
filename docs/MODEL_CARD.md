@@ -9,7 +9,7 @@ Regula's detection engine is a static analysis system that reports source-code i
 | Field | Value |
 |---|---|
 | Name | Regula Detection Engine |
-| Version | 1.9.0 (this doc updated 2026-07-27) |
+| Version | 2.0.0 (this doc updated 2026-08-19) |
 | Type | Rule-based detector plus a separate evidence-gated legal decision kernel |
 | Training data | None — not a machine learning model |
 | Detection patterns | 419 tiered risk regexes across 57 categories (10 prohibited + 18 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Includes housing (Colorado SB 26-189), transportation (Korea AI Basic Act Art 33), and emotion inference split categories. Regenerate with `python3 scripts/site_facts.py`. |
@@ -211,7 +211,7 @@ Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scri
 
 ### Continuous validation
 
-- 3,112 pytest-collected tests, produced by collection rather than
+- 3,119 pytest-collected tests, produced by collection rather than
   hand-maintained (measured 2026-08-13). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 48 CLI integration tests (`tests/test_cli_integration.py`), enumerated by
@@ -224,7 +224,7 @@ Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scri
 
 ## Versioning
 
-This model card describes Regula v1.9.0. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
+This model card describes Regula v2.0.0. If the detection patterns, classification logic, or evaluation methodology change, this document should be updated in the same commit.
 
 ---
 
