@@ -110,4 +110,4 @@ evidence, do not become compliant by being written down.
 ---
 
 _Template based on EU AI Act (Regulation 2024/1689) Annex IV_
-_For use with Regula v1.9.0_
+_For use with Regula v2.0.0_

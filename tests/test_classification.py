@@ -4918,6 +4918,39 @@ def test_custom_rules_no_file():
     print("✓ Custom rules: missing file returns empty structure")
 
 
+def test_project_custom_rules_require_explicit_opt_in():
+    """A repository cannot silently supply regexes to the scanner."""
+    import os
+    import tempfile
+    from unittest.mock import patch
+    from custom_rules import load_custom_rules
+
+    source = (
+        'version: "1.0"\n'
+        "rules:\n"
+        "  prohibited:\n"
+        "    - name: local_rule\n"
+        "      patterns:\n"
+        '        - "local_rule_marker"\n'
+    )
+    previous = Path.cwd()
+    with tempfile.TemporaryDirectory() as td, tempfile.TemporaryDirectory() as home_td:
+        root = Path(td)
+        rules_path = root / "regula-rules.yaml"
+        rules_path.write_text(source, encoding="utf-8")
+        try:
+            os.chdir(root)
+            with patch("pathlib.Path.home", return_value=Path(home_td)):
+                implicit = load_custom_rules()
+                explicit = load_custom_rules(str(rules_path))
+        finally:
+            os.chdir(previous)
+
+    assert implicit["prohibited"] == []
+    assert len(explicit["prohibited"]) == 1
+    print("✓ Security: project custom regexes require explicit --rules opt-in")
+
+
 def test_custom_prohibited_rule_detected():
     """Custom prohibited rule triggers classification."""
     import sys
@@ -5029,17 +5062,39 @@ def test_custom_rule_redos_protection():
         _compile_custom_pattern("(a+)+$")
         assert False, "Should have raised ValueError for nested quantifiers"
     except ValueError as e:
-        assert "nested quantifier" in str(e).lower()
+        assert "unbounded quantifier" in str(e).lower()
     # Long pattern
     try:
         _compile_custom_pattern("a" * 501)
         assert False, "Should have raised ValueError for long pattern"
     except ValueError as e:
         assert "too long" in str(e).lower()
-    # Valid pattern should work
-    result = _compile_custom_pattern("social.*scoring")
+    # A single bounded wildcard remains supported.
+    result = _compile_custom_pattern(r"social[^\n]{0,200}scoring")
     assert result is not None
     print("✓ Security: ReDoS protection for custom rule patterns")
+
+
+def test_custom_rule_rejects_polynomial_and_advanced_regexes():
+    """Custom rules are confined to the auditable bounded-repeat subset."""
+    from classify_risk import _compile_custom_pattern
+
+    rejected = {
+        "multiple unbounded": "social.*score.*person",
+        "single unbounded": "social.*score",
+        "quantified group": "(social|credit){1,2}",
+        "lookaround": "social(?=.*score)",
+        "backreference": r"(social)\1",
+        "multiple variable repeats": "a{0,10}b{0,10}",
+        "excessive bound": "a{0,501}",
+    }
+    for label, pattern in rejected.items():
+        try:
+            _compile_custom_pattern(pattern)
+            assert False, f"accepted {label}: {pattern}"
+        except ValueError:
+            pass
+    print("✓ Security: custom regex subset rejects unbounded/ambiguous forms")
 
 
 # ---------------------------------------------------------------------------

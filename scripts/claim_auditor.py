@@ -444,9 +444,9 @@ def strip_noise(text: str, suffix: str) -> str:
         return "\n" * m.group(0).count("\n")
 
     text = re.sub(r"<!--.*?-->", _blank, text, flags=re.DOTALL)
-    text = re.sub(r"<script[^>]*>.*?</script\s*>", _blank, text,
+    text = re.sub(r"<script[^>]*>.*?</script(?:\s[^>]*)?>", _blank, text,
                   flags=re.DOTALL | re.IGNORECASE)
-    text = re.sub(r"<style[^>]*>.*?</style\s*>", _blank, text,
+    text = re.sub(r"<style[^>]*>.*?</style(?:\s[^>]*)?>", _blank, text,
                   flags=re.DOTALL | re.IGNORECASE)
 
     # Inline style attribute VALUES only. CSS lengths ("width:100%") are not

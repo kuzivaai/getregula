@@ -28,6 +28,26 @@ import claim_auditor  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
+# HTML noise stripping
+# ---------------------------------------------------------------------------
+
+def test_strip_noise_blanks_browser_tolerated_script_and_style_end_tags():
+    """Malformed whitespace/attributes cannot hide claims from the auditor."""
+    source = (
+        "visible before\n"
+        "<script>hidden 99 tests</script\t\n data-x>\n"
+        "<style>hidden 88 tests</style  data-x>\n"
+        "visible after\n"
+    )
+    stripped = claim_auditor.strip_noise(source, ".html")
+    assert "hidden 99" not in stripped
+    assert "hidden 88" not in stripped
+    assert "visible before" in stripped
+    assert "visible after" in stripped
+    assert stripped.count("\n") == source.count("\n")
+
+
+# ---------------------------------------------------------------------------
 # SECTION_HEADING regex
 # ---------------------------------------------------------------------------
 

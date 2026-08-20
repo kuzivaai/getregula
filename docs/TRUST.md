@@ -61,7 +61,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 3,112 unique tests (3,112 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
+| 3,119 unique tests (3,119 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -88,14 +88,14 @@ your lawyer's job, not Regula's.
 > is pending and tracked as ledger row N43 in
 > [`docs/improvement/LEDGER.md`](improvement/LEDGER.md).
 
-### 3.1 Internal test suite — 3,112 [unique](../tests/) / 3,112 pytest-collected cases
+### 3.1 Internal test suite — 3,119 [unique](../tests/) / 3,119 pytest-collected cases
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ --collect-only -q
-# Expected: 3112 collected. This command measures collection only.
-# 3,112 unique tests (sort -u of test IDs equals collected count).
+# Expected: 3119 collected. This command measures collection only.
+# 3,119 unique tests (sort -u of test IDs equals collected count).
 
 # Execute the full suite separately. Do not infer its result from collection.
 python3 -m pytest tests/ -q
@@ -103,7 +103,7 @@ python3 -m pytest tests/ -q
 
 Regula also ships a legacy auto-discovery runner for the classification
 suite — run `python3 tests/test_classification.py` for its current output.
-The runner currently discovers 1,405 functions, a count machine-checked by
+The runner currently discovers 1,411 functions, a count machine-checked by
 `tests/test_published_count_manifest.py`. **Read that line carefully:
 `1386 passed` is not a count of tests.** The runner's counter is incremented by
 the `assert_true` / `assert_eq` / `assert_false` helpers in `tests/helpers.py`,
@@ -112,7 +112,7 @@ contributes nothing to it. The figure was **also 1386 when the runner executed
 978, 1010, 1011, 1015, 1023, 1033, 1043, 1051, 1056, 1059 and 1060 functions**: 82 functions were added across those
 runs and not one of them uses the helpers. **The number to read is the function count
 in brackets.** It walks `globals()` of `tests/test_classification.py`,
-finds every `test_*` function, and executes it; 442 of those functions
+finds every `test_*` function, and executes it; 444 of those functions
 are defined in the file itself, the rest are aliased in from other test
 modules. The pytest total above covers this suite
 plus all dedicated test files (signing, timestamping, evidence format
@@ -401,7 +401,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (3,112 unique tests, 3,112 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,405 functions, 442 defined in-file) |
+| Test suite | `tests/` (3,119 unique tests, 3,119 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,411 functions, 444 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit integration source | `scripts/install.py` |
@@ -739,7 +739,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 3,112 unique tests (3,112 pytest-collected) |
+| Test suite | `tests/` | 3,119 unique tests (3,119 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |

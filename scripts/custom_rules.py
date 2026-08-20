@@ -6,8 +6,12 @@ Regula's built-in patterns.
 
 Rule file locations (checked in order):
   1. Path from --rules CLI flag
-  2. ./regula-rules.yaml (project root)
-  3. ~/.regula/regula-rules.yaml (user home)
+  2. ~/.regula/regula-rules.yaml (user-owned default)
+
+Project-root rules are not loaded implicitly. A repository can be untrusted
+input, and treating its regular expressions as executable scanner policy lets
+the repository choose work performed by the scanner. Use ``--rules`` to make
+that trust decision explicit.
 """
 import sys
 from pathlib import Path
@@ -42,12 +46,19 @@ def _parse_yaml(text: str) -> dict:
 
 def _find_rules_file() -> str | None:
     """Search default locations for a regula-rules.yaml file."""
-    # 1. Project root (cwd)
+    # A project-local rules file is untrusted repository input. Do not execute
+    # its regexes merely because the user changed directory into the project.
+    # Make the change visible so an existing setup does not silently lose its
+    # custom detections after upgrading.
     cwd_path = Path.cwd() / "regula-rules.yaml"
     if cwd_path.is_file():
-        return str(cwd_path)
+        print(
+            "regula: INFO: project regula-rules.yaml was not auto-loaded; "
+            "pass --rules regula-rules.yaml to trust and use it.",
+            file=sys.stderr,
+        )
 
-    # 2. User home
+    # User-owned configuration remains the default policy source.
     home_path = Path.home() / ".regula" / "regula-rules.yaml"
     if home_path.is_file():
         return str(home_path)
@@ -60,7 +71,8 @@ def load_custom_rules(path: str = None) -> dict:
 
     Args:
         path: Explicit path to a rules file. If None, searches default
-              locations (./regula-rules.yaml, ~/.regula/regula-rules.yaml).
+              location (~/.regula/regula-rules.yaml). Project-local rules
+              require an explicit --rules path.
 
     Returns:
         {
@@ -77,13 +89,8 @@ def load_custom_rules(path: str = None) -> dict:
     if path is None:
         return dict(_EMPTY_RULES)
 
-    # ./regula-rules.yaml comes from the current working directory, which
-    # during `cd repo && regula check .` is the untrusted tree itself.
-    # Auto-discovery happens to filter FIFOs (is_file() is False for
-    # them), but an explicit --rules path reached the bare read directly:
-    # a FIFO there hung classification (reproduced 2026-07-24), and a
-    # symlink was followed wherever it pointed. The guard refuses both,
-    # plus oversized files, without depending on discovery's behaviour.
+    # An explicit --rules path may still name an attacker-shaped file. The
+    # guard refuses FIFOs, symlinks and oversized files before parsing it.
     content = read_text_if_safe(Path(path), errors="strict")
     if content is None:
         print(

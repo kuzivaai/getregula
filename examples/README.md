@@ -50,4 +50,7 @@ Regula's behaviour across tiers is the fastest way to understand what it will
 flag on your own code.
 
 `regula-rules.yaml` in this directory is a separate example showing how to
-define custom organisation-specific patterns.
+define custom organisation-specific patterns. Use it explicitly with
+`regula check . --rules examples/regula-rules.yaml`; project files are not
+auto-loaded as executable regex policy. A user-owned default can instead live
+at `~/.regula/regula-rules.yaml`.

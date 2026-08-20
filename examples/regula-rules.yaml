@@ -1,8 +1,9 @@
 # regula-rules.yaml — Custom risk patterns for your organisation
 #
-# Place this file in your project root (./regula-rules.yaml) or in your
-# home directory (~/.regula/regula-rules.yaml). You can also pass an
-# explicit path with: regula check --rules /path/to/rules.yaml
+# Copy this file to ~/.regula/regula-rules.yaml for a user-owned default, or
+# opt in to a project-local file explicitly. Regula does not auto-execute
+# regular expressions found in a repository:
+#   regula check . --rules ./regula-rules.yaml
 #
 # Custom rules SUPPLEMENT Regula's built-in patterns — they cannot
 # override or weaken built-in classifications.
@@ -15,8 +16,8 @@ rules:
   prohibited:
     - name: internal_social_scoring
       patterns:
-        - "employee.*scoring.*system"
-        - "worker.*rank.*algorithm"
+        - "employee[^\\n]{0,200}scoring system"
+        - "worker[^\\n]{0,200}ranking algorithm"
       description: "Internal employee social scoring system"
       article: "5"
 
@@ -25,9 +26,9 @@ rules:
   high_risk:
     - name: automated_hiring
       patterns:
-        - "resume.*screen"
-        - "cv.*filter"
-        - "candidate.*rank"
+        - "resume[^\\n]{0,200}screen"
+        - "cv[^\\n]{0,200}filter"
+        - "candidate[^\\n]{0,200}rank"
       description: "Automated hiring/screening system"
       articles: ["6", "9", "14"]
       category: "Employment (Annex III)"
@@ -37,8 +38,8 @@ rules:
   limited_risk:
     - name: customer_chatbot
       patterns:
-        - "chatbot.*customer"
-        - "virtual.*assistant.*support"
+        - "chatbot[^\\n]{0,200}customer"
+        - "virtual[^\\n]{0,200}assistant support"
       description: "Customer-facing chatbot requiring transparency disclosure"
 
   # Additional AI indicators

@@ -1,6 +1,6 @@
 # Business Continuity & Key-Person Risk
 
-> **Last reviewed:** 2026-07-27 · **Regula version:** 1.9.0
+> **Last reviewed:** 2026-08-19 · **Regula version:** 2.0.0
 
 This document answers, directly, the question a procurement or vendor-risk
 team should ask about any small vendor: **"What happens to us if the
