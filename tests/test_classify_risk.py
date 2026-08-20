@@ -1031,20 +1031,20 @@ class TestCompileCustomPattern:
 
     def test_nested_quantifiers_rejected(self):
         """Patterns with nested quantifiers (ReDoS risk) are rejected."""
-        with pytest.raises(ValueError, match="nested quantifiers"):
+        with pytest.raises(ValueError, match="unbounded quantifier"):
             _compile_custom_pattern(r"(a+)+")
 
     def test_another_nested_quantifier(self):
-        with pytest.raises(ValueError, match="nested quantifiers"):
+        with pytest.raises(ValueError, match="unbounded quantifier"):
             _compile_custom_pattern(r"(x*)*")
 
     def test_invalid_regex_raises(self):
         with pytest.raises(ValueError, match="Invalid regex"):
             _compile_custom_pattern(r"[unclosed")
 
-    def test_normal_quantifiers_allowed(self):
-        """Non-nested quantifiers should be fine."""
-        rx = _compile_custom_pattern(r"pattern_\d+_match")
+    def test_bounded_quantifier_allowed(self):
+        """A single bounded quantifier remains available to custom rules."""
+        rx = _compile_custom_pattern(r"pattern_\d{1,20}_match")
         assert rx is not None
 
 

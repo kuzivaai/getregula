@@ -11,9 +11,9 @@
 
 | Version | Supported |
 |---|---|
-| 1.9.x | ✅ Receives security fixes |
-| 1.7.x | ⚠️ Critical security fixes only; upgrade — 1.9.0 is a drop-in replacement (see `docs/VERSIONING.md`: the jump is a version realignment, not a breaking change) |
-| < 1.7 | ❌ Unsupported — please upgrade |
+| 2.0.x | ✅ Receives security fixes |
+| 1.9.x | ⚠️ Critical security fixes only; 2.0.0 has breaking output/config changes documented in `CHANGELOG.md` |
+| < 1.9 | ❌ Unsupported — please upgrade |
 
 The latest release is on PyPI at <https://pypi.org/project/regula-ai/>.
 
@@ -86,9 +86,9 @@ for one scope is not described as a clean bill of health for another.
 | Core dependency declaration | 2026-08-19 | No required third-party packages; this does not describe optional extras |
 | Semgrep | 2026-08-19 | Not re-run in this audit; no current zero-finding claim is made |
 | `regula self-test` | Release gate | Final branch result is recorded by CI before merge/release |
-| Custom regression suite | Collection manifest | 3,112 pytest-collected tests; collection count is not a pass result |
+| Custom regression suite | Collection manifest | 3,119 pytest-collected tests; collection count is not a pass result |
 | PyPI provenance attestation (PEP 740, Trusted Publishing) | Each release | Expected on wheel and sdist; verify the individual release rather than infer it |
-| CodeQL static analysis | 2026-08-19 | PR 55 merge-ref analysis returned 0 results; default branch still exposes 43 open alerts from its last analysed commit |
+| CodeQL static analysis | 2026-08-19 | Default-branch analysis at merge commit `2ab71d8` exposes 43 open alerts; the PR 55 zero was baseline-relative, not a zero-inventory result |
 Source: reproducible commands and evidence are documented in [`docs/TRUST.md`](docs/TRUST.md); live workflow state is available in [GitHub Actions](https://github.com/kuzivaai/getregula/actions).
 
 The full posture is in [`docs/TRUST.md`](docs/TRUST.md), Section 7.
@@ -109,12 +109,13 @@ Honest list, also recorded in `docs/TRUST.md`:
 
 ## CodeQL static-analysis alerts (open, triaged, not suppressed)
 
-At the 2026-08-19 snapshot, the default branch exposed **43 open alerts** from
-analysis commit `65eb5b9421ab6ab75a13c47bbf6c3aee1e6209dc`. The exact PR 55
-merge-ref analysis (`dbefebfaee3403145d6736c42b6c809c795f69d6`) returned zero
-results. That is evidence about two different refs: the default-branch alerts
-are not represented as closed until a post-merge default-branch analysis says
-so. Use the [live code-scanning list](https://github.com/kuzivaai/getregula/security/code-scanning)
+At the 2026-08-19 snapshot, the default branch exposes **43 open alerts** from
+analysis commit `2ab71d85929a8bccea8b152cbf5b5b86d14f9b49`. The exact PR 55
+merge-ref analysis returned zero baseline-relative results; it did **not** mean
+the repository inventory was empty. A release branch fixes the reachable API
+path-oracle, custom-regex and claim-auditor defects and retains per-alert proof
+for the intentional scanner paths and test fixtures. Use the
+[live code-scanning list](https://github.com/kuzivaai/getregula/security/code-scanning)
 for current state and the dated [finding inventory](docs/security/SECURITY-FINDINGS-2026-08-19.md)
 for the exact snapshot and dispositions.
 

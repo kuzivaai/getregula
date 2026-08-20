@@ -2,7 +2,7 @@
   "name": "regula",
   "display_name": "Regula — EU AI Act Code-Indicator Scanner",
   "description": "Report code-observable AI governance indicators and candidate risk categories for contextual human review. Maps findings to 13 framework references and provides review scaffolds. The core install has no required third-party runtime dependencies; optional features may add dependencies or network access.",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "repository": "https://github.com/kuzivaai/getregula",
   "homepage": "https://getregula.com",
   "license": "Apache-2.0",

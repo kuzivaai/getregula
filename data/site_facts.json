@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T17:10:39.098295+00:00",
+  "generated_at": "2026-08-19T21:33:17.778811+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,15 +27,15 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 3112,
-      "total_functions": 3059,
+      "total_collected": 3119,
+      "total_functions": 3066,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
         "tests/test_aibom.py": 32,
         "tests/test_analysis_manifest.py": 12,
         "tests/test_annotation_stats.py": 10,
-        "tests/test_api_server.py": 77,
+        "tests/test_api_server.py": 80,
         "tests/test_audit_scoping.py": 39,
         "tests/test_audit_surface_conformance.py": 11,
         "tests/test_bare_scan_decision.py": 1,
@@ -45,13 +45,13 @@
         "tests/test_build_regulations.py": 14,
         "tests/test_cascade_count.py": 39,
         "tests/test_check_decompositions.py": 20,
-        "tests/test_claim_auditor.py": 41,
+        "tests/test_claim_auditor.py": 42,
         "tests/test_claim_auditor_coords.py": 4,
         "tests/test_claim_auditor_percent.py": 15,
         "tests/test_claim_diff.py": 20,
         "tests/test_claim_quarantine.py": 17,
         "tests/test_claim_scan_coverage.py": 10,
-        "tests/test_classification.py": 441,
+        "tests/test_classification.py": 443,
         "tests/test_classify_risk.py": 207,
         "tests/test_cli_integration.py": 48,
         "tests/test_collection_integrity.py": 4,
@@ -128,7 +128,7 @@
         "tests/test_redteam_coverage.py": 19,
         "tests/test_register.py": 22,
         "tests/test_registry.py": 8,
-        "tests/test_release_distribution_policy.py": 10,
+        "tests/test_release_distribution_policy.py": 11,
         "tests/test_release_gate.py": 15,
         "tests/test_reliability.py": 11,
         "tests/test_remediation_plan_integrity.py": 5,
@@ -159,7 +159,7 @@
         "tests/test_tree_guard.py": 10,
         "tests/test_validation_readiness.py": 2
       },
-      "runner_functions": 1405
+      "runner_functions": 1411
     }
   },
   "notes": {

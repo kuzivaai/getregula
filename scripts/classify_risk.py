@@ -430,14 +430,125 @@ def strip_comments(text: str, language: str = "python") -> str:
 # ---------------------------------------------------------------------------
 
 _MAX_PATTERN_LENGTH = 500
+_WARNED_INVALID_CUSTOM_PATTERNS = set()
+
+
+def _validate_custom_pattern_complexity(pattern: str) -> None:
+    """Reject regex structures with unbounded or hard-to-audit runtime.
+
+    Python's stdlib regex engine has no portable match timeout. Custom rules
+    are therefore limited to a deliberately conservative subset: no
+    lookarounds or backreferences, no quantified groups or unbounded repeats,
+    and no more than one bounded variable repeat (maximum 500 characters).
+    This is defence in depth on top of the 500-character
+    pattern limit, the 1 MiB REST classify limit, and the scanner's 10 MiB file
+    limit. It is not a proof that arbitrary regular expressions run in linear
+    time, which is why project-local rules also require explicit opt-in.
+    """
+    if re.search(r"\\[1-9]|\(\?P=", pattern):
+        raise ValueError("Pattern contains a backreference (potential ReDoS)")
+    if any(token in pattern for token in ("(?=", "(?!", "(?<=", "(?<!")):
+        raise ValueError("Pattern contains a lookaround (runtime is not bounded)")
+
+    in_class = False
+    escaped = False
+    variable_repeats = 0
+    fixed_repeat_total = 0
+    previous = ""
+    i = 0
+    while i < len(pattern):
+        char = pattern[i]
+        if escaped:
+            escaped = False
+            previous = "atom"
+            i += 1
+            continue
+        if char == "\\":
+            escaped = True
+            i += 1
+            continue
+        if char == "[" and not in_class:
+            in_class = True
+            i += 1
+            continue
+        if char == "]" and in_class:
+            in_class = False
+            previous = "atom"
+            i += 1
+            continue
+        if in_class:
+            i += 1
+            continue
+
+        if char in "*+":
+            raise ValueError(
+                "Pattern contains an unbounded quantifier; use a bounded "
+                "form such as {0,200}"
+            )
+        elif char == "?":
+            if previous == "quantifier":
+                # Lazy modifier; it does not add another repeated atom.
+                previous = "quantifier"
+            elif previous == "group_open":
+                # ``(?:`` and named-group syntax are structural markers.
+                previous = "group_open"
+            elif previous == "group":
+                raise ValueError("Pattern quantifies a group (potential ReDoS)")
+            else:
+                variable_repeats += 1
+                previous = "quantifier"
+        elif char == "{":
+            end = pattern.find("}", i + 1)
+            if end != -1:
+                if previous == "group":
+                    raise ValueError("Pattern quantifies a group (potential ReDoS)")
+                bounds = pattern[i + 1:end]
+                parts = bounds.split(",", 1)
+                try:
+                    lower = int(parts[0])
+                    upper = int(parts[1]) if len(parts) == 2 and parts[1] else None
+                except ValueError:
+                    # Let re.compile provide the syntax error for a literal
+                    # brace sequence that is not a quantifier.
+                    previous = "atom"
+                    i = end + 1
+                    continue
+                if upper is None and len(parts) == 2:
+                    raise ValueError("Pattern contains an unbounded quantifier")
+                upper = lower if upper is None else upper
+                if upper > 500:
+                    raise ValueError("Pattern repeat upper bound exceeds 500")
+                if lower != upper:
+                    variable_repeats += 1
+                fixed_repeat_total += upper
+                previous = "quantifier"
+                i = end
+            else:
+                previous = "atom"
+        elif char == "(":
+            previous = "group_open"
+        elif char == ")":
+            previous = "group"
+        elif char not in "^$|":
+            previous = "atom"
+
+        if variable_repeats > 1:
+            raise ValueError(
+                "Pattern contains multiple variable quantifiers "
+                "(potential polynomial ReDoS)"
+            )
+        if fixed_repeat_total > 1000:
+            raise ValueError("Pattern fixed-repeat budget exceeds 1000")
+        i += 1
 
 
 def _compile_custom_pattern(pattern: str) -> "re.Pattern":
     """Compile a custom rule pattern with basic ReDoS protection."""
+    if not isinstance(pattern, str):
+        raise ValueError("Pattern must be a string")
     if len(pattern) > _MAX_PATTERN_LENGTH:
         raise ValueError(f"Pattern too long ({len(pattern)} chars, max {_MAX_PATTERN_LENGTH})")
-    if re.search(r'\([^)]*[+*][^)]*\)[+*]', pattern):
-        raise ValueError(f"Pattern contains nested quantifiers (potential ReDoS): {pattern[:50]}")
+    _validate_custom_pattern_complexity(pattern)
     try:
         return re.compile(pattern, re.IGNORECASE)
     except re.error as e:
@@ -531,8 +642,16 @@ def _check_patterns(compiled_dict: dict, patterns_dict: dict,
                             entry[field] = defaults[field]
                     matches.append(entry)
                     break
-            except ValueError:
-                continue  # Skip unsafe patterns silently
+            except ValueError as exc:
+                warning_key = (str(pattern), str(exc))
+                if warning_key not in _WARNED_INVALID_CUSTOM_PATTERNS:
+                    _WARNED_INVALID_CUSTOM_PATTERNS.add(warning_key)
+                    print(
+                        "regula: WARNING: skipped unsafe custom regex "
+                        f"{str(pattern)[:80]!r}: {exc}",
+                        file=sys.stderr,
+                    )
+                continue
 
     # Filter: keep only matches that also appear in stripped (non-comment) text
     if matches and stripped_lower is not None:

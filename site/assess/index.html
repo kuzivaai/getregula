@@ -1218,7 +1218,7 @@ function getScanNextSteps(tier) {
   if (tier === "annex_iii_pattern") {
     return [
       { title: "Review the findings above", desc: "Check that the matched indicators correctly describe your system's purpose. Pattern-based classification requires human review to confirm context." },
-      { title: "Answer the questionnaire too", desc: "The questionnaire assesses deployment context that code scanning cannot detect. Use both for a complete picture." },
+      { title: "Answer the questionnaire too", desc: "The questionnaire assesses deployment context that code scanning cannot detect. Using both provides broader evidence, but still requires human technical and legal review." },
       { title: "Start with your biggest gaps", desc: "Technical documentation (Article 11) and data governance (Article 10) are typically the largest compliance gaps." },
       { title: "For project-wide analysis", desc: "This scan analysed a single file or snippet. Your development team can scan the full project: <code>pipx install regula-ai</code>, then <code>regula gap --project .</code>" },
     ];
