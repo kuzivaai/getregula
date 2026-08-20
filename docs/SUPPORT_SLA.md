@@ -1,8 +1,8 @@
 # Support Service Level Agreement
 
 > **Document version:** 1.1
-> **Last reviewed:** 2026-07-27
-> **Regula version:** 1.9.0
+> **Last reviewed:** 2026-08-19
+> **Regula version:** 2.0.0
 > **See also:** [`CONTINUITY.md`](CONTINUITY.md) — key-person / bus-factor risk
 > **Maintainer:** Kuziva AI Ltd
 

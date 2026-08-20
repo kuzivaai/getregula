@@ -114,3 +114,21 @@ def test_ci_signing_dependency_cannot_fall_below_the_audited_floor():
         source = workflow.read_text(encoding="utf-8")
         assert "cryptography>=41,<51" not in source
         assert "cryptography>=50.0.0,<51" in source
+
+
+def test_github_release_reuses_verified_artifacts_after_pypi_smoke_tests():
+    source = (
+        ROOT / ".github" / "workflows" / "release.yml"
+    ).read_text(encoding="utf-8")
+    release_job = source.split("\n  github-release:\n", 1)[1]
+
+    assert release_job.startswith("    needs: verify\n")
+    assert "permissions:\n      contents: write" in release_job
+    assert (
+        "actions/download-artifact@"
+        "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"
+    ) in release_job
+    assert "name: dist" in release_job
+    assert "sha256sum regula_ai-*.whl regula_ai-*.tar.gz > SHA256SUMS" in release_job
+    assert 'gh release create "$RELEASE_TAG"' in release_job
+    assert "--verify-tag" in release_job

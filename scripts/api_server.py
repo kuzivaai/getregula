@@ -96,6 +96,48 @@ def _json_bytes(obj: dict) -> bytes:
 # Request handler
 # ---------------------------------------------------------------------------
 
+
+def _resolve_request_target(raw_path: object) -> Path:
+    """Resolve an API path without probing anything outside the server root.
+
+    ``Path.exists()`` and ``Path.is_dir()`` are filesystem probes.  Calling
+    either before the working-directory boundary check lets an unauthenticated
+    local client distinguish an existing outside path from a missing one.  Do
+    the lexical containment check first, then resolve symlinks and repeat the
+    check before a handler may inspect the target.
+
+    The server root is its launch directory.  Running the server from a broad
+    directory deliberately grants that broad scope; the default bind remains
+    localhost and the server still has no authentication.
+    """
+    if not isinstance(raw_path, str) or not raw_path.strip():
+        raise ValueError("Field 'path' must be a non-empty string")
+
+    root = Path.cwd().resolve()
+    candidate = Path(raw_path)
+    if not candidate.is_absolute():
+        candidate = root / candidate
+
+    # abspath normalises '..' without resolving symlinks or testing whether
+    # the outside target exists.  That makes the first rejection non-probing.
+    lexical = Path(os.path.abspath(candidate))
+    try:
+        lexical.relative_to(root)
+    except ValueError as exc:
+        raise PermissionError(
+            "Path must be within the current working directory"
+        ) from exc
+
+    resolved = lexical.resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise PermissionError(
+            "Path must be within the current working directory"
+        ) from exc
+    return resolved
+
+
 class RegulaHandler(BaseHTTPRequestHandler):
     """HTTP request handler for the Regula REST API."""
 
@@ -234,21 +276,19 @@ class RegulaHandler(BaseHTTPRequestHandler):
             self._send_error(400, "Missing required field: path")
             return
 
-        target = Path(path).resolve()
+        try:
+            target = _resolve_request_target(path)
+        except ValueError as e:
+            self._send_error(400, str(e))
+            return
+        except PermissionError as e:
+            self._send_error(403, str(e))
+            return
         if not target.exists():
             self._send_error(400, f"Path does not exist: {path}")
             return
         if not target.is_dir() and not target.is_file():
             self._send_error(400, f"Path is not a file or directory: {path}")
-            return
-
-        # Security: reject paths outside the working directory to prevent
-        # scanning arbitrary filesystem locations via the API.
-        cwd = Path.cwd().resolve()
-        try:
-            target.relative_to(cwd)
-        except ValueError:
-            self._send_error(403, "Path must be within the current working directory")
             return
 
         min_tier = body.get("min_tier", "")
@@ -367,17 +407,16 @@ class RegulaHandler(BaseHTTPRequestHandler):
             self._send_error(400, "Missing required field: path")
             return
 
-        target = Path(path).resolve()
+        try:
+            target = _resolve_request_target(path)
+        except ValueError as e:
+            self._send_error(400, str(e))
+            return
+        except PermissionError as e:
+            self._send_error(403, str(e))
+            return
         if not target.is_dir():
             self._send_error(400, f"Path is not a directory: {path}")
-            return
-
-        # Security: reject paths outside the working directory
-        cwd = Path.cwd().resolve()
-        try:
-            target.relative_to(cwd)
-        except ValueError:
-            self._send_error(403, "Path must be within the current working directory")
             return
 
         strict = bool(body.get("strict", False))

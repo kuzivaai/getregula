@@ -27,6 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 from api_server import (
     _build_envelope,
     _json_bytes,
+    _resolve_request_target,
     MAX_REQUEST_SIZE,
     RegulaHandler,
 )
@@ -580,8 +581,13 @@ def test_check_missing_path():
 
 def test_check_nonexistent_path():
     """POST /v1/check with non-existent path returns 400."""
-    status, body = _dispatch_request("POST", "/v1/check",
-                                     json_body={"path": "/nonexistent/path/xyz"})
+    with tempfile.TemporaryDirectory() as tmpdir:
+        root = Path(tmpdir).resolve()
+        with patch("pathlib.Path.cwd", return_value=root):
+            status, body = _dispatch_request(
+                "POST", "/v1/check",
+                json_body={"path": "nonexistent/path/xyz"},
+            )
     assert status == 400
     assert "does not exist" in body["error"]
 
@@ -601,6 +607,48 @@ def test_check_path_outside_cwd():
                 )
     assert status == 403
     assert "working directory" in body["error"]
+
+
+def test_outside_path_is_rejected_before_filesystem_type_probes():
+    """The API boundary must not reveal whether an outside path exists."""
+    root = Path("/srv/regula-project")
+    with patch("pathlib.Path.cwd", return_value=root), \
+         patch("pathlib.Path.exists", side_effect=AssertionError("outside probe")), \
+         patch("pathlib.Path.is_dir", side_effect=AssertionError("outside probe")), \
+         patch("pathlib.Path.is_file", side_effect=AssertionError("outside probe")):
+        status, body = _dispatch_request(
+            "POST", "/v1/check", json_body={"path": "/etc/passwd"}
+        )
+    assert status == 403
+    assert body["error"] == "Path must be within the current working directory"
+
+
+def test_request_target_rejects_non_string_paths():
+    """Structured JSON values cannot reach pathlib as path-like input."""
+    for value in ({"path": "."}, ["."], 1, True):
+        try:
+            _resolve_request_target(value)
+            assert False, f"accepted non-string path: {value!r}"
+        except ValueError as exc:
+            assert "non-empty string" in str(exc)
+
+
+def test_request_target_rejects_symlink_escape():
+    """A lexical in-root path cannot resolve through a link to outside."""
+    with tempfile.TemporaryDirectory() as root_td, \
+         tempfile.TemporaryDirectory() as outside_td:
+        root = Path(root_td).resolve()
+        link = root / "outside"
+        try:
+            link.symlink_to(Path(outside_td), target_is_directory=True)
+        except (OSError, NotImplementedError):
+            return
+        with patch("pathlib.Path.cwd", return_value=root):
+            try:
+                _resolve_request_target("outside/secret.py")
+                assert False, "accepted a symlink escape"
+            except PermissionError as exc:
+                assert "working directory" in str(exc)
 
 
 def test_check_invalid_min_tier():
@@ -821,8 +869,11 @@ def test_gap_missing_path():
 def test_gap_path_not_directory():
     """POST /v1/gap with a file (not dir) returns 400."""
     with tempfile.NamedTemporaryFile(suffix=".py") as f:
-        status, body = _dispatch_request("POST", "/v1/gap",
-                                         json_body={"path": f.name})
+        target = Path(f.name).resolve()
+        with patch("pathlib.Path.cwd", return_value=target.parent):
+            status, body = _dispatch_request(
+                "POST", "/v1/gap", json_body={"path": f.name}
+            )
     assert status == 400
     assert "not a directory" in body["error"]
 

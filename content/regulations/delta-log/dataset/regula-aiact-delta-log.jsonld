@@ -52,7 +52,7 @@
           "@id": "http://data.europa.eu/eli/ontology"
         }
       ],
-      "regula:generatorVersion": "1.9.0",
+      "regula:generatorVersion": "2.0.0",
       "regula:eventCount": 13,
       "regula:vocabularyNote": "The DPVCG EU-AIAct vocabulary (a W3C Community Group report, not a ratified W3C Standard) is referenced because Regula's scan-result export emits its concepts. Per-event DPV concepts are not asserted: the vocabulary currently has no regulatory-change-event concepts. Regula proposes adding them upstream (DPVCG issue #229)."
     },
