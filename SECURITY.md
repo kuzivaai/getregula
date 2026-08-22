@@ -88,7 +88,7 @@ for one scope is not described as a clean bill of health for another.
 | `regula self-test` | Release gate | Final branch result is recorded by CI before merge/release |
 | Custom regression suite | Collection manifest | 3,119 pytest-collected tests; collection count is not a pass result |
 | PyPI provenance attestation (PEP 740, Trusted Publishing) | Each release | Expected on wheel and sdist; verify the individual release rather than infer it |
-| CodeQL static analysis | 2026-08-19 | Default-branch analysis at merge commit `2ab71d8` exposes 43 open alerts; the PR 55 zero was baseline-relative, not a zero-inventory result |
+| CodeQL static analysis | 2026-08-20 analysis; dispositions verified 2026-08-22 | Analysis `1646686319` at main commit `1be502f` produced 41 results. All 41 were reviewed and individually dispositioned; the current main-branch CodeQL open count is 0. This is a reviewed static-analysis result, not proof of no vulnerabilities. |
 Source: reproducible commands and evidence are documented in [`docs/TRUST.md`](docs/TRUST.md); live workflow state is available in [GitHub Actions](https://github.com/kuzivaai/getregula/actions).
 
 The full posture is in [`docs/TRUST.md`](docs/TRUST.md), Section 7.
@@ -107,38 +107,46 @@ Honest list, also recorded in `docs/TRUST.md`:
   also be the moment we register as a CNA. Until then, GitHub Security
   Advisory + email.
 
-## CodeQL static-analysis alerts (open, triaged, not suppressed)
+## CodeQL static-analysis results (individually dispositioned)
 
-At the 2026-08-19 snapshot, the default branch exposes **43 open alerts** from
-analysis commit `2ab71d85929a8bccea8b152cbf5b5b86d14f9b49`. The exact PR 55
-merge-ref analysis returned zero baseline-relative results; it did **not** mean
-the repository inventory was empty. A release branch fixes the reachable API
-path-oracle, custom-regex and claim-auditor defects and retains per-alert proof
-for the intentional scanner paths and test fixtures. Use the
-[live code-scanning list](https://github.com/kuzivaai/getregula/security/code-scanning)
+Default-branch CodeQL analysis `1646686319` completed at commit
+`1be502f913c84cbbbed85334a2c0b763f4dba829` with **41 results**. On
+2026-08-22 every result was reviewed and dispositioned on its own alert; no
+query, path or rule was disabled. The current open CodeQL count for main is
+**0**. The earlier PR 55 zero was baseline-relative and did **not** establish
+this inventory result. Use the [live code-scanning list](https://github.com/kuzivaai/getregula/security/code-scanning)
 for current state and the dated [finding inventory](docs/security/SECURITY-FINDINGS-2026-08-19.md)
-for the exact snapshot and dispositions.
+for IDs, controls and residual risks.
 
-**37 × `py/path-injection` (across 8 files).** A code scanner's job is to read
-files from a folder the user points it at, so its file-reading paths are tainted
-by design. Every scanning command routes through `walk_project_files()` /
-`is_safe_to_scan()`, which reject named pipes, out-of-root symlinks and `.git`;
-the optional REST API (`api_server.py`) additionally rejects any path outside the
-current working directory (`Path.resolve().relative_to(cwd)`) and caps request
-bodies at 1 MB. CodeQL does not model these containment checks as sanitisers, so
-the taint path is reported even though the guard is present. `tests/test_hostile_sweep.py`
-exercises this whole class against a deliberately hostile directory tree.
+**36 × `py/path-injection` (across 8 files, enumerated in the
+[dated finding inventory](docs/security/SECURITY-FINDINGS-2026-08-19.md)).**
+These results trace the caller-selected scan root and the guard operations themselves. Content reads
+reject escaping symlinks, named pipes, non-regular files and oversized files;
+POSIX main walkers pin parent directories with `os.fwalk`; and REST targets
+must pass lexical and resolved containment within the server launch directory
+before handler probes. CodeQL does not model these project-specific boundaries
+as sanitisers. Each alert was therefore dismissed as a false positive with an
+alert-specific evidence comment.
 
-**6 × other rules, each reviewed individually:**
+That disposition is not an assertion of perfect path safety. Windows lacks the
+POSIX `O_NOFOLLOW`/`fwalk` controls, and `compliance_check.py` reopens a by-name
+read after its 64 MiB content-cache budget is exhausted. Those ancestor-race
+residuals require an attacker able to mutate the selected tree concurrently and
+remain documented rather than erased.
 
-| Alert | Location | Assessment |
+**5 × other results, each reviewed individually:**
+
+| Result | Location | Disposition |
 |---|---|---|
-| `py/polynomial-redos` | `classify_risk.py` | Reachable only via *user-supplied* custom-rule patterns, which already pass `_compile_custom_pattern` (rejects nested quantifiers and patterns over 500 chars; unit-tested). Polynomial, not exponential; self-inflicted. Low risk, mitigated. |
-| `py/bad-tag-filter` | `claim_auditor.py` | A genuine minor robustness gap in an internal docs-audit tool — **fixed**: the `<script>` / `<style>` blanking regex now tolerates whitespace and attributes in the closing tag. |
-| `py/clear-text-logging-sensitive-data` | `tests/helpers.py` | Test helper that prints an assertion failure; the "secret" is a synthetic, char-code-constructed test credential. Test-only false positive. |
-| `py/redos` | `tests/test_security_hardening.py` | A deliberately hostile regex used to exercise the scanner's ReDoS reporting. Test-only fixture, not an executed application regex. |
-| `py/redos` | `tests/test_classification.py` | A regex inside the test that *asserts* ReDoS protection works. Test-only. |
-| `py/incomplete-url-substring-sanitization` | `tests/test_build_regulations.py` | A test asserting rendered HTML contains a URL substring, not a security check. Test-only false positive. |
+| `py/polynomial-redos` | `classify_risk.py` | False positive after mitigation: custom regexes require explicit `--rules` opt-in and the accepted subset rejects unbounded repeats, multiple variable repeats, quantified groups, lookarounds and backreferences; pattern and input sizes are capped. This is bounded risk, not a general proof about arbitrary regexes. |
+| `py/clear-text-logging-sensitive-data` | `tests/helpers.py` | Used in tests: assertion helper for synthetic credential fixtures, with no production secret source. |
+| `py/redos` | `tests/test_security_hardening.py` | Used in tests: deliberately catastrophic expression executed under a CPU-time meter to prove the detector observes the failure mode. |
+| `py/redos` | `tests/test_classification.py` | Used in tests: hostile expression used to assert custom-pattern rejection. |
+| `py/incomplete-url-substring-sanitization` | `tests/test_build_regulations.py` | Used in tests: checks rendered output contains a URL; it is not a URL sanitizer. |
+
+The prior `py/bad-tag-filter` result and three superseded API path flows are
+absent from the terminal main analysis after their fixes. Absence from this
+analysis is narrower evidence than a penetration test.
 
 Regula's own PR scan also reports one high-risk biometrics *product indicator*
 in `scripts/cli_scan.py`. It is not a CodeQL vulnerability and must not be
