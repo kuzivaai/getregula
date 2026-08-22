@@ -123,7 +123,7 @@
         "generated current-state check"
       ],
       "tests_run": [
-        "118 machine-state rows: 25 OPEN, 26 PARTIAL, 67 CLOSED",
+        "119 machine-state rows: 25 OPEN, 27 PARTIAL, 67 CLOSED",
         "32 legacy rows awaiting independent reviews",
         "JavaScript 130/130 and runtime parity 38/38",
         "generated current state matches"
@@ -155,7 +155,7 @@
         "Implementation commit 6f18cc8"
       ],
       "counterevidence": [
-        "Default branch has 43 open CodeQL alerts",
+        "Initial default branch had 43 open CodeQL alerts",
         "Pre-change Bandit run found 14 findings",
         "Pre-change all-extras audit found five advisories in two packages"
       ],
@@ -174,9 +174,10 @@
         "Post-change Bandit: 0 findings",
         "Post-change all-extras dependency audit: 1 advisory in WeasyPrint 68.1",
         "Focused policy and XML tests: 17 passed",
-        "PR merge-ref CodeQL analysis at the pre-change head: 0 results",
-        "Legacy runner after fix: 1464 assertions across 1404 functions, 0 failed",
-        "Pytest with localhost permitted: 3111 passed",
+        "Exact PR 57 release head f7d8e228: CodeQL and all required checks passed",
+        "Terminal main CodeQL analysis 1646686319 at 35ea195: 41 results, all individually dispositioned, 0 current main CodeQL alerts open",
+        "Legacy runner at final release head: 1464 assertions across 1411 functions, 0 failed",
+        "Pytest at final release head: the complete canonical collection passed",
         "Self-test: 6/6 passed",
         "Doctor: 8 passed, 4 info, 0 warnings"
       ],
@@ -187,10 +188,10 @@
       "rollback": "Revert the bounded security-truth commit",
       "observability": "CI, CodeQL analysis results and dated security inventory",
       "owner_fact_required": false,
-      "decision": "AUTO_APPROVED_PENDING_MACHINE_CONDITION",
-      "decision_reason": "Security truth must pass before Class B or C execution",
-      "executed_at": "2026-08-19T17:06:12Z",
-      "result": "LOCAL_RECONCILIATION_AND_FULL_GATE_PASSED; FRESH_PR_ANALYSIS_PENDING"
+      "decision": "EXECUTED",
+      "decision_reason": "Security implementation, exact-head gates, terminal default-branch analysis and individual alert dispositions completed",
+      "executed_at": "2026-08-22T09:10:31Z",
+      "result": "MAIN_CODEQL_ANALYSIS_COMPLETE; 41_RESULTS_INDIVIDUALLY_DISPOSITIONED; 0_OPEN_CODEQL; 1_SEPARATE_REGULA_PRODUCT_INDICATOR_OPEN"
     },
     {
       "action_id": "merge-deploy-release-2026-08-19",
@@ -209,8 +210,8 @@
         "scripts/release_gate.py"
       ],
       "counterevidence": [
-        "Fresh CI and CodeQL results do not yet exist for the unpushed security commit",
-        "Production and PyPI do not yet contain branch behaviour"
+        "PyPI still reports published package identity 1.9.0",
+        "Production must be reverified after the security-closeout merge"
       ],
       "security_delta": "Must not proceed with unresolved reachable high or critical risk",
       "privacy_delta": "Must not activate a transmitting form",
@@ -222,19 +223,24 @@
         "installed wheel and sdist verification"
       ],
       "tests_run": [
-        "Final local legacy runner: 1464 assertions across 1405 functions, 0 failed",
-        "Final local pytest passed with localhost socket permission; the collected-test total is recorded in data/site_facts.json",
+        "Final local legacy runner: 1464 assertions across 1411 functions, 0 failed",
+        "Final local pytest: the complete canonical collection passed",
         "Local self-test: 6/6 passed",
-        "Local doctor: 8 passed, 4 info, 0 warnings"
+        "Local doctor: 8 passed, 4 info, 0 warnings",
+        "PR 57 exact release head f7d8e228 passed all required GitHub checks",
+        "PR 57 merged to main as 35ea195",
+        "Main CI, CodeQL, action tests and Regula scan completed successfully"
       ],
-      "generated_artefacts": [],
+      "generated_artefacts": [
+        "docs/security/SECURITY-FINDINGS-2026-08-19.md"
+      ],
       "rollback": "Record exact production rollback before deployment; releases are not overwritten",
       "observability": "PR checks, deployment terminal state, production fingerprint and PyPI hashes",
       "owner_fact_required": false,
       "decision": "AUTO_APPROVED_PENDING_MACHINE_CONDITION",
       "decision_reason": "Standing owner authorisation applies only after all Class C predicates pass",
       "executed_at": null,
-      "result": "LOCAL_GATE_PASSED; FRESH_PR_CHECKS_PENDING"
+      "result": "PR_57_MERGED_AT_1BE502F; MAIN_CI_AND_CODEQL_PASSED; PRODUCTION_REVERIFICATION_AND_PACKAGE_RELEASE_PENDING"
     },
     {
       "action_id": "payment-booking-and-transmitting-form-2026-08-19",

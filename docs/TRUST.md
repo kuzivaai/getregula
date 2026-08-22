@@ -296,6 +296,17 @@ re-run in the 2026-08-19 audit, so no current Semgrep pass is claimed. Dated,
 ref-specific findings and dispositions are in
 [`docs/security/SECURITY-FINDINGS-2026-08-19.md`](security/SECURITY-FINDINGS-2026-08-19.md).
 
+Default-branch CodeQL analysis `1646686319` at main commit `35ea195` produced
+41 results. All 41 were reviewed and individually dispositioned by 2026-08-22;
+the current main-branch CodeQL open count is 0. No query or path was broadly
+suppressed. Thirty-six results were intentional caller-selected scanner paths
+whose guarded reads CodeQL does not model; four were deliberate test fixtures;
+one was the explicitly opted-in, bounded custom-regex route. Windows path-race
+degradation and the 64 MiB content-cache fallback in `compliance_check.py`
+remain accepted, documented residuals. This is internal static-analysis
+evidence, not an independent penetration test or a claim that no vulnerability
+exists.
+
 Bandit project config in `pyproject.toml [tool.bandit]` documents every
 project-level skip with rationale. Hard checks (B101 assert, B102 exec,
 B301 pickle, B501–B507 ssl/tls, B601–B602 shell injection, B608 sql
