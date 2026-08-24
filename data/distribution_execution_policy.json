@@ -287,7 +287,7 @@
         "Browser at 320px and 390px: pricing reflow had no horizontal overflow; pricing, FAQ and contact-intent events used only finite allowlisted values",
         "Desktop and mobile pricing pages visually inspected after reflow correction",
         "Complete legacy runner: 1464 passed, 0 failed across 1424 functions",
-        "Complete pytest collection: 3132 passed in 1486.65 seconds",
+        "Complete pytest collection passed in 1486.65 seconds",
         "CLI self-test: 6/6 passed",
         "CLI doctor: 8 passed, 4 informational, 0 warnings"
       ],
