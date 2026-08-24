@@ -205,9 +205,12 @@ def test_redos_meter_is_cpu_time_not_wall_clock():
        so machine load alone can never trip a ReDoS assertion again.
     2. Genuine catastrophic backtracking accrues real CPU time, so the
        meter still detects the thing the tests exist to detect. Pattern
-       (a+)+b against 'a'*20 + '!' backtracks ~2^20 states, measured at
-       roughly 0.2 CPU s at calibration; the assertion bound is 0.05 so a
-       4x faster machine still passes.
+       (a+)+b is tried against bounded inputs from 'a'*20 + '!' through
+       'a'*24 + '!'. The first input that burns more than 0.05 CPU seconds
+       ends the control. This keeps the assertion meaningful across Python
+       regex-engine changes without lowering its floor; the upper bound
+       still fails closed if the meter cannot observe roughly 2^24
+       backtracking states.
     """
     slept = _cpu_seconds(lambda: time.sleep(0.2))
     assert_true(
@@ -216,12 +219,18 @@ def test_redos_meter_is_cpu_time_not_wall_clock():
         f"wall clock, which is the N28 defect reintroduced")
 
     catastrophic = re.compile(r"(a+)+b")
-    burned = _cpu_seconds(lambda: catastrophic.search("a" * 20 + "!"))
+    burned = 0.0
+    input_length = 20
+    for input_length in range(20, 25):
+        burned = _cpu_seconds(
+            lambda n=input_length: catastrophic.search("a" * n + "!"))
+        if burned > 0.05:
+            break
     assert_true(
         burned > 0.05,
-        f"meter charged only {burned:.4f} CPU s for ~2^20 backtracking "
-        f"states; a meter that cannot see catastrophic backtracking makes "
-        f"every ReDoS test above vacuous")
+        f"meter charged only {burned:.4f} CPU s for approximately "
+        f"2^{input_length} backtracking states; a meter that cannot see "
+        f"catastrophic backtracking makes every ReDoS test above vacuous")
     print("✓ ReDoS meter: CPU-time based; blind to sleep, sees backtracking")
 
 
