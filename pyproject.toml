@@ -48,8 +48,8 @@ test = ["pytest~=9.0", "jsonschema~=4.0"]
 pdf = ["weasyprint>=62,<70"]
 # sentry-sdk 2.x stable; 3.x not yet released. ~=2.8 is equivalent to
 # >=2.8,<3 but classifies as compatible-release for clearer intent.
-sentry = ["sentry-sdk~=2.8"]
-telemetry = ["sentry-sdk~=2.8"]
+sentry = ["sentry-sdk~=2.68"]
+telemetry = ["sentry-sdk~=2.68"]
 # Flask 3.x is the current stable major; 4.x will break. Tightened from
 # >=3.0 to bound the major.
 web = ["flask~=3.1"]
@@ -66,7 +66,7 @@ web = ["flask~=3.1"]
 # certificates, so carrying the vulnerable wheel would be needless residual
 # risk. The upper bound remains explicit for release reproducibility.
 signing = ["cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
-all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
+all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.68", "cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
 
 [project.urls]
 Homepage = "https://getregula.com"
