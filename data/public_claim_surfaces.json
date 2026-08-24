@@ -7912,6 +7912,17 @@
       "reason": "deployed non-claim asset"
     },
     {
+      "stable_id": "website:faab91532f46edf6",
+      "channel": "website",
+      "source": "site/assets/analytics.js",
+      "destination": "/assets/analytics.js",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "asset",
+      "claim_capable": false,
+      "classification": "non_claim_asset",
+      "reason": "deployed non-claim asset"
+    },
+    {
       "stable_id": "website:1756e5035902b18f",
       "channel": "website",
       "source": "site/assets/demo/landing-page.png",
@@ -8832,13 +8843,13 @@
       "mcp": 3,
       "package": 2,
       "repository_docs": 40,
-      "website": 96
+      "website": 97
     },
     "classification": {
       "active_product": 774,
       "historical_record": 1,
       "internal_record": 1,
-      "non_claim_asset": 26
+      "non_claim_asset": 27
     }
   },
   "exclusions": [

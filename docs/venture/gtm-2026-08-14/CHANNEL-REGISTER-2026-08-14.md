@@ -1,13 +1,14 @@
 # Channel register: distribution and amplification targets
 
-**Date compiled:** 2026-08-14
-**Status:** REGISTER ONLY. `EXTERNAL_CONTACT: NOT_AUTHORISED` stands. Nothing
-in this file may be contacted, pitched or submitted until the owner signs a
-dated authorisation (owner question set, field 14). Public, passive actions
-(publishing on our own surfaces, submitting nothing, contacting no one) are
-unaffected.
+**Date compiled:** 2026-08-14; **current-control update:** 2026-08-24
+**Status:** ACTIVE UNDER THE 19 AUGUST OWNER DIRECTIVE. Editorial submissions
+are authorised with the evidence policy; corporate B2B outreach is authorised
+only after the private register, suppression, privacy and recipient controls
+in the canonical GTM plan. This does not permit mass submission,
+personal-address prospecting, tracking pixels or unsupported claims.
 
-**Verification key:** [V-direct] fetched by the main session on 2026-08-14;
+**Verification key:** [V-direct-24] fetched from the channel's primary page on
+2026-08-24; [V-direct] fetched by the main session on 2026-08-14;
 [V-agent] fetched by the research agent from the cited page on 2026-08-14;
 [secondary] search-snippet or aggregator figure, not confirmed on a primary
 page; [n/s] not publicly stated.
@@ -16,10 +17,10 @@ page; [n/s] not publicly stated.
 
 | Channel | Audience | Why first |
 |---|---|---|
-| AI Governance Library (aigl.blog, Jakub Szarmach) | counts [n/s]; curates and reviews AI-governance resources and tools [V-agent] | Its entire format is reviewing artefacts like Regula; a curation submission is the single cheapest credible placement |
-| Console.dev | "30k+ subscribers" [V-direct]; weekly devtool reviews, free review submission + paid /advertise | Reviews open-source devtools as its core job. **CORRECTED 14 Aug (second pass, all [V-direct] from console.dev/selection-criteria and /advertise):** the earlier note had the gating backwards. The weekly "Interesting tools" editorial review has NO version requirement; only the separate "Betas" listing is version-gated ("the release must be pre 1.0 ... Any GA or stable releases are not eligible"). Regula at v1.9.0 is therefore ineligible for Betas and fully eligible for the free editorial review, which is the route to take. Submission: "Email hello@console.dev". Sponsorship detail confirmed direct: "max 100 characters", "We don't do sponsored reviews", "68% of our readers have signed-up to a tool featured by Console" |
-| Talk Python To Me / Python Bytes (talkpython.fm) | audience stats on request [V-agent]; public sponsorship offer | Exact stack match: Python CLI on PyPI; guest or news-item routes |
-| Changelog News / podcasts (changelog.com/sponsor) | "reach 100,000 developers weekly"; 26,333 newsletter subscribers [V-agent] | OSS-native; a compliance CLI is unusual enough to be story-worthy |
+| Console.dev | Audience count not reverified; primary selection page live [V-direct-24] | Weekly "Interesting tools" reviews have a distinct criteria section from the pre-1.0-only "Betas" listing. Regula 2.0.0 is eligible for editorial consideration, not the Beta listing. The page says reviews are not sponsored and instructs submitters to email `hello@console.dev`. First editorial target. |
+| AI Governance Library (aigl.blog, Jakub Szarmach) | counts [n/s]; primary About page live [V-direct-24] | Its stated bar is practical, non-promotional material with no hidden sales funnel. The About page exposes an editorial contact address but no submission form. Fit is conditional: submit the free open-source evidence workflow, disclose the inactive commercial hypothesis, and accept that curation may reject anything seen as lead generation. |
+| Python Bytes / Talk Python | audience stats not reverified; Python Bytes exposes "Submit news" at `/home/contact` [V-direct-24] | Exact Python/package fit and a direct news-idea route. Pitch a reproducible 2.0.0 package and the design choice to preserve unknowns, not generic regulation commentary. |
+| Changelog News / podcasts | audience figures not reverified; current primary site exposes `/news/submit` and a separate signed-in episode-request flow [V-direct-24] | OSS-native with a direct news route. Use news submission before requesting an episode; no audience-size claim is needed for the decision. |
 | The EU AI Act Newsletter (Risto Uuk, FLI) | "over 50,000 subscribers" per FLI bio, internally inconsistent with "over 40,000" on same page [V-agent] | RECLASSIFIED 14 Aug (Sprint 1 dossier, accepted): treat as a COMPETITOR CHANNEL, not a partner; FLI ships the de facto community-standard free checker and the newsletter author owns it. Deprioritise; editorial coverage only if it arrives unsolicited |
 
 ## Tier 2: niche authority (editorial mention or guest slot)
@@ -107,4 +108,4 @@ page; [n/s] not publicly stated.
 
 | Date | Action | Authorised by | Record |
 |---|---|---|---|
-| (empty; no outreach authorised) | | | |
+| 2026-08-19 | Editorial submission and controlled corporate B2B outreach under the evidence/compliance policies | Owner directive | `data/distribution_execution_policy.json`; payment, booking, transmitting forms and customer source upload remain disabled |

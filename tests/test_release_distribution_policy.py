@@ -18,6 +18,7 @@ from svg_text import SvgTextError, rendered_lines  # noqa: E402
 
 
 POLICY = ROOT / "data" / "distribution_execution_policy.json"
+EXPERIMENTS = ROOT / "data" / "distribution_experiments.json"
 
 
 def _policy() -> dict:
@@ -54,6 +55,23 @@ def test_hard_stop_states_cannot_be_mistaken_for_authorisation():
     assert states["PAYMENT_GATE"] == "NOT_ACTIVE"
     assert states["CONSULTANT_BOOKING"] == "NOT_AVAILABLE"
     assert states["CUSTOMER_SOURCE_UPLOAD"] == "NOT_ACCEPTED"
+
+
+def test_distribution_experiments_are_preregistered_with_complete_fields():
+    register = json.loads(EXPERIMENTS.read_text(encoding="utf-8"))
+    required = {
+        "experiment_id", "target_segment", "decision_question", "hypothesis",
+        "counter_hypothesis", "channel", "asset", "baseline",
+        "primary_metric", "guardrail", "denominator", "minimum_observation",
+        "cost_cap", "owner_effort_cap", "result", "uncertainty", "decision",
+        "stop_condition",
+    }
+    ids = []
+    for experiment in register["experiments"]:
+        assert set(experiment) == required, experiment.get("experiment_id")
+        assert experiment["result"] is None
+        ids.append(experiment["experiment_id"])
+    assert len(ids) == len(set(ids))
 
 
 def test_https_validator_accepts_only_the_exact_allowlisted_host():

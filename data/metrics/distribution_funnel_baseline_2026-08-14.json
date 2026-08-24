@@ -1,0 +1,90 @@
+{
+  "counts": {
+    "assessment_complete": null,
+    "assessment_pageviews": 2,
+    "assessment_start": null,
+    "contact_intent": null,
+    "homepage_pageviews": 124,
+    "install_command_copy": null,
+    "pricing_pageviews": 0,
+    "qualifier_complete": null,
+    "qualifier_start": null,
+    "scanner_complete": null,
+    "scanner_error": null,
+    "scanner_start": null
+  },
+  "event_spec_effective_date": "2026-08-24",
+  "event_spec_id": "regula-anonymous-funnel-v1",
+  "format_version": 1,
+  "generated_at": "2026-08-24T14:10:00+00:00",
+  "interpretation_limits": [
+    "Plausible exports are aggregate tables and do not expose a cohort journey.",
+    "Rates compare aggregate event totals with named aggregate denominators.",
+    "No causal or statistical-significance claim is supported at the retained traffic level.",
+    "A pre-contract export cannot establish a baseline for the current event names."
+  ],
+  "legacy_events": {
+    "Assess Question": {
+      "total_conversions": 17,
+      "unique_conversions": 1
+    },
+    "Assessment Started": {
+      "total_conversions": 1,
+      "unique_conversions": 1
+    },
+    "CTA Click": {
+      "total_conversions": 3,
+      "unique_conversions": 2
+    },
+    "Outbound Link: Click": {
+      "total_conversions": 12,
+      "unique_conversions": 11
+    }
+  },
+  "rates": {
+    "assessment_completion_rate": null,
+    "assessment_start_rate": null,
+    "contact_intent_per_pricing_view": null,
+    "qualifier_completion_rate": null,
+    "qualifier_start_rate": null,
+    "scanner_completion_rate": null,
+    "scanner_error_rate": null,
+    "scanner_start_rate": null
+  },
+  "raw_event_counts": {
+    "Assess Question": {
+      "total_conversions": 17,
+      "unique_conversions": 1
+    },
+    "Assessment Complete": {
+      "total_conversions": 2,
+      "unique_conversions": 1
+    },
+    "Assessment Started": {
+      "total_conversions": 1,
+      "unique_conversions": 1
+    },
+    "CTA Click": {
+      "total_conversions": 3,
+      "unique_conversions": 2
+    },
+    "Outbound Link: Click": {
+      "total_conversions": 12,
+      "unique_conversions": 11
+    }
+  },
+  "source": {
+    "file": "Plausible export getregula.com 91d .zip",
+    "fresh_for_event_contract": false,
+    "kind": "plausible_aggregate_export",
+    "window_days": 91,
+    "window_end": "2026-08-13",
+    "window_start": "2026-05-15"
+  },
+  "traffic": {
+    "daily_visitor_sum": 188,
+    "note": "Daily visitor counts are summed; this is not a period-unique visitor count.",
+    "pageviews": 217,
+    "visits": 192
+  }
+}

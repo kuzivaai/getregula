@@ -201,7 +201,7 @@
       "reversibility": "Merge and release are durable; site rollback must be recorded",
       "current_primary_sources": [
         "GitHub PR, Actions, Releases and deployment records",
-        "Netlify production response",
+        "GitHub Pages production response",
         "PyPI package and attestation APIs"
       ],
       "repository_evidence": [
@@ -211,7 +211,7 @@
       ],
       "counterevidence": [
         "PyPI still reports published package identity 1.9.0",
-        "Production must be reverified after the security-closeout merge"
+        "Production and published artefacts required independent post-release verification"
       ],
       "security_delta": "Must not proceed with unresolved reachable high or critical risk",
       "privacy_delta": "Must not activate a transmitting form",
@@ -229,7 +229,12 @@
         "Local doctor: 8 passed, 4 info, 0 warnings",
         "PR 57 exact release head 825d24e3 passed all required GitHub checks",
         "PR 57 merged to main as 1be502f",
-        "Main CI, CodeQL, action tests and Regula scan completed successfully"
+        "Main CI, CodeQL, action tests and Regula scan completed successfully",
+        "Production founder, mobile, 200/400 percent reflow-equivalent, keyboard, no-JavaScript, success, error, reset, scanner recovery, locales and 404 browser paths verified",
+        "Release run 32730630146: build, publish, verify and github-release jobs completed successfully",
+        "PyPI 2.0.0 wheel and sdist independently matched SHA256SUMS",
+        "Clean wheel install reported 2.0.0 and self-test passed 6/6",
+        "PyPI Integrity API bound both artefact hashes to repository kuzivaai/getregula, workflow release.yml and environment pypi"
       ],
       "generated_artefacts": [
         "docs/security/SECURITY-FINDINGS-2026-08-19.md"
@@ -237,10 +242,112 @@
       "rollback": "Record exact production rollback before deployment; releases are not overwritten",
       "observability": "PR checks, deployment terminal state, production fingerprint and PyPI hashes",
       "owner_fact_required": false,
-      "decision": "AUTO_APPROVED_PENDING_MACHINE_CONDITION",
-      "decision_reason": "Standing owner authorisation applies only after all Class C predicates pass",
+      "decision": "EXECUTED",
+      "decision_reason": "All Class C predicates passed and the standing owner authorisation applied",
+      "executed_at": "2026-08-24T13:07:34Z",
+      "result": "PR_55_AND_SECURITY_CLOSEOUT_MERGED; PRODUCTION_VERIFIED; REGULA_AI_2_0_0_PUBLISHED_AND_INDEPENDENTLY_VERIFIED; V2_TAG_CREATED; V1_UNCHANGED"
+    },
+    {
+      "action_id": "anonymous-funnel-contract-2026-08-24",
+      "action_type": "analytics_privacy_reconciliation",
+      "risk_class": "B",
+      "scope": "Homepage qualifier, browser assessment/scanner, pricing, sample and distribution attribution",
+      "reversibility": "Git-revertible before and after site deployment",
+      "current_primary_sources": [
+        "Plausible retained aggregate export ending 2026-08-13",
+        "Rendered site event-call inventory"
+      ],
+      "repository_evidence": [
+        "data/analytics_event_spec.json",
+        "site/assets/analytics.js",
+        "scripts/distribution_funnel.py",
+        "tests/test_analytics_contract.py",
+        "tests/test_distribution_funnel.py"
+      ],
+      "counterevidence": [
+        "The retained analytics export predates the event contract and cannot baseline current event names",
+        "Prior event calls transmitted result type, detector class, language, jurisdiction or answer count",
+        "No current Plausible credential is available for a fresh export"
+      ],
+      "security_delta": "No new endpoint, account, cookie or identifier; one small first-party event allowlist script",
+      "privacy_delta": "Removes result/context properties, rejects arbitrary campaign text, permits only finite event/property values and suppresses duplicate logical events",
+      "legal_or_commercial_delta": "Improves measurement integrity without activating a personal-data form, service, booking or payment",
+      "tests_required": [
+        "Event schema and sanitizer tests",
+        "Locale and generated-qualifier parity",
+        "Full project gate",
+        "Real-browser network verification before production claim"
+      ],
+      "tests_run": [
+        "Focused analytics, release-policy, public-claim, count, collection and site suite: 108 passed",
+        "JavaScript scanner suite: 130 passed; runtime parity 38/38 including all 30 high-risk fixtures",
+        "Generated region-page integrity: exact for all five generated pages; 1,616 internal links and 0 dead",
+        "Browser at 390px: qualifier start/complete emitted once with allowlisted campaign properties only; no answers or results transmitted",
+        "Browser at 390px: assessment and scanner success/error paths emitted only property-free lifecycle events",
+        "Browser at 320px and 390px: pricing reflow had no horizontal overflow; pricing, FAQ and contact-intent events used only finite allowlisted values",
+        "Desktop and mobile pricing pages visually inspected after reflow correction",
+        "Complete legacy runner: 1464 passed, 0 failed across 1424 functions",
+        "Complete pytest collection passed in 1486.65 seconds",
+        "CLI self-test: 6/6 passed",
+        "CLI doctor: 8 passed, 4 informational, 0 warnings"
+      ],
+      "generated_artefacts": [
+        "data/analytics_event_spec.json",
+        "data/metrics/distribution_funnel_baseline_2026-08-14.json",
+        "data/distribution_experiments.json"
+      ],
+      "rollback": "Revert the analytics implementation commit and verify no custom funnel requests fire",
+      "observability": "Browser request capture and exact-window Plausible export processed by scripts/distribution_funnel.py",
+      "owner_fact_required": false,
+      "decision": "READY_FOR_CLASS_B_EXECUTION",
+      "decision_reason": "Implementation, browser verification and the complete project gate passed; commit, push, merge and production verification remain to execute",
       "executed_at": null,
-      "result": "PR_57_MERGED_AT_1BE502F; MAIN_CI_AND_CODEQL_PASSED; PRODUCTION_REVERIFICATION_AND_PACKAGE_RELEASE_PENDING"
+      "result": "ALL_LOCAL_MACHINE_GATES_PASSED; NOT_YET_COMMITTED_OR_DEPLOYED"
+    },
+    {
+      "action_id": "official-mcp-registry-2-0-0-2026-08-24",
+      "action_type": "immutable_registry_publication",
+      "risk_class": "C",
+      "scope": "Official MCP Registry metadata for io.github.kuzivaai/regula version 2.0.0",
+      "reversibility": "Published metadata is immutable; status may change but metadata remains API-accessible",
+      "current_primary_sources": [
+        "Official MCP Registry API",
+        "Official MCP Registry versioning, FAQ and aggregator documentation",
+        "mcp-publisher live validator"
+      ],
+      "repository_evidence": [
+        "server.json",
+        "mcp-server.json",
+        "scripts/mcp_server.py",
+        "tests/test_source_of_truth.py"
+      ],
+      "counterevidence": [
+        "Official registry still reports 1.9.0 as active latest",
+        "Registry publication returned HTTP 401 because the stored JWT expired"
+      ],
+      "security_delta": "Metadata-only publication pointing to the independently verified PyPI package",
+      "privacy_delta": "No personal data or customer content",
+      "legal_or_commercial_delta": "Public directory distribution only; no legal or commercial service claim",
+      "tests_required": [
+        "Live manifest validation",
+        "Published package install and MCP smoke verification",
+        "Post-publication official API verification"
+      ],
+      "tests_run": [
+        "mcp-publisher validate: server.json is valid",
+        "Release workflow clean install and smoke verification passed",
+        "Official registry live query: exactly one 1.9.0 active/latest record"
+      ],
+      "generated_artefacts": [
+        "docs/distribution/SUBMISSIONS.md"
+      ],
+      "rollback": "Publish corrected metadata under a unique version or change status; immutable metadata cannot be erased",
+      "observability": "Official /v0.1/servers API and registry status fields",
+      "owner_fact_required": true,
+      "decision": "EXTERNAL_EXECUTION_BLOCKED",
+      "decision_reason": "GitHub device authentication is required to replace the expired Registry JWT",
+      "executed_at": null,
+      "result": "2_0_0_VALIDATED_NOT_PUBLISHED; OWNER_ACTION_MCP_PUBLISHER_LOGIN_GITHUB_THEN_PUBLISH"
     },
     {
       "action_id": "payment-booking-and-transmitting-form-2026-08-19",

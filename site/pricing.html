@@ -344,10 +344,10 @@
 
 <div class="pricing-hero">
     <h1>Start free. Talk to a human when you want one.</h1>
-    <p class="subtitle">The assessment and the scanner are free and stay free. The paid work is priced on this page rather than quoted on request, so you can decide whether it is worth a conversation before you have one. Nothing here takes payment; every paid action is an email, and talking costs nothing.</p>
+    <p class="subtitle">The assessment and scanner are free and stay free. The figures below are test-price hypotheses for proposed human work, not validated prices or services you can buy today. Nothing here takes payment or books a consultant; every enquiry is an email, and talking costs nothing.</p>
 </div>
 
-<div class="pricing-cards" style="grid-template-columns:repeat(3, 1fr);max-width:1120px;">
+<div class="pricing-cards">
 
     <!-- Free tier -->
     <div class="pricing-card featured">
@@ -367,9 +367,9 @@
 
     <!-- Fixed-price starter assessment -->
     <div class="pricing-card">
-        <h3>Starter assessment</h3>
-        <div class="price">GBP 950</div>
-        <div class="price-note">Fixed price, fixed scope, remote. Turnaround is about a week; that is elapsed time, not days billed. Payment gate not active; email first.</div>
+        <h3>Proposed starter assessment</h3>
+        <div class="price">Test: GBP 950</div>
+        <div class="price-note">An unvalidated fixed-scope price hypothesis. The seller, consultant, duration, terms, insurance and fulfilment controls are unresolved, so this service is not available.</div>
         <ul>
             <li>One codebase and one product scope</li>
             <li>Scan output read with you, indicator by indicator</li>
@@ -377,14 +377,14 @@
             <li>Prioritised action brief you keep</li>
             <li>Referral boundary for qualified legal advice</li>
         </ul>
-        <a class="cta-btn free" href="mailto:support@getregula.com?subject=Starter%20assessment%20enquiry" onclick="if(window.plausible)plausible('Contact Click',{props:{source:'pricing-starter'}})">Email about a starter assessment</a>
+        <a class="cta-btn free" href="mailto:support@getregula.com?subject=Starter%20assessment%20research%20enquiry" data-contact-route="starter">Ask about the service hypothesis</a>
     </div>
 
     <!-- Advisory day rate -->
     <div class="pricing-card">
-        <h3>Advisory day</h3>
-        <div class="price">GBP 650</div>
-        <div class="price-note">Per day, published rather than quoted. Payment gate not active; talking is free.</div>
+        <h3>Proposed advisory day</h3>
+        <div class="price">Test: GBP 650/day</div>
+        <div class="price-note">An unvalidated day-rate hypothesis. No consultant is named or bookable; the payment gate is inactive and talking is free.</div>
         <ul>
             <li>One live session with an AI governance consultant</li>
             <li>Fact and scope review before interpretation</li>
@@ -392,39 +392,39 @@
             <li>Prioritised action brief with named open questions</li>
             <li>Clear referral boundary for qualified legal advice</li>
         </ul>
-        <a class="cta-btn free" href="mailto:support@getregula.com?subject=Consultant%20review%20enquiry" onclick="if(window.plausible)plausible('Contact Click',{props:{source:'pricing-consultant'}})">Email us about a review</a>
+        <a class="cta-btn free" href="mailto:support@getregula.com?subject=Advisory%20service%20research%20enquiry" data-contact-route="consultant">Ask about the service hypothesis</a>
     </div>
 
 </div>
 
 <div class="trust-note" style="max-width:1120px;">
-    <p><strong>Why the prices are on the page.</strong> A focused, fixed-scope assessment for founders and small teams is a different thing from an enterprise readiness programme, and we do not claim it is equivalent to one. What we can say plainly is that our price is published. In a check of published EU AI Act representation and assessment prices on 14 August 2026, two providers we found did publish a figure, Prighter and European Compliance Suite, and the others quoted on request; the check, its sources and its date are recorded in <a href="https://github.com/kuzivaai/getregula/blob/main/docs/venture/gtm-2026-08-14/MARKET-SIZING-2026-08-14.md">the repository</a> so you can read it rather than take our word for it. Where a price is quoted on request, a small team cannot budget without first entering a sales conversation. If a fixed scope is the wrong shape for your situation, say so by email and we will tell you honestly rather than stretch it.</p>
+    <p><strong>Why test prices are visible.</strong> GBP 950 and GBP 650 per day are hypotheses to test through concrete scoped proposals; nobody has accepted or rejected either figure in the current evidence register. They are shown so a conversation can test a real boundary rather than a vague “would you pay?” question. A focused assessment for a founder is not equivalent to an enterprise readiness programme. The dated competitor-price check and its limits remain available in <a href="https://github.com/kuzivaai/getregula/blob/main/docs/venture/gtm-2026-08-14/MARKET-SIZING-2026-08-14.md">the repository</a>, but competitor prices do not validate ours.</p>
 </div>
 
 <div class="trust-note">
-    <p><strong>No payment or booking runs on this site today.</strong> Every paid action on this page is an email. There is no checkout, no card capture and no booking flow, and the named consultant and full terms will be published before anything can be bought. If your team needs a multi-system or organisation-wide review, the same email reaches us: <a href="mailto:support@getregula.com?subject=Organisation%20review%20enquiry" onclick="if(window.plausible)plausible('Contact Click',{props:{source:'pricing-organisation'}})">support@getregula.com</a>. The core scanner processes files locally and does not upload them; optional commands such as the governance news feed, vocabulary refresh and RFC 3161 timestamping do make outbound requests, and the timestamping command sends hashes rather than code.</p>
+    <p><strong>Payment gate not active. No payment or booking runs on this site today.</strong> Every paid action on this page is an email. There is no checkout, no card capture and no booking flow, and the named consultant and full terms will be published before anything can be bought. If your team needs a multi-system or organisation-wide review, the same email reaches us: <a href="mailto:support@getregula.com?subject=Organisation%20review%20enquiry" data-contact-route="organisation">support@getregula.com</a>. The core scanner processes files locally and does not upload them; optional commands such as the governance news feed, vocabulary refresh and RFC 3161 timestamping do make outbound requests, and the timestamping command sends hashes rather than code.</p>
     <p><strong>What we are, stated plainly.</strong> There is no EU legal entity behind this offer and no professional indemnity cover is in place. Nothing on this site, and nothing produced by the tool or by a paid session, is legal advice. Regula indicates where a person should look; it does not determine your risk tier, your obligations or your compliance, and a qualified professional must settle anything that turns on a legal conclusion.</p>
 </div>
 
 <div class="pricing-faq">
     <h2>Questions</h2>
 
-    <details>
+    <details data-analytics-item="scope">
         <summary>What remains free?</summary>
         <p>The browser questions, local scanner, observed indicators, unresolved facts, and existing CLI commands remain free. Paid support adds human review and a scoped service; it does not hide the tool's evidence or limitations.</p>
     </details>
 
-    <details>
+    <details data-analytics-item="deliverable">
         <summary>What would a consultant review provide?</summary>
-        <p>The proposed service includes a scoped evidence review, one live walkthrough, a prioritised action brief, and a written list of facts or specialist decisions still required. The prices are now published on this page: GBP 950 for the fixed-scope starter assessment and GBP 650 per day for advisory work. The named consultant, the duration and the full terms will be published before booking opens.</p>
+        <p>The service hypothesis includes a scoped evidence review, one live walkthrough, a prioritised action brief, and a written list of facts or specialist decisions still required. GBP 950 for the fixed scope and GBP 650 per day are unvalidated test prices. The seller, named consultant, duration, insurance, fulfilment controls and full terms must be resolved before any service or booking opens.</p>
     </details>
 
-    <details>
+    <details data-analytics-item="price">
         <summary>Can I pay or book now?</summary>
         <p>No. There is no live checkout or booking flow. Payment will not be enabled until fulfillment, availability, privacy, tax, cancellation, refund, and professional-boundary controls are ready and tested. You can email us at any time; a conversation costs nothing and commits you to nothing.</p>
     </details>
 
-    <details>
+    <details data-analytics-item="limitations">
         <summary>Will the consultant give legal advice?</summary>
         <p>Not unless the named consultant is separately qualified and engaged to do so. AI governance support can help organise facts, evidence, and actions, but legal conclusions must be referred to an appropriately qualified professional.</p>
     </details>
@@ -457,6 +457,7 @@
     </div>
 </footer>
 
+<script src="/assets/analytics.js"></script>
 <script>
     // Nav scroll
     function updateNav() {
@@ -464,12 +465,17 @@
     }
     window.addEventListener('scroll', updateNav, { passive: true });
 
+    if (window.RegulaAnalytics) {
+        window.RegulaAnalytics.track('Pricing View');
+    }
+
     // FAQ engagement, counted only when a question is opened.
     document.querySelectorAll('.pricing-faq details').forEach(function (d) {
         d.addEventListener('toggle', function () {
-            if (d.open && window.plausible) {
-                var q = d.querySelector('summary');
-                plausible('Pricing FAQ Open', { props: { question: q ? q.textContent.trim().slice(0, 60) : '' } });
+            if (d.open && window.RegulaAnalytics) {
+                window.RegulaAnalytics.track('Pricing FAQ Open', {
+                    item: d.getAttribute('data-analytics-item')
+                }, { onceKey: 'Pricing FAQ Open:' + d.getAttribute('data-analytics-item') });
             }
         });
     });

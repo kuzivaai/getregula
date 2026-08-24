@@ -173,12 +173,12 @@ Detector observations (not legal facts):
         <div class="artifact-card">
             <h3>HTML compliance report</h3>
             <p>The full per-finding report (<code>regula report -f html</code>): verdict, findings with file/line references, article mappings, and confidence scores.</p>
-            <a class="open-btn" href="/examples/sample-report.html" onclick="if(window.plausible)plausible('Sample Artifact Open',{props:{type:'html-report'}})">Open sample report &rarr;</a>
+            <a class="open-btn" href="/examples/sample-report.html" data-regula-event="Sample Report View" data-regula-property="asset" data-regula-value="html-report">Open sample report &rarr;</a>
         </div>
         <div class="artifact-card">
             <h3>Executive summary</h3>
             <p>The one-page summary for non-technical stakeholders (<code>regula report -f exec-summary</code>): what was scanned, what it means, what to do next.</p>
-            <a class="open-btn" href="/examples/sample-exec-summary.html" onclick="if(window.plausible)plausible('Sample Artifact Open',{props:{type:'exec-summary'}})">Open executive summary &rarr;</a>
+            <a class="open-btn" href="/examples/sample-exec-summary.html" data-regula-event="Sample Report View" data-regula-property="asset" data-regula-value="executive-summary">Open executive summary &rarr;</a>
         </div>
     </div>
 </div>
@@ -191,10 +191,11 @@ Detector observations (not legal facts):
 
 <div class="sample-section">
     <h2>Next step &mdash; with or without installing</h2>
-    <p>Not sure the EU AI Act even applies to you? The <a href="/assess/" onclick="if(window.plausible)plausible('CTA Click',{props:{type:'assess-from-sample'}})">browser-based assessment</a> answers that in about 60 seconds, no install. Ready to scan your own code? <code>pipx install regula-ai &amp;&amp; regula check .</code></p>
+    <p>Not sure the EU AI Act even applies to you? The <a href="/assess/">browser-based assessment</a> answers that in about 60 seconds, no install. Ready to scan your own code? <code>pipx install regula-ai &amp;&amp; regula check .</code></p>
 </div>
 </main>
 
+<script src="/assets/analytics.js"></script>
 <footer>
     <div class="foot-inner">
         <div class="foot-left">

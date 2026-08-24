@@ -1,0 +1,257 @@
+{
+  "format_version": 1,
+  "spec_id": "regula-anonymous-funnel-v1",
+  "effective_date": "2026-08-24",
+  "privacy_boundary": {
+    "classification": "anonymous_aggregate_product_analytics",
+    "processor": "Plausible Analytics",
+    "permitted_campaign_properties": [
+      "campaign_source",
+      "campaign_medium",
+      "campaign_name"
+    ],
+    "prohibited_properties": [
+      "question_answers",
+      "source_code",
+      "repository_url",
+      "organisation_name",
+      "email",
+      "ip_derived_profile",
+      "free_text",
+      "regulatory_result",
+      "tracking_identifier",
+      "personal_identifier"
+    ],
+    "notes": "Campaign values are accepted only from the finite allowlists in this file and are retained in sessionStorage. No visitor identifier is created. Duplicate protection suppresses the same logical event key within one page lifecycle."
+  },
+  "campaign_allowlists": {
+    "campaign_source": [
+      "github",
+      "pypi",
+      "mcp-registry",
+      "github-marketplace",
+      "console-dev",
+      "ai-governance-library",
+      "python-bytes",
+      "talk-python",
+      "changelog",
+      "iapp",
+      "corporate-outreach"
+    ],
+    "campaign_medium": [
+      "repository",
+      "registry",
+      "marketplace",
+      "editorial",
+      "community",
+      "email"
+    ],
+    "campaign_name": [
+      "release-2-0",
+      "founder-qualifier",
+      "browser-scanner",
+      "editorial-2026q3",
+      "b2b-pilot-2026q3"
+    ]
+  },
+  "events": {
+    "Qualifier Start": {
+      "purpose": "Measure whether the founder-first questions are started.",
+      "trigger": "First answer change in the five-question homepage qualifier.",
+      "properties": [],
+      "prohibited_properties": ["question_answers", "regulatory_result"],
+      "denominator": "Unique homepage views in the same exact reporting window.",
+      "privacy_classification": "anonymous behavioural event",
+      "implementation": "site/assets/qualifier.js via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py qualifier_start_rate"
+    },
+    "Qualifier Complete": {
+      "purpose": "Measure completion of the five-question qualifier.",
+      "trigger": "A complete valid qualifier submission renders a result.",
+      "properties": [],
+      "prohibited_properties": ["question_answers", "regulatory_result"],
+      "denominator": "Qualifier Start events in the same exact reporting window.",
+      "privacy_classification": "anonymous behavioural event",
+      "implementation": "site/assets/qualifier.js via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py qualifier_completion_rate"
+    },
+    "Assessment Start": {
+      "purpose": "Measure entry into the fuller browser assessment.",
+      "trigger": "The visitor explicitly starts the assessment flow.",
+      "properties": [],
+      "prohibited_properties": ["question_answers", "regulatory_result"],
+      "denominator": "Assessment-page views in the same exact reporting window.",
+      "privacy_classification": "anonymous behavioural event",
+      "implementation": "site/assess/assess-flow.js via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py assessment_start_rate"
+    },
+    "Assessment Complete": {
+      "purpose": "Measure whether the fuller assessment reaches a rendered result.",
+      "trigger": "A result is rendered after the visitor requests it.",
+      "properties": [],
+      "prohibited_properties": ["question_answers", "regulatory_result"],
+      "denominator": "Assessment Start events in the same exact reporting window.",
+      "privacy_classification": "anonymous behavioural event",
+      "implementation": "site/assess/assess-flow.js via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py assessment_completion_rate"
+    },
+    "Scanner Start": {
+      "purpose": "Measure explicit entry into the local browser scanner.",
+      "trigger": "The visitor opens the browser scanner.",
+      "properties": [],
+      "prohibited_properties": ["source_code", "repository_url", "regulatory_result"],
+      "denominator": "Assessment-page views in the same exact reporting window.",
+      "privacy_classification": "anonymous behavioural event",
+      "implementation": "site/assess locale pages via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py scanner_start_rate"
+    },
+    "Scanner Complete": {
+      "purpose": "Measure successful browser-scan completion without reporting what was found.",
+      "trigger": "The in-browser scanner renders a result without throwing.",
+      "properties": [],
+      "prohibited_properties": ["source_code", "repository_url", "regulatory_result"],
+      "denominator": "Scanner Start events in the same exact reporting window.",
+      "privacy_classification": "anonymous behavioural event",
+      "implementation": "site/assess locale pages via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py scanner_completion_rate"
+    },
+    "Scanner Error": {
+      "purpose": "Measure browser-scan reliability without transmitting code or exception text.",
+      "trigger": "The in-browser scanner catches an exception and shows its recovery state.",
+      "properties": [],
+      "prohibited_properties": ["source_code", "free_text", "regulatory_result"],
+      "denominator": "Scanner Start events in the same exact reporting window.",
+      "privacy_classification": "anonymous operational event",
+      "implementation": "site/assess locale pages via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py scanner_error_rate"
+    },
+    "Install Command Copy": {
+      "purpose": "Measure intent to continue from browser results into the local CLI.",
+      "trigger": "A visitor copies an installation or results CLI command.",
+      "properties": [],
+      "prohibited_properties": ["free_text", "repository_url"],
+      "denominator": "Relevant result or installation-section views in the same window.",
+      "privacy_classification": "anonymous intent event",
+      "implementation": "site/assess locale pages and install controls via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py install_intent_rate"
+    },
+    "GitHub Action Click": {
+      "purpose": "Measure interest in CI integration.",
+      "trigger": "A labelled GitHub Action integration link is activated.",
+      "properties": ["location"],
+      "prohibited_properties": ["repository_url", "free_text"],
+      "denominator": "Views of pages containing the labelled integration link.",
+      "privacy_classification": "anonymous outbound-intent event",
+      "implementation": "site/assets/analytics.js delegated link tracking",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py integration_intent"
+    },
+    "MCP Click": {
+      "purpose": "Measure interest in MCP integration.",
+      "trigger": "A labelled MCP integration link is activated.",
+      "properties": ["location"],
+      "prohibited_properties": ["repository_url", "free_text"],
+      "denominator": "Views of pages containing the labelled integration link.",
+      "privacy_classification": "anonymous outbound-intent event",
+      "implementation": "site/assets/analytics.js delegated link tracking",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py integration_intent"
+    },
+    "PyPI Click": {
+      "purpose": "Measure package-registry continuation.",
+      "trigger": "A link to the regula-ai PyPI project is activated.",
+      "properties": ["location"],
+      "prohibited_properties": ["repository_url", "free_text"],
+      "denominator": "Views of pages containing a PyPI link.",
+      "privacy_classification": "anonymous outbound-intent event",
+      "implementation": "site/assets/analytics.js delegated link tracking",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py registry_intent"
+    },
+    "GitHub Click": {
+      "purpose": "Measure repository continuation.",
+      "trigger": "A link to the Regula GitHub repository is activated.",
+      "properties": ["location"],
+      "prohibited_properties": ["repository_url", "free_text"],
+      "denominator": "Views of pages containing a repository link.",
+      "privacy_classification": "anonymous outbound-intent event",
+      "implementation": "site/assets/analytics.js delegated link tracking",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py repository_intent"
+    },
+    "Sample Report View": {
+      "purpose": "Measure whether visitors inspect a reproducible example output.",
+      "trigger": "A labelled sample report or executive-summary link is activated.",
+      "properties": ["asset"],
+      "prohibited_properties": ["repository_url", "free_text", "regulatory_result"],
+      "denominator": "Sample-report landing-page views in the same exact window.",
+      "privacy_classification": "anonymous content event",
+      "implementation": "site/sample-report.html via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py sample_report_rate"
+    },
+    "Pricing View": {
+      "purpose": "Measure navigation to the truthful service-boundary page.",
+      "trigger": "The pricing page completes DOM loading.",
+      "properties": [],
+      "prohibited_properties": ["personal_identifier", "regulatory_result"],
+      "denominator": "Qualified upstream continuation events in the same exact window.",
+      "privacy_classification": "anonymous page-intent event",
+      "implementation": "site/pricing.html via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py pricing_continuation_rate"
+    },
+    "Pricing FAQ Open": {
+      "purpose": "Identify which published service-boundary question is opened.",
+      "trigger": "A pricing FAQ disclosure changes to open.",
+      "properties": ["item"],
+      "prohibited_properties": ["free_text", "personal_identifier"],
+      "denominator": "Pricing-page views in the same exact window.",
+      "privacy_classification": "anonymous content event",
+      "implementation": "site/pricing.html via RegulaAnalytics.track",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py pricing_faq_rate"
+    },
+    "Contact Intent": {
+      "purpose": "Measure an explicit move toward direct email without recording an address or message.",
+      "trigger": "A labelled consulting, organisation, or support mailto link is activated.",
+      "properties": ["route"],
+      "prohibited_properties": ["email", "free_text", "organisation_name", "regulatory_result"],
+      "denominator": "Pricing or result-route views in the same exact window.",
+      "privacy_classification": "anonymous high-intent event",
+      "implementation": "site/assets/analytics.js delegated link tracking",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py contact_intent_rate"
+    },
+    "Enquiry Prepared": {
+      "purpose": "Measure completion of the future local-only enquiry-preparation flow.",
+      "trigger": "A visitor explicitly generates a local enquiry summary.",
+      "properties": [],
+      "prohibited_properties": ["email", "free_text", "organisation_name", "regulatory_result"],
+      "denominator": "Local enquiry-preparation starts in the same exact window.",
+      "privacy_classification": "anonymous local-flow event",
+      "implementation": "Reserved; must not fire before the local-only flow exists.",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py enquiry_completion_rate"
+    },
+    "Documentation Search": {
+      "purpose": "Measure use of a future first-party documentation search without recording query text.",
+      "trigger": "A first-party documentation search is submitted.",
+      "properties": [],
+      "prohibited_properties": ["free_text", "personal_identifier"],
+      "denominator": "Documentation search-form views in the same exact window.",
+      "privacy_classification": "anonymous documentation event",
+      "implementation": "Reserved; must not fire before first-party documentation search exists.",
+      "test": "tests/test_analytics_contract.py",
+      "dashboard_or_report": "scripts/distribution_funnel.py documentation_search_rate"
+    }
+  }
+}

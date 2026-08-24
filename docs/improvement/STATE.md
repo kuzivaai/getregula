@@ -25,6 +25,9 @@ The homepage must support that task before presenting the developer CLI.
 - Ledger review queue: 32 rows require independent human review; the bot does not infer their state.
 - Browser/Python scanner parity gate: all 38 canonical fixtures execute, including all 30 high-risk fixtures.
 - Synthetic label fidelity, not real-world accuracy: high-risk 18/30; negatives 3/3. The default CLI condition separately recalls 10/30 high-risk fixtures.
+- Repository release identity: 2.0.0. Last recorded release action: EXECUTED at 2026-08-24T13:07:34Z; result `PR_55_AND_SECURITY_CLOSEOUT_MERGED; PRODUCTION_VERIFIED; REGULA_AI_2_0_0_PUBLISHED_AND_INDEPENDENTLY_VERIFIED; V2_TAG_CREATED; V1_UNCHANGED`.
+- Anonymous funnel contract: READY_FOR_CLASS_B_EXECUTION; result `ALL_LOCAL_MACHINE_GATES_PASSED; NOT_YET_COMMITTED_OR_DEPLOYED`.
+- Official MCP Registry 2.0.0 update: EXTERNAL_EXECUTION_BLOCKED; result `2_0_0_VALIDATED_NOT_PUBLISHED; OWNER_ACTION_MCP_PUBLISHER_LOGIN_GITHUB_THEN_PUBLISH`.
 
 ## Current boundaries
 
@@ -44,11 +47,11 @@ The homepage must support that task before presenting the developer CLI.
 
 ## Resume order
 
-1. Keep the complete scanner parity gate green and investigate its named label disagreements without tuning only to the benchmark.
-2. Use `python3 scripts/ledger_review.py` to obtain two independent, evidenced reviews for each REVIEW_REQUIRED row; adjudicate disagreements outside the bot.
-3. Verify the founder homepage at desktop, 390 px mobile, keyboard-only, zoom/reflow, success, validation-error, and scanner-error states.
-4. Run the full project verification command from `AGENTS.md`.
-5. Re-derive publication status from Git and GitHub. If a pull request exists, require green checks and preview evidence before deciding whether to merge; merge, release, and production deployment remain separate decisions.
+1. Complete the anonymous funnel contract's full gate, browser/network verification, review, merge and production verification; then obtain a fresh exact-window export.
+2. Complete GitHub device authentication for `mcp-publisher`, publish the already-valid 2.0.0 metadata, and verify the official Registry API before claiming it updated.
+3. Execute the first tailored editorial submissions only after the measured campaign path is live; record sent, response, referral, qualified action and stop state separately.
+4. Keep the complete scanner parity gate green and investigate its named label disagreements without tuning only to the benchmark.
+5. Use `python3 scripts/ledger_review.py` to obtain two genuinely independent, evidenced reviews for each REVIEW_REQUIRED row; adjudicate disagreements outside the bot.
 
 ## Source-of-truth commands
 
@@ -58,5 +61,6 @@ python3 scripts/ledger_review.py summary
 node tests/test_scanner_js.js
 python3 scripts/current_state.py --check
 git status --short --branch
-git ls-remote origin refs/heads/feat/engagement-fixes refs/heads/main
+git ls-remote origin refs/heads/main refs/tags/v2.0.0 refs/tags/v2
+mcp-publisher validate server.json
 ```

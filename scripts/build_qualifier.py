@@ -170,6 +170,7 @@ def render(key: str, copy: dict) -> str:
   </div>
 </section>
 <script type="application/json" id="qual-copy">{blob}</script>
+<script src="/assets/analytics.js"></script>
 <script src="/assets/qualifier.js" defer></script>
 {END}"""
 
