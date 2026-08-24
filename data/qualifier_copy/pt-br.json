@@ -259,16 +259,16 @@
     },
     "paid": {
       "title": "Uma avaliação por escrito",
-      "price": "GBP 950, escopo fixo",
-      "body": "Uma base de código, um escopo de produto, remoto, cerca de uma semana de tempo corrido. O resultado do scan lido com você, indicador por indicador, uma lista escrita dos fatos ainda a resolver e um resumo priorizado que fica com você. Não é uma determinação de conformidade, não é certificação e não é aconselhamento jurídico. Nenhum pagamento ocorre neste site; começa com um e-mail.",
+      "price": "Preço de teste: GBP 950. Ainda indisponível",
+      "body": "A hipótese atual de serviço abrange uma base de código e um escopo de produto, de forma remota: leitura do scan indicador por indicador, lista escrita dos fatos ainda a resolver e um resumo priorizado. GBP 950 é um preço de teste não validado, não uma evidência de disposição a pagar. O serviço não está disponível: vendedor, consultoria, duração, termos, seguro e controles de entrega estão indefinidos. Não seria uma determinação de conformidade, certificação nem aconselhamento jurídico.",
       "cta": "Ver o que está incluído (em inglês)",
       "href": "/pricing.html",
-      "short": "Uma avaliação por escrito a um preço fixo publicado. Não é uma determinação."
+      "short": "Uma proposta de avaliação por escrito com preço de teste não validado. Ainda não está disponível."
     },
     "consultant": {
       "title": "Falar com uma consultoria",
-      "price": "GBP 650 por dia",
-      "body": "Uma sessão ao vivo com uma consultoria independente de governança de IA. Não é uma certificação, e a consultoria não presta aconselhamento jurídico a menos que esteja separadamente qualificada e contratada para isso. A reserva ainda não está aberta: o nome da pessoa, a duração e os termos completos serão publicados antes. Até lá é um e-mail, e conversar não custa nada.",
+      "price": "Preço de teste: GBP 650 por dia. Ainda indisponível",
+      "body": "A hipótese atual é uma sessão ao vivo com uma consultoria independente de governança de IA a uma diária de teste de GBP 650. O preço não foi validado e nenhuma pessoa está nomeada ou disponível para reserva. Não seria uma certificação, e a consultoria só prestaria aconselhamento jurídico se tivesse qualificação e contratação separadas. Até a publicação do fornecedor, duração, termos, seguro e controles de entrega, isto é apenas uma consulta por e-mail; conversar não custa nada.",
       "cta": "Escrever sobre uma revisão",
       "href": "mailto:support@getregula.com?subject=Consultant%20review%20enquiry",
       "short": "Uma conversa com uma consultoria independente. Não é certificação e ainda não é reservável."

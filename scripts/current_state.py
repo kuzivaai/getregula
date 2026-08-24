@@ -14,11 +14,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import ledger_review
 import ledger_status
+from constants import VERSION
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 STATE_PATH = REPO_ROOT / "docs" / "improvement" / "STATE.md"
 MANIFEST = REPO_ROOT / "benchmarks" / "synthetic" / "manifest.json"
 RECALL = REPO_ROOT / "benchmarks" / "synthetic" / "RECALL.json"
+POLICY = REPO_ROOT / "data" / "distribution_execution_policy.json"
 
 
 def _scanner_measurement() -> tuple[int, int, int, int, int]:
@@ -59,6 +61,11 @@ def render() -> str:
     recall = json.loads(RECALL.read_text(encoding="utf-8"))
     default_recall = recall["conditions"]["scanner/default"]["tiers"][
         "high_risk"]["fraction"]
+    policy = json.loads(POLICY.read_text(encoding="utf-8"))
+    actions = {action["action_id"]: action for action in policy["actions"]}
+    release = actions["merge-deploy-release-2026-08-19"]
+    analytics = actions["anonymous-funnel-contract-2026-08-24"]
+    mcp = actions["official-mcp-registry-2-0-0-2026-08-24"]
 
     return f"""# Regula — current resume state
 
@@ -87,6 +94,9 @@ The homepage must support that task before presenting the developer CLI.
 - Ledger review queue: {len(review_queue)} rows require independent human review; the bot does not infer their state.
 - Browser/Python scanner parity gate: all {corpus} canonical fixtures execute, including all {high_total} high-risk fixtures.
 - Synthetic label fidelity, not real-world accuracy: high-risk {high_exact}/{high_total}; negatives {negative_correct}/{negative_total}. The default CLI condition separately recalls {default_recall} high-risk fixtures.
+- Repository release identity: {VERSION}. Last recorded release action: {release['decision']} at {release['executed_at']}; result `{release['result']}`.
+- Anonymous funnel contract: {analytics['decision']}; result `{analytics['result']}`.
+- Official MCP Registry 2.0.0 update: {mcp['decision']}; result `{mcp['result']}`.
 
 ## Current boundaries
 
@@ -106,11 +116,11 @@ The homepage must support that task before presenting the developer CLI.
 
 ## Resume order
 
-1. Keep the complete scanner parity gate green and investigate its named label disagreements without tuning only to the benchmark.
-2. Use `python3 scripts/ledger_review.py` to obtain two independent, evidenced reviews for each REVIEW_REQUIRED row; adjudicate disagreements outside the bot.
-3. Verify the founder homepage at desktop, 390 px mobile, keyboard-only, zoom/reflow, success, validation-error, and scanner-error states.
-4. Run the full project verification command from `AGENTS.md`.
-5. Re-derive publication status from Git and GitHub. If a pull request exists, require green checks and preview evidence before deciding whether to merge; merge, release, and production deployment remain separate decisions.
+1. Complete the anonymous funnel contract's full gate, browser/network verification, review, merge and production verification; then obtain a fresh exact-window export.
+2. Complete GitHub device authentication for `mcp-publisher`, publish the already-valid 2.0.0 metadata, and verify the official Registry API before claiming it updated.
+3. Execute the first tailored editorial submissions only after the measured campaign path is live; record sent, response, referral, qualified action and stop state separately.
+4. Keep the complete scanner parity gate green and investigate its named label disagreements without tuning only to the benchmark.
+5. Use `python3 scripts/ledger_review.py` to obtain two genuinely independent, evidenced reviews for each REVIEW_REQUIRED row; adjudicate disagreements outside the bot.
 
 ## Source-of-truth commands
 
@@ -120,7 +130,8 @@ python3 scripts/ledger_review.py summary
 node tests/test_scanner_js.js
 python3 scripts/current_state.py --check
 git status --short --branch
-git ls-remote origin refs/heads/feat/engagement-fixes refs/heads/main
+git ls-remote origin refs/heads/main refs/tags/v2.0.0 refs/tags/v2
+mcp-publisher validate server.json
 ```
 """
 

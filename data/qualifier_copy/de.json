@@ -259,16 +259,16 @@
     },
     "paid": {
       "title": "Eine schriftliche Bewertung",
-      "price": "GBP 950, fester Umfang",
-      "body": "Eine Codebasis, ein Produktumfang, aus der Ferne, etwa eine Woche Kalenderzeit. Der Scan wird mit Ihnen Indikator für Indikator durchgegangen, dazu eine schriftliche Liste der noch zu klärenden Tatsachen und ein priorisiertes Kurzdokument, das Sie behalten. Es ist keine Konformitätsfeststellung, keine Zertifizierung und keine Rechtsberatung. Auf dieser Website läuft keine Zahlung; es beginnt mit einer E-Mail.",
+      "price": "Testpreis: GBP 950. Noch nicht verfügbar",
+      "body": "Die derzeitige Dienstleistungshypothese umfasst eine Codebasis und einen Produktumfang aus der Ferne: Der Scan würde Indikator für Indikator durchgegangen, ergänzt um eine schriftliche Liste offener Tatsachen und ein priorisiertes Kurzdokument. GBP 950 ist ein unbestätigter Testpreis und kein Beleg für Zahlungsbereitschaft. Die Leistung ist nicht verfügbar: Verkäufer, Beratungsperson, Dauer, Bedingungen, Versicherung und Erfüllungsablauf sind ungeklärt. Es wäre keine Konformitätsfeststellung, Zertifizierung oder Rechtsberatung.",
       "cta": "Nachlesen, was enthalten ist (auf Englisch)",
       "href": "/pricing.html",
-      "short": "Eine schriftliche Bewertung zu einem veröffentlichten Festpreis. Sie ist keine Feststellung."
+      "short": "Eine vorgeschlagene schriftliche Bewertung mit unbestätigtem Testpreis. Sie ist noch nicht verfügbar."
     },
     "consultant": {
       "title": "Mit einer Beratung sprechen",
-      "price": "GBP 650 pro Tag",
-      "body": "Eine Live-Sitzung mit einer unabhängigen KI-Governance-Beratung. Es ist keine Zertifizierung, und die Beratung erteilt keine Rechtsberatung, sofern sie nicht gesondert qualifiziert und beauftragt ist. Eine Buchung ist noch nicht möglich: Zuerst werden die benannte Person, die Dauer und die vollständigen Bedingungen veröffentlicht. Bis dahin ist es eine E-Mail, und Reden kostet nichts.",
+      "price": "Testpreis: GBP 650 pro Tag. Noch nicht verfügbar",
+      "body": "Die derzeitige Hypothese ist eine Live-Sitzung mit einer unabhängigen KI-Governance-Beratung zu einem Testtagessatz von GBP 650. Der Preis ist unbestätigt; keine Beratungsperson ist benannt oder buchbar. Es wäre keine Zertifizierung, und Rechtsberatung gäbe es nur bei gesonderter Qualifikation und Beauftragung. Bis Anbieter, Dauer, Bedingungen, Versicherung und Erfüllungsablauf veröffentlicht sind, ist dies nur eine E-Mail-Anfrage; ein Gespräch kostet nichts.",
       "cta": "Wegen einer Durchsicht schreiben",
       "href": "mailto:support@getregula.com?subject=Consultant%20review%20enquiry",
       "short": "Ein Gespräch mit einer unabhängigen Beratung. Keine Zertifizierung und noch nicht buchbar."

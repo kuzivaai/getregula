@@ -259,16 +259,16 @@
     },
     "paid": {
       "title": "A written assessment",
-      "price": "GBP 950, fixed scope",
-      "body": "One codebase, one product scope, remote, about a week of elapsed time. The scan read with you indicator by indicator, a written list of the facts still to be settled, and a prioritised brief you keep. It is not a compliance determination, not a certification and not legal advice. No payment runs on this site; it starts with an email.",
+      "price": "Test price: GBP 950. Not available yet",
+      "body": "The current service hypothesis is one codebase, one product scope, remote, with a scan read indicator by indicator, a written list of facts still to settle, and a prioritised brief. The GBP 950 figure is an unvalidated test price, not evidence of willingness to pay. The service is not available: the seller, consultant, duration, terms, insurance and fulfilment controls are unresolved. It would not be a compliance determination, certification or legal advice.",
       "cta": "Read what is included",
       "href": "/pricing.html",
-      "short": "A written assessment at a published fixed price. It is not a determination."
+      "short": "A proposed written assessment with an unvalidated test price. It is not available yet."
     },
     "consultant": {
       "title": "Talk to a consultant",
-      "price": "GBP 650 per day",
-      "body": "A live session with an independent AI governance consultant. It is not a certification, and the consultant does not give legal advice unless separately qualified and engaged to do so. Booking is not open yet: the named consultant, the duration and the full terms will be published first. Until then it is an email, and talking costs nothing.",
+      "price": "Test price: GBP 650 per day. Not available yet",
+      "body": "The current hypothesis is a live session with an independent AI governance consultant at a GBP 650 test day rate. The price is unvalidated and no consultant is named or bookable. It would not be a certification, and the consultant would not give legal advice unless separately qualified and engaged to do so. Until the provider, duration, terms, insurance and fulfilment controls are published, this is only an email enquiry and talking costs nothing.",
       "cta": "Email about a review",
       "href": "mailto:support@getregula.com?subject=Consultant%20review%20enquiry",
       "short": "A conversation with an independent consultant. Not a certification, and not bookable yet."

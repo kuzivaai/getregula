@@ -497,7 +497,7 @@
     <div class="export-section">
       <h3>Export your results</h3>
       <div class="export-buttons">
-        <button type="button" class="btn btn-secondary" onclick="if(window.plausible)plausible('Assess Export',{props:{type:'print'}});window.print()">Print / Save as PDF</button>
+        <button type="button" class="btn btn-secondary" onclick="window.print()">Print / Save as PDF</button>
         <button type="button" class="btn btn-secondary" onclick="copyShareLink()">Copy shareable link</button>
         <button type="button" class="btn btn-secondary" onclick="exportJSON()">Download JSON</button>
       </div>
@@ -540,6 +540,7 @@
     </div>
 </footer>
 
+<script src="/assets/analytics.js"></script>
 <script src="scanner.js"></script>
 <script src="decision-model.js"></script>
 <script src="decision-kernel.js"></script>
@@ -929,7 +930,7 @@ document.addEventListener("click", function (e) {
   const codeEl = e.target.closest("#resultsSection code");
   if (!codeEl) return;
   navigator.clipboard.writeText(codeEl.textContent).catch(() => {});
-  if (window.plausible) plausible("Results CLI Copy", { props: { command: codeEl.textContent.slice(0, 60) } });
+  if (window.RegulaAnalytics) window.RegulaAnalytics.track("Install Command Copy");
 });
 
 function startScanner() {
@@ -939,7 +940,7 @@ function startScanner() {
   document.getElementById("scannerSection").style.display = "block";
   document.getElementById("scanError").style.display = "none";
   document.getElementById("codeInput").focus();
-  if (window.plausible) plausible("Scanner Started");
+  if (window.RegulaAnalytics) window.RegulaAnalytics.track("Scanner Start");
 }
 
 function backToHero() {
@@ -1014,14 +1015,13 @@ function runScan() {
       renderScanResults(scanResult);
       document.getElementById("scanResults").style.display = "block";
 
-      if (window.plausible) plausible("Scan Complete", {
-        props: { detector_class: scanResult.classification.detector_class, result_type: scanResult.decision.result_type, language: scanResult.language }
-      });
+      if (window.RegulaAnalytics) window.RegulaAnalytics.track("Scanner Complete");
     } catch (error) {
       scanResult = null;
       const errorElement = document.getElementById("scanError");
       errorElement.style.display = "block";
       errorElement.focus();
+      if (window.RegulaAnalytics) window.RegulaAnalytics.track("Scanner Error");
       console.error("Regula browser scan failed", error);
     } finally {
       document.getElementById("scanProgress").style.display = "none";

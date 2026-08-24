@@ -109,9 +109,6 @@
 
   function selectJurisdiction(jurisdiction) {
     activeJurisdiction = jurisdiction;
-    if (window.plausible) {
-      window.plausible("Assess Jurisdiction", { props: { jurisdiction } });
-    }
     document.querySelectorAll(".jurisdiction-btn").forEach(button => {
       button.style.border = "1px solid var(--border)";
       button.style.background = "transparent";
@@ -160,7 +157,7 @@
     byId("assessIntro").style.display = "block";
     updateAssessIntro();
     renderQuestion();
-    if (window.plausible) window.plausible("Assessment Started");
+    if (window.RegulaAnalytics) window.RegulaAnalytics.track("Assessment Start");
   }
 
   function answeredCount() { return Object.keys(answers).length; }
@@ -295,11 +292,6 @@
   }
 
   function nextQuestion() {
-    if (window.plausible) {
-      window.plausible("Assess Question", {
-        props: { step: currentQuestion + 1, jurisdiction: activeJurisdiction },
-      });
-    }
     if (currentQuestion < activeDisplayOrder().length - 1) {
       currentQuestion++;
       renderQuestion();
@@ -334,15 +326,7 @@
       nextElement: byId("nextStepsSection"),
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (window.plausible) {
-      window.plausible("Assessment Complete", {
-        props: {
-          result_type: results.result_type,
-          jurisdiction: activeJurisdiction,
-          answered: answeredCount(),
-        },
-      });
-    }
+    if (window.RegulaAnalytics) window.RegulaAnalytics.track("Assessment Complete");
   }
 
   function encodeAnswers() {
@@ -356,9 +340,6 @@
   }
 
   function copyShareLink() {
-    if (window.plausible) {
-      window.plausible("Assess Export", { props: { type: "share-link" } });
-    }
     const code = encodeAnswers();
     const jurParam = activeJurisdiction !== "eu" ? "&j=" + activeJurisdiction : "";
     const url = window.location.origin + window.location.pathname + "?r=" + code + jurParam;
@@ -370,9 +351,6 @@
   }
 
   function exportJSON() {
-    if (window.plausible) {
-      window.plausible("Assess Export", { props: { type: "json" } });
-    }
     window.RegulaDecisionUI.exportResult(calculateResults(), {
       locale: document.documentElement.lang,
       answers: answers,

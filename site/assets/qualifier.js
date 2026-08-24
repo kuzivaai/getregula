@@ -158,7 +158,7 @@
     return card;
   }
 
-  function render(a) {
+  function render(a, recordCompletion) {
     resultBox.textContent = '';
 
     var h2 = el('h2', null, copy.resultHeading);
@@ -210,14 +210,11 @@
     resultBox.hidden = false;
     h2.setAttribute('tabindex', '-1');
     h2.focus();
-    /* A bare count, with NO property derived from the answers. An earlier
-     * version sent whether the reader's answers named a use the Act treats most
-     * strictly, which is a signal about the reader rather than a page count,
-     * and the privacy notice's promise is that the answers do not leave the
-     * device. The count distinguishes "nobody uses this" from "people use it",
-     * which is the only question the traffic could support anyway. */
-    if (window.plausible) {
-      window.plausible('Qualifier Result');
+    /* Record completion without any answer or result property. A shared-link
+     * render is deliberately excluded: it is a view of someone else's saved
+     * state, not a completion by this visitor. */
+    if (recordCompletion && window.RegulaAnalytics) {
+      window.RegulaAnalytics.track('Qualifier Complete');
     }
   }
 
@@ -301,7 +298,7 @@
       return;
     }
     clearError();
-    render(a);
+    render(a, true);
     if (resetBtn) { resetBtn.disabled = false; }
   }
 
@@ -344,6 +341,9 @@
       clearError();
       errorBox.className = 'qual-err';
       if (resetBtn) { resetBtn.disabled = false; }
+      if (window.RegulaAnalytics) {
+        window.RegulaAnalytics.track('Qualifier Start');
+      }
     });
 
     var shared = decode(new URLSearchParams(window.location.search).get('qual'));
@@ -352,7 +352,7 @@
         var input = form.querySelector('input[name="' + q + '"][value="' + CSS.escape(shared[q]) + '"]');
         if (input) { input.checked = true; }
       });
-      render(shared);
+      render(shared, false);
       if (resetBtn) { resetBtn.disabled = false; }
     }
   }

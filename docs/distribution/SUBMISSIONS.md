@@ -1,6 +1,6 @@
 # Distribution listings register
 
-Updated 14 August 2026. This file is the single register of where Regula is
+Updated 24 August 2026. This file is the single register of where Regula is
 listed, what is prepared, and what is held pending owner authorisation.
 
 This version supersedes the May 2026 revision, whose copy-paste-ready drafts
@@ -17,9 +17,9 @@ stated date, not read from a repository record.
 
 | Surface | Status |
 |---|---|
-| PyPI `regula-ai` | PUBLISHED, 1.9.0 (27 Jul 2026). World-checked 14 Aug 2026 via the PyPI JSON API: live version 1.9.0, and the `mcp-name: io.github.kuzivaai/regula` ownership marker is present on line 1 of the published package description. The description still shows the pre-14-Aug README headline; the repositioned headline reaches PyPI at the next release. |
-| GitHub Action (`action.yml`) | EXISTS in the repository, exercised by `.github/workflows/test-action.yml`, branding present. LISTED on the GitHub Marketplace since 14 Aug 2026 (owner-published release v1.9.0 at 07:46:45Z with the Marketplace box ticked; world-checked the same day: the action page shows publisher kuzivaai, v1.9.0, categories Security and Code quality). Earlier the same day a Marketplace search had returned no kuzivaai action. The May 2026 revision of this file recorded the Marketplace listing as already done; either that record was wrong or the listing lapsed, and which of the two cannot be determined from here. The floating `v1` tag exists locally and on the remote and moves on each release (`.github/workflows/release.yml` header), so the `uses: kuzivaai/getregula@v1` examples resolve. |
-| MCP server (`scripts/mcp_server.py`) | EXISTS, stdio, stdlib-only, tool-level errors flagged per the MCP error form since 14 Aug 2026. LISTED on the official MCP registry since 2026-08-14T06:56:16Z as `io.github.kuzivaai/regula` 1.9.0 (owner-executed publish; world-checked via the registry API the same day, count 1; see the authorisation ledger below). Earlier the same day the search had returned only an unrelated third-party server. |
+| PyPI `regula-ai` | PUBLISHED, 2.0.0 (24 Aug 2026). Release workflow build, trusted publish, clean PyPI install and smoke tests passed. Independently downloaded GitHub assets match `SHA256SUMS`; clean wheel install reports 2.0.0 and passes 6/6 self-tests. PyPI Integrity records bind wheel SHA-256 `6b8e9a38b0d9c9cb18bb054b9b932a785dd3678e343f503aece406f2b41966d1` and sdist SHA-256 `3ef5b7e34436a8ce4e510927129944d223fb4ea650cfe29b4b42c8a1bbf0ed36` to the GitHub `release.yml` publisher. |
+| GitHub Action (`action.yml`) | EXISTS and exercised by `.github/workflows/test-action.yml`; branding present. The Marketplace page is live and was world-checked 24 Aug 2026. The accessible public page does not expose a version string proving that the Marketplace recommendation moved from the owner-published 1.9.0 release. The new immutable `v2.0.0` and floating `v2` tags exist; `v1` is unchanged. Marketplace-version confirmation remains an owner/UI check, not an executed update claim. |
+| MCP server (`scripts/mcp_server.py`) | EXISTS, stdio, stdlib-only. The official registry still serves immutable version 1.9.0 as active/latest (world-checked 24 Aug). The 2.0.0 `server.json` passes the registry's live validator, but publication returned HTTP 401 because the saved registry JWT expired. `mcp-publisher login github` produced a device-auth prompt; 2.0.0 is therefore BLOCKED_EXTERNAL_AUTH and has not been published. |
 | VS Code extension | Recorded as published (v0.1.0, May 2026). Not re-verified this session; the 11 Aug 2026 audit records the extension as outside CI. Treat as unverified until checked against the live marketplace. |
 | Hacker News | Submissions were already made (May 2026). Do not resubmit; this is a standing project rule. |
 | dev.to | Articles published (May 2026 record; not re-verified this session). |
@@ -27,29 +27,28 @@ stated date, not read from a repository record.
 
 ## Prepared and held
 
-Publishing to a registry or marketplace is a distribution act and an owner
-decision. Everything below is built and verifiable in the repository; nothing
-has been submitted. Each item activates only on a dated owner authorisation
-recorded in this file's authorisation ledger.
+Publishing to a registry or marketplace is authorised by the 19 August owner
+directive after platform checks. A prepared action is still not an executed
+one; platform authentication or acceptance remains a blocker where required.
 
 ### 1. Official MCP registry (registry.modelcontextprotocol.io)
 
 - Artefact: `server.json` at the repository root, `$schema` 2025-12-11 (the
   schema version live registry entries carry, checked 14 Aug 2026), name
-  `io.github.kuzivaai/regula`, PyPI package `regula-ai` 1.9.0, stdio
+  `io.github.kuzivaai/regula`, PyPI package `regula-ai` 2.0.0, stdio
   transport.
-- Ownership validation: the registry verifies PyPI packages by finding the
-  `mcp-name` marker in the published package description. Verified present in
-  the live 1.9.0 package (see status register), so validation will run
-  against the package already on PyPI; no new release is required first.
+- Ownership validation: the live `mcp-publisher validate` check passed for
+  2.0.0 on 24 Aug; the 2.0.0 PyPI package and entry point are published and
+  independently installed.
 - Version discipline: the manifest's two version fields must equal
   `scripts/constants.py:VERSION`; enforced by
   `tests/test_source_of_truth.py::test_current_version_declared_consistently_everywhere`
   (control run 14 Aug 2026: a planted 9.9.9 package version fails the guard
   by name).
-- Owner steps at authorisation: install `mcp-publisher`;
-  `mcp-publisher login github` as the kuzivaai account;
-  `mcp-publisher publish` from the repository root.
+- Exact blocked action: complete `mcp-publisher login github` as `kuzivaai`,
+  then run `mcp-publisher publish server.json` from the repository root and
+  verify 2.0.0 through `/v0.1/servers`. Registry versions are immutable;
+  status can be changed, but metadata remains accessible.
 
 ### 2. GitHub Marketplace (Actions)
 
@@ -87,3 +86,16 @@ with the repository's prohibited-claims classes
 |---|---|---|---|
 | 2026-08-14 | GitHub Marketplace | Owner, by publishing release v1.9.0 with "Publish this Action to the GitHub Marketplace" ticked | Listed as "Regula AI Governance Check", publisher kuzivaai, v1.9.0, categories Security and Code quality; verified on the action's Marketplace page 14 Aug 2026 |
 | 2026-08-14 | Official MCP registry | Owner, by personally executing `mcp-publisher login github` and `mcp-publisher publish` | Listed as `io.github.kuzivaai/regula` 1.9.0, status active, publishedAt 2026-08-14T06:56:16Z; verified via the registry API (`/v0/servers?search=io.github.kuzivaai/regula`, count 1) |
+| 2026-08-19 | Registry/directory and editorial submissions | Owner directive | Authorised after platform/evidence checks; does not waive human platform-authentication or commercial-terms acceptance |
+
+## Editorial submission register
+
+Every row is one submission, not a reusable mass-mail list. `PREPARED_NOT_SENT`
+means no external message or form submission occurred.
+
+| Channel | Route world-checked | Version / asset | State | Follow-up / stop |
+|---|---|---|---|---|
+| Console.dev | `hello@console.dev`, primary selection page, 24 Aug | 2.0.0; CLI sample, release, trust/limits | PREPARED_NOT_SENT; wait for analytics-contract deployment | One follow-up after 7 business days; stop after rejection or 14 days |
+| AI Governance Library | editorial contact on primary About page, 24 Aug | Free open-source evidence workflow; disclose inactive commercial hypothesis | PREPARED_NOT_SENT; fit risk is its explicit no-hidden-funnel policy | One direct curation question; no follow-up after rejection |
+| Python Bytes | `/home/contact` "Submit news", 24 Aug | PyPI 2.0.0 and reproducible Python CLI journey | PREPARED_NOT_SENT | One submission; no duplicate Talk Python pitch in the same cycle |
+| Changelog News | `/news/submit`, primary site, 24 Aug | OSS release and falsifiable local sample | PREPARED_NOT_SENT | One news submission; episode request only after editorial interest |
