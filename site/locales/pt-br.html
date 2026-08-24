@@ -282,7 +282,7 @@
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
     <script>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
+      plausible.init({formSubmissions:false,transformRequest:function(payload){payload.u=window.location.origin+window.location.pathname;return payload;}})
     </script>
     <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 </head>
@@ -438,7 +438,7 @@
 <div class="sec reveal" id="terminal">
     <h2 class="sec-head">Se você tem familiaridade com um terminal</h2>
     <p class="sec-sub">Os mesmos indicadores existem como um comando local. Ele lê arquivos na sua máquina e não os envia. Abaixo está a saída real da fixture de teste versionada, reproduzida a cada build pelas próprias verificações do projeto, e não uma simulação. Repare no que ele faz com uma pergunta não resolvida: nomeia os fatos de que precisa em vez de adivinhar uma classe.</p>
-    <ul class="qual-proof"><li>3.132 testes, executados de novo a cada mudança</li><li>achados de segurança divulgados por ferramenta e escopo</li><li>zero dependências no núcleo</li><li>o núcleo local não envia os arquivos analisados</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">trust pack</a></li></ul>
+    <ul class="qual-proof"><li>3.134 testes, executados de novo a cada mudança</li><li>achados de segurança divulgados por ferramenta e escopo</li><li>zero dependências no núcleo</li><li>o núcleo local não envia os arquivos analisados</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">trust pack</a></li></ul>
     <div class="term-wrap" role="region" aria-label="Demo interativa da CLI Regula. Alterne as abas para ver exemplos de saida dos comandos regula check, plan, gap e comply">
             <div class="term-bar" aria-hidden="true">
                 <div class="term-dot td-r"></div>

@@ -507,14 +507,14 @@ an execution system, not evidence that distribution or demand has succeeded.
 
 | Surface | Evidence-backed state | Next action |
 |---|---|---|
-| Source | `main` at `ef5309a9f6485662192c6648d2deb17705edacf0`; PR 55 and the 2.0 security closeout merged | Preserve this commit as the 2.0.0 release identity |
+| Source | Current deployed `main` is `ef98360209237ed0e5cd625f9383497d94714c18`; the immutable 2.0.0 release identity remains `ef5309a9f6485662192c6648d2deb17705edacf0` | Do not conflate the current website commit with the released package commit |
 | Production | Founder-first homepage and all three locales live; desktop, 640, 390, 320, keyboard, no-JS, error, success, reset, scanner recovery and 404 paths mechanically verified | Human comprehension remains untested |
 | PyPI | `regula-ai` 2.0.0 published 24 Aug; wheel and sdist hashes verified; clean wheel install passes 6/6 self-tests | Monitor install and support evidence, not download vanity alone |
 | Provenance | PyPI Integrity API binds both artefact hashes to `kuzivaai/getregula`, `release.yml`, environment `pypi` | Never describe provenance as proof of safety |
 | GitHub Release | `v2.0.0`, non-draft/non-prerelease, wheel, sdist and `SHA256SUMS`; floating `v2` points at the release commit and `v1` is unchanged | Use `v2` in new major-version Action examples only after compatibility review |
 | Marketplace | Existing Regula listing is live; the accessible listing does not expose a version string that independently proves 2.0.0 selection | Human Marketplace UI confirmation may still be required |
 | MCP Registry | Live official entry remains 1.9.0; 2.0.0 validates, but publication was rejected because the stored Registry JWT expired | Owner must complete GitHub device authentication, then re-run `mcp-publisher publish server.json` and verify `/v0.1/servers` |
-| Analytics | Versioned privacy allowlist and funnel implementation exist on the distribution branch; focused mechanical tests pass | Merge, deploy, browser-verify emitted events, then obtain a fresh export |
+| Analytics | PR 61 merged and deployed, but production request capture found full query strings in Plausible's URL field and an unregistered automatic form event; external distribution is halted and a tested hotfix is pending | Merge and deploy the hotfix, prove in production that query strings and automatic form events are absent, then obtain a fresh export |
 | Search | Sitemap and robots return 200; canonical/hreflang checks exist | Search Console credentials/property remain unavailable, so no fresh index baseline exists |
 
 ### 11.2 Funnel and decision rules
@@ -566,12 +566,17 @@ The management decision rule is:
 ## 14. Analytics, attribution and baseline
 
 `data/analytics_event_spec.json` is the only current custom-event contract.
-`site/assets/analytics.js` rejects unregistered event names, unknown event
-properties and arbitrary campaign text; it retains only allowlisted source,
-medium and campaign values for the browser session and creates no identifier.
-Duplicate logical events are suppressed within a page lifecycle. The contract
-forbids answers, code, repository URL, organisation, email, free text,
-regulatory result and personal/tracking identifiers.
+`site/assets/analytics.js` rejects unregistered custom event names, unknown
+custom event properties and arbitrary campaign text; it retains only
+allowlisted source, medium and campaign values for the browser session and
+creates no identifier. Duplicate logical events are suppressed within a page
+lifecycle. The contract forbids answers, code, repository URL, organisation,
+email, free text, regulatory result and personal/tracking identifiers. That
+custom-event boundary did not govern Plausible's own page URL or automatic
+form event: production inspection on 24 August found both paths active. The
+current hotfix strips the whole query string before every Plausible request and
+disables automatic form-submission tracking; it must be production-verified
+before distribution resumes.
 
 `data/metrics/distribution_funnel_baseline_2026-08-14.json` is deliberately
 marked stale for the contract: its exact 91-day window ends 13 August. It
@@ -584,9 +589,10 @@ after deployment. No credential is present in this environment to obtain it.
 
 Campaign URLs may use only the enumerated values in the event contract. The
 first campaign is `release-2-0`; editorial and B2B campaigns have distinct
-names. Arbitrary UTM values are discarded rather than transmitted as custom
-properties. Plausible's aggregate referrer/page reporting remains the source
-for untagged referrals.
+names. Allowlisted source, medium and campaign values are transmitted only as
+finite custom properties; all query parameters, including arbitrary UTM
+values, must be removed from the reported URL. Plausible's aggregate
+referrer/page reporting remains the source for untagged referrals.
 
 ## 15. Editorial and corporate outreach controls
 

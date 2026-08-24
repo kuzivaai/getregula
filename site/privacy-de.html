@@ -46,7 +46,7 @@
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
     <script>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
+      plausible.init({formSubmissions:false,transformRequest:function(payload){payload.u=window.location.origin+window.location.pathname;return payload;}})
     </script>
 </head>
 <body>
@@ -77,7 +77,7 @@
         <a href="/locales/de.html">Regula</a> / Datenschutz
     </div>
     <h1>Datenschutz und <span class="hl">Analyse</span></h1>
-    <p class="standfirst">Was diese Website erhebt und was nicht, klar gesagt. Zuletzt aktualisiert am 14. August 2026. Diese Seite beschreibt die aktuelle Praxis und wird aktualisiert, wenn sich die Praxis &auml;ndert.</p>
+    <p class="standfirst">Was diese Website erhebt und was nicht, klar gesagt. Zuletzt aktualisiert am 24. August 2026. Diese Seite beschreibt die aktuelle Praxis und wird aktualisiert, wenn sich die Praxis &auml;ndert.</p>
 </div>
 
 <div class="blog-body">
@@ -92,7 +92,7 @@
 <p>Nichts. Es gibt keinen Login, kein Formular, das Daten an uns &uuml;bermittelt, und derzeit keinen Zahlungs- oder Buchungsvorgang auf dieser Website. Die f&uuml;nf Fragen auf der Startseite sind als Formular ausgezeichnet, damit Tastatur und Screenreader sie als eine Gruppe behandeln; dieses Formular hat kein Ziel, &uuml;bermittelt nichts, und sein Ergebnis wird in Ihrem Browser berechnet. E-Mail-Links auf der Website &ouml;ffnen Ihr eigenes Mailprogramm; &uuml;ber die Website selbst wird nichts &uuml;bermittelt.</p>
 
 <h2>Analyse</h2>
-<p>Wir nutzen <a href="https://plausible.io/" rel="noopener">Plausible Analytics</a>, geladen von plausible.io. Es ist ein Cookie-freier Analysedienst: Er setzt keine Cookies und betreibt kein seiten&uuml;bergreifendes Tracking. Wir sehen aggregierte Zahlen zu Seitenaufrufen und zu benannten Ereignissen, etwa dem Start oder Abschluss des Kurzfragebogens, der Bewertung oder des Scanners, dem Kopieren eines Installationsbefehls, dem &Ouml;ffnen einer Preisfrage oder dem Klick auf einen Repository-, Paket- oder E-Mail-Link. Ereignisse enthalten niemals Ihre Antworten, Ihren Code, Ihr Ergebnis, Ihre Repository-URL, Suchtext, Namen, E-Mail-Adresse, Organisation oder eine pers&ouml;nliche Kennung. Wenn Sie &uuml;ber eine von uns gemessene Kampagne kommen, speichern wir f&uuml;r die Browsersitzung nur Werte aus unseren festen Listen f&uuml;r Quelle, Medium und Kampagne; beliebiger Kampagnentext wird verworfen. Der versionierte Ereignisvertrag ist im Repository &ouml;ffentlich. Wie Plausible die zugrunde liegenden Anfragen verarbeitet, beschreibt die <a href="https://plausible.io/data-policy" rel="noopener">Plausible-Datenrichtlinie</a>.</p>
+<p>Wir nutzen <a href="https://plausible.io/" rel="noopener">Plausible Analytics</a>, geladen von plausible.io. Es ist ein Cookie-freier Analysedienst: Er setzt keine Cookies und betreibt kein seiten&uuml;bergreifendes Tracking. Wir sehen aggregierte Zahlen zu Seitenaufrufen und zu benannten Ereignissen, etwa dem Start oder Abschluss des Kurzfragebogens, der Bewertung oder des Scanners, dem Kopieren eines Installationsbefehls, dem &Ouml;ffnen einer Preisfrage oder dem Klick auf einen Repository-, Paket- oder E-Mail-Link. Ereignisse enthalten niemals Ihre Antworten, Ihren Code, Ihr Ergebnis, Ihre Repository-URL, Suchtext, Namen, E-Mail-Adresse, Organisation oder eine pers&ouml;nliche Kennung. Vor jeder Analyseanfrage entfernt die Website die gesamte Abfragezeichenfolge aus der gemeldeten Seiten-URL und deaktiviert das automatische Formularereignis von Plausible. Wenn Sie &uuml;ber eine von uns gemessene Kampagne kommen, speichern wir f&uuml;r die Browsersitzung nur Werte aus unseren festen Listen f&uuml;r Quelle, Medium und Kampagne; beliebiger Kampagnentext wird verworfen und nicht gesendet. Der versionierte Ereignisvertrag ist im Repository &ouml;ffentlich. Wie Plausible die zugrunde liegenden Anfragen verarbeitet, beschreibt die <a href="https://plausible.io/data-policy" rel="noopener">Plausible-Datenrichtlinie</a>.</p>
 
 <h2>Die Browser-Bewertung</h2>
 <p>Die <a href="/assess/de.html">Bewertung</a> l&auml;uft vollst&auml;ndig in Ihrem Browser. Ihre Antworten werden auf Ihrem Ger&auml;t verarbeitet und nicht an uns gesendet. Der JSON-Export ist ein lokaler Download. Wenn Sie die Teilen-Funktion nutzen, werden Ihre Antworten in den Link selbst kodiert: Wer den Link hat, kann sie dekodieren, und jeder Dienst, der den Link verarbeitet, einschlie&szlig;lich des Servers, der diese Website ausliefert, wenn der Link ge&ouml;ffnet wird, kann die kodierte Zeichenkette sehen. Beim &Ouml;ffnen eines geteilten Links entfernt die Seite die kodierten Antworten aus der Adressleiste, bevor das Analyse-Skript l&auml;dt; sie flie&szlig;en also nicht in unsere Analyse ein.</p>

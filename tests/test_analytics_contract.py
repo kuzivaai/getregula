@@ -15,6 +15,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SPEC_PATH = ROOT / "data" / "analytics_event_spec.json"
 MODULE_PATH = ROOT / "site" / "assets" / "analytics.js"
+TRACKER_INIT = (
+    "plausible.init({formSubmissions:false,transformRequest:function(payload){"
+    "payload.u=window.location.origin+window.location.pathname;return payload;}})"
+)
 
 
 def _spec() -> dict:
@@ -67,6 +71,45 @@ def test_global_prohibited_properties_cover_the_owner_directive():
         "tracking_identifier",
         "personal_identifier",
     } <= prohibited
+
+
+def test_tracker_strips_every_query_string_and_disables_automatic_form_events():
+    boundary = _spec()["privacy_boundary"]
+    assert boundary["tracker_controls"] == {
+        "url_query_parameters": "stripped from every Plausible request before transmission",
+        "automatic_form_submissions": False,
+    }
+
+    carriers = []
+    for path in [*(ROOT / "site").rglob("*.html"), ROOT / "content/regulations/_template.html"]:
+        text = path.read_text(encoding="utf-8")
+        if "plausible.init" not in text:
+            continue
+        carriers.append(str(path.relative_to(ROOT)))
+        assert text.count(TRACKER_INIT) == 1, path
+        assert "plausible.init()" not in text, path
+
+    assert carriers
+
+
+def test_tracker_request_transform_behaves_as_the_privacy_contract_states():
+    homepage = (ROOT / "site/index.html").read_text(encoding="utf-8")
+    init_call = next(
+        line.strip() for line in homepage.splitlines() if TRACKER_INIT in line
+    )
+    source = f"""
+global.window={{location:{{origin:'https://getregula.com',pathname:'/pricing.html'}}}};
+let options=null;
+global.plausible={{init:(value)=>{{options=value;}}}};
+{init_call}
+const result=options.transformRequest({{u:'https://getregula.com/pricing.html?utm_content=alice@example.com&utm_source=github'}});
+console.log(JSON.stringify({{formSubmissions:options.formSubmissions,result}}));
+"""
+    actual = _node(source)
+    assert actual == {
+        "formSubmissions": False,
+        "result": {"u": "https://getregula.com/pricing.html"},
+    }
 
 
 def test_browser_module_and_machine_spec_have_the_same_events_and_campaigns():

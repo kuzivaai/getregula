@@ -88,7 +88,7 @@
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
     <script>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
+      plausible.init({formSubmissions:false,transformRequest:function(payload){payload.u=window.location.origin+window.location.pathname;return payload;}})
     </script>
 </head>
 <body>
