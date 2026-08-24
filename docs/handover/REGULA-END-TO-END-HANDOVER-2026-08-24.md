@@ -90,6 +90,15 @@ The following local data is not protected by the repository:
 - any unpublished Plausible export or platform login state that exists outside
   the repository.
 
+A non-destructive recovery archive was created at
+`/mnt/c/Users/mkuzi/Downloads/REGULA-UNTRACKED-WORK-BACKUP-2026-08-24.tar.gz`.
+It contains both directories, 59 files and 67 total archive entries including
+directories. Its SHA-256 is
+`1e83e0ff6b70546b094e43b2d39193b3d6117c5877c5c2890594da08fa20fc7e`.
+Source: `find marketing output -type f`, `tar -tzf`, `wc -l` and `sha256sum`
+run on 24 August 2026. This is a continuity backup, not a decision to commit or
+publish those files.
+
 Do not add `marketing/` or `output/` to a commit without first asking the owner
 what belongs there. They pre-dated the closeout work and were deliberately left
 untouched.
@@ -715,8 +724,8 @@ changing any status record.
 - [ ] `.handover.md`, `AGENTS.md`, `CLAUDE.md` and `BRAIN-FEED.md` point to it.
 - [ ] A non-empty readable copy exists in
   `/mnt/c/Users/mkuzi/Downloads`.
-- [ ] `marketing/` and `output/` are backed up separately or the owner accepts
-  their loss.
+- [x] `marketing/` and `output/` are backed up separately in the verified
+  Downloads archive named in section 2.
 - [ ] PR #63's post-handover exact head and check state are recorded.
 - [ ] No credentials, access tokens, browser cookies or private recipient data
   are included.
