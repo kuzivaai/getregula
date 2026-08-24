@@ -379,5 +379,28 @@
     },
     "period_label_corrected": "2026-08-19",
     "correction_note": "Recorded as last_7_days by the collector without window bounds. The values are cumulative totals, consistent with the previously measured collector defect. Values unchanged; only the label is corrected. See docs/improvement/LEDGER.md N109."
+  },
+  {
+    "date": "2026-08-24",
+    "period": "last_7_complete_days",
+    "window_start": "2026-08-17",
+    "window_end": "2026-08-23",
+    "downloads": {
+      "with_mirrors": 123,
+      "without_mirrors": 22
+    },
+    "all_time_to_date": {
+      "with_mirrors": 7549,
+      "without_mirrors": 2260
+    },
+    "by_system": {
+      "Linux": 15,
+      "Windows": 2
+    },
+    "by_python": {
+      "3.12": 13,
+      "3.13": 2,
+      "3.14": 2
+    }
   }
 ]
