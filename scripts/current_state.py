@@ -66,6 +66,18 @@ def render() -> str:
     release = actions["merge-deploy-release-2026-08-19"]
     analytics = actions["anonymous-funnel-contract-2026-08-24"]
     mcp = actions["official-mcp-registry-2-0-0-2026-08-24"]
+    if analytics["decision"] == "EXECUTED":
+        analytics_resume = (
+            "Execute the first tailored editorial submissions through the "
+            "production-verified campaign path; record sent, response, referral, "
+            "qualified action and stop state separately."
+        )
+    else:
+        analytics_resume = (
+            "Complete the anonymous funnel contract's full gate, browser/network "
+            "verification, review, merge and production verification before any "
+            "external distribution."
+        )
 
     return f"""# Regula — current resume state
 
@@ -116,9 +128,9 @@ The homepage must support that task before presenting the developer CLI.
 
 ## Resume order
 
-1. Complete the anonymous funnel contract's full gate, browser/network verification, review, merge and production verification; then obtain a fresh exact-window export.
+1. {analytics_resume}
 2. Complete GitHub device authentication for `mcp-publisher`, publish the already-valid 2.0.0 metadata, and verify the official Registry API before claiming it updated.
-3. Execute the first tailored editorial submissions only after the measured campaign path is live; record sent, response, referral, qualified action and stop state separately.
+3. Obtain a fresh exact-window aggregate analytics export after the new campaign has had time to receive traffic; the current pre-contract baseline is stale.
 4. Keep the complete scanner parity gate green and investigate its named label disagreements without tuning only to the benchmark.
 5. Use `python3 scripts/ledger_review.py` to obtain two genuinely independent, evidenced reviews for each REVIEW_REQUIRED row; adjudicate disagreements outside the bot.
 

@@ -297,7 +297,10 @@
         "Focused hotfix contract tests: 11 passed; request transform strips a synthetic email-bearing query string and automatic form tracking is disabled",
         "Hotfix generated-page integrity: five generated pages exact; 1,616 internal links and 0 dead",
         "Local mobile browser: English, German and Brazilian Portuguese privacy pages rendered at 390px with zero horizontal overflow; English page visually inspected",
-        "Complete hotfix gate: 1464 legacy assertions passed across 1426 functions; every pytest-collected case passed; self-test 6/6; doctor 8 pass and 4 informational"
+        "Complete hotfix gate: 1464 legacy assertions passed across 1426 functions; every pytest-collected case passed; self-test 6/6; doctor 8 pass and 4 informational",
+        "PR 62 exact synchronized head 7abfa546b4fb2df588e881c996348cbb6d0be8a2 passed Python 3.10-3.13, accessibility, CodeQL, claim, site, Action and Regula checks and merged as 15b559e7e1b165e5862c426c8d4fe9574b66822e",
+        "Main workflow run 32762608335 and its GitHub Pages deployment job completed successfully",
+        "Production mobile capture emitted exactly Pageview, Qualifier Start and Qualifier Complete; every URL was https://getregula.com/ with no query string, only allowlisted campaign properties were present, no Form: Submission event appeared and the console had 0 errors and 0 warnings"
       ],
       "generated_artefacts": [
         "data/analytics_event_spec.json",
@@ -307,10 +310,10 @@
       "rollback": "Revert the analytics implementation commit and verify no custom funnel requests fire",
       "observability": "Browser request capture and exact-window Plausible export processed by scripts/distribution_funnel.py",
       "owner_fact_required": false,
-      "decision": "PRIVACY_HOTFIX_PENDING_CLASS_B_EXECUTION",
-      "decision_reason": "PR 61 was merged and deployed, but a real production request capture found query-string disclosure and an unregistered automatic form event; external distribution is halted until the hotfix passes the complete gate, merges, deploys and passes production network verification",
-      "executed_at": null,
-      "result": "PR_61_MERGED_AND_DEPLOYED; PRODUCTION_PRIVACY_DEFECT_REPRODUCED; EXTERNAL_DISTRIBUTION_HALTED; HOTFIX_LOCALLY_FOCUSED_VERIFIED_NOT_YET_MERGED"
+      "decision": "EXECUTED",
+      "decision_reason": "The production defect was reproduced, fixed across every tracker carrier, fully gated, merged, deployed and disproved by a clean production request capture; privacy-gated distribution may resume",
+      "executed_at": "2026-08-24T18:42:18Z",
+      "result": "PR_61_DEPLOYED_AND_DEFECT_REPRODUCED; PR_62_MERGED_AS_15B559E; MAIN_DEPLOYMENT_PASSED; PRODUCTION_QUERY_STRINGS_STRIPPED; AUTOMATIC_FORM_EVENT_ABSENT; DISTRIBUTION_PRIVACY_GATE_PASSED"
     },
     {
       "action_id": "official-mcp-registry-2-0-0-2026-08-24",

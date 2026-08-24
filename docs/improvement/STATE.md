@@ -26,7 +26,7 @@ The homepage must support that task before presenting the developer CLI.
 - Browser/Python scanner parity gate: all 38 canonical fixtures execute, including all 30 high-risk fixtures.
 - Synthetic label fidelity, not real-world accuracy: high-risk 18/30; negatives 3/3. The default CLI condition separately recalls 10/30 high-risk fixtures.
 - Repository release identity: 2.0.0. Last recorded release action: EXECUTED at 2026-08-24T13:07:34Z; result `PR_55_AND_SECURITY_CLOSEOUT_MERGED; PRODUCTION_VERIFIED; REGULA_AI_2_0_0_PUBLISHED_AND_INDEPENDENTLY_VERIFIED; V2_TAG_CREATED; V1_UNCHANGED`.
-- Anonymous funnel contract: PRIVACY_HOTFIX_PENDING_CLASS_B_EXECUTION; result `PR_61_MERGED_AND_DEPLOYED; PRODUCTION_PRIVACY_DEFECT_REPRODUCED; EXTERNAL_DISTRIBUTION_HALTED; HOTFIX_LOCALLY_FOCUSED_VERIFIED_NOT_YET_MERGED`.
+- Anonymous funnel contract: EXECUTED; result `PR_61_DEPLOYED_AND_DEFECT_REPRODUCED; PR_62_MERGED_AS_15B559E; MAIN_DEPLOYMENT_PASSED; PRODUCTION_QUERY_STRINGS_STRIPPED; AUTOMATIC_FORM_EVENT_ABSENT; DISTRIBUTION_PRIVACY_GATE_PASSED`.
 - Official MCP Registry 2.0.0 update: EXTERNAL_EXECUTION_BLOCKED; result `2_0_0_VALIDATED_NOT_PUBLISHED; OWNER_ACTION_MCP_PUBLISHER_LOGIN_GITHUB_THEN_PUBLISH`.
 
 ## Current boundaries
@@ -47,9 +47,9 @@ The homepage must support that task before presenting the developer CLI.
 
 ## Resume order
 
-1. Complete the anonymous funnel contract's full gate, browser/network verification, review, merge and production verification; then obtain a fresh exact-window export.
+1. Execute the first tailored editorial submissions through the production-verified campaign path; record sent, response, referral, qualified action and stop state separately.
 2. Complete GitHub device authentication for `mcp-publisher`, publish the already-valid 2.0.0 metadata, and verify the official Registry API before claiming it updated.
-3. Execute the first tailored editorial submissions only after the measured campaign path is live; record sent, response, referral, qualified action and stop state separately.
+3. Obtain a fresh exact-window aggregate analytics export after the new campaign has had time to receive traffic; the current pre-contract baseline is stale.
 4. Keep the complete scanner parity gate green and investigate its named label disagreements without tuning only to the benchmark.
 5. Use `python3 scripts/ledger_review.py` to obtain two genuinely independent, evidenced reviews for each REVIEW_REQUIRED row; adjudicate disagreements outside the bot.
 

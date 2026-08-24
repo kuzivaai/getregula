@@ -96,7 +96,7 @@ means no external message or form submission occurred.
 
 | Channel | Route world-checked | Version / asset | State | Follow-up / stop |
 |---|---|---|---|---|
-| Console.dev | `hello@console.dev`, primary selection page, 24 Aug | 2.0.0; CLI sample, release, trust/limits | PREPARED_NOT_SENT; external distribution halted pending production privacy-hotfix proof | One follow-up after 7 business days; stop after rejection or 14 days |
-| AI Governance Library | editorial contact on primary About page, 24 Aug | Free open-source evidence workflow; disclose inactive commercial hypothesis | PREPARED_NOT_SENT; external distribution halted pending production privacy-hotfix proof; fit risk is its explicit no-hidden-funnel policy | One direct curation question; no follow-up after rejection |
-| Python Bytes | `/home/contact` "Submit news", 24 Aug | PyPI 2.0.0 and reproducible Python CLI journey | PREPARED_NOT_SENT; external distribution halted pending production privacy-hotfix proof | One submission; no duplicate Talk Python pitch in the same cycle |
-| Changelog News | `/news/submit`, primary site, 24 Aug | OSS release and falsifiable local sample | PREPARED_NOT_SENT; external distribution halted pending production privacy-hotfix proof | One news submission; episode request only after editorial interest |
+| Console.dev | `hello@console.dev`, primary selection page, 24 Aug | 2.0.0; CLI sample, release, trust/limits | READY_TO_SEND_NOT_SENT; production privacy gate passed 24 Aug | One follow-up after 7 business days; stop after rejection or 14 days |
+| AI Governance Library | editorial contact on primary About page, 24 Aug | Free open-source evidence workflow; disclose inactive commercial hypothesis | READY_TO_SEND_NOT_SENT; production privacy gate passed; fit risk is its explicit no-hidden-funnel policy | One direct curation question; no follow-up after rejection |
+| Python Bytes | `/home/contact` "Submit news", 24 Aug | PyPI 2.0.0 and reproducible Python CLI journey | READY_TO_SEND_NOT_SENT; production privacy gate passed 24 Aug | One submission; no duplicate Talk Python pitch in the same cycle |
+| Changelog News | `/news/submit`, primary site, 24 Aug | OSS release and falsifiable local sample | READY_TO_SEND_NOT_SENT; production privacy gate passed 24 Aug | One news submission; episode request only after editorial interest |

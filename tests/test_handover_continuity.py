@@ -36,3 +36,10 @@ def test_current_state_does_not_confuse_local_source_with_deployment():
     assert "Deployment currency is not derivable from this repository" in text
     assert "A local or committed HTML change is not a deployment" in text
     assert "Scanner parity is not scanner validity" in text
+
+
+def test_executed_analytics_gate_is_not_reported_as_future_work():
+    text = STATE.read_text(encoding="utf-8")
+    assert "Anonymous funnel contract: EXECUTED" in text
+    assert "Execute the first tailored editorial submissions" in text
+    assert "Complete the anonymous funnel contract's full gate" not in text
