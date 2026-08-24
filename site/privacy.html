@@ -46,7 +46,7 @@
     <script async src="https://plausible.io/js/pa-_TnuxaU2TjRgMK9Cc1btN.js"></script>
     <script>
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
-      plausible.init()
+      plausible.init({formSubmissions:false,transformRequest:function(payload){payload.u=window.location.origin+window.location.pathname;return payload;}})
     </script>
 </head>
 <body>
@@ -78,7 +78,7 @@
         <a href="/">Regula</a> / Privacy
     </div>
     <h1>Privacy and <span class="hl">analytics</span></h1>
-    <p class="standfirst">What this site does and does not collect, stated plainly. Last updated 14 August 2026. This page describes current practice and will be updated if practice changes.</p>
+    <p class="standfirst">What this site does and does not collect, stated plainly. Last updated 24 August 2026. This page describes current practice and will be updated if practice changes.</p>
 </div>
 
 <div class="blog-body">
@@ -93,7 +93,7 @@
 <p>Nothing. There is no login, no form that submits data to us, and no payment or booking flow on this site at present. The five questions on the front page are marked up as a form so that a keyboard and a screen reader treat them as one group; that form has no destination, submits nothing, and its result is worked out in your browser. Email links on the site open your own mail application; nothing is submitted through the site itself.</p>
 
 <h2>Analytics</h2>
-<p>We use <a href="https://plausible.io/" rel="noopener">Plausible Analytics</a>, loaded from plausible.io. It is a cookieless analytics service: it sets no cookies and does no cross-site tracking. We see aggregate counts of page views and of named events such as starting or completing the qualifier, assessment or scanner, copying an install command, opening a pricing question, or clicking a repository, package or email link. Events never include your answers, code, result, repository URL, search text, name, email address, organisation or a personal identifier. If you arrive through one of our measured campaigns, we retain only a value from our finite source, medium and campaign allowlists for the browser session; arbitrary campaign text is discarded. The versioned event contract is public in the repository. How Plausible handles the underlying requests is described in the <a href="https://plausible.io/data-policy" rel="noopener">Plausible data policy</a>.</p>
+<p>We use <a href="https://plausible.io/" rel="noopener">Plausible Analytics</a>, loaded from plausible.io. It is a cookieless analytics service: it sets no cookies and does no cross-site tracking. We see aggregate counts of page views and of named events such as starting or completing the qualifier, assessment or scanner, copying an install command, opening a pricing question, or clicking a repository, package or email link. Events never include your answers, code, result, repository URL, search text, name, email address, organisation or a personal identifier. Before every analytics request, the site removes the whole query string from the reported page URL and disables Plausible's automatic form-submission event. If you arrive through one of our measured campaigns, we retain only a value from our finite source, medium and campaign allowlists for the browser session; arbitrary campaign text is discarded rather than sent. The versioned event contract is public in the repository. How Plausible handles the underlying requests is described in the <a href="https://plausible.io/data-policy" rel="noopener">Plausible data policy</a>.</p>
 
 <h2>The browser assessment</h2>
 <p>The <a href="/assess/">assessment</a> runs entirely in your browser. Your answers are processed on your device and are not sent to us. Exporting a JSON result is a local download. If you use the share feature, your answers are encoded into the link itself: anyone who has the link can decode them, and any service that handles the link, including the server that hosts this site when the link is opened, can see the encoded string. When a shared link is opened, the page removes the encoded answers from the address bar before the analytics script loads, so they are not included in our analytics.</p>

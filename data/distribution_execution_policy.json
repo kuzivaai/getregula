@@ -267,10 +267,11 @@
       "counterevidence": [
         "The retained analytics export predates the event contract and cannot baseline current event names",
         "Prior event calls transmitted result type, detector class, language, jurisdiction or answer count",
+        "Post-deployment production capture showed Plausible retaining the full landing query string in the request URL and automatically emitting an unregistered Form: Submission event",
         "No current Plausible credential is available for a fresh export"
       ],
       "security_delta": "No new endpoint, account, cookie or identifier; one small first-party event allowlist script",
-      "privacy_delta": "Removes result/context properties, rejects arbitrary campaign text, permits only finite event/property values and suppresses duplicate logical events",
+      "privacy_delta": "Removes result/context properties, rejects arbitrary campaign text, permits only finite event/property values, suppresses duplicate logical events, strips query strings from every Plausible request and disables Plausible's automatic form event",
       "legal_or_commercial_delta": "Improves measurement integrity without activating a personal-data form, service, booking or payment",
       "tests_required": [
         "Event schema and sanitizer tests",
@@ -282,14 +283,21 @@
         "Focused analytics, release-policy, public-claim, count, collection and site suite: 108 passed",
         "JavaScript scanner suite: 130 passed; runtime parity 38/38 including all 30 high-risk fixtures",
         "Generated region-page integrity: exact for all five generated pages; 1,616 internal links and 0 dead",
-        "Browser at 390px: qualifier start/complete emitted once with allowlisted campaign properties only; no answers or results transmitted",
+        "Pre-deployment browser at 390px: qualifier start/complete emitted once with allowlisted custom properties; this did not test Plausible's own full-URL and automatic-form behaviour",
         "Browser at 390px: assessment and scanner success/error paths emitted only property-free lifecycle events",
         "Browser at 320px and 390px: pricing reflow had no horizontal overflow; pricing, FAQ and contact-intent events used only finite allowlisted values",
         "Desktop and mobile pricing pages visually inspected after reflow correction",
-        "Complete legacy runner: 1464 passed, 0 failed across 1424 functions",
-        "Complete pytest collection passed in 1486.65 seconds",
+        "Complete hotfix legacy runner: 1464 passed, 0 failed across 1426 functions",
+        "Complete hotfix pytest suite: all collected cases passed in 1807.34 seconds",
         "CLI self-test: 6/6 passed",
-        "CLI doctor: 8 passed, 4 informational, 0 warnings"
+        "CLI doctor: 8 passed, 4 informational, 0 warnings",
+        "PR 61 exact synchronized head bdac037 passed all required GitHub checks and merged as ef98360209237ed0e5cd625f9383497d94714c18",
+        "Main workflow run 32750428457 passed, including the site deployment job",
+        "Production capture with an arbitrary utm_content value demonstrated that the full query string was transmitted in Plausible's URL field and that Plausible emitted Form: Submission",
+        "Focused hotfix contract tests: 11 passed; request transform strips a synthetic email-bearing query string and automatic form tracking is disabled",
+        "Hotfix generated-page integrity: five generated pages exact; 1,616 internal links and 0 dead",
+        "Local mobile browser: English, German and Brazilian Portuguese privacy pages rendered at 390px with zero horizontal overflow; English page visually inspected",
+        "Complete hotfix gate: 1464 legacy assertions passed across 1426 functions; every pytest-collected case passed; self-test 6/6; doctor 8 pass and 4 informational"
       ],
       "generated_artefacts": [
         "data/analytics_event_spec.json",
@@ -299,10 +307,10 @@
       "rollback": "Revert the analytics implementation commit and verify no custom funnel requests fire",
       "observability": "Browser request capture and exact-window Plausible export processed by scripts/distribution_funnel.py",
       "owner_fact_required": false,
-      "decision": "READY_FOR_CLASS_B_EXECUTION",
-      "decision_reason": "Implementation, browser verification and the complete project gate passed; commit, push, merge and production verification remain to execute",
+      "decision": "PRIVACY_HOTFIX_PENDING_CLASS_B_EXECUTION",
+      "decision_reason": "PR 61 was merged and deployed, but a real production request capture found query-string disclosure and an unregistered automatic form event; external distribution is halted until the hotfix passes the complete gate, merges, deploys and passes production network verification",
       "executed_at": null,
-      "result": "ALL_LOCAL_MACHINE_GATES_PASSED; NOT_YET_COMMITTED_OR_DEPLOYED"
+      "result": "PR_61_MERGED_AND_DEPLOYED; PRODUCTION_PRIVACY_DEFECT_REPRODUCED; EXTERNAL_DISTRIBUTION_HALTED; HOTFIX_LOCALLY_FOCUSED_VERIFIED_NOT_YET_MERGED"
     },
     {
       "action_id": "official-mcp-registry-2-0-0-2026-08-24",

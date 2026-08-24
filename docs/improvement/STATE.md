@@ -26,7 +26,7 @@ The homepage must support that task before presenting the developer CLI.
 - Browser/Python scanner parity gate: all 38 canonical fixtures execute, including all 30 high-risk fixtures.
 - Synthetic label fidelity, not real-world accuracy: high-risk 18/30; negatives 3/3. The default CLI condition separately recalls 10/30 high-risk fixtures.
 - Repository release identity: 2.0.0. Last recorded release action: EXECUTED at 2026-08-24T13:07:34Z; result `PR_55_AND_SECURITY_CLOSEOUT_MERGED; PRODUCTION_VERIFIED; REGULA_AI_2_0_0_PUBLISHED_AND_INDEPENDENTLY_VERIFIED; V2_TAG_CREATED; V1_UNCHANGED`.
-- Anonymous funnel contract: READY_FOR_CLASS_B_EXECUTION; result `ALL_LOCAL_MACHINE_GATES_PASSED; NOT_YET_COMMITTED_OR_DEPLOYED`.
+- Anonymous funnel contract: PRIVACY_HOTFIX_PENDING_CLASS_B_EXECUTION; result `PR_61_MERGED_AND_DEPLOYED; PRODUCTION_PRIVACY_DEFECT_REPRODUCED; EXTERNAL_DISTRIBUTION_HALTED; HOTFIX_LOCALLY_FOCUSED_VERIFIED_NOT_YET_MERGED`.
 - Official MCP Registry 2.0.0 update: EXTERNAL_EXECUTION_BLOCKED; result `2_0_0_VALIDATED_NOT_PUBLISHED; OWNER_ACTION_MCP_PUBLISHER_LOGIN_GITHUB_THEN_PUBLISH`.
 
 ## Current boundaries

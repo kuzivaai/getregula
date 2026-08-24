@@ -22,7 +22,11 @@
       "tracking_identifier",
       "personal_identifier"
     ],
-    "notes": "Campaign values are accepted only from the finite allowlists in this file and are retained in sessionStorage. No visitor identifier is created. Duplicate protection suppresses the same logical event key within one page lifecycle."
+    "tracker_controls": {
+      "url_query_parameters": "stripped from every Plausible request before transmission",
+      "automatic_form_submissions": false
+    },
+    "notes": "Campaign values are accepted only from the finite allowlists in this file and are retained in sessionStorage. The Plausible request transform strips the full query string before every request, including pageviews and custom events; allowlisted campaign values travel only as enumerated custom properties. Automatic form-submission tracking is disabled. No visitor identifier is created. Duplicate protection suppresses the same logical event key within one page lifecycle."
   },
   "campaign_allowlists": {
     "campaign_source": [
