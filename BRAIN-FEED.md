@@ -11,8 +11,8 @@ scans it like any other.
 
 <!-- BRAIN:BEGIN -->
 state: Regula is a founder-first, local AI-governance risk-indication product. Version 2.0.0 is published; the production privacy hotfix is live and browser-verified. The generated current state is `docs/improvement/STATE.md` and the full recovery record is `docs/handover/REGULA-END-TO-END-HANDOVER-2026-08-24.md`.
-blocker: PR #63 must be rechecked on its exact head; official MCP 2.0.0 needs owner device authentication; editorial distribution needs an approved sender or attributed platform login; fresh analytics and Search Console data need credentials; research, payment and booking retain their separate privacy and commercial hard stops.
-next: Back up untracked `marketing/` and `output/` before the PC reset, push the handover, reconcile PR #63 and its deployment, then execute one tailored editorial submission per approved channel only after the required sender or account authentication exists.
+blocker: PR #63 merged as `1e0a4f7001fa8ca40d205d2434e10b371861cf48` before its in-progress checks terminated; verify the new main workflows and deployment. Official MCP 2.0.0 needs owner device authentication; editorial distribution needs an approved sender or attributed platform login; fresh analytics and Search Console data need credentials; research, payment and booking retain their separate privacy and commercial hard stops.
+next: Push the final handover correction, verify PR #63's default-branch workflows and deployment, then execute one tailored editorial submission per approved channel only after the required sender or account authentication exists. The untracked `marketing/` and `output/` directories are backed up in the verified Downloads archive named by the handover.
 gates: Never present an indicator as a legal determination, certification or clearance. Keep customer source upload, personal-data forms, payment and booking disabled. Synthetic parity is not real-world accuracy, and automated browser evidence is not human usability evidence.
 updated: 2026-08-24
 <!-- BRAIN:END -->

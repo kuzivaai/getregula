@@ -25,15 +25,18 @@ The most important continuity facts are:
    distribution measurement system and production analytics privacy hotfix are
    implemented and on `main`. Sources: merge commits `2ab71d8`, `1be502f`,
    `ef5309a`, `ef98360` and `15b559e` in `git log --merges`.
-2. The local branch is `distribution/analytics-production-closeout`. Its pushed
-   closeout commit is `4257b36336071a863ecf28e5f746ae4cafca36b2`, and it is
-   represented by GitHub PR #63. Source: `git branch -vv`, `git rev-parse HEAD`
-   and `https://github.com/kuzivaai/getregula/pull/63`.
-3. At the last successful GitHub query, PR #63 was mergeable. Claim, site,
-   lint, CodeQL, Regula, Action, deploy-preview and accessibility checks had
-   passed; Python 3.11 had passed; Python 3.10, 3.12 and 3.13 were still
-   running. This is a time-bounded observation, not a final PR verdict. Recheck
-   GitHub before merging.
+2. PR #63 merged to `main` as
+   `1e0a4f7001fa8ca40d205d2434e10b371861cf48` at 19:45:34Z on 24 August.
+   Its final source head was
+   `f8124af2a2c65abbea1dbb83ac0f8164eda0984b`. Source: the GitHub PR record
+   and `git log` after fetching `origin/main`.
+3. GitHub allowed `gh pr merge --auto --merge` to merge PR #63 immediately
+   rather than waiting for every in-progress check. At the last pre-merge
+   query, 16 named checks had passed and 8 were still running, with no reported
+   failure. The new default-branch CI, CodeQL and Regula workflows are running;
+   the Action workflow passed. This is not a final deployment verdict. Verify
+   runs `32770006248`, `32770006256` and `32770006275` before claiming the
+   merged state is terminally green or deployed.
 4. The exact local acceptance command passed on the closeout tree before this
    handover was written: 1,464 legacy assertions passed across 1,427 runner
    functions; 3,135 pytest cases passed; self-test passed 6/6; doctor reported
@@ -65,9 +68,10 @@ The most important continuity facts are:
 
 The following work is already remote and recoverable from GitHub:
 
-- `main` through merge commit `15b559e7e1b165e5862c426c8d4fe9574b66822e`;
-- the PR #63 branch through closeout commit
-  `4257b36336071a863ecf28e5f746ae4cafca36b2`;
+- `main` through PR #63 merge commit
+  `1e0a4f7001fa8ca40d205d2434e10b371861cf48`;
+- the merged PR #63 source branch through
+  `f8124af2a2c65abbea1dbb83ac0f8164eda0984b`;
 - release tags `v2.0.0` and floating `v2`; floating `v1` was deliberately left
   unchanged;
 - published PyPI package `regula-ai` 2.0.0 and its GitHub Release assets.
@@ -76,9 +80,10 @@ Sources: `git branch -vv`, `git tag --list`,
 `data/distribution_execution_policy.json` and
 `docs/distribution/SUBMISSIONS.md`.
 
-This handover and its pointer updates must also be committed and pushed before
-shutdown. If they are not visible on PR #63, use the copy placed in the Windows
-Downloads folder as the recovery source.
+This handover and its pointer updates are visible on merged `main` through PR
+#63. A final status correction follows on branch
+`docs/pc-reset-handover-final`; use the verified Downloads copy if that branch
+has not yet merged when the PC resets.
 
 The following local data is not protected by the repository:
 
@@ -157,13 +162,14 @@ legal advice, certification and customer source upload inactive.
 
 ### 5.1 Git
 
-- Local branch at handover creation:
-  `distribution/analytics-production-closeout`.
-- Local and remote branch closeout commit before this handover commit:
-  `4257b36336071a863ecf28e5f746ae4cafca36b2`.
-- Local and remote `main` at the last fetch:
-  `15b559e7e1b165e5862c426c8d4fe9574b66822e`.
-- Open review: PR #63, "Close production analytics privacy gate".
+- Local branch after the final status correction began:
+  `docs/pc-reset-handover-final`.
+- Merged PR #63 source head:
+  `f8124af2a2c65abbea1dbb83ac0f8164eda0984b`.
+- Local and remote `main` after the last fetch:
+  `1e0a4f7001fa8ca40d205d2434e10b371861cf48`.
+- PR #63 is merged; its default-branch workflows require terminal
+  verification.
 - The only pre-handover working-tree entries were untracked `marketing/` and
   `output/`.
 
@@ -179,8 +185,8 @@ These values are observations, not permanent facts. Run the commands in section
 - PR #61: analytics, measurement and distribution operating system, merged as
   `ef98360`.
 - PR #62: analytics privacy hotfix, merged as `15b559e`.
-- PR #63: production-evidence closeout and current-state correction, open at
-  the continuity timestamp.
+- PR #63: production-evidence closeout, current-state correction and recovery
+  handover, merged as `1e0a4f7`.
 
 Source: `git log --merges --oneline` and GitHub PR records.
 
@@ -491,9 +497,10 @@ Do not call the service available.
    `mcp-publisher login github`, complete the device flow as `kuzivaai`, then
    publish and verify the official API. Registry metadata is immutable per
    version, so check the exact manifest before publication.
-2. **PR #63:** re-query GitHub. Merge only if the new exact head is not behind
-   `main` and every required check passes. Do not rely on the time-bounded
-   partial status in this document.
+2. **PR #63 post-merge verification:** GitHub merged before all in-progress
+   checks reached a terminal state. Verify the named default-branch workflows
+   and the Pages deployment before describing the merge as fully green and
+   deployed.
 3. **Editorial email:** configure an approved outbound sender. The current
    Google credential lacks Gmail API access.
 4. **Changelog:** owner-authenticated attributed account required.
@@ -513,11 +520,10 @@ on feature breadth.
 ### P0: preserve and reconcile current work
 
 1. Back up untracked `marketing/` and `output/` before the PC reset.
-2. Ensure this handover commit is pushed.
-3. Recheck PR #63 on its exact new head; merge only on a fully green,
-   synchronized state.
-4. Verify the resulting `main` deployment rather than assuming a merge equals a
-   deployment.
+2. Ensure the final handover-correction branch is pushed.
+3. Verify the PR #63 default-branch workflows to terminal state.
+4. Verify the resulting `main` deployment rather than assuming the completed
+   merge equals a deployment.
 
 ### P1: execute measurable distribution without crossing identity gates
 
@@ -625,22 +631,16 @@ git log -8 --oneline --decorate
 gh pr view 63 --json url,state,headRefOid,mergeable,mergeStateStatus,statusCheckRollup
 ```
 
-If PR #63 is still open:
-
-```bash
-gh pr checkout 63
-git status --short --branch
-git rev-parse HEAD
-git rev-list --left-right --count origin/main...HEAD
-gh pr checks 63
-```
-
-If it merged during the reset:
+PR #63 is merged, so update `main` and inspect its workflow runs:
 
 ```bash
 git switch main
 git pull --ff-only
 git log -5 --oneline --decorate
+gh pr view 63 --json state,mergedAt,mergeCommit,headRefOid
+gh run view 32770006248
+gh run view 32770006256
+gh run view 32770006275
 ```
 
 ### 18.2 Reproduce current state
@@ -663,22 +663,19 @@ python3 tests/test_classification.py && python3 -m pytest tests/ -q && python3 -
 Do not paraphrase this as green unless all four commands actually exit zero.
 Informational doctor notices are not failures, but report them.
 
-### 18.4 Merge and production verification
-
-Before merging PR #63:
+### 18.4 Post-merge and production verification
 
 ```bash
 git fetch origin main
-git rev-list --left-right --count origin/main...origin/distribution/analytics-production-closeout
-gh pr checks 63
-gh pr view 63 --json headRefOid,mergeable,mergeStateStatus,state
+git rev-parse origin/main
+gh pr view 63 --json state,mergedAt,mergeCommit,headRefOid
+gh run list --branch main --limit 12
 ```
 
-Merge only when the branch is synchronized and required checks pass. After
-merge, wait for the default-branch workflow and Pages deployment to reach a
-terminal success state. Then verify live HTML and the affected browser path.
-The PR mainly updates evidence, generated state and synchronized public test
-counts; it does not redesign the founder journey.
+Wait for the default-branch workflow and Pages deployment to reach a terminal
+success state. Then verify live HTML and the affected browser path. The PR
+mainly updates evidence, generated state, the recovery handover and synchronized
+public test counts; it does not redesign the founder journey.
 
 ### 18.5 MCP Registry
 
@@ -697,10 +694,10 @@ changing any status record.
 > Read `AGENTS.md`, `CLAUDE.md`,
 > `docs/handover/REGULA-END-TO-END-HANDOVER-2026-08-24.md`,
 > `docs/improvement/STATE.md` and
-> `data/distribution_execution_policy.json` completely. Reverify Git, PR #63,
+> `data/distribution_execution_policy.json` completely. Reverify Git, merged PR #63,
 > `main`, production, PyPI and the official MCP Registry before stating their
 > status. Preserve untracked `marketing/` and `output/`. Complete any still-open
-> PR #63 checks and policy-gated merge first. Then continue only the safe,
+> PR #63 default-branch checks and production deployment first. Then continue only the safe,
 > independently executable distribution work. Keep payment, booking,
 > personal-data forms, customer source upload, legal advice and certification
 > disabled. Report evidence, counterevidence and blockers without inflating
@@ -714,7 +711,7 @@ changing any status record.
 > `data/distribution_execution_policy.json`. Treat the dated handover as a
 > pointer, not live truth: run its recovery commands and update your view from
 > GitHub and production. Do not touch untracked `marketing/` or `output/` unless
-> the owner separately authorises them. Reconcile PR #63 and the production
+> the owner separately authorises them. Reconcile merged PR #63 and the production
 > deployment before starting new development. Preserve the risk-indication,
 > privacy, locale, accessibility and commercial hard-stop rules.
 
@@ -726,7 +723,8 @@ changing any status record.
   `/mnt/c/Users/mkuzi/Downloads`.
 - [x] `marketing/` and `output/` are backed up separately in the verified
   Downloads archive named in section 2.
-- [ ] PR #63's post-handover exact head and check state are recorded.
+- [x] PR #63's source head and merge commit are recorded; terminal
+  default-branch workflow and deployment verification remain outstanding.
 - [ ] No credentials, access tokens, browser cookies or private recipient data
   are included.
 - [ ] Pending actions remain labelled pending or blocked.
