@@ -66,6 +66,14 @@
       "evidence_commit": "5256c33bdbf91a7c2a2326d9e662172ec573ccd1",
       "immutable_sha256": "4667b74f0a022f74997913554b00c825ce261049c25bc99bf646e2493f8ddc76",
       "rationale": "Dated source register whose row R02 records what data/site_facts.json reported when the register was generated on 2026-08-04, phrased as '2,690 collected tests'. Surfaced on 2026-08-06 when the at-rest matcher gained the bare 'collected' unit word; it had been invisible to every instrument until then, not exempted by any of them. Rewriting the figure would falsify a source register, so it is classified rather than corrected."
+    },
+    {
+      "path": "docs/handover/REGULA-END-TO-END-HANDOVER-2026-08-24.md",
+      "record_class": "dated_evidence",
+      "recorded_at": "2026-08-24",
+      "evidence_commit": "ceb5ccbcfa1d8a5042c8ede28a6e98615a7a0495",
+      "immutable_sha256": "8122c31b61647e7807db264a7cda5d5fa1f4b5704718732c44ea96675b09cb03",
+      "rationale": "Immutable PC-reset handover preserving the exact local acceptance totals and external-state observations verified during the 2026-08-24 closeout. The recorded test total is historical evidence for the stated tree, not a claim about the current suite."
     }
   ],
   "occurrence_exclusions": []
