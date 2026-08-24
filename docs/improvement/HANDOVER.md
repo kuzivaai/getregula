@@ -1,5 +1,12 @@
 # Regula Handover
 
+> **Current recovery record, 24 August 2026:** read
+> `docs/handover/REGULA-END-TO-END-HANDOVER-2026-08-24.md` first. It contains
+> the shared Codex and Claude Code PC-reset handover, active PR, production
+> evidence, untracked-data warning and exact recovery runbook. The historical
+> programme record below remains useful context, but its point-in-time status
+> must not override the newer record or generated `docs/improvement/STATE.md`.
+
 ## CURRENT RESUME POINT
 
 This file is a historical narrative from session 4 and is not the current

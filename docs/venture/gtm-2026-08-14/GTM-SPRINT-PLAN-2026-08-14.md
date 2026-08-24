@@ -507,14 +507,14 @@ an execution system, not evidence that distribution or demand has succeeded.
 
 | Surface | Evidence-backed state | Next action |
 |---|---|---|
-| Source | Current deployed `main` is `ef98360209237ed0e5cd625f9383497d94714c18`; the immutable 2.0.0 release identity remains `ef5309a9f6485662192c6648d2deb17705edacf0` | Do not conflate the current website commit with the released package commit |
+| Source | Current deployed `main` is `15b559e7e1b165e5862c426c8d4fe9574b66822e`; the immutable 2.0.0 release identity remains `ef5309a9f6485662192c6648d2deb17705edacf0` | Do not conflate the current website commit with the released package commit |
 | Production | Founder-first homepage and all three locales live; desktop, 640, 390, 320, keyboard, no-JS, error, success, reset, scanner recovery and 404 paths mechanically verified | Human comprehension remains untested |
 | PyPI | `regula-ai` 2.0.0 published 24 Aug; wheel and sdist hashes verified; clean wheel install passes 6/6 self-tests | Monitor install and support evidence, not download vanity alone |
 | Provenance | PyPI Integrity API binds both artefact hashes to `kuzivaai/getregula`, `release.yml`, environment `pypi` | Never describe provenance as proof of safety |
 | GitHub Release | `v2.0.0`, non-draft/non-prerelease, wheel, sdist and `SHA256SUMS`; floating `v2` points at the release commit and `v1` is unchanged | Use `v2` in new major-version Action examples only after compatibility review |
 | Marketplace | Existing Regula listing is live; the accessible listing does not expose a version string that independently proves 2.0.0 selection | Human Marketplace UI confirmation may still be required |
 | MCP Registry | Live official entry remains 1.9.0; 2.0.0 validates, but publication was rejected because the stored Registry JWT expired | Owner must complete GitHub device authentication, then re-run `mcp-publisher publish server.json` and verify `/v0.1/servers` |
-| Analytics | PR 61 merged and deployed, but production request capture found full query strings in Plausible's URL field and an unregistered automatic form event; external distribution is halted and a tested hotfix is pending | Merge and deploy the hotfix, prove in production that query strings and automatic form events are absent, then obtain a fresh export |
+| Analytics | Privacy hotfix live and production-verified 24 Aug: exactly Pageview, Qualifier Start and Qualifier Complete; path-only URLs, finite campaign properties, no automatic form event, console 0/0 | Obtain a fresh exact-window export; do not infer conversion from the stale pre-contract baseline |
 | Search | Sitemap and robots return 200; canonical/hreflang checks exist | Search Console credentials/property remain unavailable, so no fresh index baseline exists |
 
 ### 11.2 Funnel and decision rules
@@ -551,7 +551,7 @@ The management decision rule is:
 
 | Asset | Segment | State | Truth/UX check | Measurement | Owner effort / cost | Follow-up / stop |
 |---|---|---|---|---|---|---|
-| Founder qualifier, EN/DE/PT-BR | Founder, SME | LIVE | Browser mechanics pass; human comprehension absent | Qualifier Start/Complete after contract deploy | Weekly 30-minute review; GBP 0 | Formative research only after privacy gate |
+| Founder qualifier, EN/DE/PT-BR | Founder, SME | LIVE | Browser mechanics and production event boundary pass; human comprehension absent | Qualifier Start/Complete | Weekly 30-minute review; GBP 0 | Formative research only after the separate research privacy gate |
 | Browser assessment/scanner | Founder, developer | LIVE | Success, reset and induced-error recovery pass at 320px | Assessment and Scanner events | Weekly reliability review; GBP 0 | Fix demonstrated errors; do not infer legal accuracy from completion |
 | PyPI 2.0.0 | Developer | LIVE VERIFIED | Hashes, provenance, clean install and self-test pass | PyPI weekly exact-window downloads, excluding mirrors where supported | 30 minutes/week; GBP 0 | Investigate support/install failure, not rank alone |
 | GitHub repository and Action | Developer | LIVE | Action checks pass; Marketplace listing exists | GitHub referral, Action intent, clones/releases where available | 1 hour/release; GBP 0 | Dedicated Action repo only if monorepo causes support or eligibility failure |
@@ -573,10 +573,13 @@ creates no identifier. Duplicate logical events are suppressed within a page
 lifecycle. The contract forbids answers, code, repository URL, organisation,
 email, free text, regulatory result and personal/tracking identifiers. That
 custom-event boundary did not govern Plausible's own page URL or automatic
-form event: production inspection on 24 August found both paths active. The
-current hotfix strips the whole query string before every Plausible request and
-disables automatic form-submission tracking; it must be production-verified
-before distribution resumes.
+form event: production inspection on 24 August found both paths active. PR 62
+strips the whole query string before every Plausible request and disables
+automatic form-submission tracking. A second production capture after
+deployment emitted exactly Pageview, Qualifier Start and Qualifier Complete,
+all with path-only URLs and finite campaign properties; the automatic form
+event was absent. This is evidence about the captured journey, not a guarantee
+about future vendor or implementation changes.
 
 `data/metrics/distribution_funnel_baseline_2026-08-14.json` is deliberately
 marked stale for the contract: its exact 91-day window ends 13 August. It
