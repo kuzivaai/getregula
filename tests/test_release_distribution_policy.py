@@ -58,6 +58,16 @@ def test_every_distribution_action_is_a_complete_evidence_manifest():
     assert "RECEIPT_5407302795_VERIFIED" in directory_action["result"]
     assert "NOT_LISTED_OR_ACCEPTED_YET" in directory_action["result"]
 
+    glama_action = next(
+        action for action in policy["actions"]
+        if action["action_id"] == "glama-directory-submission-2026-08-25"
+    )
+    assert glama_action["decision"] == "EXTERNAL_EXECUTION_BLOCKED"
+    assert glama_action["executed_at"] is None
+    assert glama_action["owner_fact_required"] is True
+    assert "0_OAUTH_GRANTS" in glama_action["result"]
+    assert "0_SUBMISSIONS" in glama_action["result"]
+
 
 def test_hard_stop_states_cannot_be_mistaken_for_authorisation():
     states = _policy()["effective_states"]
@@ -91,12 +101,21 @@ def test_distribution_experiments_are_preregistered_with_complete_fields():
     assert directory_experiment["result"] is None
     assert "Do not duplicate" in directory_experiment["stop_condition"]
 
+    glama_experiment = next(
+        experiment for experiment in register["experiments"]
+        if experiment["experiment_id"] == "DIST-008-GLAMA-MCP-DISCOVERY"
+    )
+    assert glama_experiment["decision"] == "HOLD_EXTERNAL_ACCOUNT_TERMS_AND_AUTH"
+    assert glama_experiment["result"] is None
+    assert "Do not create an account" in glama_experiment["stop_condition"]
+
     submissions = (ROOT / "docs" / "distribution" / "SUBMISSIONS.md").read_text(
         encoding="utf-8"
     )
     assert "issuecomment-5407302795" in submissions
     assert "f3d0d525f1ae91f375c7dddccdbccee1f6cca3174c4812890cfd1bd908340be0" in submissions
     assert "submitted only, not listed or accepted" in submissions
+    assert "0 accounts, 0 OAuth grants, 0 submissions, 0 listings" in submissions
 
 
 def test_research_action_agrees_with_the_fail_closed_gate():

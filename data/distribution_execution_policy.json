@@ -470,6 +470,62 @@
       "result": "ONE_FREE_SUBMISSION_POSTED; RECEIPT_5407302795_VERIFIED; NOT_LISTED_OR_ACCEPTED_YET; NO_PAID_PLACEMENT"
     },
     {
+      "action_id": "glama-directory-submission-2026-08-25",
+      "action_type": "controlled_public_directory_submission",
+      "risk_class": "D",
+      "scope": "One free Glama listing submission for the public Regula MCP repository",
+      "reversibility": "Materially limited: Glama's current terms grant an irrevocable registry-content licence and allow continued hosting or refusal of removal",
+      "current_primary_sources": [
+        "https://glama.ai/mcp/servers?query=getregula",
+        "https://glama.ai/mcp/methodology",
+        "https://glama.ai/policies/terms-of-service",
+        "https://glama.ai/policies/privacy-policy"
+      ],
+      "repository_evidence": [
+        "server.json",
+        "mcp-server.json",
+        "scripts/mcp_server.py",
+        "docs/distribution/SUBMISSIONS.md",
+        "data/distribution_experiments.json"
+      ],
+      "counterevidence": [
+        "No getregula or Regula project listing was found in the live Glama search before execution stopped",
+        "The Add Server control requires a Glama account and redirected the unauthenticated browser to GitHub OAuth requesting read:user, user:email and read:org",
+        "No authenticated Glama or GitHub browser session was available, so no account, OAuth grant or submission was created",
+        "Terms section 13 grants a perpetual, irrevocable, worldwide, royalty-free and sublicensable registry-content licence and permits indefinite hosting or refusal of removal",
+        "Terms section 15 grants company-name and logo marketing permission on signup until prospectively revoked",
+        "The privacy policy covers name, email, device, IP and usage data, while the terms state customer data is stored in the United States"
+      ],
+      "security_delta": "If submitted, Glama would clone the already-public Git history, infer or use a Docker build, execute it in an external sandbox and introspect the MCP surface; no private repository, secret or customer content is authorised",
+      "privacy_delta": "The route requires an external account and GitHub OAuth disclosure of user, email and organisation data; no OAuth consent or personal-data submission occurred",
+      "legal_or_commercial_delta": "The free listing carries durable content-licence, removal-discretion and marketing-permission terms; no paid hosting, subscription or listing was accepted",
+      "tests_required": [
+        "Live exact-name listing search",
+        "Rendered Add Server path inspection",
+        "OAuth scope inspection without credential entry",
+        "Current methodology, terms and privacy review",
+        "Repository policy and experiment consistency tests"
+      ],
+      "tests_run": [
+        "Jina Reader and a real browser found zero getregula search results on 25 August 2026",
+        "The rendered Add Server control opened a Glama signup dialog rather than a stable public submission form",
+        "The GitHub option redirected to GitHub login for Glama AI with read:user, user:email and read:org scopes",
+        "No credentials were entered and the browser session was closed without creating an account or submission",
+        "Current Glama methodology, terms effective 13 March 2026 and privacy policy were reviewed from primary pages"
+      ],
+      "generated_artefacts": [
+        "docs/distribution/SUBMISSIONS.md",
+        "data/distribution_experiments.json"
+      ],
+      "rollback": "No submission exists to roll back; if later submitted, use Glama support for correction or removal while recognising that the current terms allow continued hosting",
+      "observability": "Exact-name Glama search, authenticated account receipt, listing URL and aggregate Glama referrer sessions if a listing is later created",
+      "owner_fact_required": true,
+      "decision": "EXTERNAL_EXECUTION_BLOCKED",
+      "decision_reason": "The legitimate route requires an authenticated browser account, GitHub OAuth consent and assent to durable platform terms that were not completed in this environment",
+      "executed_at": null,
+      "result": "ROUTE_VERIFIED; 0_ACCOUNTS_CREATED; 0_OAUTH_GRANTS; 0_SUBMISSIONS; AUTHENTICATED_BROWSER_AND_PLATFORM_ASSENT_REQUIRED"
+    },
+    {
       "action_id": "corporate-b2b-pilot-2026-08-25",
       "action_type": "controlled_corporate_outreach",
       "risk_class": "D",

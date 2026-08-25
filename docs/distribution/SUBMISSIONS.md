@@ -22,6 +22,7 @@ stated date, not read from a repository record.
 | GitHub Action (`action.yml`) | EXISTS and exercised by `.github/workflows/test-action.yml`; branding present. The Marketplace page is live and was world-checked 24 Aug 2026. The accessible public page does not expose a version string proving that the Marketplace recommendation moved from the owner-published 1.9.0 release. The new immutable `v2.0.0` and floating `v2` tags exist; `v1` is unchanged. Marketplace-version confirmation remains an owner/UI check, not an executed update claim. |
 | MCP server (`scripts/mcp_server.py`) | EXISTS, stdio, stdlib-only. The official registry still serves immutable version 1.9.0 as active/latest (world-checked 24 Aug). The 2.0.0 `server.json` passes the registry's live validator, but publication returned HTTP 401 because the saved registry JWT expired. `mcp-publisher login github` produced a device-auth prompt; 2.0.0 is therefore BLOCKED_EXTERNAL_AUTH and has not been published. |
 | mcp.so directory | SUBMITTED, NOT LISTED OR ACCEPTED (25 Aug 2026). One free submission was posted through the directory project's open GitHub intake issue as `kuzivaai`; the exact receipt is [comment 5407302795](https://github.com/chatmcp/mcpso/issues/1#issuecomment-5407302795). The separate web form advertised USD 39 and was not used. |
+| Glama directory | NOT SUBMITTED OR LISTED (25 Aug 2026). Exact-name search returned no `getregula` result. The real Add Server path requires a Glama account and GitHub OAuth (`read:user`, `user:email`, `read:org`); no authenticated browser session was available and no credentials, consent or submission were provided. Current registry terms make the listing licence irrevocable and removal discretionary, so this is not represented as a reversible free-form submission. |
 | VS Code extension | Recorded as published (v0.1.0, May 2026). Not re-verified this session; the 11 Aug 2026 audit records the extension as outside CI. Treat as unverified until checked against the live marketplace. |
 | Hacker News | Submissions were already made (May 2026). Do not resubmit; this is a standing project rule. |
 | dev.to | Articles published (May 2026 record; not re-verified this session). |
@@ -66,8 +67,21 @@ one; platform authentication or acceptance remains a blocker where required.
 
 - Glama auto-indexes public GitHub MCP servers; a listing may appear without
   any action once the repository is discoverable, and appears faster once the
-  official registry entry exists. No Regula listing was found there on 25
-  August; no official submission action has been identified or executed.
+  official registry entry exists. No `getregula` listing was found there on 25
+  August. Its live Add Server control was inspected in a real browser: it opens
+  a Glama account dialog, and the GitHub option redirects to GitHub login with
+  `read:user`, `user:email` and `read:org` scopes. No credentials were entered;
+  no account, OAuth grant or submission was created.
+- This Glama route is not operationally or legally equivalent to the free
+  mcp.so issue comment. Glama's terms effective 13 March 2026 grant a
+  perpetual, irrevocable, worldwide, royalty-free and sublicensable licence
+  over registry submissions; allow indefinite hosting or refusal of removal;
+  and grant company-name/logo marketing permission on signup until future
+  revocation. Its privacy policy covers account, device and usage data, and the
+  terms state customer data is stored in the United States. Submission remains
+  `EXTERNAL_EXECUTION_BLOCKED` pending authenticated browser access and actual
+  platform assent. `DIST-008-GLAMA-MCP-DISCOVERY` defines the measurement and
+  stop rules if that later occurs.
 - mcp.so's web submission page advertised a USD 39 one-time submission on 25
   August. That paid route was not authorised or used. The directory project's
   open GitHub submission issue was active, had current submissions and carried
@@ -143,6 +157,7 @@ with the repository's prohibited-claims classes
 | 2026-08-14 | Official MCP registry | Owner, by personally executing `mcp-publisher login github` and `mcp-publisher publish` | Listed as `io.github.kuzivaai/regula` 1.9.0, status active, publishedAt 2026-08-14T06:56:16Z; verified via the registry API (`/v0/servers?search=io.github.kuzivaai/regula`, count 1) |
 | 2026-08-19 | Registry/directory and editorial submissions | Owner directive | Authorised after platform/evidence checks; does not waive human platform-authentication or commercial-terms acceptance |
 | 2026-08-25 | mcp.so free GitHub intake | Owner directive plus live duplicate, route, terms and package checks | One submission posted by `kuzivaai`; [receipt 5407302795](https://github.com/chatmcp/mcpso/issues/1#issuecomment-5407302795); submitted only, not listed or accepted |
+| 2026-08-25 | Glama directory inspection | Owner directive plus live search, browser, OAuth-scope, methodology, terms and privacy checks | Legitimate route verified but blocked on authenticated browser account and platform assent; 0 accounts, 0 OAuth grants, 0 submissions, 0 listings |
 
 ## Editorial submission register
 
