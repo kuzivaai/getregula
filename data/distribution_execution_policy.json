@@ -668,7 +668,10 @@
         "Pre-change repository rulesets response was an empty array",
         "Protection PUT succeeded using configuration SHA-256 d2c91d5b0de6ff21ca199981a2d7c2f3e9f6e3f46bbf3bc2c3a9a6b727380329",
         "Post-change readback reported main protected, strict checks true, enforcement_level everyone and 21 app-bound contexts",
-        "Post-change readback reported enforce_admins true, force pushes false, deletions false, conversation resolution true, required reviews absent and merge commits allowed"
+        "Post-change readback reported enforce_admins true, force pushes false, deletions false, conversation resolution true, required reviews absent and merge commits allowed",
+        "PR 69 at head 6399c5e remained OPEN with mergeStateStatus BLOCKED while required checks were pending",
+        "Repository allow_auto_merge changed from false to true and was confirmed by REST readback",
+        "PR 69 auto-merge request was accepted at 2026-08-25T10:47:18Z, but the PR remained OPEN and BLOCKED rather than merging before its required checks"
       ],
       "generated_artefacts": [
         "data/distribution_execution_policy.json"
@@ -676,10 +679,10 @@
       "rollback": "Replace the protection document with a reviewed corrected configuration; do not delete protection merely to bypass a failing or pending check",
       "observability": "GitHub branch-protection readback, pull-request merge state and required check rollup",
       "owner_fact_required": false,
-      "decision": "EXECUTED_PENDING_CONTROL_PR",
-      "decision_reason": "The missing enforcement directly caused a sequencing defect; a reversible status-check-only rule is necessary and does not impose an impossible external-review requirement",
+      "decision": "EXECUTED",
+      "decision_reason": "The missing enforcement directly caused a sequencing defect; live readback and PR 69 demonstrated that the reversible rule blocks an administrator-requested auto-merge while required checks are pending",
       "executed_at": "2026-08-25T09:55:22Z",
-      "result": "MAIN_PROTECTED; 21_REQUIRED_GITHUB_ACTIONS_CHECKS; ADMINS_ENFORCED; FORCE_PUSH_AND_DELETE_BLOCKED; CONTROL_PR_PENDING"
+      "result": "MAIN_PROTECTED; 21_REQUIRED_GITHUB_ACTIONS_CHECKS; ADMINS_ENFORCED; FORCE_PUSH_AND_DELETE_BLOCKED; PR_69_OPEN_BLOCKED_WITH_AUTO_MERGE_QUEUED"
     },
     {
       "action_id": "payment-booking-and-transmitting-form-2026-08-19",
