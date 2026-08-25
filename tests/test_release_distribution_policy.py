@@ -68,6 +68,16 @@ def test_every_distribution_action_is_a_complete_evidence_manifest():
     assert "0_OAUTH_GRANTS" in glama_action["result"]
     assert "0_SUBMISSIONS" in glama_action["result"]
 
+    protection_action = next(
+        action for action in policy["actions"]
+        if action["action_id"] == "main-branch-protection-2026-08-25"
+    )
+    assert protection_action["decision"] == "EXECUTED_PENDING_CONTROL_PR"
+    assert protection_action["executed_at"] == "2026-08-25T09:55:22Z"
+    assert protection_action["owner_fact_required"] is False
+    assert "21_REQUIRED_GITHUB_ACTIONS_CHECKS" in protection_action["result"]
+    assert "CONTROL_PR_PENDING" in protection_action["result"]
+
 
 def test_hard_stop_states_cannot_be_mistaken_for_authorisation():
     states = _policy()["effective_states"]

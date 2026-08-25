@@ -629,6 +629,59 @@
       "result": "GATE_IMPLEMENTED_BLOCKED; 0_PARTICIPANTS_CONTACTED; 0_SESSIONS_COMPLETED; 19_LAUNCH_FACTS_UNRESOLVED"
     },
     {
+      "action_id": "main-branch-protection-2026-08-25",
+      "action_type": "release_guardrail_reconciliation",
+      "risk_class": "B",
+      "scope": "GitHub main-branch merge sequencing, required checks and destructive-push controls",
+      "reversibility": "Repository administrators can change or remove the rule through GitHub settings or API; removing it would restore the demonstrated premature-merge risk",
+      "current_primary_sources": [
+        "https://docs.github.com/en/rest/branches/branch-protection",
+        "https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches",
+        "GitHub REST API for kuzivaai/getregula branches/main/protection"
+      ],
+      "repository_evidence": [
+        ".github/workflows/ci.yaml",
+        ".github/workflows/codeql.yml",
+        ".github/workflows/regula-scan.yaml",
+        ".github/workflows/test-action.yml",
+        "data/distribution_execution_policy.json",
+        "tests/test_release_distribution_policy.py"
+      ],
+      "counterevidence": [
+        "Before remediation, GitHub returned HTTP 404 Branch not protected for main and the repository rulesets API returned an empty list",
+        "PR 68 merged immediately at 2026-08-25T09:52:48Z while all four Python matrix jobs were still pending, despite the command requesting auto-merge",
+        "The exact PR head had passed the mandatory local gate, but remote CI-before-merge was therefore not established",
+        "A required approving review was not configured because this is a solo-maintainer repository and that rule would make ordinary authorised merges impossible"
+      ],
+      "security_delta": "Requires 21 unique GitHub Actions checks from app 15368, blocks force-push and deletion, applies to administrators and requires conversation resolution",
+      "privacy_delta": "No personal data, customer content or new third-party processor",
+      "legal_or_commercial_delta": "No payment, contract, service, booking or customer commitment; repository governance only",
+      "tests_required": [
+        "Pre-change protection and ruleset read",
+        "Post-change exact settings readback",
+        "Protected-branch state readback",
+        "Control pull request remains unmergeable until required checks pass",
+        "Control pull request merges only after all required checks pass"
+      ],
+      "tests_run": [
+        "Pre-change branches/main/protection returned HTTP 404 Branch not protected",
+        "Pre-change repository rulesets response was an empty array",
+        "Protection PUT succeeded using configuration SHA-256 d2c91d5b0de6ff21ca199981a2d7c2f3e9f6e3f46bbf3bc2c3a9a6b727380329",
+        "Post-change readback reported main protected, strict checks true, enforcement_level everyone and 21 app-bound contexts",
+        "Post-change readback reported enforce_admins true, force pushes false, deletions false, conversation resolution true, required reviews absent and merge commits allowed"
+      ],
+      "generated_artefacts": [
+        "data/distribution_execution_policy.json"
+      ],
+      "rollback": "Replace the protection document with a reviewed corrected configuration; do not delete protection merely to bypass a failing or pending check",
+      "observability": "GitHub branch-protection readback, pull-request merge state and required check rollup",
+      "owner_fact_required": false,
+      "decision": "EXECUTED_PENDING_CONTROL_PR",
+      "decision_reason": "The missing enforcement directly caused a sequencing defect; a reversible status-check-only rule is necessary and does not impose an impossible external-review requirement",
+      "executed_at": "2026-08-25T09:55:22Z",
+      "result": "MAIN_PROTECTED; 21_REQUIRED_GITHUB_ACTIONS_CHECKS; ADMINS_ENFORCED; FORCE_PUSH_AND_DELETE_BLOCKED; CONTROL_PR_PENDING"
+    },
+    {
       "action_id": "payment-booking-and-transmitting-form-2026-08-19",
       "action_type": "commercial_activation",
       "risk_class": "E",
