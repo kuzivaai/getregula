@@ -361,6 +361,98 @@
       "result": "2_0_0_VALIDATED_NOT_PUBLISHED; OWNER_ACTION_MCP_PUBLISHER_LOGIN_GITHUB_THEN_PUBLISH"
     },
     {
+      "action_id": "editorial-submission-wave-1-2026-08-25",
+      "action_type": "controlled_editorial_distribution",
+      "risk_class": "D",
+      "scope": "One tailored submission each to Console.dev, AI Governance Library, Python Bytes and Changelog News",
+      "reversibility": "Drafts are Git-revertible; a sent email or attributed form submission cannot be unsent",
+      "current_primary_sources": [
+        "https://console.dev/selection-criteria",
+        "https://aigl.blog/about/",
+        "https://pythonbytes.fm/home/contact",
+        "https://changelog.com/news/submit"
+      ],
+      "repository_evidence": [
+        "docs/distribution/EDITORIAL-EXECUTION-PACKETS-2026-08-25.md",
+        "docs/distribution/SUBMISSIONS.md",
+        "data/distribution_experiments.json",
+        "site/assets/analytics.js"
+      ],
+      "counterevidence": [
+        "The repository previously called the four routes prepared without carrying send-ready channel-specific copy",
+        "The available Google credential returned HTTP 403 on the Gmail API capability probe",
+        "Changelog requires sign-in or sign-up and uses the profile for attribution and notification",
+        "No external message receipt or form-submission receipt exists"
+      ],
+      "security_delta": "No code execution, attachment, credential transfer, tracking pixel or recipient list; external sends remain blocked",
+      "privacy_delta": "Each packet targets one published editorial address or authenticated platform route; no personal prospect list or hidden tracking",
+      "legal_or_commercial_delta": "The copy discloses product limitations, inactive service hypotheses and absence of payment, booking, legal advice and certification",
+      "tests_required": [
+        "Live primary route verification",
+        "Production campaign-query privacy verification",
+        "Public claim and finite campaign allowlist review",
+        "External receipt verification before any SENT state"
+      ],
+      "tests_run": [
+        "Agent Reach doctor confirmed Jina Reader availability on 25 August 2026",
+        "All four primary submission routes were fetched and rechecked on 25 August 2026",
+        "The production founder journey and path-only analytics contract passed in a real browser",
+        "The four campaign source, medium and name values match the finite analytics allowlist",
+        "No outbound sender or Changelog authenticated account was available; zero submissions sent"
+      ],
+      "generated_artefacts": [
+        "docs/distribution/EDITORIAL-EXECUTION-PACKETS-2026-08-25.md",
+        "docs/distribution/SUBMISSIONS.md"
+      ],
+      "rollback": "Revert the drafts before sending; after sending, record correction or withdrawal with the channel rather than erasing the historical receipt",
+      "observability": "Per-channel UTC send time, sender, recipient or route, body hash, platform receipt and follow-up state",
+      "owner_fact_required": true,
+      "decision": "EXTERNAL_EXECUTION_BLOCKED",
+      "decision_reason": "Send-ready artefacts now exist, but an approved outbound project sender and an owner-authenticated Changelog account do not",
+      "executed_at": null,
+      "result": "4_TAILORED_PACKETS_READY; 0_SENT; APPROVED_SENDER_REQUIRED; CHANGELOG_ACCOUNT_REQUIRED"
+    },
+    {
+      "action_id": "corporate-b2b-pilot-2026-08-25",
+      "action_type": "controlled_corporate_outreach",
+      "risk_class": "D",
+      "scope": "Low-volume outreach to incorporated recruitment-AI vendors under experiment DIST-005",
+      "reversibility": "Templates and empty controls are reversible; processing recipient data or sending a message is not fully reversible",
+      "current_primary_sources": [],
+      "repository_evidence": [
+        "data/distribution_experiments.json",
+        "docs/venture/gtm-2026-08-14/GTM-SPRINT-PLAN-2026-08-14.md",
+        "site/privacy.html"
+      ],
+      "counterevidence": [
+        "No verified private recipient register exists",
+        "No recipient-specific lawful-basis or legitimate-interest record exists",
+        "No operational suppression register or eligible-address review has been completed",
+        "No approved outbound project sender is available"
+      ],
+      "security_delta": "No list purchase, scraping, tracking pixel, bulk sender or external recipient-data processor is permitted",
+      "privacy_delta": "No recipient data has been collected or processed for this campaign; the public repository must never contain the private register",
+      "legal_or_commercial_delta": "The directive authorises only compliant corporate outreach and does not waive recipient, privacy, objection or suppression controls",
+      "tests_required": [
+        "Current direct-marketing rules and guidance review for the actual sender and recipient jurisdictions",
+        "Private register field and access-control validation",
+        "Recipient-by-recipient eligible business-address and suppression check",
+        "Approved sender and unsubscribe or objection handling test"
+      ],
+      "tests_run": [],
+      "generated_artefacts": [
+        "data/distribution_experiments.json",
+        "docs/venture/gtm-2026-08-14/GTM-SPRINT-PLAN-2026-08-14.md"
+      ],
+      "rollback": "Do not start until all gates pass; after an objection, suppress immediately and retain only what is necessary to prevent further contact",
+      "observability": "Delivered first contacts, bounces, objections, suppressions and qualified conversations; no open rate",
+      "owner_fact_required": true,
+      "decision": "EXTERNAL_EXECUTION_BLOCKED",
+      "decision_reason": "The private recipient, lawful-basis, suppression, jurisdiction and approved-sender controls are absent",
+      "executed_at": null,
+      "result": "0_RECIPIENTS_PROCESSED; 0_MESSAGES_SENT; PRIVATE_COMPLIANCE_CONTROLS_REQUIRED"
+    },
+    {
       "action_id": "payment-booking-and-transmitting-form-2026-08-19",
       "action_type": "commercial_activation",
       "risk_class": "E",

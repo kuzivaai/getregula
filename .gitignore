@@ -100,13 +100,15 @@ docs/moat-research.md
 docs/landscape.md
 content/outreach/
 content/platform-copy.md
-# docs/distribution/ stays local scratch EXCEPT the listings register,
-# which records world-checked listing states and owner-gated submission
-# steps and must survive as a tracked record (a register that lives only
-# on one machine is the continuity failure LEDGER.md's header records).
+# docs/distribution/ stays local scratch EXCEPT the listings register and the
+# dated execution packets it points to. Those record world-checked listing
+# states, exact approved copy and owner-gated submission steps and must survive
+# as tracked records (a register that lives only on one machine is the
+# continuity failure LEDGER.md's header records).
 # A directory-level ignore blocks re-inclusion of children, hence /*.
 docs/distribution/*
 !docs/distribution/SUBMISSIONS.md
+!docs/distribution/EDITORIAL-EXECUTION-PACKETS-2026-08-25.md
 docs/repo-readiness-audit.md
 docs/research-eval-report.md
 docs/research-eval-public-readiness.md

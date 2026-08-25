@@ -1,7 +1,7 @@
 {
   "format_version": 1,
   "register_id": "regula-distribution-experiments-v1",
-  "updated_at": "2026-08-24",
+  "updated_at": "2026-08-25",
   "measurement_rule": "Record counterevidence before favourable evidence; never select the success metric after observing results.",
   "experiments": [
     {
@@ -51,7 +51,7 @@
       "hypothesis": "Console.dev's developer-tool readership is sufficiently task-aligned to produce scanner, install or integration continuation.",
       "counter_hypothesis": "AI-governance scanning is peripheral to regular developer workflow and produces curiosity traffic only.",
       "channel": "console-dev-editorial",
-      "asset": "tailored v2.0.0 editorial submission with live sample and limitations",
+      "asset": "docs/distribution/EDITORIAL-EXECUTION-PACKETS-2026-08-25.md; Console.dev packet with live sample, limitations and finite campaign URL",
       "baseline": "No Console.dev referral recorded in the retained export.",
       "primary_metric": "Scanner Complete plus Install Command Copy from the allowlisted Console campaign, with qualified replies recorded separately.",
       "guardrail": "No sponsored-review implication, uniqueness claim or legal-risk claim.",
