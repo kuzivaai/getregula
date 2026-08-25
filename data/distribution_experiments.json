@@ -123,6 +123,46 @@
       "uncertainty": "Formative performance does not establish time saved in real engagements.",
       "decision": "HOLD_RESEARCH_PRIVACY_GATE",
       "stop_condition": "Stop if participants consistently require source material or assurance that Regula does not and cannot provide."
+    },
+    {
+      "experiment_id": "DIST-007-MCP-DIRECTORY-DISCOVERY",
+      "target_segment": "developer_using_an_mcp_compatible_client",
+      "decision_question": "Will a factual mcp.so listing produce any qualified evaluation of Regula's local MCP tools?",
+      "hypothesis": "Developers already looking for MCP servers will inspect and continue from a bounded local code-governance tool listing.",
+      "counter_hypothesis": "The directory will not list the submission, or directory visitors will not have a relevant AI-governance task and will not continue.",
+      "channel": "mcp-so-free-github-submission",
+      "asset": "GitHub issue receipt 5407302795 and the factual MCP listing copy recorded in docs/distribution/SUBMISSIONS.md",
+      "baseline": "No matching Regula listing was found before submission on 25 August 2026; one free submission now exists, with no acceptance or listing evidence.",
+      "primary_metric": "Verified directory listing state and, only if listed, qualified scanner, install or documentation continuation per aggregate mcp.so-referrer session.",
+      "guardrail": "Never count the submission itself as acceptance, listing, endorsement, traffic or adoption; do not use the paid placement route during this experiment.",
+      "denominator": "One non-duplicated free submission; after a verified listing, aggregate mcp.so-referrer sessions in the same exact reporting window.",
+      "minimum_observation": "One external moderation outcome and, if listed, four weekly aggregate readouts; this is an operating rule, not a power calculation.",
+      "cost_cap": "GBP 0 external spend",
+      "owner_effort_cap": "One submission, one factual clarification if requested and 15 minutes per weekly readout",
+      "result": null,
+      "uncertainty": "The issue route may not be ingested, the directory controls timing and presentation, and aggregate referrer data cannot establish an individual journey or causal effect.",
+      "decision": "SUBMITTED_PENDING_EXTERNAL_REVIEW",
+      "stop_condition": "Do not duplicate the submission; after one clarification, stop outreach and retain a NOT_LISTED result if no listing or moderation response exists after four weekly checks."
+    },
+    {
+      "experiment_id": "DIST-008-GLAMA-MCP-DISCOVERY",
+      "target_segment": "developer_comparing_or_testing_mcp_servers",
+      "decision_question": "Would a verified Glama listing produce qualified evaluation of Regula's bounded local MCP tools?",
+      "hypothesis": "Glama's tool-level inspection workflow will help relevant developers understand and evaluate Regula's three local MCP tools.",
+      "counter_hypothesis": "The listing will not become discoverable, automated build or scoring will fail, or visitors will not have a relevant AI-governance task.",
+      "channel": "glama-free-mcp-directory",
+      "asset": "Public GitHub repository, server.json and the factual listing copy recorded in docs/distribution/SUBMISSIONS.md",
+      "baseline": "The live exact-name search returned no getregula result on 25 August 2026; zero accounts, OAuth grants, submissions or listings were created.",
+      "primary_metric": "Verified discoverable listing state and, only if listed, qualified scanner, install or documentation continuation per aggregate Glama-referrer session.",
+      "guardrail": "Do not treat directory size, automated scores or submission as adoption; do not authorise paid hosting, private source, credentials or customer content.",
+      "denominator": "One owner-authenticated free listing if later submitted; after discovery, aggregate Glama-referrer sessions in the same exact reporting window.",
+      "minimum_observation": "One external indexing outcome and, if discoverable, four weekly aggregate readouts; this is an operating rule, not a power calculation.",
+      "cost_cap": "GBP 0 external spend; no hosted plan or subscription",
+      "owner_effort_cap": "One authenticated submission, one correction if required and 15 minutes per weekly readout",
+      "result": null,
+      "uncertainty": "Glama controls build, scoring, presentation and removal; aggregate referrers cannot prove an individual journey, and the durable platform terms may outweigh an unproven discovery benefit.",
+      "decision": "HOLD_EXTERNAL_ACCOUNT_TERMS_AND_AUTH",
+      "stop_condition": "Do not create an account or submit until authenticated browser access and explicit platform assent exist; after submission, do not duplicate and stop after one correction or four empty weekly checks."
     }
   ]
 }
