@@ -49,6 +49,15 @@ def test_every_distribution_action_is_a_complete_evidence_manifest():
         assert required == set(action), action["action_id"]
         assert action["risk_class"] in policy["action_classes"]
 
+    directory_action = next(
+        action for action in policy["actions"]
+        if action["action_id"] == "mcp-so-directory-submission-2026-08-25"
+    )
+    assert directory_action["decision"] == "EXECUTED_PENDING_EXTERNAL_REVIEW"
+    assert directory_action["executed_at"] == "2026-08-25T08:00:17Z"
+    assert "RECEIPT_5407302795_VERIFIED" in directory_action["result"]
+    assert "NOT_LISTED_OR_ACCEPTED_YET" in directory_action["result"]
+
 
 def test_hard_stop_states_cannot_be_mistaken_for_authorisation():
     states = _policy()["effective_states"]
@@ -73,6 +82,21 @@ def test_distribution_experiments_are_preregistered_with_complete_fields():
         assert experiment["result"] is None
         ids.append(experiment["experiment_id"])
     assert len(ids) == len(set(ids))
+
+    directory_experiment = next(
+        experiment for experiment in register["experiments"]
+        if experiment["experiment_id"] == "DIST-007-MCP-DIRECTORY-DISCOVERY"
+    )
+    assert directory_experiment["decision"] == "SUBMITTED_PENDING_EXTERNAL_REVIEW"
+    assert directory_experiment["result"] is None
+    assert "Do not duplicate" in directory_experiment["stop_condition"]
+
+    submissions = (ROOT / "docs" / "distribution" / "SUBMISSIONS.md").read_text(
+        encoding="utf-8"
+    )
+    assert "issuecomment-5407302795" in submissions
+    assert "f3d0d525f1ae91f375c7dddccdbccee1f6cca3174c4812890cfd1bd908340be0" in submissions
+    assert "submitted only, not listed or accepted" in submissions
 
 
 def test_research_action_agrees_with_the_fail_closed_gate():

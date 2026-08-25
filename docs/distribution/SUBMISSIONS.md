@@ -21,12 +21,13 @@ stated date, not read from a repository record.
 | PyPI `regula-ai` | PUBLISHED, 2.0.0 (24 Aug 2026). Release workflow build, trusted publish, clean PyPI install and smoke tests passed. Independently downloaded GitHub assets match `SHA256SUMS`; clean wheel install reports 2.0.0 and passes 6/6 self-tests. PyPI Integrity records bind wheel SHA-256 `6b8e9a38b0d9c9cb18bb054b9b932a785dd3678e343f503aece406f2b41966d1` and sdist SHA-256 `3ef5b7e34436a8ce4e510927129944d223fb4ea650cfe29b4b42c8a1bbf0ed36` to the GitHub `release.yml` publisher. |
 | GitHub Action (`action.yml`) | EXISTS and exercised by `.github/workflows/test-action.yml`; branding present. The Marketplace page is live and was world-checked 24 Aug 2026. The accessible public page does not expose a version string proving that the Marketplace recommendation moved from the owner-published 1.9.0 release. The new immutable `v2.0.0` and floating `v2` tags exist; `v1` is unchanged. Marketplace-version confirmation remains an owner/UI check, not an executed update claim. |
 | MCP server (`scripts/mcp_server.py`) | EXISTS, stdio, stdlib-only. The official registry still serves immutable version 1.9.0 as active/latest (world-checked 24 Aug). The 2.0.0 `server.json` passes the registry's live validator, but publication returned HTTP 401 because the saved registry JWT expired. `mcp-publisher login github` produced a device-auth prompt; 2.0.0 is therefore BLOCKED_EXTERNAL_AUTH and has not been published. |
+| mcp.so directory | SUBMITTED, NOT LISTED OR ACCEPTED (25 Aug 2026). One free submission was posted through the directory project's open GitHub intake issue as `kuzivaai`; the exact receipt is [comment 5407302795](https://github.com/chatmcp/mcpso/issues/1#issuecomment-5407302795). The separate web form advertised USD 39 and was not used. |
 | VS Code extension | Recorded as published (v0.1.0, May 2026). Not re-verified this session; the 11 Aug 2026 audit records the extension as outside CI. Treat as unverified until checked against the live marketplace. |
 | Hacker News | Submissions were already made (May 2026). Do not resubmit; this is a standing project rule. |
 | dev.to | Articles published (May 2026 record; not re-verified this session). |
 | Pre-commit hook | Configured (May 2026 record; not re-verified this session). |
 
-## Prepared and held
+## Executed, prepared and held
 
 Publishing to a registry or marketplace is authorised by the 19 August owner
 directive after platform checks. A prepared action is still not an executed
@@ -65,8 +66,61 @@ one; platform authentication or acceptance remains a blocker where required.
 
 - Glama auto-indexes public GitHub MCP servers; a listing may appear without
   any action once the repository is discoverable, and appears faster once the
-  official registry entry exists. mcp.so accepts submissions.
-- Only the approved copy below may be used on any directory form.
+  official registry entry exists. No Regula listing was found there on 25
+  August; no official submission action has been identified or executed.
+- mcp.so's web submission page advertised a USD 39 one-time submission on 25
+  August. That paid route was not authorised or used. The directory project's
+  open GitHub submission issue was active, had current submissions and carried
+  no prior Regula or `kuzivaai` submission across the issue comments checked.
+- At `2026-08-25T08:00:17Z`, `kuzivaai` posted exactly one free submission:
+  [GitHub receipt 5407302795](https://github.com/chatmcp/mcpso/issues/1#issuecomment-5407302795).
+  GitHub's API re-read confirmed the author, timestamp and exact body. The body
+  SHA-256 is
+  `f3d0d525f1ae91f375c7dddccdbccee1f6cca3174c4812890cfd1bd908340be0`.
+  This proves submission only. It does not prove review, acceptance, indexing,
+  listing, endorsement, traffic, installation or adoption.
+- Measurement and stop rules are preregistered as
+  `DIST-007-MCP-DIRECTORY-DISCOVERY` in
+  `data/distribution_experiments.json`. No duplicate submission is permitted.
+- Only the approved copy below may be used on any future directory form or
+  clarification.
+
+#### mcp.so submission copy
+
+Rendered below with Markdown line-break syntax normalised. The receipt and
+SHA-256 above, not this rendering, are the byte-exact evidence.
+
+> **Regula — local AI-governance code indicators and evidence scaffolds**
+>
+> Repository: https://github.com/kuzivaai/getregula
+>
+> PyPI: https://pypi.org/project/regula-ai/
+>
+> Website: https://getregula.com/
+>
+> Regula includes a local stdio MCP server with three tools: `regula_check`,
+> `regula_classify`, and `regula_gap`. It scans local source code for patterns
+> that may need AI-governance review, records deployment facts that code cannot
+> show, and reports insufficient information instead of inventing a legal
+> classification.
+>
+> Install: `pipx install regula-ai`
+>
+> Run: `regula mcp-server`
+>
+> Claude Desktop / Cursor configuration and tool schemas:
+> https://github.com/kuzivaai/getregula#claude-desktop--cursor-mcp
+>
+> - Open source: Apache-2.0 / EUPL-1.2 code; detection rules under DRL-1.1
+> - Core scanner has no required Python dependencies
+> - Core local workflow does not upload scanned files
+> - Pattern matching, not semantic understanding; false positives and false
+>   negatives are possible
+> - Not legal advice, a compliance determination, or certification
+>
+> Release note: PyPI and the repository manifest are version 2.0.0. The
+> official MCP Registry still reports the older 1.9.0 entry while its 2.0.0
+> publication awaits renewed owner authentication.
 
 ## Approved listing copy (14 August 2026)
 
@@ -88,6 +142,7 @@ with the repository's prohibited-claims classes
 | 2026-08-14 | GitHub Marketplace | Owner, by publishing release v1.9.0 with "Publish this Action to the GitHub Marketplace" ticked | Listed as "Regula AI Governance Check", publisher kuzivaai, v1.9.0, categories Security and Code quality; verified on the action's Marketplace page 14 Aug 2026 |
 | 2026-08-14 | Official MCP registry | Owner, by personally executing `mcp-publisher login github` and `mcp-publisher publish` | Listed as `io.github.kuzivaai/regula` 1.9.0, status active, publishedAt 2026-08-14T06:56:16Z; verified via the registry API (`/v0/servers?search=io.github.kuzivaai/regula`, count 1) |
 | 2026-08-19 | Registry/directory and editorial submissions | Owner directive | Authorised after platform/evidence checks; does not waive human platform-authentication or commercial-terms acceptance |
+| 2026-08-25 | mcp.so free GitHub intake | Owner directive plus live duplicate, route, terms and package checks | One submission posted by `kuzivaai`; [receipt 5407302795](https://github.com/chatmcp/mcpso/issues/1#issuecomment-5407302795); submitted only, not listed or accepted |
 
 ## Editorial submission register
 
