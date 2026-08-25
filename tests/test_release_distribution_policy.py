@@ -19,6 +19,7 @@ from svg_text import SvgTextError, rendered_lines  # noqa: E402
 
 POLICY = ROOT / "data" / "distribution_execution_policy.json"
 EXPERIMENTS = ROOT / "data" / "distribution_experiments.json"
+RESEARCH_GATE = ROOT / "data" / "research_execution_gate.json"
 
 
 def _policy() -> dict:
@@ -72,6 +73,22 @@ def test_distribution_experiments_are_preregistered_with_complete_fields():
         assert experiment["result"] is None
         ids.append(experiment["experiment_id"])
     assert len(ids) == len(set(ids))
+
+
+def test_research_action_agrees_with_the_fail_closed_gate():
+    gate = json.loads(RESEARCH_GATE.read_text(encoding="utf-8"))
+    action = next(
+        item for item in _policy()["actions"]
+        if item["action_id"] == "moderated-founder-research-readiness-2026-08-25"
+    )
+    assert gate["execution_state"] == "BLOCKED"
+    assert gate["external_research"] == "DISABLED"
+    assert gate["participants_contacted"] == 0
+    assert gate["sessions_completed"] == 0
+    assert len(gate["unresolved_facts"]) == 19
+    assert action["decision"] == "EXTERNAL_EXECUTION_BLOCKED"
+    assert action["executed_at"] is None
+    assert action["result"].endswith("19_LAUNCH_FACTS_UNRESOLVED")
 
 
 def test_https_validator_accepts_only_the_exact_allowlisted_host():

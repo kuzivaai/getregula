@@ -211,8 +211,8 @@ Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scri
 
 ### Continuous validation
 
-- 3,135 pytest-collected tests, produced by collection rather than
-  hand-maintained (measured 2026-08-13). See
+- 3,143 pytest-collected tests, produced by collection rather than
+  hand-maintained (measured 2026-08-25). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 48 CLI integration tests (`tests/test_cli_integration.py`), enumerated by
   `data/site_facts.json`.

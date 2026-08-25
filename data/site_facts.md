@@ -2,7 +2,7 @@
 
 *Canonical source of truth for every numeric claim on the landing pages. Regenerate by running `python3 scripts/site_facts.py`.*
 
-Generated: `2026-08-24T18:46:19.467311+00:00`
+Generated: `2026-08-25T00:49:42.826422+00:00`
 
 ## Top-line counts
 
@@ -14,7 +14,7 @@ Generated: `2026-08-24T18:46:19.467311+00:00`
 | Tiered risk pattern groups | 57 | `scripts/risk_patterns.py` |
 | Compliance frameworks | **13** | `references/framework_crosswalk.yaml` + EU AI Act |
 | Programming languages | 8 | `scripts/ast_engine.py` |
-| Test functions (all files) | 3082 | `tests/test_*.py` |
+| Test functions (all files) | 3090 | `tests/test_*.py` |
 
 ## Detection pattern breakdown
 
