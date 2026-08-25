@@ -453,6 +453,69 @@
       "result": "0_RECIPIENTS_PROCESSED; 0_MESSAGES_SENT; PRIVATE_COMPLIANCE_CONTROLS_REQUIRED"
     },
     {
+      "action_id": "moderated-founder-research-readiness-2026-08-25",
+      "action_type": "research_privacy_gate",
+      "risk_class": "D",
+      "scope": "Formative founder-homepage and governance-evidence-pack usability research under experiments DIST-002 and DIST-006",
+      "reversibility": "Protocols and empty registers are Git-revertible; participant contact and personal-data processing are not fully reversible",
+      "current_primary_sources": [
+        "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/a-guide-to-lawful-basis/",
+        "https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/the-research-provisions/principles-and-grounds-for-processing/",
+        "https://www.ukri.org/councils/esrc/guidance-for-applicants/research-ethics-guidance/consent/",
+        "https://www.mrs.org.uk/standards/guidelines-for-qualitative-research"
+      ],
+      "repository_evidence": [
+        "data/research_execution_gate.json",
+        "docs/research/FOUNDER-USABILITY-RESEARCH-GATE-2026-08-25.md",
+        "docs/venture/validation-readiness-2026-08-05/templates/PARTICIPANT-INFORMATION.md",
+        "docs/venture/validation-readiness-2026-08-05/templates/CONSENT.md",
+        "docs/venture/validation-readiness-2026-08-05/templates/WITHDRAWAL-AND-DELETION.md"
+      ],
+      "counterevidence": [
+        "No controller identity or controller contact is recorded",
+        "No lawful-basis decision or review evidence is recorded",
+        "No participant notice has been completed and approved",
+        "No approved private storage, access, processor, transfer or retention record exists",
+        "No tested withdrawal, rights-request or incident route exists",
+        "No approved recruitment sender or participant source exists",
+        "No authenticated owner launch authorisation exists"
+      ],
+      "security_delta": "No recording, customer source, confidential material, special-category data, tracking pixel or personal data in Git is permitted",
+      "privacy_delta": "Adds a machine-validated, fail-closed register of every launch fact while collecting no participant data",
+      "legal_or_commercial_delta": "Separates participation permission from lawful basis and research from sales, legal advice, certification and market-validity claims",
+      "tests_required": [
+        "Research-gate structural and mutation tests",
+        "Manual-runner wiring",
+        "Canonical blocked-state command",
+        "Full project verification before merge"
+      ],
+      "tests_run": [
+        "Four primary guidance routes rechecked on 25 August 2026",
+        "Research-gate and release-policy focused tests: 20 passed before count-integrity expansion",
+        "Research, release, count-manifest, source-of-truth and site-facts focused tests: 84 passed",
+        "Canonical research-gate validation passed in blocked state",
+        "Status command returned non-zero with 19 unresolved facts and external-contact blockers",
+        "Published-count cascade check passed against the canonical site-facts manifest",
+        "Mandatory manual runner passed on 25 August 2026 with zero failures or skips",
+        "Mandatory full pytest collection passed on 25 August 2026 with zero failures",
+        "Mandatory CLI self-test passed on 25 August 2026",
+        "Mandatory doctor completed on 25 August 2026 with no failures and four informational notices"
+      ],
+      "generated_artefacts": [
+        "data/research_execution_gate.json",
+        "docs/research/FOUNDER-USABILITY-RESEARCH-GATE-2026-08-25.md",
+        "scripts/research_gate.py",
+        "tests/test_research_gate.py"
+      ],
+      "rollback": "Revert the preparation artefacts; do not contact participants unless a later independently reviewed and authenticated launch decision clears every gate",
+      "observability": "Machine status reports unresolved facts, owner-authorisation state, participant-contact count and session count",
+      "owner_fact_required": true,
+      "decision": "EXTERNAL_EXECUTION_BLOCKED",
+      "decision_reason": "The repository can validate a safe blocked state but cannot appoint the controller, decide lawful basis, approve private systems or authenticate the owner",
+      "executed_at": null,
+      "result": "GATE_IMPLEMENTED_BLOCKED; 0_PARTICIPANTS_CONTACTED; 0_SESSIONS_COMPLETED; 19_LAUNCH_FACTS_UNRESOLVED"
+    },
+    {
       "action_id": "payment-booking-and-transmitting-form-2026-08-19",
       "action_type": "commercial_activation",
       "risk_class": "E",
