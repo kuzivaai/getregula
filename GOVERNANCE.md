@@ -18,9 +18,10 @@ the maintainer's personal identity.
 | Domain `getregula.com` | Project owner | |
 | Crash-reporting endpoint | none shipped | Published builds contain no endpoint; see `SECURITY.md` |
 
-There are no other maintainers, no organisation, and no foundation.
-Automated accounts (`dependabot`, `github-actions`) hold no credentials and
-cannot approve or release.
+The project currently documents a single maintainer/owner and no organisation
+or foundation; the public ownership rule is recorded in
+[`.github/CODEOWNERS`](.github/CODEOWNERS). Automated accounts (`dependabot`,
+`github-actions`) hold no credentials and cannot approve or release.
 
 ## What that means for you — stated plainly
 

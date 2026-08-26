@@ -41,11 +41,6 @@ unindexed source existed.
 | [Joern code property graph](https://docs.joern.io/code-property-graph/) | Current official docs; [Apache-2.0 repository](https://github.com/joernio/joern) active on 25 August | Combining syntax, control and data-flow representations in a cross-language graph | JVM/tooling footprint conflicts with a small stdlib-only core; suitable for research baselines or an optional adapter |
 | [BenchProctor](https://github.com/TheAuditorTool/BenchProctor) | Apache-2.0 repository; 7 stars and active in July 2026 when observed | Candidate examples for SARIF-oriented benchmark orchestration | Very limited adoption and no peer-reviewed validity evidence found; do not inherit claims or scores uncritically |
 
-For scale only, GitHub API observations on 25 August 2026 showed approximately
-26,752 stars for Tree-sitter, 16,396 for Semgrep, 10,009 for the CodeQL queries
-repository and 3,448 for Joern. These counts are volatile and are not a ranking
-of technical quality.
-
 ## Findings and decisions
 
 ### 1. The legal source model is now materially different from the 2024 schedule
@@ -108,10 +103,11 @@ reported, rather than copied wholesale.
 
 ### 4. Priority scores are not probabilities
 
-Regula's 0–100 value is a heuristic detector-priority score. It is not a 70%
-chance that a finding is correct. Renaming or documentation cannot calibrate
-it. Calibration requires a representative, independent calibration set and a
-held-out evaluation; subgroup shift and time drift must be measured.
+Regula's 0–100 value is a heuristic detector-priority score. A score of 70 must
+not be interpreted as a probability that a finding is correct. Renaming or
+documentation cannot calibrate it. Calibration requires a representative,
+independent calibration set and a held-out evaluation; subgroup shift and time
+drift must be measured.
 
 Conformal risk control is promising only after those prerequisites exist. A
 future selective policy should publish coverage and selective error, including

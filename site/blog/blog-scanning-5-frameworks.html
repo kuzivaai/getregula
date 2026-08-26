@@ -21,7 +21,7 @@
 
     <!-- Primary SEO -->
     <title>Scanning 5 AI Frameworks for EU AI Act Compliance | Regula</title>
-    <meta name="description" content="562 findings across PyTorch, HuggingFace, LangChain, LlamaIndex, and CrewAI. Your framework choice shapes your compliance surface.">
+    <meta name="description" content="An evidence-qualified scan of PyTorch, HuggingFace, LangChain, LlamaIndex, and CrewAI, with context for interpreting the findings.">
     <meta name="keywords" content="EU AI Act compliance, AI framework, PyTorch compliance, LangChain compliance, HuggingFace compliance, AI governance, regula">
     <meta name="author" content="Regula maintainers">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
@@ -33,13 +33,13 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://getregula.com/blog/blog-scanning-5-frameworks.html">
     <meta property="og:title" content="Scanning 5 AI Frameworks for EU AI Act Compliance | Regula">
-    <meta property="og:description" content="562 findings across PyTorch, HuggingFace, LangChain, LlamaIndex, and CrewAI. Your framework choice shapes your compliance surface.">
+    <meta property="og:description" content="An evidence-qualified scan of five AI frameworks, with context for interpreting Regula's findings.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-04-25">
-    <meta property="article:modified_time" content="2026-04-25">
+    <meta property="article:modified_time" content="2026-08-26">
     <meta property="article:author" content="Regula maintainers">
     <meta property="article:section" content="AI Governance">
     <meta property="article:tag" content="EU AI Act">
@@ -49,7 +49,7 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Scanning 5 AI Frameworks for EU AI Act Compliance | Regula">
-    <meta name="twitter:description" content="562 findings across 5 AI frameworks. The framework you pick shapes your compliance surface.">
+    <meta name="twitter:description" content="An evidence-qualified scan of five AI frameworks, with context for interpreting Regula's findings.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
 
     <!-- Structured data: Article -->
@@ -58,10 +58,10 @@
       "@context": "https://schema.org",
       "@type": "BlogPosting",
       "headline": "Scanning 5 AI Frameworks for EU AI Act Compliance | Regula",
-      "description": "562 findings across PyTorch, HuggingFace Transformers, LangChain, LlamaIndex, and CrewAI. The framework you pick shapes your compliance surface before you write a line of code.",
+      "description": "An evidence-qualified scan of five AI frameworks, with context for interpreting Regula's findings.",
       "image": "https://getregula.com/assets/og-image.png",
       "datePublished": "2026-04-25T00:00:00+00:00",
-      "dateModified": "2026-04-25T00:00:00+00:00",
+      "dateModified": "2026-08-26T00:00:00+00:00",
       "author": {
         "@type": "Person",
         "name": "Regula maintainers",
@@ -306,7 +306,7 @@
 
         <p>We didn&rsquo;t expect the differences to be this stark.</p>
 
-        <h3>HuggingFace Transformers: cybersecurity surface (65% AI security)</h3>
+        <h3>HuggingFace Transformers: cybersecurity surface</h3>
 
         <p>113 of <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">175 findings</a> are AI security patterns. Transformers loads, saves, and converts models across dozens of formats. That means deserialization code paths and model weight handling, which trigger Article 15&rsquo;s cybersecurity requirements if the system qualifies as high-risk.</p>
 
@@ -314,7 +314,7 @@
 
         <p>If you are building on Transformers, the scan suggests reviewing model integrity, deserialisation, and provenance. It does not establish that cybersecurity is the project's main legal concern.</p>
 
-        <h3>CrewAI: human oversight surface (72% agent autonomy)</h3>
+        <h3>CrewAI: human oversight surface</h3>
 
         <p>56 of <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">78 findings</a> are agent autonomy patterns. CrewAI&rsquo;s entire purpose is to let AI agents take actions, and the scan reflects that: LLM output flowing to tool execution, task delegation between agents, autonomous decision loops.</p>
 
@@ -322,7 +322,7 @@
 
         <p>CrewAI provides some of these primitives (human input steps, callbacks). The scan can&rsquo;t tell whether your specific pipeline actually uses them. That&rsquo;s on you.</p>
 
-        <h3>PyTorch: high-risk surface (41% high-risk, 57% AI security)</h3>
+        <h3>PyTorch: deployment-context and cybersecurity surface</h3>
 
         <p><a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">93 findings</a>, split between AI security (53) and high-risk (38). PyTorch&rsquo;s 38 high-risk findings are the highest of any framework, which makes sense: it&rsquo;s the infrastructure behind computer vision, speech processing, and classification systems that regularly land in Annex III high-risk categories.</p>
 
