@@ -138,7 +138,9 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: linear-gradient(135deg, #3b82f6, #7c3aed);
+            /* White on the former #3b82f6 stop was 3.68:1. Both current
+               stops clear WCAG 2.2 AA for normal text. */
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
             color: #fff;
             padding: 14px 28px;
             border-radius: 999px;
@@ -150,7 +152,7 @@
             transition: transform 0.1s, box-shadow 0.15s;
         }
         .cta-pill:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(59,130,246,0.35); }
-        .cta-pill.copied { background: linear-gradient(135deg, #059669, #047857); }
+        .cta-pill.copied { background: linear-gradient(135deg, #047857, #065f46); }
         .cta-secondary {
             margin-top: 14px;
             font-size: 13px;

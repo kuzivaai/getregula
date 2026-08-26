@@ -7202,8 +7202,13 @@ def test_synthetic_fixture_precision_recall_matches_artefact():
 # Published precision matches the labelled benchmark
 # ---------------------------------------------------------------------------
 
-def test_published_precision_matches_labels():
-    """The README/benchmark precision number must match labels.json."""
+def test_dated_precision_is_not_a_current_product_claim():
+    """Keep the old arithmetic in its evidence record, not product copy.
+
+    The random-corpus artefact cannot be re-derived from a clean checkout and
+    predates the current detector. A previous guard required README.md to keep
+    publishing it, turning a provenance test into a stale-claim mandate.
+    """
     from pathlib import Path as _P
     root = _P(__file__).parent.parent
     labels_path = root / "benchmarks" / "labels.json"
@@ -7235,11 +7240,16 @@ def test_published_precision_matches_labels():
         f"benchmarks/README.md publishes a precision number that does not match "
         f"{source}. Source says {pct_str}; update the README table or relabel."
     )
-    assert pct_str in main_readme, (
-        f"README.md publishes a precision number that does not match {source}. "
-        f"Source says {pct_str}; update the README table or relabel."
+    assert pct_str not in main_readme, (
+        f"README.md republishes the dated {pct_str} result as current product "
+        "evidence; keep it in benchmarks/README.md with its limitations"
     )
-    print(f"✓ precision: published number {pct_str} matches {source}")
+    from exec_summary import generate_exec_summary
+    assert pct_str not in generate_exec_summary([], "test-project"), (
+        "generated executive summaries must not attach a superseded detector "
+        "measurement to a current scan"
+    )
+    print(f"✓ precision: dated {pct_str} retained only in evidence record")
 
 
 # ---------------------------------------------------------------------------

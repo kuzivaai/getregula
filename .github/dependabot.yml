@@ -1,7 +1,7 @@
 # Regula is stdlib-only at runtime, so the surface area for Dependabot
 # is small by design. What it does watch:
 #
-#   - pyproject.toml dev dependencies (pytest, pyyaml — both dev-only)
+#   - pyproject.toml optional and contributor-test dependencies
 #   - GitHub Actions versions used in .github/workflows/
 #
 # The runtime package installs with zero production dependencies per

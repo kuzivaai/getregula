@@ -5,9 +5,9 @@
 > questions a sceptical buyer, auditor, or compliance officer asks before
 > they will consider running it on their codebase.
 >
-> Every claim below is paired with the **exact shell command** anyone can
-> run to verify it independently. If a claim is not verifiable, it is not
-> in this document.
+> Reproducible claims below are paired with the exact command and scope used
+> to check them. Historical evidence that cannot be independently re-derived
+> is retained only when the missing inputs and resulting limitation are stated.
 
 ---
 
@@ -29,15 +29,16 @@
 ## 1. Who built it and what is it
 
 Regula is an **open-source command-line tool** that combines code scanning
-with governance questionnaires for EU AI Act compliance at the point of
-creation. It is licensed
+with governance questionnaires to produce code-observable indicators and
+review evidence. It is licensed
 under the Apache License 2.0. The full source is on GitHub at
 [github.com/kuzivaai/getregula](https://github.com/kuzivaai/getregula).
 PyPI package: [`regula-ai`](https://pypi.org/project/regula-ai/).
 
-It is **not a SaaS, not a hosted service, not an API**. It runs entirely
-on the developer's machine. No code, no findings, no telemetry leave the
-machine unless the user explicitly opts in to anonymous crash reporting.
+It is **not a SaaS or hosted service**. The CLI and optional local API server
+run on the developer's machine. Core scans do not transmit code or findings;
+timestamping, update/feed checks, configured telemetry, and other explicitly
+network-enabled features are separate opt-in paths.
 
 It is **not a legal opinion**, not a substitute for a Data Protection
 Impact Assessment, not a guarantee of Article 6(3) exemption, and not a
@@ -51,8 +52,8 @@ your lawyer's job, not Regula's.
 
 | Claim | Evidence |
 |---|---|
-| Detects 8 prohibited AI practices (Article 5 of Regulation (EU) 2024/1689) | `regula classify --text "predictive policing system"` |
-| Detects 10 high-risk categories (Annex III + 2 Annex I categories cross-referenced by Article 6(1)) | `regula classify --text "classify_resume function"` |
+| Contains rules intended to surface selected Article 5 prohibited-practice indicators | `regula classify --text "predictive policing system"`; this is one example, not a coverage proof |
+| Contains rules intended to surface selected Annex III and Annex I high-risk indicators | `regula classify --text "classify_resume function"`; intended purpose and deployment context remain unresolved |
 | Maps every finding to specific articles of the EU AI Act | `regula classify --text "credit scoring model" --format json` |
 | Maps every finding to ISO 42001, NIST AI RMF, NIST AI 600-1, NIST CSF 2.0, SOC 2 TSC, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, CRA, ICO/DSIT, LGPD, Marco Legal IA | `cat references/framework_crosswalk.yaml` |
 | Generates Annex IV conformity evidence packs | `regula conform .` |
@@ -69,7 +70,7 @@ your lawyer's job, not Regula's.
 | "100% precision" | Regula is intentionally tuned for recall on Annex III/Article 5. False positives at the INFO tier are documented and quantified — see [the precision/recall report](benchmarks/PRECISION_RECALL_2026_04.md). |
 | "Audits your AI vendor" | Regula sees your code, not the vendor's. It surfaces vendor names and their published GPAI Code of Practice signatory status, nothing more. |
 | "Replaces a DPIA / FRIA / HRIA" | These are organisational processes that involve people, policy, and stakeholder consultation. `regula conform --organisational` provides a structured self-assessment questionnaire for Articles 9/17/27/72, but the output is a self-reported evidence document, not a compliance certificate. A qualified assessor must verify the answers. |
-| "Works on every language" | Python and JS/TS have full AST + cross-file flow. Java/Go/Rust/C/C++ are regex-only. This is documented in [`docs/architecture.md`](architecture.md). |
+| "Works equally well on every language" | Python has the deepest rule set; JS/TS has optional syntax-aware analysis; other supported languages have more limited pattern coverage. Equivalent real-world validity has not been measured. See [`docs/architecture.md`](architecture.md). |
 
 ---
 
@@ -190,13 +191,13 @@ is the human-authored fixture set in `benchmarks/synthetic/fixtures/`.
 > identical 14 fixtures. The divergence previously recorded compared two
 > different gate conditions as well as two paths.
 
-### 3.5 OSS precision benchmark — published, sliced, reproducible
+### 3.5 Dated OSS precision records — limited and not current validation
 
 The full report is at
 [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md).
 
 ```bash
-# Headline precision (blind-labelled random corpus, production code only):
+# Display the tracked v1.7.0 random-corpus score record:
 python3 benchmarks/label.py score --corpus random
 # Expected: 83.5% precision (N=115)
 # Labelled by a single reviewer; no inter-rater agreement measurement
@@ -213,18 +214,18 @@ python3 benchmarks/label.py score
 # Expected: 36.8% precision (N=446)
 ```
 
-**Two corpora, two numbers — both honest, different scopes.** The
-headline precision is **83.5%** (N=115, **measured on Regula v1.7.0**,
+**Two corpora, two dated records with different scopes.** The retired random
+corpus record is **83.5%** (N=115, **measured on Regula v1.7.0**,
 labelled by a **single reviewer** with no inter-rater agreement
 measurement, see [`benchmarks/README.md`](../benchmarks/README.md)),
 on production code from a random corpus of 50 Python AI repos selected
 via GitHub API (pool of 276, random seed 42) and blind-labelled
 (labeller saw only file path, code context, and finding description —
-no project name, README, or purpose). This measures what users see
-with default `--skip-tests` and domain-gating settings.
+no project name, README, or purpose). The measured subset membership and pinned
+repository snapshots are missing, so it cannot be re-derived and does not
+measure the current detector.
 
-> **Version note:** Precision figures are re-measured per release where
-> the corpus permits. Pattern additions in v1.7.1+ (including Article
+> **Version note:** Pattern additions in v1.7.1+ (including Article
 > 5(1)(ba)/(bb) NCII/CSAM detection) are not yet reflected in benchmark
 > numbers. Figures cite the Regula version they were measured on. Per-tier:
 `ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%),
@@ -239,10 +240,8 @@ rounded values from the N=115 published benchmark recorded in
 The development corpus (`python3 benchmarks/label.py score`, no flags)
 scores **36.8%** on 446 entries across 5 AI library projects and 12
 application projects. The library subset (scikit-learn, langchain,
-pydantic-ai, instructor, openai-python) alone is 15.2% — AI framework
-infrastructure code is the hardest corpus, analogous to running an SQL
-injection scanner on psycopg2 itself. Discovering this 36.8% figure is
-not a contradiction of the 83.5% headline (N=115, single reviewer, see
+pydantic-ai, instructor, openai-python) alone is 15.2%. The 36.8% figure is
+not directly comparable with the retired 83.5% record (N=115, single reviewer, see
 [`benchmarks/README.md`](../benchmarks/README.md)) — it is a different corpus
 measuring a different thing.
 
@@ -264,9 +263,13 @@ Source: `benchmarks/results/random_corpus/METHODOLOGY.json`, regenerated by `ben
 
 Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
-### 3.5 Known limitations
+### 3.5a Known limitations
 
-- **TypeScript precision is 0% on the current benchmark** (0 TP, 6 FP). All six TypeScript false positives are domain-keyword matches in code where no AI inference occurs. Regula has no TypeScript-specific AST gating, so TypeScript findings should be treated as advisory. Source: [`benchmarks/results/random_corpus/METHODOLOGY.json`](../benchmarks/results/random_corpus/METHODOLOGY.json).
+- **TypeScript validity is unmeasured.** A dated six-finding development slice
+  contained 0 TP and 6 FP. That tiny selected slice is a warning signal, not a
+  current or generalisable precision rate. TypeScript findings should be
+  treated as advisory. Source:
+  [`benchmarks/results/random_corpus/METHODOLOGY.json`](../benchmarks/results/random_corpus/METHODOLOGY.json).
 - **Library source code** has 15.2% precision on the measured library corpus, compared with 66.1% for measured application code. AI frameworks implement APIs that the patterns flag, so use `--scope production` and `--skip-tests` to focus on application code. Source: [`benchmarks/results/random_corpus/METHODOLOGY.json`](../benchmarks/results/random_corpus/METHODOLOGY.json).
 
 ### 3.6 Security posture — bandit, semgrep, pip-audit

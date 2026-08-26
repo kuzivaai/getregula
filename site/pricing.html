@@ -115,7 +115,9 @@
             top: calc(-1 * var(--s3));
             left: 50%;
             transform: translateX(-50%);
-            background: var(--accent);
+            /* White on --accent is 3.68:1. The smaller badge text requires
+               4.5:1; --action provides 5.17:1. */
+            background: var(--action);
             color: #fff;
             font-family: var(--font-mono);
             font-size: 11px;

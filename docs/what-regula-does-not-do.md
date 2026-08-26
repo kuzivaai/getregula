@@ -19,22 +19,22 @@ questionnaire layer (`regula conform --organisational`, `regula assess`,
 organisational obligations code cannot verify — but the output is
 self-reported evidence, not a compliance certificate.
 
-## Articles Regula can partially or fully address from code
+## Articles where code can provide limited review evidence
 
 These are the obligations where static analysis of source files
 produces useful signal:
 
-| Article | Obligation | What Regula checks | Confidence |
+| Article | Obligation | What Regula checks | Evidence limit |
 |---|---|---|---|
-| **Art. 5** | Prohibited practices | Pattern-detects social scoring, subliminal manipulation, real-time biometric identification, emotion inference in workplaces. Human review required for intent. | High for pattern match; legal determination is human |
-| **Art. 10** | Data governance | Training-data file references, dataset-loading patterns, documented data sources | Medium — detects presence/absence, not quality |
+| **Art. 5** | Prohibited practices | Pattern-detects social scoring, subliminal manipulation, real-time biometric identification, emotion inference in workplaces. Human review required for intent. | Rule matches and synthetic fixtures only; real-world error is not independently measured |
+| **Art. 10** | Data governance | Training-data file references, dataset-loading patterns, documented data sources | Detects limited code evidence, not data quality or governance operation |
 | **Art. 11 + Annex IV** | Technical documentation | Generates a pre-filled Annex IV template from scan findings and dependency graph (`regula conform`) | Scaffold only — human must complete |
-| **Art. 12** | Event logging | Static: detects logging calls near AI model invocations. Runtime: `regula monitor` SDK instruments LLM calls with hash-chained JSONL logs (model, tokens, latency, oversight status). | Medium — static detects presence; runtime SDK provides structured logging but is self-attesting |
-| **Art. 13** | Transparency | User-facing AI disclosure strings, consent flows, Art. 50 markers | Medium |
-| **Art. 14** | Human oversight | Cross-file flow analysis for review-before-action gates (`regula oversight`) | High for pattern match; design determination is human |
-| **Art. 15** | Accuracy, robustness, cybersecurity | Error handling around model calls, input validation, known unsafe serialisation (`pickle`, `joblib`) | Medium — detects anti-patterns, not robustness |
+| **Art. 12** | Event logging | Static: detects logging calls near AI model invocations. Runtime: `regula monitor` SDK instruments LLM calls with hash-chained JSONL logs (model, tokens, latency, oversight status). | Static presence only; runtime records are structured but self-attesting |
+| **Art. 13** | Transparency | User-facing AI disclosure strings, consent flows, Art. 50 markers | Presence or absence of recognised strings and flows; not user comprehension or legal sufficiency |
+| **Art. 14** | Human oversight | Cross-file flow analysis for review-before-action gates (`regula oversight`) | Recognised flow patterns only; cannot establish that review is effective, timely, or meaningful |
+| **Art. 15** | Accuracy, robustness, cybersecurity | Error handling around model calls, input validation, known unsafe serialisation (`pickle`, `joblib`) | Detects selected implementation signals and anti-patterns, not actual accuracy or robustness |
 | **Art. 49 + Annex VIII** | EU database registration | Generates a pre-filled registration packet from scan findings (`regula register`) | Scaffold only — human must submit |
-| **Art. 51–55** | GPAI obligations | Detects GPAI model usage, extracts provenance into an AI-BOM (`regula sbom --ai-bom`) | Medium |
+| **Art. 51–55** | GPAI obligations | Detects recognised GPAI model usage, extracts observed dependency metadata into an AI-BOM (`regula sbom --ai-bom`) | Dependency and code observations only; provider status and obligations require contextual review |
 | **Art. 99** | Penalties reference | Surfaces the fine tiers in reports; does not determine liability | Reference only |
 
 ## Articles Regula cannot address at all
@@ -112,8 +112,6 @@ documented reliability issues (Blodgett et al., ACL 2021), both
 benchmarks are US-centric and English-only, and bundled samples are
 curated subsets of the full datasets.
 
-Enterprise tools (IBM watsonx.governance, Fiddler AI, Arthur AI) do
-production fairness measurement on deployed models with real data.
 Regula's bias command is a starting point, not a compliance artefact.
 
 ### Documentation generation (`regula conform`, `regula docs`, `regula model-card`)
@@ -173,20 +171,6 @@ For a production compliance programme you will need all of:
 
 Regula is only the last item on that list.
 
-## Industry validation
-
-McKinsey's April 2026 [AI Transformation Manifesto](https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-ai-transformation-manifesto)
-(Singla, Sukharevsky, Lamarre, Smaje & Levin) independently validates
-this scope boundary: adoption fails when adjacent processes are left
-unchanged. A code scanner that detects risk patterns cannot verify that
-an organisation has acted on those findings.
-
-This is exactly why code scanning alone does not create compliance.
-Regula reads your code. Your organisation must still operate the risk
-management system, quality management system, post-market monitoring,
-and fundamental-rights impact assessment that the code scanning
-cannot verify.
-
 ## Why this document exists
 
 Because the first rule of this project is honesty about capability.
@@ -203,5 +187,5 @@ issue and tell us which sentence is wrong.
 
 ---
 
-*Last reviewed: 2026-04-24. Canonical version lives in the repository
+*Last reviewed: 2026-08-26. Canonical version lives in the repository
 at [docs/what-regula-does-not-do.md](https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md).*

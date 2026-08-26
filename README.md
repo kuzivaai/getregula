@@ -256,7 +256,10 @@ Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questio
 
 **Regula is:**
 
-- A development-time compliance tool that combines static code analysis with governance questionnaires, mapping both to obligations across 3 jurisdictions (EU AI Act, South Korea AI Basic Act, Colorado SB 26-189)
+- A development-time evidence and triage tool that combines static code
+  analysis with governance questionnaires, mapping observations and declared
+  facts to possible obligations across 3 jurisdictions (EU AI Act, South
+  Korea AI Basic Act, Colorado SB 26-189)
 - A shift-left code-indicator scanner -- like ESLint for governance review, running in your terminal or CI/CD pipeline
 - A questionnaire-based assessment tool for organisational obligations that code patterns cannot verify (Articles 9, 17, 27, 72)
 - Pattern-based risk indication across 3 jurisdictions, not a legal compliance certificate
@@ -306,8 +309,17 @@ documentation, not a production fairness monitor :  see "What Regula is
 Regula performs **pattern-based risk indication**, not legal risk classification.
 
 - The EU AI Act classifies risk based on intended purpose and deployment context (Article 6), not code patterns. Regula's findings are indicators that warrant human review.
-- **False positives will occur.** Blind-labelled benchmark on 50 randomly selected Python AI repos measured **83.5% precision on production code** (N=115, measured on v1.7.0, labelled by a single reviewer with no inter-rater agreement measurement). Per-tier: `ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%), `minimal_risk` (100%). The `high_risk` tier (33%, N=6) is statistically unmeasurable at this sample size. Full methodology, corpus selection, and reproduction steps: [`benchmarks/README.md`](benchmarks/README.md).
-- **TypeScript findings are advisory:** 0% precision on the current benchmark (6 FP, 0 TP). Language-specific AST gating is not yet implemented for TypeScript.
+- **False positives will occur.** Regula has no current, independently
+  labelled real-world precision estimate. Its development corpora are
+  single-reviewer records, and the older random-corpus result cannot be
+  re-derived from a clean checkout because its measured subset and pinned
+  source snapshots were not preserved. The arithmetic, limitations, and
+  superseded measurement remain available as a dated research record in
+  [`benchmarks/README.md`](benchmarks/README.md); they are not evidence of the
+  current detector's accuracy.
+- **TypeScript findings are advisory:** current real-world precision is
+  unmeasured. A dated six-finding development slice contained six false
+  positives, which is a warning signal rather than a dependable rate.
 - **False negatives will occur.** Novel risk patterns not in the database will be missed.
 - Article 5 prohibitions have conditions and exceptions that require human judgment.
 - The audit trail is self-attesting (locally verifiable, not externally witnessed).

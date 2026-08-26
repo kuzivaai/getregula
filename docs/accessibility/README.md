@@ -2,7 +2,7 @@
 
 **Target:** WCAG 2.2 Level AA<br>
 **Conformance status:** not claimed<br>
-**Last completed automated audit:** 25 August 2026, 51 canonical pages at
+**Last completed automated audit:** 26 August 2026, 51 canonical pages at
 desktop and mobile widths (102 runs), zero axe violations<br>
 **Incomplete automated checks:** 65 across 65 runs; these require manual review
 and are not counted as passes<br>
@@ -71,7 +71,7 @@ approximations.
 
 ## Automated accessibility audit
 
-The audit completed on 25 August 2026 covered all 51 discovered canonical
+The audit completed on 26 August 2026 covered all 51 discovered canonical
 pages at 1400×900 and 390×844 (102 runs). It reported zero axe violations for
 the `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, and `wcag22aa` tags. Axe also
 returned 65 incomplete checks across 65 runs. Those require human review and
@@ -80,7 +80,25 @@ are not counted as passes.
 The audit runner now discovers every canonical HTML page under `site/` on each
 run. It excludes only redirect stubs and verbatim generated report examples.
 It exits unsuccessfully for page-load errors or detected violations, preventing
-a partial audit from appearing green.
+a partial audit from appearing green. For every incomplete rule it preserves
+every target, the relevant HTML and axe's failure summary; an earlier report
+kept only the count, which made the required manual review unauditable.
+
+Every incomplete result was `color-contrast`. Axe could not decide because of
+gradients, partially obscured or overlapping elements, pseudo-elements,
+non-text symbols, or very short text. Manual contrast calculation found and
+fixed three genuine AA defects that the automated result left unresolved:
+
+- the 13px decision-tree number changed from 4.13:1 to 5.97:1;
+- the 11px pricing badge changed from 3.68:1 to 5.17:1; and
+- the UAE action button's failing 3.68:1 blue stop and its light-green state
+  were replaced with gradient stops that exceed 4.5:1 against white.
+
+Shared navigation, callout, tracker and audience-card colours were calculated
+against their worst declared composite backgrounds and met the applicable
+threshold in the checked states. The remaining overlap and effective-background
+cases stay in the manual review population; zero automated violations plus
+these targeted calculations is still not a WCAG conformance result.
 
 Run it with:
 
@@ -152,9 +170,9 @@ still required.
 
 | Evidence | Current status | What it supports | What it cannot support |
 |---|---|---|---|
-| Axe audit, 4 August 2026 | 42 canonical pages, zero detected violations; 16 incomplete checks on 13 pages | Current automated rules on the discovered canonical surface | Manual criteria or WCAG conformance |
+| Axe audit, 26 August 2026 | 51 canonical pages × 2 viewports, zero detected violations; 65 incomplete checks on 65 runs; complete incomplete-node evidence retained | Current automated rules on the discovered canonical surface | Manual criteria or WCAG conformance |
 | Dynamic axe discovery | Implemented and exercised | Canonical-page selection and failing exit status | Manual criteria or user experience |
-| Keyboard browser review | Pending | Operability and visible state on tested paths | Screen-reader experience |
+| Limited keyboard browser review | Homepage menu/error/result and full assessment primary/unknown paths exercised at desktop and mobile widths | Operability, focus and visible state on those tested paths | Screen-reader experience, other paths or representative-user success |
 | Screen-reader review | Pending | Named assistive-technology behavior | All users and configurations |
 | Moderated usability testing | Pending | Task success and observed failure modes for its sample | Population-wide certainty |
 | CrUX field data | Not established | Real-user Core Web Vitals when available | Low-traffic pages without sufficient data |

@@ -171,7 +171,10 @@
             font-family: var(--font-mono);
             font-size: 13px;
             font-weight: 600;
-            color: var(--accent);
+            /* The translucent circular fill prevents axe from resolving this
+               automatically. --accent was 4.13:1 at the darkest measured
+               composite; --accent-hover is 5.97:1 and clears normal-text AA. */
+            color: var(--accent-hover);
             background: rgba(59,130,246,0.1);
             width: 32px; height: 32px;
             border-radius: 50%;

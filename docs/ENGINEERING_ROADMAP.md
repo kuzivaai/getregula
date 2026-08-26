@@ -54,4 +54,7 @@ of a finding is not clearance.
 - Performance on large monorepositories under cold and warm cache conditions.
 
 The source appraisal and resulting implementation decisions are recorded in
-[`RESEARCH_BASIS_2026-08-25.md`](RESEARCH_BASIS_2026-08-25.md).
+[`RESEARCH_BASIS_2026-08-25.md`](RESEARCH_BASIS_2026-08-25.md). The 26 August
+validity, UX and engineering re-audit is in
+[`VALIDITY_UX_ENGINEERING_AUDIT_2026-08-26.md`](VALIDITY_UX_ENGINEERING_AUDIT_2026-08-26.md),
+with controlled test-speed evidence in [`PERF_REPORT.md`](../PERF_REPORT.md).

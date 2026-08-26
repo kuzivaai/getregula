@@ -305,9 +305,13 @@ Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, AI
 
 Regula maps findings to 13 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, OWASP Top 10 for Agentic Applications, MITRE ATLAS, LGPD (Brazil), Marco Legal da IA (Brazil), EU Cyber Resilience Act, and UK ICO AI Guidance. Framework mappings appear in check findings and gap assessments automatically.
 
-### Real-World Validation Benchmark
+### Development-corpus measurement utility
 
-Measure Regula's precision and recall against real codebases. Outputs CSV for manual labelling, then calculates metrics from labelled data.
+Export findings from selected codebases for manual labelling, then calculate
+precision over those labelled findings. This does not establish real-world
+validity by itself. Recall requires an exhaustively labelled population that
+includes misses; the current labelled findings cannot supply it and report
+recall as `null`.
 
 ```bash
 regula benchmark --project /path/to/project                    # Scan
@@ -315,14 +319,15 @@ regula benchmark --project /path/to/project -f csv -o out.csv  # CSV for labelli
 regula benchmark --metrics labelled.csv                        # Precision/recall
 ```
 
-**Self-benchmark precision (labels 2026-04-01, re-validated 2026-04-07).**
+**Dated maintainer-labelled record (labels 2026-04-01, checked 2026-04-07).**
 
 > **Re-validation result.** The labelled corpus was generated on
 > 2026-04-01. Pattern files have been modified six times since. A full
 > rescan on 2026-04-07 found that **252 of 257 labels (98%)** still
 > match current scan output, and precision on that matched subset is
-> **15.1%** — within 0.1pp of the published number. The 15.2% below
-> stands as a current measurement *on the labelled findings*. Note: the
+> **15.1%** — within 0.1pp of the recorded number. The 15.2% below is
+> arithmetic over the dated labelled findings, not an estimate of current
+> detector performance. Note: the
 > rescan also produced 3,927 new findings that have no labels yet — the
 > published number covers ~6% of what the scanner currently emits, and
 > a comprehensive precision figure requires labelling that delta. That
@@ -369,7 +374,10 @@ Sample run on `Linux-6.6.87.2-microsoft-standard-WSL2-x86_64` (Python 3.12.3, Re
 | [openai/openai-python](https://github.com/openai/openai-python) | `58184ad545ee` | 1,218 | 404 | 5.76s | 211.5 |
 | [encode/httpx](https://github.com/encode/httpx) | `b5addb64f016` | 60 | 8 | 0.57s | 105.1 |
 
-Numbers are from a single run on one machine. Re-run the script on your own hardware before citing them. No precision/recall claims are made — see the validation benchmark above for accuracy measurement.
+Numbers are from a single run on one machine. Re-run the script on your own
+hardware before citing them. No precision/recall claims are made — see the
+development-corpus section above for the limits of the available detector
+measurements.
 
 ### Inline Suppression
 

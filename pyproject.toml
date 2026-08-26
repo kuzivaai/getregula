@@ -31,15 +31,28 @@ classifiers = [
 [project.optional-dependencies]
 yaml = ["pyyaml~=6.0"]
 ast = ["tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23"]
-# pytest pinned to the 9.x major (current stable). Dev-only extra —
-# contributors install this, end users never do. CI installs latest
-# pytest, which resolves to 9.x under this constraint.
+# Complete contributor/CI test environment. This remains a dev-only extra —
+# end users never install it and the packaged core remains stdlib-only.
+# pytest-xdist is used only to distribute the unchanged pytest collection;
+# CI also keeps one complete sequential run to expose order/shared-state bugs.
 # jsonschema backs tests/test_delta_log_schema.py, which validates the delta
 # log against its JSON Schema and deliberately fails rather than skips when the
 # library is absent (a schema test that quietly does nothing is a blank gate).
-# It was undeclared here and in CI, so the suite passed only on interpreters
-# that happened to have it installed globally.
-test = ["pytest~=9.0", "jsonschema~=4.0"]
+# The optional feature libraries below are present here so a documented
+# `uv sync --extra test --locked` exercises YAML, syntax-aware JS/TS, signing,
+# timestamping and telemetry privacy paths instead of silently skipping them.
+test = [
+    "pytest~=9.0",
+    "pytest-xdist~=3.8",
+    "jsonschema~=4.0",
+    "pyyaml~=6.0",
+    "tree-sitter~=0.23",
+    "tree-sitter-javascript~=0.23",
+    "tree-sitter-typescript~=0.23",
+    "cryptography>=50.0.0,<51",
+    "asn1crypto>=1.5.1,<2",
+    "sentry-sdk~=2.8",
+]
 # weasyprint bounded across 7 majors (62-69). The lower bound stays at 62
 # because that is the oldest major the PDF rendering has been validated
 # against; the upper bound tracks dependabot's tested bumps (<69 at commit

@@ -9,7 +9,7 @@ Regula's detection engine is a static analysis system that reports source-code i
 | Field | Value |
 |---|---|
 | Name | Regula Detection Engine |
-| Version | 2.0.0 (this doc updated 2026-08-19) |
+| Version | 2.0.0 (this doc updated 2026-08-26) |
 | Type | Rule-based detector plus a separate evidence-gated legal decision kernel |
 | Training data | None — not a machine learning model |
 | Detection patterns | 419 tiered risk regexes across 57 categories (10 prohibited + 18 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Includes housing (Colorado SB 26-189), transportation (Korea AI Basic Act Art 33), and emotion inference split categories. Regenerate with `python3 scripts/site_facts.py`. |
@@ -110,18 +110,24 @@ Not all 8 supported languages are equally well-covered:
 
 | Language | Pattern depth | Notes |
 |---|---|---|
-| Python | Deep | Most patterns were developed against Python codebases. Highest recall. |
-| JavaScript/TypeScript | Moderate | Good coverage for common AI frameworks (TensorFlow.js, OpenAI SDK). |
-| Java | Moderate | Covers Spring AI, DL4J, and common ML library imports. |
-| Go | Basic | Covers common Go AI library imports. Fewer domain-specific patterns. |
-| Rust | Basic | Covers tch-rs, candle, burn. Limited ecosystem coverage. |
-| C/C++ | Basic | Covers TensorFlow C API, ONNX Runtime. Limited pattern set. |
+| Python | Most developed | Most rules and the available labelled development records are Python-focused; current real-world recall is unknown. |
+| JavaScript/TypeScript | Intermediate | Recognises common frameworks and has an optional syntax-aware path; current real-world precision and recall are unknown. |
+| Java | Limited | Recognises selected framework imports and patterns; detector validity is unmeasured. |
+| Go | Limited | Recognises selected library imports and patterns; detector validity is unmeasured. |
+| Rust | Limited | Recognises selected library imports and patterns; detector validity is unmeasured. |
+| C/C++ | Limited | Recognises selected library imports and patterns; detector validity is unmeasured. |
 
 A Python project will receive more granular findings than an equivalent Rust project. This is a known bias in the pattern set, not a language limitation.
 
-### Precision baseline
+### Retired v1.7.0 precision record
 
-Published benchmark against 50 randomly selected Python AI repos (from 276 candidates, random seed 42), **N=115**, blind-labelled by a **single reviewer** with no inter-rater agreement measurement (labeller saw only file path, code context, and finding description; see [`benchmarks/README.md`](../benchmarks/README.md)). Production code only (default `--skip-tests` settings):
+Regula has no current independent real-world precision estimate. The table
+below preserves a dated v1.7.0 record rather than presenting it as a baseline
+for v2.0.0. It used 50 randomly selected Python AI repositories (from 276
+candidates, seed 42), an N=115 production subset, and one blind reviewer with
+no inter-rater agreement measurement. The measured subset and pinned source
+snapshots were not preserved, so the result cannot be re-derived from a clean
+checkout. See [`benchmarks/README.md`](../benchmarks/README.md).
 
 | Tier | TP | FP | Precision |
 |---|---:|---:|---:|
@@ -133,18 +139,17 @@ Published benchmark against 50 randomly selected Python AI repos (from 276 candi
 | **Overall** | **96** | **19** | **83.5%** |
 Source: [`benchmarks/README.md`](../benchmarks/README.md). N=115, single reviewer, no inter-rater agreement measurement.
 
-**Improvement from v1.7.4:** Domain-gated high-risk findings, LLM import
-gating, and justice opt-in reduced FP from 42 to 19 on the same labelled
-corpus, improving production precision from 70.0% to 83.5%. 3 borderline
-ai_security TPs were lost (LLM02 findings in files without LLM library imports).
-Both figures are from the same N=115 corpus recorded in [`benchmarks/README.md`](../benchmarks/README.md).
+Within that v1.7.0 analysis, domain-gated high-risk findings, LLM import
+gating, and justice opt-in changed the recorded false-positive count from 42
+to 19 and lost three borderline `ai_security` true-positive labels. This is a
+historical within-corpus comparison, not evidence about v2.0.0.
 
 The `high_risk` tier (33%) remains weakest — 6 subcategories (`critical_infrastructure`,
 `safety_components`, `worker_management`, `democratic_processes`, `justice`,
 `essential_services`) now require `--domain` declaration or import fingerprinting to fire. Including test
 code drops overall precision to 60.6%. Both figures are recorded in [`benchmarks/README.md`](../benchmarks/README.md); note that 33% rests on N=6 and is not statistically meaningful at that sample size.
 
-Full methodology and reproduction steps: `benchmarks/README.md`
+Available methodology and the reproducibility gap: `benchmarks/README.md`.
 
 ---
 
@@ -206,11 +211,17 @@ Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scri
 
 257 findings hand-labelled across 5 mature open-source AI libraries (instructor, pydantic-ai, langchain, scikit-learn, openai-python). Each finding manually classified as TP or FP. Labels committed at `benchmarks/labels.json`. This corpus was used during development to tune patterns and is **not** the headline precision number — library code is mostly infrastructure, producing 15.2% precision at the `minimal_risk` tier.
 
-### Random corpus (headline precision measurement)
+### Random corpus (retired dated measurement)
 
 50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.0. 201 findings stratified-sampled and blind-labelled by a **single reviewer** (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
 
-**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.0). **Labelled by one reviewer; no inter-rater agreement measurement exists.** Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`; labelling limits: [`benchmarks/README.md`](../benchmarks/README.md) (the only repo-wide disclosure of the single-reviewer basis).
+**Recorded result:** 83.5% precision on the N=115 production subset for
+Regula v1.7.0. One reviewer supplied the labels and no inter-rater agreement
+measurement exists. The subset membership and pinned repository snapshots are
+not tracked, so this is neither re-runnable nor evidence of current detector
+accuracy. Full available methodology:
+`benchmarks/results/random_corpus/METHODOLOGY.json`; limitations:
+[`benchmarks/README.md`](../benchmarks/README.md).
 
 ### Continuous validation
 
@@ -231,4 +242,4 @@ This model card describes Regula v2.0.0. If the detection patterns, classificati
 
 ---
 
-*Last updated: 12 August 2026.*
+*Last updated: 26 August 2026.*

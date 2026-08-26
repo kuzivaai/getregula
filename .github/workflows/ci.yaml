@@ -14,6 +14,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      # A failure on one interpreter must not cancel evidence from the others.
+      fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
@@ -23,15 +25,49 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install pyyaml "pytest~=9.0" "jsonschema~=4.0" "cryptography>=50.0.0,<51" "asn1crypto>=1.5.1,<2"
-      - name: Custom test runner (manual list — asserts every test is registered)
-        run: python3 tests/test_classification.py
-      - name: pytest discovery (catches anything not in the manual list)
-        run: pytest tests/ -q --durations=50 --durations-min=0.1
+      - run: pip install ".[test]"
+      - name: Complete pytest collection (two workers, no test selection)
+        # Two local repetitions on the complete current collection cut
+        # wall time by ~49% without changing the pass/skip counts. Four workers
+        # saved only ~8 more seconds while using ~70% more CPU and slowing the
+        # repository-wide scans through contention. A complete sequential run
+        # remains below to retain order/shared-state evidence.
+        run: pytest tests/ -q -n 2 --dist worksteal --durations=50 --durations-min=0.1
       - name: Built-in self-test
         run: python3 -m scripts.cli self-test
       - name: Doctor health checks
         run: python3 -m scripts.cli doctor
+
+  sequential-order-audit:
+    name: Complete sequential pytest (order and shared-state audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - run: pip install ".[test]"
+      - name: Complete pytest collection in the default sequential order
+        run: pytest tests/ -q --durations=50 --durations-min=0.1
+
+  custom-runner-audit:
+    name: Custom runner and product-contract audits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - run: pip install ".[test]"
+      - name: Complete alternate custom runner
+        # Pytest already exercises these assertions on every interpreter. This
+        # one run verifies the separate zero-argument harness itself without
+        # repeating the same subset four times.
+        run: python3 tests/test_classification.py
       - name: Security self-check (blocks unexpected findings in Regula's own source)
         run: python3 -m scripts.cli security-self-check
       - name: Quoted regulatory passages are verbatim
@@ -43,7 +79,7 @@ jobs:
       - name: Published CLI transcripts reproduce
         # Nine tracked surfaces published a `Verdict:` line as CLI output while
         # no command emitted `Verdict:` at all, and two guides published a
-        # per-article `Overall score: NN%` from a formatter no CLI path
+        # a retired per-article percentage line from a formatter no CLI path
         # reaches. Both asserted conclusions the tool does not make. This runs
         # the command each page documents and compares.
         run: python3 scripts/verify_transcripts.py

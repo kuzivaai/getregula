@@ -96,6 +96,21 @@ const VIEWPORTS = [
         violationRules: axe.violations.map(v => ({ id: v.id, impact: v.impact, description: v.description, nodes: v.nodes.length, sampleTargets: v.nodes.slice(0,2).map(n=>n.target.join(' ')) })),
         passes: axe.passes.length,
         incomplete: axe.incomplete.length,
+        // "Incomplete" means axe could not decide automatically and a human
+        // must inspect the named target. Keeping only the count made a green
+        // report impossible to audit: 51 mobile runs each reported one
+        // incomplete rule, but the committed shape discarded which rule it
+        // was and where it occurred.
+        incompleteRules: axe.incomplete.map(v => ({
+          id: v.id,
+          impact: v.impact,
+          description: v.description,
+          nodes: v.nodes.map(n => ({
+            target: n.target.join(' '),
+            html: n.html,
+            failureSummary: n.failureSummary,
+          })),
+        })),
       });
     } catch (e) { results.push({ page: p, viewport: vp.name, error: e.message }); }
     await ctx.close();
