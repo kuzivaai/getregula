@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <title>EU AI Act for Recruitment and Hiring AI: Developer Guide | Regula</title>
+    <meta name="description" content="Recruitment AI is high-risk under Annex III Category 4. What code patterns trigger classification, what Articles 9-15 require, and how to scan your code.">
+    <meta name="keywords" content="EU AI Act recruitment, hiring AI compliance, Annex III Category 4, CV screening AI, high-risk AI employment, Articles 9-15, regula check, AI hiring tool regulation">
+    <meta name="author" content="Regula maintainers">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/guides/eu-ai-act-recruitment-hiring.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/guides/eu-ai-act-recruitment-hiring.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/guides/eu-ai-act-recruitment-hiring.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/guides/eu-ai-act-recruitment-hiring.html">
+    <meta property="og:title" content="EU AI Act for Recruitment and Hiring AI: What Developers Need">
+    <meta property="og:description" content="Recruitment AI is high-risk under Annex III Category 4. What code patterns trigger classification, what Articles 9-15 require, and how to scan your code.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula - EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Recruitment AI">
+    <meta property="article:tag" content="Annex III">
+    <meta property="article:tag" content="High-Risk AI">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act for Recruitment and Hiring AI: What Developers Need">
+    <meta name="twitter:description" content="Recruitment AI is high-risk under Annex III Category 4. What code patterns trigger classification, what Articles 9-15 require, and how to scan your code.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="/assets/fonts.min.css"><link rel="stylesheet" href="/assets/site.min.css"></noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "EU AI Act for Recruitment and Hiring AI: What Developers Need",
+      "description": "Recruitment AI is high-risk under Annex III Category 4. What code patterns trigger classification, what Articles 9-15 require, and how to scan your code.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-06-25T00:00:00+00:00",
+      "dateModified": "2026-06-25T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Regula maintainers",
+        "url": "https://getregula.com/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/regula-logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/guides/eu-ai-act-recruitment-hiring.html"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://getregula.com/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Recruitment AI", "item": "https://getregula.com/guides/eu-ai-act-recruitment-hiring.html" }
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my recruitment AI system high-risk under the EU AI Act?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If your software screens CVs, ranks candidates, scores interviews, or automates any part of hiring decisions, it falls under Annex III, Category 4 (point (a)) of the EU AI Act. That category covers AI systems intended for recruitment or selection of natural persons, including placing targeted job advertisements, screening or filtering applications, and evaluating candidates. This makes it high-risk, which means Articles 9 through 15 apply. The compliance deadline is 2 December 2027 under the Digital Omnibus (approved by European Parliament 16 June 2026 and by the Council 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the compliance obligations for high-risk recruitment AI?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "High-risk recruitment AI must comply with Articles 9 through 15 of the EU AI Act. Article 9 requires a risk management system. Article 10 covers data governance, including training data representativeness. Article 11 requires technical documentation following Annex IV. Article 12 mandates record-keeping for every candidate decision. Article 13 requires transparency, meaning candidates must know AI is involved. Article 14 requires human oversight of AI recommendations. Article 15 covers accuracy, robustness, and cybersecurity, including testing for demographic bias."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can Regula check if my recruitment AI complies with the EU AI Act?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Regula can scan your codebase for risk patterns that indicate high-risk classification, generate Annex IV documentation scaffolds, and run a gap analysis against Articles 9-15. It cannot perform actual bias testing on your data, conduct a Fundamental Rights Impact Assessment, or replace operational risk management. For bias testing, Regula provides benchmarks (CrowS-Pairs, BBQ) as a starting point, but testing against your own hiring data is your responsibility."
+          }
+        }
+      ]
+    }
+    </script>
+    <script>
+    </script>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+<main id="main">
+<article>
+
+<div class="blog-hero" style="padding-bottom:24px;">
+    <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Regula maintainers</p>
+    <h1 style="margin:8px 0 16px;">EU AI Act for Recruitment and Hiring AI: What Developers Need</h1>
+    <p class="standfirst" style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">Software intended to screen CVs, rank candidates, score interviews, or automate hiring decisions may follow the high-risk path under Article 6 and Annex III point 4(a): <em>&ldquo;AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates&rdquo;.</em> Intended purpose, Article 6 conditions, and exceptions must be assessed in context.</p>
+</div>
+
+<div class="blog-body">
+
+<h2>Why recruitment AI is high-risk</h2>
+
+<p>Annex III of the <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">EU AI Act (Regulation (EU) 2024/1689)</a> lists eight domains where AI systems are considered high-risk by their intended purpose. Category 4, &ldquo;Employment, workers&rsquo; management and access to self-employment&rdquo; covers the full hiring pipeline: job advertisement targeting, application screening and filtering, candidate evaluation, and interview assessment.</p>
+
+<p>The model type alone does not settle classification. Intended purpose is central, but the complete Article 6 test and Annex III wording still apply. Recruitment-related code is evidence to review, not a legal conclusion by itself.</p>
+
+<p><a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a>, in force since 27 July 2026, sets <strong>2 December 2027</strong> for Annex III high-risk provisions. Whether a recruitment system follows that path depends on the Article 6 test, intended purpose, and the Annex III wording; a code pattern alone does not decide it.</p>
+
+<p>One thing that is already enforceable: Article 5 prohibitions, in force since 2 February 2025. If your recruitment tool uses subliminal manipulation, exploits vulnerabilities, or implements social scoring, that is banned now, not in 2027.</p>
+
+<h2>Code patterns associated with the high-risk path</h2>
+
+<p>Regula scans source code for patterns associated with Annex III use cases. In recruitment software, the patterns it looks for include:</p>
+
+<ul>
+    <li><code>cv_screen</code>, <code>resume_filter</code>, <code>candidate_rank</code>, <code>hiring_decision</code></li>
+    <li>ML model calls (<code>sklearn</code>, <code>transformers</code>, <code>torch</code>) combined with employment-related variable names</li>
+    <li>Functions like <code>score_resume()</code>, <code>classify_resume()</code>, <code>rank_candidates()</code></li>
+    <li>Prompt templates that embed hiring instructions (e.g. &ldquo;score these resumes&rdquo;, &ldquo;rank candidates by fit&rdquo;)</li>
+    <li>Automated decision outputs that feed into application accept/reject flows</li>
+</ul>
+
+<p>Here is what the scan looks like on the bundled example project:</p>
+
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check examples/cv-screening-app --scope all --domain employment
+
+Regula Scan: examples/cv-screening-app
+============================================================
+
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
+
+  Files scanned:      1
+  High-risk:          1
+  BLOCK tier:         0
+  WARN tier:          0
+  INFO tier:          1
+
+  HIGH-RISK INDICATORS:
+    [INFO] [ 43] app.py — Employment and workers management [plan]
+============================================================</code></pre>
+
+<p>Read the two halves separately. The decision block says
+<code>insufficient_information</code>: the tool has not concluded that the Act
+applies, and it names the two facts a person still has to establish before any
+Article 9 to 15 duty can be attached. The detector block is evidence for that
+person, not a finding of law, which is why it is labelled "not legal facts".</p>
+
+<p>The number in brackets is a detector priority, not a probability and not a
+compliance score. 63 places this finding in the WARN band (50 to 79). It counts
+how many patterns matched, so a deliberately small example scores lower than a
+production hiring tool with named entity extraction on CVs, interview scoring
+pipelines and applicant tracking integrations. Earlier versions of this page
+labelled it a confidence percentage, which invited reading a pattern count as a
+likelihood; the tool no longer emits that wording.</p>
+
+<p>The <code>--domain employment</code> flag activates employment-specific patterns that might not fire under the default scan. If you know your system is used for hiring, pass this flag.</p>
+
+<h2>Articles 9-15: what they actually require</h2>
+
+<p>If contextual review establishes that the system is high-risk, Articles 9 through 15 define core requirements. Here is a developer-oriented reading of each one.</p>
+
+<h3>Article 9: Risk management system</h3>
+<p>You need a documented process for identifying and mitigating risks throughout the system lifecycle. For recruitment AI, this means documenting known biases in your training data, testing for discrimination across demographic groups, and defining what happens when the system gets it wrong. This is not a one-off document. It is a living system with identified risks, mitigations, owners, and review cycles.</p>
+
+<h3>Article 10: Data governance</h3>
+<p>Training, validation, and testing data must be relevant, representative, and as free from errors as practicable. For hiring tools, the question is pointed: does your training data reflect the demographics of the candidate pool? If you trained on historical hiring decisions that were themselves biased, Article 10 requires you to identify and address that. You also need documented data management practices covering collection, labelling, cleaning, and enrichment.</p>
+
+<h3>Article 11: Technical documentation (Annex IV)</h3>
+<p>You must produce technical documentation following the Annex IV template before the system is placed on the market. This covers the system description, intended purpose, hardware and software requirements, design choices, training methodology, validation results, and risk management measures. It is thorough. Regula can generate a scaffold for this with <code>regula docs .</code>, but filling in the substance is your job.</p>
+
+<h3>Article 12: Record-keeping</h3>
+<p>The system must automatically log its operations to a degree that allows traceability. For a recruitment AI, this means logging every candidate decision: which candidates were scored, what scores they received, what features contributed to the score, and what action was taken. Think structured audit logs, not just print statements.</p>
+
+<h3>Article 13: Transparency</h3>
+<p>Candidates must be told that AI is being used in their application process. This is not optional, and it is not buried-in-the-terms-of-service transparency. The obligation is to enable deployers (the companies using your tool) to interpret outputs and use the system appropriately. Your documentation needs to cover capabilities, limitations, and the degree of accuracy tested.</p>
+
+<h3>Article 14: Human oversight</h3>
+<p>A human must be able to understand, intervene in, and override the system. For recruitment, this means a person reviews AI-generated rankings or recommendations before they are acted on. A hiring system where the AI output is the final decision, with no human in the loop, does not meet Article 14. The human must have the competence and authority to override.</p>
+
+<h3>Article 15: Accuracy, robustness, and cybersecurity</h3>
+<p>The system must achieve appropriate levels of accuracy for its intended purpose, be resilient to errors and inconsistencies, and be secured against tampering. For hiring AI, the accuracy requirement includes testing for bias across protected characteristics: gender, ethnicity, age, disability. If your model performs differently for different demographic groups, that is an Article 15 problem.</p>
+
+<h2>What Regula covers and what it does not</h2>
+
+<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+<thead>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+    <th style="text-align:left;padding:8px;">Regula can</th>
+    <th style="text-align:left;padding:8px;">Regula cannot</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;">Detect risk patterns in your code that indicate high-risk classification</td>
+    <td style="padding:8px;">Test for actual bias in your hiring data</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;">Generate Annex IV documentation scaffolds</td>
+    <td style="padding:8px;">Conduct a Fundamental Rights Impact Assessment (FRIA)</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;">Run a gap analysis against Articles 9-15</td>
+    <td style="padding:8px;">Implement operational risk management for you</td>
+</tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+    <td style="padding:8px;">Run bias benchmarks (CrowS-Pairs, BBQ) as a starting point</td>
+    <td style="padding:8px;">Replace bias testing on YOUR candidate data</td>
+</tr>
+</tbody>
+</table>
+
+<p>On bias testing specifically: <code>regula bias</code> runs established academic benchmarks (CrowS-Pairs and BBQ) against language models to check for stereotypical associations. This is a useful directional signal. It is not a substitute for testing your model on your actual candidate data with your actual feature set. If your model is a logistic regression on structured features, CrowS-Pairs does not apply at all. Know what you are testing and what you are not.</p>
+
+<h2>Practical walkthrough</h2>
+
+<p>Here is a full workflow for scanning a recruitment AI project. We will use the bundled <code>cv-screening-app</code> example.</p>
+
+<h3>Step 1: Scan for risk indicators</h3>
+
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula check examples/cv-screening-app --domain employment --scope all</code></pre>
+
+<p>This tells you which Annex III category the detected patterns point at. The output above shows Annex III Category 4 as a candidate, alongside the facts that remain unresolved. It is not a determination that the system is high-risk.</p>
+
+<h3>Step 2: Gap analysis against Articles 9-15</h3>
+
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula gap --project examples/cv-screening-app
+
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</code></pre>
+
+<p>Eight article observations are held, not emitted. That is the point of this
+command: until someone establishes that the subject is an AI system and that the
+jurisdiction applies, Regula will not attach Article 9 to 15 evidence to it. An
+earlier version of this page showed a percentage score per article. That output
+no longer exists, and it should not: a percentage against an article reads as a
+compliance measurement, which is a determination Regula does not make.
+<a href="https://github.com/kuzivaai/getregula/tree/main/examples/cv-screening-app">Example source</a>.</p>
+
+<h3>Step 3: Organisational conformity check</h3>
+
+<pre tabindex="0" style="background:var(--bg-elev);padding:16px;border-radius:8px;overflow-x:auto;"><code>$ regula conform --organisational</code></pre>
+
+<p>This is an interactive questionnaire that walks through the organisational requirements: do you have a risk management process, data governance policy, human oversight procedures, and so on. It generates a conformity report you can include in your compliance file.</p>
+
+<h2>What you need to worry about and what you probably do not</h2>
+
+<p><strong>Worry about:</strong> documentation gaps (Article 11 is the most common zero-score), logging (most hiring tools log nothing useful for Article 12), and transparency notices (Article 13 is rarely implemented in code).</p>
+
+<p><strong>Probably do not need to worry about yet:</strong> conformity assessment procedures (those come at deployment, not development), notified body involvement (Annex III systems use self-assessment unless they also fall under Annex I), or post-market monitoring systems (required, but you need a working system first).</p>
+
+<p><strong>Start now regardless of the deadline:</strong> the distance between a codebase with no documented data governance and one that could survive scrutiny is not closed in a sprint. Data governance and technical documentation take months to get right, and retrofitting logging into an existing system is harder than building it in from the start.</p>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Omnibus status:</strong> The dates stated here come from <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj" style="color:var(--text-dim);">Regulation (EU) 2026/1744</a>, published in the Official Journal on 24 July 2026 and in force from 27 July 2026. The earlier provisional agreement is legislative history, not the current legal basis.
+</p>
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Regula maintainers &middot;
+    <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
+    <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+</p>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system under the EU AI Act</a> &mdash; Article 6, risk tiers, and what code scanning can tell you</li>
+        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers in actual code</a> &mdash; What each risk tier looks like in Python with scanner output</li>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to your AI app?</a> &mdash; Decision tree for scope, provider vs deployer, and extraterritorial reach</li>
+        <li><a href="/blog/blog-article-5-prohibited-practices.html">Article 5 prohibited AI practices</a> &mdash; Banned categories, already enforceable, with code examples</li>
+        <li><a href="/about.html">About Regula</a> &mdash; What Regula is, who builds it, and what it does</li>
+    </ul>
+</div>
+
+</div>
+
+</article>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

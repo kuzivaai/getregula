@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>The Omnibus Trilogue Failed: April 2026 Post-Mortem &mdash; Regula</title>
+    <meta name="description" content="The first EU AI Act Omnibus trilogue failed on 28 April 2026; the 7 May follow-up succeeded. High-risk deadlines deferred to 2 December 2027.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta property="og:title" content="The Omnibus Trilogue Failed: April 2026 Post-Mortem — Regula">
+    <meta property="og:description" content="The first EU AI Act Omnibus trilogue failed on 28 April 2026. The follow-up succeeded on 7 May: high-risk deadlines deferred to 2 December 2027, approved by Parliament and Council in June 2026.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog/blog-omnibus-trilogue-failed.html">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-05-02">
+    <meta property="article:author" content="Regula maintainers">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="The Omnibus Trilogue Failed: April 2026 Post-Mortem — Regula">
+    <meta name="twitter:description" content="The first EU AI Act Omnibus trilogue failed on 28 April 2026. The follow-up succeeded on 7 May: high-risk deadlines deferred to 2 December 2027.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+    <link rel="canonical" href="https://getregula.com/blog/blog-omnibus-trilogue-failed.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-omnibus-trilogue-failed.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-omnibus-trilogue-failed.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "The Omnibus Trilogue Failed: April 2026 Post-Mortem — Regula",
+        "description": "The first EU AI Act Omnibus trilogue failed on 28 April 2026. The follow-up succeeded on 7 May: high-risk deadlines deferred to 2 December 2027, approved by Parliament and Council in June 2026.",
+        "url": "https://getregula.com/blog/blog-omnibus-trilogue-failed.html",
+        "datePublished": "2026-05-02",
+        "dateModified": "2026-07-10",
+        "author": {
+            "@type": "Person",
+            "name": "Regula maintainers",
+            "url": "https://getregula.com/about.html"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://getregula.com/assets/regula-logo.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://getregula.com/blog/blog-omnibus-trilogue-failed.html"
+        },
+        "keywords": ["EU AI Act", "Omnibus trilogue", "AI regulation deadline", "high-risk AI systems", "August 2026 deadline", "conformity assessment"]
+    }
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <style>
+        /* Warning box */
+        .warn-box {
+            background: rgba(245,158,11,0.06);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: var(--r-md);
+            padding: var(--s5) var(--s6);
+            margin: var(--s6) 0;
+            font-size: 14px;
+            color: var(--text-2);
+            line-height: 1.65;
+        }
+        .warn-box strong { color: var(--warn); }
+
+        /* Steps list */
+        .action-steps {
+            list-style: none;
+            margin: var(--s6) 0;
+            padding: 0;
+            counter-reset: steps;
+        }
+        .action-steps li {
+            counter-increment: steps;
+            display: flex;
+            gap: var(--s4);
+            padding: var(--s5) 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0;
+        }
+        .action-steps li:last-child { border-bottom: none; }
+        .action-steps li::before {
+            content: counter(steps);
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            flex-shrink: 0;
+            width: 32px;
+            line-height: 1.3;
+        }
+        .action-steps li div { flex: 1; }
+        .action-steps li div strong { color: var(--text); display: block; margin-bottom: 4px; }
+        .action-steps li div p { font-size: 14px; margin-bottom: 0; }
+
+        /* Blog CTA */
+        .blog-cta {
+            margin: var(--s10) 0 var(--s8);
+            text-align: center;
+        }
+        .blog-cta .install-box {
+            display: inline-flex;
+            margin-bottom: var(--s4);
+        }
+        .blog-cta p {
+            font-size: 13px;
+            color: var(--text-faint);
+        }
+
+        @media (max-width: 600px) {
+            .action-steps li { flex-direction: column; gap: var(--s2); }
+            .action-steps li::before { width: auto; }
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getregula.com/blog/writing.html"},
+            {"@type": "ListItem", "position": 3, "name": "Omnibus Trilogue Outcome"}
+        ]
+    }
+    </script>
+    <script>
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<article>
+
+<aside style="background:rgba(16,185,129,0.08);border-left:3px solid #10b981;padding:16px 20px;margin:0 0 16px;border-radius:0 8px 8px 0;">
+  <strong>Editor's note (August 2026):</strong> The follow-up trilogue succeeded on 7 May 2026. Regulation (EU) 2026/1744 entered into force on 27 July 2026, setting 2 December 2027 for Annex III high-risk obligations and 2 August 2028 for Annex I product-embedded systems. The analysis below is retained as a dated account of the 28 April failure.
+  <br><small>Source: <a href="https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/">Council press release, 7 May 2026</a></small>
+</aside>
+
+<div class="blog-hero">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Blog</a> / Omnibus Trilogue Failed
+    </div>
+    <div class="blog-meta">
+        <span>2 May 2026</span>
+        <span class="dot">&middot;</span>
+        <span>4 min read</span>
+        <span class="dot">&middot;</span>
+        <span>The Implementation Layer</span>
+    </div>
+    <h1>The Omnibus Trilogue Failed (April 2026): A Post-Mortem</h1>
+    <p class="standfirst">The first political trilogue ended without agreement on 28 April 2026. The 7 May follow-up succeeded, and Regulation (EU) 2026/1744 later enacted the revised dates. This is an April post-mortem retained for the historical record; the editor's note gives the current position.</p>
+</div>
+
+<div class="blog-sep"></div>
+
+<div class="blog-body">
+
+    <h2>What happened</h2>
+
+    <p>The Cypriot Presidency of the Council convened a political trilogue on the <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-regulation-proposal">Digital Omnibus on AI</a> on 28 April 2026. The session ended without an agreed text after roughly twelve hours of negotiation (<a href="https://www.twobirds.com/en/insights/2026/digital-omnibus-on-ai-trilogue-stalls-ahead-of-the-ai-act-deadline">Bird &amp; Bird</a>).</p>
+
+    <p>Both the European Parliament (which voted 569&ndash;45&ndash;23 on 26 March) and the Council (general approach adopted 13 March) had entered the trilogue with mandates broadly supporting the Commission&rsquo;s proposal to defer high-risk deadlines. The expectation across the regulatory advisory community was that the trilogue would produce a political agreement the same night. It did not.</p>
+
+    <p>At the time, a follow-up trilogue was expected in early-to-mid May 2026. It took place on 7 May and produced agreement; the later enactment is recorded in the editor's note above.</p>
+
+    <h2>Why it failed</h2>
+
+    <p>The sticking point was <strong>conformity assessment architecture for AI embedded in regulated products</strong> &mdash; specifically, whether AI components in products covered by Annex I Section A (machinery, medical devices, civil aviation, etc.) should undergo conformity assessment under existing sectoral legislation or under a new AI Act&ndash;specific procedure (<a href="https://www.twobirds.com/en/insights/2026/digital-omnibus-on-ai-trilogue-stalls-ahead-of-the-ai-act-deadline">Bird &amp; Bird</a>).</p>
+
+    <p>The Parliament favoured deferring to sectoral law: if a medical device already goes through CE marking under the Medical Devices Regulation, the AI component should be assessed as part of that existing process. The Council resisted, arguing that this approach creates gaps where sectoral bodies lack AI-specific competence. The Commission occupied a middle position. Neither side moved enough to close the gap in the available time.</p>
+
+    <p>This is not a cosmetic disagreement. The conformity assessment question determines which notified bodies assess AI risk, which standards apply, and how compliance costs are distributed across supply chains. It was always the hardest open issue in the Omnibus, and it remains unresolved.</p>
+
+    <h2>What this means for the deadline</h2>
+
+    <p><strong>At the time this April account was written</strong>, the original 2 August 2026 date in Article 113 remained the legal position. That statement was superseded when <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32026R1744">Regulation (EU) 2026/1744</a> entered into force on 27 July 2026.</p>
+
+    <p>At the time (late April 2026), several regulatory advisors were recommending that organisations prepare against the original August 2026 deadline. <a href="https://www.modulos.ai/blog/ai-act-omnibus-trilogue-failed/">Modulos</a> and <a href="https://www.twobirds.com/en/insights/2026/digital-omnibus-on-ai-trilogue-stalls-ahead-of-the-ai-act-deadline">Bird &amp; Bird</a> both take this position. Even if the mid-May trilogue succeeds, the remaining legislative steps (legal-linguistic review, formal Council and Parliament adoption, Official Journal publication) take weeks. The margin for the Omnibus to enter into force before 2 August is now extremely thin.</p>
+
+    <div class="warn-box">
+        <strong>Bottom line (as written, late April 2026):</strong> the failure looked likely to leave too little runway for the deferral before 2 August 2026. In the event, the follow-up succeeded and Regulation (EU) 2026/1744 enacted 2 December 2027, so August 2026 is not the operative Annex III date.
+    </div>
+
+    <h2>What to do now</h2>
+
+    <p>Establish your risk classification with <code>regula check .</code>, run a gap assessment against Articles 9–15 with <code>regula gap .</code>, build your documentation scaffolding with <code>regula docs .</code>, and track the next trilogue outcome. Starting the technical documentation and risk management work now buys time on the harder obligations regardless of which deadline ultimately applies.</p>
+
+    <ol class="action-steps">
+        <li>
+            <div>
+                <strong>Establish your risk classification</strong>
+                <p>Run <code>regula check .</code> in your project root. This scans your codebase against 419 risk patterns and returns indicators for human review; it cannot legally classify the AI system because Article 6 classification also depends on intended purpose and deployment context. If your reviewed classification is not high-risk, the deadline question is less urgent &mdash; but Article 5 prohibitions and Article 50 transparency obligations are already in force regardless.</p>
+            </div>
+        </li>
+        <li>
+            <div>
+                <strong>Run a gap assessment against Articles 9&ndash;15</strong>
+                <p>Run <code>regula gap .</code> to see where the evidence sits. It reports a decision of <code>insufficient_information</code> until the applicability facts are settled, names the facts it still needs, and attaches article evidence only where the decision kernel resolved the matching obligation. It does not score you per article and it does not estimate effort, because neither follows from reading code. See our <a href="/blog/blog-omnibus-decision-framework.html">decision framework</a> for how to prioritise across the three compliance tracks.</p>
+            </div>
+        </li>
+        <li>
+            <div>
+                <strong>Build the documentation scaffolding now</strong>
+                <p>Articles 11 and 12 require technical documentation and automatic logging. These take time but are straightforward to start. Run <code>regula docs .</code> to generate an Annex IV documentation template pre-filled from your actual codebase. Starting the documentation now buys you time on the harder obligations (risk management under Article 9, human oversight under Article 14).</p>
+            </div>
+        </li>
+        <li>
+            <div>
+                <strong>Track the next trilogue</strong>
+                <p>The follow-up trilogue subsequently succeeded on 7 May 2026. Regula&rsquo;s <a href="https://github.com/kuzivaai/getregula/tree/main/content/regulations/delta-log">delta log</a> tracks regulatory changes with primary sources. Run <code>regula regwatch</code> to check whether your installed ruleset reflects the latest recorded state.</p>
+            </div>
+        </li>
+    </ol>
+
+    <div class="blog-cta">
+        <div class="install-box" onclick="copyInstall(this)">
+            <span class="dollar">$</span>
+            <span class="cmd">pipx install regula-ai && regula check .</span>
+            <span class="cp">copy</span>
+        </div>
+        <p>Shows your EU AI Act risk classification and compliance gaps.</p>
+    </div>
+
+    <h2>Where Regula fits</h2>
+
+    <p>Regula is a static code scanner that identifies regulatory risk indicators and generates documentation scaffolds. It does not determine legal classification, decide which obligations apply, replace legal advice, or monitor legislation in real time. It provides code-level evidence for contextual review. For historical background on the proposal, see: <a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus Delay: What Developers Actually Need to Know</a>.</p>
+
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
+        <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Regula maintainers &middot;
+        <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+    </p>
+
+    <div class="blog-sep" style="max-width:100%;"></div>
+
+    <div class="warn-box" style="margin-top: var(--s7);">
+        <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions. All regulatory dates cited in this article are sourced from primary EU institutions and named legal analyses; see inline links for each claim.
+    </div>
+
+</div>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-omnibus-delay.html">The EU AI Act Omnibus delay</a> &mdash; Full timeline, deadline table, and risk-tier-specific guidance</li>
+        <li><a href="/blog/blog-omnibus-decision-framework.html">Omnibus decision framework</a> &mdash; Three-track planning approach for deadline uncertainty</li>
+        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Why startups are ignoring the AI Act</a> &mdash; Three triggers that change the calculus for founders</li>
+    </ul>
+    <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
+        <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-omnibus-trilogue-failed.html&t=The%20Omnibus%20Trilogue%20Failed.%20The%20August%202026%20Deadline%20Is%20Back." rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>
+    </p>
+</div>
+
+</article>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', () => {
+        updateNav();
+    }, { passive: true });
+
+    // Copy install command
+    function copyInstall(el) {
+        navigator.clipboard.writeText('pipx install regula-ai && regula check .').then(() => {
+            el.classList.add('copied');
+            el.querySelector('.cp').textContent = 'copied';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                el.querySelector('.cp').textContent = 'copy';
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>

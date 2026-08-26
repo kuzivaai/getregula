@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets; same pattern as
+         blog posts. Inline critical CSS establishes dark theme immediately;
+         color-scheme: dark hints the canvas colour; stylesheets load via
+         media="print" + onload swap so they don't block first paint. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Free and Open Source | Regula</title>
+    <meta name="description" content="Regula's browser assessment, local CLI, code indicators and evidence scaffolds are free and open source. Regula does not offer paid consulting or legal advice.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/pricing.html">
+    <meta property="og:title" content="Free and Open Source | Regula">
+    <meta property="og:description" content="Use Regula's browser assessment and local CLI for free. No account, checkout or paid consulting service.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula: EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free and Open Source | Regula">
+    <meta name="twitter:description" content="Use Regula's browser assessment and local CLI for free. No account, checkout or paid consulting service.">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Free and Open Source Regula Tools",
+      "url": "https://getregula.com/pricing.html",
+      "description": "Regula's browser assessment, local CLI, code indicators and evidence scaffolds are free and open source.",
+      "isPartOf": {"@type": "WebSite", "name": "Regula", "url": "https://getregula.com/"},
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://getregula.com/"},
+          {"@type": "ListItem", "position": 2, "name": "Evidence Packs", "item": "https://getregula.com/pricing.html"}
+        ]
+      }
+    }
+    </script>
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://getregula.com/pricing.html">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <style>
+        /* Pricing page styles */
+        .pricing-hero {
+            max-width: 720px;
+            margin: var(--s12) auto var(--s10);
+            padding: 0 var(--s6);
+            text-align: center;
+        }
+        .pricing-hero h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--s5);
+        }
+        .pricing-hero .subtitle {
+            font-size: 16px;
+            color: var(--text-2);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--s6);
+            max-width: 960px;
+            margin: 0 auto var(--s12);
+            padding: 0 var(--s6);
+        }
+
+        .pricing-card {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: var(--s7) var(--s6);
+            display: flex;
+            flex-direction: column;
+        }
+        .pricing-card.featured {
+            border-color: var(--accent);
+            background: var(--bg-elev-2);
+            position: relative;
+        }
+        .pricing-card.featured::before {
+            content: "Most useful";
+            position: absolute;
+            top: calc(-1 * var(--s3));
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: var(--s1) var(--s4);
+            border-radius: var(--r-pill);
+        }
+
+        .pricing-card h3 {
+            font-family: var(--font-serif);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: var(--s2);
+        }
+        .pricing-card .price {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: var(--s2);
+        }
+        .pricing-card .price-note {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: var(--s6);
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 var(--s7);
+            flex: 1;
+        }
+        .pricing-card ul li {
+            padding: var(--s2) 0;
+            font-size: 14px;
+            color: var(--text-2);
+            border-bottom: 1px solid var(--border);
+            line-height: 1.55;
+        }
+        .pricing-card ul li:last-child { border-bottom: none; }
+        .pricing-card ul li::before {
+            content: "\2713\00a0";
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .pricing-card .cta-btn {
+            display: block;
+            text-align: center;
+            padding: var(--s3) var(--s5);
+            border-radius: var(--r-md);
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            min-height: 44px;
+            line-height: 44px;
+            padding: 0 var(--s5);
+            cursor: default;
+        }
+        .pricing-card .cta-btn.free {
+            background: var(--accent-soft);
+            color: #bae6fd;
+            border: 1px solid rgba(59,130,246,0.2);
+            cursor: pointer;
+        }
+        .pricing-card .cta-btn.free:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+        .pricing-card .cta-btn.coming {
+            background: var(--bg-elev);
+            color: var(--text-dim);
+            border: 1px solid var(--border-strong);
+        }
+        .pricing-card.featured .cta-btn.coming {
+            background: rgba(59,130,246,0.1);
+            color: #bae6fd;
+            border: 1px solid rgba(59,130,246,0.3);
+        }
+
+
+        .pricing-card code {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-dim);
+            background: rgba(255,255,255,0.04);
+            padding: 2px 6px;
+            border-radius: var(--r-sm);
+        }
+
+        .trust-note {
+            max-width: 640px;
+            margin: 0 auto var(--s12);
+            padding: 0 var(--s6);
+            text-align: center;
+        }
+        .trust-note p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.7;
+        }
+        .trust-note strong {
+            color: var(--text-2);
+        }
+
+        .service-boundary {
+            max-width: 960px;
+            margin: 0 auto var(--s12);
+            padding: 0 var(--s6);
+        }
+        .service-boundary h2 {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            margin-bottom: var(--s4);
+        }
+        .service-boundary > p {
+            color: var(--text-2);
+            max-width: 720px;
+            line-height: 1.7;
+            margin-bottom: var(--s6);
+        }
+        .boundary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--s6);
+        }
+        .boundary-panel {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: var(--s6);
+        }
+        .boundary-panel h3 {
+            font-family: var(--font-serif);
+            font-size: 20px;
+            margin-bottom: var(--s3);
+        }
+        .boundary-panel ul {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--text-2);
+        }
+        .boundary-panel li { margin-bottom: var(--s2); }
+
+        .pricing-faq {
+            max-width: 640px;
+            margin: 0 auto var(--s12);
+            padding: 0 var(--s6);
+        }
+        .pricing-faq h2 {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            margin-bottom: var(--s6);
+            text-align: center;
+        }
+        .pricing-faq details {
+            border-bottom: 1px solid var(--border);
+            padding: var(--s5) 0;
+        }
+        .pricing-faq summary {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+        .pricing-faq summary:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: var(--r-sm);
+        }
+        .pricing-faq details p {
+            font-size: 14px;
+            color: var(--text-2);
+            margin-top: var(--s3);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .pricing-cards {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+            .pricing-hero {
+                margin: var(--s10) auto var(--s8);
+            }
+            .boundary-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script>
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<div class="pricing-hero">
+    <h1>Free tools, honest boundaries.</h1>
+    <p class="subtitle">The assessment and scanner are free and open source. Regula does not operate a paid assessment, booking flow or consulting service. When a question needs legal or domain judgment, take the evidence to an appropriately qualified professional you choose.</p>
+</div>
+
+<div class="pricing-cards">
+
+    <div class="pricing-card featured">
+        <h3>Browser assessment</h3>
+        <div class="price">Free</div>
+        <div class="price-note">Runs in your browser. No account, server-side form or visitor analytics.</div>
+        <ul>
+            <li>Browser questions with an unresolved-facts path</li>
+            <li>Article-linked explanations</li>
+            <li>Local JSON export</li>
+            <li>Share links disclose encoded answers to recipients</li>
+            <li>No legal determination or professional advice</li>
+        </ul>
+        <a class="cta-btn free" href="/assess/">Start free assessment</a>
+    </div>
+
+    <div class="pricing-card">
+        <h3>Local CLI</h3>
+        <div class="price">Free</div>
+        <div class="price-note">Open-source core with no required runtime dependencies. Scanned files stay local.</div>
+        <ul>
+            <li>Code-observable indicators for human review</li>
+            <li>Text and stable JSON output</li>
+            <li>Evidence and documentation scaffolds</li>
+            <li>CI and pre-commit integration</li>
+            <li>Explicit unresolved facts and limitations</li>
+        </ul>
+        <code style="margin-bottom: var(--s5); display: block;">pipx install regula-ai</code>
+        <a class="cta-btn free" href="/product.html">See the CLI</a>
+    </div>
+
+    <div class="pricing-card">
+        <h3>Independent review</h3>
+        <div class="price">Outside Regula</div>
+        <div class="price-note">Regula does not provide legal advice, certification or a paid review service.</div>
+        <ul>
+            <li>Use a qualified professional for legal conclusions</li>
+            <li>Verify scope, intended purpose and operator roles</li>
+            <li>Review false positives and missed indicators</li>
+            <li>Share only the evidence necessary for the review</li>
+            <li>Treat Regula output as an input, not a verdict</li>
+        </ul>
+        <a class="cta-btn free" href="/about.html">Read Regula's limits</a>
+    </div>
+
+</div>
+
+<div class="trust-note">
+    <p><strong>No checkout, booking, paid tier or sales enquiry.</strong> The core scanner processes files locally and does not upload them. Optional networked commands are documented separately and require an explicit action; RFC 3161 timestamping sends hashes rather than code.</p>
+    <p><strong>What Regula is, stated plainly.</strong> Regula indicates code observations and facts to investigate. It does not determine your risk tier, obligations or compliance. Anything that turns on a legal conclusion needs an appropriately qualified professional.</p>
+</div>
+
+<div class="pricing-faq">
+    <h2>Questions</h2>
+
+    <details>
+        <summary>What remains free?</summary>
+        <p>The browser questions, local scanner, observed indicators, unresolved facts and existing CLI commands are free and open source.</p>
+    </details>
+
+    <details>
+        <summary>Does Regula offer a paid review?</summary>
+        <p>No. Regula does not offer consulting, certification, legal advice, payment or booking. You can take its output to a qualified professional you select independently.</p>
+    </details>
+
+    <details>
+        <summary>Why is the address still /pricing.html?</summary>
+        <p>Existing links and bookmarks use this address. The page now states the product's free status and avoids redirecting visitors through a broken path.</p>
+    </details>
+
+    <details>
+        <summary>When is independent professional review appropriate?</summary>
+        <p>Use appropriately qualified review when intended purpose, operator role, jurisdiction, deployment context or a legal conclusion affects the decision. Regula cannot observe those facts from code alone.</p>
+    </details>
+</div>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+    window.addEventListener('scroll', updateNav, { passive: true });
+</script>
+
+</body>
+</html>

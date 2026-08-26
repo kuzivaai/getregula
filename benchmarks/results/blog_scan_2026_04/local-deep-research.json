@@ -1,0 +1,440 @@
+{
+  "command": "check",
+  "data": [
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 4",
+      "confidence_score": 88,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Employment and workers management",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: employment",
+        "domains_matched": [
+          "employment"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/local_deep_research/advanced_search_system/candidate_exploration/base_explorer.py",
+      "indicators": [
+        "employment"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 4",
+      "confidence_score": 93,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Employment and workers management",
+      "domain_boost": {
+        "boost": 20,
+        "detail": "Domain keywords detected: employment, education, law_enforcement + automated decision logic",
+        "domains_matched": [
+          "employment",
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/local_deep_research/advanced_search_system/strategies/evidence_based_strategy.py",
+      "indicators": [
+        "employment"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 4",
+      "confidence_score": 93,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Employment and workers management",
+      "domain_boost": {
+        "boost": 20,
+        "detail": "Domain keywords detected: employment, education, law_enforcement + automated decision logic",
+        "domains_matched": [
+          "employment",
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/local_deep_research/advanced_search_system/strategies/evidence_based_strategy_v2.py",
+      "indicators": [
+        "employment"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 4",
+      "confidence_score": 88,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Employment and workers management",
+      "domain_boost": {
+        "boost": 15,
+        "detail": "Domain keywords detected: employment, law_enforcement",
+        "domains_matched": [
+          "employment",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/local_deep_research/advanced_search_system/strategies/improved_evidence_based_strategy.py",
+      "indicators": [
+        "employment"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        },
+        {
+          "article": "12",
+          "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "articles": [
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15"
+      ],
+      "category": "Annex III, Category 4",
+      "confidence_score": 93,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Employment and workers management",
+      "domain_boost": {
+        "boost": 20,
+        "detail": "Domain keywords detected: employment, education, law_enforcement + automated decision logic",
+        "domains_matched": [
+          "employment",
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/local_deep_research/advanced_search_system/strategies/modular_strategy.py",
+      "indicators": [
+        "employment"
+      ],
+      "lifecycle_phases": [
+        "plan",
+        "develop"
+      ],
+      "line": 1,
+      "observations": [
+        {
+          "article": "13",
+          "observation": "Automated decision function detected \u2014 Article 13 requires transparency to deployers about capabilities and limitations."
+        }
+      ],
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "high_risk"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "src/local_deep_research/citation_handlers/forced_answer_citation_handler.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 49,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "src/local_deep_research/citation_handlers/precision_extraction_handler.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 79,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "src/local_deep_research/citation_handlers/standard_citation_handler.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 37,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM10)",
+      "confidence_score": 60,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Unbounded token generation \u2014 cost and resource exhaustion risk",
+      "file": "src/local_deep_research/config/llm_config.py",
+      "indicators": [
+        "unbounded_token_generation"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 376,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Set explicit max_tokens limit. Add cost monitoring and rate limiting.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Security (LLM02)",
+      "confidence_score": 80,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "PII or sensitive data flows into or out of LLM without redaction \u2014 information disclosure risk",
+      "file": "src/local_deep_research/metrics/pricing/pricing_fetcher.py",
+      "indicators": [
+        "sensitive_info_disclosure"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "operate"
+      ],
+      "line": 132,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": false,
+      "provenance": "production",
+      "remediation": "Scrub PII before sending to model APIs and filter model output before returning to users. Use libraries like presidio, scrubadub, or pii-catcher. OWASP LLM02:2025.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "articles": [
+        "50"
+      ],
+      "category": "Limited Risk (Article 50)",
+      "confidence_score": 73,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 50 transparency. Omnibus proposes: 2 Nov 2026. Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "Emotion recognition systems",
+      "domain_boost": {
+        "boost": 20,
+        "detail": "Domain keywords detected: education, law_enforcement + automated decision logic",
+        "domains_matched": [
+          "education",
+          "law_enforcement"
+        ]
+      },
+      "exceptions": null,
+      "file": "src/local_deep_research/web/static/js/pages/news.js",
+      "indicators": [
+        "emotion_recognition"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 1,
+      "observations": [],
+      "omnibus_deadline": "2026-11-02",
+      "open_question": false,
+      "provenance": "production",
+      "risk_decision": null,
+      "suppressed": false,
+      "tier": "limited_risk"
+    },
+    {
+      "category": "AI Security (LLM06)",
+      "confidence_score": 40,
+      "deadline": "2026-08-02",
+      "deadline_note": "Current law: 2 Aug 2026. Omnibus proposes: 2 Dec 2027 (Annex III). Trilogue in progress.",
+      "deadline_status": "current_law",
+      "description": "AI API call detected \u2014 verify error handling is in place",
+      "file": "src/local_deep_research/web_search_engines/relevance_filter.py",
+      "indicators": [
+        "no_error_handling_ai_call"
+      ],
+      "lifecycle_phases": [
+        "develop"
+      ],
+      "line": 397,
+      "omnibus_deadline": "2027-12-02",
+      "open_question": true,
+      "provenance": "production",
+      "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+      "suppressed": false,
+      "tier": "ai_security"
+    },
+    {
+      "category": "AI Credential Governance (Article 15)",
+      "confidence_score": 65,
+      "deadline": "2026-08-02",
+      "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026.",
+      "deadline_status": "current_law",
+      "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
+      "file": "src/local_deep_research/web_search_engines/search_engine_base.py",
+      "indicators": [
+        "openai_api_key"
+      ],
+      "lifecycle_phases": [
+        "develop",
+        "deploy"
+      ],
+      "line": 614,
+      "open_question": false,
+      "provenance": "production",
+      "suppressed": false,
+      "tier": "credential_exposure"
+    }
+  ],
+  "exit_code": 0,
+  "format_version": "1.0",
+  "regula_version": "1.7.0",
+  "timestamp": "2026-04-23T21:38:51.463769Z"
+}

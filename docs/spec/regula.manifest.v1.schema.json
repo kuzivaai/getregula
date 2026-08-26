@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://getregula.com/spec/regula.manifest.v1.schema.json",
+  "title": "Regula Evidence Format — Manifest (v1.0)",
+  "description": "Schema for manifest.json at the root of a regula.evidence.v1 pack. See docs/spec/regula-evidence-format-v1.md for normative text.",
+  "type": "object",
+  "required": [
+    "format",
+    "format_version",
+    "regula_version",
+    "generated_at",
+    "project",
+    "hash_algorithm",
+    "files"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "regula.evidence.v1",
+      "description": "Format identifier. MUST equal 'regula.evidence.v1' for v1.x packs."
+    },
+    "format_version": {
+      "type": "string",
+      "pattern": "^1\\.\\d+$",
+      "description": "Format revision within v1. '1.0' is the initial release; '1.1' adds the optional signing + timestamp blocks; further minor versions may add optional fields."
+    },
+    "schema_uri": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to this JSON Schema document."
+    },
+    "regula_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[a-zA-Z0-9\\.]+)?$",
+      "description": "Semver of the Regula build that produced the pack."
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 timestamp with timezone offset."
+    },
+    "project": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable project / system name."
+    },
+    "project_directory": {
+      "type": "string",
+      "description": "Directory name that was scanned, for disambiguation."
+    },
+    "hash_algorithm": {
+      "type": "string",
+      "const": "sha256",
+      "description": "Digest algorithm used for file-level integrity. v1 fixes this to SHA-256."
+    },
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Ordered list of every file in the pack (excluding the manifest itself).",
+      "items": {
+        "type": "object",
+        "required": ["filename", "sha256", "size_bytes"],
+        "additionalProperties": true,
+        "properties": {
+          "filename": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_\\-./]+$",
+            "description": "POSIX relative path from pack root."
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Lowercase hex SHA-256 digest of file contents."
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "File size in bytes, uncompressed."
+          }
+        }
+      }
+    },
+    "form": {
+      "type": "string",
+      "enum": ["full_annex_iv", "sme_simplified_annex_iv"],
+      "description": "Which pack variant this is. 'full_annex_iv' is the default multi-section layout; 'sme_simplified_annex_iv' is a single-file pack per Article 11(1) second subparagraph."
+    },
+    "interim_format_disclosure": {
+      "type": "string",
+      "description": "Free-text disclosure explaining a pack variant whose official format the Commission has not yet published."
+    },
+    "signing": {
+      "type": "object",
+      "description": "Optional in v1.1+. Ed25519 signature over the canonical manifest JSON (with the `signing` field stripped). A consumer that cannot verify the signature SHOULD warn but MUST NOT reject the pack unless strict mode is requested.",
+      "required": ["algorithm", "canonical_serialization", "signature", "public_key"],
+      "additionalProperties": true,
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "const": "ed25519",
+          "description": "Signature algorithm. v1.1 fixes this to Ed25519."
+        },
+        "canonical_serialization": {
+          "type": "string",
+          "const": "json-sort-keys-no-whitespace-utf8",
+          "description": "How the signed bytes are produced from the manifest. v1.1 fixes this to sorted-key, no-whitespace JSON encoded as UTF-8, with the `signing` field removed before serialisation."
+        },
+        "signature": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9+/=]+$",
+          "description": "Base64-encoded Ed25519 signature (64 raw bytes → 88 base64 chars)."
+        },
+        "public_key": {
+          "type": "string",
+          "description": "Base64-encoded SubjectPublicKeyInfo PEM of the Ed25519 public key. Consumers decode the base64, then load the PEM."
+        }
+      }
+    },
+    "timestamp_authority": {
+      "type": "object",
+      "description": "Optional in v1.1+. Carries an RFC 3161 TimeStampToken over the canonical manifest form. The reference verifier checks the messageImprint hash and, where it can, the token's PKCS#7 SignedData signature, reporting the strongest status actually proven: 'HASH_MATCHED' (imprint only — gen_time NOT authenticated), 'SIGNATURE_VERIFIED' (signature valid against the certificate embedded in the token and the critical id-kp-timeStamping EKU present, but the signer's identity is self-asserted), or 'CHAIN_VERIFIED' (additionally chained to a caller-supplied --tsa-trust-anchor, both certs valid at gen_time). It never reports a plain 'VERIFIED'. No revocation (CRL/OCSP) is ever consulted and no full RFC 5280 path validation is performed — see spec section 4.6.4.",
+      "required": ["format", "hash_algorithm", "message_imprint", "token"],
+      "additionalProperties": true,
+      "properties": {
+        "format": {
+          "type": "string",
+          "const": "rfc3161",
+          "description": "Timestamp token format. v1.1 fixes this to RFC 3161."
+        },
+        "hash_algorithm": {
+          "type": "string",
+          "const": "sha256",
+          "description": "Hash used for the TimeStampReq messageImprint. v1.1 fixes this to sha256."
+        },
+        "message_imprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Lowercase hex SHA-256 of the canonical manifest form that was submitted to the TSA. Consumers recompute this from the manifest and compare with the imprint embedded inside the token."
+        },
+        "tsa_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the TSA that issued the token."
+        },
+        "requested_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "RFC 3339 timestamp when Regula sent the request. Not authoritative — use `gen_time` for the TSA's claim."
+        },
+        "token": {
+          "type": "string",
+          "description": "Base64-encoded DER bytes of the TimeStampToken (CMS ContentInfo). Decode with base64, then parse with any RFC 3161-aware library."
+        },
+        "gen_time": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The TSA's genTime from the embedded TSTInfo. This is the authoritative witness moment."
+        },
+        "tsa_name": {
+          "type": ["string", "null"],
+          "description": "TSA name as declared inside the token's TSTInfo, if the TSA included one."
+        },
+        "chain_verified": {
+          "type": "boolean",
+          "description": "Whether the TSA signer-cert chain was verified against a trust store. v1.1 verifiers set this to false and warn."
+        }
+      }
+    }
+  }
+}

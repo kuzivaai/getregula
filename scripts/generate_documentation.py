@@ -1,0 +1,1897 @@
+#!/usr/bin/env python3
+# regula-ignore — Annex IV documentation templates embed article and risk-domain vocabulary as generated prose, not AI practice
+"""
+Regula Documentation Generator
+
+Generates EU AI Act Annex IV documentation SCAFFOLDS and QMS (Quality Management
+System) templates from project analysis.
+
+Output is a starting point that requires human review and completion — it is
+NOT complete compliance documentation and should not be presented as such.
+"""
+
+import argparse
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+# Shared path guard: never read a tree we do not control with a bare
+# read_text — a FIFO blocks forever and a symlink escapes the project.
+from scan_safety import read_text_if_safe
+
+from classify_risk import classify, RiskTier, is_ai_related, get_governance_contacts, check_ai_security
+from constants import VERSION
+from log_event import log_event
+from code_analysis import analyse_project_code
+from ast_analysis import parse_python_file, detect_human_oversight, detect_logging_practices, trace_ai_data_flow, resolve_cross_file_ai_flows
+from dependency_scan import parse_requirements_txt, parse_pyproject_toml
+from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS
+
+
+def extract_ai_dependencies(project_path: str) -> list:
+    """Extract AI dependency names and versions from requirements.txt/pyproject.toml.
+
+    Returns a list of dicts: {name, version, source_file}
+    """
+    project = Path(project_path).resolve()
+    ai_deps = []
+    seen = set()
+
+    for dep_file, parser in [
+        ("requirements.txt", parse_requirements_txt),
+        ("pyproject.toml", parse_pyproject_toml),
+    ]:
+        path = project / dep_file
+        if not path.exists():
+            continue
+        try:
+            content = read_text_if_safe(path, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
+            deps = parser(content)
+            for d in deps:
+                if d["is_ai"] and d["name"] not in seen:
+                    seen.add(d["name"])
+                    ai_deps.append({
+                        "name": d["name"],
+                        "version": d.get("version"),
+                        "source_file": dep_file,
+                    })
+        except (OSError, ValueError, KeyError) as e:
+            print(f"regula: skipping dep file {dep_file}: {e}", file=sys.stderr)
+            continue
+
+    return ai_deps
+
+
+def scan_project(project_path: str) -> dict:
+    """Scan a project directory for AI-related files and patterns."""
+    project = Path(project_path).resolve()
+    findings = {
+        "ai_files": [],
+        "model_files": [],
+        "classifications": [],
+        "highest_risk": RiskTier.NOT_AI,
+    }
+
+    risk_order = {
+        RiskTier.NOT_AI: 0, RiskTier.MINIMAL_RISK: 1,
+        RiskTier.LIMITED_RISK: 2, RiskTier.HIGH_RISK: 3, RiskTier.PROHIBITED: 4,
+    }
+
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(project) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(project)))
+    for root, dirs, files, _dirfd in _walk:
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for filename in files:
+            filepath = Path(root) / filename
+            rel_path = filepath.relative_to(project)
+
+            if filepath.suffix in MODEL_EXTENSIONS:
+                findings["model_files"].append(str(rel_path))
+                continue
+
+            if filepath.suffix in CODE_EXTENSIONS:
+                try:
+                    content = read_text_if_safe(filepath, errors="ignore", dir_fd=_dirfd)
+                    if content is None:
+                        raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
+                except (PermissionError, OSError):
+                    continue  # unreadable file; skip
+
+                if is_ai_related(content):
+                    findings["ai_files"].append(str(rel_path))
+                    result = classify(content)
+                    findings["classifications"].append({
+                        "file": str(rel_path),
+                        "tier": result.tier.value,
+                        "indicators": result.indicators_matched,
+                        "articles": result.applicable_articles,
+                        "description": result.description,
+                    })
+                    if risk_order.get(result.tier, 0) > risk_order.get(findings["highest_risk"], 0):
+                        findings["highest_risk"] = result.tier
+
+    return findings
+
+
+def ast_analyse_project(project_path: str) -> dict:
+    """Run AST-based analysis across Python files to populate documentation sections.
+
+    Returns:
+        ai_imports      — sorted list of unique AI library imports detected
+        ai_functions    — list of dicts {file, name, args} for non-test AI functions
+        oversight_score — average oversight score (0-100) across files with AI calls
+        oversight_evidence — list of oversight pattern dicts with file context
+        automated_decisions — list of unreviewed automated decision paths
+        logging_score   — average logging score (0-100) across files with AI calls
+        total_logged    — AI operations with nearby logging
+        total_unlogged  — AI operations without nearby logging
+    """
+    project = Path(project_path).resolve()
+
+    all_ai_imports: set = set()
+    all_ai_functions: list = []
+    oversight_scores: list = []
+    all_oversight_evidence: list = []
+    all_automated_decisions: list = []
+    logging_scores: list = []
+    total_logged = 0
+    total_unlogged = 0
+    all_data_flows: list = []
+
+    for filepath in project.rglob("*.py"):
+        if any(d in filepath.relative_to(project).parts for d in SKIP_DIRS):
+            continue
+        try:
+            content = read_text_if_safe(filepath, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
+        except OSError:
+            continue  # unreadable file; skip
+
+        rel = str(filepath.relative_to(project))
+
+        parsed = parse_python_file(content)
+        if not parsed["has_ai_code"]:
+            continue
+
+        # Collect AI imports
+        all_ai_imports.update(parsed["ai_imports"])
+
+        # Collect non-test function signatures (including new fields)
+        for fn in parsed["function_defs"]:
+            if not fn["is_test"]:
+                all_ai_functions.append({
+                    "file": rel,
+                    "name": fn["name"],
+                    "args": fn["args"],
+                    "line": fn.get("line"),
+                    "return_type": fn.get("return_type"),
+                    "docstring": fn.get("docstring"),
+                })
+
+        # Oversight analysis
+        oversight = detect_human_oversight(content)
+        oversight_scores.append(oversight["oversight_score"])
+        for p in oversight["oversight_patterns"]:
+            all_oversight_evidence.append(dict(p, file=rel))
+        for d in oversight["automated_decisions"]:
+            all_automated_decisions.append(dict(d, file=rel))
+
+        # Logging analysis
+        logging = detect_logging_practices(content)
+        logging_scores.append(logging["logging_score"])
+        total_logged += logging["ai_operations_logged"]
+        total_unlogged += logging["ai_operations_unlogged"]
+
+        # Data flow tracing
+        flows = trace_ai_data_flow(content)
+        for flow in flows:
+            all_data_flows.append(dict(flow, file=rel))
+
+    oversight_score = int(sum(oversight_scores) / len(oversight_scores)) if oversight_scores else 50
+    logging_score = int(sum(logging_scores) / len(logging_scores)) if logging_scores else 50
+
+    # Normalise AI import names to top-level library names for readability
+    top_level_imports: set = set()
+    for imp in all_ai_imports:
+        top_level_imports.add(imp.split(".")[0])
+
+    return {
+        "ai_imports": sorted(top_level_imports),
+        "ai_functions": all_ai_functions,
+        "oversight_score": oversight_score,
+        "oversight_evidence": all_oversight_evidence,
+        "automated_decisions": all_automated_decisions,
+        "logging_score": logging_score,
+        "total_logged": total_logged,
+        "total_unlogged": total_unlogged,
+        "data_flows": all_data_flows,
+    }
+
+
+def _governance_section() -> str:
+    """Generate the governance contacts section from policy."""
+    contacts = get_governance_contacts()
+    if not contacts:
+        return """### Governance Contacts
+_[TO BE COMPLETED — configure in regula-policy.yaml]_
+
+- **AI Officer:** _[Name, Role, Email]_
+- **DPO:** _[Name, Email]_
+"""
+
+    ai_officer = contacts.get("ai_officer", {})
+    dpo = contacts.get("dpo", {})
+
+    lines = ["### Governance Contacts\n"]
+
+    if ai_officer and (ai_officer.get("name") or ai_officer.get("role")):
+        name = ai_officer.get("name", "_[TO BE COMPLETED]_")
+        role = ai_officer.get("role", "AI Officer")
+        email = ai_officer.get("email", "_[TO BE COMPLETED]_")
+        lines.append(f"- **AI Officer:** {name} ({role}) — {email}")
+    else:
+        lines.append("- **AI Officer:** _[TO BE COMPLETED — set governance.ai_officer in regula-policy.yaml]_")
+
+    if dpo and (dpo.get("name") or dpo.get("email")):
+        name = dpo.get("name", "_[TO BE COMPLETED]_")
+        email = dpo.get("email", "_[TO BE COMPLETED]_")
+        lines.append(f"- **DPO:** {name} — {email}")
+    else:
+        lines.append("- **DPO:** _[TO BE COMPLETED — set governance.dpo in regula-policy.yaml]_")
+
+    lines.append("")
+    return "\n".join(lines)
+
+
+def generate_annex_iv(findings: dict, project_name: str, project_path: str) -> str:
+    """Generate an Annex IV technical-documentation scaffold for human completion.
+
+    Until 2026-08-17 this docstring described the output as Annex IV
+    documentation carrying a compliance state, while the document the function
+    emits opens by saying it is "an auto-generated scaffold, NOT complete
+    compliance documentation". The implementation was right and its own docstring
+    contradicted it.  carries the verbatim old line; it is described
+    rather than quoted, because quoting it reintroduces the claim.
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    highest = findings["highest_risk"]
+    if isinstance(highest, RiskTier):
+        highest = highest.value
+
+    doc = f"""# Annex IV — Technical Documentation Scaffold
+
+> **IMPORTANT:** This is an auto-generated scaffold, NOT complete compliance
+> documentation. All sections marked _[TO BE COMPLETED]_ require human input.
+> Risk indicators are pattern-based and may not reflect the actual risk
+> classification under Article 6. This document must be reviewed by qualified
+> personnel before being used as regulatory evidence.
+
+## AI System: {project_name}
+
+**Generated by:** Regula v{VERSION}
+**Date:** {now}
+**Overall Risk Classification:** {highest.upper().replace('_', '-')}
+
+---
+
+## 0. Governance
+
+{_governance_section()}
+---
+
+## 1. General Description
+
+### 1.1 System Identity
+- **System name:** {project_name}
+- **Project path:** {project_path}
+- **Documentation date:** {now}
+- **Classification:** {highest.upper().replace('_', '-')}
+
+### 1.2 AI Components Detected
+
+| File | Risk Tier | Indicators | Applicable Articles |
+|------|-----------|------------|---------------------|
+"""
+
+    for c in findings["classifications"]:
+        articles = ", ".join(c["articles"]) if c["articles"] else "N/A"
+        indicators = ", ".join(c["indicators"]) if c["indicators"] else "N/A"
+        doc += f"| {c['file']} | {c['tier'].upper().replace('_', '-')} | {indicators} | {articles} |\n"
+
+    if not findings["classifications"]:
+        doc += "| _No AI components detected_ | — | — | — |\n"
+
+    if findings["model_files"]:
+        doc += "\n### 1.3 Model Files\n\n"
+        for mf in findings["model_files"]:
+            doc += f"- `{mf}`\n"
+
+    # Auto-populate sections 2-4 from code analysis
+    analysis = analyse_project_code(project_path)
+    ast_data = ast_analyse_project(project_path)
+
+    # Extract dependency versions
+    ai_deps = extract_ai_dependencies(project_path)
+
+    # Track completion per section for --completion flag
+    completion = {}
+
+    doc += "\n---\n\n## 2. Detailed Description of Elements and Development Process\n\n"
+
+    # 2.1 Development Methods — auto-populated from AST + dependency versions
+    doc += "### 2.1 Development Methods\n\n"
+    section_auto = False
+    if ai_deps or ast_data["ai_imports"]:
+        doc += "**[AUTO-DETECTED]**\n\n"
+        section_auto = True
+
+        # Dependency table with versions
+        if ai_deps:
+            doc += "**AI dependencies (from project manifest):**\n\n"
+            doc += "| Library | Version | Source |\n"
+            doc += "|---------|---------|--------|\n"
+            for dep in ai_deps:
+                ver = dep["version"] or "_unpinned_"
+                doc += f"| {dep['name']} | {ver} | {dep['source_file']} |\n"
+            doc += "\n"
+        elif ast_data["ai_imports"]:
+            doc += "**AI frameworks/libraries (from imports):**\n"
+            for imp in ast_data["ai_imports"]:
+                doc += f"- `{imp}`\n"
+            doc += "\n"
+
+        # Function table with signatures, docstrings, line numbers
+        if ast_data["ai_functions"]:
+            doc += "**Functions detected:**\n\n"
+            doc += "| Function | File | Signature | Docstring |\n"
+            doc += "|----------|------|-----------|-----------|\n"
+            for fn in ast_data["ai_functions"][:20]:
+                args = ", ".join(fn["args"]) if fn["args"] else ""
+                sig = f"({args})"
+                ret = fn.get("return_type")
+                if ret:
+                    sig += f" -> {ret}"
+                docstr = fn.get("docstring") or "_None_"
+                # Truncate long values for table readability
+                if len(docstr) > 60:
+                    docstr = docstr[:57] + "..."
+                if len(sig) > 50:
+                    sig = sig[:47] + "..."
+                line = fn.get("line", "?")
+                doc += f"| {fn['name']} | {fn['file']}:{line} | `{sig}` | {docstr} |\n"
+            if len(ast_data["ai_functions"]) > 20:
+                doc += f"\n_...and {len(ast_data['ai_functions']) - 20} more functions_\n"
+            doc += "\n"
+
+    doc += "**[COMPLETE THESE]**\n\n"
+    doc += "Model selection rationale:\n"
+    doc += "> We selected __________ because __________.\n"
+    doc += "> Alternatives considered: __________.\n\n"
+    doc += "Training methodology:\n"
+    doc += "> Trained on __________ using __________.\n"
+    doc += "> Split: __% train / __% val / __% test.\n\n"
+    completion["2.1"] = "partial" if section_auto else "empty"
+
+    # 2.2 Data Requirements — auto-detected + guided template
+    doc += "### 2.2 Data Requirements\n\n"
+    if analysis["data_sources"]:
+        doc += "**[AUTO-DETECTED]** Data sources found:\n\n"
+        for ds in analysis["data_sources"]:
+            doc += f"- {ds}\n"
+        doc += "\n"
+        completion["2.2"] = "partial"
+    else:
+        completion["2.2"] = "empty"
+    doc += "**[COMPLETE THESE]** (Article 10 — Data Governance)\n\n"
+    doc += "Training data:\n"
+    doc += "> Dataset: __________ | Size: __________ records\n"
+    doc += "> Collection method: __________\n"
+    doc += "> Time period: __________ to __________\n\n"
+    doc += "Bias examination:\n"
+    doc += "> Protected attributes checked: __________\n"
+    doc += "> Bias mitigation applied: __________ (e.g., resampling, reweighting, none)\n"
+    doc += "> Known data gaps: __________\n\n"
+
+    # 2.3 Model Architecture — auto-detected + guided template
+    doc += "### 2.3 Model Architecture\n\n"
+    if analysis["architectures"]:
+        doc += "**[AUTO-DETECTED]** Frameworks/architectures:\n\n"
+        for arch in analysis["architectures"]:
+            doc += f"- {arch}\n"
+        doc += "\n"
+        completion["2.3"] = "partial"
+    else:
+        completion["2.3"] = "empty"
+    doc += "**[COMPLETE THESE]**\n\n"
+    doc += "Architecture:\n"
+    doc += "> Model type: __________ (e.g., transformer, gradient boosting, logistic regression)\n"
+    doc += "> Parameters: __________ | Input format: __________ | Output format: __________\n\n"
+    doc += "Training:\n"
+    doc += "> Hardware: __________ | Duration: __________ | Final loss: __________\n"
+    doc += "> Hyperparameters: __________\n\n"
+
+    doc += "---\n\n## 3. Monitoring, Functioning, and Control\n\n"
+
+    # 3.1 Human Oversight — AST-derived score + evidence (Article 14)
+    doc += "### 3.1 Human Oversight\n\n"
+    has_ai_ops = ast_data["total_logged"] + ast_data["total_unlogged"] > 0
+    if has_ai_ops or ast_data["oversight_evidence"] or ast_data["automated_decisions"]:
+        doc += "**[AUTO-DETECTED]** AST analysis found the following oversight indicators:\n\n"
+        doc += f"**Oversight score:** {ast_data['oversight_score']}/100\n\n"
+        if ast_data["oversight_evidence"]:
+            doc += "**Oversight mechanisms detected:**\n"
+            for ev in ast_data["oversight_evidence"][:10]:
+                doc += f"- {ev['detail']} (line {ev['line']}) — `{ev['file']}`\n"
+            doc += "\n"
+        if ast_data["automated_decisions"]:
+            doc += f"**Automated decision paths (no human review gate detected):** {len(ast_data['automated_decisions'])}\n"
+            for ad in ast_data["automated_decisions"][:5]:
+                doc += f"- `{ad['source']}` (line {ad['source_line']}) → automated at line {ad['decision_line']} — `{ad['file']}`\n"
+            doc += "\n"
+        elif not ast_data["oversight_evidence"]:
+            doc += "_No human review gates detected in AI operation paths._\n\n"
+        doc += "_Verify these mechanisms meet Article 14 requirements (human oversight, override capability)._\n\n"
+        completion["3.1"] = "partial"
+    elif analysis["oversight"]:
+        doc += "**[AUTO-DETECTED]** Oversight patterns found:\n\n"
+        for o in analysis["oversight"]:
+            doc += f"- {o}\n"
+        doc += "\n_Verify these mechanisms meet Article 14 requirements._\n\n"
+        completion["3.1"] = "partial"
+    else:
+        doc += "_No human oversight patterns detected._ Review Article 14 requirements.\n\n"
+        completion["3.1"] = "empty"
+
+    # 3.2 Logging — AST-derived score + per-operation coverage table (Article 12)
+    doc += "### 3.2 Logging Infrastructure\n\n"
+    total_ops = ast_data["total_logged"] + ast_data["total_unlogged"]
+    if total_ops > 0:
+        pct = int(ast_data["total_logged"] / total_ops * 100) if total_ops > 0 else 0
+        doc += f"**Coverage:** {ast_data['total_logged']}/{total_ops} AI operations ({pct}%)\n\n"
+
+        # Per-operation coverage table from AI functions
+        if ast_data["ai_functions"]:
+            doc += "| Operation | Location | Status | What to log |\n"
+            doc += "|-----------|----------|--------|-------------|\n"
+            for fn in ast_data["ai_functions"][:15]:
+                line = fn.get("line", "?")
+                # Heuristic: if the function has logging nearby, mark as covered
+                # (simplified — actual detection is in ast_analysis)
+                status = "check" # can't determine per-function from aggregate data
+                what_to_log = "input_hash, timestamp, model_version, output_summary"
+                doc += f"| {fn['name']} | {fn['file']}:{line} | {status} | {what_to_log} |\n"
+            doc += "\n"
+
+        if ast_data["total_unlogged"] > 0:
+            doc += (
+                "**To comply with Article 12:**\n"
+                "Add logging that captures input hashes (not raw data), timestamps,\n"
+                "model versions, and output summaries for each AI operation.\n\n"
+            )
+        else:
+            doc += "_All detected AI operations have logging coverage._\n\n"
+        completion["3.2"] = "partial" if ast_data["total_unlogged"] > 0 else "auto"
+    elif analysis["logging"]:
+        doc += "**[AUTO-DETECTED]** Logging mechanisms found:\n\n"
+        for lg in analysis["logging"]:
+            doc += f"- {lg}\n"
+        doc += "\n_Verify logging meets Article 12 record-keeping requirements._\n\n"
+        completion["3.2"] = "partial"
+    else:
+        doc += "_No logging infrastructure detected._ Article 12 requires automatic recording of events.\n\n"
+        completion["3.2"] = "empty"
+
+    # 3.3 Data Flow — AST-derived AI operation flow tracing
+    doc += "### 3.3 AI Data Flow\n\n"
+    if ast_data["data_flows"]:
+        doc += "**[AUTO-DETECTED]** AST analysis traced the following AI operation data flows:\n\n"
+        for flow in ast_data["data_flows"][:15]:  # cap to avoid walls of text
+            dests = flow.get("destinations", [])
+            dest_strs = []
+            for d in dests:
+                dest_strs.append(f"{d['type']} (line {d['line']})")
+            dest_summary = ", ".join(dest_strs) if dest_strs else "no traced destinations"
+            doc += f"- AI operation at line {flow['source_line']} flows to: {dest_summary} — `{flow['file']}`\n"
+        if len(ast_data["data_flows"]) > 15:
+            doc += f"- _...and {len(ast_data['data_flows']) - 15} more_\n"
+        doc += "\n_Review data flow paths to ensure AI outputs pass through appropriate oversight and logging._\n\n"
+        completion["3.3"] = "auto"
+    else:
+        doc += "_No intra-file AI data flows detected._\n\n"
+        completion["3.3"] = "empty"
+
+    # Cross-file AI data flows (Python only)
+    try:
+        cross_flows = resolve_cross_file_ai_flows(project_path)
+        if cross_flows:
+            doc += "**[AUTO-DETECTED] Cross-file AI data flows:**\n\n"
+            doc += "| Importing File | Imports From | AI File | AI Functions |\n"
+            doc += "|----------------|--------------|---------|-------------|\n"
+            for cf in cross_flows[:15]:
+                funcs = ", ".join(cf["ai_functions_in_target"][:3])
+                if len(cf["ai_functions_in_target"]) > 3:
+                    funcs += f" +{len(cf['ai_functions_in_target']) - 3} more"
+                doc += f"| {cf['source_file']} | {cf['imports_from']} | {cf['imported_file']} | {funcs} |\n"
+            if len(cross_flows) > 15:
+                doc += f"\n_...and {len(cross_flows) - 15} more cross-file flows_\n"
+            doc += "\n_Files importing AI modules inherit regulatory obligations from those modules._\n\n"
+            if completion["3.3"] == "empty":
+                completion["3.3"] = "partial"
+    except Exception as e:
+        print(f"regula: cross-file resolution failed: {e}", file=sys.stderr)
+
+    # --- Section 4: Performance Metrics Appropriateness (Annex IV, point 4) ---
+    doc += "---\n\n## 4. Performance Metrics Appropriateness\n\n"
+    doc += "**[COMPLETE THESE]** (Annex IV, point 4)\n\n"
+    doc += "Describe why the chosen metrics are appropriate for this AI system's intended purpose:\n\n"
+    doc += "| Metric | Value | Why Appropriate | Dataset | Date Measured |\n"
+    doc += "|--------|-------|-----------------|---------|---------------|\n"
+    doc += "| Accuracy | __________ | __________ | __________ | __________ |\n"
+    doc += "| Precision | __________ | __________ | __________ | __________ |\n"
+    doc += "| Recall | __________ | __________ | __________ | __________ |\n"
+    doc += "| F1 Score | __________ | __________ | __________ | __________ |\n"
+    doc += "| False positive rate | __________ | __________ | __________ | __________ |\n\n"
+    doc += "> Acceptable performance thresholds: __________\n"
+    doc += "> Performance degrades when: __________\n"
+    doc += "> Potentially discriminatory impacts assessed: __________\n\n"
+    doc += "### Known Limitations\n\n"
+    doc += "| Limitation | Impact | Mitigation |\n"
+    doc += "|-----------|--------|------------|\n"
+    doc += "| __________ | __________ | __________ |\n\n"
+    doc += "> Foreseeable misuse scenarios: __________\n"
+    doc += "> Populations the system should NOT be used for: __________\n\n"
+    completion["4"] = "empty"
+
+    # --- Section 5: Risk Management System (Annex IV, point 5 / Article 9) ---
+    doc += "---\n\n## 5. Risk Management System (Article 9)\n\n"
+    security_findings = []
+    for c in findings["classifications"]:
+        filepath = Path(project_path) / c["file"]
+        if filepath.exists():
+            try:
+                text = read_text_if_safe(filepath, errors="ignore")
+                if text is None:
+                    raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
+                sf = check_ai_security(text)
+                for f in sf:
+                    f["file"] = c["file"]
+                security_findings.extend(sf)
+            except OSError:
+                pass  # unreadable file; skip security check
+
+    completion["1"] = "auto"  # Section 1 is always auto-populated from scan
+    if security_findings or findings["classifications"]:
+        doc += "### Risk Register\n\n"
+        doc += "**[AUTO-DETECTED]**\n\n"
+        doc += "| Risk ID | File | Description | OWASP Mapping | Severity | Mitigation |\n"
+        doc += "|---------|------|-------------|---------------|----------|------------|\n"
+        rid = 1
+        for c in findings["classifications"]:
+            tier = c["tier"].upper().replace("_", "-")
+            doc += f"| R{rid:03d} | {c['file']} | {c['description']} ({tier}) | — | {tier} | _[TO BE COMPLETED]_ |\n"
+            rid += 1
+        for sf in security_findings:
+            doc += f"| R{rid:03d} | {sf['file']} | {sf['description']} | {sf['owasp']} | {sf['severity'].upper()} | {sf['remediation'][:60]} |\n"
+            rid += 1
+        doc += "\n"
+        completion["5"] = "partial"
+    else:
+        doc += "_[TO BE COMPLETED BY DEVELOPMENT TEAM]_\n\n"
+        completion["5"] = "empty"
+
+    # --- Section 6: Lifecycle Changes (Annex IV, point 6) ---
+    doc += "---\n\n## 6. Lifecycle Changes\n\n"
+
+    import subprocess as _sp
+    git_log_lines = []
+    try:
+        result = _sp.run(
+            ["git", "log", "--oneline", "-20", "--no-merges"],
+            capture_output=True, text=True, cwd=project_path, timeout=5,
+        )
+        if result.returncode == 0:
+            git_log_lines = [ln.strip() for ln in result.stdout.strip().split("\n") if ln.strip()]
+    except (OSError, _sp.TimeoutExpired):
+        pass  # git not available or slow; skip commit history
+
+    if git_log_lines:
+        doc += "**[AUTO-DETECTED]** Recent development history (last 20 commits):\n\n"
+        doc += "| Commit | Description |\n"
+        doc += "|--------|-------------|\n"
+        for line in git_log_lines:
+            parts = line.split(" ", 1)
+            sha = parts[0] if parts else "?"
+            msg = parts[1] if len(parts) > 1 else ""
+            doc += f"| `{sha}` | {msg} |\n"
+        doc += "\n"
+        completion["6"] = "partial"
+    else:
+        completion["6"] = "empty"
+
+    try:
+        result = _sp.run(
+            ["git", "tag", "--sort=-creatordate"],
+            capture_output=True, text=True, cwd=project_path, timeout=5,
+        )
+        if result.returncode == 0:
+            tags = [t.strip() for t in result.stdout.strip().split("\n") if t.strip()][:10]
+            if tags:
+                doc += "**Version tags:**\n\n"
+                for tag in tags:
+                    doc += f"- `{tag}`\n"
+                doc += "\n"
+    except (OSError, _sp.TimeoutExpired):
+        pass  # git not available or slow; skip version tags
+
+    doc += "**[COMPLETE THESE]**\n\n"
+    doc += "Significant changes since initial deployment:\n"
+    doc += "> _[List major changes to the AI system, including model updates, data changes, and architectural modifications]_\n\n"
+    doc += "Change management process:\n"
+    doc += "> _[Describe how changes are reviewed, tested, and approved before deployment]_\n\n"
+
+    # --- Section 7: Harmonised Standards (Annex IV, point 7) ---
+    doc += "---\n\n## 7. Harmonised Standards and Specifications\n\n"
+
+    import re as _re
+    policy_frameworks = []
+    policy_path = Path(project_path) / "regula-policy.yaml"
+    if not policy_path.exists():
+        policy_path = Path(project_path) / "regula-policy.yml"
+    if policy_path.exists():
+        try:
+            content = read_text_if_safe(policy_path, errors="ignore")
+            if content is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
+            in_frameworks = False
+            for line in content.split("\n"):
+                stripped = line.strip()
+                if stripped.startswith("frameworks:"):
+                    in_frameworks = True
+                    continue
+                if in_frameworks:
+                    if stripped.startswith("- "):
+                        fw = stripped[2:].strip().strip('"').strip("'")
+                        if fw and not fw.startswith("#"):
+                            policy_frameworks.append(fw)
+                    elif stripped and not stripped.startswith("#"):
+                        in_frameworks = False
+        except OSError:
+            pass  # policy file unreadable; skip
+
+    if policy_frameworks:
+        doc += "**[AUTO-DETECTED]** Frameworks declared in `regula-policy.yaml`:\n\n"
+        for fw in policy_frameworks:
+            doc += f"- {fw}\n"
+        doc += "\n"
+        completion["7"] = "partial"
+    else:
+        completion["7"] = "empty"
+
+    standards_keywords = {
+        "ISO 42001": r"iso.?42001",
+        "ISO 27001": r"iso.?27001",
+        "NIST AI RMF": r"nist.?ai.?rmf|ai.?risk.?management.?framework",
+        "OWASP LLM Top 10": r"owasp.?llm|llm.?top.?10",
+        "SOC 2": r"soc.?2",
+        "NIST CSF": r"nist.?csf|cybersecurity.?framework",
+    }
+    detected_standards = set()
+    resolved_project = str(Path(project_path).resolve())
+    # os.fwalk yields a dir descriptor; opening relative to it pins the
+    # directory inode, closing the ancestor-swap race O_NOFOLLOW cannot
+    # (it guards only the final component). Absent on Windows.
+    _walk = (os.fwalk(resolved_project) if hasattr(os, 'fwalk')
+             else ((_r, _d, _f, None) for _r, _d, _f in os.walk(resolved_project)))
+    for root, dirs, files, _dirfd in _walk:
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for filename in files:
+            fp = Path(root) / filename
+            if fp.suffix in {".md", ".txt", ".rst", ".yaml", ".yml", ".py", ".js", ".ts"}:
+                try:
+                    text = read_text_if_safe(fp, errors="ignore", dir_fd=_dirfd)
+                    if text is None:
+                        raise OSError("refused by scan_safety")
+                    text = text[:5000]
+                    for std_name, pattern in standards_keywords.items():
+                        if _re.search(pattern, text, _re.IGNORECASE):
+                            detected_standards.add(std_name)
+                except OSError:
+                    continue  # unreadable file; skip
+
+    if detected_standards:
+        doc += "**[AUTO-DETECTED]** Standards referenced in project files:\n\n"
+        for std in sorted(detected_standards):
+            doc += f"- {std}\n"
+        doc += "\n"
+        if completion.get("7") == "empty":
+            completion["7"] = "partial"
+
+    doc += "**[COMPLETE THESE]**\n\n"
+    doc += "Harmonised standards applied (Article 40):\n"
+    doc += "> _[List any harmonised standards, or common specifications under Article 41]_\n\n"
+    doc += "Where no harmonised standards apply, describe alternative solutions:\n"
+    doc += "> _[Detailed description of solutions adopted to meet Chapter III, Section 2 requirements]_\n\n"
+
+    # --- Section 8: EU Declaration of Conformity (Annex IV, point 8) ---
+    doc += "---\n\n## 8. EU Declaration of Conformity\n\n"
+    doc += "_[TO BE COMPLETED BEFORE MARKET PLACEMENT — Article 47]_\n\n"
+
+    pyproject_path = Path(project_path) / "pyproject.toml"
+    if pyproject_path.exists():
+        try:
+            pyproject_text = read_text_if_safe(pyproject_path, errors="ignore")
+            if pyproject_text is None:
+                raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
+            name_match = _re.search(r'name\s*=\s*"([^"]+)"', pyproject_text)
+            author_match = _re.search(r'authors\s*=\s*\[\s*\{[^}]*name\s*=\s*"([^"]+)"', pyproject_text)
+            if not author_match:
+                author_match = _re.search(r'authors\s*=\s*\[\s*"([^"]+)"', pyproject_text)
+
+            if name_match or author_match:
+                doc += "**[AUTO-DETECTED]** Provider information from `pyproject.toml`:\n\n"
+                if name_match:
+                    doc += f"- **System/Package name:** {name_match.group(1)}\n"
+                if author_match:
+                    doc += f"- **Provider name:** {author_match.group(1)}\n"
+                doc += "\n"
+                completion["8"] = "partial"
+            else:
+                completion["8"] = "empty"
+        except OSError:
+            completion["8"] = "empty"
+    else:
+        completion["8"] = "empty"
+
+    doc += "Provider details:\n"
+    doc += "> **Name:** _[Legal entity name]_\n"
+    doc += "> **Address:** _[Registered address]_\n"
+    doc += "> **Authorised representative:** _[Name and signature]_\n"
+    doc += "> **Date:** _[Date of declaration]_\n\n"
+
+    # --- Section 9: Post-Market Monitoring (Annex IV, point 9 / Article 72) ---
+    doc += "---\n\n## 9. Post-Market Monitoring Plan (Article 72)\n\n"
+
+    monitoring_indicators = []
+    monitoring_patterns_re = [
+        (r"health.?check|readiness.?probe|liveness.?probe", "Health check endpoint"),
+        (r"alert|pagerduty|opsgenie|datadog|sentry|prometheus|grafana", "Alerting/monitoring service"),
+        (r"model.?monitor|drift.?detect|data.?drift|concept.?drift", "Model/data drift detection"),
+        (r"incident.?report|post.?mortem|runbook", "Incident response process"),
+    ]
+    resolved_project_9 = Path(project_path).resolve()
+    for root, dirs, files in os.walk(str(resolved_project_9)):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for filename in files:
+            fp = Path(root) / filename
+            if fp.suffix in CODE_EXTENSIONS | {".yaml", ".yml", ".md", ".txt"}:
+                try:
+                    text = read_text_if_safe(fp, errors="ignore")
+                    if text is None:
+                        raise OSError("refused by scan_safety")
+                    text = text[:5000]
+                    for pattern, label in monitoring_patterns_re:
+                        if _re.search(pattern, text, _re.IGNORECASE):
+                            rel_p = str(fp.relative_to(resolved_project_9))
+                            monitoring_indicators.append(f"{label}: `{rel_p}`")
+                            break
+                except OSError:
+                    continue  # unreadable file; skip
+
+    if monitoring_indicators:
+        doc += "**[AUTO-DETECTED]** Monitoring infrastructure found:\n\n"
+        seen_indicators = set()
+        for ind in monitoring_indicators:
+            if ind not in seen_indicators:
+                doc += f"- {ind}\n"
+                seen_indicators.add(ind)
+        doc += "\n"
+        completion["9"] = "partial"
+    else:
+        doc += "_No monitoring infrastructure detected._\n\n"
+        completion["9"] = "empty"
+
+    doc += "**[COMPLETE THESE]** (Article 72 — Post-Market Monitoring)\n\n"
+    doc += "Monitoring plan:\n"
+    doc += "> Monitoring frequency: __________\n"
+    doc += "> Performance metrics tracked: __________\n"
+    doc += "> Drift detection method: __________\n"
+    doc += "> Incident escalation process: __________\n"
+    doc += "> Serious incident reporting timeline: within __________ of awareness (Article 73)\n\n"
+
+    # --- README-based system description (supplements Section 1) ---
+    readme_content = None
+    for readme_name in ["README.md", "README.rst", "README.txt", "README"]:
+        readme_path = Path(project_path) / readme_name
+        if readme_path.exists():
+            try:
+                readme_content = read_text_if_safe(readme_path, errors="ignore")
+                if readme_content is None:
+                    raise OSError("refused by scan_safety (symlink/FIFO/oversized)")
+                break
+            except OSError:
+                continue  # unreadable README; try next candidate
+
+    if readme_content:
+        lines_r = readme_content.split("\n")
+        purpose_lines = []
+        found_content = False
+        for line in lines_r:
+            stripped = line.strip()
+            if not stripped:
+                if found_content:
+                    break
+                continue
+            if stripped.startswith("#"):
+                found_content = False
+                continue
+            if stripped.startswith("![") or stripped.startswith("[!["):
+                continue
+            if stripped.startswith("---") or stripped.startswith("==="):
+                continue
+            found_content = True
+            purpose_lines.append(stripped)
+            if len(purpose_lines) >= 5:
+                break
+
+        if purpose_lines:
+            doc += "---\n\n### System Purpose (from README)\n\n"
+            doc += "**[AUTO-DETECTED]**\n\n"
+            doc += "> " + " ".join(purpose_lines) + "\n\n"
+
+    doc += f"""---
+
+_Generated by Regula v{VERSION} — AI Governance Risk Indication_
+_Template based on EU AI Act (Regulation 2024/1689) Annex IV_
+_Generated on {now}_
+"""
+
+    # Store completion data on the doc string for retrieval
+    doc = doc.rstrip()
+    doc += "\n"
+
+    # Attach completion metadata (retrievable by generate_completion_report)
+    _last_completion.clear()
+    _last_completion.update(completion)
+
+    return doc
+
+
+# Module-level completion cache for --completion flag
+_last_completion: dict = {}
+
+
+def generate_sme_simplified_annex_iv(findings: dict, project_name: str, project_path: str) -> str:
+    """Generate the SME-simplified Annex IV technical documentation.
+
+    Article 11(1) second subparagraph of the EU AI Act allows providers
+    that are SMEs (including start-ups) to provide the elements of the
+    technical documentation specified in Annex IV in a simplified manner.
+    The Commission is required to establish a simplified technical
+    documentation form targeted at small and microenterprises (per
+    Article 11(1)) — as of 2026-04-08 this form has not been published.
+    This function produces an interim format that covers the minimum a
+    notified body or enterprise customer typically asks for, sourced
+    from the same scan data as the full Annex IV.
+
+    Returns a single-file Markdown document. Significantly shorter than
+    `generate_annex_iv()` (~30% the length on a representative project).
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    highest = findings["highest_risk"]
+    if isinstance(highest, RiskTier):
+        highest = highest.value
+
+    classifications = findings.get("classifications", []) or []
+    model_files = findings.get("model_files", []) or []
+    ai_deps = extract_ai_dependencies(project_path)
+    ast_data = ast_analyse_project(project_path)
+
+    # Article 6(5) guidance status rendered from the single source of truth
+    # (compliance_check.ARTICLE_6_GUIDELINES_STATUS) so this generated doc
+    # cannot drift when the Commission publishes the guidelines.
+    from compliance_check import ARTICLE_6_GUIDELINES_STATUS as _a6, _uk_date
+    if _a6.get("missed") and _a6.get("current_status") != "finalised":
+        _art6_note = (
+            f"The Commission missed its {_uk_date(_a6['deadline'])} deadline for "
+            "publishing the\nguidelines on Article 6 (Article 6(5)). "
+            "Self-assessment is currently\nunguided — document the rationale thoroughly."
+        )
+    else:
+        _art6_note = (
+            "The Commission has published its Article 6(5) guidelines on "
+            f"high-risk\nclassification (deadline was {_uk_date(_a6['deadline'])}). "
+            "Self-assessment\nunder Article 6(3) can now follow the published guidance."
+        )
+
+    doc = f"""# Annex IV (SME Simplified) — Technical Documentation
+
+> **INTERIM FORMAT.** Article 11(1) of the EU AI Act allows SMEs and
+> microenterprises to provide the elements of Annex IV in a simplified
+> manner. The Commission is required to establish a simplified
+> technical documentation form for SMEs but had not published it as of
+> 2026-04-08. This document is the interim format Regula generates from
+> code scan evidence; replace with the official Commission template
+> when published.
+
+## AI System: {project_name}
+
+| Field | Value |
+|---|---|
+| **Provider** | _[YOUR LEGAL ENTITY NAME]_ |
+| **System name** | {project_name} |
+| **Version** | _[VERSION TAG]_ |
+| **Documentation date** | {now} |
+| **Risk classification (auto)** | {highest.upper().replace('_', '-')} |
+| **Generated by** | Regula v{VERSION} (SME simplified) |
+
+---
+
+## 1. Intended purpose (Annex IV §1(a))
+
+_[Plain-language description of what the system is intended to do, who
+the user is, what input it takes, what output it produces, and any
+foreseeable limitations.]_
+
+A clear intended-purpose description is the single most load-bearing
+element of an SME conformity assessment — it determines whether the
+system falls under Annex III, whether the Article 6(3) exemption could
+apply, and what evidence the rest of this document needs to cover.
+
+---
+
+## 2. AI components and dependencies (Annex IV §1(c), §2(a))
+
+### 2.1 Components detected
+
+| File | Risk tier | Indicators | Articles |
+|---|---|---|---|
+"""
+
+    for c in classifications:
+        articles = ", ".join(c.get("articles", [])) or "—"
+        indicators = ", ".join(c.get("indicators", [])) or "—"
+        doc += f"| {c.get('file', '')} | {(c.get('tier', '') or '').upper().replace('_', '-')} | {indicators} | {articles} |\n"
+
+    if not classifications:
+        doc += "| _No AI components detected_ | — | — | — |\n"
+
+    if model_files:
+        doc += "\n### 2.2 Model files\n\n"
+        for mf in model_files:
+            doc += f"- `{mf}`\n"
+
+    if ai_deps:
+        doc += "\n### 2.3 AI dependencies\n\n"
+        doc += "| Library | Version | Source |\n"
+        doc += "|---|---|---|\n"
+        for dep in ai_deps:
+            ver = dep.get("version") or "_unpinned_"
+            doc += f"| {dep.get('name', '')} | {ver} | {dep.get('source_file', '')} |\n"
+    elif ast_data.get("ai_imports"):
+        doc += "\n### 2.3 AI frameworks (from imports)\n\n"
+        for imp in ast_data["ai_imports"]:
+            doc += f"- `{imp}`\n"
+
+    doc += """
+
+---
+
+## 3. Risk management summary (Annex IV §2(g), Article 9)
+
+_[One paragraph: list the foreseeable risks of harm to health, safety,
+or fundamental rights that the system could create, and the mitigation
+measures you have in place. SMEs are not expected to operate a full
+ISO 42001 risk management system here — a clear, honest, short
+narrative is sufficient at the simplified-form stage.]_
+
+The Regula scan above lists the components Regula classifies as risk
+indicators. Use that list as the input to this section.
+
+---
+
+## 4. Data governance summary (Annex IV §2(d), Article 10)
+
+_[One paragraph: describe the training, validation, and test data sets
+at a high level (sources, type, volume, time period); how data quality
+was assured; and what bias evaluation, if any, was performed. SMEs may
+reference an upstream provider's published documentation if the model
+is used as-is rather than fine-tuned.]_
+
+If you trained or fine-tuned a model, run `regula gpai-check` to
+generate the GPAI Code of Practice training-content summary obligation
+checklist (Article 53(1)(d)).
+
+---
+
+## 5. Human oversight (Annex IV §2(e), Article 14)
+
+_[One paragraph: describe how a human can monitor the system's outputs,
+interpret them correctly, and intervene if needed. For decision-support
+systems, name the human function that makes the final call.]_
+
+If the system involves automated decisions affecting individuals, run
+`regula oversight` to scan the call graph for human review gates and
+attach the JSON output as evidence.
+
+---
+
+## 6. Accuracy, robustness and security (Annex IV §2(f), Article 15)
+
+_[One paragraph: describe the accuracy metrics, robustness testing, and
+cybersecurity measures applied. Include the SBOM if you have one
+(`regula sbom --ai-bom .`).]_
+
+---
+
+## 7. Standards applied (Article 40)
+
+The CEN-CENELEC JTC 21 harmonised standards for the EU AI Act are
+expected in Q4 2026 (accelerated process adopted October 2025). As of
+2026-04-08, no harmonised standard listed in the OJEU under Article 40
+is available. Until then, this row remains empty for most SMEs.
+
+| Standard | Status | Coverage |
+|---|---|---|
+| ISO/IEC 42001:2023 | _OPTIONAL_ | If your organisation operates an AI management system |
+| CEN-CENELEC JTC 21 (pending) | _NOT YET PUBLISHED_ | Targeted Q4 2026 |
+
+---
+
+## 8. Article 6(3) exemption self-assessment (if applicable)
+
+If your system falls in an Annex III area but you believe Article 6(3)
+applies, run:
+
+```bash
+regula exempt --format json > exempt-self-assessment.json
+```
+
+""" + _art6_note + """
+
+---
+
+## 9. Provider declaration
+
+I, _[NAME, FUNCTION]_, declare on behalf of _[LEGAL ENTITY]_ that the
+information provided in this simplified technical documentation is
+accurate to the best of my knowledge, that the system is in conformity
+with the obligations of Regulation (EU) 2024/1689 applicable to it,
+and that the supporting evidence (linked or referenced above) is
+retained for at least 10 years from the date the system is placed on
+the market or put into service (Article 18).
+
+Place: ____________________
+Date:  ____________________
+Signature: ____________________
+
+---
+
+_Generated by Regula v""" + VERSION + ", " + now + """. This is an interim
+simplified form pending publication of the official Commission SME
+template under Article 11(1). Replace with the official template when
+published._
+"""
+    return doc
+
+
+def generate_completion_report(project_name: str) -> str:
+    """Generate a completion percentage report for the last Annex IV generation.
+
+    Must be called after generate_annex_iv().
+    """
+    completion = _last_completion
+    if not completion:
+        return "No completion data available. Run `regula docs` first."
+
+    section_names = {
+        "1": "General Description",
+        "2.1": "Development Methods",
+        "2.2": "Data Requirements",
+        "2.3": "Model Architecture",
+        "3.1": "Human Oversight (Article 14)",
+        "3.2": "Logging Infrastructure (Article 12)",
+        "3.3": "AI Data Flow",
+        "4": "Performance Metrics",
+        "5": "Risk Management",
+        "6": "Lifecycle Changes",
+        "7": "Harmonised Standards",
+        "8": "Declaration of Conformity",
+        "9": "Post-Market Monitoring",
+    }
+
+    status_labels = {
+        "auto": "Auto-populated",
+        "partial": "Partial (needs human input)",
+        "empty": "Empty (needs human input)",
+    }
+
+    lines = [f"Annex IV Completion Report — {project_name}\n"]
+    lines.append(f"{'Section':<30} {'Status':<35}")
+    lines.append(f"{'-'*30} {'-'*35}")
+
+    auto_count = 0
+    partial_count = 0
+    empty_count = 0
+    total = 0
+
+    for key in sorted(section_names.keys()):
+        name = section_names[key]
+        status = completion.get(key, "empty")
+        label = status_labels.get(status, status)
+        lines.append(f"  {key:<6} {name:<22} {label}")
+        total += 1
+        if status == "auto":
+            auto_count += 1
+        elif status == "partial":
+            partial_count += 1
+        else:
+            empty_count += 1
+
+    pct_auto = int(auto_count / total * 100) if total else 0
+    pct_partial = int(partial_count / total * 100) if total else 0
+    pct_empty = int(empty_count / total * 100) if total else 0
+
+    lines.append("")
+    lines.append(f"  Auto-populated:  {auto_count}/{total} ({pct_auto}%)")
+    lines.append(f"  Partial:         {partial_count}/{total} ({pct_partial}%)")
+    lines.append(f"  Needs input:     {empty_count}/{total} ({pct_empty}%)")
+    lines.append("")
+
+    return "\n".join(lines)
+
+
+def generate_qms_scaffold(findings: dict, project_name: str, project_path: str) -> str:
+    """Generate a Quality Management System scaffold per Article 17.
+
+    Article 17 requires providers of high-risk AI systems to put in place a
+    quality management system. This scaffold covers the required elements.
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    highest = findings["highest_risk"]
+    if isinstance(highest, RiskTier):
+        highest = highest.value
+
+    doc = f"""# Quality Management System Scaffold — Article 17
+
+> **IMPORTANT:** This is an auto-generated scaffold. All sections require
+> human completion and review by qualified personnel. A QMS cannot be
+> auto-generated — this provides the structure, not the substance.
+
+## AI System: {project_name}
+
+**Generated by:** Regula v{VERSION}
+**Date:** {now}
+
+---
+
+## 0. Governance and Accountability
+
+{_governance_section()}
+**Accountability structure:**
+
+| Role | Responsibility | Person |
+|------|---------------|--------|
+| AI Officer | Overall AI governance accountability | _[TO BE COMPLETED]_ |
+| DPO | Data protection oversight | _[TO BE COMPLETED]_ |
+| Technical Lead | System design and implementation | _[TO BE COMPLETED]_ |
+| Risk Owner | Risk assessment and monitoring | _[TO BE COMPLETED]_ |
+
+---
+
+## 1. Strategy and Compliance Objectives (Art. 17(1)(a))
+
+_[TO BE COMPLETED]_
+
+- Regulatory framework: EU AI Act (Regulation 2024/1689)
+- Risk classification: {highest.upper().replace('_', '-')}
+- Compliance target date: _[TO BE COMPLETED]_
+
+---
+
+## 2. Techniques, Procedures, and Actions for Design and Development (Art. 17(1)(b))
+
+_[TO BE COMPLETED]_
+
+### 2.1 Development Lifecycle
+- [ ] Requirements specification
+- [ ] Design documentation
+- [ ] Implementation standards
+- [ ] Code review procedures
+- [ ] Testing methodology
+
+### 2.2 Data Management (Article 10)
+- [ ] Training data documentation
+- [ ] Data quality assessment
+- [ ] Bias detection procedures
+- [ ] Data governance framework
+
+---
+
+## 3. Techniques, Procedures, and Actions for Testing and Validation (Art. 17(1)(c))
+
+_[TO BE COMPLETED]_
+
+- [ ] Performance testing criteria
+- [ ] Bias and fairness testing
+- [ ] Robustness testing
+- [ ] Security testing
+- [ ] Validation against intended purpose
+
+---
+
+## 4. Technical Specifications and Standards (Art. 17(1)(d))
+
+_[TO BE COMPLETED]_
+
+| Standard | Status | Notes |
+|----------|--------|-------|
+| ISO 42001 (AI Management System) | [ ] Not started | |
+| EN 18286:2026 (QMS for AI) | [ ] Not started | Published 12 Jul 2026; NOT yet OJ-cited, so no Art. 40 presumption |
+| ISO 23894 (AI Risk Management) | [ ] Not started | |
+
+---
+
+## 5. Systems and Procedures for Data Management (Art. 17(1)(e))
+
+_[TO BE COMPLETED]_
+
+- [ ] Data inventory
+- [ ] Data lineage tracking
+- [ ] Data quality metrics
+- [ ] Data retention policy
+
+---
+
+## 6. Risk Management System (Art. 17(1)(f), Art. 9)
+
+_[TO BE COMPLETED]_
+
+### 6.1 Known Risks
+
+| Risk | Likelihood | Impact | Mitigation | Owner |
+|------|-----------|--------|------------|-------|
+| _[TO BE COMPLETED]_ | | | | |
+
+### 6.2 Risk Monitoring
+- [ ] Monitoring frequency defined
+- [ ] Risk escalation procedures
+- [ ] Incident response plan
+
+---
+
+## 7. Post-Market Monitoring (Art. 17(1)(g), Art. 72)
+
+_[TO BE COMPLETED]_
+
+- [ ] Monitoring plan documented
+- [ ] Feedback collection mechanism
+- [ ] Performance degradation detection
+- [ ] Incident reporting procedures
+
+---
+
+## 8. Record-Keeping (Art. 17(1)(h), Art. 12)
+
+- Regula audit trail: `~/.regula/audit/`
+- Chain integrity verification: `regula audit verify`
+- [ ] Additional logging requirements identified
+- [ ] Log retention policy: _[TO BE COMPLETED]_ years
+
+---
+
+## 9. Corrective Actions (Art. 17(1)(i))
+
+_[TO BE COMPLETED]_
+
+- [ ] Non-conformity identification process
+- [ ] Root cause analysis procedures
+- [ ] Corrective action implementation
+- [ ] Effectiveness verification
+
+---
+
+## 10. Communication with Authorities (Art. 17(1)(j))
+
+_[TO BE COMPLETED]_
+
+- National competent authority: _[TO BE COMPLETED]_
+- Notification procedures: _[TO BE COMPLETED]_
+- Serious incident reporting: _[TO BE COMPLETED]_
+
+---
+
+## 11. Human Oversight (Art. 14)
+
+_[TO BE COMPLETED]_
+
+- [ ] Human oversight mechanism defined
+- [ ] Override capability documented
+- [ ] Operator training programme
+- [ ] Decision escalation criteria
+
+---
+
+## 12. Transparency (Art. 13)
+
+_[TO BE COMPLETED]_
+
+- [ ] Instructions for use documented
+- [ ] Capabilities and limitations described
+- [ ] Performance characteristics disclosed
+- [ ] Intended purpose clearly defined
+
+---
+
+## Review Schedule
+
+| Review | Frequency | Next Due | Responsible |
+|--------|-----------|----------|-------------|
+| Full QMS review | Annual | _[TO BE COMPLETED]_ | AI Officer |
+| Risk assessment | Quarterly | _[TO BE COMPLETED]_ | Risk Owner |
+| Audit trail verification | Monthly | _[TO BE COMPLETED]_ | Technical Lead |
+| Incident review | Per incident | — | AI Officer |
+
+---
+
+_Generated by Regula v{VERSION} — AI Governance Risk Indication_
+_Template based on EU AI Act (Regulation 2024/1689) Article 17_
+_Generated on {now}_
+"""
+
+    return doc
+
+
+def generate_model_card(findings: dict, project_name: str, project_path: str) -> str:
+    """Generate a HuggingFace-compatible model card.
+
+    See https://huggingface.co/docs/hub/model-cards for format.
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    highest = findings["highest_risk"]
+    if isinstance(highest, RiskTier):
+        highest = highest.value
+
+    analysis = analyse_project_code(project_path)
+
+    doc = f"""---
+license: _[TO BE COMPLETED]_
+tags:
+  - regula-scanned
+  - eu-ai-act
+---
+
+# Model Card: {project_name}
+
+> _[AUTO-DETECTED — VERIFY]_ This model card was auto-generated by Regula v{VERSION}.
+> All sections require human review before publication.
+
+## Model Details
+
+### Model Description
+
+- **Developed by:** _[TO BE COMPLETED]_
+- **Model type:** {', '.join(analysis['architectures']) if analysis['architectures'] else '_[TO BE COMPLETED]_'}
+- **Language(s):** _[TO BE COMPLETED]_
+- **License:** _[TO BE COMPLETED]_
+- **EU AI Act Risk Classification:** {highest.upper().replace('_', '-')}
+
+### Model Sources
+
+- **Repository:** {project_path}
+- **Documentation:** _[TO BE COMPLETED]_
+
+## Uses
+
+### Direct Use
+_[TO BE COMPLETED]_
+
+### Out-of-Scope Use
+_[TO BE COMPLETED]_
+
+## Training Details
+
+### Training Data
+"""
+    if analysis["data_sources"]:
+        doc += "_[AUTO-DETECTED — VERIFY]_ Detected data sources:\n\n"
+        for ds in analysis["data_sources"]:
+            doc += f"- {ds}\n"
+    else:
+        doc += "_[TO BE COMPLETED]_\n"
+
+    doc += """
+### Training Procedure
+_[TO BE COMPLETED]_
+
+## Evaluation
+
+### Metrics
+_[TO BE COMPLETED]_
+
+### Results
+_[TO BE COMPLETED]_
+
+## Environmental Impact
+_[TO BE COMPLETED]_
+
+## Technical Specifications
+_[TO BE COMPLETED]_
+
+## EU AI Act Compliance
+
+"""
+    if highest in ("high_risk", "prohibited"):
+        doc += f"**Risk tier:** {highest.upper().replace('_', '-')}\n\n"
+        doc += "Articles 9-15 apply. See Annex IV documentation for full compliance status.\n\n"
+        if analysis["oversight"]:
+            doc += "**Human oversight mechanisms detected:**\n\n"
+            for o in analysis["oversight"]:
+                doc += f"- _[AUTO-DETECTED — VERIFY]_ {o}\n"
+        else:
+            doc += "**No human oversight mechanisms detected.** Article 14 compliance required.\n"
+    elif highest == "limited_risk":
+        doc += "**Risk tier:** LIMITED-RISK\n\nArticle 50 transparency requirements apply.\n"
+    else:
+        doc += (
+            "**Automated result:** NO ELEVATED RISK-TIER INDICATORS\n\n"
+            "This is not a legal classification. Articles 4 and 5 and other "
+            "context-dependent duties may still apply.\n"
+        )
+
+    # --- Enhanced sections ---
+
+    # Intended Use
+    annex_iii_indicators = []
+    for c in findings.get("classifications", []):
+        for ind in c.get("indicators", []):
+            annex_iii_indicators.append(ind)
+
+    doc += "\n## Intended Use\n\n"
+    if annex_iii_indicators:
+        doc += "_[AUTO-DETECTED — VERIFY]_ Based on detected patterns, this system may fall under:\n\n"
+        for ind in sorted(set(annex_iii_indicators)):
+            doc += f"- {ind}\n"
+        doc += "\n"
+    doc += "**Intended use description:** _[TO BE COMPLETED]_\n\n"
+    doc += "**Intended users:** _[TO BE COMPLETED]_\n\n"
+
+    # Known Limitations
+    doc += "## Known Limitations\n\n"
+    doc += "### Accuracy Limitations\n_[TO BE COMPLETED]_\n\n"
+    doc += "### Bias Limitations\n_[TO BE COMPLETED]_\n\n"
+    doc += "### Failure Modes\n_[TO BE COMPLETED — describe known failure modes and their consequences]_\n\n"
+
+    # Bias Risks — conditional on high-risk indicators
+    bias_keywords = {"employ", "biometric", "migra", "credit", "recruit", "hiring", "facial"}
+    bias_relevant = [ind for ind in annex_iii_indicators
+                     if any(kw in ind.lower() for kw in bias_keywords)]
+    if bias_relevant:
+        doc += "## Bias Risks\n\n"
+        doc += ("_[AUTO-DETECTED — VERIFY]_ The following patterns suggest bias documentation "
+                "is particularly important for this system:\n\n")
+        for ind in sorted(set(bias_relevant)):
+            doc += f"- {ind}\n"
+        doc += "\n"
+        doc += "- [ ] Demographic parity assessment: _[TO BE COMPLETED]_\n"
+        doc += "- [ ] Equalised odds assessment: _[TO BE COMPLETED]_\n"
+        doc += "- [ ] Disparate impact analysis: _[TO BE COMPLETED]_\n"
+        doc += "- [ ] Mitigation measures: _[TO BE COMPLETED]_\n\n"
+
+    # Evaluation Methodology
+    doc += "## Evaluation Methodology\n\n"
+    doc += "### Testing Results\n_[TO BE COMPLETED — include metrics, test datasets, and evaluation criteria]_\n\n"
+    doc += "### Benchmarks\n_[TO BE COMPLETED — list benchmark datasets and scores]_\n\n"
+
+    # Out-of-Scope Uses
+    doc += "## Out-of-Scope Uses\n\n"
+    doc += "_[TO BE COMPLETED — describe uses this model is not designed for]_\n\n"
+    doc += ("> **Note:** This model card is not legal advice. It does not constitute "
+            "a conformity assessment or compliance certification.\n\n")
+
+    # Ethical Considerations
+    doc += "## Ethical Considerations\n\n"
+    if highest in ("high_risk", "prohibited"):
+        doc += ("Per Annex IV Section 2(b), high-risk AI systems require documentation of "
+                "foreseeable risks to health, safety, and fundamental rights.\n\n")
+    doc += "- [ ] Impact on fundamental rights: _[TO BE COMPLETED]_\n"
+    doc += "- [ ] Environmental impact: _[TO BE COMPLETED]_\n"
+    doc += "- [ ] Societal impact: _[TO BE COMPLETED]_\n"
+
+    doc += f"""
+---
+
+_Generated by Regula v{VERSION} on {now}_
+"""
+    return doc
+
+
+def generate_ai_governance(findings: dict, project_name: str, project_path: str) -> str:
+    """Generate an AI governance scaffold based on scan findings."""
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    highest = findings["highest_risk"]
+    if isinstance(highest, RiskTier):
+        highest = highest.value
+
+    analysis = analyse_project_code(project_path)
+    ai_deps = extract_ai_dependencies(project_path)
+
+    doc = f"""# AI Governance Document — {project_name}
+
+> **DISCLAIMER:** This document is a scaffold. It requires human review and
+> completion. It is not legal advice.
+
+**Version:** 1.0
+**Date:** {now}
+**Risk Classification:** {highest.upper().replace('_', '-')}
+**Generated by:** Regula v{VERSION}
+
+---
+
+## 1. AI System Description
+
+**Project:** {project_name}
+**Repository:** {project_path}
+
+"""
+
+    # AI's Role — list detected AI dependencies
+    doc += "## 2. AI Dependencies and Their Role\n\n"
+    if ai_deps:
+        doc += "| Dependency | Version | Source | Usage Description |\n"
+        doc += "|------------|---------|--------|-------------------|\n"
+        for dep in ai_deps:
+            doc += (f"| {dep['name']} | {dep.get('version', 'unknown')} "
+                    f"| {dep.get('source_file', 'unknown')} "
+                    f"| _[TO BE COMPLETED]_ |\n")
+    else:
+        doc += "_No AI dependencies detected._ _[TO BE COMPLETED — list any AI components manually]_\n"
+    doc += "\n"
+
+    # Accountability
+    doc += """## 3. Accountability
+
+The _[TO BE COMPLETED: role, e.g. CTO / AI Officer]_ is responsible for all
+AI-generated outputs in this system.
+
+| Role | Responsibility | Person |
+|------|---------------|--------|
+| AI System Owner | Overall accountability for AI system | _[TO BE COMPLETED]_ |
+| Technical Lead | Implementation and maintenance | _[TO BE COMPLETED]_ |
+| Risk Owner | Risk assessment and monitoring | _[TO BE COMPLETED]_ |
+| DPO | Data protection oversight | _[TO BE COMPLETED]_ |
+
+"""
+
+    # Transparency Statement
+    doc += """## 4. Transparency Statement
+
+_[TO BE COMPLETED — describe how users are informed that they are interacting
+with an AI system, per Article 50]_
+
+- [ ] Users are informed the system uses AI
+- [ ] AI-generated outputs are clearly labelled
+- [ ] System capabilities and limitations are documented
+
+"""
+
+    # Conditional: Human Oversight
+    if highest in ("high_risk", "prohibited") or not analysis["oversight"]:
+        doc += "## 5. Human Oversight (Article 14)\n\n"
+        if highest in ("high_risk", "prohibited"):
+            doc += ("**REQUIRED:** This system is classified as "
+                    f"{highest.upper().replace('_', '-')}. "
+                    "Article 14 human oversight documentation is mandatory.\n\n")
+        if analysis["oversight"]:
+            doc += "_[AUTO-DETECTED — VERIFY]_ Detected oversight mechanisms:\n\n"
+            for o in analysis["oversight"]:
+                doc += f"- {o}\n"
+            doc += "\n"
+        else:
+            doc += ("**No human oversight mechanisms detected in code.** "
+                    "Document oversight procedures below.\n\n")
+        doc += "- [ ] Override capability documented\n"
+        doc += "- [ ] Escalation procedures defined\n"
+        doc += "- [ ] Operator training programme in place\n"
+        doc += "- [ ] Decision review process documented\n\n"
+
+    # Risk Assessment — conditional on tier
+    doc += "## 6. Risk Assessment\n\n"
+    if highest == "prohibited":
+        doc += ("**CRITICAL:** Patterns matching Article 5 prohibited practices detected. "
+                "Immediate legal review required.\n\n")
+    elif highest == "high_risk":
+        doc += ("**Significant risks identified.** Articles 9-15 obligations apply. "
+                "Complete the risk assessment below.\n\n")
+    elif highest == "limited_risk":
+        doc += "Transparency obligations apply under Article 50.\n\n"
+    else:
+        doc += ("Standard development practices apply. No mandatory AI Act obligations "
+                "identified at this time.\n\n")
+
+    doc += "| Risk | Likelihood | Impact | Mitigation | Owner |\n"
+    doc += "|------|-----------|--------|------------|-------|\n"
+    doc += "| _[TO BE COMPLETED]_ | | | | |\n\n"
+
+    # Conditional: Data Governance
+    if analysis["data_sources"]:
+        doc += "## 7. Data Governance\n\n"
+        doc += "_[AUTO-DETECTED — VERIFY]_ Detected data sources:\n\n"
+        for ds in analysis["data_sources"]:
+            doc += f"- {ds}\n"
+        doc += "\n"
+        doc += "- [ ] Data quality assessment: _[TO BE COMPLETED]_\n"
+        doc += "- [ ] Data lineage documentation: _[TO BE COMPLETED]_\n"
+        doc += "- [ ] Bias assessment on training data: _[TO BE COMPLETED]_\n"
+        doc += "- [ ] Data retention policy: _[TO BE COMPLETED]_\n\n"
+
+    # Change Log
+    doc += """## Change Log
+
+| Date | Version | Author | Description |
+|------|---------|--------|-------------|
+| _[TO BE COMPLETED]_ | 1.0 | _[TO BE COMPLETED]_ | Initial governance document |
+
+"""
+
+    # Review Schedule
+    doc += """## Review Schedule
+
+This document should be reviewed _[TO BE COMPLETED: quarterly/annually]_.
+
+| Review | Frequency | Next Due | Responsible |
+|--------|-----------|----------|-------------|
+| Full governance review | _[TO BE COMPLETED]_ | _[TO BE COMPLETED]_ | AI System Owner |
+| Risk assessment update | _[TO BE COMPLETED]_ | _[TO BE COMPLETED]_ | Risk Owner |
+
+"""
+
+    # Footer
+    doc += f"""---
+
+_Generated by Regula v{VERSION} on {now}_
+_Compliance framework references: EU AI Act Article 4 (AI literacy), ISO 42001 Section 5.2 (AI policy), NIST AI RMF GOVERN_
+"""
+
+    return doc
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Generate Annex IV technical documentation and QMS scaffolds")
+    parser.add_argument("--project", "-p", default=".", help="Project directory to scan")
+    parser.add_argument("--output", "-o", default="docs", help="Output directory")
+    parser.add_argument("--name", "-n", help="Project name (defaults to directory name)")
+    parser.add_argument("--format", choices=["markdown", "json"], default="markdown")
+    parser.add_argument("--qms", action="store_true", help="Also generate QMS scaffold (Article 17)")
+    parser.add_argument("--all", action="store_true", help="Generate all documentation types")
+    args = parser.parse_args()
+
+    project_path = str(Path(args.project).resolve())
+    project_name = args.name or Path(project_path).name
+
+    print(f"Scanning {project_path}...")
+    findings = scan_project(project_path)
+
+    ai_count = len(findings["ai_files"])
+    model_count = len(findings["model_files"])
+    highest = findings["highest_risk"]
+    if isinstance(highest, RiskTier):
+        highest = highest.value
+    print(f"Found {ai_count} AI-related files, {model_count} model files")
+    print(f"Highest risk tier: {highest.upper().replace('_', '-')}")
+
+    # "docs" is the argparse default sentinel — resolve it against the
+    # PROJECT, not the CWD, or invocations from another directory (or the
+    # test suite) write <cwd>/docs/<project>_annex_iv.md junk. Mirrors
+    # cli_analysis.cmd_docs.
+    if args.output and args.output != "docs":
+        output_dir = Path(args.output)
+    else:
+        output_dir = Path(project_path) / "docs"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    if args.format == "json":
+        output_file = output_dir / f"{project_name}_annex_iv.json"
+        json_findings = dict(findings)
+        json_findings["highest_risk"] = highest
+        output_file.write_text(json.dumps(json_findings, indent=2, default=str), encoding="utf-8")
+        print(f"Documentation written to {output_file}")
+    else:
+        # Annex IV
+        output_file = output_dir / f"{project_name}_annex_iv.md"
+        doc = generate_annex_iv(findings, project_name, project_path)
+        output_file.write_text(doc, encoding="utf-8")
+        print(f"Annex IV documentation written to {output_file}")
+
+        # QMS scaffold
+        if args.qms or getattr(args, "all", False):
+            qms_file = output_dir / f"{project_name}_qms.md"
+            qms_doc = generate_qms_scaffold(findings, project_name, project_path)
+            qms_file.write_text(qms_doc, encoding="utf-8")
+            print(f"QMS scaffold written to {qms_file}")
+
+    try:
+        log_event("documentation_generated", {
+            "project": project_name, "highest_risk": highest,
+            "ai_files": ai_count, "model_files": model_count,
+            "types": ["annex_iv"] + (["qms"] if args.qms or getattr(args, "all", False) else []),
+        }, project_path=project_path)
+    except (OSError,):
+        pass  # audit logging is best-effort
+
+
+def generate_conformity_declaration(
+    project_path: str,
+    system_name: str = "",
+    version: str = "1.0",
+    provider_name: str = "",
+    provider_address: str = "",
+    annex_iii_provision: str = "",
+) -> str:
+    """Generate an EU Declaration of Conformity scaffold per Annex XIII.
+
+    Returns a markdown string. All [TO BE COMPLETED] sections require
+    human review and signature before use.
+
+    Annex XIII requires:
+    (a) Provider name and address
+    (b) AI system name, version, and description
+    (c) Applicable Annex III provision
+    (d) Declaration statement
+    (e) Reference to technical documentation
+    (f) Conformity assessment procedure
+    (g) Standards applied
+    (h) Notified body (if applicable)
+    (i) Place, date, signature
+    """
+    scan = scan_project(project_path)
+    risk = scan.get("highest_risk", RiskTier.NOT_AI)
+    risk_str = risk.value if isinstance(risk, RiskTier) else str(risk)
+
+    contacts = get_governance_contacts()
+    ai_officer = contacts.get("ai_officer", {})
+
+    prov = provider_name or contacts.get("provider_name", "_[TO BE COMPLETED \u2014 Company legal name]_")
+    prov_addr = provider_address or contacts.get("provider_address", "_[TO BE COMPLETED \u2014 Registered address]_")
+    sys_name = system_name or Path(project_path).name
+    annex_iii = annex_iii_provision or "_[TO BE COMPLETED \u2014 Specify which Annex III provision applies, e.g. Annex III(1)(a): biometric identification]_"
+    officer_name = ai_officer.get("name", "_[TO BE COMPLETED]_")
+    officer_role = ai_officer.get("role", "_[TO BE COMPLETED]_")
+
+    today = datetime.now(timezone.utc).strftime("%d %B %Y")
+
+    return f"""# EU Declaration of Conformity
+
+> **AUTO-GENERATED SCAFFOLD \u2014 Requires legal review and authorised signature before use.**
+> This is NOT a legally valid Declaration of Conformity until completed and signed.
+> Reference: EU AI Act Article 47 and Annex XIII.
+
+---
+
+## Declaration
+
+We, the undersigned,
+
+**Provider:** {prov}
+**Address:** {prov_addr}
+
+hereby declare that the following AI system:
+
+**AI system name:** {sys_name}
+**Version:** {version}
+**Risk classification (auto-detected):** {risk_str.upper()} \u2014 _[VERIFY against intended purpose and deployment context]_
+
+is in conformity with Regulation (EU) 2024/1689 of the European Parliament and of the Council on Artificial Intelligence (the EU AI Act).
+
+---
+
+## (a) Provider Details
+
+| Field | Value |
+|-------|-------|
+| Legal name | {prov} |
+| Registered address | {prov_addr} |
+| Contact for this declaration | {officer_name}, {officer_role} |
+
+---
+
+## (b) AI System Description
+
+| Field | Value |
+|-------|-------|
+| System name | {sys_name} |
+| Version/release | {version} |
+| Intended purpose | _[TO BE COMPLETED \u2014 Describe the specific intended purpose per Article 9(2)(a)]_ |
+| Deployment context | _[TO BE COMPLETED \u2014 EU member states where system is placed on market/put into service]_ |
+
+---
+
+## (c) Applicable Annex III Provision
+
+This AI system falls under:
+
+{annex_iii}
+
+---
+
+## (d) Declaration Statement
+
+The AI system identified above, in the version described in this declaration, is in conformity with the following requirements of Regulation (EU) 2024/1689:
+
+- Article 9: Risk management system
+- Article 10: Data and data governance
+- Article 11: Technical documentation (Annex IV)
+- Article 12: Record keeping
+- Article 13: Transparency and provision of information to deployers
+- Article 14: Human oversight
+- Article 15: Accuracy, robustness and cybersecurity
+
+---
+
+## (e) Technical Documentation Reference
+
+Technical documentation maintained per Article 11 and Annex IV is available at:
+
+_[TO BE COMPLETED \u2014 Internal document reference or location]_
+
+Annex IV scaffold generated by Regula is available in the project repository.
+
+---
+
+## (f) Conformity Assessment Procedure
+
+The following conformity assessment procedure was applied (per Article 43):
+
+- [ ] Internal control (Annex VI) \u2014 applicable to most high-risk systems
+- [ ] Third-party assessment by notified body (Annex VII) \u2014 required for certain biometric systems
+
+_[TO BE COMPLETED \u2014 Select the applicable procedure]_
+
+---
+
+## (g) Harmonised Standards and Common Specifications Applied
+
+| Standard | Scope | Applied |
+|----------|-------|---------|
+| ISO/IEC 42001:2023 | AI management systems | _[YES/NO/PARTIAL]_ |
+| ISO/IEC 23894:2023 | AI risk management | _[YES/NO/PARTIAL]_ |
+| ISO/IEC TR 24368 | AI ethical concerns | _[YES/NO/PARTIAL]_ |
+| CEN/CENELEC (pending) | EU AI Act harmonised standards | _[Targeting end of 2026]_ |
+
+_Note: EU AI Act harmonised standards were not finalised as of the date of this scaffold (targeting end of 2026)._
+
+---
+
+## (h) Notified Body
+
+_[TO BE COMPLETED \u2014 If a notified body was involved in the conformity assessment, provide its name, identification number, and a description of the intervention. Otherwise state: "Not applicable \u2014 internal control procedure under Annex VI was applied."]_
+
+---
+
+## (i) Signature
+
+| | |
+|---|---|
+| Place | _[TO BE COMPLETED]_ |
+| Date | {today} |
+| Name | {officer_name} |
+| Function | {officer_role} |
+| Signature | _[SIGNATURE REQUIRED]_ |
+
+---
+
+_This declaration was scaffolded by Regula v{VERSION} on {today}. It must be reviewed by a qualified legal professional before use as a compliance document._
+"""
+
+
+if __name__ == "__main__":
+    main()

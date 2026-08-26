@@ -1,0 +1,28 @@
+{
+  "id": "2026-07-29-annex-xiv-aih-codes",
+  "date": "2026-07-29",
+  "type": "regulation-adoption",
+  "source_url": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
+  "source_title": "Regulation (EU) 2026/1744, Annex XIV (list of codes, categories and corresponding types of AI systems) and recitals 43 and 45",
+  "celex_number": "32026R1744",
+  "affected_articles": [
+    "30"
+  ],
+  "affected_recitals": [
+    "43",
+    "45"
+  ],
+  "summary": "Regulation (EU) 2026/1744 inserts Annex XIV into Regulation (EU) 2024/1689, a three-category code list used to scope the designation of notified bodies: AIP codes (product legislation), AIB codes (biometric Annex III systems) and AIH codes (horizontal, technology-specific). Annex XIV Section 3 defines AIH 0401 as \"AI systems based on other emerging AI technologies not covered by other codes, including Agentic AI\", and AIH 0205 as \"AI systems that learn from their environment, excluding AI systems covered under AIH 0401\". This is the first appearance of the term Agentic AI in binding Union law, and it appears exactly once in the whole regulation, in that table. It is a nomenclature code for assessor competence, NOT a definition: no article defines an agent, no risk tier is keyed to autonomy, and no obligation attaches to the code. Recital 43 states the code list exists so that notified bodies \"are fully competent in regard to the AI systems they are required to assess\".",
+  "mechanical_change": "None. No Regula pattern, tier, crosswalk or obligation changes. Recorded because the code exists and because two widely cited commentaries each reported half of the AIH 0401 label (one as \"agentic AI\", one as \"emerging technologies\"); the operative text is both, in one sentence.",
+  "impact_on_regula_patterns": [
+    {
+      "pattern_id": "*",
+      "change": "reviewed-no-change",
+      "notes": "WATCH ITEM, no change today. Article 1(16) amends Article 30(2) of 2024/1689 to scope notification by reference to Annex XIV, and recital 45 delegates power to amend that annex, so AIH 0401 is the first place agentic-AI obligations would attach if they ever do. TRIGGERS that re-open the OWASP Agentic crosswalk question: (a) any delegated act amending Annex XIV; (b) any AI Office or Commission guidance referencing AIH 0401 or attaching duties to it. Until a trigger fires, any Regula surface mentioning AIH 0401 must state that it is a notified-body competence code carrying no obligations."
+    }
+  ],
+  "confidence": "verified-primary",
+  "verified_by": "EUR-Lex full-text retrieval of eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202601744 on 2026-07-29, HTTP 200. Annex XIV Section 3 code labels extracted verbatim (AIH 0101, 0201, 0202, 0203, 0204, 0205, 0301, 0401); recitals 43 and 45 retrieved in full; the string \"agentic\" occurs exactly once in the document, at Annex XIV Section 3(d). Supersedes the earlier STATE.md closure, which was correct that no definition or obligation exists and incorrect that no category exists.",
+  "verified_on": "2026-07-29",
+  "jurisdiction": "EU"
+}

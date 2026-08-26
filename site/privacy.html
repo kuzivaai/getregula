@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <title>Privacy | Regula</title>
+    <meta name="description" content="What this site does and does not collect: no accounts, submitted forms, cookies or visitor analytics, and browser tools that keep answers on your device.">
+    <meta name="author" content="Regula maintainers">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://getregula.com/privacy.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/privacy.html">
+    <link rel="alternate" hreflang="de" href="https://getregula.com/privacy-de.html">
+    <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/privacy-pt-br.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/privacy.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/privacy.html">
+    <meta property="og:title" content="Privacy | Regula">
+    <meta property="og:description" content="What this site does and does not collect, stated plainly.">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <script>
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/privacy-de.html">DE</a>
+        <a href="/privacy-pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+<article>
+
+<div class="blog-hero" style="padding-bottom:24px;">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / Privacy
+    </div>
+    <h1>Privacy</h1>
+    <p class="standfirst">What this site does and does not collect, stated plainly. Last updated 24 August 2026. This page describes current practice and will be updated if practice changes.</p>
+</div>
+
+<div class="blog-body">
+
+<h2>The short version</h2>
+<p>This site has no accounts, no sign-up forms, no newsletter, and sets no cookies. The five questions on the front page and the fuller browser assessment both run on your device and do not send your answers to us. The one thing to know before using the share feature: a share link contains your encoded answers, so share it only with people you want to see them.</p>
+
+<h2>Who operates this site</h2>
+<p>Regula is an open-source project maintained by the Regula maintainers (see the <a href="/about.html">About page</a>). For any question or request about this page, write to <a href="mailto:support@getregula.com">support@getregula.com</a>.</p>
+
+<h2>What this site collects directly</h2>
+<p>Nothing. There is no login, no form that submits data to us, and no payment or booking flow on this site at present. The five questions on the front page are marked up as a form so that a keyboard and a screen reader treat them as one group; that form has no destination, submits nothing, and its result is worked out in your browser. Email links on the site open your own mail application; nothing is submitted through the site itself.</p>
+
+<h2>Analytics</h2>
+<p>We do not run visitor analytics or advertising trackers on this site.</p>
+
+<h2>The browser assessment</h2>
+<p>The <a href="/assess/">assessment</a> runs entirely in your browser. Your answers are processed on your device and are not sent to us. Exporting a JSON result is a local download. If you use the share feature, your answers are encoded into the link itself: anyone who has the link can decode them, and any service that handles the link, including the server that hosts this site when the link is opened, can see the encoded string. When a shared link is opened, the page removes the encoded answers from the address bar as an additional privacy safeguard.</p>
+
+<h2>Hosting</h2>
+<p>This site is served by GitHub Pages. GitHub may collect visitor IP addresses in its logs when serving any GitHub Pages site, as described in <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages#data-collection" rel="noopener">GitHub's Pages documentation</a> and the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub General Privacy Statement</a>. We do not receive those logs.</p>
+
+<h2>The CLI and packages</h2>
+<p>The Regula command-line tool runs locally and does not upload scanned file contents. Optional crash reporting operates only with explicit opt-in consent, asks before sending anything, and can be suppressed outright with the <code>REGULA_NO_TELEMETRY</code> environment variable. The implementation is open source and can be read in the <a href="https://github.com/kuzivaai/getregula" rel="noopener">repository</a>.</p>
+
+<h2>Email</h2>
+<p>If you email <a href="mailto:support@getregula.com">support@getregula.com</a>, we use what you send only to answer you. You are not added to any list.</p>
+
+<h2>Your questions and rights</h2>
+<p>Depending on where you live, data-protection law may give you rights in relation to processing done by the services named above; their linked policies describe how to exercise them with those providers. For anything involving this site or project, contact <a href="mailto:support@getregula.com">support@getregula.com</a> and we will respond.</p>
+
+<h2>Changes</h2>
+<p>Changes to this page are published here with an updated date. The page's history is public in the site's <a href="https://github.com/kuzivaai/getregula" rel="noopener">repository</a>.</p>
+
+</div>
+
+</article>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

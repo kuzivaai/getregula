@@ -1,0 +1,66 @@
+{
+  "$schema": "https://getregula.com/sa-tracker.schema.json",
+  "version": "1.0",
+  "last_updated": "2026-08-17",
+  "gazette_status": "withdrawn",
+  "withdrawn_by_gazette": "2026-06-12",
+  "withdrawal_announced": "2026-04-26",
+  "withdrawal_approved_by_cabinet": "2026-06-05",
+  "next_review": "Monitor official sources for any replacement publication",
+  "rows": [
+    {
+      "label": "Cabinet approval",
+      "value": "25 March 2026 (combined with Special Sitting 1 April 2026) — draft approved for public comment",
+      "state": "verified",
+      "source": "https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf"
+    },
+    {
+      "label": "Gazette publication",
+      "value": "10 April 2026 — Government Gazette No. 54477, Notice 3880 of 2026",
+      "state": "verified",
+      "source": "https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf"
+    },
+    {
+      "label": "Public comment window",
+      "value": "60 days from 10 April 2026, closing 10 June 2026 at 16h00. The window ran to its close; the ministerial withdrawal announcement of 26 April 2026 preceded it and the withdrawal notice was gazetted two days after it closed",
+      "state": "verified",
+      "source": "https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf"
+    },
+    {
+      "label": "Withdrawal announced",
+      "value": "26 April 2026 — Minister of Communications and Digital Technologies Solly Malatsi announced the withdrawal after an internal process, citing fictitious sources in the reference list. An announcement, not the instrument that withdrew the notice",
+      "state": "verified",
+      "source": "https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy"
+    },
+    {
+      "label": "Withdrawal approved by Cabinet",
+      "value": "5 June 2026 — Cabinet approved the withdrawal, announced by Minister in the Presidency Khumbudzo Ntshavheni at a post-Cabinet media briefing, to allow the policy to be reworked",
+      "state": "verified",
+      "source": "https://www.sanews.gov.za/node/81987"
+    },
+    {
+      "label": "Withdrawal gazetted (operative act)",
+      "value": "12 June 2026 — Government Notice 3880 withdrawn by gazette: \"I, Solly Malatsi, Minister of Communications and Digital Technologies, hereby withdraw Government Notice Number 3880 published in Government Gazette Number 54477 on 10 April 2026 ... withdrawn in its entirety effective from the date of publication.\" This is the act that withdrew the draft. The withdrawal gazette's own number is not asserted here because it was not read. Marked secondary: the operative wording is quoted verbatim by ITWeb of 15 June 2026 and the gazette itself was not retrieved, gov.za being unreachable when this row was written on 17 August 2026",
+      "state": "secondary",
+      "source": "https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz"
+    },
+    {
+      "label": "Revised timeline",
+      "value": "No replacement date asserted until an official record is published",
+      "state": "unverified",
+      "source": "https://www.gov.za"
+    },
+    {
+      "label": "Regulatory model",
+      "value": "Sector-specific, multi-regulator (financial services, health, education, telecoms) — as described in withdrawn draft",
+      "state": "secondary",
+      "source": "https://www.michalsons.com/blog/draft-south-africa-national-ai-policy/81592"
+    },
+    {
+      "label": "Background",
+      "value": "October 2024 DCDT Policy Framework published as the precursor document",
+      "state": null,
+      "source": "https://www.dcdt.gov.za"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+name: "Bug Report"
+description: "Regula crashed or behaved unexpectedly"
+title: "Bug: [description]"
+labels: ["bug", "triage"]
+body:
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: "What happened?"
+      description: "Describe the unexpected behaviour."
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: "Command run"
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: "Error output"
+      render: text
+
+  - type: input
+    id: version
+    attributes:
+      label: "Regula version"
+      placeholder: "1.7.0"
+    validations:
+      required: true
+
+  - type: input
+    id: python_version
+    attributes:
+      label: "Python version"
+      placeholder: "3.12.3"
+
+  - type: input
+    id: os
+    attributes:
+      label: "Operating system"
+      placeholder: "Ubuntu 22.04 / macOS 14.5 / Windows 11"

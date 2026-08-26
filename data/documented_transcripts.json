@@ -1,0 +1,144 @@
+{
+  "_what_this_is": "The transcripts this project publishes that are bound to a tracked fixture, and can therefore be reproduced by running the command the page documents. scripts/verify_transcripts.py runs each command and requires every anchor to appear both on the page and in the real output.",
+  "_why": "Measured 2026-08-14 against a pristine checkout: nine tracked surfaces published a `Verdict:` line as CLI output while no command emitted `Verdict:` at all, two guides published `Overall score: NN%` from a formatter no CLI path reaches, and several pages wrote a detector priority as `confidence: NN%`, wording the tool no longer emits.",
+  "_not_covered": "Transcripts that illustrate a hypothetical project (site/guides/article-9-risk-management.html uses /home/USER/myproject, eu-ai-act-healthcare.html uses sample_medical.py, blog-risk-tiers-in-code.html uses hiring.py) cannot be reproduced by running anything, so they are out of scope here BY DESIGN, not by oversight. They are covered instead by tests/test_documented_transcripts.py::test_no_published_surface_shows_a_retired_output_marker, which proves the marker is retired by running the CLI rather than by asserting it.",
+  "_anchor_choice": "Anchors avoid the `Regula Scan:` header, which prints an absolute path that differs per checkout, and avoid `Model:`, which carries a decision-model date that moves independently. RESOLVED 2026-08-15: the earlier disagreement between [WARN] [ 63] and [INFO] [ 43] on byte-identical input was never non-determinism. `_is_example_file` (scripts/report.py:169) inspects the resolved path's parts for an 'examples' segment, and a match subtracts a flat 20 (scripts/report.py:273). The published tier bands are BLOCK >=80, WARN 50-79, INFO <50, so the same finding scores 63 and prints WARN when the project sits at a path without that segment, and 43 and prints INFO when it sits under examples/. Demonstrated by copying examples/cv-screening-app to a scratch path with an identical SHA-256 and scanning both: the in-repo path returned [INFO] [ 43], the copy returned [WARN] [ 63]. The documented command scans the in-repo path, so 43 is the correct published value and the earlier 63 anchors were recorded against a location the documented command does not use.",
+  "transcripts": [
+    {
+      "surface": "examples/cv-screening-app/README.md",
+      "command": [
+        "check",
+        "examples/cv-screening-app",
+        "--scope",
+        "all"
+      ],
+      "anchors": [
+        "Decision: insufficient_information",
+        "Detector observations (not legal facts):",
+        "High-risk:          1",
+        "INFO tier:          1",
+        "[INFO] [ 43] app.py — Employment and workers management [plan]"
+      ]
+    },
+    {
+      "surface": "examples/cv-screening-app/README.md",
+      "command": [
+        "gap",
+        "--project",
+        "examples/cv-screening-app"
+      ],
+      "anchors": [
+        "Article observations emitted: 0; held pending applicability: 8",
+        "Article evidence is attached only where the decision kernel resolved the corresponding obligation."
+      ]
+    },
+    {
+      "surface": "examples/customer-chatbot/README.md",
+      "command": [
+        "check",
+        "examples/customer-chatbot",
+        "--scope",
+        "all"
+      ],
+      "anchors": [
+        "Detector summary: ARTICLE 50 PATTERNS",
+        "Limited-risk:       1",
+        "INFO tier:          2",
+        "[INFO] [ 20] app.py:29 — Chatbots and conversational AI [develop]",
+        "Chatbots and conversational AI (detector priority: 20)"
+      ]
+    },
+    {
+      "surface": "examples/code-completion-tool/README.md",
+      "command": [
+        "check",
+        "examples/code-completion-tool"
+      ],
+      "anchors": [
+        "High-risk:          0",
+        "Limited-risk:       0",
+        "BLOCK tier:         0",
+        "INFO tier:          0"
+      ]
+    },
+    {
+      "surface": "site/sample-report.html",
+      "command": [
+        "check",
+        "examples/cv-screening-app",
+        "--scope",
+        "all"
+      ],
+      "anchors": [
+        "Decision: insufficient_information",
+        "Detector summary: ANNEX III OR SECURITY PATTERNS",
+        "INFO tier:          1",
+        "[INFO] [ 43] app.py — Employment and workers management [plan]"
+      ]
+    },
+    {
+      "surface": "site/guides/eu-ai-act-recruitment-hiring.html",
+      "command": [
+        "check",
+        "examples/cv-screening-app",
+        "--scope",
+        "all",
+        "--domain",
+        "employment"
+      ],
+      "anchors": [
+        "Decision: insufficient_information",
+        "Resolve the facts listed above before attaching Article 9 to 15 duties.",
+        "INFO tier:          1",
+        "[INFO] [ 43] app.py — Employment and workers management [plan]"
+      ]
+    },
+    {
+      "surface": "site/guides/eu-ai-act-recruitment-hiring.html",
+      "command": [
+        "gap",
+        "--project",
+        "examples/cv-screening-app"
+      ],
+      "anchors": [
+        "Article observations emitted: 0; held pending applicability: 8"
+      ]
+    },
+    {
+      "surface": "README.md",
+      "command": [
+        "check",
+        "examples/cv-screening-app",
+        "--scope",
+        "all"
+      ],
+      "anchors": [
+        "Decision: insufficient_information",
+        "Detector summary: ANNEX III OR SECURITY PATTERNS",
+        "Resolve the facts listed above before attaching Article 9 to 15 duties.",
+        "High-risk:          1",
+        "INFO tier:          1",
+        "[INFO] [ 43] app.py — Employment and workers management [plan]",
+        "Detector priority: 0-100 (higher = more code patterns matched; not a correctness probability)"
+      ]
+    },
+    {
+      "surface": "site/llms-full.txt",
+      "command": [
+        "check",
+        "examples/cv-screening-app",
+        "--scope",
+        "all"
+      ],
+      "anchors": [
+        "Decision: insufficient_information",
+        "Detector summary: ANNEX III OR SECURITY PATTERNS",
+        "Resolve the facts listed above before attaching Article 9 to 15 duties.",
+        "High-risk:          1",
+        "INFO tier:          1",
+        "[INFO] [ 43] app.py — Employment and workers management [plan]",
+        "Detector priority: 0-100 (higher = more code patterns matched; not a correctness probability)"
+      ]
+    }
+  ]
+}

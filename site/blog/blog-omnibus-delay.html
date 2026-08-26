@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>EU AI Act Omnibus Delay: What Happened and What Applies Now</title>
+    <meta name="description" content="Regulation (EU) 2026/1744 defers EU AI Act Annex III high-risk obligations to 2 December 2027 and Annex I obligations to 2 August 2028.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta property="og:title" content="EU AI Act Omnibus Delay: What Happened and What Applies Now">
+    <meta property="og:description" content="The enacted Digital Omnibus defers Annex III high-risk obligations to 2 December 2027 and Annex I obligations to 2 August 2028.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog/blog-omnibus-delay.html">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-10">
+    <meta property="article:author" content="Regula maintainers">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Omnibus Delay: What Happened and What Applies Now">
+    <meta name="twitter:description" content="The enacted Digital Omnibus defers Annex III high-risk obligations to 2 December 2027 and Annex I obligations to 2 August 2028.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+    <link rel="canonical" href="https://getregula.com/blog/blog-omnibus-delay.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-omnibus-delay.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-omnibus-delay.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "EU AI Act Omnibus Delay — Regula",
+        "description": "The Digital Omnibus defers EU AI Act high-risk deadlines from August 2026 to 2 December 2027. Approved by Parliament 16 June and Council 29 June 2026; published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026.",
+        "url": "https://getregula.com/blog/blog-omnibus-delay.html",
+        "datePublished": "2026-04-10",
+        "dateModified": "2026-05-01",
+        "author": {
+            "@type": "Person",
+            "name": "Regula maintainers",
+            "url": "https://getregula.com/about.html"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://getregula.com/assets/regula-logo.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://getregula.com/blog/blog-omnibus-delay.html"
+        },
+        "keywords": ["EU AI Act", "Digital Omnibus", "AI regulation delay", "high-risk AI systems", "developer compliance"]
+    }
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <style>
+        /* Deadline table */
+        .deadline-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--s6) 0;
+            font-size: 14px;
+        }
+        .deadline-table th {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-faint);
+            text-align: left;
+            padding: var(--s3) var(--s4);
+            border-bottom: 1px solid var(--border-strong);
+            font-weight: 500;
+        }
+        .deadline-table td {
+            padding: var(--s3) var(--s4);
+            border-bottom: 1px solid var(--border);
+            color: var(--text-2);
+            line-height: 1.5;
+        }
+        .deadline-table tr:last-child td { border-bottom: none; }
+        .deadline-table .status-current {
+            color: var(--warn);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .deadline-table .status-proposed {
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .deadline-table .status-active {
+            color: var(--success);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Warning box */
+        .warn-box {
+            background: rgba(245,158,11,0.06);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: var(--r-md);
+            padding: var(--s5) var(--s6);
+            margin: var(--s6) 0;
+            font-size: 14px;
+            color: var(--text-2);
+            line-height: 1.65;
+        }
+        .warn-box strong { color: var(--warn); }
+
+        /* Steps list */
+        .action-steps {
+            list-style: none;
+            margin: var(--s6) 0;
+            padding: 0;
+            counter-reset: steps;
+        }
+        .action-steps li {
+            counter-increment: steps;
+            display: flex;
+            gap: var(--s4);
+            padding: var(--s5) 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 0;
+        }
+        .action-steps li:last-child { border-bottom: none; }
+        .action-steps li::before {
+            content: counter(steps);
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+            flex-shrink: 0;
+            width: 32px;
+            line-height: 1.3;
+        }
+        .action-steps li div { flex: 1; }
+        .action-steps li div strong { color: var(--text); display: block; margin-bottom: 4px; }
+        .action-steps li div p { font-size: 14px; margin-bottom: 0; }
+
+        /* Blog CTA */
+        .blog-cta {
+            margin: var(--s10) 0 var(--s8);
+            text-align: center;
+        }
+        .blog-cta .install-box {
+            display: inline-flex;
+            margin-bottom: var(--s4);
+        }
+        .blog-cta p {
+            font-size: 13px;
+            color: var(--text-faint);
+        }
+
+        @media (max-width: 600px) {
+            .deadline-table { font-size: 12px; }
+            .deadline-table th, .deadline-table td { padding: var(--s2) var(--s3); }
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getregula.com/blog/writing.html"},
+            {"@type": "ListItem", "position": 3, "name": "The Omnibus Delay"}
+        ]
+    }
+    </script>
+    <script>
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<article>
+
+<aside style="background:rgba(16,185,129,0.08);border-left:3px solid #10b981;padding:16px 20px;margin:0 0 16px;border-radius:0 8px 8px 0;">
+  <strong>Editor's note (4 August 2026):</strong> The Digital Omnibus is enacted as Regulation (EU) 2026/1744 and has been in force since 27 July 2026. It sets 2 December 2027 for Annex III high-risk obligations and 2 August 2028 for Annex I product-embedded obligations. The original article pre-dated enactment; the body below has been updated to distinguish current law from legislative history.
+  <br><small>Primary source: <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32026R1744">Regulation (EU) 2026/1744</a></small>
+</aside>
+
+<div class="blog-hero">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Blog</a> / EU AI Act Omnibus Delay
+    </div>
+    <div class="blog-meta">
+        <span>10 April 2026</span>
+        <span class="dot">&middot;</span>
+        <span>5 min read</span>
+        <span class="dot">&middot;</span>
+        <span>The Implementation Layer</span>
+    </div>
+    <h1>The EU AI Act Omnibus Delay: What Developers Actually Need to Know</h1>
+    <p class="standfirst">The Digital Omnibus is enacted as Regulation (EU) 2026/1744. Annex III high-risk obligations apply from 2 December 2027 and Annex I product-embedded obligations from 2 August 2028. Here is what those dates mean for development planning.</p>
+</div>
+
+<div class="blog-sep"></div>
+
+<div class="blog-body">
+
+    <h2>What's happening</h2>
+
+    <p>The Digital Omnibus entered into force on 27 July 2026 as <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32026R1744">Regulation (EU) 2026/1744</a>. It defers Annex III high-risk obligations to 2 December 2027 and Annex I product-embedded obligations to 2 August 2028. The regulation also changes other provisions, so this article should not be read as a complete amendment summary.</p>
+
+    <p>On 19 November 2025, the European Commission published the <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-regulation-proposal">Digital Omnibus on AI</a>: a targeted simplification package proposing amendments to Regulation (EU) 2024/1689 (the <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689">EU AI Act</a>). The headline change is a deferral of the application dates for high-risk AI system obligations.</p>
+
+    <p>Since then, two things have happened:</p>
+
+    <ul>
+        <li><strong>13 March 2026</strong> &mdash; the <a href="https://www.addleshawgoddard.com/en/insights/insights-briefings/2026/technology/eu-digital-omnibus-ai-update-council-parliament-agreed-positions/">Council of the EU adopted its general approach</a>, broadly endorsing the Commission's deferral proposal with targeted amendments on Article 6(3) scope and regulatory sandbox timelines.</li>
+        <li><strong>26 March 2026</strong> &mdash; the <a href="https://www.europarl.europa.eu/news/en/press-room/20260323IPR38829/">European Parliament voted 569&ndash;45&ndash;23 (for&ndash;against&ndash;abstentions) in favour of its first-reading position</a>, supporting the deferral but introducing amendments to strengthen Article 50 transparency requirements and to narrow the Article 6(3) procedural-task carve-out. Trilogue negotiations launched the same day.</li>
+    </ul>
+
+    <p>The first trilogue on 28 April 2026 ended without agreement. A follow-up produced political agreement on 7 May, followed by parliamentary and Council approval and Official Journal publication on 24 July 2026. That negotiation history is now background; the enacted text is the authority.</p>
+
+    <h2>What the deadlines look like now</h2>
+
+    <p>Article 5 prohibitions and GPAI obligations are already applicable. Article 50 obligations generally have applied since 2 August 2026; providers of systems covered by Article 50(2) that were already on the market before then have until 2 December 2026. Regulation (EU) 2026/1744 sets 2 December 2027 for Annex III high-risk provisions and 2 August 2028 for Annex I product-embedded provisions.</p>
+
+    <p>The table distinguishes the original AI Act dates from the dates now enacted by Regulation (EU) 2026/1744.</p>
+
+    <table class="deadline-table">
+        <thead>
+            <tr>
+                <th>Obligation</th>
+                <th>Original date</th>
+                <th>Enacted date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Article 5 prohibitions (social scoring, subliminal manipulation, etc.)</td>
+                <td>2 Feb 2025</td>
+                <td>No change</td>
+                <td><span class="status-active">In force</span></td>
+            </tr>
+            <tr>
+                <td>GPAI obligations (Articles 53&ndash;55)</td>
+                <td>2 Aug 2025</td>
+                <td>No change</td>
+                <td><span class="status-active">In force</span></td>
+            </tr>
+            <tr>
+                <td>High-risk: standalone AI systems (Annex III)</td>
+                <td>2 Aug 2026</td>
+                <td>2 Dec 2027</td>
+                <td><span class="status-active">Enacted</span></td>
+            </tr>
+            <tr>
+                <td>High-risk: product-embedded AI (Annex I &mdash; machinery, medical devices, etc.)</td>
+                <td>2 Aug 2026</td>
+                <td>2 Aug 2028</td>
+                <td><span class="status-active">Enacted</span></td>
+            </tr>
+            <tr>
+                <td>Legacy high-risk systems placed on market before new application date</td>
+                <td>2 Aug 2027</td>
+                <td>Deferred proportionally</td>
+                <td><span class="status-proposed">Proposed</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>Sources: <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689">Regulation (EU) 2024/1689</a> (Article 113 application dates), <a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-regulation-proposal">Commission Omnibus proposal</a>, <a href="https://www.mofo.com/resources/insights/251201-eu-digital-omnibus">Morrison Foerster analysis</a>, <a href="https://www.cooley.com/news/insight/2025/2025-11-24-eu-ai-act-proposed-digital-omnibus-on-ai-will-impact-businesses-ai-compliance-roadmaps">Cooley analysis</a>, <a href="https://www.sidley.com/en/insights/newsupdates/2025/12/eu-digital-omnibus-the-european-commission-proposes-important-changes-to-the-eus-digital-rulebook">Sidley analysis</a>.</p>
+
+    <h2>Should you wait or act now?</h2>
+
+    <p>The honest answer: it depends on your risk tier.</p>
+
+    <h3>If your system is prohibited (Article 5)</h3>
+    <p><strong>Nothing has changed.</strong> The prohibitions on social scoring, subliminal manipulation, real-time remote biometric identification in public spaces, and emotion inference in workplaces and education have been in force since 2 February 2025. The Omnibus does not touch these. If Regula flags your code as prohibited-tier, act now.</p>
+
+    <h3>If your system is high-risk (Annex III &mdash; standalone)</h3>
+    <p>Regulation (EU) 2026/1744 moves the Annex III application date from 2 August 2026 to 2 December 2027. This is enacted law, not a forecast. Classification and exact obligations still require contextual assessment.</p>
+
+    <p>The practical advice: <strong>keep your compliance programme running against the deferred 2 December 2027 date for standalone high-risk systems.</strong> The extra time is now approved rather than merely likely, but it is not an excuse to do nothing.</p>
+
+    <h3>If your system is high-risk (Annex I &mdash; product-embedded)</h3>
+    <p>The enacted application date for the Annex I product-embedded path is 2 August 2028. If you are building AI into medical devices, machinery, or other products covered by the Union harmonisation legislation listed in Annex I, check the amended Article 113 and the relevant sector legislation. Standards publication and Official Journal citation are separate events: Article 40's presumption of conformity depends on the conditions in the enacted text.</p>
+
+    <h3>If your system is minimal or limited risk</h3>
+    <p>Do not infer that the amendment is irrelevant solely from a scanner tier. Article 50 obligations generally have applied since 2 August 2026, and the amendment includes a transition to 2 December 2026 for providers of Article 50(2) systems already on the market before 2 August 2026. Scope and other amended provisions still require contextual review.</p>
+
+    <h2>What Regula does about this</h2>
+
+    <p>Regula tracks every regulatory change in a <a href="https://github.com/kuzivaai/getregula/tree/main/content/regulations/delta-log">structured delta log</a>: a versioned, primary-sourced changelog for the EU AI Act. Each entry records the date, affected articles, source URL, and impact on Regula's detection patterns.</p>
+
+    <p>The delta log currently contains entries for:</p>
+    <ul>
+        <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689">Regulation adoption</a> (12 July 2024)</li>
+        <li><a href="https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-regulation-proposal">Commission Omnibus proposal</a> (19 November 2025)</li>
+        <li>Council general approach (13 March 2026)</li>
+        <li>Parliament first-reading position, 569&ndash;45&ndash;23 (26 March 2026)</li>
+        <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32026R1744">Regulation (EU) 2026/1744</a> enacted and in force (27 July 2026)</li>
+    </ul>
+
+    <p>The <code>regula timeline</code> command reports deadline information based on detected candidate risk paths. The <a href="https://github.com/kuzivaai/getregula/tree/main/content/regulations/delta-log">delta log</a> records the enacted Omnibus and its primary source. Contextual legal classification remains a human responsibility.</p>
+
+    <p>The <code>regula regwatch</code> command warns you when your installed ruleset is older than the latest delta-log entry, so you know when to update.</p>
+
+    <h2>What to do this week</h2>
+
+    <p>Run <code>regula check .</code> to identify candidate indicators and use <code>regula timeline</code> as a reference, then confirm classification and dates from intended purpose, deployment context and the enacted amendment. This article records the proposal-stage history; Regulation (EU) 2026/1744 now sets 2 December 2027 for Annex III and 2 August 2028 for Annex I high-risk rules.</p>
+
+    <ol class="action-steps">
+        <li>
+            <div>
+                <strong>Find out your risk tier</strong>
+                <p>Run <code>regula check .</code> in your project root. It reports code-observable indicators associated with candidate categories. It does not determine a legal tier or whether an amendment affects your obligations.</p>
+            </div>
+        </li>
+        <li>
+            <div>
+                <strong>Check whether the delay affects you</strong>
+                <p>If <code>regula check</code> reports high-risk indicators, use <code>regula timeline</code> as a reference. Then determine from intended purpose and deployment context whether Article 6 and Annex III or the Annex I product path applies. The enacted dates are 2 December 2027 and 2 August 2028 respectively.</p>
+            </div>
+        </li>
+        <li>
+            <div>
+                <strong>Follow the delta log</strong>
+                <p>The <a href="https://github.com/kuzivaai/getregula/tree/main/content/regulations/delta-log">delta log</a> records confirmed regulatory changes and their primary sources. Keep your Regula installation current with <code>pip install --upgrade regula-ai</code>.</p>
+            </div>
+        </li>
+    </ol>
+
+    <div class="blog-cta">
+        <div class="install-box" onclick="copyInstall(this)">
+            <span class="dollar">$</span>
+            <span class="cmd">pipx install regula-ai && regula timeline</span>
+            <span class="cp">copy</span>
+        </div>
+        <p>Shows your current EU AI Act deadlines based on your codebase.</p>
+    </div>
+
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
+        <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Regula maintainers &middot;
+        <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+    </p>
+
+    <div class="blog-sep" style="max-width:100%;"></div>
+
+    <div class="warn-box" style="margin-top: var(--s7);">
+        <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions. All regulatory dates cited in this article are sourced from primary EU institutions and named legal analyses; see inline links for each claim.
+    </div>
+
+</div>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-omnibus-decision-framework.html">Omnibus decision framework</a> &mdash; Three-track planning approach for deadline uncertainty</li>
+        <li><a href="/blog/blog-omnibus-trilogue-failed.html">What happened in the Omnibus trilogue</a> &mdash; The 28 April failure, Annex I sticking point, and what followed</li>
+        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Why startups are ignoring the AI Act</a> &mdash; Three triggers that change the calculus for founders</li>
+    </ul>
+    <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
+        <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-omnibus-delay.html&t=The%20EU%20AI%20Act%20Omnibus%20Delay%3A%20What%20Developers%20Need%20to%20Know" rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>
+    </p>
+</div>
+
+</article>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', () => {
+        updateNav();
+    }, { passive: true });
+
+    // Copy install command
+    function copyInstall(el) {
+        navigator.clipboard.writeText('pipx install regula-ai && regula timeline').then(() => {
+            el.classList.add('copied');
+            el.querySelector('.cp').textContent = 'copied';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                el.querySelector('.cp').textContent = 'copy';
+            }, 2000);
+        });
+    }
+</script>
+
+</body>
+</html>

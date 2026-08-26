@@ -1,0 +1,37 @@
+name: CodeQL
+
+# Static security analysis of the Python source. Complements the
+# claim-auditor and security-self-check gates: CodeQL looks for code
+# vulnerabilities (injection, path traversal, unsafe deserialisation);
+# the in-repo gates look for governance and copy defects.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "17 6 * * 1" # weekly, Monday 06:17 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze (python)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      # init and analyze MUST move in lockstep: mixing majors hard-fails
+      # with "Loaded a configuration file for version X, but running
+      # version Y" (reproduced on Dependabot PRs #25/#28, which each
+      # bumped one of the pair). The SHA is the v4.37.3 annotated tag's
+      # commit, verified by dereferencing the tag via the GitHub API.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
+        with:
+          languages: python
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3

@@ -1,0 +1,153 @@
+# Regula ↔ prEN 18282 (Cybersecurity for AI Systems) Traceability Matrix
+#
+# DRAFT STATUS: prEN 18282 is at CEN-CENELEC Public Enquiry stage.
+# Final text may change before expected Q4 2026 publication.
+# This mapping is based on clause structure retrieved from:
+#   - AI Assurance Institute (aiassurance.institute/pren-18282-clauses.html)
+#   - Adam Leon Smith substack (adamleonsmith.substack.com) analysis of
+#     five outcome categories and attack types
+#   accessed: 11 June 2026
+# NOT based on the full enquiry document (access-restricted).
+# Will be revised when the final standard is published.
+#
+# Relationship types:
+#   indicator: Regula detects a code-level indicator relevant to this clause
+#   evidence:  Regula output provides evidence toward meeting this clause
+#   cannot:    This clause requires organisational/runtime input Regula cannot address
+
+schema_version: "1.0-draft"
+standard: "prEN 18282"
+standard_title: "Artificial intelligence — Cybersecurity specifications for AI systems"
+maps_to: "EU AI Act Article 15"
+draft_status: "Public Enquiry"
+expected_publication: "Q4 2026"
+last_verified: "2026-06-11"
+source: "AI Assurance Institute + Adam Leon Smith commentary (not full enquiry text)"
+access_note: "Full enquiry document not publicly accessible without CEN-CENELEC member access. Clause structure and outcome categories verified via secondary commentary only."
+
+# Five outcome categories from the standard
+outcome_categories:
+  - prevent
+  - detect
+  - respond
+  - resolve
+  - control
+
+# Five AI-specific attack types
+attack_types:
+  - data_poisoning
+  - model_poisoning
+  - adversarial_attacks
+  - confidentiality_attacks
+  - model_flaws
+
+mappings:
+  # Clause 6: Relevant circumstances
+  - clause: "6"
+    topic: "Identify relevant circumstances for the AI system"
+    relationship: "indicator"
+    regula_categories:
+      - "supply_chain_model"
+      - "hardcoded_model_path"
+    note: "Regula detects model supply chain patterns (model loading, dependency sources). Contextual threat modelling is an organisational activity."
+
+  # Clause 7-8: Vulnerabilities and threats
+  - clause: "7-8"
+    topic: "Identify vulnerabilities and threats"
+    relationship: "indicator"
+    regula_categories:
+      - "unsafe_deserialization"
+      - "prompt_injection_vulnerable"
+      - "prompt_injection_indirect"
+      - "prompt_injection_tool_output"
+      - "data_poisoning"
+      - "supply_chain_model"
+      - "exposed_api_key_env"
+      - "system_prompt_leakage"
+      - "rag_poisoning"
+    note: "Regula detects code patterns associated with known vulnerability classes. Does not perform dynamic vulnerability assessment or penetration testing."
+
+  # Clause 9: Cybersecurity risks
+  - clause: "9"
+    topic: "Determine cybersecurity risks"
+    relationship: "indicator"
+    regula_categories:
+      - "unsafe_deserialization"
+      - "exposed_api_key_env"
+      - "sensitive_info_disclosure"
+      - "no_output_validation"
+      - "excessive_agency"
+    note: "Detector priority (a count of matched code patterns) provides a risk signal. Risk determination requires threat modelling with organisational context."
+
+  # Clause 10: Measures across five outcomes per attack type
+  - clause: "10"
+    topic: "Select measures across five outcomes for each attack type"
+    outcome_mapping:
+      prevent:
+        relationship: "indicator"
+        regula_categories:
+          - "unsafe_deserialization"
+          - "prompt_injection_vulnerable"
+          - "prompt_injection_indirect"
+          - "prompt_injection_tool_output"
+          - "no_output_validation"
+          - "hardcoded_model_path"
+          - "supply_chain_model"
+          - "exposed_api_key_env"
+        note: "Regula detects absence of preventive controls (input validation, safe loading, credential management)"
+      detect:
+        relationship: "indicator"
+        regula_categories:
+          - "data_poisoning"
+          - "rag_poisoning"
+          - "system_prompt_leakage"
+          - "sensitive_info_disclosure"
+        note: "Regula flags patterns associated with detectable attack vectors. Runtime detection requires monitoring infrastructure."
+      respond:
+        relationship: "cannot"
+        regula_categories: []
+        note: "Incident response is a runtime/organisational capability, not a code property"
+      resolve:
+        relationship: "cannot"
+        regula_categories: []
+        note: "Recovery procedures require operational runbooks, not code scanning"
+      control:
+        relationship: "indicator"
+        regula_categories:
+          - "excessive_agency"
+          - "no_grounding"
+          - "missing_temperature_control"
+          - "unbounded_token_generation"
+          - "no_error_handling_ai_call"
+        note: "Regula detects absent control measures (guardrails, grounding, output limits)"
+
+  # Clause 11: Testing
+  - clause: "11"
+    topic: "Testing requirements"
+    relationship: "evidence"
+    regula_categories: []
+    note: "regula self-test and the benchmark suite provide evidence of scanner validation. Testing the AI system itself requires runtime tools (Giskard, Promptfoo, etc.)"
+
+  # Clause 12: Documentation
+  - clause: "12"
+    topic: "Documentation requirements"
+    relationship: "evidence"
+    regula_categories: []
+    note: "regula docs and regula conform generate documentation scaffolds. Substance must be provided by humans."
+
+coverage_summary:
+  total_clauses: 7
+  indicator: 4
+  evidence: 2
+  cannot: 1
+  ai_security_categories_mapped: 16
+  ai_security_categories_total: 17
+  unmapped_category: "no_grounding appears in control outcome only — covered"
+  note: "16 of 17 AI_SECURITY_PATTERNS categories appear in at least one clause mapping. All five outcome categories addressed: prevent (8 categories), detect (4), control (5). Respond and resolve are organisational — Regula cannot address these."
+
+  outcome_coverage:
+    prevent: "8 categories — strongest coverage"
+    detect: "4 categories"
+    respond: "0 — organisational"
+    resolve: "0 — organisational"
+    control: "5 categories"

@@ -1,0 +1,510 @@
+# cv-screening-app — Try Regula in 10 minutes
+
+A minimal high-risk reference project (Annex III, Category 4 — Employment)
+designed as a **complete evaluation journey**. Run every Regula workflow
+against a single realistic fixture, watch every artefact Regula produces,
+verify the whole thing without touching your own codebase.
+
+Intended for: maintainers evaluating Regula, auditors reviewing the output
+format, contributors learning the command surface, or anyone who wants to
+see what a full Article 43 evidence pack looks like before running Regula
+on their own project.
+
+Allow around ten minutes end-to-end. No cloud services, no API keys,
+no registrations — every command below runs locally.
+
+---
+
+## Step 0 — install
+
+```bash
+pipx install regula-ai    # or: uvx --from regula-ai regula
+regula --version           # expect regula 1.7.6 or newer
+```
+
+Clone the repo to get this example:
+
+```bash
+git clone https://github.com/kuzivaai/getregula.git
+cd getregula
+```
+
+---
+
+## Step 1 — scan (`regula check`) — 30 seconds
+
+```bash
+regula check examples/cv-screening-app --scope all
+```
+
+Expected output (verified against Regula v1.9.0 on 2026-08-14):
+
+```
+Regula Scan: /home/USER/getregula/examples/cv-screening-app
+============================================================
+
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observations (not legal facts):
+
+  Detector summary: ANNEX III OR SECURITY PATTERNS
+  The scanner found patterns relevant to Annex III or security review.
+  Resolve the facts listed above before attaching Article 9 to 15 duties.
+
+  Why:
+    1. app.py:1 — Employment and workers management
+       (Art. 9, Art. 10)
+  Files scanned:      1
+  Prohibited:         0
+  Credentials:        0
+  High-risk:          1
+  Agent autonomy:     0
+  Limited-risk:       0
+  Suppressed:         0
+  BLOCK tier:         0
+  WARN tier:          0
+  INFO tier:          1
+  Lifecycle:          develop: 1, plan: 1
+
+  HIGH-RISK INDICATORS:
+    [INFO] [ 43] app.py — Employment and workers management [plan]
+
+  Questions for human review (1):
+    ? app.py:1 — Annex III, Category 4
+      Employment and workers management (detector priority: 43)
+============================================================
+```
+
+`--scope all` is required. This fixture lives under `examples/`, which the
+default production scope excludes, so the plain command reports
+`NO ACTIVE PRODUCTION-SCOPE PATTERNS` and shows nothing. The bracketed 43 is a
+detector priority, not a probability and not a compliance score; earlier
+versions of this file wrote it as a confidence percentage, and the tool no
+longer emits that wording.
+
+**Living under `examples/` costs this finding 20 points, and that is worth
+understanding before you read the number across to your own code.**
+`classify_provenance` treats any path containing an `example`, `demo`,
+`sample`, `tutorial` or `cookbook` segment as example provenance, and example
+provenance subtracts a flat 20. The published tier bands are BLOCK at 80 or
+above, WARN from 50 to 79, and INFO below 50, so the deduction also moves this
+finding from WARN to INFO. The same directory copied to a path without such a
+segment scores 63 and prints WARN. Verified on 2026-08-15 by scanning
+`examples/cv-screening-app` and a byte-identical copy at a neutral path, and
+recorded as the prior audit. **In a real project, this code would score 63.**
+
+**What to notice — three things, and two of them are precision features:**
+
+1. Regula matched the employment vocabulary in `app.py`
+   (`hire_probability`, `applicants`, `job`) and classified the project
+   as **high-risk, Annex III Category 4**. That is an indication, not a
+   legal determination — Article 6 + Article 6(3) still govern the
+   applicability decision for your real system.
+2. The employment pattern only fired because this project **declares its
+   domain**: `regula-policy.yaml` here contains `system.domain:
+   employment`. Since v1.7.5, domain-gated high-risk patterns stay
+   silent unless the project declares the domain (or you pass
+   `--domain`) — employment vocabulary in generic code was the largest
+   false-positive source. Delete the policy file and re-run to see the
+   finding reported as "suppressed by domain gating".
+3. `--scope all` is needed because Regula classifies files under
+   `examples/` as example-provenance and, by default (`--scope
+   production`), excludes their non-minimal findings from the verdict.
+   On your real project you run plain `regula check .` — both
+   precision features exist so that *that* scan is quiet unless it
+   should not be.
+
+---
+
+## Step 2 — remediation plan (`regula plan`) — 10 seconds
+
+```bash
+regula plan --project examples/cv-screening-app
+```
+
+Expected output (abbreviated — full plan is 8 tasks; verified against
+Regula v1.9.0 on 2026-08-06):
+
+```
+# Remediation Plan — cv-screening-app
+Generated: 2026-08-06T…
+Tasks: 8
+
+## Priority: HIGH
+
+TASK-001 [HIGH] Article 17 — Quality Management System
+  Article: 17
+  Action: Address compliance gaps for Article 17 (Quality Management System):
+            - No quality policy or quality objectives found
+  Effort: ~4-8h
+  Deadline: 2 December 2027 for Annex III (Omnibus published in OJ
+            2026-07-24, in force from 2026-07-27)
+  Status: [ ] Not Started
+
+TASK-002 [HIGH] Article 12 — Record-Keeping
+  …
+
+TASK-003 [HIGH] Article 13 — Transparency
+  …
+```
+
+**What to notice:** Regula converted the scan findings into a prioritised
+remediation list mapped to EU AI Act Articles 9 through 15 (plus the
+Article 17 QMS gap). Use this to populate your own JIRA / Linear backlog.
+
+---
+
+## Step 3 — gap assessment (`regula gap`) — 15 seconds
+
+```bash
+regula gap --project examples/cv-screening-app
+```
+
+Expected output (verified against Regula v1.9.0 on 2026-08-14):
+
+```
+Decision: insufficient_information
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8
+```
+
+**What to notice:** eight article observations are *held*, not emitted. Until a
+person establishes that the subject is an AI system and that the jurisdiction
+applies, Regula attaches no Article 9 to 15 evidence to it.
+
+Earlier versions of this file showed a per-article percentage and an overall
+score. That output has been removed from the tool, not just from this page: a
+percentage against an article reads as a compliance measurement, and Regula does
+not make compliance determinations.
+
+---
+
+## Step 4 — full evidence pack (`regula conform --zip`) — 30 seconds
+
+```bash
+rm -rf /tmp/regula-demo
+regula conform \
+  --project examples/cv-screening-app \
+  --output /tmp/regula-demo \
+  --name cv-screening-app \
+  --zip
+```
+
+Expected terminal output (verified against Regula v1.7.6 on 2026-07-20;
+`<date>` is your run date):
+
+```
+Generating conformity assessment evidence pack for examples/cv-screening-app...
+Conformity evidence pack written to: /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>
+Format: regula.evidence.v1 (format_version 1.0)
+Contains 26 files with SHA-256 integrity hashes.
+Overall readiness: 29%
+Bundle written to:      /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>.regula.zip
+Verify bundle with:     regula verify /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>.regula.zip
+Start with: /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>/00-assessment-summary.json
+```
+
+**What was generated:**
+
+```
+conformity-evidence-cv-screening-app-<date>/
+├── 00-assessment-summary.json          ← start here
+├── README.md
+├── manifest.json                       ← SHA-256 integrity, declares regula.evidence.v1
+├── 01-risk-classification/
+│   ├── findings.json
+│   └── coverage.json
+├── 02-risk-management-art9/
+│   ├── evidence.json
+│   └── coverage.json
+├── 03-data-governance-art10/
+├── 04-technical-documentation-art11/
+│   ├── annex-iv-draft.md               ← the Annex IV doc your auditor expects
+│   ├── evidence.json
+│   └── coverage.json
+├── 05-record-keeping-art12/
+│   ├── audit-trail.json
+│   └── …
+├── 06-transparency-art13/
+├── 07-human-oversight-art14/
+│   └── oversight-analysis.json         ← cross-file human-in-the-loop analysis
+├── 08-accuracy-robustness-art15/
+│   ├── sbom.json                       ← CycloneDX AI-BOM
+│   └── …
+├── 09-supply-chain/
+│   ├── dependency-report.json
+│   └── sbom.json
+├── 10-declaration-of-conformity/
+│   └── declaration-template.md         ← Article 47 DoC scaffold
+└── 11-remediation/
+    └── remediation-plan.md
+
++ conformity-evidence-cv-screening-app-<date>.regula.zip    ← portable bundle
+```
+
+Open `00-assessment-summary.json` for the top-level readiness score and
+article-by-article breakdown. Open `04-technical-documentation-art11/annex-iv-draft.md`
+for the Annex IV draft a notified body would review.
+
+**What Regula did NOT produce** (see each `coverage.json`): the
+organisational parts of the compliance evidence. Risk Management System
+documentation (Article 9 process records), Quality Management System
+(Article 17), Post-Market Monitoring (Article 72), and Fundamental Rights
+Impact Assessment (Article 27) are out of scope for a code scanner.
+`regula conform --organisational` produces a questionnaire for those.
+
+The format produced above is the
+[Regula Evidence Format v1](../../docs/spec/regula-evidence-format-v1.md) —
+a versioned, schema-validated, portable spec that any third-party tool
+can read without re-running Regula.
+
+---
+
+## Step 5 — verify the pack (`regula verify`) — 5 seconds
+
+The manifest binds every file to a SHA-256 hash. Anyone can verify the
+pack has not been tampered with, **without re-running Regula**:
+
+```bash
+regula verify /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>
+```
+
+Expected output:
+
+```
+Verifying: /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>
+  Format: regula.evidence.v1 v1.0 (generated by Regula 1.7.6)
+============================================================
+  ✓ 01-risk-classification/findings.json — OK
+  ✓ 01-risk-classification/coverage.json — OK
+  …
+  ✓ README.md — OK
+============================================================
+  26/26 files verified, 0 issues
+  All files match manifest. Pack integrity confirmed.
+```
+
+Verify the `.regula.zip` bundle directly (useful for transporting evidence
+to a reviewer):
+
+```bash
+regula verify /tmp/regula-demo/conformity-evidence-cv-screening-app-<date>.regula.zip
+```
+
+Write a machine-readable verification report (for audit trails):
+
+```bash
+regula verify \
+  /tmp/regula-demo/conformity-evidence-cv-screening-app-<date> \
+  --strict \
+  --format json \
+  --report /tmp/regula-demo/verify-report.json
+```
+
+`--strict` fails if the pack does not declare `format=regula.evidence.v1`
+(useful in CI to reject legacy packs).
+
+### Optional — tamper-evident signing + timestamping (v1.1)
+
+For audit-relevant provenance, sign the manifest with an Ed25519 key
+and witness its existence with an RFC 3161 timestamp. Signing binds
+*who*, timestamping binds *when* — together they close the "motivated
+attacker" gap that the SHA-256 manifest alone does not protect against.
+
+Install the optional crypto extra once:
+
+```bash
+pipx install "regula-ai[signing]"
+# or:  pip install "regula-ai[signing]"
+```
+
+Regenerate the pack with both signatures:
+
+```bash
+regula conform \
+  --project examples/cv-screening-app \
+  --output /tmp/regula-demo-signed \
+  --name cv-screening-app \
+  --zip \
+  --sign \
+  --timestamp
+```
+
+First `--sign` generates an Ed25519 keypair at `~/.regula/signing.key`
+(override with `--signing-key <path>` or the `REGULA_SIGNING_KEY` env
+var). **Back up this key separately — it cannot be regenerated, and
+key rotation is not supported in v1.1.** Do not commit it to git.
+`--timestamp` contacts `https://freetsa.org/tsr` by default;
+override with `--tsa-url <url>` for a different TSA.
+
+Expected output additions:
+
+```
+Format: regula.evidence.v1 (format_version 1.1)
+…
+Signed: Ed25519 signature embedded (verify with `regula verify …`).
+Timestamped: RFC 3161 token from https://freetsa.org/tsr at <your run time>.
+```
+
+Verify the signed + timestamped pack:
+
+```bash
+regula verify /tmp/regula-demo-signed/conformity-evidence-cv-screening-app-*
+```
+
+Expected new lines:
+
+```
+Format: regula.evidence.v1 v1.1 (generated by Regula 1.7.6)
+Signature: VERIFIED (ed25519 signature verified)
+Timestamp: VERIFIED (timestamp hash matches manifest; gen_time=… (signer-chain NOT independently verified))
+============================================================
+  26/26 files verified, 0 issues
+  All files match manifest. Pack integrity confirmed.
+```
+
+Any post-signing edit — changing a finding's hash, touching a file,
+re-ordering keys — invalidates the signature and `regula verify` exits 1.
+See [`docs/spec/regula-evidence-format-v1.md`](../../docs/spec/regula-evidence-format-v1.md),
+§4.5 (signing) and §4.6 (timestamp), for the canonical form and the
+trust boundaries (in particular, v1.1 does not independently validate
+the TSA signer-cert chain — consumers with a higher trust bar should
+run the raw token through `openssl ts -verify`).
+
+---
+
+## Step 6 — red-team hand-off (`regula handoff`) — 10 seconds
+
+Regula detects LLM entrypoints and emits a scoped config for a
+behavioural-testing tool (Giskard / garak / promptfoo). Regula covers the
+static layer; this command hands off to the dynamic layer.
+
+```bash
+regula handoff giskard examples/cv-screening-app --output /tmp/giskard.yaml
+cat /tmp/giskard.yaml
+```
+
+Expected config (abbreviated):
+
+```yaml
+# Giskard scan config — generated by `regula handoff giskard`
+model:
+  name: REPLACE_ME
+  model_type: text_generation
+  feature_names:
+    - "prompt"
+scan:
+  scans:
+    - "robustness"
+    - "performance"
+    - "hallucination"
+    - "harmful_content"
+    - "stereotypes"
+    - "information_disclosure"
+  threshold: 0.2
+regula_handoff:
+  version: 1
+  generated_at: "2026-07-16T…"
+  entrypoint_count: 0
+```
+
+Terminal also prints OWASP LLM Top 10 coverage (5/10 for Giskard on this
+fixture; `regula handoff garak` covers 7/10 with different emphasis). No
+entrypoints were detected here because the fixture is a classical ML
+model, not an LLM — run the same command on a real LLM project to see
+entrypoint detection in action.
+
+---
+
+## Step 7 — (optional) bias evaluation — 1 minute
+
+If you have [Ollama](https://ollama.ai) installed with a supported model:
+
+```bash
+ollama pull llama3.2
+regula bias --project examples/cv-screening-app --model llama3.2
+```
+
+Two benchmarks run (CrowS-Pairs + BBQ) with Wilson and bootstrap
+confidence intervals. Aggregated scores only — no individual stereotype
+pairs are displayed. See the
+[bias methodology + ethics statement](../../README.md#bias-evaluation--methodology-and-ethics)
+in the main README.
+
+---
+
+## What you now have
+
+Every Regula artefact, end to end, against one project:
+
+| Artefact | Path |
+|---|---|
+| Scan finding | (terminal, Step 1) |
+| Remediation plan | (terminal, Step 2) |
+| Gap report | (terminal, Step 3) |
+| Evidence pack — 26 files mapped to Articles 9–15 + supply chain + DoC | `/tmp/regula-demo/conformity-evidence-…/` |
+| Annex IV draft | `…/04-technical-documentation-art11/annex-iv-draft.md` |
+| Declaration of Conformity scaffold | `…/10-declaration-of-conformity/declaration-template.md` |
+| AI-BOM (CycloneDX) | `…/08-accuracy-robustness-art15/sbom.json` |
+| Integrity manifest | `…/manifest.json` (regula.evidence.v1) |
+| Portable bundle | `….regula.zip` |
+| Verification report | `/tmp/regula-demo/verify-report.json` |
+| Ed25519-signed manifest (v1.1, optional) | `/tmp/regula-demo-signed/…/manifest.json` |
+| RFC 3161 timestamp token (v1.1, optional) | embedded in the signed manifest |
+| Red-team config | `/tmp/giskard.yaml` |
+
+This is the evidence package you show an auditor, a buyer's procurement
+team, or a regulator who asks "can you prove what your AI system does?"
+
+---
+
+## Why Regula flags this project
+
+Annex III (4)(a) lists *"AI systems intended to be used for recruitment
+or selection of natural persons, in particular to place targeted job
+advertisements, to analyse and filter job applications, and to evaluate
+candidates"* as high-risk. If deployed for real hiring, Articles 9–15
+apply: risk management, data governance, documentation, logging,
+transparency, human oversight, accuracy.
+
+## What Regula does NOT tell you
+
+Whether this code, in your context, is actually in scope of Annex III.
+That depends on Article 6 (significant risk of harm) and the Article 6(3)
+exemption for narrow procedural or preparatory tasks. Regula surfaces the
+risk indicators; the applicability decision — and the legal advice that
+accompanies it — is yours.
+
+See [`docs/what-regula-does-not-do.md`](../../docs/what-regula-does-not-do.md)
+for the full scope statement.
+
+---
+
+## What the fixture does (for contributors)
+
+`app.py` trains a toy logistic-regression model on in-memory job
+applicants and ranks new candidates by predicted hire probability.
+No network calls, no persistence, no real PII. Output is deterministic
+given the hardcoded training data. The vocabulary (`JobApplicant`,
+`hire_probability`, `rank_candidates`) triggers Regula's employment
+patterns — see `data/patterns/high_risk__employment.yaml`.
+
+Two other reference projects in this directory demonstrate the other
+risk tiers:
+
+- [`examples/customer-chatbot`](../customer-chatbot) — Article 50
+  limited-risk chatbot transparency obligation
+- [`examples/code-completion-tool`](../code-completion-tool) — minimal-risk
+  dev-time assistant (clean scan)

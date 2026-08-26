@@ -1,0 +1,13 @@
+{
+  "id": "2026-03-26-parliament-position",
+  "date": "2026-03-26",
+  "type": "parliament-position",
+  "source_url": "https://www.europarl.europa.eu/news/en/press-room",
+  "source_title": "European Parliament — position on the Digital Omnibus on AI (first reading)",
+  "affected_articles": ["6", "13", "26", "43", "50", "113"],
+  "summary": "The European Parliament adopts its first-reading position on the Digital Omnibus on AI. The vote establishes Parliament's negotiating mandate for trilogue. Parliament's position broadly supports the deferral but introduces amendments strengthening transparency requirements (Article 50) and narrowing the Article 6(3) narrow-procedural-task carve-out.",
+  "mechanical_change": "Parliament position locked in. Amendments tabled on Article 50 transparency thresholds and Article 6(3) scope. No direct amendments to the core high-risk obligation articles (9-15).",
+  "confidence": "reported-unverified",
+  "verified_by": "Regula project — press release URL needs to be identified and linked before this entry is promoted",
+  "verified_on": "2026-04-09"
+}

@@ -1,0 +1,152 @@
+[build-system]
+requires = ["setuptools>=68,<84"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "regula-ai"
+# Version is single-sourced from scripts/constants.py (R1: the 16 Jul 2026
+# release rehearsal built a mis-versioned wheel because pyproject and
+# constants had to be bumped in lockstep and only one was).
+dynamic = ["version"]
+description = "Local code-observable AI governance risk indicators for contextual human review"
+readme = "README.md"
+license = "(Apache-2.0 OR EUPL-1.2) AND LicenseRef-DRL-1.1"
+license-files = ["LICENSE.txt", "LICENSE.EUPL", "docs/LICENSE.Detection.Rules.md", "NOTICE"]
+requires-python = ">=3.10"
+authors = [{name = "The Implementation Layer"}]
+keywords = ["ai-governance", "eu-ai-act", "compliance", "claude-code", "risk-indication", "south-korea", "colorado", "multi-jurisdiction", "static-analysis", "offline", "mcp-server", "github-action", "sarif"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Security",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+yaml = ["pyyaml~=6.0"]
+ast = ["tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23"]
+# pytest pinned to the 9.x major (current stable). Dev-only extra —
+# contributors install this, end users never do. CI installs latest
+# pytest, which resolves to 9.x under this constraint.
+# jsonschema backs tests/test_delta_log_schema.py, which validates the delta
+# log against its JSON Schema and deliberately fails rather than skips when the
+# library is absent (a schema test that quietly does nothing is a blank gate).
+# It was undeclared here and in CI, so the suite passed only on interpreters
+# that happened to have it installed globally.
+test = ["pytest~=9.0", "jsonschema~=4.0"]
+# weasyprint bounded across 7 majors (62-69). The lower bound stays at 62
+# because that is the oldest major the PDF rendering has been validated
+# against; the upper bound tracks dependabot's tested bumps (<69 at commit
+# cad76a0, <70 on 16 Jul 2026). Tighter compatible-release
+# (e.g. ~=68.0) would break existing installs, so the bounded range stands.
+pdf = ["weasyprint>=62,<70"]
+# sentry-sdk 2.x stable; 3.x not yet released. ~=2.8 is equivalent to
+# >=2.8,<3 but classifies as compatible-release for clearer intent.
+sentry = ["sentry-sdk~=2.8"]
+telemetry = ["sentry-sdk~=2.8"]
+# Flask 3.x is the current stable major; 4.x will break. Tightened from
+# >=3.0 to bound the major.
+web = ["flask~=3.1"]
+# Ed25519 manifest signing (v1.1 §4.5) and RFC 3161 TSA timestamping
+# (v1.1 §4.6). `cryptography`'s Ed25519 API has been stable since v2.6
+# (2019). `asn1crypto` is pure-Python with no native deps and powers the
+# TimeStampToken parser at verify time; the stdlib-only DER encoder still
+# handles the request path.
+#
+# The 50.0.0 floor excludes four advisories present in the previously locked
+# 46.0.7 wheel (PYSEC-2026-3552, PYSEC-2026-3553, PYSEC-2026-3554 and
+# GHSA-537c-gmf6-5ccf). Regula does not call the affected PKCS#7 decrypt or
+# PolicyBuilder paths, but its RFC 3161 verifier does parse untrusted
+# certificates, so carrying the vulnerable wheel would be needless residual
+# risk. The upper bound remains explicit for release reproducibility.
+signing = ["cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
+all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
+
+[project.urls]
+Homepage = "https://getregula.com"
+Repository = "https://github.com/kuzivaai/getregula"
+Issues = "https://github.com/kuzivaai/getregula/issues"
+Documentation = "https://github.com/kuzivaai/getregula/blob/main/README.md"
+Changelog = "https://github.com/kuzivaai/getregula/blob/main/CHANGELOG.md"
+"Trust pack" = "https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md"
+"Delta log" = "https://github.com/kuzivaai/getregula/tree/main/content/regulations/delta-log"
+
+[project.scripts]
+regula = "scripts.cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "scripts.constants.VERSION"}
+
+[tool.setuptools.packages.find]
+# Explicitly include only packages that are part of the public CLI surface.
+# Internal go-to-market tooling and ad-hoc scripts must NOT be added here —
+# put them under tools/ (not packaged) instead.
+include = ["scripts*", "references*"]
+exclude = ["tools*", "benchmarks*", "tests*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.md"]
+"references" = ["*.yaml", "*.json"]
+# BBQ bias-eval sample: without it, `regula conform` in an installed
+# context prints "BBQ eval failed" (found 16 Jul 2026 running the
+# evaluation journey against the published 1.7.5 wheel).
+#
+# dashboard/index.html: `regula api-server` registers as "Start the REST API
+# server with web dashboard" and `_handle_dashboard` serves this file at
+# /v1/dashboard. It was not packaged, so the installed product answered that
+# endpoint with a 302-byte JSON message advising the user to "Place index.html
+# in scripts/dashboard/", which is an instruction to edit site-packages. The
+# tree served 52,443 bytes of HTML for the same request. Found 2026-08-17 by
+# building a wheel from this tree and diffing its behaviour against the tree,
+# which no session had done; same class as the 1.7.6 `regula dpv` break above.
+# Coverage is enforced at rest by tests/test_installed_artefact.py, which reads
+# REQUIRED_PACKAGED_DATA rather than restating this list.
+"scripts" = ["bias_data/*.json", "dpv_data/*.json", "eli_data/*.json",
+             "dashboard/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+
+[tool.bandit]
+# Project-level rationale for bandit skips. Every suppression below is a
+# policy decision, not a per-site ignore, and each is justified in the
+# docstring of the relevant module. Hard security checks (B101 assert,
+# B102 exec, B301 pickle, B302 marshal, B303 md5 for crypto, B304 ciphers,
+# B305 cipher modes, B501–B507 ssl/tls, B601–B602 shell injection,
+# B608 sql injection, B609 linux wildcard) REMAIN ENABLED.
+exclude_dirs = ["tests", "benchmarks", "dist", "build", "tools"]
+skips = [
+    # B110 try_except_pass / B112 try_except_continue — Regula uses these
+    # extensively for best-effort, optional-feature, and fallback paths
+    # (optional deps, optional metadata, graceful feed parsing, etc.).
+    # Every such block is a deliberate "degrade gracefully" rather than
+    # crash the CLI. Treating each as a security finding produces noise
+    # without action.
+    "B110",
+    "B112",
+    # B404 — importing subprocess is not a vulnerability on its own.
+    # All actual subprocess call sites are reviewed under B603/B607.
+    "B404",
+    # B603 — subprocess without shell=True is the SAFER option (no shell
+    # interpretation). Flagged by bandit as a reminder, not a bug.
+    "B603",
+    # B607 — starting a process with a partial path ("git", "sphinx-build").
+    # All call sites are dev tooling / benchmark scripts that must honour
+    # the developer's PATH; hardcoding /usr/bin/git would break on macOS
+    # (/opt/homebrew/bin) and Windows. Dev tooling is never invoked by
+    # the installed CLI on an end-user machine.
+    "B607",
+    # B311 — random.random() / random.choice() used for non-security
+    # purposes (bias-eval A/B position shuffle, pattern example picking,
+    # etc.). Cryptographic RNG (secrets module) is used where it matters
+    # — see scripts/timestamp.py:_build_tsq nonce generation.
+    "B311",
+]

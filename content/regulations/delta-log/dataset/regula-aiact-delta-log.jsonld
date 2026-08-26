@@ -1,0 +1,497 @@
+{
+  "@context": {
+    "eli": "http://data.europa.eu/eli/ontology#",
+    "dct": "http://purl.org/dc/terms/",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "regula": "https://getregula.com/ns/delta/"
+  },
+  "@graph": [
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/",
+      "@type": "dcat:Dataset",
+      "dct:title": "Regula EU AI Act Regulatory Delta-Log (machine-readable dataset)",
+      "dct:description": "A versioned, primary-source-linked, machine-readable record of changes to the EU AI Act (Regulation (EU) 2024/1689) and its amendments, including the Digital Omnibus on AI (Regulation (EU) 2026/1744). Each event carries the affected articles, a dated summary, the primary source, and an explicit verification-confidence grade. Legal acts are identified by EUR-Lex ELI IRIs; amendment relations use the ELI ontology. This is risk and currency INFORMATION, not legal advice.",
+      "dct:creator": "Regula (getregula.com)",
+      "dct:issued": {
+        "@value": "2024-07-12",
+        "@type": "xsd:date"
+      },
+      "dct:modified": {
+        "@value": "2026-07-29",
+        "@type": "xsd:date"
+      },
+      "dct:license": [
+        {
+          "@id": "https://www.apache.org/licenses/LICENSE-2.0"
+        },
+        {
+          "@id": "https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12"
+        }
+      ],
+      "dcat:landingPage": {
+        "@id": "https://getregula.com/regulations/delta-log/"
+      },
+      "dcat:keyword": [
+        "EU AI Act",
+        "Regulation (EU) 2024/1689",
+        "Digital Omnibus",
+        "Regulation (EU) 2026/1744",
+        "regulatory change",
+        "delta log",
+        "AI governance",
+        "compliance",
+        "ELI",
+        "DPV"
+      ],
+      "dct:conformsTo": [
+        {
+          "@id": "https://w3id.org/dpv/legal/eu/aiact"
+        },
+        {
+          "@id": "http://data.europa.eu/eli/ontology"
+        }
+      ],
+      "regula:generatorVersion": "2.0.0",
+      "regula:eventCount": 13,
+      "regula:vocabularyNote": "The DPVCG EU-AIAct vocabulary (a W3C Community Group report, not a ratified W3C Standard) is referenced because Regula's scan-result export emits its concepts. Per-event DPV concepts are not asserted: the vocabulary currently has no regulatory-change-event concepts. Regula proposes adding them upstream (DPVCG issue #229)."
+    },
+    {
+      "@id": "http://data.europa.eu/eli/reg/2024/1689/oj",
+      "@type": "eli:LegalResource",
+      "eli:title": "Regulation (EU) 2024/1689 (Artificial Intelligence Act)"
+    },
+    {
+      "@id": "http://data.europa.eu/eli/reg/2026/1744/oj",
+      "@type": "eli:LegalResource",
+      "eli:title": "Regulation (EU) 2026/1744 of the European Parliament and of the Council of 8 July 2026 (Digital Omnibus on AI)",
+      "eli:date_publication": {
+        "@value": "2026-07-24",
+        "@type": "xsd:date"
+      },
+      "eli:amends": [
+        {
+          "@id": "http://data.europa.eu/eli/reg/2024/1689/oj"
+        },
+        {
+          "@id": "http://data.europa.eu/eli/reg/2018/1139/oj"
+        },
+        {
+          "@id": "http://data.europa.eu/eli/reg/2023/1230/oj"
+        }
+      ]
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2024-07-12-regulation-adopted",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2024-07-12-regulation-adopted",
+      "dct:date": {
+        "@value": "2024-07-12",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "regulation-adoption",
+      "dct:description": "The EU AI Act is published in the Official Journal of the European Union. Regulation (EU) 2024/1689 enters into force 20 days later (1 August 2024). Subsequent application dates are staggered: Article 5 prohibitions from 2 February 2025, General-Purpose AI rules from 2 August 2025, governance and penalty provisions from 2 August 2025, high-risk system obligations from 2 August 2026, and high-risk systems placed on the market before 2 August 2026 from 2 August 2027 (per Article 113).",
+      "dct:source": {
+        "@id": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689"
+      },
+      "regula:sourceTitle": "Regulation (EU) 2024/1689 of the European Parliament and of the Council of 13 June 2024 laying down harmonised rules on artificial intelligence",
+      "regula:affectedArticles": [
+        "*"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "dct:subject": {
+        "@id": "http://data.europa.eu/eli/reg/2024/1689/oj"
+      },
+      "regula:celexNumber": "32024R1689",
+      "regula:verifiedOn": {
+        "@value": "2026-04-09",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Regula project",
+      "regula:mechanicalChange": "Adoption and publication of the full regulation text. Establishes risk-based categorisation (prohibited, high-risk, limited-risk, minimal-risk), obligations for providers and deployers, conformity assessment procedures, post-market monitoring, and penalties up to EUR 35 million or 7% of global annual turnover."
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2025-11-19-digital-omnibus-proposal",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2025-11-19-digital-omnibus-proposal",
+      "dct:date": {
+        "@value": "2025-11-19",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "amendment-proposal",
+      "dct:description": "The European Commission publishes the Digital Omnibus on AI: a targeted simplification package proposing to defer the application dates for high-risk AI system obligations and to clarify transparency duties. The proposal shifts the Annex III high-risk deadline from 2 August 2026 to a later date (widely reported as 2 December 2027 in the proposal text), with further deferrals for systems placed on the market before the new application date. Procedural simplifications are proposed for SMEs and for conformity assessment steps.",
+      "dct:source": {
+        "@id": "https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package"
+      },
+      "regula:sourceTitle": "Digital Omnibus on AI — European Commission proposal for targeted amendments to Regulation (EU) 2024/1689",
+      "regula:affectedArticles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-04-09",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Regula project",
+      "regula:mechanicalChange": "Proposed deferral: Annex III high-risk obligations from 2 August 2026 → 2 December 2027. Annex I high-risk systems: deferred into 2028. Proposed clarifications to Article 6(3) on narrow procedural tasks and to Article 50 transparency thresholds. Not yet adopted — requires Council + Parliament agreement through the ordinary legislative procedure."
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-03-13-council-position",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-03-13-council-position",
+      "dct:date": {
+        "@value": "2026-03-13",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "council-position",
+      "dct:description": "The Council of the European Union adopts its general approach on the Digital Omnibus on AI. Member State representatives agree on a negotiating position that broadly endorses the Commission proposal's deferral of high-risk AI system obligations, with targeted amendments on the scope of Article 6(3) and on Member State sandbox establishment timelines. The general approach opens the door to trilogue negotiations with the European Parliament.",
+      "dct:source": {
+        "@id": "https://www.consilium.europa.eu/en/press/press-releases/"
+      },
+      "regula:sourceTitle": "Council of the EU — general approach on the Digital Omnibus on AI",
+      "regula:affectedArticles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "regula:confidence": "reported-unverified",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-04-09",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Regula project — primary source URL is a Council press release aggregator; the specific press release for this file needs to be identified and linked before this entry is promoted to verified-primary",
+      "regula:mechanicalChange": "Council general approach locked in. Negotiating mandate extends the Commission's deferral proposal and adds clarifications on regulatory sandbox timelines (Article 57) and on the classification of narrow procedural tasks (Article 6(3)). No direct amendments to Articles 9-15 obligations themselves."
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-03-26-parliament-position",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-03-26-parliament-position",
+      "dct:date": {
+        "@value": "2026-03-26",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "parliament-position",
+      "dct:description": "The European Parliament adopts its first-reading position on the Digital Omnibus on AI. The vote establishes Parliament's negotiating mandate for trilogue. Parliament's position broadly supports the deferral but introduces amendments strengthening transparency requirements (Article 50) and narrowing the Article 6(3) narrow-procedural-task carve-out.",
+      "dct:source": {
+        "@id": "https://www.europarl.europa.eu/news/en/press-room"
+      },
+      "regula:sourceTitle": "European Parliament — position on the Digital Omnibus on AI (first reading)",
+      "regula:affectedArticles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "regula:confidence": "reported-unverified",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-04-09",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Regula project — press release URL needs to be identified and linked before this entry is promoted",
+      "regula:mechanicalChange": "Parliament position locked in. Amendments tabled on Article 50 transparency thresholds and Article 6(3) scope. No direct amendments to the core high-risk obligation articles (9-15)."
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-04-28-trilogue-target",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-04-28-trilogue-target",
+      "dct:date": {
+        "@value": "2026-04-28",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "amendment-proposal",
+      "dct:description": "Target date for the first trilogue meeting between Council, Parliament and Commission on the Digital Omnibus on AI. Not an adopted change — this entry tracks the calendar milestone so the Regula countdown and the FAQ copy can reflect the live state of negotiations. Once the trilogue outcome is known, this entry will be superseded by a `trilogue-outcome` entry with the specific compromise text.",
+      "dct:source": {
+        "@id": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+      },
+      "regula:sourceTitle": "Trilogue negotiations — Digital Omnibus on AI (target date)",
+      "regula:affectedArticles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "regula:confidence": "reported-unverified",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-04-09",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Regula project — calendar milestone from legal-firm reporting; official confirmation pending",
+      "regula:mechanicalChange": "No change yet — placeholder for the negotiation milestone."
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-04-29-trilogue-failed",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-04-29-trilogue-failed",
+      "dct:date": {
+        "@value": "2026-04-29",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "amendment-proposal",
+      "dct:description": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after about 12 hours of negotiations. The sticking point was the conformity-assessment architecture for AI in regulated products under Annex I: Parliament pushed to move sectoral legislation (machinery, medical devices, toys) from Section A to Section B, letting sectoral safety law handle those AI systems; the Council resisted, to preserve AI Act oversight for sensitive sectors. A follow-up trilogue is scheduled for about 13 May 2026. The Cypriot Council Presidency must close the file before its term ends 30 June 2026; otherwise the Lithuanian Presidency takes over from 1 July. If the Omnibus is not formally adopted before 2 August 2026, the original AI Act obligations (Regulation 2024/1689, Article 113) apply as written on that date. Multiple advisory firms (IAPP, DLA Piper, Modulos) now recommend preparing against the original 2 August 2026 deadline rather than the proposed extensions.",
+      "dct:source": {
+        "@id": "https://iapp.org/news/a/ai-act-omnibus-what-just-happened-and-what-comes-next"
+      },
+      "regula:sourceTitle": "AI Act Omnibus: first political trilogue ends without agreement",
+      "regula:affectedArticles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-05-01",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "IAPP, Modulos, The Next Web, Computerworld, Ropes & Gray — multiple independent legal and policy sources confirmed the trilogue outcome",
+      "regula:mechanicalChange": "No change to the AI Act text. The proposed delay (2 Dec 2027 for standalone Annex III, 2 Aug 2028 for Annex I products) remains a proposal, not law. Original deadlines remain legally binding.",
+      "regula:supersedes": {
+        "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-04-28-trilogue-target"
+      }
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-05-07-trilogue-agreement",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-05-07-trilogue-agreement",
+      "dct:date": {
+        "@value": "2026-05-07",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "trilogue-outcome",
+      "dct:description": "The follow-up political trilogue on the Digital Omnibus on AI succeeded on 7 May 2026, reaching a provisional agreement between the Council and the European Parliament after the 28-29 April round had ended without agreement. The agreement defers the application of obligations for standalone high-risk AI systems under Annex III from 2 August 2026 to 2 December 2027, and for high-risk AI embedded in regulated products under Annex I to 2 August 2028. It also introduces new prohibitions (non-consensual intimate deepfakes / CSAM) applying from 2 December 2026 and moves the Article 50(2) synthetic-content marking transition to 2 December 2026. The provisional agreement was approved by Member States' ambassadors (Coreper) on 13 May 2026.",
+      "dct:source": {
+        "@id": "https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/"
+      },
+      "regula:sourceTitle": "Artificial intelligence: Council and Parliament agree to simplify and streamline rules",
+      "regula:affectedArticles": [
+        "6",
+        "50",
+        "51",
+        "57",
+        "113"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-07-22",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Council of the EU press release (7 May 2026); European Parliament press release 20260427IPR42011; corroborated by White & Case, Inside Privacy, IAPP",
+      "regula:mechanicalChange": "Still a proposal at this stage: the provisional agreement changes no AI Act text until it is formally adopted by both institutions and published in the Official Journal. Original deadlines (including 2 August 2026 for Annex III) remained legally binding as at this date.",
+      "regula:supersedes": {
+        "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-04-29-trilogue-failed"
+      }
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-06-16-parliament-adoption",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-06-16-parliament-adoption",
+      "dct:date": {
+        "@value": "2026-06-16",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "parliament-position",
+      "dct:description": "The European Parliament's plenary approved the Digital Omnibus on AI on 16 June 2026 by 423 votes to 57, with 174 abstentions, endorsing the 7 May provisional agreement. This confirms Parliament's side of the deferral of Annex III high-risk obligations to 2 December 2027 and Annex I product-embedded obligations to 2 August 2028, and the new prohibition on non-consensual intimate deepfakes. The IMCO and LIBE committees had approved the agreed text on 2 June 2026. Formal adoption still required the Council's final approval.",
+      "dct:source": {
+        "@id": "https://www.europarl.europa.eu/news/en/press-room/20260611IPR45207/ai-act-ep-approves-simplification-measures-and-nudifier-app-ban"
+      },
+      "regula:sourceTitle": "AI Act: EP approves simplification measures and \"nudifier\" app ban",
+      "regula:affectedArticles": [
+        "6",
+        "50",
+        "51",
+        "57",
+        "113"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-07-22",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "European Parliament press release 20260611IPR45207 (16 June 2026); European Parliament Legislative Train Schedule (updated 20 June 2026)",
+      "regula:mechanicalChange": "No change to the AI Act text yet: Parliament's approval is one of the two co-legislator adoption steps. The amendment does not take legal effect until the Council also adopts it and the act is published in the Official Journal. Original deadlines remained binding as at this date.",
+      "regula:supersedes": {
+        "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-05-07-trilogue-agreement"
+      }
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-06-29-council-adoption",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-06-29-council-adoption",
+      "dct:date": {
+        "@value": "2026-06-29",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "council-position",
+      "dct:description": "The Council of the EU gave its final approval to the Digital Omnibus on AI on 29 June 2026, completing the co-legislators' formal adoption after the European Parliament's 16 June plenary vote. This locks in the deferral of Annex III standalone high-risk obligations from 2 August 2026 to 2 December 2027, and Annex I product-embedded high-risk obligations to 2 August 2028, together with the new prohibitions and the Article 50(2) transition to 2 December 2026. The only remaining step is publication in the Official Journal of the European Union; the act enters into force on the third day after publication.",
+      "dct:source": {
+        "@id": "https://www.consilium.europa.eu/en/press/press-releases/2026/06/29/artificial-intelligence-council-gives-final-green-light-to-simplify-and-streamline-rules/"
+      },
+      "regula:sourceTitle": "Artificial intelligence: Council gives final green light to simplify and streamline rules",
+      "regula:affectedArticles": [
+        "6",
+        "50",
+        "51",
+        "57",
+        "113"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-07-22",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Council of the EU press release (29 June 2026); European Parliament Legislative Train Schedule",
+      "regula:mechanicalChange": "The amendment is now adopted by both co-legislators but is not yet in force: it takes legal effect three days after Official Journal publication, which is pending (expected before 2 August 2026). Until publication, the original 2 August 2026 deadline for Annex III high-risk obligations technically remains binding, though the deferral is now settled in substance.",
+      "regula:supersedes": {
+        "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-06-16-parliament-adoption"
+      }
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-07-12-en-18286-published",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-07-12-en-18286-published",
+      "dct:date": {
+        "@value": "2026-07-12",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "harmonised-standard",
+      "dct:description": "CEN-CENELEC approved EN 18286 on 12 July 2026 and it is published as EN 18286:2026. It is the first AI Act standard from JTC 21 to reach publication, and it operationalises the Article 17 quality management system duty for providers of high-risk AI systems. Its public enquiry ran 30 October 2025 to 22 January 2026. CRITICAL DISTINCTION: publication is not Official Journal citation. As at this entry's verification date the standard has NOT been cited in the OJ, so it does NOT yet confer the Article 40 presumption of conformity, and a provider relying on it carries the full evidentiary burden. Any statement that EN 18286 is unpublished or at formal vote is now false; any statement that it grants presumption of conformity is also false.",
+      "dct:source": {
+        "@id": "https://www.sgs.com/en-se/news/2026/07/en-18286-a-new-european-standard-for-ai-quality-management-and-eu-ai-act-readiness-has-been-published"
+      },
+      "regula:sourceTitle": "EN 18286:2026, Artificial Intelligence: Quality management system for EU AI Act regulatory purposes (CEN-CENELEC JTC 21)",
+      "regula:affectedArticles": [
+        "17",
+        "40"
+      ],
+      "regula:confidence": "verified-secondary",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-07-29",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Corroborated 2026-07-29 across three independent sources: SGS (accredited certification body) announcing publication; Adam Leon Smith (named CEN-CENELEC JTC 21 participant) publishing \"EN 18286:2026 is finally published, the first AI Act standard to reach that milestone\"; and the Cloud Security Alliance research note of 28 April 2026 for the underlying legal point that presumption of conformity arises only on OJ citation. NOT verified at a CEN-CENELEC primary page: the official AI topic page carries no standard-level status, and the JTC 21 tracker consulted is a June 2026 snapshot that itself instructs readers to check the live work programme. The OJ-citation negative is therefore an absence-of-evidence finding, not a positive confirmation, and should be re-checked before any surface relies on it.",
+      "regula:mechanicalChange": "references/harmonised_standards.yaml qms-art17 moved from status in_progress to published, published_ref set to EN 18286:2026 with published_date 2026-07-12, while oj_reference stays null and confers_presumption stays false. The blog paragraph asserting the standards were not expected before Q4 2026 was corrected, and the generated documentation checklist row was corrected on both counts (it said awaiting publication, and gave the enquiry as closing October 2026 when it closed January 2026)."
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-07-20-art50-final-guidelines",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-07-20-art50-final-guidelines",
+      "dct:date": {
+        "@value": "2026-07-20",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "commission-guidance",
+      "dct:description": "The Commission published the final version of its Guidelines on transparency obligations for providers and deployers of AI systems on 20 July 2026, under the Article 96(1)(d) empowerment to issue guidance on the practical implementation of Article 50. The draft was published 8 May 2026 and its consultation closed 3 June 2026. The final guidelines arrived thirteen days before the Article 50 obligations for new systems started to apply on 2 August 2026. They cover interactive systems, generative systems and deepfakes, and sit alongside the voluntary Code of Practice on marking and labelling of AI-generated content of 10 June 2026. CRITICAL DISTINCTION: these are guidance, not binding law. They aid consistent application but do not amend Article 50, and following them is not a presumption of conformity.",
+      "dct:source": {
+        "@id": "https://digital-strategy.ec.europa.eu/en/library/guidelines-obligations-ai-act-art50"
+      },
+      "regula:sourceTitle": "Guidelines on transparency obligations for providers and deployers of AI systems (European Commission, 20 July 2026)",
+      "regula:affectedArticles": [
+        "50",
+        "96"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "regula:verifiedOn": {
+        "@value": "2026-08-19",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "Direct retrieval on 2026-08-19 of the Commission's official library page and final 51-page guidelines document, plus the official EUR-Lex text of Regulation (EU) 2024/1689 Article 96(1)(d). Article 50(1)-(5) and the Article 111(4) transition were cross-checked against official EUR-Lex texts for Regulations (EU) 2024/1689 and 2026/1744.",
+      "regula:mechanicalChange": "scripts/timeline.py gained a 2026-07-20 timeline row for the final guidelines and its module docstring moved the Article 50 guidelines status from draft-with-open-consultation to final-published; the docstring's Article 6 guidelines line was corrected to the 19 May 2026 draft with the targeted consultation closed 23 July 2026. site/blog/blog-art50-code-of-practice.html gained a dated editor's note linking the final guidelines. On 2026-08-19 the guidance was used to verify paragraph-specific decision facts, correct disclosure templates, and build a bounded synthetic signal-regression corpus."
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-07-24-oj-publication",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-07-24-oj-publication",
+      "dct:date": {
+        "@value": "2026-07-24",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "regulation-adoption",
+      "dct:description": "The Digital Omnibus on AI was published in the Official Journal of the European Union on 24 July 2026 as Regulation (EU) 2026/1744, amending Regulations (EU) 2024/1689, (EU) 2018/1139 and (EU) 2023/1230. It entered into force on 27 July 2026. The amendment sets 2 December 2027 for the Article 6(2)/Annex III path and 2 August 2028 for the Article 6(1)/Annex I path. Providers of Article 50(2) systems placed on the market before 2 August 2026 must comply by 2 December 2026. New Article 5(1)(ba), 5(1)(bb), 5(1a) and 5(1b) apply from 2 December 2026. The regulation also amends definitions, AI literacy, classification, governance, conformity, sandbox, transparency and other provisions; it is not only a deadline amendment.",
+      "dct:source": {
+        "@id": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj"
+      },
+      "regula:sourceTitle": "Regulation (EU) 2026/1744 of the European Parliament and of the Council of 8 July 2026 (Digital Omnibus on AI)",
+      "regula:affectedArticles": [
+        "5",
+        "6",
+        "11",
+        "50",
+        "113"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "dct:subject": {
+        "@id": "http://data.europa.eu/eli/reg/2026/1744/oj"
+      },
+      "regula:celexNumber": "32026R1744",
+      "regula:verifiedOn": {
+        "@value": "2026-07-27",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "EUR-Lex ELI record retrieved 2026-07-27 (automated fetch of eur-lex.europa.eu/eli/reg/2026/1744/oj/eng returned the regulation text): confirms Regulation (EU) 2026/1744 of 8 July 2026, OJ 24 July 2026, entry into force on the third day following publication (recital 46), Annex III deferral to 2 December 2027 and Annex I deferral to 2 August 2028 (recital 40, quoted), new Article 5 points (ba)/(bb) prohibitions, amended Article 11(1) SME/SMC simplified documentation, and the four-month marking transitional period for providers on the market before 2 August 2026 (recital 38). Previously corroborated by two independent specialised legal publishers (EU Law Live, 24 Jul 2026; NicFab). The retrieval was automated; a maintainer eyeball of the EUR-Lex page remains a cheap extra assurance step.",
+      "regula:mechanicalChange": "Regula's OMNIBUS_OJ_DATE flipped to 2026-07-24, deriving the in-force date 2026-07-27. Applicable deadlines in reports, registration packets, explanations and timelines now carry the deferred dates as current law, with the pre-Omnibus dates kept as history and all in-force wording date-qualified (\"in force from 2026-07-27\") so nothing overstated legal status during the three days between publication and effect.",
+      "regula:supersedes": {
+        "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-06-29-council-adoption"
+      }
+    },
+    {
+      "@id": "https://getregula.com/regulations/delta-log/dataset/event/2026-07-29-annex-xiv-aih-codes",
+      "@type": "regula:RegulatoryDeltaEvent",
+      "dct:identifier": "2026-07-29-annex-xiv-aih-codes",
+      "dct:date": {
+        "@value": "2026-07-29",
+        "@type": "xsd:date"
+      },
+      "regula:eventType": "regulation-adoption",
+      "dct:description": "Regulation (EU) 2026/1744 inserts Annex XIV into Regulation (EU) 2024/1689, a three-category code list used to scope the designation of notified bodies: AIP codes (product legislation), AIB codes (biometric Annex III systems) and AIH codes (horizontal, technology-specific). Annex XIV Section 3 defines AIH 0401 as \"AI systems based on other emerging AI technologies not covered by other codes, including Agentic AI\", and AIH 0205 as \"AI systems that learn from their environment, excluding AI systems covered under AIH 0401\". This is the first appearance of the term Agentic AI in binding Union law, and it appears exactly once in the whole regulation, in that table. It is a nomenclature code for assessor competence, NOT a definition: no article defines an agent, no risk tier is keyed to autonomy, and no obligation attaches to the code. Recital 43 states the code list exists so that notified bodies \"are fully competent in regard to the AI systems they are required to assess\".",
+      "dct:source": {
+        "@id": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj"
+      },
+      "regula:sourceTitle": "Regulation (EU) 2026/1744, Annex XIV (list of codes, categories and corresponding types of AI systems) and recitals 43 and 45",
+      "regula:affectedArticles": [
+        "30"
+      ],
+      "regula:confidence": "verified-primary",
+      "regula:jurisdiction": "EU",
+      "regula:affectedRecitals": [
+        "43",
+        "45"
+      ],
+      "dct:subject": {
+        "@id": "http://data.europa.eu/eli/reg/2026/1744/oj"
+      },
+      "regula:celexNumber": "32026R1744",
+      "regula:verifiedOn": {
+        "@value": "2026-07-29",
+        "@type": "xsd:date"
+      },
+      "regula:verifiedBy": "EUR-Lex full-text retrieval of eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=OJ:L_202601744 on 2026-07-29, HTTP 200. Annex XIV Section 3 code labels extracted verbatim (AIH 0101, 0201, 0202, 0203, 0204, 0205, 0301, 0401); recitals 43 and 45 retrieved in full; the string \"agentic\" occurs exactly once in the document, at Annex XIV Section 3(d). Supersedes the earlier STATE.md closure, which was correct that no definition or obligation exists and incorrect that no category exists.",
+      "regula:mechanicalChange": "None. No Regula pattern, tier, crosswalk or obligation changes. Recorded because the code exists and because two widely cited commentaries each reported half of the AIH 0401 label (one as \"agentic AI\", one as \"emerging technologies\"); the operative text is both, in one sentence."
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root { color-scheme: dark }
+  html, body {
+    background: #070711;
+    color: #e2e2f0;
+    margin: 0;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+</style>
+<meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+<title>EN 18228 &amp; EN 18282: Regula vs Draft AI Standards</title>
+<meta name="description" content="Mapping Regula's detections to draft harmonised standards EN 18228 and EN 18282 for EU AI Act Articles 9 and 15. Based on public enquiry text.">
+<meta name="author" content="Regula maintainers">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<link rel="canonical" href="https://getregula.com/blog/blog-en-standards-mapping.html">
+<link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-en-standards-mapping.html">
+<link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-en-standards-mapping.html">
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://getregula.com/blog/blog-en-standards-mapping.html">
+<meta property="og:title" content="EN 18228 & EN 18282: Regula vs Draft AI Standards">
+<meta property="og:description" content="Mapping Regula's detections to draft harmonised standards EN 18228 and EN 18282 for EU AI Act Articles 9 and 15.">
+<meta property="og:image" content="https://getregula.com/assets/og-image.png">
+<meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+<meta property="og:locale" content="en_GB">
+<meta property="og:site_name" content="Regula">
+<meta property="article:published_time" content="2026-06-12T00:00:00+00:00">
+<meta property="article:section" content="AI Governance">
+<meta property="article:tag" content="EU AI Act">
+<meta property="article:tag" content="EN 18228">
+<meta property="article:tag" content="EN 18282">
+<meta property="article:tag" content="Harmonised Standards">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="EN 18228 & EN 18282: Regula vs Draft AI Standards">
+<meta name="twitter:description" content="Mapping Regula's detections to EN 18228 and EN 18282. What a code scanner can and cannot evidence.">
+<meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+<link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+<link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+<noscript><link rel="stylesheet" href="/assets/fonts.min.css"><link rel="stylesheet" href="/assets/site.min.css"></noscript>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "EN 18228 & EN 18282: Regula vs Draft AI Standards",
+    "description": "Traceability mapping between Regula's detection categories and the draft harmonised standards for EU AI Act Articles 9 and 15.",
+    "author": {
+        "@type": "Person",
+        "name": "Regula maintainers",
+        "url": "https://getregula.com/about.html"
+    },
+    "datePublished": "2026-06-12",
+    "dateModified": "2026-06-12",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://getregula.com/assets/regula-logo.png"
+        }
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/blog/blog-en-standards-mapping.html"
+    },
+    "image": "https://getregula.com/assets/og-image.png",
+    "url": "https://getregula.com/blog/blog-en-standards-mapping.html"
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getregula.com/blog/writing.html"},
+        {"@type": "ListItem", "position": 3, "name": "EN 18228 and EN 18282 Standards Mapping"}
+    ]
+}
+</script>
+<script>
+</script>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+<main id="main" style="max-width:720px;margin:0 auto;padding:32px 20px;">
+<article>
+<div style="margin-bottom:32px;">
+<p style="color:var(--text-dim);font-size:0.9rem;">12 June 2026 &middot; Regula maintainers</p>
+<h1 style="margin:8px 0 16px;">EN 18228 and EN 18282: What Regula Can Evidence Against Draft AI Standards</h1>
+<p style="color:var(--text-2);font-size:1.1rem;line-height:1.6;">Two CEN-CENELEC harmonised standards for the EU AI Act are in public enquiry. Here is what a code scanner can and cannot evidence against them &mdash; and what will change when they publish.</p>
+</div>
+
+<aside style="background:rgba(245,158,11,0.08);border-left:3px solid #f59e0b;padding:16px 20px;margin:0 0 24px;border-radius:0 8px 8px 0;">
+<strong>Draft status:</strong> prEN 18228 and prEN 18282 are at CEN-CENELEC Public Enquiry stage. Final text may change before expected Q4 2026 publication. This mapping is based on clause structure from secondary commentary (AI Assurance Institute, Adam Leon Smith), <strong>not the full enquiry document</strong> (access-restricted to CEN-CENELEC members). It will be revised when the final standards are published.
+</aside>
+
+<h2>What these standards are</h2>
+<p>prEN 18228 and prEN 18282 are draft CEN-CENELEC harmonised standards for the EU AI Act, currently at public enquiry stage. EN 18228 covers AI risk management (Article 9) and EN 18282 covers cybersecurity for AI systems (Article 15). Once published, they will provide presumption of conformity with their respective articles. Final publication is expected Q4 2026.</p>
+<p><strong>prEN 18228</strong> (AI Risk Management) provides presumption of conformity with <strong>Article 9</strong> of the EU AI Act. It covers risk identification, risk controls, testing, and post-market monitoring across the AI lifecycle.</p>
+<p><strong>prEN 18282</strong> (Cybersecurity for AI Systems) maps to <strong>Article 15</strong>. It organises AI cybersecurity around five outcome categories &mdash; Prevent, Detect, Respond, Resolve, Control &mdash; applied to five attack types: data poisoning, model poisoning, adversarial attacks, confidentiality attacks, and model flaws.</p>
+
+<h2>What Regula can evidence</h2>
+<p>Regula provides code-level indicators relevant to EN 18228 clauses on hazard identification, testing, risk controls, and monitoring (clauses 6, 8, 9, 12), and contributes artefacts towards the Risk Management File (clauses 4.5, 4.6). For EN 18282, 16 of 17 AI_SECURITY detection categories map to at least one outcome in the Prevent, Detect, or Control categories.</p>
+<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);"><th style="text-align:left;padding:8px;">Standard</th><th style="text-align:left;padding:8px;">Clauses with coverage</th><th style="text-align:left;padding:8px;">Relationship</th></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18228</td><td style="padding:8px;">Clause 6 (hazard identification), 8 (testing), 9 (risk controls), 12 (monitoring)</td><td style="padding:8px;">Indicator &mdash; Regula detects code patterns relevant to these clauses</td></tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18228</td><td style="padding:8px;">Clause 4.5 (planning), 4.6 (Risk Management File)</td><td style="padding:8px;">Evidence &mdash; <code>regula plan</code> and <code>regula conform</code> contribute artefacts</td></tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18282</td><td style="padding:8px;">Prevent (8 categories), Detect (4), Control (5)</td><td style="padding:8px;">Indicator &mdash; 16 of 17 AI_SECURITY categories map to at least one outcome</td></tr>
+</tbody></table>
+
+<h2>What Regula cannot address</h2>
+<p>Regula cannot address organisational process clauses (EN 18228 clauses 4.1–4.4 on governance, competence, and risk criteria), lifecycle integration (clause 5), residual risk acceptance (clauses 10–11), or EN 18282 Respond and Resolve outcomes. These require documented procedures, domain-expert judgement, and operational runbooks that are not code properties.</p>
+<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+<thead><tr style="border-bottom:1px solid rgba(255,255,255,0.1);"><th style="text-align:left;padding:8px;">Gap</th><th style="text-align:left;padding:8px;">Why</th></tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18228 Clauses 4.1&ndash;4.4 (process, governance, competence, risk criteria)</td><td style="padding:8px;">Organisational processes &mdash; require documented procedures, not code</td></tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18228 Clause 5 (lifecycle process integration)</td><td style="padding:8px;">Organisational capability &mdash; integrating risk management across the AI lifecycle is not a code property</td></tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18228 Clauses 10&ndash;11 (residual risk, review)</td><td style="padding:8px;">Human determination &mdash; risk acceptance is a domain-expert judgement</td></tr>
+<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:8px;">EN 18282 Respond and Resolve outcomes</td><td style="padding:8px;">Runtime/organisational &mdash; incident response and recovery require operational runbooks</td></tr>
+</tbody></table>
+
+<h2>Three relationship types</h2>
+<p>The Regula standards mapping uses three distinct relationship types: Indicator (Regula detects a relevant code-level signal, but detection does not mean the clause is satisfied), Evidence (Regula output contributes an artefact towards the clause, but is not sufficient alone), and Cannot (the clause requires organisational, runtime, or human-judgement input that code scanning cannot address).</p>
+<p>The full matrices (in <a href="https://github.com/kuzivaai/getregula/tree/main/references">references/</a>) use three distinct relationship types, never conflated:</p>
+<ul>
+<li><strong>Indicator:</strong> Regula detects a code-level signal relevant to the clause. Finding present &ne; clause satisfied.</li>
+<li><strong>Evidence:</strong> Regula output contributes an artefact towards meeting the clause. Not sufficient alone.</li>
+<li><strong>Cannot:</strong> The clause requires organisational, runtime, or human-judgement input that code scanning fundamentally cannot address.</li>
+</ul>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+<p style="color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Regula maintainers &middot; <strong>Sources:</strong> <a href="https://aiassurance.institute/pren-18228-clauses.html" style="color:var(--text-dim);">AI Assurance Institute (EN 18228)</a>, <a href="https://adamleonsmith.substack.com/p/pren-18282-heads-to-enquiry-cybersecurity" style="color:var(--text-dim);">Adam Leon Smith (EN 18282)</a> &middot; <strong>Full matrices:</strong> <a href="https://github.com/kuzivaai/getregula/blob/main/references/en18228_mapping.yaml" style="color:var(--text-dim);">en18228_mapping.yaml</a>, <a href="https://github.com/kuzivaai/getregula/blob/main/references/en18282_mapping.yaml" style="color:var(--text-dim);">en18282_mapping.yaml</a></p>
+<p style="color:var(--text-dim);font-size:0.85rem;"><em>Not legal advice. Regula identifies risk indicators for developer review.</em></p>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-art50-code-of-practice.html">Article 50 Code of Practice mapping</a> &mdash; What a code scanner can evidence against the AI content marking rules</li>
+        <li><a href="/blog/blog-scanning-5-frameworks.html">Scanning 5 compliance frameworks</a> &mdash; 562 findings across PyTorch, HuggingFace, LangChain, LlamaIndex, CrewAI</li>
+        <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system</a> &mdash; Article 6, the four tiers, and what code scanning can tell you</li>
+    </ul>
+</div>
+
+</article>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

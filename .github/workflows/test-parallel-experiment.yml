@@ -1,0 +1,50 @@
+name: Test parallelism experiment
+
+on:
+  workflow_dispatch:
+
+# This manual-only workflow measures job-level parallelism without replacing
+# or weakening CI. Each matrix entry runs one complete existing test command.
+permissions:
+  contents: read
+
+jobs:
+  test-experiment:
+    name: ${{ matrix.suite }} (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      # Collect every result even if one interpreter or suite fails. This is
+      # an experiment, so a cancelled cell is missing evidence.
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+        suite: [custom, pytest, pytest-xdist]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install pyyaml "pytest~=9.0" "pytest-xdist~=3.8" "jsonschema~=4.0" "cryptography>=50.0.0,<51" "asn1crypto>=1.5.1,<2"
+      - name: Complete custom test runner with timing report
+        if: matrix.suite == 'custom'
+        run: python3 tests/test_classification.py
+      - name: Complete pytest suite with timing report
+        if: matrix.suite == 'pytest'
+        run: pytest tests/ -q --durations=50 --durations-min=0.1
+      - name: Complete pytest suite with experimental CPU distribution
+        if: matrix.suite == 'pytest-xdist'
+        # worksteal is the xdist scheduler intended for highly uneven test
+        # durations. This remains manual and non-gating until its results
+        # demonstrate that Git/worktree-sensitive tests are parallel-safe.
+        run: pytest tests/ -q -n auto --dist worksteal --durations=50 --durations-min=0.1
+      - name: Built-in self-test
+        if: matrix.suite == 'custom'
+        run: python3 -m scripts.cli self-test
+      - name: Doctor health checks
+        if: matrix.suite == 'custom'
+        run: python3 -m scripts.cli doctor
+      - name: Security self-check
+        if: matrix.suite == 'custom'
+        run: python3 -m scripts.cli security-self-check

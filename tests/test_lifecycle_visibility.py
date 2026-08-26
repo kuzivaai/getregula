@@ -1,0 +1,124 @@
+"""Tests for lifecycle phase visibility in output."""
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+
+PROJECT_ROOT = str(Path(__file__).resolve().parent.parent)
+
+
+def _write_ai_code(directory):
+    """Write AI code that triggers high-risk findings."""
+    (directory / "app.py").write_text(
+        "import openai\n"
+        "client = openai.OpenAI()\n"
+        "result = client.chat.completions.create(model='gpt-4', messages=[])\n"
+        "# hiring decision system\n"
+        "def evaluate_candidate(resume):\n"
+        "    score = client.chat.completions.create(model='gpt-4', messages=[{'role': 'user', 'content': resume}])\n"
+        "    return score\n"
+    )
+
+
+def test_check_text_output_contains_lifecycle(tmp_path):
+    """Text output should show lifecycle phase tags."""
+    src = tmp_path / "src"
+    src.mkdir()
+    _write_ai_code(src)
+    result = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--scope", "all",
+         "--domain", "employment"],
+        capture_output=True, text=True,
+        cwd=PROJECT_ROOT,
+    )
+    # Should contain at least one lifecycle tag in square brackets
+    assert "[develop]" in result.stdout or "[deploy]" in result.stdout or "[plan]" in result.stdout, \
+        f"No lifecycle tag found in output: {result.stdout[:500]}"
+
+
+def test_lifecycle_summary_in_header(tmp_path):
+    """Scan header should include a Lifecycle: summary line."""
+    src = tmp_path / "src"
+    src.mkdir()
+    _write_ai_code(src)
+    result = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--scope", "all"],
+        capture_output=True, text=True,
+        cwd=PROJECT_ROOT,
+    )
+    assert "Lifecycle:" in result.stdout, \
+        f"No Lifecycle summary found in output: {result.stdout[:500]}"
+
+
+def test_lifecycle_filter_reduces_findings(tmp_path):
+    """--lifecycle flag should filter to only matching findings."""
+    src = tmp_path / "src"
+    src.mkdir()
+    _write_ai_code(src)
+    # Get all findings count
+    result_all = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--format", "json"],
+        capture_output=True, text=True,
+        cwd=PROJECT_ROOT,
+    )
+    # Get filtered findings (plan phase has fewer findings than develop)
+    result_filtered = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests",
+         "--lifecycle", "plan", "--format", "json"],
+        capture_output=True, text=True,
+        cwd=PROJECT_ROOT,
+    )
+    all_data = json.loads(result_all.stdout)["data"]
+    filtered_data = json.loads(result_filtered.stdout)["data"]
+    all_findings = all_data["detector_findings"]
+    filtered_findings = filtered_data["detector_findings"]
+    # Filtered should be <= all (plan phase has fewer findings than develop)
+    assert len(filtered_findings) <= len(all_findings)
+    # All filtered findings should include "plan" in their lifecycle_phases
+    for f in filtered_findings:
+        assert "plan" in f.get("lifecycle_phases", []), \
+            f"Finding {f.get('file')} does not have 'plan' phase"
+    assert all_data["decision"]["result_type"] == "insufficient_information"
+    assert filtered_data["decision"]["result_type"] == "insufficient_information"
+
+
+def test_lifecycle_filter_retire_empty(tmp_path):
+    """--lifecycle retire should return no findings for typical AI code."""
+    src = tmp_path / "src"
+    src.mkdir()
+    _write_ai_code(src)
+    result = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests",
+         "--lifecycle", "retire", "--format", "json"],
+        capture_output=True, text=True,
+        cwd=PROJECT_ROOT,
+    )
+    data = json.loads(result.stdout)["data"]
+    findings = data["detector_findings"]
+    assert len(findings) == 0, \
+        f"Expected no findings for 'retire' phase, got {len(findings)}"
+    assert data["decision"]["result_type"] == "insufficient_information"
+
+
+def test_json_output_unaffected(tmp_path):
+    """JSON output should still have lifecycle_phases as list."""
+    src = tmp_path / "src"
+    src.mkdir()
+    _write_ai_code(src)
+    result = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "check", str(src), "--no-skip-tests", "--scope", "all", "--format", "json"],
+        capture_output=True, text=True,
+        cwd=PROJECT_ROOT,
+    )
+    data = json.loads(result.stdout)
+    payload = data["data"]
+    findings = payload["detector_findings"]
+    assert len(findings) > 0, "Expected at least one finding"
+    for f in findings[:5]:
+        assert isinstance(f.get("lifecycle_phases"), list), "lifecycle_phases should be a list in JSON"
+        assert "tier" not in f, "detector observations must not carry a legal tier"
+        assert "confidence_score" not in f, "detector priority must not pose as confidence"
+    assert payload["decision"]["result_type"] == "insufficient_information"
+    assert payload["decision"]["rule_resolution"] == "unresolved"

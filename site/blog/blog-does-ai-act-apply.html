@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- Primary SEO -->
+    <title>Does the EU AI Act Apply to You? Article 2 Decision Tree</title>
+    <meta name="description" content="Walk through Article 2 scope rules step by step. Covers extraterritorial reach, provider vs deployer roles, open-source exemptions, and the 4 risk tiers.">
+    <meta name="keywords" content="does EU AI Act apply to my app, EU AI Act US companies, EU AI Act SaaS, EU AI Act provider vs deployer, EU AI Act extraterritorial scope, EU AI Act OpenAI API, EU AI Act solo founder, EU AI Act Article 2">
+    <meta name="author" content="Regula maintainers">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/blog/blog-does-ai-act-apply.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-does-ai-act-apply.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-does-ai-act-apply.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog/blog-does-ai-act-apply.html">
+    <meta property="og:title" content="Does the EU AI Act Apply to You? Article 2 Decision Tree">
+    <meta property="og:description" content="Walk through Article 2 scope rules step by step. Covers extraterritorial reach, provider vs deployer roles, open-source exemptions, and the 4 risk tiers.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-10T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-04-10T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Compliance">
+    <meta property="article:tag" content="SaaS">
+    <meta property="article:tag" content="Provider vs Deployer">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Does the EU AI Act Apply to You? Article 2 Decision Tree">
+    <meta name="twitter:description" content="Walk through Article 2 scope rules step by step. Covers extraterritorial reach, provider vs deployer roles, open-source exemptions, and the 4 risk tiers.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <!-- Structured data: Article -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Does the EU AI Act Apply to Your AI App?",
+      "description": "A developer's decision tree for EU AI Act applicability, covering extraterritorial scope, provider vs deployer distinctions, risk tiers, and practical next steps.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-04-10T00:00:00+00:00",
+      "dateModified": "2026-04-10T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Regula maintainers",
+        "url": "https://getregula.com/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/regula-logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/blog/blog-does-ai-act-apply.html"
+      }
+    }
+    </script>
+
+    <!-- Structured data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getregula.com/blog/writing.html" },
+        { "@type": "ListItem", "position": 3, "name": "Does the EU AI Act Apply to Your AI App?", "item": "https://getregula.com/blog/blog-does-ai-act-apply.html" }
+      ]
+    }
+    </script>
+
+    <!-- Structured data: FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does the EU AI Act apply to US companies?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Article 2(1)(c) of the EU AI Act applies to providers and deployers established outside the EU where the output of their AI system is used in the EU. This is extraterritorial scope similar to GDPR. If your AI product has EU users, the regulation applies regardless of where your company is incorporated."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Am I a provider or deployer if I use the OpenAI API?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "If you integrate OpenAI's API into your own product and serve it to end users, you are typically a deployer under Article 3(4) of the EU AI Act. OpenAI is the general-purpose AI (GPAI) model provider. You become a provider yourself only if you place the AI system on the market under your own name or substantially modify the model."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the EU AI Act have a size threshold for small companies?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The EU AI Act does not exempt companies based on size, revenue, or user count. Article 2 applies based on where the AI system's output is used, not the size of the provider or deployer. However, Article 62 requires Member States to provide SMEs with testing environments and proportionate support."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- Favicon + Fonts -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+
+    <style>
+        /* Page-specific: Decision tree */
+        .decision-tree {
+            background: var(--bg-elev);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: var(--s7);
+            margin: var(--s6) 0;
+        }
+        .dt-step {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            gap: var(--s4);
+            margin-bottom: var(--s5);
+            align-items: start;
+        }
+        .dt-step:last-child { margin-bottom: 0; }
+        .dt-num {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent);
+            background: rgba(59,130,246,0.1);
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dt-body h4 {
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .dt-body p {
+            font-size: 14px;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+        .dt-arrow {
+            grid-column: 1;
+            text-align: center;
+            color: var(--text-faint);
+            font-size: 14px;
+            line-height: 1;
+            margin-bottom: var(--s3);
+        }
+        @media (max-width: 600px) {
+            .decision-tree { padding: var(--s5); }
+        }
+    </style>
+    <script>
+    </script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<article>
+
+<div class="blog-hero">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Blog</a> / EU AI Act Applicability
+    </div>
+    <div class="blog-meta">
+        <span>10 April 2026</span>
+        <span class="dot">&middot;</span>
+        <span>Regula maintainers</span>
+        <span class="dot">&middot;</span>
+        <span>6 min read</span>
+    </div>
+    <h1>Does the EU AI Act <span class="hl">apply</span> to your AI app?</h1>
+    <p class="standfirst">The question every developer building with OpenAI, Anthropic, or any AI API is asking. The answer is almost certainly yes if you have EU users &mdash; and the regulation does not care where your company is incorporated. Here is how to work it out, with every claim traced to a specific Article.</p>
+</div>
+
+<div class="blog-sep"></div>
+
+<aside style="background:rgba(59,130,246,0.08);border-left:3px solid var(--accent);padding:12px 16px;margin:0 0 24px;border-radius:4px;font-size:0.9rem;color:var(--text-2);">
+<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026. Annex III high-risk deadlines are deferred to 2 December 2027 (EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in the OJ 24 Jul 2026, in force from 27 Jul 2026). References in this article to the Omnibus being "under active trilogue negotiation" and "not yet law" are now historical. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
+</aside>
+
+<div class="blog-body">
+
+    <!-- Section 1: The short answer -->
+    <section id="short-answer">
+        <h2>The short answer</h2>
+
+        <p>Using AI and having users in the EU is usually enough to make the question live, but it does not settle it. Scope turns on the role you hold, what the system is for, and whether one of the Article 2 exclusions catches you. The rest of this page walks the actual test rather than assuming the answer.</p>
+
+        <p>Article 2(1) defines three categories of entity that fall within scope:</p>
+
+        <ul>
+            <li><strong>Article 2(1)(a):</strong> Providers placing an AI system on the EU market, regardless of whether they are established in the EU or a third country.</li>
+            <li><strong>Article 2(1)(b):</strong> Deployers of AI systems who are established in, or located in, the EU.</li>
+            <li><strong>Article 2(1)(c):</strong> Providers and deployers of AI systems established in a third country, <strong>where the output produced by the system is used in the Union</strong>.</li>
+        </ul>
+
+        <p>That third clause is the one that catches most developers off guard. It means a SaaS product built in San Francisco, Lagos, or London that serves even a single EU user is in scope.</p>
+
+        <p class="cite">Source: <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689" target="_blank" rel="noopener">Regulation (EU) 2024/1689</a>, Article 2(1). Published in the Official Journal of the European Union on 12 July 2024.</p>
+    </section>
+
+    <!-- Section 2: Decision tree -->
+    <section id="decision-tree">
+        <h2>A decision tree</h2>
+
+        <p>Five questions determine your position under the EU AI Act: whether your product uses AI, whether you have EU users, whether you are the provider or deployer, which risk tier applies, and what obligations follow. Working through them in order takes under a minute and gives you a clear regulatory classification under Regulation (EU) 2024/1689.</p>
+
+        <p>Work through these five questions in order. Each one narrows your position under the regulation.</p>
+
+        <div class="decision-tree">
+            <div class="dt-step">
+                <div class="dt-num">1</div>
+                <div class="dt-body">
+                    <h4>Does your product use AI?</h4>
+                    <p>Article 3(1) defines an AI system as "a machine-based system that is designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, and that, for explicit or implicit objectives, infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments." If you call an LLM API, run an ML model, or have a system that learns from data &mdash; yes, this is AI under the regulation. If no: you are not in scope. Stop here.</p>
+                </div>
+            </div>
+            <div class="dt-step">
+                <div class="dt-num">2</div>
+                <div class="dt-body">
+                    <h4>Do you have EU users?</h4>
+                    <p>If the output of your AI system is used by anyone located in the EU, Article 2(1)(c) brings you into scope. "Used in the Union" includes EU-based end users of a globally available SaaS product. If you have zero EU users today and no plans to serve them: you are not currently in scope, but this changes the moment your first EU user signs up.</p>
+                </div>
+            </div>
+            <div class="dt-step">
+                <div class="dt-num">3</div>
+                <div class="dt-body">
+                    <h4>Are you the provider or the deployer?</h4>
+                    <p><strong>Provider</strong> (Article 3(3)): the entity that develops an AI system or has it developed, and places it on the market or puts it into service under its own name or trademark. <strong>Deployer</strong> (Article 3(4)): any entity that uses an AI system under its authority. Most SaaS companies integrating OpenAI, Anthropic, or Google APIs into their product are <em>deployers</em>. The API provider is the general-purpose AI (GPAI) model provider. See Section 4 below for the full breakdown.</p>
+                </div>
+            </div>
+            <div class="dt-step">
+                <div class="dt-num">4</div>
+                <div class="dt-body">
+                    <h4>What risk tier are you in?</h4>
+                    <p>The EU AI Act uses prohibited practices, high-risk classifications, and transparency duties rather than a universal four-tier clearance scheme. A system with no elevated indicator may still have duties under Articles 4 and 5 or other applicable law. High-risk areas include employment, essential services, education, law enforcement, and critical infrastructure, subject to Article 6 and its exceptions.</p>
+                </div>
+            </div>
+            <div class="dt-step">
+                <div class="dt-num">5</div>
+                <div class="dt-body">
+                    <h4>What are your obligations?</h4>
+                    <p><strong>Possible Article 5 indicator:</strong> pause the affected use and obtain qualified review. <strong>Candidate high-risk:</strong> assess Article 6 and any exception before applying Articles 9&ndash;15. <strong>Article 50 indicator:</strong> confirm the applicable transparency duty. <strong>No elevated indicator:</strong> do not treat the result as legal clearance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Non-EU companies -->
+    <section id="non-eu">
+        <h2>I am based in the US / UK / outside the EU &mdash; does it still apply?</h2>
+
+        <p>Yes. The mechanism is Article 2(1)(c), which states that the regulation applies to:</p>
+
+        <blockquote>
+            <p>"providers and deployers of AI systems that have their place of establishment or are located in a third country, where the output produced by the AI system is used in the Union"</p>
+        </blockquote>
+
+        <p>This is deliberately modelled on GDPR's extraterritorial reach (Article 3(2) of the GDPR). The regulation does not require you to have an office in the EU, a legal entity in the EU, or even a contract with an EU customer. If the <em>output</em> of your AI system is used by someone in the EU, you are in scope.</p>
+
+        <p>For non-EU providers of <strong>high-risk</strong> AI systems, there is an additional requirement: Article 22 requires you to appoint an <strong>authorised representative</strong> established in the EU before placing the system on the market. This is a legal prerequisite, not optional.</p>
+
+        <p class="cite">Source: Regulation (EU) 2024/1689, Article 2(1)(c) and Article 22.</p>
+    </section>
+
+    <!-- Section 4: Provider vs deployer -->
+    <section id="provider-deployer">
+        <h2>I use the OpenAI API &mdash; am I a provider or a deployer?</h2>
+
+        <p>If you integrate a hosted model (OpenAI, Anthropic, Google) into your product and serve it to end users, you are a deployer under Article 3(4). The API provider is the GPAI model provider. You only become a provider yourself if you place the AI system on the market under your own name or make a substantial modification to a high-risk system under Article 25.</p>
+
+        <p>This is the single most common question on developer forums, and the answer is more straightforward than most people expect.</p>
+
+        <p><strong>You are almost certainly a deployer.</strong></p>
+
+        <p>Article 3(4) defines a deployer as "a natural or legal person, public authority, agency or other body using an AI system under its authority except where the AI system is used in the course of a personal non-professional activity". If you integrate OpenAI's GPT, Anthropic's Claude, Google's Gemini, or any other hosted model into your product, you are using that AI system under your authority, and using it in a product you ship is not personal non-professional use. You are the deployer.</p>
+
+        <p>OpenAI (or Anthropic, or Google) is the <strong>GPAI model provider</strong> under Article 3(63). They have their own obligations under Articles 53&ndash;55, which have been in force since 2 August 2025.</p>
+
+        <p><strong>When do you become a provider instead?</strong> Article 3(3) says you are a provider if you:</p>
+
+        <ul>
+            <li>Place an AI system on the market or put it into service <strong>under your own name or trademark</strong>, or</li>
+            <li>Make a <strong>substantial modification</strong> to a high-risk AI system that is already on the market (Article 25)</li>
+        </ul>
+
+        <p>So if you fine-tune a model significantly, wrap it in a product, and market it as your own AI system &mdash; you may cross the line from deployer to provider. The distinction matters because providers of high-risk systems have heavier obligations (conformity assessment, CE marking, registration in the EU database).</p>
+
+        <p>For most SaaS developers calling an API: you are a deployer. Your obligations are lighter but they are real &mdash; particularly around transparency (Article 50) and, if you are in a high-risk domain, around human oversight (Article 14) and record-keeping (Article 12).</p>
+
+        <p class="cite">Source: Regulation (EU) 2024/1689, Articles 3(3), 3(4), 3(63), 25, and 53&ndash;55.</p>
+    </section>
+
+    <!-- Section 5: Solo founder -->
+    <section id="solo-founder">
+        <h2>I am a solo founder with 3 users &mdash; do I really need to worry?</h2>
+
+        <p>Honest answer: the regulation does not have a size threshold.</p>
+
+        <p>Article 2 applies based on where the AI system's output is used, not the size of the company behind it. There is no "small company exemption" and no minimum user count. A solo developer with a SaaS product used by three EU customers is technically in scope.</p>
+
+        <p><strong>However.</strong> Practical enforcement risk is proportionate. The EU AI Office and national competent authorities have finite resources. They will focus on high-impact, high-risk systems first &mdash; not a three-user side project.</p>
+
+        <p>Article 62 requires Member States to provide SMEs and startups with priority access to AI regulatory sandboxes and to take the specific interests and needs of SME providers into account when setting fees and compliance costs. Recital 141 explicitly acknowledges that compliance costs should be proportionate.</p>
+
+        <p>The practical move is to document the system's intended purpose, roles, deployment context, and any detected indicators early. A tool can support that review but cannot establish that no obligations apply.</p>
+
+        <div class="callout">
+            <p><strong>Omnibus status.</strong> <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32026R1744">Regulation (EU) 2026/1744</a> entered into force on 27 July 2026. Annex III high-risk obligations apply from 2 December 2027 and Annex I product-embedded obligations from 2 August 2028.</p>
+        </div>
+
+        <p class="cite">Source: Regulation (EU) 2024/1689, Articles 2, 62, and Recital 141. Omnibus status: <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM:2025:0037:FIN" target="_blank" rel="noopener">COM(2025) 37 final</a>.</p>
+    </section>
+
+    <!-- Section 6: Automate the decision -->
+    <section id="automate">
+        <h2>Automate the decision</h2>
+
+        <p>The decision tree above is exactly what <code>regula assess</code> implements as an interactive CLI flow. It walks you through the same five questions &mdash; AI usage, EU scope, prohibited practices, high-risk domains, and transparency triggers &mdash; and tells you your tier, your role, and your obligations.</p>
+
+        <div class="term">
+            <div class="term-bar">
+                <span class="term-dot td-r"></span>
+                <span class="term-dot td-y"></span>
+                <span class="term-dot td-g"></span>
+            </div>
+            <pre tabindex="0">
+<span class="p">$</span> <span class="c">regula assess</span>
+
+<span class="h">EU AI Act — Applicability Check</span>
+
+<span class="m">  Does your product use AI, machine learning, or an AI API?</span>
+<span class="m">  (Examples: OpenAI, Anthropic, Google AI, Hugging Face...)</span>
+  <span class="g">yes</span>
+
+<span class="m">  Do any users interact with your product from within the EU?</span>
+  <span class="g">yes</span>
+
+<span class="m">  Does your product do any of the following?</span>
+<span class="m">  a) Score or rank people's social behaviour...</span>
+<span class="m">  b) Influence user decisions outside their awareness...</span>
+  <span class="g">no</span>
+
+<span class="m">  Does your product do any of the following?</span>
+<span class="m">  a) Screen, rank, or filter job candidates...</span>
+<span class="m">  b) Make or influence credit decisions...</span>
+  <span class="g">no</span>
+
+<span class="m">  Does your product do any of the following?</span>
+<span class="m">  a) Interact with users via chat or voice...</span>
+<span class="m">  b) Generate text, images, audio, or video...</span>
+  <span class="g">yes</span>
+
+<span class="m">  Are you based outside the EU?</span>
+  <span class="g">yes</span>
+<hr>
+  <span class="h">Result: LIMITED-RISK (Article 50 transparency obligation)</span>
+
+  Your product is in scope, but the obligation is lightweight:
+  inform users they are interacting with AI or consuming
+  AI-generated content.
+
+  <span class="y">Generally applicable since 2 August 2026.</span>
+  Article 50(2) providers with systems already on the market before that date have until 2 December 2026 under Regulation (EU) 2026/1744.
+</pre>
+        </div>
+
+        <p style="margin-top: var(--s5);">You can also run it non-interactively in CI or scripts:</p>
+
+        <div class="term">
+            <div class="term-bar">
+                <span class="term-dot td-r"></span>
+                <span class="term-dot td-y"></span>
+                <span class="term-dot td-g"></span>
+            </div>
+            <pre tabindex="0">
+<span class="p">$</span> <span class="c">regula assess --answers yes,yes,no,no,yes</span>
+<span class="p">$</span> <span class="c">regula assess --answers yes,yes,no,yes,no --format json</span>
+</pre>
+        </div>
+    </section>
+
+    <!-- Section 7: What to do next -->
+    <section id="next-steps">
+        <h2>What to do next</h2>
+
+        <p>Run <code>regula assess</code> to record intended purpose and deployment context, then <code>regula check .</code> to identify code-observable indicators. Use the results as evidence for qualified review; neither command confirms legal classification or the obligations applicable to a real deployment.</p>
+
+        <p>Based on where you landed in the decision tree:</p>
+
+        <ul>
+            <li><strong>Need a structured starting point?</strong> Run <code>regula assess</code> to record context for human review.</li>
+            <li><strong>Want to scan your code?</strong> Run <code>regula check .</code> to identify risk patterns against 419 detections across 8 languages.</li>
+            <li><strong>High-risk?</strong> Run <code>regula gap .</code> for an Articles 9&ndash;15 gap assessment, then <code>regula plan .</code> for a prioritised remediation list.</li>
+            <li><strong>Limited-risk?</strong> Run <code>regula disclose .</code> to draft disclosure text to review for your chatbot or AI-generated content.</li>
+            <li><strong>Want the full picture?</strong> Install and run:</li>
+        </ul>
+
+        <div class="term">
+            <div class="term-bar">
+                <span class="term-dot td-r"></span>
+                <span class="term-dot td-y"></span>
+                <span class="term-dot td-g"></span>
+            </div>
+            <pre tabindex="0">
+<span class="p">$</span> <span class="c">pipx install regula-ai</span>
+<span class="p">$</span> <span class="c">regula assess</span>          <span class="m"># applicability check</span>
+<span class="p">$</span> <span class="c">regula check .</span>         <span class="m"># code-level risk scan</span>
+<span class="p">$</span> <span class="c">regula report . -f html</span> <span class="m"># full compliance report</span>
+</pre>
+        </div>
+    </section>
+
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
+        <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Regula maintainers &middot;
+        <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+    </p>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <p><strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. The EU AI Act requires contextual assessment that no automated tool can fully provide. For high-risk systems, consult a qualified legal professional. All Article references are to Regulation (EU) 2024/1689 as published in the Official Journal of the European Union on 12 July 2024.</p>
+    </div>
+
+</div>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers in actual code</a> &mdash; What each risk tier looks like in Python with scanner output</li>
+        <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system</a> &mdash; Article 6, the four tiers, and what code scanning can tell you</li>
+        <li><a href="/blog/blog-startups-ignoring-ai-act.html">Why startups are ignoring the AI Act</a> &mdash; Three triggers that change the calculus for founders</li>
+    </ul>
+    <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
+        <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-does-ai-act-apply.html&t=Does%20the%20EU%20AI%20Act%20Apply%20to%20Your%20AI%20App%3F" rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>
+    </p>
+</div>
+
+</article>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+// Nav scroll effect
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('.nav');
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 10);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>EU AI Act Technical Guides for Developers | Regula Blog</title>
+    <meta name="description" content="Technical articles on EU AI Act risk tiers, Article 5 prohibited practices, Omnibus timeline, and code-level compliance. Written for developers, not lawyers.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://getregula.com/blog/writing.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/writing.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/writing.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "EU AI Act Analysis & Compliance Guides — Regula Blog",
+        "description": "Developer-focused analysis of the EU AI Act: risk classification, Article 5 prohibited practices, Omnibus timeline, compliance scanning, and harmonised standards.",
+        "url": "https://getregula.com/blog/writing.html",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com"
+        }
+    }
+    </script>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/blog/writing.html">
+    <meta property="og:title" content="EU AI Act Technical Guides for Developers | Regula Blog">
+    <meta property="og:description" content="Technical articles on EU AI Act risk tiers, Article 5 prohibited practices, Omnibus timeline, and code-level compliance. Written for developers, not lawyers.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Regula — open-source AI governance risk indication tool">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:locale" content="en_GB">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Technical Guides for Developers | Regula Blog">
+    <meta name="twitter:description" content="Technical articles on EU AI Act risk tiers, Article 5 prohibited practices, Omnibus timeline, and code-level compliance. Written for developers, not lawyers.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <style>
+        .hub-hero {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 80px 32px 48px;
+        }
+        .hub-hero h1 {
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1.08;
+            margin-bottom: 18px;
+        }
+        .hub-hero h1 .hl { color: var(--accent); }
+        .hub-hero .lede {
+            font-size: 18px;
+            color: var(--text-2);
+            line-height: 1.7;
+            margin-bottom: 16px;
+            max-width: 720px;
+        }
+        .art-list {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 0 32px 80px;
+        }
+        .art-item {
+            display: block;
+            padding: 28px 0;
+            border-bottom: 1px solid var(--border);
+            color: inherit;
+            transition: padding-left 0.2s;
+        }
+        .art-item:hover {
+            padding-left: 8px;
+        }
+        .art-item:hover h2 { color: var(--accent-hover); }
+        .art-meta {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .art-meta .tag {
+            padding: 2px 8px;
+            background: rgba(59,130,246,0.1);
+            color: var(--accent);
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .art-meta .status-live {
+            background: rgba(16,185,129,0.1);
+            color: var(--success);
+        }
+        .art-item h2 {
+            font-family: var(--font-serif);
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.2;
+            transition: color 0.15s;
+        }
+        .art-item p {
+            font-size: 15px;
+            color: var(--text-2);
+            line-height: 1.7;
+            max-width: 720px;
+        }
+        @media (max-width: 800px) {
+            .hub-hero h1 { font-size: 36px; }
+            .art-item h2 { font-size: 22px; }
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Blog"}
+        ]
+    }
+    </script>
+    <script>
+    </script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" class="active">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+    <header class="hub-hero">
+        <h1>EU AI Act <span class="hl">analysis</span></h1>
+        <p class="lede">Developer-focused guides to EU AI Act compliance: risk classification, prohibited practices, Omnibus timeline, harmonised standards, and code scanning. Every claim cites a specific Article.</p>
+    </header>
+
+    <main id="main" class="art-list">
+
+        <a class="art-item" href="/guides/article-14-human-oversight.html">
+            <div class="art-meta">
+                <span class="tag">Guide</span>
+                <span>25 June 2026</span>
+                <span>Topic: EU AI Act &middot; Article 14 &middot; Human Oversight</span>
+            </div>
+            <h2>Article 14: human oversight requirements for high-risk AI</h2>
+            <p>High-risk AI systems must let a person watch, understand, and intervene. How cross-file flow analysis checks your codebase for review-before-action patterns.</p>
+        </a>
+
+        <a class="art-item" href="/guides/article-9-risk-management.html">
+            <div class="art-meta">
+                <span class="tag">Guide</span>
+                <span>25 June 2026</span>
+                <span>Topic: EU AI Act &middot; Article 9 &middot; Risk Management</span>
+            </div>
+            <h2>Article 9: risk management system requirements</h2>
+            <p>Article 9 requires a documented risk management system for high-risk AI. What code scanning covers, what it does not, and where to start.</p>
+        </a>
+
+        <a class="art-item" href="/guides/eu-ai-act-recruitment-hiring.html">
+            <div class="art-meta">
+                <span class="tag">Guide</span>
+                <span>25 June 2026</span>
+                <span>Topic: EU AI Act &middot; Recruitment &middot; Annex III Category 4</span>
+            </div>
+            <h2>EU AI Act for recruitment and hiring AI</h2>
+            <p>Recruitment AI is high-risk under Annex III Category 4. What code patterns trigger classification, what Articles 9-15 require, and how to scan your code.</p>
+        </a>
+
+        <a class="art-item" href="/guides/eu-ai-act-python.html">
+            <div class="art-meta">
+                <span class="tag">Guide</span>
+                <span>25 June 2026</span>
+                <span>Topic: EU AI Act &middot; Python &middot; PyTorch &middot; TensorFlow</span>
+            </div>
+            <h2>EU AI Act compliance for Python developers</h2>
+            <p>Python AI frameworks like PyTorch, TensorFlow, and scikit-learn trigger EU AI Act risk patterns. How to scan your Python code and what the findings mean.</p>
+        </a>
+
+        <a class="art-item" href="/guides/article-5-prohibited-practices.html">
+            <div class="art-meta">
+                <span class="tag">Guide</span>
+                <span>25 June 2026</span>
+                <span>Topic: EU AI Act &middot; Article 5 &middot; Prohibited Practices</span>
+            </div>
+            <h2>Article 5: prohibited AI practices under the EU AI Act</h2>
+            <p>Eight categories of AI are banned outright, with two more added by the Omnibus. What each prohibition covers, the narrow exceptions, and how to check your code.</p>
+        </a>
+
+        <a class="art-item" href="/guides/article-50-transparency.html">
+            <div class="art-meta">
+                <span class="tag">Guide</span>
+                <span>25 June 2026</span>
+                <span>Topic: EU AI Act &middot; Article 50 &middot; Transparency</span>
+            </div>
+            <h2>Article 50: transparency obligations for AI systems</h2>
+            <p>Chatbots, deepfakes, emotion recognition, and synthetic content all trigger Article 50 disclosure requirements. What the obligations are and how Regula detects them.</p>
+        </a>
+
+        <a class="art-item" href="/guides/eu-ai-act-healthcare.html">
+            <div class="art-meta">
+                <span class="tag">Guide</span>
+                <span>25 June 2026</span>
+                <span>Topic: EU AI Act &middot; Healthcare &middot; Medical Devices &middot; MDR</span>
+            </div>
+            <h2>EU AI Act and healthcare AI</h2>
+            <p>AI in medical devices is high-risk under the EU AI Act via the MDR cross-reference. What healthcare AI must comply with and how to scan for risk patterns.</p>
+        </a>
+
+        <a class="art-item" href="/guides/eu-ai-act-javascript.html">
+            <div class="art-meta">
+                <span class="tag">Guide</span>
+                <span>25 June 2026</span>
+                <span>Topic: EU AI Act &middot; JavaScript &middot; TypeScript &middot; Node.js</span>
+            </div>
+            <h2>EU AI Act compliance for JavaScript and TypeScript developers</h2>
+            <p>JavaScript AI tools like OpenAI SDK, LangChain.js, and TensorFlow.js trigger EU AI Act risk patterns. How to scan your JS/TS code and what the findings mean.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-en-standards-mapping.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>12 June 2026</span>
+                <span>Topic: EU AI Act &middot; Harmonised Standards &middot; EN 18228 &middot; EN 18282</span>
+            </div>
+            <h2>EN 18228 and EN 18282: what Regula can evidence against draft AI standards</h2>
+            <p>Two CEN-CENELEC harmonised standards for Articles 9 and 15 are in public enquiry. Traceability mapping of what a code scanner can and cannot evidence &mdash; based on secondary commentary, with revision planned when the standards publish.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-art50-code-of-practice.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>11 June 2026</span>
+                <span>Topic: EU AI Act &middot; Article 50 &middot; Code of Practice</span>
+            </div>
+            <h2>What the Art 50 Code of Practice means for your codebase</h2>
+            <p>The Code of Practice on AI content marking was published 10 June 2026. A mapping of what Regula can evidence (watermarking, C2PA, provenance metadata) and what requires runtime infrastructure it cannot scan.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-classify-ai-system.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>11 June 2026</span>
+                <span>Topic: EU AI Act &middot; Risk Classification &middot; Article 6</span>
+            </div>
+            <h2>How to classify your AI system under the EU AI Act</h2>
+            <p>Classification depends on intended purpose and deployment context, not just code. A developer guide to Article 6, the four risk tiers, and what code scanning can and cannot tell you.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-static-analysis-ai-compliance.html">
+            <div class="art-meta">
+                <span class="tag">Analysis</span>
+                <span>11 June 2026</span>
+                <span>Topic: EU AI Act &middot; Compliance &middot; Static Analysis</span>
+            </div>
+            <h2>Static analysis for AI compliance: why code scanning complements questionnaires</h2>
+            <p>Code scanning and questionnaires each cover different parts of EU AI Act compliance. Neither alone is sufficient. An evidence-based comparison with honest precision figures.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-omnibus-trilogue-failed.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>2 May 2026</span>
+                <span>Topic: EU AI Act &middot; Digital Omnibus &middot; Trilogue</span>
+            </div>
+            <h2>The Omnibus Trilogue Failed (April 2026): A Post-Mortem</h2>
+            <p>The first political trilogue on the Digital Omnibus ended without agreement on 28 April after 12 hours. The sticking point was conformity assessment for AI in regulated products. The follow-up trilogue succeeded on 7 May; Parliament and Council approved the December 2027 deferral in June 2026.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-code-scanning-vs-questionnaires.html">
+            <div class="art-meta">
+                <span class="tag">Analysis</span>
+                <span>25 April 2026</span>
+                <span>Topic: EU AI Act &middot; Compliance &middot; Code Scanning</span>
+            </div>
+            <h2>Questionnaires tell you what you said. Code scanning shows what you did.</h2>
+            <p>Questionnaires and code scanning cover different halves of the EU AI Act. Neither replaces the other. Together, they produce something closer to defensible compliance.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-scanning-5-frameworks.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>25 April 2026</span>
+                <span>Topic: EU AI Act &middot; AI Frameworks &middot; Compliance</span>
+            </div>
+            <h2>We scanned 5 AI frameworks for EU AI Act compliance. Here&rsquo;s what 389 patterns found.</h2>
+            <p>562 findings across PyTorch, HuggingFace Transformers, LangChain, LlamaIndex, and CrewAI. The framework you pick shapes your compliance surface before you write a line of code.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-article-5-prohibited-practices.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>25 April 2026</span>
+                <span>Topic: EU AI Act &middot; Article 5 &middot; Prohibited practices</span>
+            </div>
+            <h2>EU AI Act Article 5 is already live: scanning your code for prohibited AI practices</h2>
+            <p>Article 5 has been enforceable since February 2025 with fines up to EUR 35 million. Most developers don&rsquo;t know this. Here is what the 8 prohibited categories look like in code, what Regula flags, and what to do about it.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-omnibus-decision-framework.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>25 April 2026</span>
+                <span>Topic: EU AI Act &middot; Digital Omnibus &middot; Deadlines</span>
+            </div>
+            <h2>August 2026 or December 2027? A developer&rsquo;s guide to the Omnibus uncertainty</h2>
+            <p>Two dates, one law, nobody knows which applies. A three-track framework for deciding what to build now, what can wait, and why planning for August is the engineering-rational choice even if December wins.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-startups-ignoring-ai-act.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>17 April 2026</span>
+                <span>Topic: EU AI Act &middot; Startups</span>
+            </div>
+            <h2>Most startups are ignoring the EU AI Act. Here&rsquo;s when that stops being rational.</h2>
+            <p>The dominant Reddit/HN sentiment is to ignore it until fines land. For now, that&rsquo;s defensible. Three specific triggers change the calculus &mdash; and two have nothing to do with enforcement.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-scanning-10-ai-apps.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>10 April 2026</span>
+                <span>Topic: EU AI Act &middot; Open-source compliance</span>
+            </div>
+            <h2>I scanned 10 open-source AI apps for EU AI Act compliance</h2>
+            <p>553 findings across 218,000-star projects &mdash; what compliance actually looks like in real codebases.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-risk-tiers-in-code.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>10 April 2026</span>
+                <span>Topic: EU AI Act &middot; Risk classification</span>
+            </div>
+            <h2>What EU AI Act risk tiers look like in your code</h2>
+            <p>Zero code examples exist in the top-ranking content for EU AI Act risk classification. This post fills that gap: real Python snippets for each of the four tiers &mdash; prohibited, high-risk, limited-risk, minimal-risk &mdash; with actual regula check output showing what gets flagged and why. Includes the grey zones and honest precision figures.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-does-ai-act-apply.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>10 April 2026</span>
+                <span>Topic: EU AI Act &middot; Applicability</span>
+            </div>
+            <h2>Does the EU AI Act apply to your AI app? A developer&rsquo;s guide</h2>
+            <p>A five-step decision tree for developers: does your product use AI, do you have EU users, are you a provider or deployer, what risk tier, what are your obligations? Every legal reference cites a specific Article. Ends with the automated version: regula assess.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-omnibus-delay.html">
+            <div class="art-meta">
+                <span class="tag">Regula</span>
+                <span>10 April 2026</span>
+                <span>Topic: EU AI Act &middot; Digital Omnibus</span>
+            </div>
+            <h2>The EU AI Act Omnibus delay: what developers actually need to know</h2>
+            <p>The Digital Omnibus defers high-risk deadlines from August 2026 to December 2027 — approved by Parliament and Council in June 2026 and published in the Official Journal on 24 July 2026 (Regulation (EU) 2026/1744), in force from 27 July 2026. Here is what is actually happening, what it means for each risk tier, and whether you should wait or act now. Every claim is primary-source linked.</p>
+        </a>
+
+        <a class="art-item" href="/regions/south-africa-ai-policy.html">
+            <div class="art-meta">
+                <span class="tag status-live">Live tracker</span>
+                <span>Last updated: 17 August 2026</span>
+                <span>Topic: South Africa</span>
+            </div>
+            <h2>South Africa's draft National AI Policy: what Cabinet approved, and what it means for code</h2>
+            <p>The draft National Artificial Intelligence Policy was gazetted on 10 April 2026. After fictitious references were identified the Minister announced the withdrawal on 26 April 2026, Cabinet approved it on 5 June, and Notice 3880 was withdrawn by gazette on 12 June 2026. The tracker separates that withdrawn document from the existing POPIA and governance baseline.</p>
+        </a>
+
+        <a class="art-item" href="/blog/blog-aicdi-governance-gaps.html">
+            <div class="art-meta">
+                <span class="tag">Analysis</span>
+                <span>Last updated: 7 April 2026</span>
+                <span>Topic: Corporate AI governance</span>
+            </div>
+            <h2>How Regula maps to the AICDI corporate AI governance gaps</h2>
+            <p>The 2026 UNESCO and Thomson Reuters Foundation AI Company Data Initiative report analysed 2,972 global companies across 11 GICS sectors and 7 regions, and found large gaps between AI adoption and AI governance. This piece maps each AICDI gap to what Regula actually does — honest about what a static code scanner can address (model registry, human oversight verification, Article 9–15 gap assessment, conformity evidence) and what it cannot (board oversight, worker protection policies, training programmes, environmental impact assessments).</p>
+        </a>
+
+        <a class="art-item" href="https://github.com/kuzivaai/getregula/blob/main/docs/article-south-africa-ai-policy.md">
+            <div class="art-meta">
+                <span class="tag">Markdown mirror</span>
+                <span>Topic: South Africa</span>
+            </div>
+            <h2>South Africa draft National AI Policy — markdown version</h2>
+            <p>The same South Africa content as the live landing page, rendered as markdown on GitHub. Useful if you want to diff the page against the git history, or if you are reading in a context where the live site is not convenient.</p>
+        </a>
+
+    <p style="max-width:720px;margin:32px auto 8px;color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 14 August 2026 &middot; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+
+</main>
+
+    <footer>
+        <div class="foot-inner">
+            <div class="foot-left">
+                <div class="foot-brand">Regula</div>
+                <div class="foot-links">
+                    <a href="/assess/">Assess</a>
+                    <a href="/guides/">Guides</a>
+                    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                    <a href="/blog/writing.html">Blog</a>
+                    <a href="/regions/regulations.html">Regulations</a>
+                    <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+                </div>
+                <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+            </div>
+            <div class="foot-right">
+                <div class="foot-legal">
+                    <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        function onScroll() {
+            nav.classList.toggle('scrolled', window.scrollY > 20);
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+    </script>
+</body>
+</html>

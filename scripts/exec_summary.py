@@ -1,0 +1,258 @@
+# regula-ignore
+"""Executive summary report generator.
+
+Produces a print-optimised standalone HTML document suitable for
+forwarding to counsel, attaching to a procurement questionnaire,
+or presenting to a board. Zero external dependencies.
+
+This document is an automated scan summary, NOT a conformity
+assessment, legal determination, or compliance certificate.
+"""
+
+import sys
+import socket
+from datetime import datetime, timezone
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from html import escape as html_escape
+
+from constants import VERSION
+from omnibus import ANNEX_III_PROSE, OMNIBUS_STATUS, ORIGINAL_PROSE
+
+
+# Plain-English tier descriptions
+TIER_DESCRIPTIONS = {
+    "prohibited": (
+        "This project contains indicators associated with AI practices "
+        "not permitted under EU AI Act Article 5."
+    ),
+    "high_risk": (
+        "This project contains indicators associated with HIGH-RISK AI "
+        "systems under EU AI Act Annex III. Articles 9\u201315 obligations "
+        f"may apply (effective {ANNEX_III_PROSE} under the Digital Omnibus, "
+        f"{OMNIBUS_STATUS})."
+    ),
+    "limited_risk": (
+        "This project contains indicators associated with LIMITED-RISK AI "
+        "systems under EU AI Act Article 50. Transparency obligations apply "
+        # Art 50's general applicability date is statutory (Article 113)
+        # and unchanged by the Omnibus; the string is still sourced from
+        # omnibus.py so no deadline literal lives outside it.
+        f"from {ORIGINAL_PROSE}."
+    ),
+    "minimal_risk": (
+        "No elevated risk-tier indicators were detected for this project. "
+        "This is not a legal classification; Article 4, Article 5, and other "
+        "context-dependent duties may still apply."
+    ),
+}
+
+TIER_ORDER = ["prohibited", "high_risk", "limited_risk", "minimal_risk",
+              "ai_security", "agent_autonomy", "credential_exposure", "bias"]
+
+DISCLAIMER = (
+    "This scan detects code-level risk indicators. It cannot determine "
+    "whether your system meets the \u2018significant risk\u2019 threshold "
+    "under Article 6, whether Article 6(3) exemptions apply, or whether "
+    "your intended use falls within a regulated category. These are "
+    "contextual determinations requiring legal and domain expertise."
+)
+
+
+def _highest_tier(findings: list[dict]) -> str:
+    """Return the highest-severity tier present in findings."""
+    tiers = {f.get("tier", "minimal_risk") for f in findings}
+    for t in TIER_ORDER:
+        if t in tiers:
+            return t
+    return "minimal_risk"
+
+
+def _plain_description(finding: dict) -> str:
+    """Translate a finding into one sentence a non-technical person can read."""
+    desc = finding.get("description", "")
+    if desc:
+        return desc
+    cat = finding.get("category", finding.get("tier", ""))
+    return f"Risk indicator detected: {cat}"
+
+
+def generate_exec_summary(findings: list[dict], project_name: str,
+                          engagement: dict = None) -> str:
+    """Generate a standalone print-optimised HTML executive summary.
+
+    Args:
+        findings: Scan findings.
+        project_name: Display name for the scanned project.
+        engagement: Optional engagement metadata (see engagement.py).
+            When present, the header carries client / prepared-by /
+            reference lines so consultants can hand the document to a
+            client as-is. When absent, output is unchanged.
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    hostname = socket.gethostname()
+    tier = _highest_tier(findings)
+    tier_desc = TIER_DESCRIPTIONS.get(tier, TIER_DESCRIPTIONS["minimal_risk"])
+
+    # Engagement header lines (all values are untrusted display text —
+    # escape before embedding in HTML).
+    engagement = engagement or {}
+    engagement_meta = ""
+    if engagement.get("client"):
+        engagement_meta += (f"\n  <span><strong>Prepared for:</strong> "
+                            f"{html_escape(engagement['client'])}</span>")
+    if engagement.get("prepared_by"):
+        engagement_meta += (f"\n  <span><strong>Prepared by:</strong> "
+                            f"{html_escape(engagement['prepared_by'])}</span>")
+    if engagement.get("reference"):
+        engagement_meta += (f"\n  <span><strong>Engagement ref:</strong> "
+                            f"{html_escape(engagement['reference'])}</span>")
+
+    # Top 5 findings by confidence, highest tier first
+    sorted_findings = sorted(
+        findings,
+        key=lambda f: (TIER_ORDER.index(f.get("tier", "minimal_risk"))
+                        if f.get("tier", "minimal_risk") in TIER_ORDER
+                        else 99,
+                        -(f.get("confidence_score", 0))),
+    )
+    top_findings = sorted_findings[:5]
+
+    findings_rows = ""
+    for f in top_findings:
+        cat = f.get("category", f.get("tier", "unknown"))
+        articles = f.get("applicable_articles", f.get("article", ""))
+        if isinstance(articles, list):
+            articles = ", ".join(str(a) for a in articles)
+        file_line = f"{f.get('file', '?')}:{f.get('line', '?')}"
+        desc = _plain_description(f)
+        # File paths come from the scanned repository — third-party
+        # input in a consultant engagement. Escape every cell.
+        findings_rows += f"""
+            <tr>
+                <td>{html_escape(str(cat))}</td>
+                <td>{html_escape(str(articles))}</td>
+                <td><code>{html_escape(file_line)}</code></td>
+                <td>{html_escape(desc)}</td>
+            </tr>"""
+
+    tier_upper = tier.replace("_", " ").upper()
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Act Risk Indicator Summary \u2014 {html_escape(project_name)}</title>
+<style>
+  * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+  body {{
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    color: #1a1a2e; background: #ffffff; line-height: 1.6;
+    max-width: 800px; margin: 0 auto; padding: 40px 32px;
+  }}
+  h1 {{ font-size: 1.5rem; color: #1a1a2e; margin-bottom: 4px; }}
+  .subtitle {{ color: #6b7280; font-size: 0.95rem; margin-bottom: 24px; font-style: italic; }}
+  .meta {{ font-size: 0.85rem; color: #6b7280; margin-bottom: 24px; }}
+  .meta span {{ display: inline-block; margin-right: 16px; }}
+  .tier-box {{
+    background: #f8f9fa; border-left: 4px solid #3b82f6;
+    padding: 16px 20px; margin: 24px 0; border-radius: 0 6px 6px 0;
+  }}
+  .tier-box .tier-label {{
+    font-weight: 700; font-size: 1.1rem; color: #1a1a2e; margin-bottom: 4px;
+  }}
+  .tier-box .tier-desc {{ font-size: 0.9rem; color: #374151; }}
+  h2 {{ font-size: 1.1rem; color: #1a1a2e; margin: 24px 0 8px; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; }}
+  table {{ width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 8px 0 16px; }}
+  th {{ text-align: left; font-weight: 600; padding: 6px 8px; border-bottom: 2px solid #e5e7eb; color: #374151; }}
+  td {{ padding: 6px 8px; border-bottom: 1px solid #f3f4f6; vertical-align: top; }}
+  code {{ font-family: ui-monospace, 'Cascadia Code', monospace; font-size: 0.8rem; background: #f3f4f6; padding: 1px 4px; border-radius: 3px; }}
+  .disclaimer {{
+    background: #fffbeb; border-left: 4px solid #f59e0b;
+    padding: 12px 16px; margin: 24px 0; border-radius: 0 6px 6px 0;
+    font-size: 0.85rem; color: #92400e;
+  }}
+  .disclaimer strong {{ color: #78350f; }}
+  .footer {{
+    margin-top: 32px; padding-top: 16px; border-top: 1px solid #e5e7eb;
+    font-size: 0.75rem; color: #9ca3af; line-height: 1.5;
+  }}
+  @media print {{
+    body {{ padding: 20px; font-size: 11pt; }}
+    .tier-box, .disclaimer {{ break-inside: avoid; }}
+    .footer {{ position: fixed; bottom: 0; left: 0; right: 0; text-align: center; }}
+  }}
+</style>
+</head>
+<body>
+
+<h1>AI Act Risk Indicator Summary</h1>
+<p class="subtitle">Technical scan results for review \u2014 not a legal determination</p>
+
+<div class="meta">
+  <span><strong>Project:</strong> {html_escape(project_name)}</span>
+  <span><strong>Scanned:</strong> {now}</span>
+  <span><strong>Regula:</strong> v{VERSION}</span>{engagement_meta}
+</div>
+
+<div class="tier-box">
+  <div class="tier-label">Risk tier: {tier_upper}</div>
+  <div class="tier-desc">{tier_desc}</div>
+</div>
+
+<h2>Top findings</h2>
+{"<p style='color:#6b7280;font-size:0.9rem;'>No findings detected.</p>" if not top_findings else f'''
+<table>
+  <thead>
+    <tr><th>Category</th><th>Article</th><th>Location</th><th>Description</th></tr>
+  </thead>
+  <tbody>{findings_rows}
+  </tbody>
+</table>'''}
+
+<div class="disclaimer">
+  <strong>What this scan can and cannot determine</strong><br>
+  {DISCLAIMER}
+</div>
+
+<h2>Data residency</h2>
+<p style="font-size:0.9rem;">This scan ran locally on <code>{hostname}</code>. No code, findings, or metadata were transmitted.</p>
+
+<h2>Methodology</h2>
+<p style="font-size:0.9rem;">Regula v{VERSION}, {_pattern_count_phrase()}across 8 language families. Benchmark: 83.5% precision on production code (N=115, measured on v1.7.0, Python only, labelled by a single reviewer with no inter-rater agreement measurement). Full methodology: <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">TRUST.md</a>; labelling limits: <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md">benchmarks/README.md</a></p>
+
+<div class="footer">
+  Generated by Regula (getregula.com). Open source, Apache 2.0.<br>
+  This document is an automated scan summary, not a conformity assessment,
+  legal determination, or compliance certificate.
+</div>
+
+</body>
+</html>"""
+    return html
+
+
+def _pattern_count() -> int | None:
+    """Measured pattern count from site_facts, or None if it cannot be measured.
+
+    Returns None rather than a literal on failure. site_facts.compute() raises
+    deliberately when the count cannot be measured, precisely so an unmeasured
+    figure is never published as fact; substituting a hardcoded number here
+    defeated that and could print a stale count into a document a reviewer
+    reads as measured output.
+    """
+    try:
+        import site_facts
+        facts = site_facts.compute()
+        return facts["counts"]["patterns"]["tier_regexes"]
+    except Exception:
+        return None
+
+
+def _pattern_count_phrase() -> str:
+    """Render the pattern count, or omit the claim entirely when unmeasured."""
+    count = _pattern_count()
+    return f"{count} detection patterns " if count is not None else "detection patterns "

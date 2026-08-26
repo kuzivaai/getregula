@@ -1,0 +1,215 @@
+{
+  "generated_at": "2026-08-06T18:55:55.800651+00:00",
+  "total_entries": 13,
+  "latest_date": "2026-07-29",
+  "types": [
+    "amendment-proposal",
+    "commission-guidance",
+    "council-position",
+    "harmonised-standard",
+    "parliament-position",
+    "regulation-adoption",
+    "trilogue-outcome"
+  ],
+  "entries": [
+    {
+      "id": "2026-07-29-annex-xiv-aih-codes",
+      "date": "2026-07-29",
+      "type": "regulation-adoption",
+      "affected_articles": [
+        "30"
+      ],
+      "summary": "Regulation (EU) 2026/1744 inserts Annex XIV into Regulation (EU) 2024/1689, a three-category code list used to scope the designation of notified bodies: AIP codes (product legislation), AIB codes (bio",
+      "confidence": "verified-primary",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
+      "file": "entries/2026-07-29-annex-xiv-aih-codes.json"
+    },
+    {
+      "id": "2026-07-24-oj-publication",
+      "date": "2026-07-24",
+      "type": "regulation-adoption",
+      "affected_articles": [
+        "5",
+        "6",
+        "11",
+        "50",
+        "113"
+      ],
+      "summary": "The Digital Omnibus on AI was published in the Official Journal of the European Union on 24 July 2026 as Regulation (EU) 2026/1744, amending Regulations (EU) 2024/1689, (EU) 2018/1139 and (EU) 2023/12",
+      "confidence": "verified-primary",
+      "source_url": "https://eur-lex.europa.eu/eli/reg/2026/1744/oj",
+      "file": "entries/2026-07-24-oj-publication.json"
+    },
+    {
+      "id": "2026-07-20-art50-final-guidelines",
+      "date": "2026-07-20",
+      "type": "commission-guidance",
+      "affected_articles": [
+        "50",
+        "96"
+      ],
+      "summary": "The Commission published the final version of its Guidelines on transparency obligations for providers and deployers of AI systems on 20 July 2026, under the Article 96(1)(d) empowerment to issue guid",
+      "confidence": "verified-primary",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems",
+      "file": "entries/2026-07-20-art50-final-guidelines.json"
+    },
+    {
+      "id": "2026-07-12-en-18286-published",
+      "date": "2026-07-12",
+      "type": "harmonised-standard",
+      "affected_articles": [
+        "17",
+        "40"
+      ],
+      "summary": "CEN-CENELEC approved EN 18286 on 12 July 2026 and it is published as EN 18286:2026. It is the first AI Act standard from JTC 21 to reach publication, and it operationalises the Article 17 quality mana",
+      "confidence": "verified-secondary",
+      "source_url": "https://www.sgs.com/en-se/news/2026/07/en-18286-a-new-european-standard-for-ai-quality-management-and-eu-ai-act-readiness-has-been-published",
+      "file": "entries/2026-07-12-en-18286-published.json"
+    },
+    {
+      "id": "2026-06-29-council-adoption",
+      "date": "2026-06-29",
+      "type": "council-position",
+      "affected_articles": [
+        "6",
+        "50",
+        "51",
+        "57",
+        "113"
+      ],
+      "summary": "The Council of the EU gave its final approval to the Digital Omnibus on AI on 29 June 2026, completing the co-legislators' formal adoption after the European Parliament's 16 June plenary vote. This lo",
+      "confidence": "verified-primary",
+      "source_url": "https://www.consilium.europa.eu/en/press/press-releases/2026/06/29/artificial-intelligence-council-gives-final-green-light-to-simplify-and-streamline-rules/",
+      "file": "entries/2026-06-29-council-adoption.json"
+    },
+    {
+      "id": "2026-06-16-parliament-adoption",
+      "date": "2026-06-16",
+      "type": "parliament-position",
+      "affected_articles": [
+        "6",
+        "50",
+        "51",
+        "57",
+        "113"
+      ],
+      "summary": "The European Parliament's plenary approved the Digital Omnibus on AI on 16 June 2026 by 423 votes to 57, with 174 abstentions, endorsing the 7 May provisional agreement. This confirms Parliament's sid",
+      "confidence": "verified-primary",
+      "source_url": "https://www.europarl.europa.eu/news/en/press-room/20260611IPR45207/ai-act-ep-approves-simplification-measures-and-nudifier-app-ban",
+      "file": "entries/2026-06-16-parliament-adoption.json"
+    },
+    {
+      "id": "2026-05-07-trilogue-agreement",
+      "date": "2026-05-07",
+      "type": "trilogue-outcome",
+      "affected_articles": [
+        "6",
+        "50",
+        "51",
+        "57",
+        "113"
+      ],
+      "summary": "The follow-up political trilogue on the Digital Omnibus on AI succeeded on 7 May 2026, reaching a provisional agreement between the Council and the European Parliament after the 28-29 April round had ",
+      "confidence": "verified-primary",
+      "source_url": "https://www.consilium.europa.eu/en/press/press-releases/2026/05/07/artificial-intelligence-council-and-parliament-agree-to-simplify-and-streamline-rules/",
+      "file": "entries/2026-05-07-trilogue-agreement.json"
+    },
+    {
+      "id": "2026-04-29-trilogue-failed",
+      "date": "2026-04-29",
+      "type": "amendment-proposal",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "The first political trilogue on the Digital Omnibus on AI ended without agreement on 29 April 2026 after about 12 hours of negotiations. The sticking point was the conformity-assessment architecture f",
+      "confidence": "verified-primary",
+      "source_url": "https://iapp.org/news/a/ai-act-omnibus-what-just-happened-and-what-comes-next",
+      "file": "entries/2026-04-29-trilogue-failed.json"
+    },
+    {
+      "id": "2026-04-28-trilogue-target",
+      "date": "2026-04-28",
+      "type": "amendment-proposal",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "Target date for the first trilogue meeting between Council, Parliament and Commission on the Digital Omnibus on AI. Not an adopted change \u2014 this entry tracks the calendar milestone so the Regula count",
+      "confidence": "reported-unverified",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai",
+      "file": "entries/2026-04-28-trilogue-target.json"
+    },
+    {
+      "id": "2026-03-26-parliament-position",
+      "date": "2026-03-26",
+      "type": "parliament-position",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "The European Parliament adopts its first-reading position on the Digital Omnibus on AI. The vote establishes Parliament's negotiating mandate for trilogue. Parliament's position broadly supports the d",
+      "confidence": "reported-unverified",
+      "source_url": "https://www.europarl.europa.eu/news/en/press-room",
+      "file": "entries/2026-03-26-parliament-position.json"
+    },
+    {
+      "id": "2026-03-13-council-position",
+      "date": "2026-03-13",
+      "type": "council-position",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "The Council of the European Union adopts its general approach on the Digital Omnibus on AI. Member State representatives agree on a negotiating position that broadly endorses the Commission proposal's",
+      "confidence": "reported-unverified",
+      "source_url": "https://www.consilium.europa.eu/en/press/press-releases/",
+      "file": "entries/2026-03-13-council-position.json"
+    },
+    {
+      "id": "2025-11-19-digital-omnibus-proposal",
+      "date": "2025-11-19",
+      "type": "amendment-proposal",
+      "affected_articles": [
+        "6",
+        "13",
+        "26",
+        "43",
+        "50",
+        "113"
+      ],
+      "summary": "The European Commission publishes the Digital Omnibus on AI: a targeted simplification package proposing to defer the application dates for high-risk AI system obligations and to clarify transparency ",
+      "confidence": "verified-primary",
+      "source_url": "https://digital-strategy.ec.europa.eu/en/library/digital-omnibus-ai-simplification-package",
+      "file": "entries/2025-11-19-digital-omnibus-proposal.json"
+    },
+    {
+      "id": "2024-07-12-regulation-adopted",
+      "date": "2024-07-12",
+      "type": "regulation-adoption",
+      "affected_articles": [
+        "*"
+      ],
+      "summary": "The EU AI Act is published in the Official Journal of the European Union. Regulation (EU) 2024/1689 enters into force 20 days later (1 August 2024). Subsequent application dates are staggered: Article",
+      "confidence": "verified-primary",
+      "source_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+      "file": "entries/2024-07-12-regulation-adopted.json"
+    }
+  ]
+}

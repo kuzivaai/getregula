@@ -1,0 +1,10 @@
+# Regula policy for the cv-screening-app reference project.
+#
+# The domain declaration is the point: since v1.7.5, `system.domain`
+# activates the domain-gated high-risk patterns for every scan of this
+# project (check, report, gap, evidence packs, init) — no --domain flag
+# needed. A real engagement declares its Annex III domain the same way;
+# precision work gated these patterns because employment vocabulary in
+# generic code was the largest false-positive source.
+system:
+  domain: employment

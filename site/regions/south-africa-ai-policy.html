@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en-ZA">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <title>South Africa Draft AI Policy 2026 &mdash; Regula</title>
+    <meta name="description" content="South Africa AI policy tracker. Cabinet-approved draft National AI Policy, data protection under POPIA, and readiness for global AI regulation.">
+    <meta name="keywords" content="South Africa AI Policy, National AI Policy South Africa, DCDT AI Policy, South Africa AI Act, POPIA AI compliance, South Africa AI regulation 2026, Khumbudzo Ntshavheni AI, AI governance South Africa, AI policy framework South Africa, sector-specific AI regulation South Africa">
+    <meta name="author" content="Regula">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/regions/south-africa-ai-policy.html">
+
+    <meta name="geo.region" content="ZA">
+    <meta name="geo.placename" content="South Africa">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/regions/south-africa-ai-policy.html">
+    <meta property="og:title" content="South Africa Draft AI Policy 2026 — Regula">
+    <meta property="og:description" content="South Africa's draft National AI Policy was gazetted on 10 April 2026, its withdrawal was announced on 26 April, approved by Cabinet on 5 June and gazetted on 12 June 2026. The draft is not current policy or law.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula — open-source AI governance risk indication tool">
+    <meta property="og:locale" content="en_ZA">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-07T00:00:00+02:00">
+    <meta property="article:modified_time" content="2026-08-17T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="South Africa Draft AI Policy 2026 — Regula">
+    <meta name="twitter:description" content="Official publication and withdrawal records, plus a qualified summary of the existing South African legal baseline.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <meta name="ICBM" content="-25.7479, 28.2293">
+    <meta property="article:tag" content="South Africa">
+    <meta property="article:tag" content="AI Policy">
+    <meta property="article:tag" content="AI Governance">
+    <meta property="article:tag" content="POPIA">
+    <meta property="article:tag" content="DCDT">
+    <link rel="alternate" hreflang="en-za" href="https://getregula.com/regions/south-africa-ai-policy.html">
+
+    <link rel="alternate" hreflang="en" href="https://getregula.com/regions/south-africa-ai-policy.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/regions/south-africa-ai-policy.html">
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "South Africa Draft AI Policy 2026 — Regula",
+    "description": "South Africa's draft National AI Policy was gazetted on 10 April 2026. Cabinet-approved withdrawal was officially confirmed on 5 June 2026 after fictitious references were identified. The draft is historical material, not current policy or law.",
+    "image": "https://getregula.com/assets/og-image.png",
+    "datePublished": "2026-04-07T00:00:00+02:00",
+    "dateModified": "2026-08-04T00:00:00+01:00",
+    "author": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://getregula.com/assets/og-image.png"
+        }
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/regions/south-africa-ai-policy.html"
+    },
+    "about": [
+        {
+            "@type": "Thing",
+            "name": "South Africa National Artificial Intelligence Policy"
+        },
+        {
+            "@type": "Thing",
+            "name": "Department of Communications and Digital Technologies"
+        },
+        {
+            "@type": "Thing",
+            "name": "POPIA"
+        },
+        {
+            "@type": "Thing",
+            "name": "Artificial Intelligence Governance"
+        }
+    ],
+    "isBasedOn": [
+        {
+            "@type": "CreativeWork",
+            "name": "South Africa National Artificial Intelligence Policy Framework",
+            "datePublished": "2024-10",
+            "publisher": {
+                "@type": "GovernmentOrganization",
+                "name": "Department of Communications and Digital Technologies, Republic of South Africa"
+            }
+        }
+    ]
+}
+    </script>
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Regula",
+            "item": "https://getregula.com/"
+        },
+        {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Regulations",
+            "item": "https://getregula.com/regions/regulations.html"
+        },
+        {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "South Africa",
+            "item": "https://getregula.com/regions/south-africa-ai-policy.html"
+        }
+    ]
+}
+    </script>
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What did Cabinet approve on 2 April 2026?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The draft National Artificial Intelligence Policy was published in Government Gazette No. 54477 on 10 April 2026. After fictitious references were identified, the Minister announced the withdrawal on 26 April 2026, Cabinet approved it on 5 June 2026, and Notice 3880 was withdrawn by gazette on 12 June 2026, which is the act that withdrew it. It is not current policy or law."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What happened to South Africa's draft AI policy?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The draft was gazetted on 10 April 2026. After fictitious references were identified, the Minister announced the withdrawal on 26 April 2026, Cabinet approved it on 5 June 2026, and Notice 3880 was withdrawn by gazette on 12 June 2026, which is the act that withdrew it. The proposed comment window was superseded by withdrawal; no replacement date is asserted here without an official record."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Does South Africa have an AI Act?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. The policy Cabinet approved is a policy, not an Act. Sector-specific regulations based on the policy are targeted for the 2027/2028 financial year. Until then, AI systems are governed by existing law: POPIA Section 71, the Copyright Act, the Competition Act, the Patents Act, and the King IV/King V Codes on Corporate Governance."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Will South Africa have a single AI regulator?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The withdrawn draft described a sector-specific approach. That historical proposal is not current policy, and this page does not assert the model of any future replacement."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "When does the public comment window open and close?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The gazette proposed a comment window ending on 10 June 2026, but withdrawal superseded that process. Any new consultation requires a new official publication."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How does POPIA apply to AI systems?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "POPIA Section 71 governs decisions based solely on automated processing of personal information, including profiling. A data subject is entitled not to be subject to such a decision unless specific exceptions apply. Any AI system deployed in South Africa that processes personal data already falls under POPIA, regardless of whether the draft AI policy has been gazetted."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What does King V require for AI governance?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "King V was adopted by the Institute of Directors in South Africa on 31 October 2025 and is in force for financial years commencing on or after January 2026. It consolidates King IV's 17 principles into 13 and introduces explicit AI governance principles alongside enhanced cyber risk provisions. Governing bodies are now expected to oversee AI use and AI-related risk as a board-level matter."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "What should South African organisations do now?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Inventory AI systems in production. Document data flows and lawful bases. Identify high-stakes deployments and the human function that reviews or can override them. Map existing POPIA, Competition Act, and sector-regulator obligations. Monitor official DCDT and Gazette publications for any replacement policy."
+            }
+        }
+    ]
+}
+    </script>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <script>
+    </script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <nav class="nav" id="nav" aria-label="Main navigation">
+        <a href="/" class="nav-brand">Regula</a>
+        <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+            <a href="/product.html">What it does</a>
+            <a href="/guides/">Guides</a>
+            <a href="/pricing.html">Pricing</a>
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+            <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+            <span class="active">🇿🇦 South Africa</span>
+            <a href="/about.html">About</a>
+            <a href="/">EN</a>
+            <a href="/locales/de.html">DE</a>
+            <a href="/locales/pt-br.html">BR</a>
+        </dialog>
+    </nav>
+
+    <header class="hub-hero">
+        <div class="breadcrumb">
+            <a href="/">Regula</a> / <a href="/regions/regulations.html">Regulations</a> / South Africa
+        </div>
+        <span class="status-badge "><span class="status-dot"></span>Withdrawn by gazette, 12 June 2026</span>
+        <h1>South Africa's <span class="hl">draft National AI Policy</span>: gazetted, then withdrawn</h1>
+        <p class="lede">South Africa's draft National Artificial Intelligence Policy was published in <a style="text-decoration:underline;text-underline-offset:3px" href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a style="text-decoration:underline;text-underline-offset:3px" href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced the withdrawal on 26 April 2026</a>, Cabinet <a style="text-decoration:underline;text-underline-offset:3px" href="https://www.sanews.gov.za/node/81987">approved it on 5 June 2026</a>, and <a style="text-decoration:underline;text-underline-offset:3px" href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. The withdrawn draft is historical material, not current policy or law. Existing legislation may still apply within its own scope.</p>
+        <p class="last-updated"><strong>Last reviewed:</strong> 17 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+
+
+<div class="tracker" id="sa-tracker" data-src="/sa-tracker.json">
+            <h2>Live tracker <span id="tracker-ts" class="tracker-ts"></span></h2>
+            <div id="tracker-rows">
+                <div class="tracker-row">
+                    <div class="lbl">Cabinet approval</div>
+                    <div class="val">25 March 2026, combined with the Special Sitting of 1 April 2026 — draft approved for public comment; announced by Minister in the Presidency Khumbudzo Ntshavheni at a post-Cabinet briefing &nbsp;<span class="ok">VERIFIED</span></div>
+                </div>
+                <div class="tracker-row">
+                    <div class="lbl">Gazette publication</div>
+                    <div class="val"><a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Gazetted 10 April 2026</a> as Notice 3880 in Gazette No. 54477; withdrawal <a href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced 26 April 2026</a>, <a href="https://www.sanews.gov.za/node/81987">approved by Cabinet 5 June 2026</a>, and <a href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">gazetted 12 June 2026</a>, the operative act &nbsp;<span class="pend">WITHDRAWN</span></div>
+                </div>
+                <div class="tracker-row">
+                    <div class="lbl">Public comment window</div>
+                    <div class="val">The gazetted consultation was superseded by withdrawal</div>
+                </div>
+                <div class="tracker-row">
+                    <div class="lbl">Regulatory model</div>
+                    <div class="val">Described in the withdrawn draft; not current policy &nbsp;<span class="pend">HISTORICAL</span></div>
+                </div>
+                <div class="tracker-row">
+                    <div class="lbl">Final policy</div>
+                    <div class="val">No replacement date asserted without a new official record</div>
+                </div>
+                <div class="tracker-row">
+                    <div class="lbl">Sector regulations</div>
+                    <div class="val">No current target asserted from the withdrawn draft</div>
+                </div>
+                <div class="tracker-row">
+                    <div class="lbl">Background</div>
+                    <div class="val">October 2024 DCDT Policy Framework published as the precursor document</div>
+                </div>
+            </div>
+        </div>
+
+    </header>
+
+    <main id="main" class="tracker-content">
+
+        <section id="what-cabinet-approved">
+            <h2>What was published and then withdrawn</h2>
+            <p>The Draft National Artificial Intelligence Policy was published in <a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced the withdrawal on 26 April 2026</a>, Cabinet <a href="https://www.sanews.gov.za/node/81987">approved it on 5 June 2026</a>, and <a href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. The withdrawn draft is public historical material, not current policy or law.</p>
+
+            <p>The withdrawn text described the following policy direction:</p>
+
+            <ul>
+                <li><strong>A sector-specific, multi-regulator governance model.</strong> Rather than creating a single dedicated AI regulator, AI governance will be embedded within existing supervisory frameworks — the FSCA for financial services, the Information Regulator for data protection, the Council for Medical Schemes for health, ICASA for telecommunications, the Department of Higher Education and Training for education, and so on. Pragmatic, but creates a patchwork that is harder to navigate for smaller businesses operating across sectors.</li>
+                <li><strong>Six core pillars</strong> organised around capacity and talent development, AI for inclusive growth and job creation, responsible governance, ethical and inclusive AI, cultural preservation and international integration, and human-centred deployment.</li>
+                <li><strong>A public comment process</strong> that did not continue after withdrawal.</li>
+                <li><strong>Final policy</strong> targeted for the 2026/2027 financial year.</li>
+                <li><strong>Sector-specific regulations and guidelines</strong> targeted for the 2027/2028 financial year.</li>
+            </ul>
+
+            <p class="note-inline">Primary records: <a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf" target="_blank" rel="noopener">Government Gazette No. 54477, 10 April 2026</a> and <a href="https://www.sanews.gov.za/node/81987" target="_blank" rel="noopener">Cabinet withdrawal confirmation, 5 June 2026</a>. Any replacement policy requires a new official publication.</p>
+        </section>
+
+        <section id="legal-baseline">
+            <h2>The South African legal baseline for AI today</h2>
+            <p>South Africa does not have an AI Act yet, and the draft policy Cabinet approved is not itself an Act either — it is a policy that will later be translated into sector-specific regulations. But South African organisations deploying AI are already bound by a substantial body of existing law. None of these require waiting for the gazette.</p>
+
+            <ul>
+                <li><strong>POPIA (Protection of Personal Information Act, 2013)</strong> — applies to any AI system that processes personal information. <strong>Section 71</strong> specifically addresses automated decision-making and profiling: a data subject is entitled not to be subject to a decision based solely on automated processing unless specific exceptions apply. This obligation already binds South African organisations regardless of when the AI Policy is gazetted.</li>
+                <li><strong>Copyright Act, 1978</strong> (and the unsigned Copyright Amendment Bill) — relevant to training-data provenance and to AI-generated outputs.</li>
+                <li><strong>Competition Act, 1998</strong> — relevant to algorithmic pricing, market concentration in AI infrastructure, and data-driven anti-competitive conduct.</li>
+                <li><strong>Patents Act, 1978</strong> — relevant to AI-generated inventions; the <em>Thaler</em> line of decisions has been tested in South African courts.</li>
+                <li><strong>King IV / King V Codes on Corporate Governance</strong> — non-statutory but widely adopted. <strong>King V was adopted by the Institute of Directors in South Africa (IoDSA) on 31 October 2025 and is in force for financial years commencing on or after January 2026.</strong> It consolidates King IV's 17 principles into 13 and introduces explicit AI governance principles alongside enhanced cyber risk provisions — governing bodies are now expected to oversee AI use and AI-related risk as a board-level matter under King V's "apply and explain" regime.</li>
+            </ul>
+        </section>
+
+        <section id="what-to-do">
+            <h2>What South African organisations should do now</h2>
+            <p>The April draft has been withdrawn. These steps are based on existing law and governance practice, not on treating the withdrawn consultation as binding:</p>
+            <ol>
+                <li><strong>Inventory your AI systems.</strong> A list of what you have deployed, in which products, by which teams, with which third-party providers, and against which categories of personal data. POPIA already requires you to know this, and King V now makes it a board-level oversight obligation.</li>
+                <li><strong>Document your data flows.</strong> Where training data came from, what consent or contractual basis covers it, where inference data lives, and who has access.</li>
+                <li><strong>Document human oversight.</strong> For each high-stakes deployment (hiring, credit scoring, healthcare triage, content moderation), name the human function that reviews or can override the system. Human oversight is central to every modern AI governance regime and will be a focal point of the draft policy's "human-centred deployment" pillar.</li>
+                <li><strong>Map your existing obligations.</strong> POPIA Section 71 (automated decision-making), Competition Act, Copyright Act, and sector regulator guidance from the Information Regulator, the FSCA, the Council for Medical Schemes, ICASA and the Department of Higher Education and Training as applicable. Those are the regulators most likely to own AI rule-making in a sector-specific model.</li>
+                <li><strong>Monitor official DCDT and Government Gazette publications.</strong> A replacement policy or consultation should be treated as current only when an official record is published.</li>
+            </ol>
+        </section>
+
+        <section id="regula">
+            <h2>Where Regula fits</h2>
+            <p>Regula is an open-source code-indicator and governance-questionnaire CLI built primarily around the EU AI Act. It can flag code associated with employment, biometrics, education, law enforcement, migration, critical infrastructure, credit, and medical uses for review. Those indicators do not determine how South African law applies, and the withdrawn draft policy is not a legal classification source.</p>
+
+            <p>For a South African team, the practically useful starting commands are:</p>
+
+<pre tabindex="0"><code><span class="term-comment"># Install</span>
+<span class="term-cmd">pipx install regula-ai</span>
+
+<span class="term-comment"># Inventory what you have</span>
+<span class="term-cmd">regula discover .</span>                    <span class="term-comment"># AI systems present in the project</span>
+<span class="term-cmd">regula inventory</span>                     <span class="term-comment"># AI library / model references with GPAI annotations</span>
+
+<span class="term-comment"># Risk indicators against the same categories the Framework names</span>
+<span class="term-cmd">regula check .</span>                       <span class="term-comment"># Scan for risk indicators</span>
+<span class="term-cmd">regula classify --input "..."</span>        <span class="term-comment"># Classify a code snippet</span>
+<span class="term-cmd">regula check --explain path/to/file</span>   <span class="term-comment"># Explain why something was classified</span>
+
+<span class="term-comment"># Generate compliance evidence</span>
+<span class="term-cmd">regula gap</span>                           <span class="term-comment"># Articles 9–15-style gap assessment</span>
+<span class="term-cmd">regula oversight</span>                     <span class="term-comment"># Cross-file Article 14-style oversight detection</span>
+<span class="term-cmd">regula conform</span>                       <span class="term-comment"># Annex IV-style conformity evidence pack</span>
+<span class="term-cmd">regula register .</span>                    <span class="term-comment"># Annex VIII-shaped registration packet</span>
+
+<span class="term-comment"># Health and reproducibility</span>
+<span class="term-cmd">regula self-test</span>
+<span class="term-cmd">regula doctor</span></code></pre>
+
+            <p>The <code>register</code> command produces an Annex VIII-shaped local artifact even though South Africa does not have an EU-style central AI database. The fields it captures — provider identity, intended purpose, data inputs, system status, conformity references, fundamental rights impact assessment, data protection impact assessment — are the exact fields any sector-specific South African regulator will eventually ask for. Treat the artifact as a structured record-keeping baseline, not as a legal filing.</p>
+
+            <p>Regula is open source, written in Python with <strong>zero production dependencies</strong>, and the entire detection ruleset is in the repository. South African teams can fork it, add SA-specific patterns (POPIA Section 71 markers, FSCA conduct standards, CMS clinical AI requirements) and contribute them back.</p>
+
+            <div class="cta-row">
+                <div class="cta-card">
+                    <h3>Install Regula</h3>
+                    <p>Open source, zero dependencies, runs locally.</p>
+                    <a href="https://github.com/kuzivaai/getregula" target="_blank" rel="noopener">github.com/kuzivaai/getregula →</a>
+                </div>
+                <div class="cta-card">
+                    <h3>Contribute SA patterns</h3>
+                    <p>POPIA, FSCA, CMS markers welcome.</p>
+                    <a href="https://github.com/kuzivaai/getregula/issues" target="_blank" rel="noopener">Open an issue →</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq">
+            <h2>Frequently asked questions</h2>
+            <div class="faq">
+                <details>
+                    <summary>What did Cabinet approve on 2 April 2026?</summary>
+                    <p>The draft National Artificial Intelligence Policy was published in <a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced the withdrawal on 26 April 2026</a>, Cabinet <a href="https://www.sanews.gov.za/node/81987">approved it on 5 June 2026</a>, and <a href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. It is not current policy or law.</p>
+                </details>
+                <details>
+                    <summary>Has South Africa's draft AI policy been gazetted?</summary>
+                    <p>It was gazetted on 10 April 2026 (No. 54477, Notice 3880). The Minister announced its withdrawal on 26 April 2026 after fabricated citations were found, Cabinet approved the withdrawal on 5 June 2026, and the notice was withdrawn by gazette on 12 June 2026. No replacement consultation date is treated here as authoritative until the responsible department publishes it.</p>
+                </details>
+                <details>
+                    <summary>Does South Africa have an AI Act?</summary>
+                    <p>No. The policy Cabinet approved is a policy, not an Act. Sector-specific regulations based on the policy are targeted for the 2027/2028 financial year. Until then, AI systems are governed by existing law: POPIA Section 71 (automated decision-making), the Copyright Act, the Competition Act, the Patents Act, and the King IV / King V Codes on Corporate Governance.</p>
+                </details>
+                <details>
+                    <summary>Will South Africa have a single AI regulator?</summary>
+                    <p>Reporting on the draft policy indicates government has chosen a sector-specific, multi-regulator model rather than creating a single dedicated AI regulator. AI governance will be embedded within existing supervisory frameworks — financial services (FSCA), data protection (Information Regulator), health (Council for Medical Schemes), telecoms (ICASA), education (DHET), and others. Pragmatic, but creates a patchwork for organisations operating across sectors. This claim will be verified against the gazetted text when it publishes.</p>
+                </details>
+                <details>
+                    <summary>When does the public comment window open and close?</summary>
+                    <p>The comment window opened with the 10 April 2026 gazette and closed on 10 June 2026 at 16h00. The Minister had already announced the withdrawal on 26 April 2026, so submissions made after that date were made against a draft the department had said it would withdraw, and the withdrawal notice was gazetted on 12 June 2026, two days after the window closed. Check the responsible department for any replacement consultation.</p>
+                </details>
+                <details>
+                    <summary>How does POPIA apply to AI systems?</summary>
+                    <p>POPIA Section 71 governs decisions based solely on automated processing of personal information, including profiling. A data subject is entitled not to be subject to such a decision unless specific exceptions apply — contract conclusion/execution, protective measures, or a law or code of conduct that safeguards their interests. Any AI system deployed in South Africa that processes personal data already falls under POPIA, regardless of whether the draft AI policy has been gazetted.</p>
+                </details>
+                <details>
+                    <summary>What does King V require for AI governance?</summary>
+                    <p>King V was adopted by the Institute of Directors in South Africa on 31 October 2025 and is in force for financial years commencing on or after January 2026. It consolidates King IV's 17 principles into 13 and introduces explicit AI governance principles alongside enhanced cyber risk provisions. Governing bodies are now expected to oversee AI use and AI-related risk as a board-level matter under King V's "apply and explain" regime.</p>
+                </details>
+                <details>
+                    <summary>What should South African organisations do now?</summary>
+                    <p>Inventory AI systems in production. Document data flows and lawful bases. Identify high-stakes deployments and the human function that reviews or can override them. Map existing POPIA, Competition Act, Copyright Act, and sector-regulator obligations. Monitor official DCDT and Gazette publications for any replacement policy.</p>
+                </details>
+            </div>
+        </section>
+
+        <section id="honest-gaps">
+            <h2>What we are tracking and what we still need to verify</h2>
+            <p>The official records establish publication and withdrawal. The following questions remain unresolved as of 4 August 2026 and must not be answered from the withdrawn text:</p>
+            <div class="gaps-box">
+                <h3>To verify if a replacement is officially published</h3>
+                <ol>
+                    <li><strong>Exact number and naming of pillars.</strong> Current reporting says six; the gazetted text may show a different count or structure.</li>
+                    <li><strong>The sector-specific multi-regulator model.</strong> Whether the final text confirms this approach or hedges it, and which specific regulators are named.</li>
+                    <li><strong>Coordination mechanism across regulators.</strong> How DCDT proposes to prevent conflicting sector rules — this is the single most important practical question for businesses operating across industries.</li>
+                    <li><strong>High-risk category definitions.</strong> Whether the draft policy carries an explicit Annex III-style list and how it compares to the EU AI Act's categories.</li>
+                    <li><strong>Public sector obligations.</strong> The extent to which state use of AI (welfare, policing, border control) is treated differently from private sector deployment.</li>
+                    <li><strong>Alignment with the AU Continental AI Strategy and SADC digital frameworks.</strong> Not addressable until the text is in the public domain.</li>
+                </ol>
+            </div>
+            <p>This page will treat a replacement as current only after an official publication can be checked. To report a new primary record or a correction, <a href="https://github.com/kuzivaai/getregula/issues" target="_blank" rel="noopener">open an issue</a>.</p>
+        </section>
+
+        <section id="sources">
+            <h2>Sources</h2>
+            <div class="sources">
+                <ul>
+                    <li><strong>Post-Cabinet media briefing (2 April 2026)</strong> — Minister in the Presidency Khumbudzo Ntshavheni, Pretoria. Announcement of Cabinet approval of the draft National AI Policy for public comment. Confirmed via live broadcast coverage on <a href="https://www.sowetan.co.za" target="_blank" rel="noopener">Sowetan</a> and <a href="https://www.businessday.co.za" target="_blank" rel="noopener">Business Day</a>.</li>
+                    <li><strong>Michalsons — Nathan-Ross Adams (3 April 2026)</strong>, "South Africa's draft national AI policy open for public comment." Source for the six-pillar structure, sector-specific multi-regulator model, 60-day comment window, 24 February 2026 parliamentary briefing, SEIAS clearance and DG cluster concurrence, and the 2026/2027 and 2027/2028 targets. To be verified against the gazetted text.</li>
+                    <li><strong>Department of Communications and Digital Technologies</strong> — the lead department. Web: <a href="https://www.dcdt.gov.za" target="_blank" rel="noopener">www.dcdt.gov.za</a>. Tel: +27 12 427 8000.</li>
+                    <li><strong>POPIA (Protection of Personal Information Act 4 of 2013)</strong> — Republic of South Africa. Section 71 governs automated decision-making and profiling.</li>
+                    <li><strong>King V Code of Corporate Governance (October 2025)</strong> — Institute of Directors in South Africa. Adopted 31 October 2025, in force for financial years commencing on or after January 2026.</li>
+                    <li><strong>October 2024 DCDT National AI Policy Framework</strong> — the precursor document published for public comment (closed 29 November 2024). Useful historical context; superseded in focus by the April 2026 draft policy.</li>
+                </ul>
+            </div>
+            <p style="margin-top: 24px; font-size: 14px; color: var(--text-dim);">If you spot an error on this page, open an issue on <a href="https://github.com/kuzivaai/getregula/issues" target="_blank" rel="noopener">github.com/kuzivaai/getregula</a> or email a correction. We would rather be told than be wrong.</p>
+        </section>
+
+
+
+    <section aria-label="Next step" style="max-width:720px;margin:48px auto 8px;padding:28px 24px;border:1px solid var(--border);border-radius:12px;text-align:center;background:var(--bg-elev);">
+        <h2 style="margin:0 0 8px;">Where does your own system stand?</h2>
+        <p style="color:var(--text-2);margin:0 0 18px;">The browser assessment is free, needs no account, and runs on your device. When the answer turns on something it cannot see, it says so and names the fact, rather than rounding the gap into a score. That makes it a starting point for review, not a legal determination.</p>
+        <a href="/assess/" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;text-decoration:none;min-height:44px;box-sizing:border-box;">Start the free assessment &rarr;</a>
+    </section>
+    </main>
+
+
+    <div style="max-width:760px;margin:var(--s7) auto var(--s5);padding:0 var(--s5);">
+        <h3 style="font-size:18px;color:var(--text);margin-bottom:var(--s3);">Related reading</h3>
+        <ul style="list-style:none;padding:0;margin:0;">
+            <li style="margin-bottom:var(--s2);"><a href="/blog/blog-does-ai-act-apply.html" style="color:var(--accent);text-decoration:underline;">Does the EU AI Act Apply to Your AI App?</a> <span style="color:var(--text-dim);font-size:14px;">— Extraterritorial reach and cross-border applicability</span></li>
+        </ul>
+    </div>
+
+    <footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        function onScroll() {
+            nav.classList.toggle('scrolled', window.scrollY > 20);
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+    </script>
+
+    <script>
+        // Progressive-enhancement tracker: fetch sa-tracker.json and replace
+        // the static rows if the JSON is newer. Static HTML remains the SEO
+        // and no-JS fallback, so nothing breaks if the fetch fails.
+        (function() {
+            const STATE_LABELS = {
+                verified: { text: 'VERIFIED', cls: 'ok' },
+                secondary: { text: 'SECONDARY', cls: 'pend' },
+                pending: { text: 'PENDING', cls: 'pend' },
+                estimated: { text: 'ESTIMATED', cls: 'est' },
+                gazetted: { text: 'GAZETTED', cls: 'ok' }
+            };
+
+            function esc(s) {
+                return String(s)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            function renderRow(row) {
+                const state = STATE_LABELS[row.state] || null;
+                const tag = state
+                    ? ' &nbsp;<span class="' + state.cls + '">' + state.text + '</span>'
+                    : '';
+                return '<div class="tracker-row">'
+                    + '<div class="lbl">' + esc(row.label) + '</div>'
+                    + '<div class="val">' + esc(row.value) + tag + '</div>'
+                    + '</div>';
+            }
+
+            const tracker = document.getElementById('sa-tracker');
+            if (!tracker) return;
+            const src = tracker.getAttribute('data-src');
+            if (!src || !window.fetch) return;
+
+            fetch(src, { cache: 'no-cache' })
+                .then(function(r) { return r.ok ? r.json() : null; })
+                .then(function(data) {
+                    if (!data || !Array.isArray(data.rows)) return;
+                    const rowsEl = document.getElementById('tracker-rows');
+                    const tsEl = document.getElementById('tracker-ts');
+                    if (rowsEl) {
+                        rowsEl.innerHTML = data.rows.map(renderRow).join('');
+                    }
+                    if (tsEl && data.last_updated) {
+                        tsEl.textContent = '· live · updated ' + data.last_updated;
+                        tsEl.classList.add('live');
+                    }
+                })
+                .catch(function() { /* static fallback already rendered */ });
+        })();
+    </script>
+
+</body>
+</html>

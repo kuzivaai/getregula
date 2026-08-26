@@ -1,0 +1,88 @@
+version: "1.0"
+organisation: "Your Organisation"
+
+# Optional named governance contact. Regulation (EU) 2026/1744 replaced
+# Article 4 with an AI-literacy duty; Article 4 does not require an AI officer.
+# ISO/IEC 42001 role and responsibility controls are a separate framework.
+governance:
+  ai_officer:
+    name: "Regula maintainers"      # Natural person accountable for the Regula project itself
+    role: "Maintainer"
+    email: "support@getregula.com"
+  dpo:
+    name: ""              # No separate DPO — solo-maintainer project
+    email: ""
+
+# Regulatory basis — declares which version of the regulation the patterns
+# are calibrated against. Auditors can verify this against the tool version.
+regulatory_basis:
+  eu_ai_act_version: "2024/1689"
+  pattern_version: "1.1.0"
+  last_reviewed: "2026-08-04"
+  notes: "Patterns reviewed against Regulation (EU) 2024/1689 as amended by Regulation (EU) 2026/1744. The amendment was published on 24 July 2026 and entered into force on 27 July 2026. Annex III high-risk provisions apply from 2 Dec 2027 and Annex I product-embedded provisions from 2 Aug 2028, subject to the enacted scope and transition rules."
+
+frameworks:
+  - eu_ai_act
+  # - iso_42001      # Planned: v1.2
+  # - nist_ai_rmf    # Planned: v1.2
+
+# System declaration — declare your AI system's domain and risk level.
+# Regula adjusts severity based on this: the same finding becomes critical
+# in a credit-scoring system but informational in internal tooling.
+#
+# Supported domains:
+#   creditworthiness, employment, insurance, education, legal,
+#   law_enforcement, migration, biometric, medical,
+#   customer_support, internal_tooling, content_generation, general_purpose
+system:
+  name: ""                  # e.g., "Lending Risk Engine"
+  domain: general_purpose   # One of the domains above
+  risk_level: ""            # prohibited, high_risk, limited_risk, minimal_risk, or "" for auto-detect
+
+rules:
+  risk_classification:
+    # Systems to always treat as high-risk (e.g., fraud_detection)
+    force_high_risk: []
+    # Systems confirmed as low-risk after human review.
+    # NOTE: Cannot override Article 5 prohibited practice detection.
+    exempt: []
+
+  logging:
+    retention_years: 10
+    export_format: [json, csv]
+
+# Compliance status workflow for discovered AI systems.
+# Valid statuses: not_started → assessment → implementing → compliant → review_due
+# compliance:
+#   review_interval_months: 12
+#   require_sign_off: true
+
+# Severity thresholds for CI/CD integration
+thresholds:
+  block_on_prohibited: true
+  block_on_high_risk: false
+  min_dependency_pinning_score: 50
+  min_confidence: 0
+  # Confidence-based finding tiers
+  block_above: 80    # score >= 80: BLOCK (CI fails, exit code 2)
+  warn_above: 50     # score 50-79: WARN (PR comment, CI passes)
+  # Below warn_above: INFO (full report only, not in PR or CI output)
+
+# Path and pattern exclusions
+exclusions:
+  paths:
+    - "tests/"
+    - "docs/"
+    - "examples/"
+  patterns:
+    - "test_*.py"
+    - "*_test.py"
+    - "*.spec.ts"
+
+# Approval workflow for high-risk AI systems (planned)
+# approvals:
+#   high_risk_systems:
+#     require_explicit_approval: true
+#     approvers:
+#       - role: "AI Governance Lead"
+#       - role: "Legal Counsel"

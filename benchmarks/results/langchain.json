@@ -1,0 +1,1593 @@
+[
+  {
+    "file": "libs/partners/openai/langchain_openai/chat_models/base.py",
+    "line": 194,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 68,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/partners/openai/langchain_openai/chat_models/_compat.py",
+    "line": 105,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/integration_tests/chat_models/test_azure.py",
+    "line": 50,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/integration_tests/chat_models/test_base.py",
+    "line": 248,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/integration_tests/chat_models/test_responses_api.py",
+    "line": 115,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/integration_tests/chat_models/test_responses_api.py",
+    "line": 1057,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 28,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/integration_tests/chat_models/conftest.py",
+    "line": 87,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+    "indicators": [
+      "generic_api_key"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "libs/partners/openai/tests/integration_tests/llms/test_base.py",
+    "line": 70,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_codex.py",
+    "line": 150,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
+    "indicators": [
+      "openai_api_key"
+    ],
+    "confidence_score": 55,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_codex.py",
+    "line": 340,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 25,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_responses_stream.py",
+    "line": 66,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+    "indicators": [
+      "missing_temperature_control"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_responses_stream.py",
+    "line": 823,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 13,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_base.py",
+    "line": 696,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/openai/tests/unit_tests/chat_models/test_base.py",
+    "line": 3489,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 25,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/partners/groq/tests/integration_tests/test_chat_models.py",
+    "line": 691,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/fireworks/tests/integration_tests/test_llms.py",
+    "line": 26,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/anthropic/tests/integration_tests/test_llms.py",
+    "line": 30,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/anthropic/tests/integration_tests/test_chat_models.py",
+    "line": 145,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/anthropic/tests/unit_tests/test_chat_models.py",
+    "line": 1872,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/anthropic/langchain_anthropic/llms.py",
+    "line": 280,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/anthropic/langchain_anthropic/chat_models.py",
+    "line": 1432,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/partners/anthropic/langchain_anthropic/middleware/anthropic_tools.py",
+    "line": 1040,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: File system modification \u2014 no human gate detected",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/test_create_agent_tool_validation.py",
+    "line": 294,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
+    "indicators": [
+      "openai_api_key"
+    ],
+    "confidence_score": 55,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/test_response_format.py",
+    "line": 109,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "High temperature setting (>=1.0) \u2014 review whether hallucination risk is acceptable for this use case",
+    "indicators": [
+      "missing_temperature_control"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use temperature=0 or 0.1 for factual/production tasks. Reserve high temperature for creative tasks.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_pii.py",
+    "line": 540,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
+    "indicators": [
+      "openai_api_key"
+    ],
+    "confidence_score": 55,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 88,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 94,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 121,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 124,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 153,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 155,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 173,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 174,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 202,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 297,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 349,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_shell_execution_policies.py",
+    "line": 388,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_tool_selection.py",
+    "line": 46,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Message/email sending \u2014 no human gate detected",
+    "indicators": [
+      "Message/email sending"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_provider_tool_search.py",
+    "line": 36,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Message/email sending \u2014 no human gate detected",
+    "indicators": [
+      "Message/email sending"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/implementations/test_file_search.py",
+    "line": 52,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/tests/unit_tests/agents/middleware/core/test_decorators.py",
+    "line": 655,
+    "tier": "ai_security",
+    "category": "AI Security (LLM07)",
+    "description": "System prompt exposed in client code, API response, or logs \u2014 prompt leakage risk",
+    "indicators": [
+      "system_prompt_leakage"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Keep system prompts server-side only. Never return them in API responses or log them. Use prompt references/IDs instead of inline prompt text. OWASP LLM07:2025.",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/_execution.py",
+    "line": 34,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/_execution.py",
+    "line": 35,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/_execution.py",
+    "line": 87,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/_execution.py",
+    "line": 137,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/_execution.py",
+    "line": 165,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/_execution.py",
+    "line": 216,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/_execution.py",
+    "line": 320,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/file_search.py",
+    "line": 313,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/shell_tool.py",
+    "line": 139,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 human gate pattern detected nearby",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 35,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/shell_tool.py",
+    "line": 729,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 human gate pattern detected nearby",
+    "indicators": [
+      "Database query execution"
+    ],
+    "confidence_score": 35,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/shell_tool.py",
+    "line": 739,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 human gate pattern detected nearby",
+    "indicators": [
+      "Database query execution"
+    ],
+    "confidence_score": 35,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain_v1/langchain/agents/middleware/shell_tool.py",
+    "line": 806,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: Database query execution \u2014 human gate pattern detected nearby",
+    "indicators": [
+      "Database query execution"
+    ],
+    "confidence_score": 35,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/core/langchain_core/utils/function_calling.py",
+    "line": 508,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 65,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/core/langchain_core/messages/block_translators/openai.py",
+    "line": 322,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/core/tests/unit_tests/test_tools.py",
+    "line": 3986,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/core/tests/unit_tests/runnables/test_runnable.py",
+    "line": 2834,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 25,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/core/tests/unit_tests/messages/block_translators/test_openai.py",
+    "line": 53,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 25,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/langchain/tests/unit_tests/evaluation/qa/test_eval_chain.py",
+    "line": 109,
+    "tier": "high_risk",
+    "category": "Annex III, Category 3",
+    "description": "Education and vocational training",
+    "indicators": [
+      "education"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 45,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "detected_domains": [
+      "education"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain/langchain_classic/evaluation/qa/eval_prompt.py",
+    "line": 4,
+    "tier": "high_risk",
+    "category": "Annex III, Category 3",
+    "description": "Education and vocational training",
+    "indicators": [
+      "education"
+    ],
+    "articles": [
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15"
+    ],
+    "exceptions": null,
+    "confidence_score": 85,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [
+      {
+        "article": "12",
+        "observation": "No logging detected \u2014 Article 12 requires automatic recording of events for traceability."
+      }
+    ],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "plan",
+      "develop"
+    ],
+    "detected_domains": [
+      "education"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/langchain/langchain_classic/tools/steamship_image_generation/tool.py",
+    "line": 7,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/langchain/langchain_classic/utilities/dalle_image_generator.py",
+    "line": 6,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 53,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "libs/langchain/langchain_classic/chains/llm_math/base.py",
+    "line": 237,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "LLM output used as factual information without grounding or verification \u2014 misinformation risk",
+    "indicators": [
+      "no_grounding"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/standard-tests/langchain_tests/integration_tests/sandboxes.py",
+    "line": 1280,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "libs/standard-tests/langchain_tests/integration_tests/sandboxes.py",
+    "line": 1292,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "Agent tool infrastructure: System command execution \u2014 no human gate detected",
+    "indicators": [
+      "System command execution"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  }
+]

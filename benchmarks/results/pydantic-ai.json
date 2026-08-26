@@ -1,0 +1,735 @@
+[
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/native_tools/__init__.py",
+    "line": 427,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots",
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 5,
+    "suppressed": false,
+    "provenance": "tooling",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "biometrics"
+      ],
+      "detail": "Domain keywords detected: biometrics"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/common_tools/image_generation.py",
+    "line": 56,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots",
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/capabilities/__init__.py",
+    "line": 37,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "tooling",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/capabilities/image_generation.py",
+    "line": 39,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots",
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 5,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/models/groq.py",
+    "line": 370,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/models/openai.py",
+    "line": 334,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "production",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/models/huggingface.py",
+    "line": 261,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "pydantic_ai_slim/pydantic_ai/models/anthropic.py",
+    "line": 765,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "docs/javascripts/algolia-search.js",
+    "line": 2,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible API key or token in assignment in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Move credentials to environment variables or a secrets manager.",
+    "indicators": [
+      "generic_api_key"
+    ],
+    "confidence_score": 60,
+    "suppressed": false,
+    "provenance": "production",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": false,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "tests/test_exceptions.py",
+    "line": 121,
+    "tier": "ai_security",
+    "category": "AI Security (LLM05)",
+    "description": "Unsafe model deserialization \u2014 arbitrary code execution risk",
+    "indicators": [
+      "unsafe_deserialization"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Use safetensors format or torch.load(path, weights_only=True). Never unpickle untrusted model files.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/test_embeddings.py",
+    "line": 1306,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
+    "indicators": [
+      "openai_api_key"
+    ],
+    "confidence_score": 55,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "tests/test_native_tool_search_vcr.py",
+    "line": 173,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/conftest.py",
+    "line": 881,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "AWS access key ID detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use AWS credential provider chain or environment variables.",
+    "indicators": [
+      "aws_access_key"
+    ],
+    "confidence_score": 55,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "tests/conftest.py",
+    "line": 421,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "Possible AWS secret access key in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use AWS credential provider chain or environment variables.",
+    "indicators": [
+      "aws_secret_key"
+    ],
+    "confidence_score": 35,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "tests/test_messages.py",
+    "line": 774,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 12,
+      "domains_matched": [
+        "education"
+      ],
+      "detail": "Domain keywords detected: education"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "tests/test_examples.py",
+    "line": 387,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "tests/test_ag_ui.py",
+    "line": 2077,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "employment",
+        "education"
+      ],
+      "detail": "Domain keywords detected: employment, education"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "tests/models/test_google.py",
+    "line": 4571,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/models/test_google.py",
+    "line": 4736,
+    "tier": "agent_autonomy",
+    "category": "Agent Autonomy (OWASP Agentic ASI02 Tool Misuse / ASI04 Missing Guardrails)",
+    "description": "AI output may flow to File system modification \u2014 human gate pattern detected nearby",
+    "indicators": [
+      "File system modification"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "operate"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/models/test_google.py",
+    "line": 157,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots",
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "tests/models/test_bedrock.py",
+    "line": 150,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "tests/models/test_openai_responses.py",
+    "line": 1850,
+    "tier": "credential_exposure",
+    "category": "AI Credential Governance (Article 15)",
+    "description": "OpenAI API key detected in AI system code. Article 15 requires cybersecurity measures for high-risk systems. Fix: Use environment variable OPENAI_API_KEY instead of hardcoding.",
+    "indicators": [
+      "openai_api_key"
+    ],
+    "confidence_score": 25,
+    "suppressed": false,
+    "provenance": "test",
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+  },
+  {
+    "file": "tests/models/test_openai_responses.py",
+    "line": 10672,
+    "tier": "ai_security",
+    "category": "AI Security (LLM09)",
+    "description": "LLM output used as factual information without grounding or verification \u2014 misinformation risk",
+    "indicators": [
+      "no_grounding"
+    ],
+    "confidence_score": 20,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Implement retrieval-augmented generation (RAG) for factual tasks. Require citations and source attribution. Add fact-checking or grounding verification before presenting LLM output as fact. OWASP LLM09:2025.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/models/test_openai.py",
+    "line": 96,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": {
+      "boost": 15,
+      "domains_matched": [
+        "education",
+        "law_enforcement"
+      ],
+      "detail": "Domain keywords detected: education, law_enforcement"
+    },
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "tests/models/test_model_request_parameters.py",
+    "line": 107,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Synthetic content generation",
+    "indicators": [
+      "synthetic_content"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  },
+  {
+    "file": "tests/models/google/test_code_execution.py",
+    "line": 218,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Chatbots and conversational AI",
+    "indicators": [
+      "chatbots"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  }
+]

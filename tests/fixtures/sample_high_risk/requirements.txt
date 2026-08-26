@@ -1,0 +1,5 @@
+openai
+scikit-learn
+torch>=2.0
+langchain
+litellm

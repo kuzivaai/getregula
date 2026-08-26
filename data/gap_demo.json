@@ -1,0 +1,54 @@
+{
+  "_what_this_is": "The landing page's terminal demo, parsed from real command output against a committed fixture. Produced by scripts/build_gap_demo.py. Never hand-edited: tests/test_gap_demo.py re-runs all four commands and fails on disagreement, and fails if the site shows a percentage this file does not contain.",
+  "_why_it_exists": "The block it replaces was invented output shown behind a $ prompt. A visitor reads that as a real scan.",
+  "check": {
+    "command": "regula check tests/fixtures/sample_high_risk --explain",
+    "model_version": "2026-08-19.1",
+    "result_type": "insufficient_information",
+    "rule_resolution": "unresolved",
+    "unresolved_count": 2,
+    "unresolved_fact_ids": [
+      "is_ai_system",
+      "jurisdiction_in_scope"
+    ]
+  },
+  "comply": {
+    "article_observations_emitted": 0,
+    "article_observations_held": 8,
+    "command": "regula comply tests/fixtures/sample_high_risk --all",
+    "model_version": "2026-08-19.1",
+    "result_type": "insufficient_information",
+    "rule_resolution": "unresolved",
+    "unresolved_count": 2,
+    "unresolved_fact_ids": [
+      "is_ai_system",
+      "jurisdiction_in_scope"
+    ]
+  },
+  "fixture": "tests/fixtures/sample_high_risk",
+  "gap": {
+    "article_observations_emitted": 0,
+    "article_observations_held": 8,
+    "command": "regula gap tests/fixtures/sample_high_risk",
+    "model_version": "2026-08-19.1",
+    "result_type": "insufficient_information",
+    "rule_resolution": "unresolved",
+    "unresolved_count": 2,
+    "unresolved_fact_ids": [
+      "is_ai_system",
+      "jurisdiction_in_scope"
+    ]
+  },
+  "generated_at": "2026-08-19T07:56:16.708383+00:00",
+  "plan": {
+    "command": "regula plan --project tests/fixtures/sample_high_risk",
+    "model_version": "2026-08-19.1",
+    "result_type": "insufficient_information",
+    "rule_resolution": "unresolved",
+    "unresolved_count": 2,
+    "unresolved_fact_ids": [
+      "is_ai_system",
+      "jurisdiction_in_scope"
+    ]
+  }
+}

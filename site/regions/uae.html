@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Regula — EU AI Act Compliance for UAE & GCC Companies</title>
+    <meta name="description" content="EU AI Act scope and code-indicator review for UAE and GCC companies whose AI outputs may be used in the EU.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta property="og:title" content="Regula — EU AI Act compliance for UAE & GCC companies selling into Europe">
+    <meta property="og:description" content="Article 2 can apply to some UAE and GCC providers and deployers. Regula reports code indicators locally for contextual review.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/regions/uae.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="https://getregula.com/assets/og-uae.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Regula — EU AI Act compliance for UAE and GCC teams. Free open-source CLI.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-uae.png">
+    <meta property="og:locale" content="en_AE">
+    <meta name="twitter:title" content="EU AI Act compliance for UAE companies">
+    <meta name="twitter:description" content="Free CLI combining code scanning and governance questionnaires for EU AI Act compliance. Built for DIFC, ADGM and GCC AI teams selling into the EU.">
+    <link rel="canonical" href="https://getregula.com/regions/uae.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Regula",
+        "description": "Open-source CLI for DIFC, ADGM and GCC AI teams selling into Europe. Audits code against EU AI Act risk patterns in one command.",
+        "url": "https://getregula.com/regions/uae.html",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, macOS, Windows",
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "softwareVersion": "2.0.0",
+        "programmingLanguage": "Python",
+        "codeRepository": "https://github.com/kuzivaai/getregula",
+        "audience": { "@type": "BusinessAudience", "audienceType": "UAE and GCC companies with EU market exposure" }
+    }
+    </script>
+    <link rel="alternate" hreflang="en" href="https://getregula.com/regions/uae.html">
+    <link rel="alternate" hreflang="en-AE" href="https://getregula.com/regions/uae.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/regions/uae.html">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: #070711;
+            color: #e2e2f0;
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
+        }
+        code, .mono { font-family: 'JetBrains Mono', monospace; }
+        h1, h2 { font-family: 'Fraunces', Georgia, serif; }
+        a { color: #3b82f6; text-decoration: none; transition: color 0.15s; }
+        a:hover { color: #60a5fa; }
+
+        .nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(7, 7, 17, 0.85);
+            backdrop-filter: saturate(140%) blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 14px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-brand { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 22px; color: #fff; }
+        .nav-brand .pill { font-family: 'DM Sans', sans-serif; font-size: 11px; padding: 2px 8px; background: rgba(59,130,246,0.15); color: #7dd3fc; border-radius: 999px; vertical-align: middle; margin-left: 6px; }
+
+        .hero {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 80px 24px 56px;
+            text-align: left;
+        }
+        .badge {
+            display: inline-block;
+            font-size: 12px;
+            padding: 6px 12px;
+            background: rgba(59,130,246,0.12);
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 999px;
+            color: #93c5fd;
+            margin-bottom: 24px;
+        }
+        h1 {
+            font-size: 48px;
+            line-height: 1.1;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        h1 .hl { color: #3b82f6; }
+        .sub {
+            font-size: 19px;
+            color: #aaaac0;
+            max-width: 680px;
+            margin-bottom: 32px;
+        }
+        .sub strong { color: #e2e2f0; }
+        .cta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #3b82f6, #7c3aed);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.1s, box-shadow 0.15s;
+        }
+        .cta-pill:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(59,130,246,0.35); }
+        .cta-pill.copied { background: linear-gradient(135deg, #059669, #047857); }
+        .cta-secondary {
+            margin-top: 14px;
+            font-size: 13px;
+            color: #888;
+        }
+        .cta-secondary a { color: #888; text-decoration: underline; text-underline-offset: 3px; }
+        .social-proof {
+            margin-top: 28px;
+            font-size: 13px;
+            color: #9898b4;  /* WCAG AA: 5.29:1 on #070711 */
+        }
+        .social-proof .sp-sep { margin: 0 8px; }
+
+        .sec {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 56px 24px;
+        }
+        h2 { font-size: 30px; color: #fff; margin-bottom: 8px; }
+        .sec-sub { font-size: 16px; color: #888; margin-bottom: 32px; }
+
+        .liab-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        /* liab-card base styles in site.css */
+
+        .sectors {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .sector {
+            background: #0f0f1f;
+            border-left: 3px solid #3b82f6;
+            padding: 16px 18px;
+        }
+        .sector strong { color: #fff; display: block; margin-bottom: 4px; font-size: 14px; }
+        .sector span { font-size: 13px; color: #888; }
+
+        .terminal {
+            background: #050510;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #c4c4d8;
+            overflow-x: auto;
+            line-height: 1.7;
+        }
+        .terminal .prompt { color: #8a8aa8; }
+        .terminal .cmd { color: #7dd3fc; }
+        .terminal .out-block { color: #fff; }
+        .terminal .out-warn { color: #facc15; }
+        .terminal .out-ok { color: #10b981; }
+
+        .install-block {
+            background: #0a0a18;
+            border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 28px;
+            display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+        .install-block .dollar { color: #8a8aa8; }
+        .install-block .cmd { color: #7dd3fc; flex: 1; }
+        .install-block button {
+            /* Darker blue for WCAG AA 4.5:1 contrast with white text. */
+            background: #1d4ed8; border: none; color: #fff;
+            padding: 8px 16px; border-radius: 6px; cursor: pointer;
+            font-family: inherit; font-size: 13px; font-weight: 600;
+        }
+        .install-block button:hover { background: #1e40af; }
+
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 36px 24px;
+            text-align: center;
+            color: #9898b4;  /* WCAG AA on #070711 */
+            font-size: 13px;
+        }
+        footer a { color: #b8b8c8; }
+
+        @media (max-width: 720px) {
+            .hero { padding: 56px 16px 36px; }
+            h1 { font-size: 32px; }
+            .sub { font-size: 17px; }
+            .sec { padding: 40px 16px; }
+            h2 { font-size: 24px; }
+            .liab-grid { grid-template-columns: 1fr; }
+            .sectors { grid-template-columns: 1fr; }
+            .nav { padding: 12px 16px; }
+            .nav-links a { margin-left: 12px; font-size: 13px; }
+        }
+        .skip-link { position: absolute; left: -9999px; top: 0; background: #3b82f6; color: #fff; padding: 8px 16px; font-family: monospace; font-size: 12px; z-index: 1000; border-radius: 0 0 6px 0; text-decoration: none; }
+        .skip-link:focus { left: 0; }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Regulations", "item": "https://getregula.com/regions/regulations.html"},
+            {"@type": "ListItem", "position": 3, "name": "UAE AI Governance"}
+        ]
+    }
+    </script>
+    <script>
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+        <a href="/" class="nav-brand">Regula</a>
+        <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+            <a href="/product.html">What it does</a>
+            <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+            <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+            <a href="/about.html">About</a>
+            <a href="/">EN</a>
+            <a href="/locales/de.html">DE</a>
+            <a href="/locales/pt-br.html">BR</a>
+        </dialog>
+    </nav>
+
+<!-- HERO -->
+<main id="main">
+<section class="hero">
+    <div class="badge">For DIFC, ADGM &amp; GCC AI teams selling into Europe</div>
+    <h1>If your AI outputs are used in the EU, <span class="hl">check Article 2 scope</span>.</h1>
+    <p class="sub">Article&nbsp;2(1)(c) can apply the EU AI Act to providers and deployers outside the EU when an AI system&rsquo;s output is used in the Union. Scope depends on role, use, and the Act&rsquo;s exclusions. Regula reports code indicators locally for human review; it does not determine whether the Act applies. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Read Article 2 in the primary legislation</a>.</p>
+
+    <button type="button" class="cta-pill" onclick="copyCmd(this, 'pipx install regula-ai \u0026\u0026 regula quickstart')">
+        <span>&#9654;</span>
+        Try the local scanner
+    </button>
+
+    <div class="cta-secondary">
+        no account &middot; no API key &middot; runs on your machine &middot;
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">read the trust pack</a>
+    </div>
+
+    <div class="social-proof">
+        <span>Apache 2.0 / EUPL 1.2</span>
+        <span class="sp-sep" aria-hidden="true">&middot;</span>
+        <span>zero runtime dependencies</span>
+        <span class="sp-sep" aria-hidden="true">&middot;</span>
+        <span><a href="https://github.com/kuzivaai/getregula/tree/main/tests" style="color:inherit;text-decoration:underline dotted;">2,897 tests</a></span>
+        <span class="sp-sep" aria-hidden="true">&middot;</span>
+        <span>Versioned security-alert inventory</span>
+    </div>
+</section>
+
+<!-- LIABILITY -->
+<section class="sec">
+    <h2>Why this matters for UAE companies</h2>
+    <p class="sec-sub">Four facts about EU AI Act extraterritoriality that GCC general counsel are double-checking right now.</p>
+
+    <div class="liab-grid">
+        <div class="card-base liab-card">
+            <h3>Extraterritorial by design</h3>
+            <p>Article 2(1)(c) of Regulation (EU) 2024/1689 explicitly applies to providers and deployers established outside the EU when the output of the AI system is used in the Union. Where you incorporate is irrelevant.</p>
+            <p class="ref">Source: Regulation (EU) 2024/1689 Article 2(1)(c)</p>
+        </div>
+        <div class="card-base liab-card">
+            <h3>Provider status carries duties</h3>
+            <p>A DIFC or ADGM company may be a provider where it develops an AI system or model, or has one developed, and places it on the market or puts it into service under its own name or trademark. Article 3 definitions and the actual distribution arrangement matter; a reseller relationship alone does not settle the role.</p>
+            <p class="ref">Source: Regulation (EU) 2024/1689 Article 3(3) and Article 16</p>
+        </div>
+        <div class="card-base liab-card">
+            <h3>Article 99 penalty framework</h3>
+            <p>Article 99 sets penalty ceilings by infringement type and includes turnover-based limits. The applicable amount depends on the legal conditions and enforcement decision.</p>
+            <p class="ref"><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">Primary source: Regulation (EU) 2024/1689, Article 99</a></p>
+        </div>
+        <div class="card-base liab-card">
+            <h3>High-risk deadline: 2 December 2027 (Omnibus)</h3>
+            <p><a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> was published on 24 July 2026 and entered into force on 27 July 2026. It sets 2 December 2027 for Annex III high-risk provisions and 2 August 2028 for Annex I product-embedded provisions. Article 50 obligations generally have applied since 2 August 2026; providers of systems covered by Article 50(2) that were already on the market before that date have until 2 December 2026 under the amendment's transition rule.</p>
+            <p class="ref">Source: Council press release, 7 May 2026; Regulation (EU) 2024/1689 Article 113</p>
+        </div>
+    </div>
+</section>
+
+<!-- SECTORS -->
+<section class="sec">
+    <h2>Sectors with the highest exposure in the UAE</h2>
+    <p class="sec-sub">Where DIFC, ADGM, Dubai Internet City, and Abu Dhabi Hub71-licensed companies most often hit EU AI Act high-risk categories.</p>
+
+    <div class="sectors">
+        <div class="sector"><strong>Fintech &amp; lending</strong><span>Credit scoring, loan approval, KYC risk → Annex III Cat 5 (essential services)</span></div>
+        <div class="sector"><strong>Insurtech</strong><span>Health/life insurance pricing, claim assessment → Annex III Cat 5</span></div>
+        <div class="sector"><strong>HR &amp; recruitment SaaS</strong><span>CV screening, candidate ranking → Annex III Cat 4 (employment)</span></div>
+        <div class="sector"><strong>Health-tech</strong><span>Clinical decision support, diagnostic AI → Article 6(1) + MDR/IVDR</span></div>
+        <div class="sector"><strong>Proptech</strong><span>Tenant screening, rental decisions → Annex III Cat 5</span></div>
+        <div class="sector"><strong>Smart city / mobility</strong><span>ADAS, traffic management, biometrics → Annex III Cat 1, 2, safety components</span></div>
+    </div>
+</section>
+
+<!-- REGULATORS -->
+<section class="sec">
+    <h2>DIFC, ADGM, and the federal layer: who regulates AI in the UAE today?</h2>
+    <p class="sec-sub">No federal UAE AI Act was identified in the official legal sources reviewed for this audit. AI governance also involves data-protection, financial, health, and free-zone rules. The regulator summary below is orientation, not a complete statement of UAE law.</p>
+
+    <div class="sectors">
+        <div class="sector"><strong>DIFC — Dubai International Financial Centre</strong><span>DIFC Data Protection Law 2020 (DIFC Law No. 5 of 2020) + Regulation 10 on processing personal data through autonomous and semi-autonomous systems. Dubai Financial Services Authority (DFSA) regulates AI deployed in regulated financial services. Personal data triggers DP law; financial use triggers DFSA rules.</span></div>
+        <div class="sector"><strong>ADGM — Abu Dhabi Global Market</strong><span>ADGM Data Protection Regulations 2021 (modelled on GDPR). Financial Services Regulatory Authority (FSRA) regulates AI in licensed financial activities. ADGM's Office of Data Protection publishes guidance on the DPR 2021, including on automated decision-making.</span></div>
+        <div class="sector"><strong>Federal layer</strong><span>Federal Decree-Law No. 45 of 2021 governs personal-data processing within its scope. Sector regulators may add requirements. This page does not rely on an unverified secondary claim about a new federal AI authority.</span></div>
+    </div>
+
+    <p style="margin-top: 24px; color: #888; font-size: 14px;">The practical takeaway: UAE rules and EU AI Act scope are separate questions. If Article 2 brings a system or actor into EU scope, applicable EU duties may sit alongside local rules. Regula reports local code indicators but cannot decide either legal question.</p>
+</section>
+
+<!-- DEMO -->
+<section class="sec">
+    <h2>What it looks like</h2>
+    <p class="sec-sub">Real session against a one-file Python script that calls OpenAI to score a CV — the canonical Annex III Category 4 case.</p>
+
+    <pre tabindex="0" class="terminal"><span class="prompt">$</span> <span class="cmd">pipx install regula-ai</span>
+Successfully installed regula-ai-1.9.0
+
+<span class="prompt">$</span> <span class="cmd">cat demo.py</span>
+import openai
+def classify_resume(resume_text):
+    client = openai.OpenAI()
+    reply = client.chat.completions.create(
+        model='gpt-4',
+        messages=[{'role':'user','content':f'Score this resume: {resume_text}'}])
+    return reply.choices[0].message.content
+
+<span class="prompt">$</span> <span class="cmd">regula quickstart</span>
+
+Regula Quickstart
+
+  Created: ./regula-policy.yaml
+
+  First scan complete (0.0s)
+  Files scanned:      1
+  BLOCK findings:     0
+  WARN findings:      0
+  <span class="out-warn">INFO findings:      1</span>
+
+<span class="prompt">$</span> <span class="cmd">regula classify --file demo.py</span>
+<span class="out-ok">Decision: insufficient_information</span>
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the governing law's definition of an AI system?
+  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+
+Detector observation (not a legal classification):
+<span class="out-warn">HIGH-RISK</span>: Employment and workers management - Articles 9, 10, 11, 12, 13, 14, 15
+
+<span class="prompt">$</span> <span class="out-ok"># Reports code-observable indicators; runtime varies by repository.</span></pre>
+
+    <div class="install-block">
+        <span class="dollar">$</span>
+        <span class="cmd">pipx install regula-ai &amp;&amp; regula quickstart</span>
+        <button type="button" onclick="copyCmd(this, 'pipx install regula-ai \u0026\u0026 regula quickstart')">Copy</button>
+    </div>
+</section>
+
+<!-- TRUST -->
+<section class="sec">
+    <h2>How you verify Regula independently</h2>
+    <p class="sec-sub">Procurement teams in DIFC and ADGM ask the same questions. Here are the answers, all in one document.</p>
+
+    <ul style="list-style: none; padding: 0; font-size: 15px; color: #aaaac0;">
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Trust Pack</strong> — every claim is paired with the exact shell command anyone can run to verify it. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">docs/TRUST.md</a></li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Published methodology</strong>: the precision and recall measurements are under review and are not quoted here as current figures. The method, the corpora and their limits are published so the numbers can be reproduced and challenged. <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md">benchmark methodology</a></li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>SHA-256 tamper-evident audit log</strong> — verify the chain yourself with <code>regula audit verify</code>.</li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Zero runtime dependencies</strong> — Regula's core only uses Python's standard library. The Software Bill of Materials is empty by design.</li>
+        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Local-first core scanning</strong> — no account or API key is required for the core scan path. Optional network-enabled features have separate boundaries.</li>
+        <li style="padding: 10px 0;">&#10003; <strong>Open source under Apache 2.0 / EUPL 1.2</strong> — read every line at <a href="https://github.com/kuzivaai/getregula">github.com/kuzivaai/getregula</a>.</li>
+    </ul>
+</section>
+
+<p style="max-width:720px;margin:32px auto 8px;color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Maintained by:</strong> Regula (open source) &middot; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+function copyCmd(btn, cmd) {
+    navigator.clipboard.writeText(cmd).then(() => {
+        const originalText = btn.innerHTML;
+        btn.classList.add('copied');
+        if (btn.classList.contains('cta-pill')) {
+            btn.innerHTML = '<span>&#10003;</span> Copied — paste in your terminal';
+        } else {
+            btn.textContent = 'Copied';
+        }
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.innerHTML = originalText;
+        }, 2500);
+    });
+}
+</script>
+</body>
+</html>

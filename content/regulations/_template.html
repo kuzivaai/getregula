@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="$lang">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <title>$title_tag</title>
+    <meta name="description" content="$meta_description">
+    <meta name="keywords" content="$meta_keywords">
+    <meta name="author" content="Regula">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/regions/$slug.html">
+
+    <meta name="geo.region" content="$geo_region">
+    <meta name="geo.placename" content="$geo_placename">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/regions/$slug.html">
+    <meta property="og:title" content="$og_title">
+    <meta property="og:description" content="$og_description">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula — open-source AI governance risk indication tool">
+    <meta property="og:locale" content="$og_locale">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="$published_time">
+    <meta property="article:modified_time" content="$modified_time">
+    <meta property="article:section" content="AI Governance">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="$twitter_title">
+    <meta name="twitter:description" content="$twitter_description">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+$head_extra
+    <link rel="alternate" hreflang="$hreflang_self" href="https://getregula.com/regions/$slug.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/regions/$slug.html">
+
+    <script type="application/ld+json">
+$jsonld_article
+    </script>
+    <script type="application/ld+json">
+$jsonld_breadcrumb
+    </script>
+    <script type="application/ld+json">
+$jsonld_faq
+    </script>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <script>
+    </script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <nav class="nav" id="nav" aria-label="Main navigation">
+        <a href="/" class="nav-brand">Regula</a>
+        <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+            <a href="/product.html">What it does</a>
+            <a href="/guides/">Guides</a>
+            <a href="/pricing.html">Pricing</a>
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+            <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+            <span class="active">$flag $nav_label</span>
+            <a href="/about.html">About</a>
+            <a href="/">EN</a>
+            <a href="/locales/de.html">DE</a>
+            <a href="/locales/pt-br.html">BR</a>
+        </dialog>
+    </nav>
+
+    <header class="hub-hero">
+        <div class="breadcrumb">
+            <a href="/">Regula</a> / <a href="/regions/regulations.html">Regulations</a> / $nav_label
+        </div>
+        <span class="status-badge $status_cls"><span class="status-dot"></span>$status_text</span>
+        <h1>$title_html</h1>
+        <p class="lede">$lede</p>
+        <p class="last-updated"><strong>Last reviewed:</strong> $last_updated &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+
+$tracker_block
+    </header>
+
+    <main id="main" class="tracker-content">
+
+$sections
+$faq_block
+$sources_block
+    <section aria-label="Next step" style="max-width:720px;margin:48px auto 8px;padding:28px 24px;border:1px solid var(--border);border-radius:12px;text-align:center;background:var(--bg-elev);">
+        <h2 style="margin:0 0 8px;">Where does your own system stand?</h2>
+        <p style="color:var(--text-2);margin:0 0 18px;">The browser assessment is free, needs no account, and runs on your device. When the answer turns on something it cannot see, it says so and names the fact, rather than rounding the gap into a score. That makes it a starting point for review, not a legal determination.</p>
+        <a href="/assess/" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;text-decoration:none;min-height:44px;box-sizing:border-box;">Start the free assessment &rarr;</a>
+    </section>
+    </main>
+$extra_html
+    <footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        function onScroll() {
+            nav.classList.toggle('scrolled', window.scrollY > 20);
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+    </script>
+$body_end_html
+</body>
+</html>

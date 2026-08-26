@@ -1,0 +1,42 @@
+{
+  "name": "regula",
+  "display_name": "Regula — EU AI Act Code-Indicator Scanner",
+  "description": "Report code-observable AI governance indicators and candidate risk categories for contextual human review. Maps findings to 13 framework references and provides review scaffolds. The core install has no required third-party runtime dependencies; optional features may add dependencies or network access.",
+  "version": "2.0.0",
+  "repository": "https://github.com/kuzivaai/getregula",
+  "homepage": "https://getregula.com",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Regula maintainers",
+    "url": "https://getregula.com"
+  },
+  "transport": "stdio",
+  "install": {
+    "command": "pipx install regula-ai && python3 -c \"import scripts.mcp_server\"",
+    "instructions": "Install via pipx: `pipx install regula-ai`. Run: `regula mcp-server` or `python3 scripts/mcp_server.py`."
+  },
+  "config": {
+    "mcpServers": {
+      "regula": {
+        "command": "python3",
+        "args": ["-m", "scripts.mcp_server"]
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "regula_check",
+      "description": "Scan a project for code-observable AI-governance indicators. Candidate risk categories require contextual human review and are not legal classification or compliance determinations."
+    },
+    {
+      "name": "regula_classify",
+      "description": "Report candidate EU AI Act risk-category indicators in a code snippet for contextual human review. The command name is a technical API identifier, not a legal classification."
+    },
+    {
+      "name": "regula_gap",
+      "description": "Report code-observable gaps against an Articles 9-15 review scaffold. Results require human completion and do not determine compliance."
+    }
+  ],
+  "categories": ["compliance", "security", "developer-tools"],
+  "keywords": ["eu-ai-act", "compliance", "static-analysis", "ai-governance", "regulatory"]
+}

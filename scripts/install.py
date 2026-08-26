@@ -1,0 +1,188 @@
+#!/usr/bin/env python3
+"""
+Regula Multi-Platform Installer
+
+Generates configuration for the supported pre-commit integrations.
+
+Supported platforms:
+  pre-commit   - pre-commit framework hook
+  git-hooks    - Direct git pre-commit hook
+"""
+
+import argparse
+import shlex
+import stat
+import sys
+from pathlib import Path
+
+
+def _find_regula_root() -> Path:
+    """Find the Regula installation directory."""
+    # Check if we're running from the source tree
+    script_dir = Path(__file__).parent.resolve()
+    if (script_dir.parent / "SKILL.md").exists():
+        return script_dir.parent
+
+    # Check common install locations
+    for candidate in [
+        Path.home() / ".claude" / "skills" / "regula",
+        Path.cwd(),
+    ]:
+        if (candidate / "SKILL.md").exists():
+            return candidate
+
+    return script_dir.parent
+
+
+def _find_python() -> str:
+    """Find the Python executable path."""
+    return sys.executable or "python3"
+
+
+def _hook_cmd(python: str, script: Path) -> str:
+    """A shell-safe ``<python> <script>`` command string.
+
+    The interpreter and script paths can contain spaces or shell
+    metacharacters (common on Windows-mounted `/mnt/c/Users/USER/...` paths under
+    WSL). These strings are executed by a harness/shell, so quote both parts
+    to avoid a broken command — or, if the path were ever attacker-influenced,
+    a command-injection primitive.
+    """
+    return f"{shlex.quote(python)} {shlex.quote(str(script))}"
+
+
+def install_pre_commit(regula_root: Path, project_dir: Path) -> None:
+    """Generate pre-commit framework configuration."""
+    python = _find_python()
+    check_script = regula_root / "scripts" / "report.py"
+
+    config_content = f"""# Regula AI Governance — pre-commit hook
+# Add this to your .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: regula-check
+        name: Regula AI Governance Check
+        entry: {shlex.quote(python)} {shlex.quote(str(check_script))} --format json --project .
+        language: system
+        always_run: true
+        pass_filenames: false
+        stages: [pre-commit]
+"""
+
+    config_file = project_dir / ".pre-commit-config.yaml"
+    if config_file.exists():
+        print(f"WARNING: {config_file} already exists.")
+        print("Add the following to your existing config:")
+        print(config_content)
+    else:
+        config_file.write_text(config_content, encoding="utf-8")
+        print(f"pre-commit config written to {config_file}")
+
+
+def install_git_hooks(regula_root: Path, project_dir: Path) -> None:
+    """Install a direct git pre-commit hook."""
+    python = _find_python()
+    report_script = regula_root / "scripts" / "report.py"
+
+    hook_content = f"""#!/bin/sh
+# Regula AI Governance — git pre-commit hook
+# Scans staged files for AI risk indicators
+
+echo "Regula: Scanning for AI governance risk indicators..."
+
+result=$({shlex.quote(python)} {shlex.quote(str(report_script))} --project . --format json 2>/dev/null)
+
+# Check for prohibited findings
+prohibited=$(echo "$result" | {shlex.quote(python)} -c "
+import sys, json
+findings = json.load(sys.stdin)
+blocked = [f for f in findings if f.get('tier') == 'prohibited' and not f.get('suppressed')]
+if blocked:
+    for f in blocked:
+        print(f'  BLOCKED: {{f.get(\"file\", \"unknown\")}} — {{f.get(\"description\", \"\")}}')
+    sys.exit(1)
+sys.exit(0)
+" 2>/dev/null)
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "Regula: PROHIBITED AI PRACTICE INDICATORS DETECTED"
+    echo "$prohibited"
+    echo ""
+    echo "Commit blocked. Review the findings above."
+    echo "To suppress a finding, add '# regula-ignore' to the relevant file."
+    exit 1
+fi
+
+echo "Regula: No prohibited indicators found."
+"""
+
+    git_dir = project_dir / ".git" / "hooks"
+    if not git_dir.exists():
+        print(f"ERROR: {project_dir} is not a git repository.")
+        sys.exit(1)
+
+    hook_file = git_dir / "pre-commit"
+    if hook_file.exists():
+        print(f"WARNING: {hook_file} already exists. Appending Regula check.")
+        existing = hook_file.read_text(encoding="utf-8")
+        hook_file.write_text(existing + "\n" + hook_content, encoding="utf-8")
+    else:
+        hook_file.write_text(hook_content, encoding="utf-8")
+
+    # Make executable
+    hook_file.chmod(hook_file.stat().st_mode | stat.S_IEXEC)
+    print(f"Git pre-commit hook installed at {hook_file}")
+
+
+PLATFORMS = {
+    "pre-commit": install_pre_commit,
+    "git-hooks": install_git_hooks,
+}
+
+
+def list_platforms() -> None:
+    """List available platforms."""
+    print("Available platforms:")
+    print("  pre-commit   — pre-commit framework hook")
+    print("  git-hooks    — Direct git pre-commit hook")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Install Regula pre-commit integration"
+    )
+    parser.add_argument(
+        "platform",
+        nargs="?",
+        choices=list(PLATFORMS.keys()) + ["list"],
+        help="Platform to install hooks for",
+    )
+    parser.add_argument(
+        "--project", "-p", default=".",
+        help="Project directory (default: current directory)",
+    )
+    args = parser.parse_args()
+
+    if not args.platform or args.platform == "list":
+        list_platforms()
+        return
+
+    regula_root = _find_regula_root()
+    project_dir = Path(args.project).resolve()
+
+    print(f"Regula root: {regula_root}")
+    print(f"Project: {project_dir}")
+    print(f"Platform: {args.platform}")
+    print()
+
+    installer = PLATFORMS[args.platform]
+    installer(regula_root, project_dir)
+
+    print()
+    print("Installation complete. Run 'python3 scripts/report.py --project .' to verify.")
+
+
+if __name__ == "__main__":
+    main()

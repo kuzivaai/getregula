@@ -1,0 +1,34 @@
+name: Accessibility evidence
+
+on:
+  pull_request:
+    paths:
+      - "site/**"
+      - "docs/accessibility/**"
+      - ".github/workflows/accessibility.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  axe:
+    name: axe WCAG 2.2 automated checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install pinned audit tools outside the product tree
+        run: |
+          npm install --prefix /tmp/regula-a11y-audit \
+            playwright@1.62.1 @axe-core/playwright@4.12.1 axe-core@4.12.1
+          /tmp/regula-a11y-audit/node_modules/.bin/playwright install --with-deps chromium
+      - name: Audit every canonical page
+        env:
+          A11Y_NODE_MODULES: /tmp/regula-a11y-audit/node_modules
+          AXE_REPORT: /tmp/regula-axe.json
+        run: |
+          python3 -m http.server 8790 --bind 127.0.0.1 --directory site &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          node docs/accessibility/run-axe.js

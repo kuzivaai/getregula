@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <title>EU AI Act Article 14: Human Oversight Requirements for AI Systems</title>
+    <meta name="description" content="Article 14 requires high-risk AI systems to have human oversight gates. How to check your codebase for review-before-action patterns with cross-file flow analysis.">
+    <meta name="keywords" content="EU AI Act Article 14, human oversight AI, human-in-the-loop, review gate, AI oversight requirements, regula oversight, cross-file flow analysis">
+    <meta name="author" content="Regula maintainers">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/guides/article-14-human-oversight.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/guides/article-14-human-oversight.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/guides/article-14-human-oversight.html">
+
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/guides/article-14-human-oversight.html">
+    <meta property="og:title" content="EU AI Act Article 14: Human Oversight Requirements for AI Systems">
+    <meta property="og:description" content="Article 14 requires high-risk AI to have human oversight gates. How to check your codebase for review-before-action patterns.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula: EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-06-25T00:00:00+00:00">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Article 14">
+    <meta property="article:tag" content="Human Oversight">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="EU AI Act Article 14: Human Oversight Requirements for AI Systems">
+    <meta name="twitter:description" content="Article 14 requires high-risk AI to have human oversight gates. How to check your codebase for review-before-action patterns.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "EU AI Act Article 14: Human Oversight Requirements for AI Systems",
+      "description": "Article 14 requires high-risk AI systems to have effective human oversight. How cross-file flow analysis can check your codebase for review-before-action patterns.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-06-25T00:00:00+00:00",
+      "dateModified": "2026-06-25T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Regula maintainers",
+        "url": "https://getregula.com/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/regula-logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/guides/article-14-human-oversight.html"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://getregula.com/guides/" },
+        { "@type": "ListItem", "position": 3, "name": "Article 14: Human Oversight" }
+      ]
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does Article 14 of the EU AI Act require?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 14 requires high-risk AI systems to be designed so that natural persons can effectively oversee them during use. This means the system must allow a human to understand its capabilities and limitations, monitor its operation, and intervene or stop it when needed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can code scanning verify human oversight compliance?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Code scanning can detect the presence of oversight patterns, such as human review gates before AI outputs reach end users. It cannot verify that the oversight is meaningful, timely, or adequately staffed. Regula's oversight command traces AI outputs across files to human review points, but presence is not effectiveness."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When do Article 14 obligations take effect?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Article 14 applies to high-risk AI systems. The Digital Omnibus (EP approved 16 June 2026, Council approved 29 June 2026; published in the Official Journal on 24 July 2026, in force from 27 July 2026) defers Annex III high-risk obligations to 2 December 2027. The deferred dates are enacted law."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <script>
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+<article>
+
+<div class="blog-hero" style="padding-bottom:24px;">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/guides/">Guides</a> / Article 14
+    </div>
+    <h1>Article 14: human oversight for <span class="hl">high-risk AI</span></h1>
+    <p class="standfirst">High-risk AI systems must be designed so a person can watch what the system is doing, understand why, and step in when it gets things wrong. That is the short version of Article 14 of Regulation (EU) 2024/1689. The longer version has teeth: if your system makes decisions that affect people and nobody can override it, you have a compliance problem.</p>
+    <p style="color:var(--text-dim);font-size:0.9rem;">25 June 2026 &middot; Regula maintainers</p>
+</div>
+
+<div class="blog-body">
+
+<h2>What Article 14 actually says</h2>
+
+<p>Article 14(1) requires that high-risk AI systems "shall be designed and developed in such a way, including with appropriate human-machine interface tools, that they can be effectively overseen by natural persons during the period in which they are in use."</p>
+
+<p>In practice, this breaks down into four things the human must be able to do (Article 14(4)):</p>
+
+<ol>
+    <li><strong>Understand</strong> the AI system's capacities and limitations, including the degree of accuracy and the conditions under which it can be expected to function correctly.</li>
+    <li><strong>Monitor</strong> the system's operation, including by being able to detect anomalies, dysfunctions, and unexpected performance.</li>
+    <li><strong>Decide not to use</strong> the system, disregard its output, or override its output in any particular situation.</li>
+    <li><strong>Intervene or stop</strong> the system entirely via a "stop button" or similar mechanism.</li>
+</ol>
+
+<p>The provider must build this into the system design. The deployer must ensure trained staff actually exercise the oversight. Both sides have obligations.</p>
+
+<h2>What this looks like in code</h2>
+
+<p>The simplest way to think about Article 14 compliance at the code level: does every path from an AI model output to a user-facing action pass through a human review gate?</p>
+
+<p>Consider a loan approval system. The AI model scores an application. If that score directly triggers an approval or rejection email with no human in the loop, Article 14 has a problem. If the score goes into a queue for a credit officer to review before the decision is communicated, that is an oversight pattern.</p>
+
+<pre tabindex="0"><code># No human oversight (Article 14 problem)
+def process_application(app):
+    score = model.predict(app.features)
+    if score > threshold:
+        send_approval_email(app)     # AI output goes directly to user
+    else:
+        send_rejection_email(app)
+
+# With human oversight (Article 14 pattern)
+def process_application(app):
+    score = model.predict(app.features)
+    recommendation = "approve" if score > threshold else "review"
+    queue_for_officer_review(app, recommendation, score)
+    # Human reviews before any communication to applicant</code></pre>
+
+<p>The difference is one function call. The regulatory difference is whether you can show a natural person reviewed the decision before it affected someone.</p>
+
+<h2>How Regula checks for oversight patterns</h2>
+
+<p>Regula's <code>oversight</code> command performs cross-file data-flow analysis. It traces AI model outputs toward endpoints and checks for code patterns associated with a human review gate. The example below is illustrative; behavior is defined in <a href="https://github.com/kuzivaai/getregula/blob/main/scripts/oversight.py">the implementation</a>.</p>
+
+<pre tabindex="0"><code>$ regula oversight .
+
+Article 14 Human Oversight Analysis
+====================================
+Example source: https://github.com/kuzivaai/getregula/blob/main/scripts/oversight.py
+Traced 3 AI output flows across 12 files.
+
+Flow 1: model.py:predict() -> api.py:recommend() -> review.py:officer_queue()
+  Status: OVERSIGHT DETECTED
+  Review gate: review.py:officer_queue (line 42)
+
+Flow 2: model.py:predict() -> batch.py:nightly_run() -> email.py:send_result()
+  Status: NO OVERSIGHT
+  AI output reaches email.py:send_result() with no human review gate.
+
+Flow 3: model.py:predict() -> dashboard.py:display_score()
+  Status: DISPLAY ONLY (no action taken on output)</code></pre>
+
+<p>The output above is illustrative. Your actual results depend on your codebase structure. The point is that Regula traces the flow, not just the presence of a function called <code>review</code>.</p>
+
+<h2>What code scanning covers and what it does not</h2>
+
+<p>Regula can detect:</p>
+<ul>
+    <li>Whether human review functions exist in the call chain between AI outputs and user-facing actions</li>
+    <li>Whether AI model outputs are queued for review rather than acted on directly</li>
+    <li>Whether "stop" or "override" mechanisms exist in the codebase</li>
+</ul>
+
+<p>Regula cannot verify:</p>
+<ul>
+    <li>Whether the human review is meaningful (a rubber-stamp review fails Article 14 even if the code has a review gate)</li>
+    <li>Whether oversight staff are adequately trained (Article 14(4)(a))</li>
+    <li>Whether the system provides enough information for the human to understand why it made a particular recommendation</li>
+    <li>Whether the "stop button" actually works under load in production</li>
+</ul>
+
+<p>Presence is not effectiveness. A codebase can pass Regula's oversight check and still have rubber-stamp oversight that a regulator would reject. Runtime testing, user studies, and operational audits are needed to verify the oversight is real.</p>
+
+<h2>Using the gap analysis</h2>
+
+<p>The gap analysis scores Article 14 based on detected oversight patterns:</p>
+
+<pre tabindex="0"><code>$ regula gap --project .
+
+Article 14 — Human oversight
+  Score:    45 / 100
+  Status:   PARTIAL
+  Evidence: 1 of 3 AI output flows pass through a review gate.
+  Gap:      batch.py nightly_run flow has no human oversight.
+  Effort:   ~3-5 hours to add review queue to batch pipeline.</code></pre>
+
+<p>A score below 50 means most AI output flows lack oversight gates. A score above 80 means all traced flows pass through a review point. A score of 100 is rare and requires every AI output path to have a verifiable human review mechanism.</p>
+
+<h2>Practical steps</h2>
+
+<ol>
+    <li><strong>Run <code>regula oversight .</code></strong> to see which AI output flows have review gates and which do not.</li>
+    <li><strong>Prioritise flows that affect people.</strong> An AI output that goes into an internal dashboard is lower risk than one that triggers an automated email to a customer.</li>
+    <li><strong>Add review queues, not just approval buttons.</strong> Article 14(4)(c) requires the ability to "disregard" the AI output. A simple approve/reject button is not enough if the human cannot see why the AI made its recommendation.</li>
+    <li><strong>Document the oversight design.</strong> Use <code>regula conform --organisational</code> to generate a structured self-assessment that covers Article 14 requirements.</li>
+    <li><strong>Test the override mechanism.</strong> Can an operator actually stop the system mid-process? Test it. <code>regula guardrails .</code> checks for the presence of guardrail implementations, but you need runtime testing to verify they work.</li>
+</ol>
+
+<h2>Deadline</h2>
+
+<p>Article 14 applies to high-risk AI systems within its scope. Regulation (EU) 2026/1744, published on 24 July 2026 and in force since 27 July 2026, sets 2 December 2027 for Annex III high-risk provisions and 2 August 2028 for the Annex I product-embedded path. Article 6 classification and the applicable transition rule still require contextual assessment.</p>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<h2>Related</h2>
+
+<ul>
+    <li><a href="/guides/article-9-risk-management.html">Article 9: risk management system requirements</a></li>
+    <li><a href="/blog/blog-risk-tiers-in-code.html">EU AI Act risk tiers explained with code examples</a></li>
+    <li><a href="/blog/blog-classify-ai-system.html">How to classify your AI system under the EU AI Act</a></li>
+    <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to you?</a></li>
+    <li><a href="/about.html">About Regula: what it does and does not do</a></li>
+</ul>
+
+<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
+
+<p style="color:var(--text-dim);font-size:0.85rem;">
+    <strong>Last reviewed:</strong> 14 August 2026 &middot;
+    <strong>Author:</strong> Regula maintainers &middot;
+    <em>Not legal advice. Regula identifies risk indicators in code for developer review. It does not determine compliance or replace professional legal counsel.</em>
+</p>
+
+</div>
+
+</article>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

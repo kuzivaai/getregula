@@ -1,0 +1,108 @@
+{
+  "manifest_version": "1.0",
+  "cases": [
+    {
+      "file": "highrisk_biometrics.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_credit.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_employment.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "ai_security"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "highrisk_medical.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk",
+        "ai_security"
+      ],
+      "n_findings": 2
+    },
+    {
+      "file": "highrisk_migration.py",
+      "expected": "high_risk",
+      "tiers_found": [
+        "high_risk"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "negative_chatbot.py",
+      "expected": "not_high",
+      "tiers_found": [
+        "ai_security"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "negative_minimal_ai.py",
+      "expected": "not_high",
+      "tiers_found": [
+        "ai_security"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "negative_pure_utility.py",
+      "expected": "not_high",
+      "tiers_found": [],
+      "n_findings": 0
+    },
+    {
+      "file": "prohibited_art5_1a.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "prohibited_art5_1b.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "prohibited_art5_1c.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "prohibited_art5_1d.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    },
+    {
+      "file": "prohibited_art5_1e.py",
+      "expected": "prohibited",
+      "tiers_found": [
+        "prohibited"
+      ],
+      "n_findings": 1
+    }
+  ]
+}

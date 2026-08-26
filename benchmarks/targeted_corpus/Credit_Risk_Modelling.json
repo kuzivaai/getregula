@@ -1,0 +1,11 @@
+{
+  "repo": "Credit_Risk_Modelling",
+  "url": "https://github.com/levist7/Credit_Risk_Modelling.git",
+  "commit": "HEAD",
+  "domain": "finance",
+  "annex_iii_category": "credit_scoring",
+  "licence": "MIT",
+  "total_findings": 1,
+  "high_risk_findings": 0,
+  "candidates": []
+}

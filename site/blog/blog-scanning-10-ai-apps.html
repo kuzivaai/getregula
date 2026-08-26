@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- Primary SEO -->
+    <title>Scanning 10 AI Apps for EU AI Act Compliance | Regula</title>
+    <meta name="description" content="553 findings across 219,000-star projects. What EU AI Act compliance actually looks like in real codebases — agent autonomy, limited risk, AI security patterns.">
+    <meta name="keywords" content="EU AI Act compliance, open source AI, AI Act scanning, regula, AI governance, agent autonomy, OWASP LLM">
+    <meta name="author" content="Regula maintainers">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://getregula.com/blog/blog-scanning-10-ai-apps.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/blog/blog-scanning-10-ai-apps.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/blog/blog-scanning-10-ai-apps.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://getregula.com/blog/blog-scanning-10-ai-apps.html">
+    <meta property="og:title" content="Scanning 10 AI Apps for EU AI Act Compliance | Regula">
+    <meta property="og:description" content="553 findings across 219,000-star projects. What EU AI Act compliance actually looks like in real codebases.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta property="article:published_time" content="2026-04-10">
+    <meta property="article:modified_time" content="2026-04-10">
+    <meta property="article:author" content="Regula maintainers">
+    <meta property="article:section" content="AI Governance">
+    <meta property="article:tag" content="EU AI Act">
+    <meta property="article:tag" content="Open Source">
+    <meta property="article:tag" content="Compliance">
+    <meta property="article:tag" content="AI Security">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Scanning 10 AI Apps for EU AI Act Compliance | Regula">
+    <meta name="twitter:description" content="553 findings across 219,000-star projects. What EU AI Act compliance actually looks like in real codebases.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+
+    <!-- Structured data: Article -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Scanning 10 AI Apps for EU AI Act Compliance | Regula",
+      "description": "553 findings across 219,000-star projects. What EU AI Act compliance actually looks like in real codebases — agent autonomy, limited risk, AI security patterns.",
+      "image": "https://getregula.com/assets/og-image.png",
+      "datePublished": "2026-04-10T00:00:00+00:00",
+      "dateModified": "2026-04-10T00:00:00+00:00",
+      "author": {
+        "@type": "Person",
+        "name": "Regula maintainers",
+        "url": "https://getregula.com/about.html"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://getregula.com/assets/regula-logo.png"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://getregula.com/blog/blog-scanning-10-ai-apps.html"
+      },
+      "keywords": ["EU AI Act", "open source", "compliance", "AI security", "agent autonomy", "OWASP LLM"]
+    }
+    </script>
+
+    <!-- Structured data: BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://getregula.com/blog/writing.html" },
+        { "@type": "ListItem", "position": 3, "name": "Scanning 10 AI apps for EU AI Act compliance", "item": "https://getregula.com/blog/blog-scanning-10-ai-apps.html" }
+      ]
+    }
+    </script>
+
+    <!-- Favicon + Fonts -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <script>
+    </script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <a href="/">EN</a>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main id="main">
+
+<article>
+
+<div class="blog-hero">
+    <div class="breadcrumb">
+        <a href="/">Regula</a> / <a href="/blog/writing.html">Blog</a> / Scanning 10 AI apps
+    </div>
+    <div class="blog-meta">
+        <span>10 April 2026</span>
+        <span class="dot">&middot;</span>
+        <span>8 min read</span>
+        <span class="dot">&middot;</span>
+        <span>The Implementation Layer</span>
+    </div>
+    <h1>I scanned 10 open-source AI apps for EU AI Act compliance. Here&rsquo;s what I <span class="hl">found.</span></h1>
+    <p style="font-style:italic;color:var(--text-dim);font-size:0.85rem;margin-bottom:12px;">Original scan with Regula v1.6.1 (330 patterns); re-scan with v1.7.0 (387 tier regexes). Current version has 419.</p>
+    <aside class="provenance-note" style="font-size:0.85rem;margin-bottom:16px;">
+      <strong>Provenance note, added 28 July 2026.</strong> Three figures on this page are annotated rather than corrected, because correcting them would mean substituting a number nobody can reproduce for another.
+      <ul>
+        <li><strong>330 patterns (v1.6.1) is UNSETTLEABLE.</strong> There is no <code>v1.6.1</code> git tag and no 1.6.1 release on PyPI, so no artefact records what that version counted. Measured at the tags that do exist, using the current counting script: v1.6.0 gives 219 and v1.6.2 gives 386, so 330 is arithmetically consistent with sitting between them, and that is the strongest statement the evidence supports. It is not confirmation.</li>
+        <li><strong>The unit is not fixed either.</strong> Run against the same v1.6.2 tree, that version&rsquo;s own counting script gives 358 and the current one gives 386. A 28-count gap on identical code means a bracket cannot settle a figure whose definition moved.</li>
+        <li><strong>387 and 386 are both correct, at two different trees that both call themselves v1.7.0.</strong> The <code>v1.7.0</code> tag is commit <code>10137ff</code> of 16 April 2026 and counts <strong>386</strong> tier regexes. The re-scan on this page ran on commit <code>c12f0b5</code> of 23 April 2026, which still carries version 1.7.0 and counts <strong>387</strong>. Measured at each tree by two independent methods that agree: that tree&rsquo;s own <code>scripts/site_facts.py</code>, and a direct sum over the pattern lists in <code>scripts/risk_patterns.py</code>. The disagreement was never about what a pattern is; it was about which tree. <strong>389 was wrong and is corrected.</strong> It appears under no unit at either tree: the full set at the tag is 52 / 386 / 182 / 17 / 38 / 10 / 4 / 4 / 18 / 659 / 446, and at 23 April it is 52 / 387 / 182 / 17 / 38 / 10 / 4 / 4 / 18 / 660 / 447.</li>
+        <li><strong>The v1.6.1 raw scan output is NOT committed</strong>, although the closing note below says output for both versions is available. Only the v1.7.0 re-scan of 23 April 2026 is in <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">benchmarks/results/blog_scan_2026_04</a>, and its README says so. The v1.6.1 files were never added.</li>
+      </ul>
+      Method and figures: benchmarks/results/blog_scan_2026_04/README.md and scripts/site_facts.py.
+    </aside>
+    <p class="standfirst">This is a historical April 2026 benchmark. <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> is now enacted and sets 2 December 2027 for the Annex III path and 2 August 2028 for the Annex I path. Whether the Act applies requires the Article 2 scope and the facts of the system and actor.</p>
+</div>
+
+<div class="blog-sep"></div>
+
+<aside style="background:rgba(59,130,246,0.08);border-left:3px solid var(--accent);padding:12px 16px;margin:0 0 24px;border-radius:4px;font-size:0.9rem;color:var(--text-2);">
+<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026. Annex III high-risk deadlines are deferred to 2 December 2027 (EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in the OJ 24 Jul 2026, in force from 27 Jul 2026). References in this article to the Omnibus not having been enacted and potentially pushing deadlines are now historical. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
+</aside>
+
+<div class="blog-body">
+
+    <section id="intro">
+        <p>I wanted to know: what does compliance actually look like in real codebases? Not in theory documents. Not in consultancy slide decks. In the code that developers are shipping right now.</p>
+
+        <a href="/guides/">Guides</a>
+        <p>So I ran <a href="https://github.com/kuzivaai/getregula">Regula</a>, an open-source static analysis tool for AI Act compliance, against 10 popular open-source AI projects. Combined, these projects have over 219,000 GitHub stars and represent the kinds of tools developers are building with today &mdash; coding agents, research assistants, chatbot platforms, LLM gateways.</p>
+    </section>
+
+    <section id="the-projects">
+        <h2>The projects</h2>
+
+        <p>The 10 projects span coding agents, research assistants, chatbot platforms, and LLM gateways, collectively representing 219,000 GitHub stars and 8,659 source files. They were chosen because they reflect what developers are actually building and deploying with AI today, not theoretical use cases.</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Project</th>
+                    <th>Stars</th>
+                    <th>What it does</th>
+                    <th>Source files</th>
+                    <th>Findings</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="https://github.com/Aider-AI/aider">Aider</a></td>
+                    <td>43,117</td>
+                    <td>AI pair programming in the terminal</td>
+                    <td>165</td>
+                    <td>13</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/Doriandarko/claude-engineer">Claude Engineer</a></td>
+                    <td>11,162</td>
+                    <td>Claude-powered coding agent</td>
+                    <td>22</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/e2b-dev/open-computer-use">Open Computer Use</a></td>
+                    <td>1,960</td>
+                    <td>AI desktop automation via sandboxed VMs</td>
+                    <td>13</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/gptme/gptme">gptme</a></td>
+                    <td>4,266</td>
+                    <td>Terminal AI agent with local tool access</td>
+                    <td>645</td>
+                    <td>87</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/LearningCircuit/local-deep-research">Local Deep Research</a></td>
+                    <td>4,290</td>
+                    <td>Deep research agent (arXiv, PubMed, web)</td>
+                    <td>2,448</td>
+                    <td>29</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/khoj-ai/khoj">Khoj</a></td>
+                    <td>33,983</td>
+                    <td>Self-hosted AI second brain</td>
+                    <td>293</td>
+                    <td>19</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/BerriAI/litellm">LiteLLM</a></td>
+                    <td>42,823</td>
+                    <td>Unified proxy for 100+ LLM APIs</td>
+                    <td>4,081</td>
+                    <td>210</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/langbot-app/LangBot">LangBot</a></td>
+                    <td>15,786</td>
+                    <td>Bot platform for Discord/Slack/Telegram</td>
+                    <td>488</td>
+                    <td>30</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/lss233/kirara-ai">Kirara AI</a></td>
+                    <td>18,676</td>
+                    <td>Multi-modal chatbot for WeChat/QQ/Telegram</td>
+                    <td>288</td>
+                    <td>24</td>
+                </tr>
+                <tr>
+                    <td><a href="https://github.com/zhayujie/chatgpt-on-wechat">ChatGPT-on-WeChat</a></td>
+                    <td>42,946</td>
+                    <td>AI chatbot for WeChat/Feishu/DingTalk</td>
+                    <td>216</td>
+                    <td>136</td>
+                </tr>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td><strong>219,009</strong></td>
+                    <td></td>
+                    <td><strong>8,659</strong></td>
+                    <td><strong>553</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Runtime varies with repository size, language mix, command options, and environment.</p>
+    </section>
+
+    <section id="what-regula-checks">
+        <h2>What Regula checks for</h2>
+
+        <p>Regula scans source code for patterns associated with EU AI Act provisions, OWASP Top 10 for LLMs, and OWASP Agentic Security risks. It reports candidate tiers and cross-cutting categories such as agent autonomy and credential exposure. These are code-level indicators for human review, not legal classifications or proof that every applicable duty was detected.</p>
+
+        <p>It does not assess whether a system <em>is</em> high-risk &mdash; that depends on deployment context, not code alone. What it does is flag code-level patterns that become compliance-relevant if the system is deployed in a regulated context.</p>
+    </section>
+
+    <section id="what-i-found">
+        <h2>What I found</h2>
+
+        <p>Regula flagged 553 findings across 8,659 source files. Agent autonomy dominated at 56.6% of findings, followed by limited-risk transparency patterns (27.8%), AI security issues (7.4%), high-risk indicators (4.9%), credential exposure (2.5%), and prohibited-practice patterns (0.7%). Most source files had no findings. <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results">Checked-in scan results</a>.</p>
+
+        <p>The checked-in April 2026 benchmark records 553 findings across 8,659 source files; see the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">archived source data and reproducibility qualifications</a>. The breakdown reported by the original run was:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Findings</th>
+                    <th>%</th>
+                    <th>What it means</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Agent autonomy</td>
+                    <td>313</td>
+                    <td>56.6%</td>
+                    <td>AI output flowing to system commands, file writes, or HTTP requests without detected human oversight gates</td>
+                </tr>
+                <tr>
+                    <td>Limited risk</td>
+                    <td>154</td>
+                    <td>27.8%</td>
+                    <td>Chatbot and synthetic-content indicators that may require an Article 50 review</td>
+                </tr>
+                <tr>
+                    <td>AI security</td>
+                    <td>41</td>
+                    <td>7.4%</td>
+                    <td>Unsafe deserialisation and unbounded generation indicators; legal relevance depends on system classification and context</td>
+                </tr>
+                <tr>
+                    <td>High risk</td>
+                    <td>27</td>
+                    <td>4.9%</td>
+                    <td>Patterns associated with employment, biometric, or critical infrastructure use cases</td>
+                </tr>
+                <tr>
+                    <td>Credential exposure</td>
+                    <td>14</td>
+                    <td>2.5%</td>
+                    <td>API keys detected in source files &mdash; Article 15 cybersecurity relevance</td>
+                </tr>
+                <tr>
+                    <td>Prohibited</td>
+                    <td>4</td>
+                    <td>0.7%</td>
+                    <td>Patterns matching prohibited practices under Article 5 (requires deployment context to confirm)</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results">Source data for this table</a>.</p>
+
+        <h3>The dominant pattern: agent autonomy (56.6%)</h3>
+
+        <p>More than half of all findings are agent autonomy patterns &mdash; AI output flowing directly to system command execution, file system modification, database queries, or HTTP requests. This is the defining characteristic of the current wave of AI tooling. Developers are building agents that act, not just chat.</p>
+
+        <p>Three projects account for most of these: ChatGPT-on-WeChat (127), gptme (84), and LiteLLM (34). The pattern is consistent: LLM output is passed to <code>subprocess</code>, <code>os.system</code>, file write operations, or HTTP clients without a human confirmation step in the code path.</p>
+
+        <p>Under the EU AI Act, this matters if the system is classified as high-risk (Article 14 requires human oversight mechanisms). Under OWASP Agentic Security, it maps to ASI02 (Tool Misuse) regardless of risk classification.</p>
+
+        <p>Some projects handle this well. Aider, for example, has human confirmation prompts before executing commands &mdash; Regula detected the gate pattern and adjusted its confidence score accordingly. Open Computer Use runs everything inside sandboxed VMs, which is a different form of containment that Regula doesn&rsquo;t currently evaluate as a mitigating control (noted for future improvement).</p>
+
+        <h3>Limited risk is straightforward (27.8%)</h3>
+
+        <p>154 findings relate to chatbot interfaces and synthetic content generation. They identify candidates for an Article 50 review; they do not establish that a duty applies. Article 50 contains different duties, roles, conditions and exceptions, so a disclosure or machine-readable mark must be designed for the applicable paragraph and context.</p>
+
+        <p>LiteLLM accounts for 130 of these &mdash; expected for a proxy that routes to 100+ LLM providers, many of which generate text presented to end users.</p>
+
+        <h3>AI security: the unsexy but important one (7.4%)</h3>
+
+        <p>41 findings for unsafe model deserialisation (pickle/joblib loading without integrity checks), unbounded token generation, and similar patterns. These map to OWASP LLM05 (insecure output handling) and LLM10 (unbounded consumption), and become compliance-relevant under Article 15&rsquo;s cybersecurity requirements.</p>
+
+        <p>Local Deep Research had 20 of these &mdash; primarily related to model loading from external sources without hash verification.</p>
+
+        <h3>High risk and prohibited: context-dependent (5.6% combined)</h3>
+
+        <p>27 high-risk and 4 prohibited findings. These are patterns that <em>could</em> indicate use in high-risk contexts (employment decisions, biometric processing, critical infrastructure) or prohibited practices (social scoring, real-time biometric identification). Whether they actually trigger these classifications depends entirely on deployment context, not the code itself.</p>
+
+        <p>LiteLLM had 16 high-risk and all 4 prohibited findings. As a universal LLM proxy, it can be used in virtually any context &mdash; so these findings reflect the breadth of its potential deployment, not inherent risk in the code.</p>
+    </section>
+
+    <section id="what-this-means">
+        <h2>What this means for developers building with AI</h2>
+
+        <p><strong>Most files in this sample had no matched elevated-risk pattern.</strong> The <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">archived April 2026 benchmark</a> reported 553 findings across 8,659 source files, concentrated in a small number of files. That file-level observation does not establish that a project is minimal risk, outside the Act, or free of mandatory duties; those questions depend on the system, actor, intended purpose, and deployment context.</p>
+
+        <p><strong>Agent autonomy is the pattern to watch.</strong> If you&rsquo;re building agents that execute actions based on LLM output, you should be thinking about human oversight mechanisms now. Not because of regulatory panic &mdash; because it&rsquo;s good engineering. An agent that can execute arbitrary system commands based on LLM output is a security risk regardless of what the EU AI Act says.</p>
+
+        <p><strong>Transparency needs a scoped review.</strong> A chatbot or synthetic-content match can prompt review under Article 50, but does not by itself establish the applicable paragraph or required measure. Some duties involve user-facing disclosure; others include machine-readable marking or deployer obligations.</p>
+
+        <p><strong>The Omnibus is now enacted.</strong> <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> entered into force on 27 July 2026. It changes more than dates and sets 2 December 2027 for the Annex III path and 2 August 2028 for the Annex I product-embedded path; the full amended provisions and transition rules still need to be applied to the facts.</p>
+    </section>
+
+    <section id="how-to-run">
+        <h2>How to run this yourself</h2>
+
+        <p>Install Regula with pip and point it at a project directory to obtain a pattern-based risk scan. Regula is open-source, has zero core dependencies, and its local scan engine does not upload project files. Results include file paths, line numbers, and EU AI Act article references for matched findings; runtime varies with project size and hardware.</p>
+
+        <pre tabindex="0"><code>pip install regula-ai
+regula check /path/to/your/project</code></pre>
+
+        <p>Regula is open-source, has zero core dependencies, and processes scan inputs locally without uploading project files. Runtime varies with project size and hardware.</p>
+
+        <p>The historical scan used the pattern set recorded with the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">archived benchmark</a>. Pattern findings should be reviewed against code and deployment context; suspected false positives can be reported upstream with reproducible evidence.</p>
+    </section>
+
+    <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">
+        <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Regula maintainers &middot;
+        <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
+    </p>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        <p><em>Scans were run using Regula v1.6.1 against shallow clones of each project&rsquo;s default branch on 10 April 2026. Star counts are as of the same date. Findings reflect code-level patterns, not deployed system risk classifications &mdash; the EU AI Act regulates systems as deployed, not code in isolation.</em></p>
+        <p><em>A re-scan with Regula v1.7.0 (23 April 2026) found 665 findings across the same 10 projects. The increase is primarily due to expanded AI security patterns in v1.7.0 (387 tier regexes vs 330 in v1.6.1). Full JSON scan output for both versions is available in the <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/blog_scan_2026_04">repository</a> for independent verification.</em></p>
+        <p><em>Regulatory update, 4 August 2026: Regulation (EU) 2026/1744 is enacted and in force. Historical scan counts on this page do not establish legal classification, compliance or applicable obligations.</em></p>
+    </div>
+
+</div>
+
+<div class="blog-sep" style="max-width:100%;margin-top:var(--s7);"></div>
+<div class="blog-body" style="margin-top:var(--s5);">
+    <h3>Related reading</h3>
+    <ul>
+        <li><a href="/blog/blog-scanning-5-frameworks.html">Scanning 5 compliance frameworks</a> &mdash; 562 findings across PyTorch, HuggingFace, LangChain, LlamaIndex, CrewAI</li>
+        <li><a href="/blog/blog-code-scanning-vs-questionnaires.html">Code scanning vs questionnaires</a> &mdash; Why neither alone is sufficient for EU AI Act compliance</li>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Does the EU AI Act apply to your AI app?</a> &mdash; Decision tree for scope, provider vs deployer, and extraterritorial reach</li>
+    </ul>
+    <p style="margin-top:48px;font-size:13px;color:var(--text-dim);">
+        <a href="https://news.ycombinator.com/submitlink?u=https://getregula.com/blog/blog-scanning-10-ai-apps.html&t=I%20scanned%2010%20open-source%20AI%20apps%20for%20EU%20AI%20Act%20compliance.%20Here%E2%80%99s%20what%20I%20found." rel="noopener" target="_blank" style="color:var(--text-dim);">Discuss on Hacker News</a>
+    </p>
+</div>
+
+</article>
+
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Nav scroll
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+</script>
+
+</body>
+</html>

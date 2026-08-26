@@ -1,0 +1,2341 @@
+#!/usr/bin/env python3
+# regula-ignore — report copy names the tiers, articles, and practices it reports on
+"""
+Regula Report Generator
+
+Generates HTML and SARIF reports from scan results and audit data.
+HTML reports are single-file, portable, and designed for non-developer
+stakeholders (DPOs, compliance officers, auditors).
+"""
+
+__all__ = [
+    "scan_files", "scan_config_files", "classify_provenance",
+    "_is_open_question",
+    "generate_html_report", "generate_sarif", "generate_sales_report",
+]
+
+import hashlib
+import json
+import os
+import re
+import sys
+from datetime import datetime, timezone
+from html import escape
+from pathlib import Path
+from typing import Optional
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+from classify_risk import classify, RiskTier, is_ai_related, PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS, AI_SECURITY_PATTERNS, generate_observations, check_ai_security
+from risk_patterns import CATEGORY_LIFECYCLE_PHASES
+from domain_scoring import compute_domain_boost
+from ast_engine import detect_language
+from log_event import collect_audit_trail
+from credential_check import check_secrets
+from remediation import get_remediation
+from agent_monitor import detect_autonomous_actions
+from scan_cache import FULL_SCOPE, ScanCache
+
+
+# ---------------------------------------------------------------------------
+# File scanner (used by both HTML and SARIF generators)
+# ---------------------------------------------------------------------------
+
+from constants import CODE_EXTENSIONS, SKIP_DIRS, MODEL_EXTENSIONS, VERSION, MAX_CLASSIFY_CHARS
+CONFIG_FILES = {".env", ".env.production", ".env.local", "docker-compose.yml", "docker-compose.yaml", "Dockerfile"}
+
+
+# The path-safety gate (symlink-escape + size cap) lives in scan_safety so
+# report.py and sbom.py share ONE implementation and cannot drift. Imported
+# under the original private name to keep this module's call sites unchanged.
+from scan_safety import is_safe_to_scan as _is_safe_to_scan
+from scan_safety import read_bytes_if_safe as _read_bytes_if_safe
+
+# ---------------------------------------------------------------------------
+# EU AI Act enforcement deadlines + Digital Omnibus status.
+# THE single source of truth is scripts/omnibus.py — when the Omnibus is
+# published in the Official Journal, set OMNIBUS_OJ_DATE there (one line).
+# These re-exports keep report.py's public API stable for existing
+# importers and tests.
+# ---------------------------------------------------------------------------
+from omnibus import (  # noqa: F401  (re-exported)
+    DEADLINE_PROHIBITED,
+    DEADLINE_CURRENT_LAW,
+    DEADLINE_OMNIBUS_ANNEX_III,
+    DEADLINE_OMNIBUS_ANNEX_I,
+    DEADLINE_OMNIBUS_LIMITED,
+    OMNIBUS_OJ_DATE,
+    OMNIBUS_ENACTED,
+    OMNIBUS_IN_FORCE_DATE,
+    OMNIBUS_STATUS,
+)
+
+# Generic indicator names that don't convey specific risk — used to gate
+# WARN-tier visibility. If a finding's only indicators are in this set,
+# it gets demoted to INFO.
+_GENERIC_INDICATORS = {
+    "ai_code", "ml_framework", "ai_import", "ai_library",
+    "ml_import", "ai_dependency", "ai_config",
+}
+
+# AI service patterns in config/env files
+_AI_CONFIG_PATTERNS = [
+    (re.compile(r"OPENAI_API_KEY|ANTHROPIC_API_KEY|COHERE_API_KEY|MISTRAL_API_KEY|GROQ_API_KEY|REPLICATE_API_TOKEN|HUGGINGFACE_TOKEN|HF_TOKEN", re.IGNORECASE), "AI API key configured"),
+    (re.compile(r"AZURE_OPENAI|VERTEX_AI|BEDROCK|SAGEMAKER", re.IGNORECASE), "Cloud AI service configured"),
+    (re.compile(r"tensorflow/serving|vllm|ollama|tritonserver|text-generation-inference", re.IGNORECASE), "AI model serving container"),
+    (re.compile(r"openai|anthropic|google.generativeai|aws.sagemaker|azurerm_openai", re.IGNORECASE), "AI provider reference"),
+]
+
+# Critical ungated security patterns: eval/exec on AI output variables.
+# Defined at module level so the regex is compiled once, not per file.
+_CRITICAL_UNGATED = [
+    (re.compile(r"(?:exec|eval)\s*\(\s*(?:ai_response|llm_output|completion|model_output|ai_output|generated_code)"), "AI Security (LLM06)"),
+]
+
+
+def scan_config_files(project_path: str) -> list:
+    """Scan config/env files for AI service references.
+
+    Returns findings for AI infrastructure detected in configuration files.
+    """
+    project = Path(project_path).resolve()
+    findings = []
+
+    for root, dirs, files in os.walk(project):
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for filename in files:
+            if filename not in CONFIG_FILES:
+                continue
+            filepath = Path(root) / filename
+            # Same guard as the main scan loop. Without it a repository can
+            # ship `.env` as a symlink to ~/.ssh/id_rsa or a CI secrets file
+            # and have it read and pattern-matched (verified).
+            _raw, _ = _read_bytes_if_safe(filepath, project)
+            if _raw is None:
+                continue  # escaping symlink, oversized, or unreadable
+            content = _raw.decode("utf-8", errors="ignore")
+
+            rel_path = str(filepath.relative_to(project))
+            for rx, description in _AI_CONFIG_PATTERNS:
+                match = rx.search(content)
+                if match:
+                    # Find line number
+                    line_num = 1
+                    for i, line in enumerate(content.split("\n"), 1):
+                        if rx.search(line):
+                            line_num = i
+                            break
+                    finding = {
+                        "file": rel_path,
+                        "line": line_num,
+                        "tier": "minimal_risk",
+                        "category": "AI Infrastructure",
+                        "description": f"{description} [REDACTED — {len(match.group())} chars at line {line_num}]",
+                        "indicators": ["ai_config"],
+                        "confidence_score": 30,
+                        "suppressed": False,
+                        "provenance": classify_provenance(filepath),
+                        "lifecycle_phases": ["deploy"],
+                    }
+                    finding["open_question"] = _is_open_question(finding)
+                    findings.append(finding)
+                    break  # One finding per config file
+
+    return findings
+
+
+def _is_test_file(filepath: Path) -> bool:
+    """Detect if a file is a test file (findings should be deprioritised).
+
+    Catches standard test conventions across Python, JS/TS ecosystems,
+    plus package-level test directories (e.g. langchain_tests/, standard-tests/).
+    """
+    name = filepath.name.lower()
+    parts = [p.lower() for p in filepath.parts]
+    # File name patterns
+    if name.startswith("test_") or name.endswith("_test.py") or name == "conftest.py":
+        return True
+    if name.endswith(".spec.ts") or name.endswith(".spec.js") or name.endswith(".test.ts") or name.endswith(".test.js"):
+        return True
+    # Directory patterns — exact matches
+    if "test" in parts or "tests" in parts or "__tests__" in parts or "spec" in parts:
+        return True
+    # Directory patterns — suffix/prefix matches (e.g. standard-tests, langchain_tests)
+    if any(p.endswith("tests") or p.endswith("_tests") or p.startswith("test_") for p in parts):
+        return True
+    return False
+
+
+def _is_example_file(filepath: Path) -> bool:
+    """Detect example/demo/tutorial files (findings should be deprioritised)."""
+    parts = [p.lower() for p in filepath.parts]
+    return any(p in ("example", "examples", "demo", "demos", "tutorial",
+                      "tutorials", "sample", "samples", "cookbook")
+               for p in parts)
+
+
+def _is_init_file(filepath: Path) -> bool:
+    """Detect __init__.py files (usually re-exports, not real logic)."""
+    return filepath.name == "__init__.py"
+
+
+def classify_provenance(filepath: Path) -> str:
+    """Classify a file's provenance for confidence weighting and scope filtering.
+
+    Returns one of: production, test, example, documentation, tooling.
+
+    Used by --scope production to exclude non-production files from findings.
+    Each classification is traceable to why that file class is non-production:
+
+    - test: test frameworks, fixtures, mocks — not deployed code
+    - example: demo/sample code — teaches patterns, not deployed
+    - documentation: docs build config, markup — not executable
+    - tooling: packaging (setup.py), CI/CD, __init__ re-exports, build
+      configs, type stubs — infrastructure that doesn't perform the
+      regulated activity itself
+    - production: default — anything not matched above
+    """
+    filepath = Path(filepath)
+    if _is_test_file(filepath):
+        return "test"
+    if _is_example_file(filepath):
+        return "example"
+    name = filepath.name.lower()
+    suffix = filepath.suffix.lower()
+    if _is_init_file(filepath):
+        return "tooling"
+    parts = [p.lower() for p in filepath.parts]
+    if any(p in (".github", ".gitlab-ci", ".circleci", ".jenkins") for p in parts):
+        return "tooling"
+    # Documentation build configs (Sphinx conf.py, mkdocs hooks, etc.)
+    if "docs" in parts and name in ("conf.py", "conftest.py", "mkdocs.py"):
+        return "documentation"
+    # Packaging and build files — do not perform the regulated activity
+    if name in ("setup.py", "setup.cfg", "noxfile.py", "fabfile.py",
+                "dockerfile", "makefile", "cmakelists.txt", "justfile",
+                "docker-compose.yml", "docker-compose.yaml",
+                ".dockerignore", ".gitignore", ".editorconfig"):
+        return "tooling"
+    # Type definition directories (e.g. src/openai/types/) and utility
+    # internals (_utils/) — structural infrastructure for minimal_risk
+    # tier (the scope filter handles the per-tier nuance)
+    if "types" in parts and suffix == ".py":
+        return "tooling"
+    if "_utils" in parts:
+        return "tooling"
+    if suffix in (".yml", ".yaml", ".toml", ".cfg", ".ini") and name not in ("pyproject.toml",):
+        return "tooling"
+    if suffix in (".md", ".rst", ".txt", ".adoc"):
+        return "documentation"
+    return "production"
+
+
+def path_context_token(filepath) -> str:
+    """Every classification input this module derives from the FULL path.
+
+    The scan cache keys on the path RELATIVE to the scan root, so two
+    byte-identical files sitting at the same relative path under different
+    roots produce the same path component. Provenance and the example/init
+    confidence penalties are derived from the FULL path instead, so without
+    this token the cached entry written for one can be served for the other,
+    and whichever ran first decides what the other one reports.
+
+    That is a correctness defect, not only a reproducibility one: `--scope
+    production` filters on provenance, so a production file served an entry
+    written by an `examples/` copy is classified "example" and its finding
+    disappears from the scan. Measured both ways, .
+
+    Any NEW classifier derived from the full path must be added here, or the
+    cache will serve its result across the boundary that classifier draws.
+    """
+    fp = Path(filepath)
+    return (
+        f"{classify_provenance(fp)}"
+        f"|t{int(_is_test_file(fp))}"
+        f"|e{int(_is_example_file(fp))}"
+        f"|i{int(_is_init_file(fp))}"
+    )
+
+
+# Every parameter of scan_files, classified against the scan cache. .
+#
+# The classification exists because `respect_ignores` was absent from the cache
+# key for as long as the cache has existed, and nothing could have told anyone:
+# there was no list to be missing from. N112 (full-path classifiers) and N147
+# (scan completeness) are the same omission in two other axes. The guard in
+# tests/test_scan_cache.py reads `inspect.signature(scan_files)`, so a
+# parameter added later fails the suite until it is ruled on here.
+#
+# The test to apply to a new parameter is one question: **can two scans that
+# differ only in this parameter produce different findings FOR THE SAME FILE?**
+# If yes it belongs in the key. Changing which files are visited is not the
+# same thing and does not.
+CACHE_KEY_SCAN_PARAMS = {
+    "project_path": "identity of the file: the key's `path` component, plus "
+                    "`path_context` for the classifiers derived from the full "
+                    "path (N112)",
+    "respect_ignores": "decides whether a finding is emitted with "
+                       "`suppressed: True`, via _parse_suppression_rules and "
+                       "_scan_agent_autonomy: the `params` component (N163)",
+    "min_tier": "skips whole detector passes, so the entry is partial: the "
+                "`scope` component, `mintier-<level>` (N147)",
+}
+
+CACHE_EXEMPT_SCAN_PARAMS = {
+    "skip_tests": "file selection, not entry content. A skipped test file is "
+                  "`continue`d before any cache read or write, so it neither "
+                  "reads nor writes an entry.",
+    "declared_domains": "applied to cached findings on the READ path, not "
+                        "baked into them: the entry stores the finding ungated "
+                        "and _check_domain_gated re-gates it per scan. "
+                        "test_domain_gated_finding_survives_cache pins this.",
+    "enrich_oversight": "post-processing over the whole finding list after the "
+                        "walk has ended and the cache has been flushed, so it "
+                        "is applied identically to cached and freshly scanned "
+                        "findings and never enters an entry.",
+}
+
+
+def scan_params_token(respect_ignores: bool = True) -> str:
+    """The `params` component of the scan cache key.
+
+    Carries every scan parameter that changes what a per-file entry CONTAINS
+    and is not already carried by another component. `min_tier` is the `scope`
+    component and is deliberately not repeated here; everything else is
+    accounted for in CACHE_KEY_SCAN_PARAMS and CACHE_EXEMPT_SCAN_PARAMS above.
+
+    Any NEW parameter that can change a file's findings must be added here and
+    to CACHE_KEY_SCAN_PARAMS, or the cache will serve one setting's result to
+    the other, which is what  records.
+    """
+    return f"ri{int(bool(respect_ignores))}"
+
+
+def _is_open_question(finding: dict) -> bool:
+    """Determine if a finding should be flagged as an open question.
+
+    Open questions are findings with confidence < 60 that are not prohibited
+    and not suppressed. They represent ambiguous detections that need human
+    judgment rather than automated action.
+    """
+    if finding.get("tier") == "prohibited":
+        return False
+    if finding.get("suppressed", False):
+        return False
+    return finding.get("confidence_score", 0) < 60
+
+
+def _has_mock_patterns(content: str) -> bool:
+    """Detect if file is primarily mock/fixture/stub code."""
+    indicators = 0
+    lower = content.lower()
+    for pattern in ("unittest.mock", "from mock import", "mock.patch",
+                    "@patch", "mocker.patch", "pytest.fixture",
+                    "create_autospec", "magicmock", "fakeclient"):
+        if pattern in lower:
+            indicators += 1
+    return indicators >= 2
+
+
+def _compute_context_penalty(filepath: Path, content: str, is_test: bool) -> int:
+    """Compute additional confidence penalty based on file context.
+
+    Returns a penalty to subtract (0 = no penalty). Test files keep the
+    existing -40 flat penalty; this function adds penalties for other
+    low-signal contexts that weren't previously handled.
+    """
+    # Test files handled separately (existing -40 flat, don't double-penalise)
+    if is_test:
+        return 0
+
+    penalty = 0
+
+    if _is_example_file(filepath):
+        penalty = max(penalty, 20)
+
+    if _is_init_file(filepath):
+        # __init__.py re-exports account for 6% of FPs (benchmarked).
+        # Penalty matches test files (-40) since re-exports contain no logic.
+        penalty = max(penalty, 40)
+
+    if _has_mock_patterns(content):
+        penalty = max(penalty, 25)
+
+    return penalty
+
+
+# Known AI/ML library package names — if the scanned project IS one
+# of these, every file will match patterns by definition. Penalty: -50.
+_AI_LIBRARY_PACKAGES = {
+    "openai", "anthropic", "langchain", "langchain-core", "langchain-community",
+    "transformers", "torch", "pytorch", "tensorflow", "keras", "jax",
+    "scikit-learn", "sklearn", "xgboost", "lightgbm", "catboost",
+    "pydantic-ai", "pydantic_ai", "instructor", "llama-index", "llamaindex",
+    "autogen", "crewai", "haystack", "dspy", "vllm", "ollama",
+    "huggingface-hub", "diffusers", "accelerate", "datasets",
+    "sentence-transformers", "spacy", "nltk", "gensim", "fastai",
+    "mlflow", "wandb", "comet-ml", "neptune", "aim",
+    "ray", "modal", "bentoml", "seldon-core",
+    "guardrails-ai", "nemoguardrails", "rebuff",
+    "deepeval", "ragas", "trulens", "promptfoo",
+}
+
+
+def _detect_ai_library_project(project: Path) -> bool:
+    """Check if the scanned project IS an AI/ML library itself.
+
+    Reads pyproject.toml and setup.cfg to extract the package name.
+    If it matches a known AI library, returns True.
+    """
+    for config_file in ("pyproject.toml", "setup.cfg", "setup.py"):
+        cfg_path = project / config_file
+        if not cfg_path.exists():
+            continue
+        try:
+            # Guarded: this file can be a symlink escaping the project.
+            _raw, _ = _read_bytes_if_safe(cfg_path, project)
+            if _raw is None:
+                continue
+            content = _raw.decode("utf-8", errors="ignore")[:4096]
+            lower = content.lower()
+            for pkg in _AI_LIBRARY_PACKAGES:
+                # Match: name = "openai" or name = 'openai' or name=openai
+                if f'name = "{pkg}"' in lower or f"name = '{pkg}'" in lower or f'name="{pkg}"' in lower:
+                    return True
+                # Also match the directory name itself
+            if project.name.lower().replace("-", "").replace("_", "") in {
+                p.replace("-", "").replace("_", "") for p in _AI_LIBRARY_PACKAGES
+            }:
+                return True
+        except (OSError, PermissionError):
+            continue
+    return False
+
+
+def _scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores, provenance="production"):
+    """Detect agent autonomy risks in a single file.
+
+    Runs on ALL code files (not just AI-related) because agent tool
+    infrastructure may not import AI libraries directly.
+    """
+    results = []
+    try:
+        autonomy_findings = detect_autonomous_actions(content, rel_path)
+        for af in autonomy_findings:
+            base_confidence = 70 if not af["has_human_gate"] else 45
+            if af.get("detection_mode") == "contextual":
+                base_confidence -= 10
+            confidence = max(base_confidence - (40 if is_test else 0), 10)
+
+            suppressed = False
+            if respect_ignores:
+                for line in lines:
+                    stripped = line.strip()
+                    if "regula-ignore" in stripped:
+                        if "regula-ignore:" not in stripped:
+                            suppressed = True
+                        elif "agent-autonomy" in stripped:
+                            suppressed = True
+
+            finding = {
+                "file": rel_path,
+                "line": af["line"],
+                "tier": "agent_autonomy",
+                "category": f"Agent Autonomy ({af['owasp_ref']})",
+                "description": af["description"],
+                "indicators": [af["action_pattern"]],
+                "confidence_score": confidence,
+                "suppressed": suppressed,
+                "provenance": provenance,
+                "lifecycle_phases": ["operate"],
+            }
+            finding["open_question"] = _is_open_question(finding)
+            results.append(finding)
+    except (ValueError, KeyError, AttributeError) as e:
+        print(f"regula: action data error in {rel_path}: {e}", file=sys.stderr)
+    return results
+
+
+def _scan_credentials(content, lines, rel_path, is_test, suppressed, provenance="production", ast_context=None):
+    """Detect credential exposure in a single file."""
+    if ast_context is None:
+        ast_context = {}
+    results = []
+    try:
+        secret_findings = check_secrets(content)
+        for sf in secret_findings:
+            secret_line = 1
+            for i, line_text in enumerate(lines, 1):
+                if sf.redacted_value[:4] in line_text:
+                    secret_line = i
+                    break
+
+            # AST context gating: reduce confidence for credentials in
+            # docstrings/string literals or test assertions
+            _cred_confidence = max(sf.confidence_score - 40, 10) if is_test else sf.confidence_score
+            _line_ctx = ast_context.get(secret_line, set())
+            if 'string' in _line_ctx or 'test_assert' in _line_ctx:
+                _cred_confidence = max(_cred_confidence - 30, 10)
+
+            finding = {
+                "file": rel_path,
+                "line": secret_line,
+                "tier": "credential_exposure",
+                "category": "AI Credential Governance (Article 15)",
+                "description": (
+                    f"{sf.description} in AI system code. "
+                    f"Article 15 requires cybersecurity measures for high-risk systems. "
+                    f"Fix: {sf.remediation}"
+                ),
+                "indicators": [sf.pattern_name],
+                "confidence_score": _cred_confidence,
+                "suppressed": suppressed,
+                "provenance": provenance,
+                "lifecycle_phases": ["develop", "deploy"],
+            }
+            finding["open_question"] = _is_open_question(finding)
+            results.append(finding)
+    except (ValueError, KeyError, AttributeError) as e:
+        print(f"regula: credential scan error in {rel_path}: {e}", file=sys.stderr)
+    return results
+
+
+_LLM_IMPORT_RE = re.compile(
+    r"\b(?:import|from)\s+(?:openai|anthropic|together|groq|cohere|"
+    r"google\.generativeai|litellm|replicate|mistralai|"
+    r"langchain|llama_index|transformers|vllm|"
+    r"huggingface_hub)\b",
+    re.IGNORECASE,
+)
+
+# LLM-specific OWASP categories that require an LLM library import.
+# LLM05 (deserialization) and LLM03 (supply chain) apply to model loading
+# and should fire regardless.
+_LLM_SPECIFIC_OWASP = {"LLM01", "LLM02", "LLM06", "LLM07", "LLM09", "LLM10"}
+
+
+def _scan_ai_security(content, rel_path, is_test, suppressed, provenance="production", ast_context=None):
+    """Detect AI security antipatterns in a single file."""
+    if ast_context is None:
+        ast_context = {}
+    results = []
+    _has_llm_import = bool(_LLM_IMPORT_RE.search(content))
+    try:
+        security_findings = check_ai_security(content)
+        for sf in security_findings:
+            # Gate LLM-specific findings: require an LLM library import
+            # to avoid flagging scientific computing / data processing code.
+            if sf["owasp"] in _LLM_SPECIFIC_OWASP and not _has_llm_import:
+                continue
+            _finding_line = sf["line"]
+            _line_ctx = ast_context.get(_finding_line, set())
+
+            # AST context gating: skip no_error_handling if already in try block
+            if sf["pattern_name"] == "no_error_handling_ai_call" and 'try' in _line_ctx:
+                continue
+
+            # AST context gating: skip sensitive_info_disclosure in docstrings
+            if sf["pattern_name"] == "sensitive_info_disclosure" and 'string' in _line_ctx:
+                continue
+
+            _sec_confidence = max(
+                {"critical": 90, "high": 80, "medium": 60, "low": 40}.get(sf["severity"], 50)
+                - (40 if is_test else 0),
+                10,
+            )
+
+            # AST context gating: reduce confidence for findings in test assertions
+            if 'test_assert' in _line_ctx:
+                _sec_confidence = max(_sec_confidence - 30, 10)
+
+            # AST context gating: reduce confidence for findings in string literals
+            if 'string' in _line_ctx:
+                _sec_confidence = max(_sec_confidence - 20, 10)
+
+            finding = {
+                "file": rel_path,
+                "line": _finding_line,
+                "tier": "ai_security",
+                "category": f"AI Security ({sf['owasp']})",
+                "description": sf["description"],
+                "indicators": [sf["pattern_name"]],
+                "confidence_score": _sec_confidence,
+                "suppressed": suppressed,
+                "provenance": provenance,
+                "remediation": sf["remediation"],
+                "lifecycle_phases": CATEGORY_LIFECYCLE_PHASES.get(sf["pattern_name"], ["develop"]),
+            }
+            finding["open_question"] = _is_open_question(finding)
+            results.append(finding)
+    except (ValueError, KeyError, AttributeError) as e:
+        print(f"regula: security scan error in {rel_path}: {e}", file=sys.stderr)
+    return results
+
+
+def _parse_suppression_rules(lines, respect_ignores, filepath="unknown"):
+    """Extract suppression rules from regula-ignore/regula-accept comments."""
+    if not respect_ignores:
+        return set(), []
+    from risk_decisions import parse_annotations, build_suppression_set
+    decisions = parse_annotations(lines, filepath)
+    suppression_set = build_suppression_set(decisions)
+    return suppression_set, decisions
+
+
+def _check_domain_gated(f: dict, domain_activated: set, opt_in_categories: set) -> bool:
+    """Return True if a cached finding should be suppressed by domain gating.
+
+    A finding is domain-gated when ALL of its indicators are opt-in and none of
+    those opt-in indicators have been activated (by user declaration or
+    fingerprinting).  Defined at module level so the closure is not recreated
+    on every file in the scan loop.
+    """
+    if f.get("tier") != "high_risk":
+        return False
+    inds = set(f.get("indicators", []))
+    opt_in = inds & opt_in_categories
+    return bool(opt_in) and not (inds - opt_in_categories) and not (opt_in & domain_activated)
+
+
+def scan_files(project_path: str, respect_ignores: bool = True,
+               skip_tests: bool = False, min_tier: str = "",
+               declared_domains: set = None,
+               enrich_oversight: bool = False) -> list:
+    """Scan project files and return findings with file locations.
+
+    Args:
+        project_path: Directory to scan.
+        respect_ignores: Honour regula-ignore comments.
+        skip_tests: Exclude test files entirely from results.
+        min_tier: Minimum tier to include ("prohibited", "high_risk",
+                  "limited_risk", "minimal_risk"). Empty string means all.
+    """
+    project = Path(project_path).resolve()
+    findings = []
+
+    # Domain gating: scan project imports for domain fingerprinting
+    from project_fingerprint import scan_project_imports
+    from constants import OPT_IN_CATEGORIES
+    from domain_scoring import project_declared_domains
+    _fingerprint = scan_project_imports(str(project))
+    # Explicit --domain arguments union with the project's own policy
+    # declaration (system.domain in regula-policy.yaml) — the policy
+    # syntax doctor and the consultant guide document. Applied here, at
+    # the single scan chokepoint, so check/report/gap/packs/init all
+    # agree on what is activated for a given project.
+    _declared = (set(declared_domains or set())
+                 | project_declared_domains(project))
+
+    # Build the set of activated high_risk subcategories.
+    # A subcategory is active if: declared by user OR detected by fingerprint.
+    _domain_to_subcats = {
+        "employment": {"employment", "high_risk__worker_management"},
+        "medical": {"medical_devices"},
+        "finance": {"essential_services"},
+        "biometrics": {"biometrics"},
+        "education": {"education"},
+        "law_enforcement": {"law_enforcement"},
+        "infrastructure": {"critical_infrastructure"},
+        "migration": {"migration"},
+    }
+    _domain_activated = set()
+    for d in _declared:
+        _domain_activated.update(_domain_to_subcats.get(d, set()))
+    _domain_activated.update(_fingerprint.get("activate", set()))
+
+    # Side-channel counters so cmd_check can show an honest "files scanned"
+    # number without refactoring every caller. Exposed on scan_files.last_stats.
+    _scanned_files = 0
+    # Count test files that were skipped because skip_tests=True. Used by
+    # cmd_check to decide whether the "test files excluded" suffix is
+    # actually truthful — without this, a directory containing no code
+    # files at all would wrongly claim tests were excluded.
+    _tests_skipped = 0
+    # Count files that contain AI imports but no specific risk indicators.
+    # Instead of creating a low-confidence finding per file (94% of FPs),
+    # we aggregate into a single summary counter.
+    _ai_files_no_indicators = 0
+    # Track eligible code files that could NOT be fully analysed, so a partial
+    # scan can never masquerade as a clean one (DEF-004 / review F1-F5). An
+    # "eligible code file" is one that passed the extension/model/stub filters
+    # and would otherwise have been scanned. Legitimate exclusions (non-code
+    # extensions, type stubs, test files under skip_tests, empty-but-valid
+    # files) are NOT skips. Categories:
+    #   unreadable        — read raised (permission/OS error)
+    #   undecodable       — bytes are not valid UTF-8 (would be silently
+    #                        mangled by errors="ignore" and mis-scanned)
+    #   notebook_corrupt  — .ipynb could not be parsed as a notebook
+    #   notebook_partial  — .ipynb parsed but some code cells were undropped-
+    #                        able (non-string source) and were not scanned
+    # Each dangerous skip records a (path, reason) pair.
+    _skipped: list = []  # list[tuple[str, str]] of (relpath, reason)
+
+    def _record_skip(fp, reason):
+        try:
+            rel = str(fp.relative_to(project))
+        except ValueError:
+            rel = str(fp)
+        _skipped.append((rel, reason))
+
+    # Directories the default skip list removed from the walk, and how many
+    # code files sit under them. Counting is bounded: a developer machine can
+    # hold a `node_modules` with hundreds of thousands of entries, and a
+    # disclosure line must never cost more than the scan it describes. When
+    # the budget is exhausted the count is reported as a floor rather than as
+    # a total, because an exhausted budget and a small directory must not
+    # produce the same-looking number (measurement rule 4).
+    _PRUNE_ENTRY_BUDGET = 20000
+    _pruned_dirs: list = []          # list[{"path", "skipped_because"}]
+    _pruned_code_files = 0
+    _prune_budget_left = _PRUNE_ENTRY_BUDGET
+
+    def _count_pruned_code_files(dirname: str, parent_fd=None) -> int:
+        """Count code-extension files under a pruned directory, under budget.
+
+        This is an inventory of names, not a scan: it never reads a file.
+        Returns the count for THIS directory so the caller can drop directories
+        that held no code at all; `.git` is pruned on every scan and reporting
+        it as "files not scanned" would imply a loss where there was none.
+
+        On POSIX, enumerate relative to the descriptor yielded by ``fwalk``.
+        Opening every descendant with ``O_NOFOLLOW`` keeps a repository from
+        swapping a skipped directory for a symlink to somewhere outside the
+        project between discovery and inventory. Where that primitive is not
+        available, decline to inventory and mark the count inexact rather than
+        walk a user-controlled absolute path.
+        """
+        nonlocal _pruned_code_files, _prune_budget_left
+        if _prune_budget_left <= 0:
+            return 0
+        here = 0
+
+        def _count_from_fd(start_fd: int) -> None:
+            nonlocal here, _prune_budget_left
+            pending = [start_fd]
+            flags = os.O_RDONLY
+            if hasattr(os, "O_DIRECTORY"):
+                flags |= os.O_DIRECTORY
+            if hasattr(os, "O_NOFOLLOW"):
+                flags |= os.O_NOFOLLOW
+            if hasattr(os, "O_CLOEXEC"):
+                flags |= os.O_CLOEXEC
+            try:
+                while pending and _prune_budget_left > 0:
+                    current_fd = pending.pop()
+                    try:
+                        with os.scandir(current_fd) as entries:
+                            for entry in entries:
+                                _prune_budget_left -= 1
+                                try:
+                                    if entry.is_file(follow_symlinks=False):
+                                        if Path(entry.name).suffix in CODE_EXTENSIONS:
+                                            here += 1
+                                    elif (entry.is_dir(follow_symlinks=False)
+                                          and _prune_budget_left > 0):
+                                        child_fd = os.open(
+                                            entry.name, flags, dir_fd=current_fd)
+                                        pending.append(child_fd)
+                                except OSError:
+                                    _prune_budget_left = 0
+                                    break
+                                if _prune_budget_left <= 0:
+                                    break
+                    finally:
+                        os.close(current_fd)
+            finally:
+                for open_fd in pending:
+                    os.close(open_fd)
+
+        if parent_fd is None or not hasattr(os, "O_NOFOLLOW"):
+            _prune_budget_left = 0
+            return 0
+        try:
+            root_flags = os.O_RDONLY
+            if hasattr(os, "O_DIRECTORY"):
+                root_flags |= os.O_DIRECTORY
+            root_flags |= os.O_NOFOLLOW
+            if hasattr(os, "O_CLOEXEC"):
+                root_flags |= os.O_CLOEXEC
+            root_fd = os.open(dirname, root_flags, dir_fd=parent_fd)
+            _count_from_fd(root_fd)
+        except OSError:
+            # An unreadable pruned directory is not a scan failure. It is
+            # simply not countable, and the exact flag below says so.
+            _prune_budget_left = 0
+        _pruned_code_files += here
+        return here
+    # Track how many findings were suppressed by domain gating and which
+    # opt-in categories were involved. Used by cmd_check to show an
+    # INFO message explaining the --domain flag.
+    _domain_gated_count = 0
+    _domain_gated_categories = set()
+
+    # Initialise scan cache (failures must never block a scan)
+    cache = None
+    try:
+        cache = ScanCache()
+    except Exception as e:
+        print(f"regula: cache init failed, scanning without cache: {e}", file=sys.stderr)
+
+    # Detect if we're scanning an AI library's own source code.
+    # Scanning openai-python, langchain, etc. from inside their own repo
+    # produces 31% of all FPs (benchmarked). The library IS AI code by
+    # definition — every file matches. Apply a heavy confidence penalty.
+    _is_ai_library_self_scan = _detect_ai_library_project(project)
+
+    # Cache context token: cached findings embed confidence scores that
+    # depend on project-level state (the AI-library self-scan cap), so
+    # entries from one context must never be served to the other.
+    _cache_ctx = "lib" if _is_ai_library_self_scan else "app"
+
+    # Tier ordering for --min-tier filtering
+    _TIER_ORDER = {
+        "prohibited": 4, "credential_exposure": 3, "high_risk": 3,
+        "ai_security": 3, "agent_autonomy": 3,
+        "limited_risk": 2, "minimal_risk": 1,
+    }
+    min_tier_level = _TIER_ORDER.get(min_tier, 0)
+
+    # How complete an entry this scan may write, and which entries it may read.
+    #
+    # A --min-tier scan skips whole detector passes (credentials, ai_security)
+    # and drops classify findings below the threshold, so its result is a
+    # partial one. Until 2026-08-17 the answer was that a partial scan wrote
+    # nothing, which is sound about completeness and left `regula check`, whose
+    # own `min_tier` default is `limited_risk`, reading a cache it could never
+    # fill. The scope component in the cache key lets a partial
+    # scan contribute what it read without any full scan trusting it as
+    # complete.
+    #
+    # Read order matters and is not arbitrary: a `full` entry is a superset and
+    # the read path below filters it by tier, so a partial reader prefers one
+    # and falls back to its own scope. A full scan reads `full` only.
+    _cache_scope = (FULL_SCOPE if min_tier_level == 0
+                    else f"mintier-{min_tier_level}")
+    _cache_read_scopes = ((FULL_SCOPE,) if min_tier_level == 0
+                          else (FULL_SCOPE, _cache_scope))
+
+    # Every remaining scan parameter that changes what an entry contains.
+    # Unlike the scope component this has no fallback: a differently
+    # parameterised entry is a different answer, not a superset. .
+    _cache_params = scan_params_token(respect_ignores=respect_ignores)
+
+    def _cache_put(filepath, content: str, file_findings: list) -> None:
+        """Write a per-file cache entry under this scan's own scope.
+
+        Takes the FULL path, not the relative one. The relative path is what
+        the key uses to identify the file, but the cached findings embed
+        provenance and the context penalty, both derived from the full path,
+        so the key needs both or entries cross that boundary.
+        """
+        if cache is None:
+            return
+        try:
+            cache.put(str(filepath.relative_to(project)), content,
+                      file_findings, context=_cache_ctx,
+                      path_context=path_context_token(filepath),
+                      scope=_cache_scope, params=_cache_params)
+        except Exception:
+            pass  # Cache write is best-effort
+
+    # os.fwalk yields a descriptor for each directory it visits. Opening a
+    # file relative to that descriptor pins the directory inode, so an
+    # ancestor directory swapped for a symlink mid-scan cannot be
+    # re-traversed — the one escape O_NOFOLLOW alone does not stop, since
+    # it guards only the final path component. os.fwalk needs dir_fd
+    # support and is absent on Windows; there we fall back to os.walk and
+    # the guard degrades to final-component protection (documented on
+    # scan_safety.open_if_safe).
+    _use_fwalk = hasattr(os, "fwalk") and not project.is_file()
+    if project.is_file():
+        # Single-file mode: synthesise a walk-compatible structure.
+        walk_iter = [(str(project.parent), [], [project.name], None)]
+        project = project.parent
+    elif _use_fwalk:
+        walk_iter = os.fwalk(project)
+    else:
+        walk_iter = ((r, d, f, None) for r, d, f in os.walk(project))
+
+    for root, dirs, files, _dirfd in walk_iter:
+        # Record what the default skip list removes BEFORE removing it.
+        #
+        # MEASURED 2026-08-17 on ageitgey/face_recognition at 9f3061a:
+        # `regula check . --scope all` reported "Files scanned: 6" and three
+        # high-risk findings, while the same command pointed at each
+        # subdirectory in turn reported fourteen over twenty-eight files. The
+        # difference is this line: twenty-three of that repository's files
+        # live under `examples/`, and `examples` is in SKIP_DIRS. Eleven of
+        # fourteen findings, 79%, were invisible at the default invocation and
+        # no line of the output said a directory had been skipped.
+        #
+        # The pruning itself is a deliberate design decision with a stated
+        # rationale on SKIP_DIRS and is NOT changed here. What changes is that
+        # the scan can no longer report a file count without also being able
+        # to report what it declined to read. That is the N138 remedy applied
+        # to a second instrument: an instrument that cannot see part of its
+        # population declares the gap at the point of use rather than leaving
+        # it silent.
+        # Keep the value that reaches descriptor-relative open() sourced from
+        # the trusted allowlist, not from the untrusted repository walk. The
+        # repository-provided names participate only in the membership test.
+        _pruned_here = [safe_name for safe_name in sorted(SKIP_DIRS)
+                        if safe_name in dirs]
+        for _d in _pruned_here:
+            _p = Path(root) / _d
+            try:
+                _rel = str(_p.relative_to(project))
+            except ValueError:
+                _rel = str(_p)
+            _here = _count_pruned_code_files(_d, _dirfd)
+            if _here:
+                _pruned_dirs.append({"path": _rel, "skipped_because": _d,
+                                     "code_files": _here})
+        dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
+        for filename in files:
+            filepath = Path(root) / filename
+
+            # Phase 5 threat model: reject symlink-escapes and oversized
+            # files before any stat/read beyond this point. A scanned
+            # repository is untrusted input (e.g. a third-party PR in CI).
+            _safe, _unsafe_reason = _is_safe_to_scan(filepath, project)
+            if not _safe:
+                _record_skip(filepath, _unsafe_reason)
+                continue
+
+            is_test = _is_test_file(filepath)
+            provenance = classify_provenance(filepath)
+
+            # Skip test files entirely if requested
+            if skip_tests and is_test:
+                _tests_skipped += 1
+                continue
+
+            # Model files
+            if filepath.suffix.lower() in MODEL_EXTENSIONS:
+                if min_tier_level <= 1:
+                    finding = {
+                        "file": str(filepath.relative_to(project)),
+                        "line": 1,
+                        "tier": "minimal_risk",
+                        "category": "Model File",
+                        "description": f"AI model file detected: {filepath.suffix}",
+                        "indicators": [filepath.suffix],
+                        "confidence_score": 30,
+                        "suppressed": False,
+                        "provenance": provenance,
+                        "lifecycle_phases": ["develop"],
+                    }
+                    finding["open_question"] = _is_open_question(finding)
+                    findings.append(finding)
+                continue
+
+            if filepath.suffix not in CODE_EXTENSIONS:
+                continue
+
+            # Skip type stub files — they declare interfaces with no
+            # runtime behaviour and produce 12% of FPs in benchmarks.
+            if filepath.suffix == ".pyi":
+                continue
+
+            _scanned_files += 1
+
+            # Progress indicator for large scans (TTY only, stderr)
+            if _scanned_files % 50 == 0 and hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():
+                print(f"\r  Scanning... {_scanned_files} files", end="", file=sys.stderr)
+
+            # Jupyter notebooks: extract code cells from the .ipynb JSON.
+            # Line numbers in findings refer to the joined-source position,
+            # not the original notebook cell — see scripts/notebook.py.
+            if filepath.suffix.lower() == ".ipynb":
+                from notebook import extract_code_status
+                _nb = extract_code_status(filepath)
+                if _nb["status"] == "parse_error":
+                    # Corrupt / unreadable notebook — could hide a prohibited
+                    # pattern. Dangerous skip; do not count as scanned (F1/F3).
+                    _record_skip(filepath, "notebook_corrupt")
+                    _scanned_files -= 1
+                    continue
+                if _nb["dropped_cells"] > 0:
+                    # Parsed, but some code cells had unusable source and were
+                    # not scanned — a PARTIAL extraction (F3). We still scan
+                    # what we could extract, but flag the file as skipped so the
+                    # gate treats the scan as partial.
+                    _record_skip(filepath, "notebook_partial")
+                # A valid notebook with zero code cells (markdown-only, freshly
+                # created) is NOT a skip — it is a complete scan of a file with
+                # no scannable code (F4). Fall through with empty content.
+                content = _nb["code"]
+                lines = content.split("\n")
+            else:
+                # Read through the guard, NOT by re-opening the name. The
+                # earlier _is_safe_to_scan() call validated a path; opening
+                # that path again would let an attacker with write access to
+                # the scanned tree swap in a symlink between the two
+                # resolutions and have us read a file the guard rejected
+                # (issue #31). read_bytes_if_safe opens once with O_NOFOLLOW
+                # and returns bytes from that exact descriptor.
+                raw_bytes, _read_reason = _read_bytes_if_safe(filepath, project, dir_fd=_dirfd)
+                if raw_bytes is None:
+                    # Unreadable eligible file — dangerous skip (F1). A
+                    # symlink_escape here means the race was caught in the act.
+                    _record_skip(filepath, _read_reason or "unreadable")
+                    _scanned_files -= 1
+                    continue
+                try:
+                    content = raw_bytes.decode("utf-8")
+                except UnicodeDecodeError:
+                    # Not valid UTF-8. The old code used errors="ignore", which
+                    # silently mangled the content and scanned garbage (F2), so
+                    # a prohibited pattern in e.g. a UTF-16 file was lost while
+                    # the file counted as cleanly scanned. Treat as a dangerous
+                    # skip instead of pretending we analysed it.
+                    _record_skip(filepath, "undecodable")
+                    _scanned_files -= 1
+                    continue
+                lines = content.split("\n")
+            rel_path = str(filepath.relative_to(project))
+
+            # Phase 5 threat model (continued): cap content passed to the
+            # regex classification engine. Several built-in patterns use a
+            # (?:word)[^"\n]{0,30}(?:word) shape that degrades near-linearly
+            # with content length under dense adversarial repetition of the
+            # trigger word (empirically measured: 27.8s worst-case on a
+            # MAX_FILE_SIZE_BYTES file). MAX_CLASSIFY_CHARS (1 MB) gives 10x+
+            # margin over the largest legitimate file in this codebase
+            # (~95 KB) while bounding worst-case per-file classification time
+            # to ~3s. Truncation is a dangerous skip — a pattern could be
+            # hiding past the cap — so the scan is honestly reported partial,
+            # never silently clean (same invariant as DEF-004/DEF-005).
+            if len(content) > MAX_CLASSIFY_CHARS:
+                _record_skip(filepath, "oversized_for_classification")
+                content = content[:MAX_CLASSIFY_CHARS]
+                lines = content.split("\n")
+
+            # Empty __init__.py files are package markers, not scannable code.
+            # This is a LEGITIMATE exclusion (no code to scan), not a dangerous
+            # skip — do not record it as a skip, but keep it out of the scanned
+            # count for an honest "files scanned" figure.
+            if filepath.name == "__init__.py" and not content.strip():
+                _scanned_files -= 1
+                continue
+
+            # Build AST context map for Python files (used for precision gating)
+            _ast_context = {}
+            if filepath.suffix == '.py':
+                from ast_context import build_context_map
+                _ast_context = build_context_map(content)
+
+            # Skip annotation-only Python files (pure re-exports and type
+            # aliases with no definitions, assignments, or calls).
+            # These produce 12% of FPs from type stubs and parameter definitions.
+            #
+            # CRITICAL (review F1): this precision filter must NEVER bypass the
+            # Article 5 prohibited check. A prohibited practice is detected on
+            # the PHRASE (e.g. "predictive policing"), which can appear in a
+            # file with none of def/class/call/assignment tokens. Before
+            # skipping, run the one-shot prohibited check; if it matches, do
+            # not skip — fall through to the full scan so the finding is
+            # emitted. This keeps the FP reduction for genuinely benign files
+            # while closing the silent-drop of a prohibited pattern.
+            if filepath.suffix == ".py" and filepath.name != "__init__.py":
+                if (not re.search(r'^def\s', content, re.MULTILINE)
+                        and not re.search(r'^class\s', content, re.MULTILINE)
+                        and not re.search(r'\w+\(', content)
+                        and not re.search(r'^[A-Za-z_]\w*\s*=', content, re.MULTILINE)):
+                    from classify_risk import check_prohibited, strip_comments as _strip_c
+                    if check_prohibited(content, stripped_text=_strip_c(content)) is None:
+                        continue
+                    # else: prohibited indicator present — do not skip.
+
+            # Cache is_ai_related result once per file — it is called up to 3×
+            # (cache stats path, non-AI gate, domain boost) so computing it
+            # once here avoids repeated full-content regex scans.
+            _is_ai = is_ai_related(content)
+
+            # Check scan cache — if content unchanged, reuse cached findings
+            try:
+                if cache is not None:
+                    cached_raw = cache.get(
+                        rel_path, content, context=_cache_ctx,
+                        path_context=path_context_token(filepath),
+                        scopes=_cache_read_scopes, params=_cache_params)
+                    if cached_raw is not None:
+                        cached = cached_raw
+                        if min_tier_level > 0:
+                            cached = [f for f in cached
+                                      if _TIER_ORDER.get(f.get("tier", ""), 0) >= min_tier_level]
+                        # Apply domain gating to cached findings too
+                        _cached_before = len(cached)
+                        cached = [f for f in cached if not _check_domain_gated(f, _domain_activated, OPT_IN_CATEGORIES)]
+                        _cached_gated = _cached_before - len(cached)
+                        if _cached_gated > 0:
+                            _domain_gated_count += _cached_gated
+                            for cf in cached_raw:
+                                if _check_domain_gated(cf, _domain_activated, OPT_IN_CATEGORIES):
+                                    _domain_gated_categories.update(cf.get("indicators", []))
+                        findings.extend(cached)
+                        # Maintain AI file counter for stats even on cache
+                        # hits. Raw emptiness, not post-filter emptiness: the
+                        # cold path only counts files whose FULL scan produced
+                        # nothing — findings merely hidden by --min-tier or
+                        # domain gating must not inflate the summary line.
+                        if not cached_raw and _is_ai:
+                            _ai_files_no_indicators += 1
+                        continue
+            except Exception:
+                pass  # Cache read failure — scan file normally
+
+            # Track per-file findings for caching
+            file_findings_start = len(findings)
+
+            # Agent autonomy detection (runs on ALL code files)
+            if min_tier_level <= _TIER_ORDER.get("agent_autonomy", 3):
+                findings.extend(_scan_agent_autonomy(content, lines, rel_path, is_test, respect_ignores, provenance))
+
+            # Article 5 prohibited practices must be detected REGARDLESS of
+            # whether the file imports an AI library — the prohibition is on
+            # the practice, not the framework. classify() already enforces
+            # this order internally, but the pre-AI-related gate below would
+            # otherwise short-circuit the entire classification path for
+            # non-AI-importing files. Run a one-shot prohibited check here,
+            # honouring regula-ignore suppressions and stripping comments
+            # so the scanner does not flag itself when reading pattern
+            # definitions or docstrings discussing the patterns.
+            if min_tier_level <= _TIER_ORDER.get("prohibited", 4):
+                from classify_risk import check_prohibited, strip_comments as _strip
+                _early_suppress, _early_decisions = _parse_suppression_rules(lines, respect_ignores, rel_path)
+                _early_silenced = "*" in _early_suppress or "prohibited" in _early_suppress
+                if not _early_silenced:
+                    _early_lang = detect_language(filename) or "python"
+                    _early_stripped = _strip(content, _early_lang)
+                    prohibited_early = check_prohibited(content, stripped_text=_early_stripped)
+                    if prohibited_early is not None:
+                        _early_indicator = prohibited_early.indicators_matched[0] if prohibited_early.indicators_matched else ""
+                        finding = {
+                            "file": rel_path,
+                            "line": 1,
+                            "tier": "prohibited",
+                            "category": prohibited_early.category or "Prohibited (Article 5)",
+                            "description": prohibited_early.description or prohibited_early.message or "",
+                            "indicators": prohibited_early.indicators_matched,
+                            "articles": prohibited_early.applicable_articles,
+                            "exceptions": prohibited_early.exceptions,
+                            "confidence_score": 90,
+                            "suppressed": False,
+                            "provenance": provenance,
+                            "observations": [],
+                            "domain_boost": None,
+                            "lifecycle_phases": CATEGORY_LIFECYCLE_PHASES.get(_early_indicator, ["plan"]),
+                        }
+                        finding["open_question"] = _is_open_question(finding)
+                        findings.append(finding)
+                        _cache_put(filepath, content, findings[file_findings_start:])
+                        continue
+
+            if not _is_ai:
+                # Even non-AI-related files should be checked for critical
+                # security patterns: eval/exec on variables named after AI output.
+                # These represent code execution risks regardless of imports.
+                for _crit_pat, _crit_cat in _CRITICAL_UNGATED:
+                    for _crit_m in _crit_pat.finditer(content):
+                        _crit_line = content[:_crit_m.start()].count("\n") + 1
+                        findings.append({
+                            "file": rel_path,
+                            "line": _crit_line,
+                            "tier": "ai_security",
+                            "category": _crit_cat,
+                            "description": "eval/exec called on AI output variable — arbitrary code execution risk",
+                            "indicators": ["eval_on_ai_output"],
+                            "confidence_score": 90,
+                            "suppressed": False,
+                            "provenance": provenance,
+                            "lifecycle_phases": ["develop"],
+                        })
+                _cache_put(filepath, content, findings[file_findings_start:])
+                continue
+
+            suppressed_rules, file_decisions = _parse_suppression_rules(lines, respect_ignores, rel_path)
+
+            # Credential governance (AI-related files only)
+            secret_suppressed = "*" in suppressed_rules or "secrets" in suppressed_rules
+            if min_tier_level <= _TIER_ORDER.get("credential_exposure", 3):
+                findings.extend(_scan_credentials(content, lines, rel_path, is_test, secret_suppressed, provenance, _ast_context))
+
+            # AI security antipatterns
+            if min_tier_level <= _TIER_ORDER.get("ai_security", 3):
+                findings.extend(_scan_ai_security(content, rel_path, is_test, secret_suppressed or "*" in suppressed_rules, provenance, _ast_context))
+
+            lang = detect_language(filename) or "python"
+            result = classify(content, language=lang)
+            if result.tier in (RiskTier.NOT_AI, RiskTier.MINIMAL_RISK) and not result.indicators_matched:
+                # Instead of emitting a low-confidence finding per file
+                # ("AI-related code with no specific risk indicators"),
+                # count these files for a single summary line. This
+                # eliminates 94% of false positives from the corpus.
+                _ai_files_no_indicators += 1
+                _cache_put(filepath, content, findings[file_findings_start:])
+                continue
+
+            # Skip findings below min_tier threshold
+            tier_level = _TIER_ORDER.get(result.tier.value, 0)
+            if tier_level < min_tier_level:
+                _cache_put(filepath, content, findings[file_findings_start:])
+                continue
+
+            is_suppressed = "*" in suppressed_rules
+            for indicator in result.indicators_matched:
+                if indicator.lower() in suppressed_rules:
+                    is_suppressed = True
+
+            # Find matching risk decision for this finding
+            matched_decision = None
+            for dec in file_decisions:
+                if dec.pattern == "*" or any(
+                    ind.lower() == dec.pattern for ind in result.indicators_matched
+                ):
+                    matched_decision = dec
+                    break
+
+            # Record suppression for feedback loop (best-effort, local-only)
+            if is_suppressed and matched_decision is not None:
+                try:
+                    from risk_decisions import record_feedback
+                    record_feedback(
+                        kind="suppress" if matched_decision.dtype == "ignore" else "accept",
+                        pattern=matched_decision.pattern,
+                        file=rel_path,
+                        line=matched_decision.line,
+                        confidence=0,
+                        tier=result.tier.value if result.tier else "",
+                        rationale=matched_decision.rationale or "",
+                    )
+                except Exception:
+                    pass  # feedback recording is best-effort
+
+            # Calculate confidence score
+            base_score = {
+                "prohibited": 85, "high_risk": 65,
+                "limited_risk": 45, "minimal_risk": 20,
+            }.get(result.tier.value, 20)
+            indicator_bonus = min(len(result.indicators_matched) * 8, 15)
+
+            # Domain-aware boost: co-occurrence of AI + regulatory domain keywords
+            domain_result = compute_domain_boost(content, _is_ai)
+            domain_boost = domain_result["boost"]
+
+            confidence_score = min(base_score + indicator_bonus + domain_boost, 100)
+
+            # Deprioritise test file findings (reduce to INFO tier)
+            if is_test and result.tier.value != "prohibited":
+                confidence_score = max(confidence_score - 40, 10)
+
+            # Context-aware penalty for examples, __init__, mocks
+            if result.tier.value != "prohibited":
+                ctx_penalty = _compute_context_penalty(filepath, content, is_test)
+                if ctx_penalty > 0:
+                    confidence_score = max(confidence_score - ctx_penalty, 10)
+
+            # AI library self-scan: hard-cap all non-prohibited findings at 10.
+            # A -50 soft penalty wasn't strong enough (openai-python: 0 TP / 51 FP).
+            # Capping at 10 effectively suppresses non-critical findings for AI SDK
+            # projects that match patterns by definition (31% of FPs in benchmarks).
+            if _is_ai_library_self_scan and result.tier.value != "prohibited":
+                confidence_score = min(confidence_score, 10)
+
+            # Library infrastructure penalty (24% of FPs in benchmarks).
+            # Files in provider/adapter/converter paths or with utility
+            # filenames are framework plumbing, not application logic.
+            if result.tier.value != "prohibited":
+                _rel_lower = rel_path.lower()
+                _fname_lower = filepath.name.lower()
+                _is_lib_infra = (
+                    "/providers/" in _rel_lower
+                    or "/adapters/" in _rel_lower
+                    or "/marshalling/" in _rel_lower
+                    or "/converters/" in _rel_lower
+                    or _fname_lower in ("utils.py", "helpers.py", "compat.py", "types.py", "_types.py")
+                    or ("/core/" in _rel_lower and _fname_lower.startswith("_"))
+                )
+                if _is_lib_infra:
+                    confidence_score = max(confidence_score - 25, 5)
+
+            # AST context penalty: if most AI-related lines are inside
+            # docstrings or try blocks, the classification confidence drops.
+            # This catches files that only mention AI patterns in documentation
+            # or wrapped error handling, not actual unguarded usage.
+            if _ast_context and result.tier.value != "prohibited":
+                from ast_context import is_in_string, is_in_try
+                _ai_lines = [i for i, ln in enumerate(lines, 1)
+                             if re.search(r'(?:import|from)\s+\w*(?:ai|ml|openai|torch|sklearn|tensorflow)', ln)]
+                if _ai_lines:
+                    _in_string_count = sum(1 for ln in _ai_lines if is_in_string(_ast_context, ln))
+                    _in_try_count = sum(1 for ln in _ai_lines if is_in_try(_ast_context, ln))
+                    _total = len(_ai_lines)
+                    # If majority of AI imports are in strings (docs), penalize
+                    if _in_string_count > _total * 0.5:
+                        confidence_score = max(confidence_score - 20, 10)
+                    # If all AI calls are already in try blocks, minor penalty
+                    # (indicates good error handling practices)
+                    elif _in_try_count == _total and _total > 0:
+                        confidence_score = max(confidence_score - 10, 10)
+
+            # Suppress findings where ALL pattern matches are inside string literals
+            # (docstrings, f-strings, etc.) — the pattern fired on documentation, not code.
+            if _ast_context and result.match_lines and result.tier.value != "prohibited":
+                from ast_context import is_in_string as _is_in_str
+                _lines_in_strings = sum(1 for ln in result.match_lines if _is_in_str(_ast_context, ln))
+                if _lines_in_strings == len(result.match_lines):
+                    # Every match was inside a string literal — skip entirely.
+                    # Deterministic given content, so the cache entry is safe.
+                    _cache_put(filepath, content, findings[file_findings_start:])
+                    continue
+                elif _lines_in_strings > 0:
+                    # Some matches in strings — penalise confidence
+                    confidence_score = max(confidence_score - 25, 5)
+
+            # Generate Article-specific observations for high-risk findings
+            observations = []
+            if result.tier == RiskTier.HIGH_RISK:
+                try:
+                    observations = generate_observations(content)
+                except (ValueError, KeyError, TypeError) as e:
+                    print(f"regula: observation generation failed for {rel_path}: {e}", file=sys.stderr)
+
+            # Look up lifecycle phases from the primary indicator
+            _primary_indicator = result.indicators_matched[0] if result.indicators_matched else ""
+            finding = {
+                "file": rel_path,
+                "line": result.match_lines[0] if result.match_lines else 1,
+                "tier": result.tier.value,
+                "category": result.category or "Unknown",
+                "description": result.description or result.message or "",
+                "indicators": result.indicators_matched,
+                "articles": result.applicable_articles,
+                "exceptions": result.exceptions,
+                "confidence_score": confidence_score,
+                "suppressed": is_suppressed,
+                "provenance": provenance,
+                "risk_decision": matched_decision.to_dict() if matched_decision else None,
+                "observations": observations,
+                "domain_boost": {
+                    "boost": domain_boost,
+                    "domains_matched": domain_result.get("domains_matched", []),
+                    "detail": domain_result.get("detail", ""),
+                } if domain_boost > 0 else None,
+                "lifecycle_phases": CATEGORY_LIFECYCLE_PHASES.get(_primary_indicator, ["develop"]),
+                "detected_domains": getattr(result, "detected_domains", []),
+            }
+            # WARN-tier demotion: if a finding would land in WARN (confidence
+            # 50-79) but has no specific indicators, demote to INFO by capping
+            # confidence at 49. "Generic" indicators are broad category labels
+            # that don't convey specific risk (e.g. "ai_code", "ml_framework").
+            if (result.tier.value not in ("prohibited", "credential_exposure")
+                    and 50 <= confidence_score <= 79):
+                _indicators = set(i.lower() for i in result.indicators_matched)
+                if not _indicators or _indicators <= _GENERIC_INDICATORS:
+                    confidence_score = min(confidence_score, 49)
+                    finding["confidence_score"] = confidence_score
+
+            # Confidence floor: suppress very-low-confidence minimal_risk findings.
+            # Base minimal_risk score is 15; anything below 20 has no corroborating
+            # evidence and is noise (205 FPs at 16% precision in dev benchmark).
+            if result.tier.value == "minimal_risk" and confidence_score < 20:
+                # Deterministic given content — safe to cache the exclusion.
+                _cache_put(filepath, content, findings[file_findings_start:])
+                continue
+
+            # Domain gating: suppress opt-in high_risk findings unless
+            # activated by user declaration or import fingerprinting.
+            # Only suppress if ALL indicators are opt-in (no non-opt-in
+            # indicator to independently justify the finding).
+            if result.tier.value == "high_risk":
+                _indicators_set = set(result.indicators_matched)
+                _opt_in_matched = _indicators_set & OPT_IN_CATEGORIES
+                _has_non_opt_in = bool(_indicators_set - OPT_IN_CATEGORIES)
+                if _opt_in_matched and not _has_non_opt_in and not (_opt_in_matched & _domain_activated):
+                    _domain_gated_categories.update(_opt_in_matched)
+                    _domain_gated_count += 1
+                    # Suppressed from THIS scan's results, but stored in the
+                    # cache UNGATED: the cache read path re-applies gating
+                    # per scan context, so a later scan with the domain
+                    # activated (--domain / fingerprint) must find it on a
+                    # cache hit. Skipping the write here would just leave
+                    # gated files permanently uncached.
+                    finding["open_question"] = _is_open_question(finding)
+                    _cache_put(filepath, content,
+                               findings[file_findings_start:] + [finding])
+                    continue  # suppress: all indicators are opt-in without activation
+
+            finding["open_question"] = _is_open_question(finding)
+            findings.append(finding)
+
+            # Cache findings collected for this file
+            _cache_put(filepath, content, findings[file_findings_start:])
+
+    # Flush cache to disk
+    try:
+        if cache is not None:
+            cache.flush()
+    except Exception:
+        pass  # Cache flush failure must not affect scan results
+
+    # Config/env file scanning for AI service references
+    try:
+        config_findings = scan_config_files(project_path)
+        if min_tier_level <= 1:  # only include if minimal_risk tier is in scope
+            findings.extend(config_findings)
+    except Exception as e:
+        print(f"regula: config scanning failed: {e}", file=sys.stderr)
+
+    # Enrich each finding with Omnibus-aware enforcement deadline
+    _enrich_deadlines(findings)
+
+    # Cross-file oversight enrichment for high-risk findings (Article 14).
+    # This is expensive (full project AST walk) — only run when explicitly
+    # requested via enrich_oversight=True, not on every default scan.
+    # Use `regula govern` for full oversight analysis.
+    if enrich_oversight:
+        high_risk_findings = [f for f in findings if f.get("tier") == "high_risk"]
+        if high_risk_findings:
+            try:
+                from cross_file_flow import analyse_project_oversight
+                oversight = analyse_project_oversight(project_path)
+                raw_score = oversight.get("summary", {}).get("oversight_score", 0)
+                score = round(raw_score / 100, 2) if isinstance(raw_score, (int, float)) and raw_score >= 0 else 0.0
+                for f in high_risk_findings:
+                    f["oversight_score"] = score
+                    f["oversight_status"] = "present" if score > 0.5 else "needs_review"
+            except Exception:
+                for f in high_risk_findings:
+                    f["oversight_score"] = None
+                    f["oversight_status"] = "not_analysed"
+
+    # Clear progress indicator if shown
+    if _scanned_files >= 50 and hasattr(sys.stderr, 'isatty') and sys.stderr.isatty():
+        print(f"\r  Scanned {_scanned_files} files    ", file=sys.stderr)
+
+    # Publish scan stats on the function itself (side-channel).
+    # cmd_check reads this to show the real "files scanned" count
+    # instead of misreporting as len(unique files with findings).
+    scan_files.last_stats = {
+        "files_scanned": _scanned_files,
+        "skip_tests": skip_tests,
+        "tests_skipped": _tests_skipped,
+        "ai_files_no_indicators": _ai_files_no_indicators,
+        "domain_gated_count": _domain_gated_count,
+        "domain_gated_categories": sorted(_domain_gated_categories),
+        # Eligible code files that could NOT be fully analysed (unreadable,
+        # undecodable, corrupt/partial notebook). A non-empty list means the
+        # scan is PARTIAL: cmd_check downgrades the manifest completion_status
+        # so the CI gate can fail closed (review F1-F5). Each entry is
+        # {"path", "reason"}. Legitimate exclusions are NOT listed here.
+        "skipped_files": [{"path": p, "reason": r} for p, r in _skipped],
+        "skipped_total": len(_skipped),
+        # Directories the default skip list removed from the walk. These are
+        # NOT scan failures and they do not make a scan partial: the pruning
+        # is deliberate. They are here so that "Files scanned: N" can never
+        # again be printed without the population it excluded being available
+        # to the caller that prints it.
+        "pruned_dirs": _pruned_dirs,
+        "pruned_dirs_total": len(_pruned_dirs),
+        "pruned_code_files": _pruned_code_files,
+        # False when the counting budget was exhausted or a pruned directory
+        # was unreadable, in which case pruned_code_files is a floor.
+        "pruned_count_exact": _prune_budget_left > 0,
+    }
+
+    return findings
+
+
+def _enrich_deadlines(findings: list) -> None:
+    """Add deadline and deadline_note to each finding based on Omnibus status.
+
+    The Digital Omnibus (Regulation (EU) 2026/1744) was published in the
+    Official Journal on 24 July 2026 and is in force from 27 July 2026
+    (three days after publication). From that date the deferred high-risk
+    dates ARE the applicable law: Annex III standalone systems move to
+    DEADLINE_OMNIBUS_ANNEX_III, Annex I product-embedded systems to
+    DEADLINE_OMNIBUS_ANNEX_I. Article 50 transparency for NEW systems
+    keeps the original DEADLINE_CURRENT_LAW date (unchanged by the
+    Omnibus); the existing-system watermarking transition is
+    DEADLINE_OMNIBUS_LIMITED. The `deadline` field carries the applicable
+    date (mirroring register.py's applicable_deadline flip); the note
+    keeps the pre-Omnibus date as history. Dates are named by constant
+    here deliberately: test_no_binding_deadline_literals_outside_omnibus
+    polices date literals in this file.
+
+    Driven entirely by omnibus.py constants: the unenacted branches below
+    rendered the pending wording until the OJ flip and are kept so the
+    contract stays readable and reversible.
+    """
+    # Date-qualified: "in force from <date>" is truthful before, on and
+    # after the entry-into-force date; a flat "in force" overstates legal
+    # status during the 3 days between OJ publication and effect.
+    _adoption_note = (
+        f"in force from {OMNIBUS_IN_FORCE_DATE} (OJ {OMNIBUS_OJ_DATE})"
+        if OMNIBUS_ENACTED
+        else f"pending OJ publication ({OMNIBUS_STATUS})"
+    )
+
+    for f in findings:
+        tier = f.get("tier", "")
+        category = f.get("category", "")
+
+        if tier == "prohibited":
+            f["deadline"] = DEADLINE_PROHIBITED
+            f["deadline_status"] = "enforceable"
+            f["deadline_note"] = "Article 5 prohibitions enforceable since 2 Feb 2025. Not affected by Omnibus."
+        elif tier in ("high_risk", "ai_security"):
+            # Annex III vs Annex I distinction
+            annex_i_keywords = ("Safety Component", "Medical Device", "Machinery",
+                                "harmonisation", "sectoral")
+            if any(kw.lower() in category.lower() for kw in annex_i_keywords):
+                if OMNIBUS_ENACTED:
+                    f["deadline"] = DEADLINE_OMNIBUS_ANNEX_I
+                    f["deadline_note"] = f"2 Aug 2028 (Annex I / sectoral; Omnibus {_adoption_note}). Pre-Omnibus date: 2 Aug 2026."
+                else:
+                    f["deadline"] = DEADLINE_CURRENT_LAW
+                    f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Aug 2028 (Annex I / sectoral). Omnibus {_adoption_note}."
+                f["deadline_status"] = "current_law"
+                f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_I
+            else:
+                if OMNIBUS_ENACTED:
+                    f["deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+                    f["deadline_note"] = f"2 Dec 2027 (Annex III; Omnibus {_adoption_note}). Pre-Omnibus date: 2 Aug 2026."
+                else:
+                    f["deadline"] = DEADLINE_CURRENT_LAW
+                    f["deadline_note"] = f"Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus {_adoption_note}."
+                f["deadline_status"] = "current_law"
+                f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+        elif tier == "credential_exposure":
+            # Article 15 is a Chapter III high-risk obligation, so its
+            # timing follows the (deferred) high-risk dates. The security
+            # reality does not: exposed credentials are exploitable the
+            # moment they ship, so the note says both.
+            if OMNIBUS_ENACTED:
+                f["deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+                f["deadline_note"] = (
+                    f"Article 15 cybersecurity requirements: 2 Dec 2027 for standalone high-risk (Omnibus {_adoption_note}). "
+                    "Exposed credentials are exploitable immediately; remediate now regardless of deadline."
+                )
+            else:
+                f["deadline"] = DEADLINE_CURRENT_LAW
+                f["deadline_note"] = "Article 15 cybersecurity requirements. Current law: 2 Aug 2026."
+            f["deadline_status"] = "current_law"
+        elif tier == "limited_risk":
+            f["deadline"] = DEADLINE_CURRENT_LAW
+            f["deadline_status"] = "current_law"
+            f["deadline_note"] = f"Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus {_adoption_note})."
+            f["omnibus_deadline"] = DEADLINE_OMNIBUS_LIMITED
+        elif tier == "agent_autonomy":
+            if OMNIBUS_ENACTED:
+                f["deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+                f["deadline_note"] = f"Article 14 human oversight: 2 Dec 2027 (Omnibus {_adoption_note}). Pre-Omnibus date: 2 Aug 2026."
+            else:
+                f["deadline"] = DEADLINE_CURRENT_LAW
+                f["deadline_note"] = f"Article 14 human oversight. Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027. Omnibus {_adoption_note}."
+            f["deadline_status"] = "current_law"
+            f["omnibus_deadline"] = DEADLINE_OMNIBUS_ANNEX_III
+        else:
+            f["deadline"] = None
+            f["deadline_status"] = "none"
+            f["deadline_note"] = (
+                "No tier-specific deadline inferred; this is not a legal "
+                "classification and other duties may still apply."
+            )
+
+
+# ---------------------------------------------------------------------------
+# HTML report
+# ---------------------------------------------------------------------------
+
+_CSS = """
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f8f9fa; color: #212529; line-height: 1.6; }
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+header { background: #1a1a2e; color: #fff; padding: 32px 0; margin-bottom: 24px; }
+header .container { display: flex; justify-content: space-between; align-items: center; }
+header h1 { font-size: 1.5rem; font-weight: 600; }
+header .meta { font-size: 0.85rem; opacity: 0.8; text-align: right; }
+.disclaimer { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 16px; margin-bottom: 24px; font-size: 0.85rem; color: #664d03; }
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.card { background: #fff; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.card .number { font-size: 2rem; font-weight: 700; }
+.card .label { font-size: 0.85rem; color: #6c757d; margin-top: 4px; }
+.card.red { border-left: 4px solid #dc3545; }
+.card.red .number { color: #dc3545; }
+.card.amber { border-left: 4px solid #fd7e14; }
+.card.amber .number { color: #fd7e14; }
+.card.green { border-left: 4px solid #198754; }
+.card.green .number { color: #198754; }
+.card.blue { border-left: 4px solid #0d6efd; }
+.card.blue .number { color: #0d6efd; }
+.card.purple { border-left: 4px solid #6f42c1; }
+.card.purple .number { color: #6f42c1; }
+.section { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.section h2 { font-size: 1.1rem; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #dee2e6; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { background: #f8f9fa; text-align: left; padding: 10px 12px; border-bottom: 2px solid #dee2e6; font-weight: 600; }
+td { padding: 10px 12px; border-bottom: 1px solid #eee; vertical-align: top; }
+tr:hover { background: #f8f9fa; }
+tr.suppressed { opacity: 0.5; text-decoration: line-through; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+.badge.prohibited { background: #dc3545; color: #fff; }
+.badge.high-risk { background: #fd7e14; color: #fff; }
+.badge.limited-risk { background: #0d6efd; color: #fff; }
+.badge.minimal-risk { background: #198754; color: #fff; }
+.badge.credential-exposure { background: #6f42c1; color: #fff; }
+.confidence-bar { display: inline-block; width: 60px; height: 8px; background: #e9ecef; border-radius: 4px; overflow: hidden; vertical-align: middle; }
+.confidence-fill { height: 100%; border-radius: 4px; }
+.top3 { list-style: none; }
+.top3 li { padding: 8px 0; border-bottom: 1px solid #eee; }
+.top3 li:last-child { border-bottom: none; }
+.chain-status { font-weight: 600; }
+.chain-valid { color: #198754; }
+.chain-invalid { color: #dc3545; }
+footer { text-align: center; padding: 24px; font-size: 0.8rem; color: #6c757d; }
+.dep-score { font-size: 2rem; font-weight: 700; }
+.dep-score.good { color: #198754; }
+.dep-score.moderate { color: #fd7e14; }
+.dep-score.poor { color: #dc3545; }
+.badge.hash { background: #198754; color: #fff; }
+.badge.exact { background: #198754; color: #fff; }
+.badge.range { background: #fd7e14; color: #fff; }
+.badge.unpinned { background: #dc3545; color: #fff; }
+.badge.compromised { background: #dc3545; color: #fff; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.7; } }
+.framework-table td { font-size: 0.8rem; }
+"""
+
+
+def _tier_badge(tier: str) -> str:
+    display = tier.upper().replace("_", "-")
+    css_class = tier.replace("_", "-")
+    return f'<span class="badge {css_class}">{display}</span>'
+
+
+def _confidence_bar(score: int) -> str:
+    color = "#dc3545" if score >= 80 else "#fd7e14" if score >= 50 else "#198754"
+    return (
+        f'<span class="confidence-bar">'
+        f'<span class="confidence-fill" style="width:{score}%;background:{color}"></span>'
+        f'</span> {score}'
+    )
+
+
+def generate_html_report(
+    findings: list,
+    project_name: str,
+    audit_events: Optional[list] = None,
+    chain_valid: Optional[bool] = None,
+    dependency_results: Optional[dict] = None,
+    framework_mappings: Optional[dict] = None,
+) -> str:
+    """Generate a single-file HTML report."""
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+
+    # Calculate stats
+    active = [f for f in findings if not f.get("suppressed")]
+    prohibited_count = sum(1 for f in active if f["tier"] == "prohibited")
+    high_risk_count = sum(1 for f in active if f["tier"] == "high_risk")
+    limited_count = sum(1 for f in active if f["tier"] == "limited_risk")
+    credential_count = sum(1 for f in active if f["tier"] == "credential_exposure")
+    suppressed_count = sum(1 for f in findings if f.get("suppressed"))
+    total_files = len(set(f["file"] for f in findings))
+
+    # Top risks — include credential exposure as a priority finding
+    top_risks = []
+    seen_categories = set()
+    for f in sorted(active, key=lambda x: -x.get("confidence_score", 0)):
+        cat = f.get("category", "")
+        if cat and cat not in seen_categories and f["tier"] in ("prohibited", "high_risk", "credential_exposure"):
+            seen_categories.add(cat)
+            top_risks.append(f)
+            if len(top_risks) >= 3:
+                break
+
+    # Build HTML
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regula Report — {escape(project_name)}</title>
+<style>{_CSS}</style>
+</head>
+<body>
+
+<header>
+<div class="container">
+<div>
+<h1>Regula — AI Governance Report</h1>
+<div style="margin-top:4px;font-size:0.9rem;">{escape(project_name)}</div>
+</div>
+<div class="meta">
+Generated: {now}<br>
+Regula v{VERSION}
+</div>
+</div>
+</header>
+
+<div class="container">
+
+<div class="disclaimer">
+<strong>Important:</strong> This report contains pattern-based risk <em>indications</em>,
+not legal risk classifications. The EU AI Act (Article 6) requires contextual assessment
+of intended purpose and deployment context. Results should be reviewed by qualified
+personnel. This is not legal advice.
+</div>
+
+<div class="summary-grid">
+<div class="card red">
+<div class="number">{prohibited_count}</div>
+<div class="label">Prohibited Patterns</div>
+</div>
+<div class="card amber">
+<div class="number">{high_risk_count}</div>
+<div class="label">High-Risk Indicators</div>
+</div>
+<div class="card blue">
+<div class="number">{limited_count}</div>
+<div class="label">Limited-Risk</div>
+</div>
+<div class="card purple">
+<div class="number">{credential_count}</div>
+<div class="label">Credential Findings</div>
+</div>
+<div class="card green">
+<div class="number">{total_files}</div>
+<div class="label">AI Files Scanned</div>
+</div>
+</div>
+"""
+
+    # Executive summary — plain-English block for non-technical readers
+    if total_files == 0:
+        exec_verdict = "No AI-related files detected"
+        exec_colour = "#6b7280"
+        exec_detail = (
+            "Regula did not find any AI-related source files in the scanned directory. "
+            "This may mean the scan path is incorrect, the project has not yet integrated AI components, "
+            "or all files were excluded by ignore rules. Verify the scan path before treating this as a clean result."
+        )
+    elif prohibited_count > 0:
+        exec_verdict = "Action required before deployment"
+        exec_colour = "#dc2626"
+        exec_detail = (
+            f"This codebase contains {prohibited_count} pattern(s) associated with practices "
+            "that are prohibited under EU AI Act Article 5 (e.g. social scoring, real-time biometric surveillance). "
+            "Article 5 carries conditions and exceptions that require human judgement, so these are indicators "
+            "to review with your legal advisers, not a finding that the system is unlawful."
+        )
+        if credential_count > 0:
+            exec_detail += (
+                f" Additionally, {credential_count} credential finding(s) were detected and should be reviewed."
+            )
+    elif high_risk_count > 0:
+        exec_verdict = "High-risk indicators detected — compliance review needed"
+        exec_colour = "#d97706"
+        exec_detail = (
+            f"This codebase contains {high_risk_count} indicator(s) of high-risk AI functionality "
+            "(Article 6). If this system is deployed in the EU in a high-risk context (e.g. credit scoring, "
+            "employment, healthcare), it will be subject to mandatory obligations including risk management, "
+            "data governance, human oversight, and technical documentation. "
+            "A compliance review is recommended before deployment."
+        )
+        if credential_count > 0:
+            exec_detail += (
+                f" Additionally, {credential_count} credential finding(s) were detected and should be reviewed."
+            )
+    elif credential_count > 0:
+        exec_verdict = "Credential exposure detected — security review needed"
+        exec_colour = "#7c3aed"
+        exec_detail = (
+            f"No prohibited or high-risk AI patterns were found, but {credential_count} credential "
+            "finding(s) were detected. Exposed API keys or secrets represent a data security risk "
+            "and should be reviewed and rotated before deployment."
+        )
+    else:
+        exec_verdict = "No prohibited or high-risk patterns detected"
+        exec_colour = "#16a34a"
+        exec_detail = (
+            "This codebase does not show patterns associated with prohibited or high-risk AI under the EU AI Act. "
+            f"{limited_count} limited-risk indicator(s) were found — these carry transparency obligations "
+            "(e.g. disclosing automated decision-making to users) but do not require the full high-risk compliance regime."
+            if limited_count > 0 else
+            "This codebase does not show patterns associated with prohibited, high-risk, or limited-risk AI under the EU AI Act."
+        )
+
+    html += f"""
+<div class="section" style="border-left:4px solid {exec_colour};padding-left:20px;margin-bottom:24px;">
+<h2 style="color:{exec_colour};margin-bottom:8px;">Executive Summary</h2>
+<p style="font-size:1.05rem;font-weight:600;color:#1a1a2e;margin-bottom:8px;">{escape(exec_verdict)}</p>
+<p style="color:#5a5a6e;line-height:1.6;">{escape(exec_detail)}</p>
+<p style="margin-top:12px;font-size:0.85rem;color:#9b9baa;">
+Scanned {total_files} file(s) &middot; {prohibited_count} prohibited &middot; {high_risk_count} high-risk &middot;
+{limited_count} limited-risk &middot; {credential_count} credential finding(s) &middot; Generated {now}
+</p>
+</div>
+"""
+
+    # Top risks section
+    if top_risks:
+        html += '<div class="section"><h2>Priority Risk Indicators</h2><ul class="top3">'
+        for r in top_risks:
+            html += f'<li>{_tier_badge(r["tier"])} <strong>{escape(r.get("category", ""))}</strong> — {escape(r.get("description", ""))} ({escape(r["file"])})</li>'
+        html += '</ul></div>'
+
+    # Audit status
+    if chain_valid is not None:
+        status_class = "chain-valid" if chain_valid else "chain-invalid"
+        status_text = "Valid" if chain_valid else "INTEGRITY FAILURE"
+        audit_count = len(audit_events) if audit_events else 0
+        blocked_count = sum(1 for e in (audit_events or []) if e.get("event_type") == "blocked")
+        html += f"""
+<div class="section">
+<h2>Audit Trail Status</h2>
+<p>Hash chain integrity: <span class="chain-status {status_class}">{status_text}</span></p>
+<p>Events logged: {audit_count} | Blocked actions: {blocked_count} | Suppressed findings: {suppressed_count}</p>
+</div>
+"""
+
+    # Dependency analysis section
+    if dependency_results is not None:
+        pinning_score = dependency_results.get("pinning_score", 0)
+        if pinning_score >= 80:
+            score_class = "good"
+        elif pinning_score >= 50:
+            score_class = "moderate"
+        else:
+            score_class = "poor"
+
+        ai_deps = dependency_results.get("ai_dependencies", [])
+        lockfiles = dependency_results.get("lockfiles", [])
+        compromised_count = dependency_results.get("compromised_count", 0)
+        compromised = dependency_results.get("compromised", [])
+
+        lockfile_status = escape(", ".join(lockfiles)) if lockfiles else "None detected"
+        compromised_card_class = "red" if compromised_count > 0 else "green"
+
+        html += f"""
+<div class="section">
+<h2>Dependency Supply Chain Analysis</h2>
+<div class="summary-grid">
+<div class="card {'green' if pinning_score >= 80 else 'amber' if pinning_score >= 50 else 'red'}">
+<div class="dep-score {score_class}">{pinning_score}</div>
+<div class="label">Pinning Score (0–100)</div>
+</div>
+<div class="card blue">
+<div class="number">{len(ai_deps)}</div>
+<div class="label">AI Dependencies</div>
+</div>
+<div class="card {'green' if lockfiles else 'amber'}">
+<div class="number" style="font-size:1rem;margin-top:4px;">{escape(lockfile_status)}</div>
+<div class="label">Lockfile Status</div>
+</div>
+<div class="card {compromised_card_class}">
+<div class="number">{compromised_count}</div>
+<div class="label">Compromised Packages</div>
+</div>
+</div>
+"""
+        if ai_deps:
+            html += """<table>
+<thead>
+<tr><th>Name</th><th>Version</th><th>Pinning Quality</th><th>Status</th></tr>
+</thead>
+<tbody>
+"""
+            compromised_names = {c if isinstance(c, str) else c.get("name", "") for c in compromised}
+            for dep in ai_deps:
+                name = dep.get("name", "")
+                version = dep.get("version", "—")
+                pinning = dep.get("pinning", "unpinned").lower()
+                is_compromised = name in compromised_names
+                status_badge = '<span class="badge compromised">COMPROMISED</span>' if is_compromised else '<span style="color:#198754;">OK</span>'
+                pinning_badge = f'<span class="badge {escape(pinning)}">{escape(pinning.upper())}</span>'
+                html += f"""<tr>
+<td>{escape(name)}</td>
+<td>{escape(str(version))}</td>
+<td>{pinning_badge}</td>
+<td>{status_badge}</td>
+</tr>
+"""
+            html += "</tbody>\n</table>\n"
+        html += "</div>\n"
+
+    # Framework mapping section — auto-load if not supplied by caller
+    if framework_mappings is None:
+        try:
+            from framework_mapper import map_to_frameworks
+            framework_mappings = map_to_frameworks(["9", "10", "11", "12", "13", "14", "15"])
+        except Exception:
+            framework_mappings = None  # Optional import — omit section if unavailable
+
+    if framework_mappings is not None:
+        html += """
+<div class="section">
+<h2>Regulatory Framework Mappings</h2>
+<table class="framework-table">
+<thead>
+<tr><th>Article</th><th>EU AI Act</th><th>NIST AI RMF</th><th>ISO 42001</th><th>UK ICO</th></tr>
+</thead>
+<tbody>
+"""
+        for article, mapping in framework_mappings.items():
+            eu = mapping.get("eu_ai_act", {})
+            eu_text = escape(eu.get("title", "—")) if isinstance(eu, dict) else escape(str(eu))
+
+            nist = mapping.get("nist_ai_rmf", {})
+            if isinstance(nist, dict) and nist.get("subcategories"):
+                nist_text = escape(", ".join(nist["subcategories"][:2]))
+            elif isinstance(nist, dict) and nist.get("functions"):
+                nist_text = escape(", ".join(nist["functions"]))
+            else:
+                nist_text = escape(str(nist)) if nist else "—"
+
+            iso = mapping.get("iso_42001", {})
+            if isinstance(iso, dict) and iso.get("controls"):
+                iso_text = escape(", ".join(iso["controls"][:2]))
+            else:
+                iso_text = escape(str(iso)) if iso else "—"
+
+            ico = mapping.get("ico_ai", {})
+            if isinstance(ico, dict) and ico.get("principles"):
+                ico_text = escape("; ".join(ico["principles"][:2]))
+            elif isinstance(ico, dict) and ico.get("source"):
+                ico_text = escape(ico["source"])
+            else:
+                ico_text = "—"
+
+            html += f"""<tr>
+<td><strong>Art. {escape(str(article))}</strong></td>
+<td>{eu_text}</td>
+<td>{nist_text}</td>
+<td>{iso_text}</td>
+<td>{ico_text}</td>
+</tr>
+"""
+        html += "</tbody>\n</table>\n</div>\n"
+
+    # Findings table
+    html += """
+<div class="section">
+<h2>All Findings</h2>
+<table>
+<thead>
+<tr><th>File</th><th>Risk Tier</th><th>Category</th><th>Confidence</th><th>Description</th><th>Remediation</th></tr>
+</thead>
+<tbody>
+"""
+    for f in sorted(findings, key=lambda x: (
+        {"prohibited": 0, "credential_exposure": 1, "high_risk": 2, "limited_risk": 3, "minimal_risk": 4}.get(x["tier"], 5),
+        -x.get("confidence_score", 0),
+    )):
+        row_class = ' class="suppressed"' if f.get("suppressed") else ""
+        desc = escape(f.get("description", ""))
+        if f.get("exceptions"):
+            desc += f' <em>(Exception: {escape(f["exceptions"])})</em>'
+        if f.get("suppressed"):
+            desc += " [SUPPRESSED]"
+        # Generate remediation for non-minimal findings
+        rem_html = ""
+        if f["tier"] in ("prohibited", "high_risk", "credential_exposure", "limited_risk"):
+            rem = get_remediation(
+                f["tier"],
+                f.get("category", ""),
+                f.get("indicators", []),
+                f.get("file", ""),
+                f.get("description", ""),
+            )
+            rem_parts = []
+            if rem.get("summary"):
+                rem_parts.append(f'<strong>{escape(rem["summary"])}</strong>')
+            if rem.get("fix_command"):
+                rem_parts.append(f'<code>{escape(rem["fix_command"])}</code>')
+            if rem.get("article"):
+                rem_parts.append(f'<em>{escape(rem["article"])}</em>')
+            rem_html = "<br>".join(rem_parts)
+        html += f"""<tr{row_class}>
+<td>{escape(f["file"])}</td>
+<td>{_tier_badge(f["tier"])}</td>
+<td>{escape(f.get("category", "—"))}</td>
+<td>{_confidence_bar(f.get("confidence_score", 0))}</td>
+<td>{desc}</td>
+<td>{rem_html}</td>
+</tr>
+"""
+
+    html += f"""
+</tbody>
+</table>
+</div>
+
+</div>
+
+<footer>
+Generated by Regula v{VERSION} — AI Governance Risk Indication<br>
+Pattern-based analysis only. Not a substitute for legal advice or DPO review.
+</footer>
+
+</body>
+</html>"""
+
+    return html
+
+
+# ---------------------------------------------------------------------------
+# SARIF output
+# ---------------------------------------------------------------------------
+
+SARIF_SEVERITY_MAP = {
+    "prohibited": "error",
+    "credential_exposure": "error",
+    "agent_autonomy": "warning",
+    "high_risk": "warning",
+    "limited_risk": "note",
+    "minimal_risk": "none",
+    "ai_security": "warning",
+}
+
+
+def generate_sarif(findings: list, project_name: str) -> dict:
+    """Generate SARIF v2.1.0 output for CI/CD integration."""
+    rules = {}
+    results = []
+
+    # Build rules from pattern definitions
+    for rule_id, config in PROHIBITED_PATTERNS.items():
+        rules[f"regula/prohibited/{rule_id}"] = {
+            "id": f"regula/prohibited/{rule_id}",
+            "name": rule_id.replace("_", " ").title(),
+            "shortDescription": {"text": config["description"]},
+            "fullDescription": {"text": f"EU AI Act Article {config['article']}: {config['description']}"},
+            "defaultConfiguration": {"level": "error"},
+            "helpUri": "https://artificialintelligenceact.eu/article/5/",
+            "properties": {
+                "tags": ["eu-ai-act", "article-5", "prohibited-practice", "compliance"],
+            },
+        }
+
+    for rule_id, config in HIGH_RISK_PATTERNS.items():
+        rules[f"regula/high-risk/{rule_id}"] = {
+            "id": f"regula/high-risk/{rule_id}",
+            "name": rule_id.replace("_", " ").title(),
+            "shortDescription": {"text": config["description"]},
+            "fullDescription": {"text": f"EU AI Act {config['category']}: {config['description']}. Articles {', '.join(config['articles'])} may apply."},
+            "defaultConfiguration": {"level": "warning"},
+            "helpUri": "https://artificialintelligenceact.eu/annex/3/",
+            "properties": {
+                "tags": ["eu-ai-act", "annex-iii", "high-risk", "compliance"],
+            },
+        }
+
+    # Credential governance rules
+    from credential_check import SECRET_PATTERNS
+    for rule_id, config in SECRET_PATTERNS.items():
+        rules[f"regula/credential/{rule_id}"] = {
+            "id": f"regula/credential/{rule_id}",
+            "name": config["description"],
+            "shortDescription": {"text": f"AI credential governance: {config['description']}"},
+            "fullDescription": {"text": f"EU AI Act Article 15 cybersecurity: {config['description']}. {config['remediation']}"},
+            "defaultConfiguration": {"level": "error" if config["confidence"] == "high" else "warning"},
+            "helpUri": "https://artificialintelligenceact.eu/article/15/",
+            "properties": {
+                "tags": ["eu-ai-act", "article-15", "cybersecurity", "credential-exposure"],
+            },
+        }
+
+    for rule_id, config in AI_SECURITY_PATTERNS.items():
+        rules[f"regula/ai-security/{rule_id}"] = {
+            "id": f"regula/ai-security/{rule_id}",
+            "name": rule_id.replace("_", " ").title(),
+            "shortDescription": {"text": config["description"]},
+            "fullDescription": {"text": f"OWASP LLM Top 10 {config.get('owasp', '')}: {config['description']}. {config.get('remediation', '')}"},
+            "defaultConfiguration": {"level": "warning"},
+            "helpUri": "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+            "properties": {
+                "tags": ["owasp-llm-top-10", "ai-security"],
+            },
+        }
+
+    # Agent autonomy rules (dynamic — generated from findings rather than static patterns)
+    # These are added on-demand below if a finding references them
+
+    for rule_id, config in LIMITED_RISK_PATTERNS.items():
+        rules[f"regula/limited-risk/{rule_id}"] = {
+            "id": f"regula/limited-risk/{rule_id}",
+            "name": rule_id.replace("_", " ").title(),
+            "shortDescription": {"text": config["description"]},
+            "fullDescription": {"text": f"EU AI Act Article 50: {config['description']}. Transparency obligation applies."},
+            "defaultConfiguration": {"level": "note"},
+            "helpUri": "https://artificialintelligenceact.eu/article/50/",
+            "properties": {
+                "tags": ["eu-ai-act", "article-50", "transparency"],
+            },
+        }
+
+    # Build results from findings
+    for f in findings:
+        if f.get("suppressed"):
+            continue
+
+        tier = f["tier"]
+        indicators = f.get("indicators", [])
+        primary_indicator = indicators[0] if indicators else "unknown"
+
+        # Match to a rule
+        if tier == "prohibited":
+            rule_id = f"regula/prohibited/{primary_indicator}"
+        elif tier == "credential_exposure":
+            rule_id = f"regula/credential/{primary_indicator}"
+        elif tier == "high_risk":
+            rule_id = f"regula/high-risk/{primary_indicator}"
+        elif tier == "agent_autonomy":
+            rule_id = f"regula/agent-autonomy/{primary_indicator}"
+            # Add rule definition on-demand if not already present
+            if rule_id not in rules:
+                rules[rule_id] = {
+                    "id": rule_id,
+                    "name": primary_indicator.replace("_", " ").title(),
+                    "shortDescription": {"text": f.get("description", "Autonomous AI action without human oversight")},
+                    "fullDescription": {"text": f"EU AI Act Article 14 (Human Oversight): {f.get('description', 'Autonomous action detected')}"},
+                    "defaultConfiguration": {"level": "warning"},
+                    "helpUri": "https://artificialintelligenceact.eu/article/14/",
+                    "properties": {
+                        "tags": ["eu-ai-act", "article-14", "human-oversight"],
+                    },
+                }
+        elif tier == "ai_security":
+            rule_id = f"regula/ai-security/{primary_indicator}"
+        elif tier == "limited_risk":
+            rule_id = f"regula/limited-risk/{primary_indicator}"
+        else:
+            continue  # Don't include minimal-risk in SARIF
+
+        # Open questions get downgraded to "note" level in SARIF
+        sarif_level = SARIF_SEVERITY_MAP.get(tier, "none")
+        if f.get("open_question"):
+            sarif_level = "note"
+
+        # Generate stable fingerprint for deduplication across runs
+        fp_input = f"{f['file']}:{f.get('line', 1)}:{rule_id}"
+        fp_hash = hashlib.sha256(fp_input.encode()).hexdigest()[:16]
+
+        result = {
+            "ruleId": rule_id,
+            "level": sarif_level,
+            "message": {
+                "text": f.get("description", "Risk indicator detected"),
+            },
+            "locations": [{
+                "physicalLocation": {
+                    "artifactLocation": {"uri": f["file"]},
+                    "region": {"startLine": f.get("line", 1)},
+                },
+            }],
+            "partialFingerprints": {
+                "primaryLocationLineHash": fp_hash,
+            },
+            "properties": {
+                "confidence_score": f.get("confidence_score", 0),
+                "open_question": f.get("open_question", False),
+                "deadline": f.get("deadline"),
+                "deadline_status": f.get("deadline_status"),
+                "omnibus_deadline": f.get("omnibus_deadline"),
+            },
+        }
+        results.append(result)
+
+    return {
+        "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+        "version": "2.1.0",
+        "runs": [{
+            "tool": {
+                "driver": {
+                    "name": "Regula",
+                    "version": VERSION,
+                    "informationUri": "https://github.com/kuzivaai/getregula",
+                    "rules": list(rules.values()),
+                },
+            },
+            "results": results,
+        }],
+    }
+
+
+# ---------------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------------
+
+def generate_sales_report(findings: list, project_name: str) -> str:
+    """Generate a compact, shareable HTML compliance summary.
+
+    Designed to be sent to enterprise buyers who ask for evidence of EU AI Act
+    compliance awareness before signing contracts. Single-file, no external deps.
+    """
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    active = [f for f in findings if not f.get("suppressed")]
+    prohibited = [f for f in active if f["tier"] == "prohibited"]
+    high_risk = [f for f in active if f["tier"] == "high_risk"]
+    limited = [f for f in active if f["tier"] == "limited_risk"]
+    total_files = len(set(f["file"] for f in findings))
+
+    # Overall status
+    if prohibited:
+        status_label = "Action Required — Prohibited Pattern"
+        status_color = "#dc2626"
+        status_bg = "#fef2f2"
+    elif high_risk:
+        status_label = "High-Risk Indicators Detected"
+        status_color = "#d97706"
+        status_bg = "#fffbeb"
+    elif limited:
+        status_label = "Limited-Risk — Transparency Obligations Apply"
+        status_color = "#2563eb"
+        status_bg = "#eff6ff"
+    else:
+        status_label = "No High-Risk Indicators Found"
+        status_color = "#16a34a"
+        status_bg = "#f0fdf4"
+
+    def _rows(items: list) -> str:
+        if not items:
+            return "<tr><td colspan='3' style='color:#6b7280;font-style:italic'>None detected</td></tr>"
+        rows = []
+        for f in items[:10]:  # cap at 10 rows
+            cat = escape(f.get("category", f.get("tier", "")))
+            art = ", ".join(f"Art. {a}" for a in f.get("articles", []))
+            file_ = escape(f.get("file", ""))
+            rows.append(f"<tr><td>{cat}</td><td>{art}</td><td style='font-family:monospace;font-size:0.8em'>{file_}</td></tr>")
+        return "\n".join(rows)
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EU AI Act Compliance Summary — {escape(project_name)}</title>
+<style>
+*{{box-sizing:border-box;margin:0;padding:0}}
+body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#111;background:#f9fafb;padding:32px 16px}}
+.card{{background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:28px;max-width:800px;margin:0 auto}}
+h1{{font-size:1.3rem;font-weight:700;margin-bottom:4px}}
+.sub{{color:#6b7280;font-size:0.9rem;margin-bottom:24px}}
+.status{{padding:16px 20px;border-radius:6px;background:{status_bg};border-left:4px solid {status_color};margin-bottom:24px}}
+.status-label{{font-weight:700;color:{status_color};font-size:1rem}}
+.grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}}
+.stat{{background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;padding:14px;text-align:center}}
+.stat-n{{font-size:1.8rem;font-weight:800;line-height:1}}
+.stat-l{{font-size:0.75rem;color:#6b7280;margin-top:4px}}
+h2{{font-size:1rem;font-weight:600;margin:20px 0 10px}}
+table{{width:100%;border-collapse:collapse;font-size:0.85rem}}
+th{{text-align:left;padding:8px 10px;background:#f3f4f6;border-bottom:1px solid #e5e7eb;font-weight:600}}
+td{{padding:8px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top}}
+.footer{{margin-top:28px;padding-top:16px;border-top:1px solid #e5e7eb;font-size:0.8rem;color:#9ca3af}}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>EU AI Act Compliance Summary</h1>
+  <div class="sub">{escape(project_name)} &nbsp;·&nbsp; Scanned {now} &nbsp;·&nbsp; {total_files} files</div>
+
+  <div class="status">
+    <div class="status-label">{status_label}</div>
+    <div style="margin-top:6px;font-size:0.875rem;color:#374151">
+      Pattern-based risk indication. Findings are indicators for human review,
+      not legal determinations. Full report available on request.
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="stat">
+      <div class="stat-n" style="color:#dc2626">{len(prohibited)}</div>
+      <div class="stat-l">Prohibited<br>indicators</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" style="color:#d97706">{len(high_risk)}</div>
+      <div class="stat-l">High-risk<br>indicators</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" style="color:#2563eb">{len(limited)}</div>
+      <div class="stat-l">Limited-risk<br>indicators</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" style="color:#374151">{total_files}</div>
+      <div class="stat-l">Files<br>scanned</div>
+    </div>
+  </div>
+
+  <h2>High-Risk Indicators (Annex III)</h2>
+  <table>
+    <thead><tr><th>Category</th><th>Articles</th><th>File</th></tr></thead>
+    <tbody>{_rows(high_risk)}</tbody>
+  </table>
+
+  <h2>Prohibited Practice Indicators (Article 5)</h2>
+  <table>
+    <thead><tr><th>Category</th><th>Article</th><th>File</th></tr></thead>
+    <tbody>{_rows(prohibited)}</tbody>
+  </table>
+
+  <div class="footer">
+    Generated by <strong>Regula</strong> (github.com/kuzivaai/getregula) &nbsp;·&nbsp;
+    EU AI Act pattern-based risk indication &nbsp;·&nbsp;
+    This summary does not constitute legal advice. For full compliance
+    assessment, consult qualified legal counsel.
+  </div>
+</div>
+</body>
+</html>"""
+    return html
+
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Generate Regula reports")
+    parser.add_argument("--project", "-p", default=".", help="Project to scan")
+    parser.add_argument("--format", "-f", choices=["html", "sarif", "json", "sales"], default="html")
+    parser.add_argument("--output", "-o", help="Output file path")
+    parser.add_argument("--name", "-n", help="Project name")
+    parser.add_argument("--include-audit", action="store_true", help="Include audit trail data")
+    args = parser.parse_args()
+
+    project_path = str(Path(args.project).resolve())
+    project_name = args.name or Path(project_path).name
+
+    print(f"Scanning {project_path}...", file=sys.stderr)
+    findings = scan_files(project_path)
+    print(f"Found {len(findings)} findings in {len(set(f['file'] for f in findings))} files", file=sys.stderr)
+
+    # Optionally include audit data
+    audit_events = None
+    chain_valid = None
+    if args.include_audit:
+        try:
+            # Project-scoped: never embed other projects' audit events
+            _audit = collect_audit_trail(project_path)
+            audit_events = _audit["events"]
+            chain_valid = _audit["chain_valid"]
+        except (OSError, ValueError, KeyError):
+            pass  # audit trail is optional; continue without it
+
+    if args.format == "html":
+        content = generate_html_report(findings, project_name, audit_events, chain_valid)
+    elif args.format == "sarif":
+        content = json.dumps(generate_sarif(findings, project_name), indent=2)
+    else:
+        content = json.dumps(findings, indent=2)
+
+    if args.output:
+        out_path = Path(args.output)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(content, encoding="utf-8")
+        print(f"Report written to {out_path}", file=sys.stderr)
+    else:
+        print(content)
+
+
+if __name__ == "__main__":
+    main()

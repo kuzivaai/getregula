@@ -1,0 +1,923 @@
+# regula-ignore
+#!/usr/bin/env python3
+"""
+Regula Risk Indication Engine
+
+Detects patterns in code that correlate with EU AI Act risk tiers.
+
+IMPORTANT: This engine performs pattern-based risk INDICATION, not legal
+risk CLASSIFICATION. The EU AI Act Article 6 requires a contextual
+assessment of intended purpose and deployment context that automated
+pattern matching cannot provide. Results should be treated as flags
+for human review, not as legal determinations.
+"""
+
+__all__ = [
+    "classify", "detect_domains", "is_ai_related", "check_prohibited",
+    "check_high_risk", "check_limited_risk", "check_ai_security",
+    "check_bias_risk", "generate_observations", "is_training_activity",
+    "strip_comments", "RiskTier", "Classification",
+    # Re-exports. These are imported FROM this module by other code and are
+    # part of its surface whether or not it calls them itself. They were absent
+    # here and unused locally, which reads to any linter as dead imports;
+    # removing them breaks eight call sites. Declaring them is the fix, not a
+    # suppression.
+    #
+    # Before removing any name from this list, grep hooks/ EXPLICITLY.
+    # hooks/ is gitignored (.gitignore:51), so gitignore-aware tooling reports
+    # zero hits for a live consumer and the name looks dead. `ISO_42001_MAP`
+    # was declared here for that reason: deleting it broke the hook's scripts
+    # import, and the hook FAILS OPEN, so `regula` allowed a prohibited command
+    # with only a stderr warning. It has since been removed, because the hook
+    # imported it and never called it, so it was a dependency edge with no
+    # consumer rather than a re-export. `risk_patterns` remains its only home.
+    # Untracked is not unused; unused is still unused. See .
+    "get_governance_contacts", "get_regulatory_basis", "_parse_yaml_fallback",
+]
+
+import argparse
+import re
+import sys
+from pathlib import Path
+from typing import Optional
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+# Core types
+from risk_types import RiskTier, Classification
+
+# Pattern definitions
+from risk_patterns import (
+    PROHIBITED_PATTERNS, HIGH_RISK_PATTERNS, LIMITED_RISK_PATTERNS,
+    AI_SECURITY_PATTERNS, AI_INDICATORS, GPAI_TRAINING_PATTERNS,
+    GOVERNANCE_OBSERVATIONS, BIAS_RISK_PATTERNS,
+)
+
+# Policy configuration
+from policy_config import (
+    get_policy, get_governance_contacts, get_regulatory_basis,
+    _parse_yaml_fallback,
+)
+
+# Load custom rules (if any)
+try:
+    from custom_rules import load_custom_rules
+    _CUSTOM_RULES = load_custom_rules()
+except ImportError:
+    _CUSTOM_RULES = {}
+
+
+# ---------------------------------------------------------------------------
+# Pre-compiled pattern caches
+#
+# All hot-path classification functions use these instead of calling
+# re.compile() on every invocation. Patterns used against text.lower()
+# are compiled without IGNORECASE; patterns used on raw text use IGNORECASE.
+# ---------------------------------------------------------------------------
+_PROHIBITED_COMPILED = {
+    name: [re.compile(p) for p in cfg["patterns"]]
+    for name, cfg in PROHIBITED_PATTERNS.items()
+}
+_HIGH_RISK_COMPILED = {
+    name: [re.compile(p) for p in cfg["patterns"]]
+    for name, cfg in HIGH_RISK_PATTERNS.items()
+}
+_LIMITED_RISK_COMPILED = {
+    name: [re.compile(p) for p in cfg["patterns"]]
+    for name, cfg in LIMITED_RISK_PATTERNS.items()
+}
+_AI_INDICATORS_COMPILED = {
+    cat: [re.compile(p) for p in patterns]
+    for cat, patterns in AI_INDICATORS.items()
+}
+_GOVERNANCE_COMPILED = {
+    name: [re.compile(p) for p in cfg["patterns"]]
+    for name, cfg in GOVERNANCE_OBSERVATIONS.items()
+}
+_BIAS_RISK_COMPILED = {
+    name: [re.compile(p, re.IGNORECASE) for p in cfg["patterns"]]
+    for name, cfg in BIAS_RISK_PATTERNS.items()
+}
+_AI_SECURITY_COMPILED = {
+    name: [re.compile(p, re.IGNORECASE) for p in cfg["patterns"]]
+    for name, cfg in AI_SECURITY_PATTERNS.items()
+}
+_GPAI_TRAINING_COMPILED = [re.compile(p, re.IGNORECASE) for p in GPAI_TRAINING_PATTERNS]
+
+# ---------------------------------------------------------------------------
+# Confidence score constants
+#
+# CALIBRATION METHOD: Heuristic, tuned against Regula's synthetic benchmark
+# suite (tests/test_classification.py). NOT probabilistically calibrated —
+# a score of 70 does NOT mean "correct 70% of the time".  Published
+# precision at default thresholds: 15.2% (see tests, precision test).
+#
+# Base scores reflect tier-level certainty without context:
+# - prohibited (75): tightly scoped Article 5 patterns, few FPs expected
+# - high_risk (55): broad Annex III categories, context-dependent
+# - limited_risk (40): transparency markers, often in docs
+# - minimal_risk (15): lowest-signal tier
+#
+# Match bonus: +8 per corroborating indicator, capped at 15 (diminishing
+# returns after 2 matches). AI context bonus: +10 when code imports
+# AI libraries, disambiguating mentions in docs or comments.
+#
+# LIMITATIONS: These scores are heuristic confidence indicators for
+# prioritising human review, not calibrated probabilities. Users should
+# set policy thresholds based on their risk tolerance, not treat scores
+# as ground-truth likelihood. See pyproject.toml [tool.regula.thresholds].
+# ---------------------------------------------------------------------------
+_CONFIDENCE_BASE = {
+    "prohibited": 75,       # Article 5 — tightly scoped prohibited practices
+    "high_risk": 55,        # Annex III — broad category, context-dependent
+    "limited_risk": 40,     # Article 50 — transparency markers; often in docs
+    "minimal_risk": 15,     # Lowest-signal tier
+}
+_CONFIDENCE_DEFAULT_BASE = 10
+_CONFIDENCE_MATCH_BONUS_PER = 8     # per additional corroborating indicator
+_CONFIDENCE_MATCH_BONUS_MAX = 15    # cap after ~2 matches
+_CONFIDENCE_AI_CONTEXT_BONUS = 10   # when code imports AI libraries
+_CONFIDENCE_MAX = 100
+
+# ---------------------------------------------------------------------------
+# AI security check
+# ---------------------------------------------------------------------------
+
+def check_ai_security(text: str) -> list:
+    """Check for AI-specific security antipatterns.
+
+    Skips comments and docstrings to avoid false positives on
+    documentation that merely mentions these patterns.
+
+    Returns a list of finding dicts, each with:
+        pattern_name, owasp, description, severity, remediation, line, matched_line
+    """
+    findings = []
+    lines = text.split("\n")
+    in_docstring = False
+
+    for name, compiled_patterns in _AI_SECURITY_COMPILED.items():
+        config = AI_SECURITY_PATTERNS[name]
+        for rx in compiled_patterns:
+            in_docstring = False
+            for i, line in enumerate(lines, 1):
+                # Skip extremely long lines to prevent regex performance issues
+                if len(line) > 2000:
+                    continue
+                stripped = line.strip()
+
+                # Skip comments (Python #, JS //, C++ //)
+                if stripped.startswith("#") or stripped.startswith("//"):
+                    continue
+
+                # Skip docstrings (triple quotes)
+                if '"""' in stripped or "'''" in stripped:
+                    # Toggle docstring state (simple heuristic)
+                    count = stripped.count('"""') + stripped.count("'''")
+                    if count == 1:
+                        in_docstring = not in_docstring
+                    continue
+                if in_docstring:
+                    continue
+
+                # Skip lines that are clearly string literals containing examples
+                # (e.g., docstring args descriptions, help text)
+                if stripped.startswith(("Args:", "Returns:", "Example:", ">>>", ".. ")):
+                    continue
+
+                if rx.search(line):
+                    findings.append({
+                        "pattern_name": name,
+                        "owasp": config["owasp"],
+                        "description": config["description"],
+                        "severity": config["severity"],
+                        "remediation": config["remediation"],
+                        "confidence": config.get("confidence"),
+                        "likelihood": config.get("likelihood"),
+                        "impact": config.get("impact"),
+                        "line": i,
+                        "matched_line": stripped[:100],
+                    })
+                    break  # One match per pattern per file is enough
+
+    return findings
+
+
+# ---------------------------------------------------------------------------
+# Training activity detection
+# ---------------------------------------------------------------------------
+
+def is_training_activity(text: str) -> bool:
+    """Detect whether code involves model training/fine-tuning (not just inference)."""
+    return any(rx.search(text) for rx in _GPAI_TRAINING_COMPILED)
+
+
+# ---------------------------------------------------------------------------
+# Governance observations
+# ---------------------------------------------------------------------------
+
+def generate_observations(text: str) -> list:
+    """Generate Article-specific governance observations from code patterns.
+
+    Returns a list of dicts with 'article' and 'observation' keys.
+    Only runs on text already classified as high-risk.
+    """
+    observations = []
+    text_lower = text.lower()
+
+    for name, compiled_patterns in _GOVERNANCE_COMPILED.items():
+        config = GOVERNANCE_OBSERVATIONS[name]
+        found = any(rx.search(text_lower) for rx in compiled_patterns)
+
+        if name == "no_logging":
+            # Flag absence of logging, not presence
+            if not found:
+                observations.append({
+                    "article": config["article"],
+                    "observation": config["absence_observation"],
+                })
+        elif found and config.get("observation"):
+            observations.append({
+                "article": config["article"],
+                "observation": config["observation"],
+            })
+
+    return observations
+
+
+def detect_domains(text: str, stripped_text: str = None) -> list:
+    """Detect all domain concepts present in the text.
+
+    Scans HIGH_RISK_PATTERNS and PROHIBITED_PATTERNS for domain fields.
+    When stripped_text is provided (comment-free), scans that instead to
+    avoid false positives from domain keywords in comments/docstrings.
+    Returns a sorted list of unique domain strings found.
+    Used for multi-jurisdiction mapping.
+    """
+    # Use stripped text (comment-free) when available to avoid FPs
+    scan_text = (stripped_text.lower() if stripped_text is not None else text.lower())
+    domains = set()
+
+    for name, compiled_patterns in _HIGH_RISK_COMPILED.items():
+        config = HIGH_RISK_PATTERNS[name]
+        domain = config.get("domain")
+        if not domain:
+            continue
+        for rx in compiled_patterns:
+            if rx.search(scan_text):
+                domains.add(domain)
+                break
+
+    for name, compiled_patterns in _PROHIBITED_COMPILED.items():
+        config = PROHIBITED_PATTERNS[name]
+        domain = config.get("domain")
+        if not domain:
+            continue
+        for rx in compiled_patterns:
+            if rx.search(scan_text):
+                domains.add(domain)
+                break
+
+    return sorted(domains)
+
+
+def check_bias_risk(text: str) -> list:
+    """Detect protected class attributes used as ML features.
+
+    Returns a list of observation dicts (article + observation).
+    Only meaningful for code that also has AI indicators.
+
+    Limitation: this is a static pattern check. It can detect whether
+    protected attributes appear in ML code and whether fairness evaluation
+    is absent. It cannot determine whether a model is actually biased.
+    """
+    observations = []
+    text_lower = text.lower()
+
+    # Check for protected class feature usage
+    feature_patterns = _BIAS_RISK_COMPILED.get("protected_class_as_feature", [])
+    has_protected_feature = any(rx.search(text_lower) for rx in feature_patterns)
+
+    if has_protected_feature:
+        cfg = BIAS_RISK_PATTERNS["protected_class_as_feature"]
+        observations.append({
+            "article": cfg["article"],
+            "observation": cfg["observation"],
+        })
+
+        # Only check for missing fairness eval when protected features found
+        fairness_patterns = _BIAS_RISK_COMPILED.get("missing_fairness_evaluation", [])
+        has_fairness_eval = any(rx.search(text_lower) for rx in fairness_patterns)
+        if not has_fairness_eval:
+            cfg2 = BIAS_RISK_PATTERNS["missing_fairness_evaluation"]
+            observations.append({
+                "article": cfg2["article"],
+                "observation": cfg2["absence_observation"],
+            })
+
+    return observations
+
+
+# ---------------------------------------------------------------------------
+# Scoring
+# ---------------------------------------------------------------------------
+
+def _safe_article_sort_key(article: str):
+    """Sort key for article IDs that may be non-integer (e.g. '29a').
+
+    Integer articles sort numerically; non-integer articles sort to the end.
+    """
+    try:
+        return (0, int(article), "")
+    except (ValueError, TypeError):
+        return (1, 0, str(article))
+
+
+def _compute_confidence_score(tier: str, num_matches: int, has_ai_indicator: bool) -> int:
+    """Compute a 0-100 confidence score based on tier, match count, and AI context.
+
+    See _CONFIDENCE_BASE and related constants above for calibration rationale.
+    """
+    base = _CONFIDENCE_BASE.get(tier, _CONFIDENCE_DEFAULT_BASE)
+    match_bonus = min(num_matches * _CONFIDENCE_MATCH_BONUS_PER, _CONFIDENCE_MATCH_BONUS_MAX)
+    ai_bonus = _CONFIDENCE_AI_CONTEXT_BONUS if has_ai_indicator else 0
+    return min(base + match_bonus + ai_bonus, _CONFIDENCE_MAX)
+
+
+
+# ---------------------------------------------------------------------------
+# Comment stripping for false positive reduction
+# ---------------------------------------------------------------------------
+
+def strip_comments(text: str, language: str = "python") -> str:
+    """Strip comments to reduce false positives in pattern matching.
+
+    Returns text with comment lines replaced by empty lines (preserving line
+    numbers for error reporting). Strips single-line comments and block comments.
+    Does not handle Python triple-quoted docstrings (these are preserved as-is,
+    which is intentional -- docstrings describe the code's actual purpose
+    and are relevant for risk classification).
+    """
+    lines = text.split("\n")
+    result = []
+    in_block_comment = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        if language == "python":
+            # Single-line comments (full line)
+            if stripped.startswith("#"):
+                result.append("")
+                continue
+
+            # Inline comment -- keep the code part, strip the comment
+            if "#" in line:
+                # Strip from first # that's not inside quotes.
+                # Handles escaped quotes (\" \') and escaped backslashes (\\).
+                in_str = False
+                str_char = None
+                for i, c in enumerate(line):
+                    if c == "\\" and in_str:
+                        # Skip the next character (it's escaped)
+                        continue
+                    if c in ('"', "'") and not in_str:
+                        # Count preceding backslashes to handle \\\" etc.
+                        n_bs = 0
+                        j = i - 1
+                        while j >= 0 and line[j] == "\\":
+                            n_bs += 1
+                            j -= 1
+                        if n_bs % 2 == 0:
+                            in_str = True
+                            str_char = c
+                    elif c == str_char and in_str:
+                        n_bs = 0
+                        j = i - 1
+                        while j >= 0 and line[j] == "\\":
+                            n_bs += 1
+                            j -= 1
+                        if n_bs % 2 == 0:
+                            in_str = False
+                    elif c == "#" and not in_str:
+                        line = line[:i]
+                        break
+                result.append(line)
+                continue
+
+        elif language in ("javascript", "typescript", "java", "go", "rust", "c", "cpp"):
+            # Single-line comments
+            if stripped.startswith("//"):
+                result.append("")
+                continue
+            # Block comment start
+            if stripped.startswith("/*"):
+                in_block_comment = True
+                result.append("")
+                continue
+            if in_block_comment:
+                if "*/" in stripped:
+                    in_block_comment = False
+                result.append("")
+                continue
+
+        result.append(line)
+
+    return "\n".join(result)
+
+# ---------------------------------------------------------------------------
+# ReDoS protection for custom rule patterns
+# ---------------------------------------------------------------------------
+
+_MAX_PATTERN_LENGTH = 500
+_WARNED_INVALID_CUSTOM_PATTERNS = set()
+
+
+def _validate_custom_pattern_complexity(pattern: str) -> None:
+    """Reject regex structures with unbounded or hard-to-audit runtime.
+
+    Python's stdlib regex engine has no portable match timeout. Custom rules
+    are therefore limited to a deliberately conservative subset: no
+    lookarounds or backreferences, no quantified groups or unbounded repeats,
+    and no more than one bounded variable repeat (maximum 500 characters).
+    This is defence in depth on top of the 500-character
+    pattern limit, the 1 MiB REST classify limit, and the scanner's 10 MiB file
+    limit. It is not a proof that arbitrary regular expressions run in linear
+    time, which is why project-local rules also require explicit opt-in.
+    """
+    if re.search(r"\\[1-9]|\(\?P=", pattern):
+        raise ValueError("Pattern contains a backreference (potential ReDoS)")
+    if any(token in pattern for token in ("(?=", "(?!", "(?<=", "(?<!")):
+        raise ValueError("Pattern contains a lookaround (runtime is not bounded)")
+
+    in_class = False
+    escaped = False
+    variable_repeats = 0
+    fixed_repeat_total = 0
+    previous = ""
+    i = 0
+    while i < len(pattern):
+        char = pattern[i]
+        if escaped:
+            escaped = False
+            previous = "atom"
+            i += 1
+            continue
+        if char == "\\":
+            escaped = True
+            i += 1
+            continue
+        if char == "[" and not in_class:
+            in_class = True
+            i += 1
+            continue
+        if char == "]" and in_class:
+            in_class = False
+            previous = "atom"
+            i += 1
+            continue
+        if in_class:
+            i += 1
+            continue
+
+        if char in "*+":
+            raise ValueError(
+                "Pattern contains an unbounded quantifier; use a bounded "
+                "form such as {0,200}"
+            )
+        elif char == "?":
+            if previous == "quantifier":
+                # Lazy modifier; it does not add another repeated atom.
+                previous = "quantifier"
+            elif previous == "group_open":
+                # ``(?:`` and named-group syntax are structural markers.
+                previous = "group_open"
+            elif previous == "group":
+                raise ValueError("Pattern quantifies a group (potential ReDoS)")
+            else:
+                variable_repeats += 1
+                previous = "quantifier"
+        elif char == "{":
+            end = pattern.find("}", i + 1)
+            if end != -1:
+                if previous == "group":
+                    raise ValueError("Pattern quantifies a group (potential ReDoS)")
+                bounds = pattern[i + 1:end]
+                parts = bounds.split(",", 1)
+                try:
+                    lower = int(parts[0])
+                    upper = int(parts[1]) if len(parts) == 2 and parts[1] else None
+                except ValueError:
+                    # Let re.compile provide the syntax error for a literal
+                    # brace sequence that is not a quantifier.
+                    previous = "atom"
+                    i = end + 1
+                    continue
+                if upper is None and len(parts) == 2:
+                    raise ValueError("Pattern contains an unbounded quantifier")
+                upper = lower if upper is None else upper
+                if upper > 500:
+                    raise ValueError("Pattern repeat upper bound exceeds 500")
+                if lower != upper:
+                    variable_repeats += 1
+                fixed_repeat_total += upper
+                previous = "quantifier"
+                i = end
+            else:
+                previous = "atom"
+        elif char == "(":
+            previous = "group_open"
+        elif char == ")":
+            previous = "group"
+        elif char not in "^$|":
+            previous = "atom"
+
+        if variable_repeats > 1:
+            raise ValueError(
+                "Pattern contains multiple variable quantifiers "
+                "(potential polynomial ReDoS)"
+            )
+        if fixed_repeat_total > 1000:
+            raise ValueError("Pattern fixed-repeat budget exceeds 1000")
+        i += 1
+
+
+def _compile_custom_pattern(pattern: str) -> "re.Pattern":
+    """Compile a custom rule pattern with basic ReDoS protection."""
+    if not isinstance(pattern, str):
+        raise ValueError("Pattern must be a string")
+    if len(pattern) > _MAX_PATTERN_LENGTH:
+        raise ValueError(f"Pattern too long ({len(pattern)} chars, max {_MAX_PATTERN_LENGTH})")
+    _validate_custom_pattern_complexity(pattern)
+    try:
+        return re.compile(pattern, re.IGNORECASE)
+    except re.error as e:
+        raise ValueError(f"Invalid regex pattern: {e}") from e
+
+
+# ---------------------------------------------------------------------------
+# Core classification functions
+# ---------------------------------------------------------------------------
+
+def is_ai_related(text: str, stripped_text: str = None) -> bool:
+    """Check if text contains AI indicators.
+
+    Uses full text by default -- AI library imports are in code, not comments.
+    stripped_text parameter is accepted for API compatibility but not used here
+    because import statements are never in comments.
+
+    Also checks custom AI indicators from regula-rules.yaml (if loaded).
+    """
+    check = text.lower()
+    for compiled_patterns in _AI_INDICATORS_COMPILED.values():
+        for rx in compiled_patterns:
+            if rx.search(check):
+                return True
+    # Check custom AI indicators
+    for indicator in _CUSTOM_RULES.get("ai_indicators", []):
+        if indicator.lower() in check:
+            return True
+    return False
+
+
+def _check_patterns(compiled_dict: dict, patterns_dict: dict,
+                     custom_key: str, text: str,
+                     stripped_text: str = None,
+                     custom_field_defaults: dict = None) -> list:
+    """Shared pattern-matching logic for all risk tiers.
+
+    Matches compiled patterns, checks custom rules, and filters against
+    stripped (comment-free) text. Returns a list of match dicts.
+
+    Args:
+        compiled_dict: Pre-compiled regex dict for this tier.
+        patterns_dict: Raw pattern definitions for this tier.
+        custom_key: Key into _CUSTOM_RULES (e.g. "prohibited").
+        text: Full source text.
+        stripped_text: Comment-stripped text for false-positive filtering.
+        custom_field_defaults: Default fields for custom rule matches.
+    """
+    text_lower = text.lower()
+    stripped_lower = stripped_text.lower() if stripped_text is not None else None
+    matches = []
+
+    for name, compiled_patterns in compiled_dict.items():
+        first_match = None
+        all_lines = []
+        for rx in compiled_patterns:
+            m = rx.search(text_lower)
+            if m:
+                line_num = text_lower[:m.start()].count("\n") + 1
+                all_lines.append(line_num)
+                if first_match is None:
+                    first_match = patterns_dict[name] | {"indicator": name, "match_line": line_num}
+        if first_match is not None:
+            # Store all match lines so AST context can check if ANY match
+            # is in executable code (not just the first match, which may
+            # be in a docstring).
+            first_match["match_lines_all"] = all_lines
+            matches.append(first_match)
+
+    # Check custom rules for this tier
+    defaults = custom_field_defaults or {}
+    for rule in _CUSTOM_RULES.get(custom_key, []):
+        for pattern in rule["patterns"]:
+            try:
+                compiled = _compile_custom_pattern(pattern)
+                m = compiled.search(text_lower)
+                if m:
+                    line_num = text_lower[:m.start()].count("\n") + 1
+                    entry = {
+                        "indicator": rule["name"],
+                        "patterns": rule["patterns"],
+                        "description": rule.get("description",
+                                                 defaults.get("description", "")),
+                        "match_line": line_num,
+                    }
+                    # Merge tier-specific fields from the rule
+                    for field in ("article", "articles", "category"):
+                        if field in rule:
+                            entry[field] = rule[field]
+                        elif field in defaults:
+                            entry[field] = defaults[field]
+                    matches.append(entry)
+                    break
+            except ValueError as exc:
+                warning_key = (str(pattern), str(exc))
+                if warning_key not in _WARNED_INVALID_CUSTOM_PATTERNS:
+                    _WARNED_INVALID_CUSTOM_PATTERNS.add(warning_key)
+                    print(
+                        "regula: WARNING: skipped unsafe custom regex "
+                        f"{str(pattern)[:80]!r}: {exc}",
+                        file=sys.stderr,
+                    )
+                continue
+
+    # Filter: keep only matches that also appear in stripped (non-comment) text
+    if matches and stripped_lower is not None:
+        confirmed = []
+        for m in matches:
+            for pattern in m.get("patterns",
+                                 patterns_dict.get(m["indicator"], {}).get("patterns", [])):
+                if re.search(pattern, stripped_lower):
+                    confirmed.append(m)
+                    break
+        matches = confirmed
+
+    return matches
+
+
+def check_prohibited(text: str, stripped_text: str = None) -> Optional[Classification]:
+    matches = _check_patterns(
+        _PROHIBITED_COMPILED, PROHIBITED_PATTERNS, "prohibited",
+        text, stripped_text,
+        custom_field_defaults={"article": "5"},
+    )
+    if matches:
+        primary = matches[0]
+        has_ai = is_ai_related(text, stripped_text=stripped_text)
+        match_lines = []
+        for m in matches:
+            if "match_lines_all" in m:
+                match_lines.extend(m["match_lines_all"])
+            elif "match_line" in m:
+                match_lines.append(m["match_line"])
+        return Classification(
+            tier=RiskTier.PROHIBITED,
+            confidence="high" if len(matches) >= 2 else "medium",
+            indicators_matched=[m["indicator"] for m in matches],
+            applicable_articles=[primary["article"]],
+            category="Prohibited (Article 5)",
+            description=primary["description"],
+            action="block",
+            message=f"PROHIBITED: {primary['description']}",
+            exceptions=primary.get("exceptions"),
+            confidence_score=_compute_confidence_score("prohibited", len(matches), has_ai),
+            pattern_confidence=primary.get("confidence"),
+            pattern_likelihood=primary.get("likelihood"),
+            pattern_impact=primary.get("impact"),
+            match_lines=match_lines,
+        )
+    return None
+
+
+def check_high_risk(text: str, stripped_text: str = None) -> Optional[Classification]:
+    matches = _check_patterns(
+        _HIGH_RISK_COMPILED, HIGH_RISK_PATTERNS, "high_risk",
+        text, stripped_text,
+        custom_field_defaults={"articles": ["6"], "category": "Custom High-Risk"},
+    )
+    if matches:
+        all_articles = set()
+        for m in matches:
+            all_articles.update(m["articles"])
+        primary = matches[0]
+        match_lines = []
+        for m in matches:
+            if "match_lines_all" in m:
+                match_lines.extend(m["match_lines_all"])
+            elif "match_line" in m:
+                match_lines.append(m["match_line"])
+        return Classification(
+            tier=RiskTier.HIGH_RISK,
+            confidence="high" if len(matches) >= 2 else "medium",
+            indicators_matched=[m["indicator"] for m in matches],
+            applicable_articles=sorted(all_articles, key=_safe_article_sort_key),
+            category=primary["category"],
+            description=primary["description"],
+            action="allow_with_requirements",
+            message=f"HIGH-RISK: {primary['description']} - Articles {', '.join(sorted(all_articles, key=_safe_article_sort_key))}",
+            confidence_score=_compute_confidence_score("high_risk", len(matches), True),
+            pattern_confidence=primary.get("confidence"),
+            pattern_likelihood=primary.get("likelihood"),
+            pattern_impact=primary.get("impact"),
+            match_lines=match_lines,
+        )
+    return None
+
+
+def check_limited_risk(text: str, stripped_text: str = None) -> Optional[Classification]:
+    matches = _check_patterns(
+        _LIMITED_RISK_COMPILED, LIMITED_RISK_PATTERNS, "limited_risk",
+        text, stripped_text,
+        custom_field_defaults={"description": "Custom limited-risk rule"},
+    )
+    if matches:
+        primary = matches[0]
+        match_lines = []
+        for m in matches:
+            if "match_lines_all" in m:
+                match_lines.extend(m["match_lines_all"])
+            elif "match_line" in m:
+                match_lines.append(m["match_line"])
+        return Classification(
+            tier=RiskTier.LIMITED_RISK,
+            confidence="high" if len(matches) >= 2 else "medium",
+            indicators_matched=[m["indicator"] for m in matches],
+            applicable_articles=["50"],
+            category="Limited Risk (Article 50)",
+            description=primary["description"],
+            action="allow_with_transparency",
+            message=f"LIMITED-RISK: {primary['description']}",
+            confidence_score=_compute_confidence_score("limited_risk", len(matches), True),
+            pattern_confidence=primary.get("confidence"),
+            pattern_likelihood=primary.get("likelihood"),
+            pattern_impact=primary.get("impact"),
+            match_lines=match_lines,
+        )
+    return None
+
+
+def _check_policy_overrides(text: str) -> Optional[Classification]:
+    """Check policy-defined force_high_risk and exempt lists.
+
+    NOTE: This is only called for non-prohibited classifications.
+    Prohibited practices CANNOT be exempted by policy — see classify().
+    """
+    policy = get_policy()
+    rules = policy.get("rules", {})
+    if not isinstance(rules, dict):
+        return None
+    risk_rules = rules.get("risk_classification", {})
+    if not isinstance(risk_rules, dict):
+        return None
+
+    text_lower = text.lower()
+
+    # Check exempt list
+    exempt = risk_rules.get("exempt", [])
+    if isinstance(exempt, list):
+        for pattern in exempt:
+            if isinstance(pattern, str) and pattern.lower() in text_lower:
+                return Classification(
+                    tier=RiskTier.MINIMAL_RISK, confidence="high",
+                    indicators_matched=[], applicable_articles=[],
+                    category="Policy Exempt",
+                    description=f"Exempt per policy: {pattern}",
+                    action="allow",
+                    message=f"EXEMPT: '{pattern}' is exempt per regula-policy.yaml",
+                )
+
+    # Check force_high_risk list
+    force_high = risk_rules.get("force_high_risk", [])
+    if isinstance(force_high, list):
+        for pattern in force_high:
+            if not isinstance(pattern, str):
+                continue
+            normalised = pattern.lower().replace("_", " ")
+            if normalised in text_lower or pattern.lower() in text_lower:
+                return Classification(
+                    tier=RiskTier.HIGH_RISK, confidence="high",
+                    indicators_matched=[pattern],
+                    applicable_articles=["9", "10", "11", "12", "13", "14", "15"],
+                    category="Policy Override",
+                    description=f"Forced high-risk per policy: {pattern}",
+                    action="allow_with_requirements",
+                    message=f"HIGH-RISK (policy override): '{pattern}' is force-classified as high-risk",
+                )
+
+    return None
+
+
+def classify(text: str, language: str = "python") -> Classification:
+    """Classify text against EU AI Act risk tiers.
+
+    Priority order (safety-first):
+      1. Prohibited practices — ALWAYS checked, CANNOT be overridden by policy
+      2. Policy overrides (force_high_risk, exempt)
+      3. Pattern-based classification (high-risk, limited-risk, minimal-risk)
+
+    Args:
+        text: The full source text to classify.
+        language: Programming language for comment stripping (default: "python").
+    """
+    # Strip comments/docstrings to reduce false positives
+    stripped = strip_comments(text, language)
+
+    # Detect domains for multi-jurisdiction mapping (runs regardless of tier)
+    domains = detect_domains(text, stripped_text=stripped)
+
+    # 1. ALWAYS check prohibited first — policy cannot override Article 5
+    prohibited = check_prohibited(text, stripped_text=stripped)
+    if prohibited:
+        prohibited.detected_domains = domains
+        return prohibited
+
+    # 2. Policy overrides (only for non-prohibited classifications)
+    policy_result = _check_policy_overrides(text)
+    if policy_result:
+        policy_result.detected_domains = domains
+        return policy_result
+
+    # 3. Standard classification
+    if not is_ai_related(text, stripped_text=stripped):
+        return Classification(
+            tier=RiskTier.NOT_AI, confidence="high",
+            action="allow", message="No AI indicators detected.",
+            detected_domains=domains,
+        )
+
+    high_risk = check_high_risk(text, stripped_text=stripped)
+    if high_risk:
+        result = high_risk
+    else:
+        limited_risk = check_limited_risk(text, stripped_text=stripped)
+        if limited_risk:
+            result = limited_risk
+        else:
+            result = Classification(
+                tier=RiskTier.MINIMAL_RISK, confidence="medium", action="allow",
+                message=(
+                    "No elevated risk-tier indicators detected. This is not a legal "
+                    "classification; Article 4, Article 5, and other context-dependent "
+                    "duties may still apply."
+                ),
+            )
+
+    # Attach detected domains to result
+    result.detected_domains = domains
+
+    # Confidence threshold filtering (policy-configurable)
+    policy = get_policy()
+    min_conf = 0
+    try:
+        min_conf = int(policy.get("thresholds", {}).get("min_confidence", 0))
+    except (TypeError, ValueError):
+        min_conf = 0
+
+    if min_conf > 0 and result.tier != RiskTier.PROHIBITED and result.confidence_score < min_conf:
+        return Classification(
+            tier=RiskTier.MINIMAL_RISK, confidence="low",
+            action="allow",
+            message=f"Finding suppressed (confidence {result.confidence_score} < threshold {min_conf})",
+            confidence_score=result.confidence_score,
+            detected_domains=domains,
+        )
+
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Detect EU AI Act risk indicators in AI operations"
+    )
+    parser.add_argument("--input", "-i", help="Text to classify")
+    parser.add_argument("--file", "-f", help="File to classify")
+    parser.add_argument("--format", choices=["text", "json"], default="text")
+    args = parser.parse_args()
+
+    if args.file:
+        text = Path(args.file).read_text(encoding="utf-8", errors="ignore")
+    elif args.input:
+        text = args.input
+    else:
+        parser.print_help()
+        sys.exit(1)
+
+    result = classify(text)
+    print(result.to_json() if args.format == "json" else result.message)
+    sys.exit(2 if result.tier == RiskTier.PROHIBITED else 0)
+
+
+if __name__ == "__main__":
+    main()

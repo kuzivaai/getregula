@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root { color-scheme: dark }
+      html, body { background: #070711; color: #e2e2f0; margin: 0; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>AI Risk Assessment: EU AI Act, South Korea, Colorado | Regula</title>
+    <meta name="description" content="Record deployment context and review candidate AI-governance indicators under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. No signup.">
+    <meta name="author" content="Regula maintainers">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://getregula.com/assess/">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/assess/">
+    <link rel="alternate" hreflang="de" href="https://getregula.com/assess/de.html">
+    <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/assess/pt-br.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/assess/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/assess/">
+    <meta property="og:title" content="AI Risk Assessment: EU AI Act, South Korea, Colorado">
+    <meta property="og:description" content="Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. No signup, no install.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula :  open-source AI governance risk indication tool">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:site_name" content="Regula">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI Risk Assessment: EU AI Act, South Korea, Colorado">
+    <meta name="twitter:description" content="Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189.">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript><link rel="stylesheet" href="/assets/fonts.min.css"></noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Regula AI Regulation Assessment",
+      "url": "https://getregula.com/assess/",
+      "description": "Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. Scan code against 419 detection patterns.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Any (web browser)",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+      "author": { "@type": "Person", "name": "Regula maintainers", "url": "https://getregula.com/about.html" }
+    }
+    </script>
+    <script>
+    </script>
+    <style>
+      :root {
+        --bg: #070711; --bg-card: #0f0f1a; --bg-hover: #151528;
+        --border: #1e1e3a; --border-active: #3b82f6;
+        --text: #e2e2f0; --text-dim: #8888a8; --text-muted: #7a7a92;
+        --accent: #3b82f6; --accent-dim: rgba(59,130,246,0.12);
+        --red: #e74c3c; --red-dim: rgba(231,76,60,0.12);
+        --amber: #f39c12; --amber-dim: rgba(243,156,18,0.12);
+        --green: #27ae60; --green-dim: rgba(39,174,96,0.12);
+        --purple: #6c5ce7; --purple-dim: rgba(108,92,231,0.12);
+        --radius: 10px;
+        --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+        --mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+      }
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      html { color-scheme: dark; }
+      body {
+        background: var(--bg); color: var(--text);
+        font-family: var(--font); line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      /* Nav :  matching main site pattern */
+      .nav {
+          position: sticky; top: 0; z-index: 100;
+          height: 56px; padding: 0 24px;
+          display: flex; align-items: center; justify-content: space-between;
+          border-bottom: 1px solid transparent;
+          transition: background 0.2s, border-color 0.2s;
+      }
+      .nav.scrolled {
+          background: rgba(7,7,17,0.92);
+          backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+          border-color: var(--border);
+      }
+      .nav-brand { font-weight: 700; font-size: 1rem; color: var(--text); text-decoration: none; }
+      dialog.nav-right {
+          display: flex; gap: 16px; font-size: 0.85rem; align-items: center;
+          border: none; background: none; padding: 0; margin: 0;
+          position: static; inset: unset; max-width: none; max-height: none;
+          width: auto; height: auto; color: inherit;
+      }
+      .nav-right a { color: var(--text-dim); text-decoration: none; }
+      .nav-right a:hover { color: var(--text); text-decoration: none; }
+      .nav-right .active { color: var(--text); font-weight: 600; }
+      .nav-toggle {
+          display: none; background: none; border: none;
+          color: var(--text-dim); font-size: 1.25rem; cursor: pointer;
+          padding: 4px; line-height: 1;
+          min-width: 44px; min-height: 44px;
+          align-items: center; justify-content: center;
+      }
+      @media (max-width: 768px) {
+          .nav-toggle { display: flex; }
+          dialog.nav-right {
+              display: none; position: fixed;
+              top: 52px; right: 0; left: 0; bottom: 0;
+              flex-direction: column; gap: 0;
+              background: rgba(7,7,17,0.97);
+              backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+              border: none; border-top: 1px solid rgba(255,255,255,0.07);
+              padding: 12px 32px 16px;
+              max-width: 100%; max-height: 100%;
+          }
+          dialog.nav-right[open] { display: flex; }
+          dialog.nav-right::backdrop { background: transparent; }
+          .nav-right a, .nav-right .active { padding: 8px 0; font-size: 0.875rem; }
+      }
+
+      /* Layout */
+      .shell { max-width: 680px; margin: 0 auto; padding: 24px 20px 80px; }
+
+      /* Hero */
+      .hero { padding: 48px 0 32px; text-align: center; }
+      .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; line-height: 1.25; }
+      .hero h1 span { color: var(--accent); }
+      .hero p { color: var(--text-dim); font-size: 1.05rem; max-width: 520px; margin: 0 auto; }
+      .hero-stats {
+        display: flex; justify-content: center; gap: 24px;
+        margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);
+      }
+
+      /* Progress bar */
+      .progress-wrap { margin: 32px 0 24px; }
+      .progress-label {
+        display: flex; justify-content: space-between;
+        font-size: 0.8rem; color: var(--text-dim); margin-bottom: 6px;
+      }
+      .progress-track {
+        height: 4px; background: var(--border); border-radius: 2px; overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%; background: var(--accent); border-radius: 2px;
+        transition: width 0.4s ease;
+      }
+
+      /* Question card */
+      .q-card {
+        background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 28px; margin-bottom: 16px;
+      }
+      .q-card.hidden { display: none; }
+      .q-number { font-size: 0.75rem; color: var(--accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 8px; }
+      .q-text { font-size: 1.1rem; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+      .q-help { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 20px; line-height: 1.5; }
+      .q-article { font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono); margin-bottom: 16px; }
+
+      /* Answer buttons */
+      .answers { display: flex; gap: 10px; }
+      .ans-btn {
+        flex: 1; padding: 12px 16px; border: 1px solid var(--border);
+        border-radius: 8px; background: transparent; color: var(--text);
+        font-family: var(--font); font-size: 0.95rem; font-weight: 500;
+        cursor: pointer; transition: all 0.15s;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        min-height: 44px;
+      }
+      .ans-btn:hover { background: var(--bg-hover); border-color: var(--text-dim); }
+      .ans-btn.selected { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+      .ans-btn.selected-no { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+      .ans-btn.selected-unsure { border-color: var(--amber); background: var(--amber-dim); color: var(--amber); }
+      /* "Not applicable" resolves the fact just as "No" does, so it is styled
+         as a decisive answer. Only "Not sure" carries the open-question amber. */
+      .ans-btn.selected-na { border-color: var(--text-dim); background: var(--bg-hover); color: var(--text); }
+      .answer-legend { font-size: 0.78rem; color: var(--text-dim); margin: 12px 0 0 0; line-height: 1.5; }
+      .q-banner { background: var(--accent-dim); border: 1px solid var(--border-active); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; font-size: 0.87rem; line-height: 1.55; color: var(--text); }
+      .early-exit { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+      .early-exit .btn { min-height: 44px; }
+      .early-exit-note { font-size: 0.78rem; color: var(--text-dim); }
+      .early-exit-final { display: block; background: var(--green-dim); border: 1px solid var(--green); border-radius: var(--radius); padding: 16px; }
+      .early-exit-final p { margin: 0 0 12px 0; font-size: 0.9rem; line-height: 1.55; }
+
+      /* Navigation buttons */
+      .nav-buttons {
+        display: flex; justify-content: space-between; margin-top: 24px;
+      }
+      .btn {
+        padding: 10px 24px; border-radius: 8px; font-family: var(--font);
+        font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none;
+        transition: all 0.15s;
+        /* Project standard is a 44px minimum touch target; the export and
+           start-over controls previously rendered at 40px. */
+        min-height: 44px;
+      }
+      .btn-primary { background: #1d4ed8; color: #fff; }
+      .btn-primary:hover { background: #1e40af; }
+      .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+      .btn-secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+      .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
+
+      /* Focus-visible for keyboard navigation (WCAG 2.4.7) */
+      :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+      .ans-btn:focus-visible, .btn:focus-visible, .jurisdiction-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius); }
+
+      /* Results */
+      .results { display: none; }
+      .results.active { display: block; }
+      .result-tier {
+        text-align: center; padding: 32px; border-radius: var(--radius);
+        margin-bottom: 24px;
+      }
+      .tier-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; margin-bottom: 8px; }
+      .tier-name { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+      .tier-desc { font-size: 0.95rem; opacity: 0.85; max-width: 480px; margin: 0 auto; }
+      .tier-high { background: var(--red-dim); border: 1px solid rgba(231,76,60,0.3); }
+      .tier-high .tier-label, .tier-high .tier-name { color: var(--red); }
+      .tier-limited { background: var(--amber-dim); border: 1px solid rgba(243,156,18,0.3); }
+      .tier-limited .tier-label, .tier-limited .tier-name { color: var(--amber); }
+      .tier-minimal { background: var(--green-dim); border: 1px solid rgba(39,174,96,0.3); }
+      .tier-minimal .tier-label, .tier-minimal .tier-name { color: var(--green); }
+      .tier-prohibited { background: rgba(140,40,200,0.12); border: 1px solid rgba(140,40,200,0.3); }
+      .tier-prohibited .tier-label, .tier-prohibited .tier-name { color: #b060e0; }
+
+      /* Obligation cards */
+      .obligations { margin: 24px 0; }
+      .obl-card {
+        background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 16px 20px; margin-bottom: 8px;
+      }
+      .obl-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+      .obl-title { font-weight: 600; font-size: 0.95rem; }
+      .obl-deadline { font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono); }
+      .obl-desc { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; }
+      .obl-effort { font-size: 0.75rem; color: var(--amber); margin-top: 6px; }
+
+      /* Gap scoring */
+      .gap-bar-wrap { margin: 4px 0 2px; display: flex; align-items: center; gap: 10px; }
+      .gap-bar { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+      .gap-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+      .gap-score { font-size: 0.8rem; font-weight: 600; min-width: 36px; text-align: right; }
+
+      /* Export section */
+      .export-section {
+        margin-top: 32px; padding: 20px; background: var(--bg-card);
+        border: 1px solid var(--border); border-radius: var(--radius);
+      }
+      .export-section h3 { font-size: 0.95rem; margin-bottom: 12px; }
+      .export-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+
+      /* Shareable link */
+      .share-section { margin-top: 16px; }
+      .share-url {
+        width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border);
+        border-radius: 6px; color: var(--text-dim); font-size: 0.8rem;
+        font-family: var(--mono); outline: none;
+      }
+      .share-url:focus { border-color: var(--accent); }
+
+      /* Next steps */
+      .next-steps { margin-top: 24px; }
+      .next-steps h2 { font-size: 1rem; margin-bottom: 12px; }
+      .step-item {
+        display: flex; gap: 12px; padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+      }
+      .step-num {
+        min-width: 28px; height: 28px; background: var(--accent-dim);
+        color: var(--accent); border-radius: 50%; display: flex;
+        align-items: center; justify-content: center;
+        font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+      }
+      .step-text { font-size: 0.9rem; }
+      .step-text strong { display: block; margin-bottom: 2px; }
+      .step-text span { color: var(--text-dim); font-size: 0.85rem; }
+
+      /* Responsive */
+      @media (max-width: 520px) {
+        .hero h1 { font-size: 1.4rem; }
+        .answers { flex-direction: column; }
+        .hero-stats { flex-direction: column; gap: 4px; }
+      }
+
+      /* Scanner findings */
+      .finding-card {
+        background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 14px 18px; margin-bottom: 8px;
+      }
+      .finding-card.severity-critical { border-left: 3px solid var(--red); }
+      .finding-card.severity-high { border-left: 3px solid var(--red); }
+      .finding-card.severity-medium { border-left: 3px solid var(--amber); }
+      .finding-card.severity-low { border-left: 3px solid var(--text-dim); }
+      .finding-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+      .finding-title { font-weight: 600; font-size: 0.9rem; }
+      .finding-badge {
+        font-size: 0.7rem; padding: 2px 8px; border-radius: 4px;
+        font-weight: 600; letter-spacing: 0.05em; white-space: nowrap;
+      }
+      .badge-critical { background: var(--red-dim); color: var(--red); }
+      .badge-high { background: var(--red-dim); color: var(--red); }
+      .badge-medium { background: var(--amber-dim); color: var(--amber); }
+      .badge-low { background: rgba(136,136,168,0.12); color: var(--text-dim); }
+      .finding-desc { font-size: 0.85rem; color: var(--text-dim); margin-top: 4px; line-height: 1.5; }
+      .finding-meta { font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono); margin-top: 6px; }
+      .finding-remediation {
+        font-size: 0.8rem; color: var(--text-dim); margin-top: 6px;
+        padding: 8px 12px; background: var(--bg); border-radius: 6px;
+        line-height: 1.5;
+      }
+      .scan-section-title {
+        font-size: 0.95rem; font-weight: 600; margin: 20px 0 10px;
+        padding-bottom: 6px; border-bottom: 1px solid var(--border);
+      }
+      .scan-summary {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px; margin-bottom: 20px;
+      }
+      .scan-stat {
+        background: var(--bg-card); border: 1px solid var(--border);
+        border-radius: 8px; padding: 14px; text-align: center;
+      }
+      .scan-stat-value { font-size: 1.4rem; font-weight: 700; }
+      .scan-stat-label { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+
+      /* Footer */
+      footer {
+          border-top: 1px solid var(--border);
+          padding: 32px 24px 24px;
+          background: #04040b;
+          margin-top: 40px;
+      }
+      .foot-inner {
+          max-width: 680px; margin: 0 auto;
+          display: flex; justify-content: space-between; align-items: flex-start;
+          gap: 24px; flex-wrap: wrap;
+      }
+      .foot-brand { font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+      .foot-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+      .foot-links a { color: var(--text-dim); font-size: 0.85rem; text-decoration: none; }
+      .foot-links a:hover { color: var(--text); }
+      .foot-copy { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+      .foot-right { text-align: right; max-width: 400px; }
+      .foot-legal {
+          font-size: 0.75rem; color: var(--text-muted); line-height: 1.6;
+          padding: 10px 14px; background: rgba(255,255,255,0.02);
+          border: 1px solid var(--border); border-radius: 6px;
+      }
+      @media (max-width: 600px) {
+          .foot-inner { flex-direction: column; }
+          .foot-right { text-align: left; max-width: 100%; }
+      }
+
+      /* Print */
+      @media print {
+        body { background: #fff; color: #111; }
+        .nav, .progress-wrap, .nav-buttons, .export-section, .share-section, footer { display: none; }
+        .q-card, .obl-card, .result-tier, .export-section { border-color: #ccc; background: #f9f9f9; }
+        .q-card.hidden { display: none; }
+      }
+    </style>
+</head>
+<body>
+
+<a href="#main" class="skip-link" style="position:absolute;top:-40px;left:0;background:var(--accent);color:#fff;padding:8px 16px;z-index:100;font-size:0.9rem;transition:top 0.2s;">Skip to content</a>
+<style>.skip-link:focus{top:0;}</style>
+
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
+        <a href="/assess/" class="active">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="/regions/regulations.html">Regulations</a>
+        <a href="/blog/writing.html">Blog</a>
+        <a href="/about.html">About</a>
+        <span class="active">EN</span>
+        <a href="/assess/de.html">DE</a>
+        <a href="/assess/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<main class="shell" role="main" id="main">
+
+  <!-- HERO -->
+  <div class="hero" id="heroSection">
+    <h1>Does AI regulation <span>apply to you?</span></h1>
+    <p>Choose a jurisdiction and record deployment context. The questionnaire reports candidate indicators, provisions to review, and next questions; it does not determine legal classification, compliance, or applicable obligations.</p>
+    <div class="hero-stats">
+      <span>Complete in your browser</span>
+      <span>Immediate review indicators</span>
+      <span>Questionnaire processing stays in this browser</span>
+    </div>
+    <div style="margin-top:24px;">
+      <label style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Which regulation applies to you?</label>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <button type="button" class="jurisdiction-btn selected" onclick="selectJurisdiction('eu')" id="jur-eu" aria-pressed="true" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border-active);background:var(--accent-dim);color:var(--accent);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">EU AI Act</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('kr')" id="jur-kr" aria-pressed="false" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">South Korea</button>
+        <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('co')" id="jur-co" aria-pressed="false" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Colorado</button>
+      </div>
+      <div id="jurisdictionInfo" style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);"></div>
+    </div>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Start assessment</button>
+    </div>
+    <div style="margin-top:16px;font-size:0.85rem;color:var(--text-dim);">Development teams can also <button type="button" onclick="startScanner()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">scan source code</button> against 419 detection patterns.</div>
+  </div>
+
+  <!-- QUESTIONNAIRE -->
+  <div id="questionnaireSection" style="display:none;">
+    <div id="assessIntro" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:20px;font-size:0.9rem;line-height:1.6;color:var(--text-dim);"></div>
+    <div class="progress-wrap" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Assessment progress" id="progressWrap">
+      <div class="progress-label" aria-live="polite">
+        <span id="progressText">Question 1</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+    </div>
+    <div id="questionContainer"></div>
+    <div class="nav-buttons">
+      <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Back</button>
+      <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled title="Select an answer to continue">Next</button>
+    </div>
+    <div id="earlyExit" style="display:none;"></div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;" aria-hidden="true">Keyboard: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">Y</kbd> yes &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> no &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">U</kbd> not sure &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">A</kbd> not applicable &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> next</div>
+  </div>
+
+  <!-- CODE SCANNER -->
+  <div id="scannerSection" style="display:none;">
+    <div class="q-card">
+      <div class="q-number">CODE SCANNER <span style="font-size:0.7rem;background:var(--accent-dim);color:var(--accent);padding:2px 8px;border-radius:4px;margin-left:8px;vertical-align:middle;">For development teams</span></div>
+      <div class="q-text">Paste your code or upload a file</div>
+      <div class="q-help">Regula scans source code for EU AI Act risk patterns : prohibited practices, high-risk indicators, security antipatterns, and transparency requirements. Everything runs in your browser. Nothing is uploaded or stored. Not a developer? Use the <button type="button" onclick="backToHero()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">questionnaire</button> instead.</div>
+
+      <div style="margin-bottom:12px;">
+        <label for="scanLang" style="font-size:0.8rem;color:var(--text-dim);display:block;margin-bottom:4px;">Language (auto-detected from file extension)</label>
+        <select id="scanLang" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font);font-size:0.85rem;width:200px;" aria-label="Programming language">
+          <option value="">Auto-detect</option>
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="typescript">TypeScript</option>
+          <option value="java">Java</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="cpp">C / C++</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <textarea id="codeInput" placeholder="Paste your code here..." style="width:100%;min-height:200px;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:0.85rem;line-height:1.5;resize:vertical;" aria-label="Code input" spellcheck="false"></textarea>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <label class="btn btn-secondary" style="cursor:pointer;" tabindex="0" role="button" aria-label="Upload source code file" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.querySelector('input').click();}">
+          Upload file
+          <input type="file" id="fileUpload" accept=".py,.js,.ts,.jsx,.tsx,.java,.go,.rs,.c,.cpp,.h,.hpp,.rb,.r,.yml,.yaml,.sh,.kt,.kts,.scala,.mjs,.cjs" style="display:none;" aria-label="Upload source file">
+        </label>
+        <span id="fileName" style="font-size:0.8rem;color:var(--text-dim);"></span>
+        <div style="flex:1;"></div>
+        <button type="button" class="btn btn-primary" id="scanBtn" onclick="runScan()" disabled>Scan code</button>
+      </div>
+    </div>
+
+    <div id="scanProgress" style="display:none;text-align:center;padding:24px;color:var(--text-dim);" aria-live="polite">
+      Scanning patterns...
+    </div>
+
+    <div id="scanError" role="alert" tabindex="-1" style="display:none;margin:16px 0;padding:14px 16px;border:1px solid var(--red);border-radius:var(--radius);background:var(--red-dim);color:var(--text);line-height:1.5;">
+      <strong>Scan could not complete.</strong> Your code has not left this browser. Check that the page loaded fully, then try again or use the CLI. No result was produced.
+    </div>
+
+    <div id="scanResults" style="display:none;"></div>
+
+    <div style="margin-top:16px;display:flex;gap:10px;">
+      <button type="button" class="btn btn-secondary" onclick="resetScanner()">Clear</button>
+      <button type="button" class="btn btn-secondary" onclick="backToHero()">Back</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results" id="resultsSection" aria-live="polite">
+    <div id="tierResult"></div>
+    <div id="obligationsList"></div>
+
+    <div class="export-section">
+      <h3>Export your results</h3>
+      <div class="export-buttons">
+        <button type="button" class="btn btn-secondary" onclick="window.print()">Print / Save as PDF</button>
+        <button type="button" class="btn btn-secondary" onclick="copyShareLink()">Copy shareable link</button>
+        <button type="button" class="btn btn-secondary" onclick="exportJSON()">Download JSON</button>
+      </div>
+      <div class="share-section" id="shareSection" style="display:none;">
+        <input class="share-url" id="shareUrl" readonly onclick="this.select()" aria-label="Shareable results URL">
+        <div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Anyone with this link sees the same results. No data is stored.</div>
+      </div>
+    </div>
+
+    <div class="next-steps" id="nextStepsSection"></div>
+
+    <div style="margin-top:24px;text-align:center;">
+      <button type="button" class="btn btn-secondary" onclick="resetAssessment()">Start over</button>
+    </div>
+  </div>
+</main>
+
+<footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> This tool identifies regulatory risk indicators for review. It does not determine compliance. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="scanner.js"></script>
+<script src="decision-model.js"></script>
+<script src="decision-kernel.js"></script>
+<script src="decision-adapters.js"></script>
+<script src="decision-ui.js"></script>
+<script src="assess-flow.js"></script>
+<script>
+// =====================================================================
+// Regula Web Assessment :  ported from scripts/questionnaire.py
+// All logic runs client-side. Nothing leaves the browser.
+// =====================================================================
+
+// =====================================================================
+// Multi-jurisdiction support
+// =====================================================================
+
+
+
+const JURISDICTION_INFO = {
+  eu: { name: "EU AI Act", law: "Regulation (EU) 2024/1689", status: "In force (phased enforcement)" },
+  kr: { name: "South Korea AI Basic Act", law: "Act No. 20676", status: "In force" },
+  co: { name: "Colorado SB 26-189", law: "C.R.S. Title 6, Article 1, Part 17", status: "Enacted, effective 1 January 2027" },
+};
+
+
+
+// Korea questions (mapped from south-korea-mapping.md research)
+const QUESTIONS_KR = [
+  {
+    id: "kr_scope",
+    text: "Does this system affect users in South Korea?",
+    help: "The AI Basic Act applies to AI systems operated in South Korea or affecting persons in South Korea (Article 4).",
+    article: "Article 4",
+  },
+  {
+    id: "kr_is_ai_system",
+    text: "Does the subject meet the AI Basic Act definition of an AI system?",
+    help: "Article 2 defines an AI system. A code pattern or product label alone does not establish this fact.",
+    article: "Article 2"
+  },
+  {
+    id: "kr_operator",
+    text: "Is the organisation an AI developer or AI-using business operator under the Act?",
+    help: "The operator definitions in Article 2 are part of the Act's scope.",
+    article: "Article 2"
+  },
+  {
+    id: "kr_provides",
+    text: "Does the operator provide AI, or a product or service using AI?",
+    help: "Articles 31 to 34 attach to an operator providing the relevant AI product or service.",
+    article: "Articles 31 to 34"
+  },
+  {
+    id: "kr_high_impact_domain",
+    text: "Does this system operate in any of these domains: biometric identification, criminal investigation, education assessment, employment/hiring, credit evaluation, healthcare, energy/water/nuclear infrastructure, government services affecting welfare or taxes, or transport operations?",
+    help: "Article 33 defines high-impact AI as systems operating in domains that affect life, physical safety, or fundamental rights. These domains trigger additional obligations under Article 34.",
+    article: "Article 33",
+  },
+  {
+    id: "kr_high_performance",
+    text: "Does cumulative training computation meet the threshold prescribed by Presidential Decree for Article 32?",
+    help: "Article 32 delegates the threshold to Presidential Decree. Do not answer from an unverified threshold quoted by this tool.",
+    article: "Article 32",
+  },
+  {
+    id: "kr_significant_impact",
+    text: "Is the system likely to have a significant impact on, or pose a risk to, life, physical safety, or fundamental rights?",
+    help: "Article 2(4) requires both a listed area and significant impact or risk for high-impact AI.",
+    article: "Article 2(4)"
+  },
+  {
+    id: "kr_transparency",
+    text: "Are users notified they are interacting with an AI system?",
+    help: "Article 31 requires AI operators to notify users that they are interacting with AI. This applies to all AI systems, not just high-impact ones.",
+    article: "Article 31",
+  },
+  {
+    id: "kr_generative",
+    text: "Does this system generate content (text, images, audio, or video)?",
+    help: "Article 31 requires generative AI outputs to be labelled as AI-generated content.",
+    article: "Article 31",
+  },
+  {
+    id: "kr_virtual_media",
+    text: "Does it provide virtual sound, image, or video outputs that are difficult to distinguish from real ones?",
+    help: "Article 31(3) contains a specific clear-notice or labelling duty for this output.",
+    article: "Article 31(3)"
+  },
+  {
+    id: "kr_foreign_operator",
+    text: "Does the operator lack an address or business office in South Korea?",
+    help: "Foreign-operator status is a necessary condition for Article 36.",
+    article: "Article 36"
+  },
+  {
+    id: "kr_agent_threshold",
+    text: "Does the operator meet the user, sales, or other threshold prescribed by Presidential Decree for a domestic agent?",
+    help: "Article 36 delegates the scale threshold to Presidential Decree.",
+    article: "Article 36"
+  },
+  {
+    id: "kr_explanation",
+    text: "Can affected persons request an explanation of AI decisions that affect them?",
+    help: "Article 34 requires operators of high-impact AI to provide explanations for AI-generated results within technical limits, including key decision criteria and an overview of training data.",
+    article: "Article 34",
+  },
+  {
+    id: "kr_risk_management",
+    text: "Is there a documented risk management plan for this AI system?",
+    help: "Article 34 requires operators of high-impact AI to establish risk management plans covering documentation, human oversight, and ongoing monitoring.",
+    article: "Article 34",
+  },
+  {
+    id: "kr_human_oversight",
+    text: "Is there human oversight for decisions made by this AI system?",
+    help: "Article 34 requires human oversight measures for high-impact AI systems.",
+    article: "Article 34",
+  },
+  {
+    id: "kr_representative",
+    text: "If you are a foreign operator: do you have a domestic representative in South Korea?",
+    help: "Article 36 requires foreign AI operators meeting certain thresholds to appoint a domestic representative in South Korea.",
+    article: "Article 36",
+  },
+];
+
+// Colorado questions (mapped from colorado-mapping.md research)
+const QUESTIONS_CO = [
+  {
+    id: "co_scope",
+    text: "Is the organisation and use within the territorial scope of Colorado SB 26-189?",
+    help: "Resolve territorial and operator scope separately from whether the technology processes personal data.",
+    article: "Section 6-1-1701",
+  },
+  {
+    id: "co_is_ai_system",
+    text: "Does the subject meet the enacted definition of regulated automated decision-making technology?",
+    help: "A code pattern or product label alone does not establish this statutory definition.",
+    article: "Section 6-1-1701"
+  },
+  {
+    id: "co_doing_business",
+    text: "Is the relevant developer or deployer doing business in Colorado?",
+    help: "Doing business in Colorado is a scope condition in the enacted Act.",
+    article: "Section 6-1-1701"
+  },
+  {
+    id: "co_personal_data",
+    text: "Does the technology process personal data concerning an individual?",
+    help: "Processing personal data is a necessary element of covered ADMT.",
+    article: "Section 6-1-1701"
+  },
+  {
+    id: "co_decisions",
+    text: "Does this system make or materially influence decisions about individuals?",
+    help: "The law applies to ADMT that makes or is a material factor in consequential decisions. Incidental or trivial uses are excluded.",
+    article: "Section 6-1-1701",
+  },
+  {
+    id: "co_domain",
+    text: "Does it operate in a covered domain: employment, education, financial/lending, housing, insurance, healthcare, or essential government services?",
+    help: "Colorado covers 7 specific domains where automated decisions about individuals trigger disclosure obligations.",
+    article: "Section 6-1-1701",
+  },
+  {
+    id: "co_material",
+    text: "Is the AI output a non-trivial factor in the decision outcome?",
+    help: "The system must materially influence the decision. If the AI output is incidental or trivial to the outcome, it may not be covered.",
+    article: "Section 6-1-1701",
+  },
+  {
+    id: "co_excluded",
+    text: "Is the technology within a statutory exclusion from covered ADMT?",
+    help: "The enacted definition lists excluded technologies. Confirm the exact exclusion before answering yes.",
+    article: "Section 6-1-1701"
+  },
+  {
+    id: "co_other_law_exemption",
+    text: "Does a specified entity or activity exemption apply because an identified alternative legal obligation is met?",
+    help: "The enacted Act contains specified exemptions. General regulation in another field is not enough by itself.",
+    article: "Section 6-1-1701"
+  },
+  {
+    id: "co_role",
+    text: "Are you the developer (built or trained the system) rather than the deployer (using it to make decisions)?",
+    help: "Colorado assigns different obligations to developers and deployers. Developers must provide documentation; deployers must provide consumer notices and handle adverse outcomes. Answer 'Yes' if you are the developer, 'No' if you are the deployer, 'Not sure' if both.",
+    article: "Sections 6-1-1702 to 6-1-1705",
+  },
+  {
+    id: "co_pre_notice",
+    text: "Is a pre-use notice provided to consumers before the ADMT is used?",
+    help: "Section 6-1-1704 requires deployers to provide clear notice to consumers before using ADMT to make a consequential decision.",
+    article: "Section 6-1-1704",
+  },
+  {
+    id: "co_adverse",
+    text: "Is there a process for disclosing adverse outcomes to consumers within 30 days?",
+    help: "Section 6-1-1704 requires deployers to notify consumers within 30 days of an adverse consequential decision, including a description of the decision, the ADMT's role, and consumer rights.",
+    article: "Section 6-1-1704",
+  },
+  {
+    id: "co_adverse_outcome",
+    text: "Has the covered consequential decision resulted in an adverse outcome for the consumer?",
+    help: "The post-decision disclosure and consumer-review duties require an adverse outcome.",
+    article: "Sections 6-1-1704 to 6-1-1705"
+  },
+  {
+    id: "co_consumer_rights",
+    text: "Can consumers request access to their data, correction, and meaningful human review?",
+    help: "Section 6-1-1705 grants consumers the right to access data used in the decision, request correction, and obtain meaningful human review of adverse decisions.",
+    article: "Section 6-1-1705",
+  },
+];
+
+// QUESTIONS array: positions 0-11 are the original 12 questions (stable for URL encoding).
+// Positions 12-14 are new questions appended to preserve backward compatibility.
+// DISPLAY_ORDER controls the sequence users see (profiling before exemptions).
+const QUESTIONS = [
+  // --- Original 12 (positions 0-11, stable for URL encoding) ---
+  {
+    id: "deployment_eu",
+    text: "Will this system be deployed in the EU or affect people in the EU?",
+    help: "The EU AI Act applies to AI systems placed on the EU market or whose output is used in the EU, regardless of where the provider is based (Article 2).",
+    article: "Article 2",
+  },
+  {
+    id: "is_ai_system",
+    text: "Does the subject meet the EU AI Act definition of an AI system?",
+    help: "Article 3(1) defines an AI system as “a machine-based system that is designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, and that, for explicit or implicit objectives, infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments”. The test is what the system does with its input, not which technology built it. A code pattern or product label alone does not establish it.",
+    article: "Article 3(1)"
+  },
+  {
+    id: "role_provider",
+    text: "Is the organisation acting as the provider of this system?",
+    help: "Article 3(3) defines a provider as “a natural or legal person, public authority, agency or other body that develops an AI system or a general-purpose AI model or that has an AI system or a general-purpose AI model developed and places it on the market or puts the AI system into service under its own name or trademark, whether for payment or free of charge”. You can be both provider and deployer; this question and the next are answered separately.",
+    article: "Articles 3 and 17"
+  },
+  {
+    id: "role_deployer",
+    text: "Is the organisation using or deploying the system under its authority?",
+    help: "Article 3(4) defines a deployer as “a natural or legal person, public authority, agency or other body using an AI system under its authority except where the AI system is used in the course of a personal non-professional activity”. Using a system inside a product or service you run is not personal non-professional use.",
+    article: "Article 3"
+  },
+  {
+    id: "affected_domain",
+    text: "Does this system operate in any of these domains: biometric identification, critical infrastructure, education, employment/hiring, essential services (credit, insurance, healthcare, social benefits), law enforcement, migration/border control, justice/democratic processes?",
+    help: "The EU AI Act identifies specific sectors where AI poses elevated risks to fundamental rights. These are listed in Annex III of the regulation. AI systems in these domains may be classified as high-risk, which triggers additional requirements.",
+    article: "Article 6(2), Annex III",
+  },
+  {
+    id: "autonomous_decisions",
+    text: "Does this system make or materially influence decisions about individuals without a human reviewing each decision?",
+    help: "Article 14 requires human oversight for high-risk systems. Systems where humans review every output before action may have lower risk.",
+    article: "Article 14",
+  },
+  {
+    id: "significant_harm",
+    text: "Could errors or failures in this system cause significant harm to someone's health, safety, or fundamental rights (e.g. right to non-discrimination, privacy, fair trial, education)?",
+    help: "Operating in a regulated domain alone is not enough for high-risk classification. The system must also pose a significant risk of harm. This question helps distinguish systems that merely operate in a regulated sector from those that could materially affect people's lives.",
+    article: "Article 6(2)",
+  },
+  {
+    id: "biometric_data",
+    text: "Does this system process biometric data (face, fingerprint, voice, gait)?",
+    help: "Processing biometric data can range from high-risk (if used for identification or categorisation) to prohibited (if used for real-time surveillance in public spaces). The classification depends on how you use the data, not just that you process it.",
+    article: "Annex III(1), Article 5",
+  },
+  {
+    id: "social_scoring",
+    text: "Does this system evaluate or score individuals based on their social behaviour, personality traits, or predicted characteristics?",
+    help: "Social scoring by public authorities is prohibited under Article 5(1)(c). Private social scoring that leads to detrimental treatment may also be caught.",
+    article: "Article 5(1)(c)",
+  },
+  {
+    id: "emotion_recognition",
+    text: "Does this system infer emotions from biometric data in a workplace or educational setting?",
+    help: "Article 5(1)(f) prohibits emotion recognition in workplaces and educational institutions, with narrow exceptions for medical or safety purposes.",
+    article: "Article 5(1)(f)",
+  },
+  {
+    id: "public_facing",
+    text: "Could individuals interact with this system without knowing it is AI-powered?",
+    help: "Article 50 contains several transparency duties with different actors, conditions, and exceptions. A missing disclosure is an indicator to review, not proof that every Article 50 duty applies.",
+    article: "Article 50",
+  },
+  {
+    id: "narrow_procedural",
+    text: "Does this system perform ONLY narrow procedural tasks (e.g. converting data between formats, sorting documents by metadata, matching records against a fixed template)?",
+    help: "Article 6(3)(a) exempts AI systems that perform narrow procedural tasks from high-risk classification, even if they operate in an Annex III domain. The task must be purely procedural with no decision-making about individuals.",
+    article: "Article 6(3)(a)",
+  },
+  {
+    id: "improves_human_activity",
+    text: "Does this system ONLY improve the result of a previously completed human activity (e.g. grammar-checking human-written text, enhancing a human-taken photo, auto-formatting a human-created document)?",
+    help: "Article 6(3)(b) exempts AI that improves previously completed human activities. The human activity must be complete before the AI acts on it :  the AI polishes, it does not create.",
+    article: "Article 6(3)(b)",
+  },
+  {
+    id: "risk_documentation",
+    text: "Does your organisation maintain a risk register or risk management documentation for this AI system?",
+    help: "Article 9 requires a documented, continuously updated risk management system. This question helps assess your current compliance posture.",
+    article: "Article 9",
+  },
+  {
+    id: "logging_active",
+    text: "Does this system automatically log its operations (inputs, outputs, decisions, timestamps)?",
+    help: "Article 12 requires automatic recording of events during the AI system's operation to enable traceability.",
+    article: "Article 12",
+  },
+  // --- New questions (positions 12-14, appended to preserve URL encoding) ---
+  {
+    id: "profiling",
+    text: "Does this system build profiles of individuals based on their personal data (e.g. performance tracking, behaviour analysis, preference modelling, risk scoring based on personal characteristics)?",
+    help: "If a system profiles natural persons as defined in GDPR Article 4(4), Article 6(3) exemptions CANNOT apply :  the system is automatically high-risk regardless of how narrow or procedural it is. Profiling means any automated processing of personal data to evaluate personal aspects.",
+    article: "Article 6(3), GDPR Article 4(4)",
+  },
+  {
+    id: "pattern_detection",
+    text: "Does this system detect patterns for human review WITHOUT replacing or substituting the human's own assessment (e.g. flagging anomalies for an analyst, highlighting potential matches for a reviewer)?",
+    help: "Article 6(3)(c) exempts AI that detects patterns or deviations from prior patterns without replacing human assessment. The human must make the final determination, not the AI.",
+    article: "Article 6(3)(c)",
+  },
+  {
+    id: "preparatory_task",
+    text: "Does this system ONLY perform preparatory tasks for a human assessor (e.g. pre-sorting applications, extracting key data points for review, generating summaries for human decision-makers)?",
+    help: "Article 6(3)(d) exempts AI performing preparatory tasks for assessments that will be carried out by a natural person. The human assessor must still make the substantive decision.",
+    article: "Article 6(3)(d)",
+  }
+];
+
+// Display order: users see questions in this logical sequence.
+// Profiling (Q12 in array) is shown before exemptions (Q8-9) so users
+// understand the gate before answering exemption questions.
+// Array indices into QUESTIONS:
+// Flow control lives in assess-flow.js so the three locale pages share one
+// implementation. Only question data and display strings are page-local.
+RegulaAssessFlow.install({
+  questions: { eu: QUESTIONS, kr: QUESTIONS_KR, co: QUESTIONS_CO },
+  jurisdictionInfo: JURISDICTION_INFO,
+  scopeQuestionId: { eu: "deployment_eu", kr: "kr_scope", co: "co_scope" },
+  copy: {
+    jurisdictionMeta: (info, questions, minutes) =>
+      `${info.law} : ${info.status} : ${questions} questions, about ${minutes} minutes`,
+    progress: (n, total) => `Question ${n} of ${total}`,
+    optionalProgress: (n, total) => `Optional question ${n} of ${total}`,
+    questionEyebrow: (n, total) => `QUESTION ${n} OF ${total}`,
+    optionalEyebrow: (n, total) => `OPTIONAL QUESTION ${n} OF ${total}`,
+    next: "Next",
+    seeResults: "See results",
+    answerGroupLabel: "Select your answer",
+    answers: {
+      yes: "Yes",
+      no: "No",
+      unsure: "Not sure",
+      notApplicable: "Not applicable",
+    },
+    answerLegend: "Yes, No and Not applicable are all recorded as answers and can resolve a legal test. Not sure is recorded as an explicit unknown and is never counted as No.",
+    keys: { yes: "y", no: "n", unsure: "u", notApplicable: "a" },
+    readiness: {
+      title: "The regulatory result is now determined.",
+      body: "The remaining questions record your current controls. They are useful for your own notes and for a reviewer, but they do not change the result above. You can stop here at any point.",
+    },
+    earlyExit: {
+      seeResult: "See results now",
+      note: "You can stop at any point. Unanswered questions are reported as unresolved, never as no.",
+      finalBody: "You answered no to the scope question, so this regulation does not appear to be triggered. The remaining questions cannot change that result.",
+    },
+    storageNotice: "This is not legal advice. Your answers stay in this browser: they are kept in session storage so you can resume, are cleared when you start over, and are never sent to a server. Results can be shared via a stateless URL.",
+    intros: {
+      eu: "The EU AI Act uses intended purpose and deployment context in determining legal obligations. This questionnaire reports indicators for human review; it does not determine your legal classification, compliance, or applicable obligations.",
+      kr: "South Korea's AI Basic Act regulates specified AI systems. This questionnaire reports indicators for human review; it does not determine whether your system is legally covered or compliant.",
+      co: "Colorado SB 26-189 regulates specified automated decision-making technology. This questionnaire reports indicators for human review; it does not determine legal coverage, compliance, or applicable disclosure obligations.",
+    },
+  },
+});
+
+
+// =====================================================================
+// Code Scanner UI
+// =====================================================================
+
+let scanResult = null;
+let uploadedFileName = null;
+
+// Results CLI commands: click-to-copy with measurement (funnel: install intent)
+document.addEventListener("click", function (e) {
+  const codeEl = e.target.closest("#resultsSection code");
+  if (!codeEl) return;
+  navigator.clipboard.writeText(codeEl.textContent).catch(() => {});
+});
+
+function startScanner() {
+  document.getElementById("heroSection").style.display = "none";
+  document.getElementById("questionnaireSection").style.display = "none";
+  document.getElementById("resultsSection").classList.remove("active");
+  document.getElementById("scannerSection").style.display = "block";
+  document.getElementById("scanError").style.display = "none";
+  document.getElementById("codeInput").focus();
+}
+
+function backToHero() {
+  document.getElementById("scannerSection").style.display = "none";
+  document.getElementById("heroSection").style.display = "block";
+}
+
+function resetScanner() {
+  document.getElementById("codeInput").value = "";
+  document.getElementById("fileName").textContent = "";
+  document.getElementById("scanResults").style.display = "none";
+  document.getElementById("scanResults").innerHTML = "";
+  document.getElementById("scanError").style.display = "none";
+  document.getElementById("scanBtn").disabled = true;
+  uploadedFileName = null;
+  scanResult = null;
+}
+
+// Keyboard navigation for questionnaire
+
+
+// Enable scan button when code is entered
+document.getElementById("codeInput").addEventListener("input", function() {
+  document.getElementById("scanBtn").disabled = this.value.trim().length === 0;
+});
+
+// File upload handler
+document.getElementById("fileUpload").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    alert("File too large (max 5 MB).");
+    return;
+  }
+  uploadedFileName = file.name;
+  document.getElementById("fileName").textContent = file.name;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    document.getElementById("codeInput").value = ev.target.result;
+    document.getElementById("scanBtn").disabled = false;
+  };
+  reader.readAsText(file);
+});
+
+function runScan() {
+  const code = document.getElementById("codeInput").value.trim();
+  if (!code) return;
+
+  const langSelect = document.getElementById("scanLang").value || undefined;
+  const filename = uploadedFileName || undefined;
+
+  // Show progress
+  document.getElementById("scanProgress").style.display = "block";
+  document.getElementById("scanResults").style.display = "none";
+  document.getElementById("scanError").style.display = "none";
+  document.getElementById("scanBtn").disabled = true;
+
+  // Run scan asynchronously to allow UI to update
+  setTimeout(function() {
+    try {
+      scanResult = scanCode(code, filename);
+      scanResult.decision = RegulaDecisionAdapters.evaluateQuestionnaireDecision(
+        activeJurisdiction, {}
+      );
+
+    // Override language if user selected one
+      if (langSelect) {
+        scanResult.language = langSelect;
+        scanResult.classification = classifyCode(code, langSelect);
+      }
+
+      renderScanResults(scanResult);
+      document.getElementById("scanResults").style.display = "block";
+
+    } catch (error) {
+      scanResult = null;
+      const errorElement = document.getElementById("scanError");
+      errorElement.style.display = "block";
+      errorElement.focus();
+      console.error("Regula browser scan failed", error);
+    } finally {
+      document.getElementById("scanProgress").style.display = "none";
+      document.getElementById("scanBtn").disabled = false;
+    }
+  }, 50);
+}
+
+function renderScanResults(result) {
+  const c = result.classification;
+  const container = document.getElementById("scanResults");
+  let html = '<div id="scanDecisionSummary"></div><div id="scanDecisionDetails"></div><div id="scanDecisionNext"></div>';
+
+  // Jurisdiction-scope notice: the code scanner currently ships EU AI Act
+  // patterns only. Don't silently return an EU verdict when a user picked
+  // Korea or Colorado on the jurisdiction toggle.
+  if (typeof activeJurisdiction !== 'undefined' && activeJurisdiction !== 'eu') {
+    const jurName = activeJurisdiction === 'kr' ? 'South Korea' : 'Colorado';
+    html += `<div class="scan-jur-notice" style="margin-bottom:16px;padding:12px 14px;border:1px solid var(--border-active);border-radius:var(--radius);background:var(--accent-dim);font-size:0.85rem;line-height:1.45;">Heads up: the code scanner currently covers <strong>EU AI Act</strong> patterns. You selected <strong>${jurName}</strong> :  for ${jurName}-specific screening use the questionnaire, or run the full CLI.</div>`;
+  }
+
+  // Tier card (reuse existing styles)
+  const tierStyles = {
+    article_5_pattern: "tier-prohibited",
+    annex_iii_pattern: "tier-high",
+    article_50_pattern: "tier-limited",
+    no_elevated_pattern: "tier-minimal",
+    no_ai_pattern: "tier-minimal",
+  };
+  const tierNames = {
+    article_5_pattern: "Article 5 code indicators",
+    annex_iii_pattern: "Annex III code indicators",
+    article_50_pattern: "Article 50 code indicators",
+    no_elevated_pattern: "No elevated code indicator",
+    no_ai_pattern: "No AI indicators detected",
+  };
+
+  html += `
+    <div class="result-tier ${tierStyles[c.detector_class] || 'tier-minimal'}">
+      <div class="tier-label">CODE SCAN RESULT</div>
+      <div class="tier-name">${tierNames[c.detector_class] || c.detector_class}</div>
+      <div class="tier-desc">${c.message}</div>
+      ${(c.detector_class === 'article_5_pattern' || c.detector_class === 'annex_iii_pattern') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">This is a <strong>pattern match, not a determination</strong> :  verify the flagged code actually implements the practice described. False positives are possible; this is not legal advice.</div>' : ''}
+      <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
+        Detector priority: ${c.detector_priority}/100 &middot; Language: ${result.language}
+        ${c.indicators_matched.length ? ' &middot; Indicators: ' + c.indicators_matched.join(', ') : ''}
+      </div>
+    </div>
+  `;
+
+  // Summary stats
+  html += `<div class="scan-summary">`;
+  html += `<div class="scan-stat"><div class="scan-stat-value" style="color:${c.detector_class === 'article_5_pattern' ? 'var(--red)' : c.detector_class === 'annex_iii_pattern' ? 'var(--red)' : c.detector_class === 'article_50_pattern' ? 'var(--amber)' : 'var(--green)'};">${c.indicators_matched.length}</div><div class="scan-stat-label">Risk indicators</div></div>`;
+  html += `<div class="scan-stat"><div class="scan-stat-value" style="color:${result.security.length > 0 ? 'var(--amber)' : 'var(--green)'};">${result.security.length}</div><div class="scan-stat-label">Security findings</div></div>`;
+  html += `<div class="scan-stat"><div class="scan-stat-value">${result.observations.length + result.bias.length}</div><div class="scan-stat-label">Observations</div></div>`;
+  html += `<div class="scan-stat"><div class="scan-stat-value">${result.is_training ? 'Yes' : 'No'}</div><div class="scan-stat-label">Training activity</div></div>`;
+  html += `</div>`;
+
+  // Risk indicators
+  if (c.indicators_matched.length > 0 && c.detector_class !== 'no_ai_pattern') {
+    html += `<div class="scan-section-title">Code pattern details</div>`;
+    if (c.detector_class === 'article_5_pattern') {
+      html += `<div class="finding-card severity-critical">
+        <div class="finding-header">
+          <div class="finding-title">${c.description}</div>
+          <span class="finding-badge badge-critical">ARTICLE 5 PATTERN</span>
+        </div>
+        <div class="finding-desc">${c.message}</div>
+        ${c.exceptions ? `<div class="finding-remediation"><strong>Exceptions:</strong> ${c.exceptions}</div>` : ''}
+        <div class="finding-meta">Provisions to review: ${c.suggested_provisions.join(', ')} &middot; Lines: ${c.match_lines.join(', ')}</div>
+      </div>`;
+    } else {
+      html += `<div class="finding-card severity-${c.detector_class === 'annex_iii_pattern' ? 'high' : 'medium'}">
+        <div class="finding-header">
+          <div class="finding-title">${c.category || c.description}</div>
+          <span class="finding-badge badge-${c.detector_class === 'annex_iii_pattern' ? 'high' : 'medium'}">${c.detector_class === 'annex_iii_pattern' ? 'ANNEX III PATTERN' : 'ARTICLE 50 PATTERN'}</span>
+        </div>
+        <div class="finding-desc">${c.description}</div>
+        <div class="finding-meta">
+          Provisions to review: ${c.suggested_provisions.join(', ')}
+          ${c.match_lines.length ? ' &middot; Lines: ' + c.match_lines.join(', ') : ''}
+        </div>
+      </div>`;
+    }
+  }
+
+  // Security findings
+  if (result.security.length > 0) {
+    html += `<div class="scan-section-title">Security findings (Article 15)</div>`;
+    for (const f of result.security) {
+      html += `<div class="finding-card severity-${f.severity}">
+        <div class="finding-header">
+          <div class="finding-title">${f.description}</div>
+          <span class="finding-badge badge-${f.severity}">${f.severity.toUpperCase()}</span>
+        </div>
+        <div class="finding-meta">${f.owasp} &middot; Line ${f.line}: <code>${escapeHtml(f.matched_line)}</code></div>
+        <div class="finding-remediation">${f.remediation}</div>
+      </div>`;
+    }
+  }
+
+  // Governance observations
+  if (result.observations.length > 0) {
+    html += `<div class="scan-section-title">Governance observations</div>`;
+    for (const o of result.observations) {
+      html += `<div class="finding-card severity-medium">
+        <div class="finding-header">
+          <div class="finding-title">Article ${o.article}</div>
+          <span class="finding-badge badge-medium">REVIEW</span>
+        </div>
+        <div class="finding-desc">${o.observation}</div>
+      </div>`;
+    }
+  }
+
+  // Bias findings
+  if (result.bias.length > 0) {
+    html += `<div class="scan-section-title">Bias risk indicators</div>`;
+    for (const b of result.bias) {
+      html += `<div class="finding-card severity-medium">
+        <div class="finding-header">
+          <div class="finding-title">Article ${b.article}</div>
+          <span class="finding-badge badge-medium">BIAS RISK</span>
+        </div>
+        <div class="finding-desc">${b.observation}</div>
+      </div>`;
+    }
+  }
+
+  // Legal obligations are emitted only by the decision kernel.
+
+  // Training activity note
+  if (result.is_training) {
+    html += `<div class="finding-card severity-medium" style="margin-top:16px;">
+      <div class="finding-header">
+        <div class="finding-title">Model training detected</div>
+        <span class="finding-badge badge-medium">GPAI</span>
+      </div>
+      <div class="finding-desc">This code appears to train or fine-tune an AI model. If you are developing a general-purpose AI model (above 10<sup>23</sup> FLOPs), additional obligations under Chapter V of the EU AI Act may apply.</div>
+    </div>`;
+  }
+
+  // Export
+  html += `
+    <div class="export-section" style="margin-top:24px;">
+      <h3>Export scan results</h3>
+      <div class="export-buttons">
+        <button type="button" class="btn btn-secondary" onclick="window.print()">Print / Save as PDF</button>
+        <button type="button" class="btn btn-secondary" onclick="exportScanJSON()">Download JSON</button>
+      </div>
+    </div>
+  `;
+
+  // Next steps
+  html += `<div class="next-steps" style="margin-top:24px;"><h2>What to do next</h2>`;
+  const steps = getScanNextSteps(c.detector_class);
+  steps.forEach(function(s, i) {
+    html += `<div class="step-item">
+      <div class="step-num">${i + 1}</div>
+      <div class="step-text"><strong>${s.title}</strong><span>${s.desc}</span></div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  container.innerHTML = html;
+
+  RegulaDecisionUI.renderQuestionnaireResult(result.decision, {
+    locale: document.documentElement.lang,
+    questions: [],
+    tierElement: document.getElementById("scanDecisionSummary"),
+    detailsElement: document.getElementById("scanDecisionDetails"),
+    nextElement: document.getElementById("scanDecisionNext"),
+  });
+
+  // Scroll to results
+  container.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function escapeHtml(text) {
+  const d = document.createElement("div");
+  d.textContent = text;
+  return d.innerHTML;
+}
+
+function getScanNextSteps(tier) {
+  if (tier === "article_5_pattern") {
+    return [
+      { title: "Get legal advice", desc: "Article 5 prohibitions carry the highest penalties. A qualified lawyer needs to assess whether your system falls within scope or qualifies for a narrow exception." },
+      { title: "Review the matched patterns", desc: "Some matches may be false positives. The patterns above show what triggered this scanner result. Check whether the flagged code implements the practice described." },
+      { title: "Share with your team", desc: "Export this scan as JSON or print as PDF. Your compliance and legal teams need to review these findings." },
+      { title: "For deeper analysis", desc: "Your development team can run the Regula CLI for file-by-file analysis: <code>pipx install regula-ai</code>, then <code>regula check .</code>" },
+    ];
+  }
+  if (tier === "annex_iii_pattern") {
+    return [
+      { title: "Review the findings above", desc: "Check that the matched indicators correctly describe your system's purpose. Pattern-based classification requires human review to confirm context." },
+      { title: "Answer the questionnaire too", desc: "The questionnaire assesses deployment context that code scanning cannot detect. Using both provides broader evidence, but still requires human technical and legal review." },
+      { title: "Start with your biggest gaps", desc: "Technical documentation (Article 11) and data governance (Article 10) are typically the largest compliance gaps." },
+      { title: "For project-wide analysis", desc: "This scan analysed a single file or snippet. Your development team can scan the full project: <code>pipx install regula-ai</code>, then <code>regula gap --project .</code>" },
+    ];
+  }
+  if (tier === "article_50_pattern") {
+    return [
+      { title: "Add transparency notices", desc: "Article 50 requires users to know when they interact with AI or consume AI-generated content." },
+      { title: "Answer the questionnaire too", desc: "The questionnaire assesses deployment context that code scanning cannot detect." },
+      { title: "For project-wide scanning", desc: "Your development team can check other files for risk patterns: <code>pipx install regula-ai</code>, then <code>regula check .</code>" },
+    ];
+  }
+  return [
+    { title: "No elevated indicators detected", desc: "This code sample did not match the scanner's elevated-risk patterns. That is not a legal classification or proof that no duties apply; review intended purpose, Article 5, Article 4 and other context-dependent provisions." },
+    { title: "Re-scan if scope changes", desc: "If you add features in areas like hiring, credit, healthcare, or law enforcement, scan again." },
+  ];
+}
+
+function exportScanJSON() {
+  if (!scanResult) return;
+  const c = scanResult.classification;
+  const data = {
+    tool: "Regula Web Scanner",
+    version: "1.0",
+    date: new Date().toISOString(),
+    disclaimer: "Not legal advice. Pattern-based risk indication for human review.",
+    language: scanResult.language,
+    detector_class: c.detector_class,
+    detector_priority: c.detector_priority,
+    indicators_matched: c.indicators_matched,
+    suggested_provisions: c.suggested_provisions,
+    description: c.description,
+    security_findings: scanResult.security.length,
+    observations: scanResult.observations.length,
+    bias_findings: scanResult.bias.length,
+    is_training: scanResult.is_training,
+    decision: scanResult.decision,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "regula-scan-" + new Date().toISOString().slice(0, 10) + ".json";
+  a.click();
+}
+
+
+// =====================================================================
+// Init: check for shared results in URL
+// =====================================================================
+
+
+</script>
+<script>
+// Nav scroll effect
+function updateNav() {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+}
+window.addEventListener('scroll', updateNav, { passive: true });
+</script>
+</body>
+</html>

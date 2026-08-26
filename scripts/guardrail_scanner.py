@@ -1,0 +1,755 @@
+#!/usr/bin/env python3
+# regula-ignore
+"""
+Regula Guardrail Scanner — Runtime AI Guardrail Detection
+
+Scans a codebase for runtime guardrail implementations covering:
+- Input validation (Art 15.4 — robustness)
+- Output filtering (Art 15.3/10 — accuracy, data quality)
+- Execution controls (Art 14 — human oversight)
+- Monitoring & audit (Art 12/13 — record-keeping, transparency)
+- Known guardrail libraries
+
+No external dependencies — stdlib only.
+"""
+
+import bisect
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+from scan_safety import walk_project_files
+
+from constants import CODE_EXTENSIONS, SKIP_DIRS
+
+
+# ---------------------------------------------------------------------------
+# Guardrail pattern definitions
+# ---------------------------------------------------------------------------
+
+GUARDRAIL_CATEGORIES = {
+    "input_validation": {
+        "article_ref": "Art 15.4",
+        "description": "Input validation and robustness against errors/faults",
+        "patterns": {
+            "prompt_injection_defence": [
+                r"prompt.?injection", r"injection.?detect", r"injection.?filter",
+                r"llm.?as.?judge", r"semantic.?check", r"input.?guard",
+                r"canary.?token", r"delimiter.?check",
+            ],
+            "input_length_limit": [
+                r"max.?tokens", r"max.?length", r"token.?limit",
+                r"len\s*\(\s*(?:prompt|input|query|message)", r"truncat",
+                r"MAX_INPUT", r"input.?size.?limit",
+            ],
+            "input_sanitisation": [
+                r"sanitiz", r"sanitise", r"strip.?html", r"escape.?special",
+                r"bleach\.clean", r"html\.escape", r"markupsafe",
+                r"input.?clean", r"normalize.?input",
+            ],
+            "pii_detection": [
+                r"pii.?detect", r"pii.?redact", r"presidio",
+                r"anonymi[sz]", r"redact.?(?:email|phone|ssn|name)",
+                r"personal.?data.?filter", r"data.?masking",
+            ],
+            "content_allowlist_blocklist": [
+                r"(?:allow|block|deny|ban).?list", r"(?:white|black).?list",
+                r"forbidden.?(?:words|terms|topics)", r"content.?filter.?(?:input|request)",
+                r"topic.?restrict", r"keyword.?filter",
+            ],
+            "rate_limiting": [
+                r"rate.?limit", r"throttl", r"requests?.?per.?(?:second|minute|hour)",
+                r"token.?bucket", r"leaky.?bucket", r"sliding.?window.?rate",
+                r"slowapi", r"ratelimit",
+            ],
+        },
+        "gap_messages": {
+            "prompt_injection_defence": "No prompt injection defences detected",
+            "input_length_limit": "No input length/token limits found",
+            "input_sanitisation": "No input sanitisation detected",
+            "pii_detection": "No PII detection or redaction found",
+            "content_allowlist_blocklist": "No content allow/blocklists found",
+            "rate_limiting": "No rate limiting on input endpoints detected",
+        },
+    },
+    "output_filtering": {
+        "article_ref": "Art 15.3, Art 10",
+        "description": "Output filtering for accuracy and data quality",
+        "patterns": {
+            "toxicity_filtering": [
+                r"detoxify", r"perspective.?api", r"toxicity.?(?:score|filter|check|detect)",
+                r"nsfw.?(?:filter|detect|check)", r"content.?moderat",
+                r"harmful.?content", r"safety.?filter",
+            ],
+            "hallucination_detection": [
+                r"hallucination.?(?:detect|check|score)", r"fact.?check",
+                r"ground(?:ing|ed).?(?:check|verif)", r"retrieval.?verif",
+                r"citation.?verif", r"faithfulness.?(?:score|check)",
+                r"source.?attribution",
+            ],
+            "output_pii_scrubbing": [
+                r"(?:output|response).?(?:pii|redact|scrub|sanitiz)",
+                r"scrub.?(?:pii|personal)", r"mask.?(?:output|response)",
+            ],
+            "output_format_validation": [
+                r"json.?schema.?valid", r"structured.?output",
+                r"output.?schema", r"response.?format.?valid",
+                r"pydantic.?(?:model|BaseModel)", r"jsonschema\.validate",
+                r"output.?pars(?:e|ing).?valid",
+            ],
+            "confidence_threshold": [
+                r"confidence.?(?:threshold|score|check)", r"abstain",
+                r"uncertain(?:ty)?.?threshold", r"(?:low|min).?confidence",
+                r"refuse.?to.?answer", r"idk.?response",
+            ],
+            "response_length_limit": [
+                r"max.?(?:output|response).?(?:length|tokens|chars)",
+                r"truncat.?(?:output|response)", r"response.?size.?limit",
+                r"MAX_OUTPUT", r"max.?completion.?tokens",
+            ],
+        },
+        "gap_messages": {
+            "toxicity_filtering": "No toxicity/content filtering detected",
+            "hallucination_detection": "No hallucination detection found",
+            "output_pii_scrubbing": "No output PII scrubbing found",
+            "output_format_validation": "No output format validation detected",
+            "confidence_threshold": "No confidence thresholds or abstention logic found",
+            "response_length_limit": "No response length limits found",
+        },
+    },
+    "execution_controls": {
+        "article_ref": "Art 14",
+        "description": "Execution controls for human oversight",
+        "patterns": {
+            "human_in_the_loop": [
+                r"human.?in.?the.?loop", r"human.?(?:approval|review|confirm)",
+                r"manual.?(?:approval|review|confirm)", r"approval.?gate",
+                r"requires?.?(?:human|manual).?(?:approval|review)",
+                r"pending.?(?:approval|review)",
+            ],
+            "tool_call_restrictions": [
+                r"(?:tool|function).?(?:allow|white|permit).?list",
+                r"allowed.?(?:tools|functions)", r"tool.?restrict",
+                r"function.?(?:call|calling).?(?:restrict|limit|filter)",
+                r"tool.?(?:guard|gate|policy)",
+            ],
+            "resource_limits": [
+                r"(?:memory|cpu|cost|budget).?limit", r"token.?budget",
+                r"max.?(?:cost|spend|budget)", r"resource.?(?:limit|quota)",
+                r"usage.?(?:limit|cap|ceiling)",
+            ],
+            "timeout_enforcement": [
+                r"timeout", r"deadline", r"time.?limit",
+                r"max.?(?:duration|wait|execution.?time)",
+                r"asyncio\.wait_for", r"signal\.alarm",
+            ],
+            "retry_limits": [
+                r"max.?retries", r"retry.?limit", r"backoff",
+                r"tenacity", r"retry.?count", r"exponential.?backoff",
+                r"max.?attempts",
+            ],
+            "sandboxed_execution": [
+                r"sandbox", r"gvisor", r"nsjail", r"firejail",
+                r"docker.?(?:run|exec|container)", r"isolated.?(?:env|execution)",
+                r"seccomp", r"AppArmor",
+            ],
+        },
+        "gap_messages": {
+            "human_in_the_loop": "No human-in-the-loop approval gates detected",
+            "tool_call_restrictions": "No tool/function call restrictions found",
+            "resource_limits": "No resource limits (memory, CPU, cost, token budgets) found",
+            "timeout_enforcement": "No timeout enforcement detected",
+            "retry_limits": "No retry limits with backoff found",
+            "sandboxed_execution": "No sandboxed execution (Docker, gVisor, nsjail) detected",
+        },
+    },
+    "monitoring_audit": {
+        "article_ref": "Art 12, Art 13",
+        "description": "Monitoring and audit for record-keeping and transparency",
+        "patterns": {
+            "io_logging": [
+                r"(?:input|output|request|response).?log",
+                r"log\.(?:info|debug|warning)\s*\(.*(?:input|output|request|response)",
+                r"audit.?log", r"conversation.?log", r"interaction.?log",
+                r"logger\.(?:info|debug)", r"logging\.getLogger",
+            ],
+            "error_tracking": [
+                r"sentry", r"bugsnag", r"rollbar", r"airbrake",
+                r"exception.?(?:track|report|log|handler)",
+                r"error.?(?:track|report|handler)",
+                r"sys\.excepthook",
+            ],
+            "usage_metrics": [
+                r"(?:usage|telemetry|metric).?(?:collect|track|record|send)",
+                r"prometheus", r"statsd", r"datadog", r"opentelemetry",
+                r"metric\.(?:inc|observe|record)", r"counter\.(?:inc|add)",
+            ],
+            "audit_trail": [
+                r"audit.?trail", r"audit.?(?:record|entry|event)",
+                r"immutable.?log", r"tamper.?(?:proof|evident)",
+                r"event.?sourc", r"append.?only.?log",
+            ],
+            "model_monitoring": [
+                r"model.?(?:monitor|performance|metric|drift)",
+                r"prediction.?(?:monitor|track|log)",
+                r"(?:accuracy|latency|throughput).?(?:monitor|track|metric)",
+                r"mlflow", r"wandb", r"weights.?(?:and|&).?biases",
+            ],
+            "drift_detection": [
+                r"drift.?detect", r"data.?drift", r"concept.?drift",
+                r"distribution.?shift", r"feature.?drift",
+                r"evidently", r"deepchecks", r"alibi.?detect",
+            ],
+        },
+        "gap_messages": {
+            "io_logging": "No input/output logging detected",
+            "error_tracking": "No error and exception tracking found",
+            "usage_metrics": "No usage metrics collection detected",
+            "audit_trail": "No audit trail generation found",
+            "model_monitoring": "No model performance monitoring detected",
+            "drift_detection": "No drift detection found",
+        },
+    },
+}
+
+# Known guardrail libraries: (import_pattern, display_name, type)
+KNOWN_LIBRARIES = [
+    (r"nemoguardrails|nemo_guardrails|from\s+nemoguardrails", "NeMo Guardrails (NVIDIA)", "open-source"),
+    (r"guardrails\.guard|from\s+guardrails\s+import|import\s+guardrails", "Guardrails AI", "open-source"),
+    (r"llm_guard|from\s+llm_guard|import\s+llm_guard", "LLM Guard (Protect AI)", "open-source"),
+    (r"lakera|lakera_guard|from\s+lakera", "Lakera Guard", "commercial"),
+    (r"rebuff|from\s+rebuff|import\s+rebuff", "Rebuff", "open-source"),
+    (r"whylabs|whylogs|from\s+whylabs|from\s+whylogs", "WhyLabs", "open-source"),
+    (r"fiddler|from\s+fiddler|import\s+fiddler", "Fiddler", "commercial"),
+    (r"presidio(?:_analyzer|_anonymizer)?|from\s+presidio", "Presidio (Microsoft)", "open-source"),
+]
+
+# Map libraries to categories they contribute to
+LIBRARY_CATEGORY_MAP = {
+    "NeMo Guardrails (NVIDIA)": ["input_validation", "output_filtering"],
+    "Guardrails AI": ["input_validation", "output_filtering"],
+    "LLM Guard (Protect AI)": ["input_validation", "output_filtering"],
+    "Lakera Guard": ["input_validation"],
+    "Rebuff": ["input_validation"],
+    "WhyLabs": ["monitoring_audit"],
+    "Fiddler": ["monitoring_audit"],
+    "Presidio (Microsoft)": ["input_validation"],
+}
+
+
+# ---------------------------------------------------------------------------
+# File discovery
+# ---------------------------------------------------------------------------
+
+def _walk_project(project_path: str):
+    """Yield (relative_path, absolute_path, content) for scannable files.
+
+    Content is read during the walk instead of being reopened by name
+    later. Reopening re-resolves the path, and in that window an ancestor
+    directory can be swapped for a symlink — the race O_NOFOLLOW cannot
+    close, since it guards only the final component. walk_project_files
+    reads through a descriptor held on the parent directory, pinning the
+    inode (#33).
+
+    This stays a GENERATOR deliberately. Callers iterate it once and
+    discard each file's content as they go, so the whole project is never
+    resident at once; materialising it with list() would trade the memory
+    property for nothing.
+    """
+    project = Path(project_path).resolve()
+    for filepath, raw in walk_project_files(
+            project, extensions=CODE_EXTENSIONS, skip_dirs=SKIP_DIRS):
+        try:
+            rel = str(filepath.relative_to(project))
+        except ValueError:
+            rel = str(filepath)
+        yield rel, str(filepath), raw.decode("utf-8", errors="ignore")
+
+
+# ---------------------------------------------------------------------------
+# Core scanning
+# ---------------------------------------------------------------------------
+
+def _scan_file_for_patterns(content: str, compiled_patterns: list) -> list:
+    """Return list of (match_object, raw_pattern_string) for each compiled
+    pattern that matches content (case-insensitive, first match only)."""
+    matched = []
+    for cpat in compiled_patterns:
+        m = cpat.search(content)
+        if m:
+            matched.append((m, cpat.pattern))
+    return matched
+
+
+def _build_newline_index(content: str) -> list:
+    """Return sorted list of newline positions for O(log n) line lookup."""
+    return [i for i, c in enumerate(content) if c == "\n"]
+
+
+def _line_for_pos(newline_index: list, pos: int) -> int:
+    """Return 1-based line number for character position pos."""
+    return bisect.bisect_left(newline_index, pos) + 1
+
+
+def scan_for_guardrails(project_path: str) -> dict:
+    """Scan codebase for guardrail implementation.
+
+    Returns structured result with per-category scores, detected patterns,
+    gaps, library detections, overall score, and recommendations.
+
+    Fix #5: Stream one file at a time — read, scan, discard.  Peak RAM is
+    now bounded to a single file's content rather than all files at once.
+
+    Fix #3: Uses pre-compiled patterns (_COMPILED_PATTERNS, etc.) so regex
+    compilation cost is paid once at module load, not per file.
+
+    Fix #4: Line numbers are computed via bisect on a per-file newline index
+    (O(log n)) rather than re-searching each line (O(lines × patterns)).
+    """
+    project_path = str(Path(project_path).resolve())
+    files_index = _walk_project(project_path)
+
+    # Accumulators for the single streaming pass.
+    # per_subkey_detections preserves the original output order:
+    #   for each sub_key, entries appear in files_index order.
+    libraries_detected = []
+    library_names_found: set = set()
+
+    # cat_key → sub_key → list of detection dicts (in file-visit order)
+    per_subkey_detections: dict = {
+        cat_key: {sub_key: [] for sub_key in cat_def["patterns"]}
+        for cat_key, cat_def in GUARDRAIL_CATEGORIES.items()
+    }
+    # cat_key → set of sub_keys that matched at least once
+    patterns_matched_per_cat: dict = {
+        cat_key: set() for cat_key in GUARDRAIL_CATEGORIES
+    }
+
+    # Single streaming pass — read one file, scan it, discard content.
+    for rel_path, _abs_path, content in files_index:
+        if not content:
+            continue
+
+        # Build newline index once per file for O(log n) line lookups (Fix #4)
+        nl_index = _build_newline_index(content)
+
+        # Library detection
+        for compiled_lib, lib_name, lib_type in _COMPILED_KNOWN_LIBRARIES:
+            if lib_name not in library_names_found:
+                if compiled_lib.search(content):
+                    libraries_detected.append({
+                        "name": lib_name,
+                        "file": rel_path,
+                        "type": lib_type,
+                    })
+                    library_names_found.add(lib_name)
+
+        # Category pattern scanning
+        for cat_key, cat_def in GUARDRAIL_CATEGORIES.items():
+            compiled_cat = _COMPILED_PATTERNS[cat_key]
+            for sub_key in cat_def["patterns"]:
+                sub_compiled = compiled_cat[sub_key]
+                matches = _scan_file_for_patterns(content, sub_compiled)
+                if matches:
+                    patterns_matched_per_cat[cat_key].add(sub_key)
+                    for match_obj, raw_pattern in matches:
+                        line = _line_for_pos(nl_index, match_obj.start())
+                        per_subkey_detections[cat_key][sub_key].append({
+                            "pattern": sub_key,
+                            "file": rel_path,
+                            "line": line,
+                            "confidence": "high" if sub_key in (
+                                "pii_detection", "toxicity_filtering",
+                                "human_in_the_loop", "io_logging",
+                            ) else "medium",
+                            "match": raw_pattern,
+                        })
+
+    # Determine which categories get library bonus
+    library_category_bonus = set()
+    for lib in libraries_detected:
+        for cat in LIBRARY_CATEGORY_MAP.get(lib["name"], []):
+            library_category_bonus.add(cat)
+
+    # Assemble per-category results, preserving original sub_key → file order
+    categories = {}
+    for cat_key, cat_def in GUARDRAIL_CATEGORIES.items():
+        patterns_matched = patterns_matched_per_cat[cat_key]
+
+        # Flatten detections in sub_key order (matches original loop order)
+        detected_flat = []
+        for sub_key in cat_def["patterns"]:
+            detected_flat.extend(per_subkey_detections[cat_key][sub_key])
+
+        # Deduplicate: keep first detection per (pattern, file)
+        seen: set = set()
+        unique_detected = []
+        for d in detected_flat:
+            key = (d["pattern"], d["file"])
+            if key not in seen:
+                seen.add(key)
+                unique_detected.append(d)
+
+        # Scoring: library=10, code patterns=5 each (cap 15), total cap 20
+        library_score = 10 if cat_key in library_category_bonus else 0
+        pattern_score = min(15, len(patterns_matched) * 5)
+        score = min(20, library_score + pattern_score)
+
+        # Gaps
+        gaps = []
+        for sub_key, gap_msg in cat_def["gap_messages"].items():
+            if sub_key not in patterns_matched:
+                gaps.append(gap_msg)
+
+        categories[cat_key] = {
+            "score": score,
+            "detected": unique_detected,
+            "gaps": gaps,
+            "article_ref": cat_def["article_ref"],
+            "description": cat_def["description"],
+        }
+
+    # Overall score — normalise from 0-80 raw to 0-100 percentage
+    max_raw = len(GUARDRAIL_CATEGORIES) * 20  # 4 categories * 20 max each
+    raw_score = sum(c["score"] for c in categories.values())
+    overall_score = round(raw_score * 100 / max_raw)
+
+    # Recommendations
+    recommendations = _generate_recommendations(categories, library_names_found)
+
+    # Detect guardrail gaps at AI call sites
+    call_site_gaps = detect_guardrail_gaps(project_path)
+
+    return {
+        "categories": categories,
+        "libraries_detected": libraries_detected,
+        "overall_score": overall_score,
+        "recommendations": recommendations,
+        "gaps": call_site_gaps,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Guardrail absence detection — AI call-site gap analysis
+# ---------------------------------------------------------------------------
+
+# Patterns that identify AI API call sites
+AI_CALL_PATTERNS = [
+    # OpenAI
+    (r"(?:openai\.)?ChatCompletion\.create", "openai.ChatCompletion.create"),
+    (r"client\.chat\.completions\.create", "client.chat.completions.create"),
+    (r"openai\.Completion\.create", "openai.Completion.create"),
+    (r"openai\.Image\.create", "openai.Image.create"),
+    # Anthropic
+    (r"anthropic\.messages\.create", "anthropic.messages.create"),
+    (r"client\.messages\.create", "client.messages.create"),
+    # Ollama
+    (r"ollama\.generate", "ollama.generate"),
+    (r"ollama\.chat", "ollama.chat"),
+    # HuggingFace / generic ML
+    (r"model\.generate\s*\(", "model.generate"),
+    (r"pipeline\s*\(", "pipeline("),
+    # LangChain
+    (r"chain\.invoke\s*\(", "chain.invoke"),
+    (r"chain\.run\s*\(", "chain.run"),
+    (r"\.ainvoke\s*\(", ".ainvoke"),
+    # LiteLLM
+    (r"litellm\.completion", "litellm.completion"),
+    (r"litellm\.acompletion", "litellm.acompletion"),
+    # Google
+    (r"genai\.GenerativeModel", "genai.GenerativeModel"),
+    (r"model\.generate_content", "model.generate_content"),
+    # Cohere
+    (r"cohere\.generate", "cohere.generate"),
+    (r"co\.chat\s*\(", "co.chat"),
+]
+
+# Guardrail presence patterns checked within ±20 lines of each call site
+_NEARBY_GUARDRAIL_PATTERNS = {
+    "input_validation": [
+        r"len\s*\(", r"max_length", r"max_tokens", r"truncat",
+        r"pii", r"redact", r"anonymi[sz]", r"scrub",
+        r"sanitiz", r"sanitise", r"escape", r"filter", r"validate",
+        r"moderate", r"content_filter", r"safety_check",
+        r"injection", r"input.?guard", r"allowlist", r"blocklist",
+    ],
+    "output_validation": [
+        r"filter", r"moderate", r"toxicity", r"safety",
+        r"json\.loads", r"parse", r"validate", r"schema",
+        r"ground", r"verify", r"fact_check", r"hallucination",
+        r"structured.?output", r"pydantic", r"BaseModel",
+    ],
+    "human_oversight": [
+        r"review", r"approve", r"human.?in.?the.?loop", r"escalate",
+        r"if\s+confidence", r"if\s+score", r"threshold",
+        r"log", r"audit", r"record",
+        r"pending.?approval", r"manual.?review",
+    ],
+}
+
+# Map guardrail types to EU AI Act articles
+_GAP_ARTICLE_MAP = {
+    "input_validation": "Article 9",
+    "output_validation": "Article 9",
+    "human_oversight": "Article 14",
+}
+
+
+# ---------------------------------------------------------------------------
+# Pre-compiled pattern tables (Fix #3 — compile once at module load)
+# ---------------------------------------------------------------------------
+
+# _COMPILED_PATTERNS: category → subcategory → list of compiled re objects
+_COMPILED_PATTERNS: dict = {
+    cat_key: {
+        sub_key: [re.compile(p, re.IGNORECASE) for p in patterns]
+        for sub_key, patterns in cat_def["patterns"].items()
+    }
+    for cat_key, cat_def in GUARDRAIL_CATEGORIES.items()
+}
+
+# _COMPILED_KNOWN_LIBRARIES: list of (compiled_re, display_name, lib_type)
+_COMPILED_KNOWN_LIBRARIES = [
+    (re.compile(lib_pattern, re.IGNORECASE), lib_name, lib_type)
+    for lib_pattern, lib_name, lib_type in KNOWN_LIBRARIES
+]
+
+# _COMPILED_AI_CALL_PATTERNS: list of (compiled_re, call_label)
+_COMPILED_AI_CALL_PATTERNS = [
+    (re.compile(call_regex, re.IGNORECASE), call_label)
+    for call_regex, call_label in AI_CALL_PATTERNS
+]
+
+# _COMPILED_GUARDRAIL_PATTERNS: guard_type → list of compiled re objects
+_COMPILED_GUARDRAIL_PATTERNS: dict = {
+    guard_type: [re.compile(p, re.IGNORECASE) for p in patterns]
+    for guard_type, patterns in _NEARBY_GUARDRAIL_PATTERNS.items()
+}
+
+
+def detect_guardrail_gaps(project_path: str) -> list:
+    """Detect AI API call sites missing nearby guardrail patterns.
+
+    Methodology: For each file, find lines matching known AI API call
+    patterns. For each call site, extract a +-20-line window and check
+    for the presence of input validation, output validation, and human
+    oversight patterns. Any guardrail type not found in the window is
+    reported as a gap, mapped to the relevant EU AI Act article.
+
+    Returns a list of dicts, each with keys: file, line, call_pattern,
+    missing, present, article.
+    """
+    project_path = str(Path(project_path).resolve())
+    files_index = _walk_project(project_path)
+    gaps = []
+
+    for rel_path, _abs_path, content in files_index:
+        if not content:
+            continue
+
+        lines = content.split("\n")
+
+        for compiled_call, call_label in _COMPILED_AI_CALL_PATTERNS:
+            for line_idx, line_text in enumerate(lines):
+                if not compiled_call.search(line_text):
+                    continue
+
+                # Extract +-20 line window
+                start = max(0, line_idx - 20)
+                end = min(len(lines), line_idx + 21)
+                window = "\n".join(lines[start:end])
+
+                present = []
+                missing = []
+
+                for guard_type, compiled_pats in _COMPILED_GUARDRAIL_PATTERNS.items():
+                    found = False
+                    for cpat in compiled_pats:
+                        if cpat.search(window):
+                            found = True
+                            break
+                    if found:
+                        present.append(guard_type)
+                    else:
+                        missing.append(guard_type)
+
+                if missing:
+                    # Determine article from most severe missing type
+                    articles = set()
+                    for m in missing:
+                        articles.add(_GAP_ARTICLE_MAP.get(m, "Article 9"))
+                    # Prefer Article 14 if human oversight is missing
+                    article = "Article 14" if "Article 14" in articles else "Article 9"
+
+                    gaps.append({
+                        "file": rel_path,
+                        "line": line_idx + 1,
+                        "call_pattern": call_label,
+                        "missing": missing,
+                        "present": present,
+                        "article": article,
+                    })
+
+    return gaps
+
+
+def _generate_recommendations(categories: dict, libraries_found: set) -> list:
+    """Generate prioritised recommendations based on gaps."""
+    recs = []
+
+    # P0: Critical gaps
+    if categories["input_validation"]["score"] < 5:
+        recs.append({
+            "priority": "P0",
+            "action": "Add input validation guardrails. Install: pip install guardrails-ai",
+            "article": "Art 15.4",
+        })
+    if categories["monitoring_audit"]["score"] < 5:
+        recs.append({
+            "priority": "P0",
+            "action": "Add logging and audit trail. EU AI Act Art 12 requires record-keeping for high-risk systems",
+            "article": "Art 12",
+        })
+    if categories["execution_controls"]["score"] < 5:
+        recs.append({
+            "priority": "P0",
+            "action": "Add human oversight controls. EU AI Act Art 14 requires human-in-the-loop for high-risk systems",
+            "article": "Art 14",
+        })
+
+    # P1: Important gaps
+    if categories["output_filtering"]["score"] < 10:
+        recs.append({
+            "priority": "P1",
+            "action": "Add output filtering. Install: pip install detoxify (toxicity) or guardrails-ai (structured output)",
+            "article": "Art 15.3",
+        })
+    pii_covered = any(
+        d["pattern"] == "pii_detection"
+        for d in categories["input_validation"]["detected"]
+    )
+    if not pii_covered:
+        recs.append({
+            "priority": "P1",
+            "action": "Add PII detection/redaction. Install: pip install presidio-analyzer presidio-anonymizer",
+            "article": "Art 15.4",
+        })
+    if "WhyLabs" not in libraries_found and \
+       categories["monitoring_audit"]["score"] < 15:
+        drift_found = any(
+            d["pattern"] == "drift_detection"
+            for d in categories["monitoring_audit"]["detected"]
+        )
+        if not drift_found:
+            recs.append({
+                "priority": "P1",
+                "action": "Add drift detection. Install: pip install evidently (open-source)",
+                "article": "Art 12",
+            })
+
+    # P2: Nice-to-haves
+    if "NeMo Guardrails (NVIDIA)" not in libraries_found and \
+       "Guardrails AI" not in libraries_found and \
+       "LLM Guard (Protect AI)" not in libraries_found:
+        recs.append({
+            "priority": "P2",
+            "action": "Consider a guardrail framework: NeMo Guardrails (pip install nemoguardrails), Guardrails AI (pip install guardrails-ai), or LLM Guard (pip install llm-guard)",
+            "article": "Art 15",
+        })
+    sandbox_found = any(
+        d["pattern"] == "sandboxed_execution"
+        for d in categories["execution_controls"]["detected"]
+    )
+    if not sandbox_found:
+        recs.append({
+            "priority": "P2",
+            "action": "Consider sandboxed execution for agent tool calls (Docker, gVisor, nsjail)",
+            "article": "Art 14",
+        })
+
+    # Sort by priority
+    priority_order = {"P0": 0, "P1": 1, "P2": 2}
+    recs.sort(key=lambda r: priority_order.get(r["priority"], 99))
+    return recs
+
+
+# ---------------------------------------------------------------------------
+# Text formatting
+# ---------------------------------------------------------------------------
+
+def _bar(score: int, max_score: int, width: int = 20) -> str:
+    """Create a text-based progress bar."""
+    filled = int(width * score / max_score) if max_score > 0 else 0
+    return "\u2588" * filled + "\u2591" * (width - filled)
+
+
+def _colour_score(score: int) -> str:
+    """Return ANSI-coloured score string."""
+    if score >= 80:
+        return f"\033[92m{score}/100\033[0m"  # green
+    elif score >= 50:
+        return f"\033[93m{score}/100\033[0m"  # yellow
+    elif score >= 25:
+        return f"\033[33m{score}/100\033[0m"  # orange
+    else:
+        return f"\033[91m{score}/100\033[0m"  # red
+
+
+def format_guardrails_text(result: dict) -> str:
+    """Format guardrail scan results as human-readable text."""
+    lines = []
+    score = result["overall_score"]
+
+    # Header
+    lines.append("")
+    lines.append(f"  Guardrail Coverage: {_colour_score(score)}")
+    lines.append("")
+
+    # Category breakdown
+    cat_display = {
+        "input_validation": "Input Validation",
+        "output_filtering": "Output Filtering",
+        "execution_controls": "Execution Controls",
+        "monitoring_audit": "Monitoring & Audit",
+    }
+
+    for cat_key, display_name in cat_display.items():
+        cat = result["categories"][cat_key]
+        pct = int(cat["score"] / 20 * 100)
+        bar = _bar(cat["score"], 20)
+        ref = cat["article_ref"]
+        lines.append(f"  {display_name:<20s} {bar}  {pct:>3d}%  ({ref})")
+
+    # Libraries
+    lines.append("")
+    if result["libraries_detected"]:
+        lines.append("  Libraries detected:")
+        for lib in result["libraries_detected"]:
+            marker = "\u2713" if lib["type"] == "open-source" else "\u25cf"
+            lines.append(f"    {marker} {lib['name']} [{lib['type']}] in {lib['file']}")
+    else:
+        lines.append("  Libraries detected: none")
+
+    # Gaps by category
+    lines.append("")
+    lines.append("  Gaps:")
+    any_gaps = False
+    for cat_key, display_name in cat_display.items():
+        cat = result["categories"][cat_key]
+        if cat["gaps"]:
+            any_gaps = True
+            for gap in cat["gaps"]:
+                lines.append(f"    \u2717 {gap} ({cat['article_ref']})")
+    if not any_gaps:
+        lines.append("    None — all categories covered")
+
+    # Recommendations
+    if result["recommendations"]:
+        lines.append("")
+        lines.append("  Recommendations:")
+        for rec in result["recommendations"]:
+            lines.append(f"    [{rec['priority']}] {rec['action']} ({rec['article']})")
+
+    lines.append("")
+    return "\n".join(lines)

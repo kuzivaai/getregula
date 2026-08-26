@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "_purpose": "Exact classifications for immutable dated records that may quote a test count current at capture time. Public product repositories must not store internal handovers or session records, so no whole-file exceptions are currently required.",
+  "records": [],
+  "occurrence_exclusions": []
+}

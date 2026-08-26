@@ -1,0 +1,126 @@
+jurisdiction_id: colorado
+name: Colorado SB 26-189
+law_reference: "C.R.S. Title 6, Article 1, Part 17"
+effective_date: "2027-01-01"
+status: "Enacted, not yet effective"
+# Signed 14 May 2026; repeals and reenacts SB 24-205's Part 17. Substantive
+# duties apply on and after 1 Jan 2027 (§ 6-1-1702(1), signed act text).
+litigation_note: >-
+  xAI LLC v. Weiser (D. Colo., filed Apr 2026; DOJ intervened) led to an
+  agreed suspension of enforcement of the original SB 24-205 in April 2026.
+  Whether that stay reaches the reenacted SB 26-189 is publicly unresolved
+  (Norton Rose Fulbright, June 2026). Watch item; does not change the
+  1 Jan 2027 duty date as enacted.
+
+definitions:
+  admt:
+    term: "Automated Decision-Making Technology"
+    citation: "C.R.S. § 6-1-1701(1)"
+    text: "Any system that uses computation to make or be a substantial factor in making a consequential decision concerning a consumer, including the use of machine learning, artificial intelligence, or other statistical or computational techniques."
+
+ag_rulemaking:
+  deadline: "2027-01-01"
+  citation: "C.R.S. § 6-1-1705(3); § 6-1-1706(5)"
+  description: "Mandatory rules for post-adverse-outcome disclosures and consumer-rights procedures are due on or before 1 January 2027 (§ 6-1-1705(3)); broader clarifying rulemaking is discretionary (§ 6-1-1706(5))."
+
+penalties:
+  per_violation: "$20,000 (via Colorado Consumer Protection Act, C.R.S. § 6-1-112)"
+  enforcement: "Colorado Attorney General only, through the CCPA (§ 6-1-1706)"
+  private_action: "Explicitly excluded"
+  cure_period: "60 days (cure provision sunsets 1 January 2030)"
+  range: "Up to $20,000 per violation under the CCPA"
+
+deadlines:
+  default: "2027-01-01"
+  cure_sunset: "2030-01-01"
+
+risk_tiers:
+  - covered
+  - not_covered
+
+domain_mappings:
+  employment:
+    risk_level: covered
+    articles: ["6-1-1702", "6-1-1703", "6-1-1704", "6-1-1705"]
+    category: "Employment"
+    obligations:
+      - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
+      - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
+      - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
+  education:
+    risk_level: covered
+    articles: ["6-1-1702", "6-1-1703", "6-1-1704", "6-1-1705"]
+    category: "Education"
+    obligations:
+      - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
+      - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
+      - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
+  credit:
+    risk_level: covered
+    articles: ["6-1-1702", "6-1-1703", "6-1-1704", "6-1-1705"]
+    category: "Financial/lending services"
+    obligations:
+      - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
+      - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
+      - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
+  healthcare:
+    risk_level: covered
+    articles: ["6-1-1702", "6-1-1703", "6-1-1704", "6-1-1705"]
+    category: "Healthcare"
+    obligations:
+      - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
+      - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
+      - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
+  insurance:
+    risk_level: covered
+    articles: ["6-1-1702", "6-1-1703", "6-1-1704", "6-1-1705"]
+    category: "Insurance"
+    obligations:
+      - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
+      - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
+      - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
+  essential_services:
+    risk_level: covered
+    articles: ["6-1-1702", "6-1-1703", "6-1-1704", "6-1-1705"]
+    category: "Essential government services"
+    obligations:
+      - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
+      - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
+      - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
+  housing:
+    risk_level: covered
+    articles: ["6-1-1702", "6-1-1703", "6-1-1704", "6-1-1705"]
+    category: "Housing/residential real estate"
+    note: "Detection patterns added: tenant screening, rental decisions, eviction, property valuation, fair housing"
+    obligations:
+      - {article: "6-1-1702", name: "Developer documentation", who: "developer"}
+      - {article: "6-1-1702(4), 6-1-1703", name: "Record retention (3 years)", who: "both"}
+      - {article: "6-1-1704", name: "Pre-use consumer notice", who: "deployer"}
+      - {article: "6-1-1704", name: "Post-adverse disclosure (30 days)", who: "deployer"}
+      - {article: "6-1-1705", name: "Consumer rights (access, correction, human review)", who: "deployer"}
+
+exclusions:
+  - "Chatbots with acceptable-use policies"
+  - "Spreadsheets and calculators"
+  - "Spell-checkers and grammar tools"
+  - "Systems not processing personal data"
+
+# Domains NOT covered by Colorado (present in EU):
+# biometrics: NOT a covered domain
+# law_enforcement: NOT a covered domain
+# migration: NOT a covered domain
+# justice: NOT a covered domain
+# critical_infrastructure: NOT a covered domain
+# safety_components: NOT a covered domain

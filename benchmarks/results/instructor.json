@@ -1,0 +1,142 @@
+[
+  {
+    "file": "instructor/v2/validation/llm_validators.py",
+    "line": 21,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "scripts/make_desc.py",
+    "line": 56,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 40,
+    "suppressed": false,
+    "provenance": "production",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/llm/test_new_client.py",
+    "line": 44,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/llm/test_anthropic/test_system.py",
+    "line": 17,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/llm/test_openai/test_patch.py",
+    "line": 31,
+    "tier": "ai_security",
+    "category": "AI Security (LLM06)",
+    "description": "AI API call detected \u2014 verify error handling is in place",
+    "indicators": [
+      "no_error_handling_ai_call"
+    ],
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "remediation": "Ensure AI API calls are wrapped in try/except. Handle rate limits, timeouts, and malformed responses. Required by CRA Annex I secure-by-design.",
+    "lifecycle_phases": [
+      "develop"
+    ],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Current law: 2 Aug 2026. Omnibus agreed: 2 Dec 2027 (Annex III). Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication).",
+    "omnibus_deadline": "2027-12-02"
+  },
+  {
+    "file": "tests/llm/test_writer/evals/test_sentiment_analysis.py",
+    "line": 17,
+    "tier": "limited_risk",
+    "category": "Limited Risk (Article 50)",
+    "description": "Emotion recognition systems",
+    "indicators": [
+      "emotion_recognition"
+    ],
+    "articles": [
+      "50"
+    ],
+    "exceptions": null,
+    "confidence_score": 10,
+    "suppressed": false,
+    "provenance": "test",
+    "risk_decision": null,
+    "observations": [],
+    "domain_boost": null,
+    "lifecycle_phases": [
+      "develop",
+      "deploy"
+    ],
+    "detected_domains": [],
+    "open_question": true,
+    "deadline": "2026-08-02",
+    "deadline_status": "current_law",
+    "deadline_note": "Article 50 transparency for new systems: 2 Aug 2026 (unchanged by Omnibus). Existing systems watermarking: 2 Dec 2026 (Omnibus pending OJ publication (EP approved 16 Jun 2026, Council approved 29 Jun 2026; pending OJ publication)).",
+    "omnibus_deadline": "2026-12-02"
+  }
+]

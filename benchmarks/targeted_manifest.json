@@ -1,0 +1,80 @@
+{
+  "description": "Targeted high-risk corpus for Annex III tier precision measurement",
+  "created": "2026-06-11",
+  "method": "GitHub search by domain keyword + language:python, filtered by: OSI licence, genuine AI application (not tutorial), active repo. Search terms and selection documented per repo.",
+  "regula_version": "1.7.1",
+  "repos": [
+    {
+      "name": "deepface",
+      "url": "https://github.com/serengil/deepface.git",
+      "commit": "HEAD",
+      "licence": "MIT",
+      "domain": "medical",
+      "annex_iii_category": "biometrics",
+      "search_method": "GitHub search: face recognition Python open source",
+      "selection_rationale": "Mature face recognition + attribute analysis library (age, gender, emotion, race). 22K stars, MIT. Biometric categorisation is Annex III Category 1."
+    },
+    {
+      "name": "face_recognition",
+      "url": "https://github.com/ageitgey/face_recognition.git",
+      "commit": "HEAD",
+      "licence": "MIT",
+      "domain": null,
+      "annex_iii_category": "biometrics",
+      "search_method": "GitHub search: face recognition Python",
+      "selection_rationale": "Canonical Python face recognition library. 56K stars, MIT. Face identification/verification is Annex III Category 1."
+    },
+    {
+      "name": "AI-Resume-Analyzer",
+      "url": "https://github.com/deepakpadhi986/AI-Resume-Analyzer.git",
+      "commit": "HEAD",
+      "licence": "MIT",
+      "domain": "employment",
+      "annex_iii_category": "employment",
+      "search_method": "GitHub search: resume screening AI Python",
+      "selection_rationale": "Resume screening + candidate recommendation tool. 858 stars, MIT. Employment screening is Annex III Category 4."
+    },
+    {
+      "name": "Credit_Risk_Modelling",
+      "url": "https://github.com/levist7/Credit_Risk_Modelling.git",
+      "commit": "HEAD",
+      "licence": "MIT",
+      "domain": "finance",
+      "annex_iii_category": "credit_scoring",
+      "search_method": "GitHub search: credit risk model Python",
+      "selection_rationale": "PD/LGD/EAD credit risk models with ML. 81 stars, MIT. Credit scoring is Annex III Category 5(b)."
+    },
+    {
+      "name": "Lending-Club-Credit-Scoring",
+      "url": "https://github.com/allmeidaapedro/Lending-Club-Credit-Scoring.git",
+      "commit": "HEAD",
+      "licence": "MIT",
+      "domain": "finance",
+      "annex_iii_category": "credit_scoring",
+      "search_method": "GitHub search: credit scoring lending Python",
+      "selection_rationale": "End-to-end credit scoring with PD/EAD/LGD and credit policy design. 34 stars, MIT. Lending decisions are Annex III Category 5(b)."
+    },
+    {
+      "name": "Face-Biometry",
+      "url": "https://github.com/prathameshparit/Face-Biometry.git",
+      "commit": "HEAD",
+      "licence": "MIT",
+      "domain": null,
+      "annex_iii_category": "biometrics",
+      "search_method": "GitHub search: face biometric identification Python",
+      "selection_rationale": "Biometric face verification system on Flask. 3 stars, MIT. Identity verification is Annex III Category 1."
+    },
+    {
+      "name": "Credit-Scoring-Model",
+      "url": "https://github.com/shubhambhatia2103/Credit-Scoring-Model.git",
+      "commit": "HEAD",
+      "licence": "NOASSERTION",
+      "domain": "finance",
+      "annex_iii_category": "credit_scoring",
+      "search_method": "GitHub search: credit scoring model Python",
+      "selection_rationale": "Logistic regression credit scoring with decile methodology for lending decisions. No explicit licence (excluded from analysis if licence check fails)."
+    }
+  ],
+  "sha_note": "All repos were harvested at HEAD on 2026-06-11. The harvest script did not record resolved commit SHAs. Re-running harvest_targeted.py may produce different results if repos have been updated since. The candidates.json file records the findings at harvest time and remains the canonical labelling input regardless of repo changes.",
+  "harvested_at": "2026-06-11T14:30:00Z"
+}

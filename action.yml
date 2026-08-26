@@ -1,0 +1,670 @@
+name: Regula AI Governance Check
+description: >-
+  Scan code for EU AI Act risk indicators in CI. Runs in your workflow; the Regula core does not upload scanned file contents.
+author: Regula
+
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  path:
+    description: Path to the project to scan
+    required: false
+    default: "."
+  comment-on-pr:
+    description: Post a compliance summary comment on pull requests
+    required: false
+    default: "true"
+  inline-pr-comments:
+    description: Post per-finding inline review comments on the PR diff (only for findings on changed lines)
+    required: false
+    default: "false"
+  inline-comment-max:
+    description: Maximum number of inline review comments to post per PR (avoid spam)
+    required: false
+    default: "20"
+  inline-comment-min-tier:
+    description: Minimum tier for inline comments (prohibited|high_risk|limited_risk|minimal_risk)
+    required: false
+    default: "high_risk"
+  format:
+    description: Output format for findings (sarif or json)
+    required: false
+    default: "sarif"
+  framework:
+    description: Compliance framework to check against
+    required: false
+    default: "eu-ai-act"
+  fail-on-prohibited:
+    description: Exit with code 2 if prohibited-use findings are detected
+    required: false
+    default: "true"
+  fail-on-high-risk:
+    description: Exit with code 1 if high-risk findings are detected
+    required: false
+    default: "false"
+  min-dependency-score:
+    description: Minimum acceptable pinning score (0–100). Exit with code 1 if below threshold.
+    required: false
+    default: "0"
+  diff-mode:
+    description: 'Only scan files changed in this PR (compares against base branch)'
+    required: false
+    default: 'false'
+  upload-sarif:
+    description: Upload SARIF results to GitHub Code Scanning
+    required: false
+    default: "true"
+  allow-partial-scan:
+    description: >-
+      Accept a scan that skipped unreadable/unparseable files
+      (completion_status="completed_with_skips"). Default "false" fails the
+      gate closed, because "0 findings" cannot cover files that were not
+      analysed. Set "true" only if you understand the risk.
+    required: false
+    default: "false"
+  annotations:
+    description: >-
+      Emit GitHub workflow command annotations (::error, ::warning, ::notice)
+      for each finding so they appear inline on the PR "Files changed" tab.
+      Works without SARIF/CodeQL. Set to "false" to disable.
+    required: false
+    default: "true"
+
+outputs:
+  findings-count:
+    description: Total number of findings
+    value: ${{ steps.count-findings.outputs.findings_count }}
+  prohibited-count:
+    description: Number of prohibited-use findings
+    value: ${{ steps.count-findings.outputs.prohibited_count }}
+  high-risk-count:
+    description: Number of high-risk findings
+    value: ${{ steps.count-findings.outputs.high_risk_count }}
+  pinning-score:
+    description: Dependency pinning score (0–100)
+    value: ${{ steps.deps-scan.outputs.pinning_score }}
+  sarif-file:
+    description: Path to the generated SARIF file
+    value: ${{ steps.run-check.outputs.sarif_file }}
+  manifest-file:
+    description: Path to the AnalysisManifest proving scan completion (DEF-004)
+    value: ${{ steps.run-check.outputs.manifest_file }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python 3.12
+      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      with:
+        python-version: "3.12"
+
+    - name: Install Regula dependencies
+      shell: bash
+      run: |
+        pip install --quiet -r "${{ github.action_path }}/requirements.txt" 2>/dev/null || true
+        pip install --quiet -e "${{ github.action_path }}" 2>/dev/null || true
+
+    - name: Run regula check
+      id: run-check
+      shell: bash
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_FRAMEWORK: ${{ inputs.framework }}
+        INPUT_DIFF_MODE: ${{ inputs.diff-mode }}
+        INPUT_ALLOW_PARTIAL_SCAN: ${{ inputs.allow-partial-scan }}
+      run: |
+        SARIF_FILE="${{ runner.temp }}/regula-results.sarif.json"
+        MANIFEST_FILE="${{ runner.temp }}/regula-manifest.json"
+        echo "sarif_file=${SARIF_FILE}" >> "$GITHUB_OUTPUT"
+        echo "manifest_file=${MANIFEST_FILE}" >> "$GITHUB_OUTPUT"
+
+        # Ensure no stale artifacts from a previous step survive.
+        rm -f "${SARIF_FILE}" "${MANIFEST_FILE}"
+
+        # Build diff flag if diff-mode is enabled
+        DIFF_FLAG=""
+        if [ "${INPUT_DIFF_MODE}" = "true" ]; then
+          BASE_REF="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
+          DIFF_FLAG="--diff ${BASE_REF}"
+        fi
+
+        # DEF-004 fix: the CLI writes the manifest ONLY on successful
+        # completion (after the SARIF write). Its presence + completed status
+        # is the proof-of-scan the gate requires. Exit code 1 just means
+        # findings were detected; the SARIF is still written. We capture the
+        # real exit code instead of swallowing it with `|| true`.
+        set +e
+        python3 "${{ github.action_path }}/scripts/cli.py" check "${INPUT_PATH}" \
+          --format sarif \
+          --framework "${INPUT_FRAMEWORK}" \
+          ${DIFF_FLAG} \
+          --output "${SARIF_FILE}" \
+          --manifest "${MANIFEST_FILE}"
+        CLI_EXIT=$?
+        set -e
+        echo "cli_exit=${CLI_EXIT}" >> "$GITHUB_OUTPUT"
+
+        # Fail closed: a clean scan MUST leave a manifest whose
+        # completion_status is "completed". Anything else is treated as a scan
+        # FAILURE and never a clean pass. We do NOT manufacture an empty SARIF
+        # to paper over a failed scan (the old behaviour that could silently
+        # disarm fail-on-prohibited). Two failure classes are distinguished:
+        #   - missing/unparseable/failed manifest -> scan did not complete
+        #   - completion_status="completed_with_skips" -> PARTIAL scan: one or
+        #     more eligible files could not be read/parsed, so "0 findings" is
+        #     not trustworthy. By default this fails closed; set
+        #     allow-partial-scan: 'true' to accept it (NOT recommended for a
+        #     prohibited-practice gate).
+        STATUS=""
+        if [ -s "${MANIFEST_FILE}" ]; then
+          STATUS=$(python3 -c "import json; print(json.load(open('${MANIFEST_FILE}')).get('completion_status',''))" 2>/dev/null || echo "")
+        fi
+        echo "completion_status=${STATUS}" >> "$GITHUB_OUTPUT"
+
+        if [ "${STATUS}" = "completed" ]; then
+          :  # clean, full scan — proceed
+        elif [ "${STATUS}" = "completed_with_skips" ] && [ "${INPUT_ALLOW_PARTIAL_SCAN}" = "true" ]; then
+          echo "::warning::Regula scan completed but SKIPPED one or more unreadable/unparseable files. Proceeding because allow-partial-scan=true. '0 findings' does not cover skipped files."
+        elif [ "${STATUS}" = "completed_with_skips" ]; then
+          echo "::error::Regula scan was PARTIAL — one or more eligible files could not be read/parsed (see manifest ${MANIFEST_FILE}). Failing closed: a compliance gate must not treat a partial scan as clean. Fix the file(s) or set allow-partial-scan: 'true' to override."
+          exit 1
+        else
+          echo "::error::Regula scan did not complete successfully (no valid completion manifest at ${MANIFEST_FILE}, CLI exit ${CLI_EXIT}). Failing closed — a failed scan must not report a green compliance gate."
+          exit 1
+        fi
+
+    - name: Emit GitHub workflow-command annotations
+      if: ${{ inputs.annotations == 'true' }}
+      shell: bash
+      env:
+        INPUT_PATH: ${{ inputs.path }}
+        INPUT_FRAMEWORK: ${{ inputs.framework }}
+        INPUT_DIFF_MODE: ${{ inputs.diff-mode }}
+      # Runs regula check in --ci mode so findings emit as ::error / ::warning /
+      # ::notice on stdout. GitHub parses these and renders inline annotations
+      # on the PR "Files changed" tab. Exit code is ignored here — the
+      # fail-on-prohibited / fail-on-high-risk gates live in the count step below.
+      run: |
+        # Build diff flag identical to the main scan
+        DIFF_FLAG=""
+        if [ "${INPUT_DIFF_MODE}" = "true" ]; then
+          BASE_REF="${{ github.event.pull_request.base.sha || 'HEAD~1' }}"
+          DIFF_FLAG="--diff ${BASE_REF}"
+        fi
+        python3 "${{ github.action_path }}/scripts/cli.py" check "${INPUT_PATH}" \
+          --ci \
+          --framework "${INPUT_FRAMEWORK}" \
+          ${DIFF_FLAG} \
+          || true
+
+    - name: Count findings
+      id: count-findings
+      shell: bash
+      run: |
+        python3 - <<'EOF'
+        import json, os, sys
+
+        manifest_file = os.environ.get("MANIFEST_FILE", "")
+        sarif_file = os.environ.get("SARIF_FILE", "")
+        output_file = os.environ.get("GITHUB_OUTPUT", "")
+
+        # DEF-004 fix: prefer the AUTHORITATIVE counts from the completion
+        # manifest. The run step already failed the job if the manifest was
+        # absent or non-completed, so by here it exists and is trustworthy.
+        # SARIF re-derivation is kept only as a defensive fallback and is
+        # never allowed to silently substitute a failed scan for a clean one.
+        findings_count = prohibited_count = high_risk_count = None
+        try:
+            with open(manifest_file) as f:
+                manifest = json.load(f)
+            counts = manifest.get("counts", {})
+            findings_count = counts.get("findings_total")
+            prohibited_count = counts.get("prohibited")
+            high_risk_count = counts.get("high_risk")
+        except Exception as e:
+            print(f"::error::Could not read completion manifest: {e}", file=sys.stderr)
+            sys.exit(1)  # fail closed — do not guess from SARIF
+
+        # Sanity: the manifest counts must be present integers.
+        if None in (findings_count, prohibited_count, high_risk_count):
+            print("::error::Completion manifest missing required counts. Failing closed.", file=sys.stderr)
+            sys.exit(1)
+
+        with open(output_file, "a") as f:
+            f.write(f"findings_count={findings_count}\n")
+            f.write(f"prohibited_count={prohibited_count}\n")
+            f.write(f"high_risk_count={high_risk_count}\n")
+
+        print(f"findings_count={findings_count}")
+        print(f"prohibited_count={prohibited_count}")
+        print(f"high_risk_count={high_risk_count}")
+        EOF
+      env:
+        MANIFEST_FILE: ${{ runner.temp }}/regula-manifest.json
+        SARIF_FILE: ${{ runner.temp }}/regula-results.sarif.json
+
+    - name: Run regula deps
+      id: deps-scan
+      shell: bash
+      run: |
+        python3 - <<'EOF'
+        import json, os, subprocess, sys
+
+        action_path = os.environ.get("ACTION_PATH", "")
+        project_path = os.environ.get("PROJECT_PATH", ".")
+        output_file = os.environ.get("GITHUB_OUTPUT", "")
+
+        try:
+            result = subprocess.run(
+                ["python3", f"{action_path}/scripts/cli.py", "deps",
+                 "--project", project_path, "--format", "json"],
+                capture_output=True, text=True, timeout=120
+            )
+            data = json.loads(result.stdout)
+            # Try common field names for pinning score
+            pinning_score = (
+                data.get("pinning_score")
+                or data.get("pin_score")
+                or data.get("score")
+                or data.get("dependency_score")
+                or 0
+            )
+            # Handle nested structures
+            if isinstance(pinning_score, dict):
+                pinning_score = pinning_score.get("score", 0)
+            pinning_score = int(float(pinning_score))
+        except Exception as e:
+            print(f"Warning: deps scan failed: {e}", file=sys.stderr)
+            pinning_score = 0
+
+        with open(output_file, "a") as f:
+            f.write(f"pinning_score={pinning_score}\n")
+
+        print(f"pinning_score={pinning_score}")
+        EOF
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+        PROJECT_PATH: ${{ inputs.path }}
+
+    - name: Write GitHub Step Summary
+      shell: bash
+      env:
+        INPUT_FRAMEWORK: ${{ inputs.framework }}
+        FAIL_ON_HIGH_RISK: ${{ inputs.fail-on-high-risk }}
+      run: |
+        cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+        ## Regula AI Governance Report
+
+        | Metric | Value |
+        |--------|-------|
+        | Total Findings | ${{ steps.count-findings.outputs.findings_count }} |
+        | Prohibited-Use Findings | ${{ steps.count-findings.outputs.prohibited_count }} |
+        | High-Risk Findings | ${{ steps.count-findings.outputs.high_risk_count }} |
+        | Dependency Pinning Score | ${{ steps.deps-scan.outputs.pinning_score }}/100 |
+        | Framework | ${INPUT_FRAMEWORK} |
+        | SARIF File | \`${{ steps.run-check.outputs.sarif_file }}\` |
+
+        EOF
+
+        # Add status indicator
+        PROHIBITED="${{ steps.count-findings.outputs.prohibited_count }}"
+        HIGH_RISK="${{ steps.count-findings.outputs.high_risk_count }}"
+
+        if ! [[ "$PROHIBITED" =~ ^[0-9]+$ ]]; then PROHIBITED=0; fi
+        if ! [[ "$HIGH_RISK" =~ ^[0-9]+$ ]]; then HIGH_RISK=0; fi
+
+        if [ "${PROHIBITED}" -gt "0" ]; then
+          echo "### Status: FAIL — Prohibited-use indicators detected" >> "$GITHUB_STEP_SUMMARY"
+        elif [ "${HIGH_RISK}" -gt "0" ] && [ "${FAIL_ON_HIGH_RISK}" = "true" ]; then
+          echo "### Status: FAIL — High-risk indicators detected" >> "$GITHUB_STEP_SUMMARY"
+        else
+          echo "### Status: No prohibited-use or high-risk indicators detected" >> "$GITHUB_STEP_SUMMARY"
+        fi
+
+        # The step summary is the surface most developers actually read, so it
+        # carries the same disclaimer as the PR comment path below. A bare
+        # "PASS" here reads as a compliance determination, which this tool does
+        # not make and must never imply.
+        printf '\n*Findings are indicators, not legal determinations. Absence of a finding is not evidence of compliance.*\n' >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Post PR compliance comment
+      if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      run: |
+        FINDINGS="${{ steps.count-findings.outputs.findings_count }}"
+        PROHIBITED="${{ steps.count-findings.outputs.prohibited_count }}"
+        HIGH_RISK="${{ steps.count-findings.outputs.high_risk_count }}"
+        PINNING="${{ steps.deps-scan.outputs.pinning_score }}"
+
+        # Determine status
+        if [ "${PROHIBITED}" -gt "0" ]; then
+          STATUS="PROHIBITED"
+          ICON="🔴"
+        elif [ "${HIGH_RISK}" -gt "0" ]; then
+          STATUS="HIGH-RISK"
+          ICON="🟡"
+        else
+          STATUS="PASS"
+          ICON="🟢"
+        fi
+
+        # Build obligation table from SARIF findings
+        python3 - <<'PYEOF'
+        import json, os, sys
+
+        sarif_file = os.environ.get("SARIF_FILE", "")
+        try:
+            with open(sarif_file) as f:
+                data = json.load(f)
+        except Exception:
+            data = {"runs": [{"results": []}]}
+
+        results = []
+        for run in data.get("runs", []):
+            results.extend(run.get("results", []))
+
+        # Group by tier
+        tiers = {}
+        for r in results:
+            rule_id = r.get("ruleId", "unknown")
+            tags = r.get("properties", {}).get("tags", [])
+            tier = "info"
+            for t in tags:
+                if "prohibited" in t.lower(): tier = "prohibited"
+                elif "high" in t.lower(): tier = "high_risk"
+                elif "limited" in t.lower(): tier = "limited_risk"
+                elif "security" in t.lower(): tier = "ai_security"
+                elif "credential" in t.lower(): tier = "credential"
+                elif "agent" in t.lower(): tier = "agent_autonomy"
+            tiers[tier] = tiers.get(tier, 0) + 1
+
+        # Build finding details (top 5 non-suppressed)
+        details = []
+        for r in results[:10]:
+            loc = r.get("locations", [{}])[0].get("physicalLocation", {})
+            path = loc.get("artifactLocation", {}).get("uri", "?")
+            line = loc.get("region", {}).get("startLine", "?")
+            msg = r.get("message", {}).get("text", "")[:100]
+            rule = r.get("ruleId", "")
+            details.append(f"| `{path}:{line}` | {rule} | {msg} |")
+
+        # Write markdown
+        lines = []
+        lines.append(f"## {os.environ.get('ICON', '🟢')} Regula Compliance: {os.environ.get('STATUS', 'PASS')}")
+        lines.append("")
+        lines.append(f"| Metric | Value |")
+        lines.append(f"|--------|-------|")
+        lines.append(f"| Findings | {os.environ.get('FINDINGS', '0')} |")
+        lines.append(f"| Prohibited | {os.environ.get('PROHIBITED', '0')} |")
+        lines.append(f"| High-Risk | {os.environ.get('HIGH_RISK', '0')} |")
+        lines.append(f"| Dependency Pinning | {os.environ.get('PINNING', '0')}/100 |")
+        lines.append("")
+
+        if details:
+            lines.append("<details><summary>Top findings</summary>\n")
+            lines.append("| Location | Rule | Description |")
+            lines.append("|----------|------|-------------|")
+            lines.extend(details[:5])
+            lines.append("\n</details>")
+            lines.append("")
+
+        lines.append("---")
+        lines.append("*Scanned by [Regula](https://github.com/kuzivaai/getregula) — EU AI Act risk indication for code*")
+        lines.append("*Findings are indicators, not legal determinations.*")
+
+        comment_body = "\n".join(lines)
+
+        # Write to file for the gh command
+        with open(os.environ.get("COMMENT_FILE", "/tmp/regula-comment.md"), "w") as f:
+            f.write(comment_body)
+
+        print(comment_body)
+        PYEOF
+      env:
+        SARIF_FILE: ${{ runner.temp }}/regula-results.sarif.json
+        COMMENT_FILE: ${{ runner.temp }}/regula-comment.md
+        FINDINGS: ${{ steps.count-findings.outputs.findings_count }}
+        PROHIBITED: ${{ steps.count-findings.outputs.prohibited_count }}
+        HIGH_RISK: ${{ steps.count-findings.outputs.high_risk_count }}
+        PINNING: ${{ steps.deps-scan.outputs.pinning_score }}
+        STATUS: ""
+        ICON: ""
+
+    - name: Create or update PR comment
+      if: inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+      with:
+        script: |
+          const fs = require('fs');
+          const body = fs.readFileSync('${{ runner.temp }}/regula-comment.md', 'utf8');
+          const marker = '<!-- regula-compliance-comment -->';
+          const fullBody = marker + '\n' + body;
+
+          // Find existing comment to update (avoid spam)
+          // Posting the summary is a convenience, NOT the compliance gate.
+          // The gate is the scan result and its completion manifest, which
+          // have already been evaluated by this point. A workflow without
+          // `pull-requests: write` — which includes every PR from a fork,
+          // since GitHub always issues those a read-only token — must not
+          // turn a clean scan into a red check because a comment could not
+          // be written. Warn and continue instead.
+          try {
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: fullBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: fullBody,
+              });
+            }
+          } catch (err) {
+            core.warning(
+              `Could not post the Regula PR comment: ${err.message}. ` +
+              `This does not affect the compliance result. Grant the workflow ` +
+              `\`permissions: pull-requests: write\`, or set \`comment-on-pr: 'false'\` ` +
+              `to silence this. PRs from forks always receive a read-only token.`
+            );
+          }
+
+    - name: Post inline PR review comments
+      if: inputs.inline-pr-comments == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+      env:
+        SARIF_FILE: ${{ runner.temp }}/regula-results.sarif.json
+        MAX_COMMENTS: ${{ inputs.inline-comment-max }}
+        MIN_TIER: ${{ inputs.inline-comment-min-tier }}
+      with:
+        script: |
+          const fs = require('fs');
+          let sarif;
+          try {
+            sarif = JSON.parse(fs.readFileSync(process.env.SARIF_FILE, 'utf8'));
+          } catch (e) {
+            core.warning(`Could not read SARIF: ${e.message}`);
+            return;
+          }
+
+          // Tier ordering — only post comments at or above MIN_TIER
+          const tierOrder = { prohibited: 4, high_risk: 3, ai_security: 3, credential_exposure: 3, agent_autonomy: 3, limited_risk: 2, minimal_risk: 1 };
+          const minLevel = tierOrder[process.env.MIN_TIER] || 3;
+          const maxComments = parseInt(process.env.MAX_COMMENTS, 10) || 20;
+
+          // Fetch the changed files in this PR with their diff hunks.
+          // Guarded for the same reason as the summary comment below: this
+          // is a convenience, not the gate. An explicit `permissions:` block
+          // that omits pull-requests access makes this throw, and a clean
+          // scan must not go red because of it.
+          let prFiles;
+          try {
+            ({ data: prFiles } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 300,
+            }));
+          } catch (err) {
+            core.warning(
+              `Could not read the PR diff for inline comments: ${err.message}. ` +
+              `This does not affect the compliance result. The workflow needs ` +
+              `\`permissions: pull-requests: write\`; PRs from forks always ` +
+              `receive a read-only token.`
+            );
+            return;
+          }
+
+          // Build a map: filename -> Set of changed line numbers (RIGHT side of diff)
+          const changedLines = new Map();
+          for (const f of prFiles) {
+            if (!f.patch) continue;
+            const lines = new Set();
+            let rightLine = 0;
+            for (const ln of f.patch.split('\n')) {
+              const hunk = ln.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/);
+              if (hunk) { rightLine = parseInt(hunk[1], 10); continue; }
+              if (ln.startsWith('+') && !ln.startsWith('+++')) {
+                lines.add(rightLine);
+                rightLine++;
+              } else if (!ln.startsWith('-')) {
+                rightLine++;
+              }
+            }
+            changedLines.set(f.filename, lines);
+          }
+
+          // Collect SARIF results into review comments
+          const allResults = [];
+          for (const run of sarif.runs || []) {
+            for (const r of run.results || []) {
+              allResults.push(r);
+            }
+          }
+
+          const tierFromTags = (tags) => {
+            for (const t of tags || []) {
+              const lt = String(t).toLowerCase();
+              if (lt.includes('prohibited')) return 'prohibited';
+              if (lt.includes('high')) return 'high_risk';
+              if (lt.includes('credential')) return 'credential_exposure';
+              if (lt.includes('agent')) return 'agent_autonomy';
+              if (lt.includes('limited')) return 'limited_risk';
+            }
+            return 'minimal_risk';
+          };
+
+          const comments = [];
+          for (const r of allResults) {
+            if (comments.length >= maxComments) break;
+            const tags = (r.properties && r.properties.tags) || [];
+            const tier = tierFromTags(tags);
+            if ((tierOrder[tier] || 0) < minLevel) continue;
+
+            const loc = (r.locations && r.locations[0] && r.locations[0].physicalLocation) || {};
+            const path = loc.artifactLocation && loc.artifactLocation.uri;
+            const line = loc.region && loc.region.startLine;
+            if (!path || !line) continue;
+
+            const fileLines = changedLines.get(path);
+            if (!fileLines || !fileLines.has(line)) continue;  // skip findings outside the diff
+
+            const ruleId = r.ruleId || 'regula';
+            const msg = (r.message && r.message.text) || '';
+            const articles = (r.properties && r.properties.articles) || [];
+            const articleStr = articles.length ? ` (Art. ${articles.join(', ')})` : '';
+
+            comments.push({
+              path,
+              line,
+              side: 'RIGHT',
+              body: `**Regula · ${tier.replace('_', ' ')}${articleStr}** — ${ruleId}\n\n${msg}\n\n_Indicator only, not a legal determination. See [Regula docs](https://github.com/kuzivaai/getregula)._`,
+            });
+          }
+
+          if (comments.length === 0) {
+            core.info('No findings on changed lines — no inline comments to post.');
+            return;
+          }
+
+          try {
+            await github.rest.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              event: 'COMMENT',
+              body: `Regula posted ${comments.length} inline finding${comments.length === 1 ? '' : 's'} on changed lines.`,
+              comments,
+            });
+            core.info(`Posted ${comments.length} inline review comments.`);
+          } catch (e) {
+            core.warning(`Failed to post inline review: ${e.message}`);
+          }
+
+    - name: Upload SARIF to GitHub Code Scanning
+      if: inputs.upload-sarif == 'true' && always()
+      continue-on-error: true
+      uses: github/codeql-action/upload-sarif@eec0bff2f6c15bf3f1e8a0152f94d17664a06a06 # v4
+      with:
+        sarif_file: ${{ steps.run-check.outputs.sarif_file }}
+        category: regula-ai-governance
+
+    - name: Determine exit code
+      shell: bash
+      env:
+        FAIL_ON_HIGH_RISK: ${{ inputs.fail-on-high-risk }}
+        FAIL_ON_PROHIBITED: ${{ inputs.fail-on-prohibited }}
+        MIN_PINNING: ${{ inputs.min-dependency-score }}
+        PROHIBITED_COUNT: ${{ steps.count-findings.outputs.prohibited_count }}
+        HIGH_RISK_COUNT: ${{ steps.count-findings.outputs.high_risk_count }}
+        PINNING_SCORE: ${{ steps.deps-scan.outputs.pinning_score }}
+      run: |
+        EXIT_CODE=0
+
+        # DEF-004 numeric guard / F4-action: Default values in case outputs are empty or non-numeric
+        PROHIBITED="${PROHIBITED_COUNT:-0}"
+        HIGH_RISK="${HIGH_RISK_COUNT:-0}"
+        PINNING="${PINNING_SCORE:-0}"
+        MIN_PIN="${MIN_PINNING:-0}"
+
+        if ! [[ "$PROHIBITED" =~ ^[0-9]+$ ]]; then PROHIBITED=0; fi
+        if ! [[ "$HIGH_RISK" =~ ^[0-9]+$ ]]; then HIGH_RISK=0; fi
+        if ! [[ "$PINNING" =~ ^[0-9]+$ ]]; then PINNING=0; fi
+        if ! [[ "$MIN_PIN" =~ ^[0-9]+$ ]]; then MIN_PIN=0; fi
+
+        # Check high-risk and low pinning score first (exit 1)
+        if [ "${FAIL_ON_HIGH_RISK}" = "true" ] && [ "${HIGH_RISK}" -gt "0" ]; then
+          EXIT_CODE=1
+        fi
+
+        if [ "${MIN_PIN}" -gt "0" ] && [ "${PINNING}" -lt "${MIN_PIN}" ]; then
+          EXIT_CODE=1
+        fi
+
+        # Prohibited-use findings override to exit code 2
+        if [ "${FAIL_ON_PROHIBITED}" = "true" ] && [ "${PROHIBITED}" -gt "0" ]; then
+          EXIT_CODE=2
+        fi
+
+        if [ "${EXIT_CODE}" -eq "2" ]; then
+          echo "::error::Regula found ${PROHIBITED} prohibited-use finding(s). Review and remediate before merging."
+          exit 2
+        elif [ "${EXIT_CODE}" -eq "1" ]; then
+          echo "::warning::Regula found ${HIGH_RISK} high-risk finding(s) or dependency pinning score ${PINNING} is below threshold ${MIN_PIN}."
+          exit 1
+        fi
+
+        echo "Regula checks passed."

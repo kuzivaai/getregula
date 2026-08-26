@@ -1,0 +1,162 @@
+{
+  "_ai_import_injected": "import torch  # injected by build_recall_artefact.py",
+  "_hit_definition": "A fixture is recalled when the HIGHEST tier detected in it equals the tier manifest.json expects.",
+  "_publication_rule": "Every published recall fraction must state its path and gate condition. A bare fraction is not a measurement: the same corpus gives different answers per condition, and the scanner and classifier paths disagree (finding F8).",
+  "_what_this_is": "Canonical recall fractions for the synthetic corpus. Produced by scripts/build_recall_artefact.py from an actual run. Never hand-edited: tests/test_recall_artefact.py re-runs the measurement and fails if this file disagrees.",
+  "conditions": {
+    "classifier/domains-declared": {
+      "gates": "domains-declared",
+      "invocation": "report.scan_files(fixtures, declared_domains=all) - benchmarks/synthetic/run.py",
+      "label": "report.scan_files called directly",
+      "note": "NOT what a user runs. Bypasses the CLI's scope and min-tier filtering. Its disagreement with the scanner path on this corpus is finding F8.",
+      "path": "classifier",
+      "tiers": {
+        "high_risk": {
+          "fraction": "16/30",
+          "hits": 16,
+          "missed": [
+            "highrisk_admissions.py",
+            "highrisk_benefits_eligibility.py",
+            "highrisk_border_screening.py",
+            "highrisk_crime_forecast.py",
+            "highrisk_energy_grid.py",
+            "highrisk_exam_proctor.py",
+            "highrisk_medical_triage.py",
+            "highrisk_polygraph_screen.py",
+            "highrisk_recidivism.py",
+            "highrisk_student_assessment.py",
+            "highrisk_task_allocation_shift.py",
+            "highrisk_voice_verify.py",
+            "highrisk_voter_targeting.py",
+            "highrisk_worker_monitoring.py"
+          ],
+          "percent": 53.3,
+          "total": 30
+        },
+        "prohibited": {
+          "fraction": "5/5",
+          "hits": 5,
+          "missed": [],
+          "percent": 100.0,
+          "total": 5
+        }
+      }
+    },
+    "scanner/default": {
+      "gates": "none",
+      "invocation": "python3 -m scripts.cli check <fixtures> --format json",
+      "label": "default scan",
+      "note": "What a user runs with no flags. Opt-in domains stay off.",
+      "path": "scanner",
+      "tiers": {
+        "high_risk": {
+          "fraction": "10/30",
+          "hits": 10,
+          "missed": [
+            "highrisk_admissions.py",
+            "highrisk_benefits_eligibility.py",
+            "highrisk_border_screening.py",
+            "highrisk_crime_forecast.py",
+            "highrisk_employment.py",
+            "highrisk_energy_grid.py",
+            "highrisk_exam_proctor.py",
+            "highrisk_judicial_support.py",
+            "highrisk_medical_triage.py",
+            "highrisk_polygraph_screen.py",
+            "highrisk_promotion_ranking.py",
+            "highrisk_recidivism.py",
+            "highrisk_student_assessment.py",
+            "highrisk_task_allocation_shift.py",
+            "highrisk_traffic_control.py",
+            "highrisk_visa_triage.py",
+            "highrisk_voice_verify.py",
+            "highrisk_voter_targeting.py",
+            "highrisk_water_supply.py",
+            "highrisk_worker_monitoring.py"
+          ],
+          "percent": 33.3,
+          "total": 30
+        },
+        "prohibited": {
+          "fraction": "5/5",
+          "hits": 5,
+          "missed": [],
+          "percent": 100.0,
+          "total": 5
+        }
+      }
+    },
+    "scanner/domains-declared": {
+      "gates": "domains-declared",
+      "invocation": "python3 -m scripts.cli check <fixtures> --format json --domain employment,medical,finance,biometrics,education,law_enforcement,infrastructure,migration",
+      "label": "all opt-in domains declared",
+      "note": "All eight opt-in domains declared at once. This is a SUPERSET of declaring only each fixture's own matching domain, so it is an upper bound on the per-fixture condition, not the same measurement.",
+      "path": "scanner",
+      "tiers": {
+        "high_risk": {
+          "fraction": "16/30",
+          "hits": 16,
+          "missed": [
+            "highrisk_admissions.py",
+            "highrisk_benefits_eligibility.py",
+            "highrisk_border_screening.py",
+            "highrisk_crime_forecast.py",
+            "highrisk_energy_grid.py",
+            "highrisk_exam_proctor.py",
+            "highrisk_medical_triage.py",
+            "highrisk_polygraph_screen.py",
+            "highrisk_recidivism.py",
+            "highrisk_student_assessment.py",
+            "highrisk_task_allocation_shift.py",
+            "highrisk_voice_verify.py",
+            "highrisk_voter_targeting.py",
+            "highrisk_worker_monitoring.py"
+          ],
+          "percent": 53.3,
+          "total": 30
+        },
+        "prohibited": {
+          "fraction": "5/5",
+          "hits": 5,
+          "missed": [],
+          "percent": 100.0,
+          "total": 5
+        }
+      }
+    },
+    "scanner/domains-declared+ai-import": {
+      "gates": "domains-declared+ai-import",
+      "invocation": "python3 -m scripts.cli check <fixtures-with-ai-import> --format json --domain employment,medical,finance,biometrics,education,law_enforcement,infrastructure,migration",
+      "label": "domains declared and an AI-library import present",
+      "note": "Fixtures copied and given import torch  # injected by build_recall_artefact.py so the AI-indicator gate is satisfied for every file. The corpus is modified; the number is not comparable to a scan of the corpus as committed.",
+      "path": "scanner",
+      "tiers": {
+        "high_risk": {
+          "fraction": "23/30",
+          "hits": 23,
+          "missed": [
+            "highrisk_benefits_eligibility.py",
+            "highrisk_border_screening.py",
+            "highrisk_crime_forecast.py",
+            "highrisk_energy_grid.py",
+            "highrisk_exam_proctor.py",
+            "highrisk_recidivism.py",
+            "highrisk_voter_targeting.py"
+          ],
+          "percent": 76.7,
+          "total": 30
+        },
+        "prohibited": {
+          "fraction": "5/5",
+          "hits": 5,
+          "missed": [],
+          "percent": 100.0,
+          "total": 5
+        }
+      }
+    }
+  },
+  "fixture_count": 38,
+  "generated_at": "2026-08-12T22:32:18.449377+00:00",
+  "manifest_version": "2.0"
+}

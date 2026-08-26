@@ -1,0 +1,24 @@
+{
+  "id": "2026-07-20-art50-final-guidelines",
+  "date": "2026-07-20",
+  "type": "commission-guidance",
+  "source_url": "https://digital-strategy.ec.europa.eu/en/library/guidelines-obligations-ai-act-art50",
+  "source_title": "Guidelines on transparency obligations for providers and deployers of AI systems (European Commission, 20 July 2026)",
+  "affected_articles": [
+    "50",
+    "96"
+  ],
+  "summary": "The Commission published the final version of its Guidelines on transparency obligations for providers and deployers of AI systems on 20 July 2026, under the Article 96(1)(d) empowerment to issue guidance on the practical implementation of Article 50. The draft was published 8 May 2026 and its consultation closed 3 June 2026. The final guidelines arrived thirteen days before the Article 50 obligations for new systems started to apply on 2 August 2026. They cover interactive systems, generative systems and deepfakes, and sit alongside the voluntary Code of Practice on marking and labelling of AI-generated content of 10 June 2026. CRITICAL DISTINCTION: these are guidance, not binding law. They aid consistent application but do not amend Article 50, and following them is not a presumption of conformity.",
+  "mechanical_change": "scripts/timeline.py gained a 2026-07-20 timeline row for the final guidelines and its module docstring moved the Article 50 guidelines status from draft-with-open-consultation to final-published; the docstring's Article 6 guidelines line was corrected to the 19 May 2026 draft with the targeted consultation closed 23 July 2026. site/blog/blog-art50-code-of-practice.html gained a dated editor's note linking the final guidelines. On 2026-08-19 the guidance was used to verify paragraph-specific decision facts, correct disclosure templates, and build a bounded synthetic signal-regression corpus.",
+  "impact_on_regula_patterns": [
+    {
+      "pattern_id": "*",
+      "change": "updated",
+      "notes": "The guidance does not amend Article 50. A 2026-08-19 follow-up refined two identifier-boundary patterns after a guidance-derived synthetic regression corpus exposed false negatives; legal applicability remains exclusively in the decision model and declared facts."
+    }
+  ],
+  "confidence": "verified-primary",
+  "verified_by": "Direct retrieval on 2026-08-19 of the Commission's official library page and final 51-page guidelines document, plus the official EUR-Lex text of Regulation (EU) 2024/1689 Article 96(1)(d). Article 50(1)-(5) and the Article 111(4) transition were cross-checked against official EUR-Lex texts for Regulations (EU) 2024/1689 and 2026/1744.",
+  "verified_on": "2026-08-19",
+  "jurisdiction": "EU"
+}

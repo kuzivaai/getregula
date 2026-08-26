@@ -1,0 +1,293 @@
+name: Release
+
+# Triggered when a FULL THREE-PART VERSION tag is pushed (e.g. v1.7.4 or
+# v2.0.0). The four jobs run in sequence:
+# build → publish → verify → GitHub Release.
+#
+# Deliberately NOT "v*": the floating major tag `v1` (which README's
+# `uses: kuzivaai/getregula@v1` consumers track, and which moves on every
+# release) matched that glob and fired this workflow — on 8 Jul 2026 it
+# attempted to republish 1.7.4 (PyPI's duplicate-file rejection was the
+# only thing that stopped it). A moving alias tag must never trigger a
+# publish.
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+
+# Least-privilege default; jobs that need more declare it at job level
+# (release.yml's publish job declares id-token: write itself).
+permissions:
+  contents: read
+
+jobs:
+  # ──────────────────────────────────────────────────────────────────────────
+  # build — compile a source distribution and wheel, then verify their
+  # contents before anything is uploaded to PyPI.
+  # ──────────────────────────────────────────────────────────────────────────
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Fetch the FULL history and tags: the release gate compares the
+      # tag being released against the previous release tag and the
+      # commit range between them, which a shallow clone cannot see.
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      # Pin to 3.12 — the same version used by lint and claim-audit in CI.
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      # Defence-in-depth behind the trigger glob: the tag must equal the
+      # version being built. Whatever tag reaches this workflow, nothing
+      # gets built (let alone published) unless it names exactly the
+      # version in pyproject.toml — a moving alias like `v1`, a typo'd
+      # tag, or a tag pushed before the version bump all fail HERE with
+      # a clear message instead of reaching PyPI.
+      - name: Assert tag matches source version
+        run: |
+          set -euo pipefail
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          # Version is single-sourced from scripts/constants.py (pyproject
+          # declares it dynamic and reads the same attribute at build time).
+          SOURCE_VERSION=$(python3 -c "import sys; sys.path.insert(0, 'scripts'); from constants import VERSION; print(VERSION)")
+          echo "tag: ${TAG_VERSION}  constants.VERSION: ${SOURCE_VERSION}"
+          if [ "${TAG_VERSION}" != "${SOURCE_VERSION}" ]; then
+            echo "::error::Tag v${TAG_VERSION} does not match scripts/constants.py VERSION ${SOURCE_VERSION}. Refusing to build/publish."
+            exit 1
+          fi
+
+      # The bump must match the content: feat commits or an Added/
+      # Deprecated changelog section require at least MINOR; BREAKING
+      # or Removed require MAJOR. The 1.7.x line shipped features in
+      # patch releases six times because nothing checked this; see
+      # docs/VERSIONING.md. Under-bumped releases fail HERE, before
+      # anything is built or published.
+      - name: Release gate (version bump matches content)
+        run: |
+          set -euo pipefail
+          python3 scripts/release_gate.py --target "${GITHUB_REF_NAME}"
+
+      # The `build` front-end drives setuptools via pyproject.toml.
+      # No other build-time deps are needed: setuptools is bundled.
+      - name: Install build dependencies
+        run: pip install build
+
+      # Produces dist/regula_ai-*.tar.gz (sdist) and dist/regula_ai-*.whl.
+      # The wheel is what end-users install; the sdist satisfies PyPI policy.
+      - name: Build sdist and wheel
+        run: python3 -m build
+
+      # Git cleanliness is not enough: setuptools repeats README content in
+      # package metadata, and an sdist publishes a wider surface than a wheel.
+      # Audit the exact bytes that would be uploaded. The verifier is stdlib
+      # only, validates archive paths and reports rule names without values.
+      - name: Verify source and distribution privacy
+        run: |
+          set -euo pipefail
+          python3 scripts/public_repo_guard.py
+          python3 scripts/verify_distribution_privacy.py \
+            dist/regula_ai-*.whl dist/regula_ai-*.tar.gz
+
+      # Unpack the wheel (it's a ZIP archive) and confirm that the three
+      # jurisdiction YAML files and the CV-screening demo script are present.
+      # These are the most commonly missing assets when package-data globs
+      # are misconfigured; catching it here avoids a broken published release.
+      - name: Verify wheel contents
+        run: |
+          set -euo pipefail
+
+          WHEEL=$(ls dist/regula_ai-*.whl)
+          echo "Inspecting: $WHEEL"
+
+          # Extract the wheel's file list without unpacking to disk
+          CONTENTS=$(python3 -c "import zipfile, sys; zf=zipfile.ZipFile(sys.argv[1]); print('\n'.join(zf.namelist()))" "$WHEEL")
+
+          MISSING=0
+
+          check() {
+            local pattern="$1"
+            if echo "$CONTENTS" | grep -q "$pattern"; then
+              echo "  PRESENT  $pattern"
+            else
+              echo "  MISSING  $pattern"
+              MISSING=1
+            fi
+          }
+
+          # CV-screening demo (scripts/demos/)
+          check "scripts/demos/cv_screening_app.py"
+
+          # BBQ bias-eval sample (scripts/bias_data/) — missing from the
+          # 1.7.5 wheel; `regula conform` printed "BBQ eval failed" on
+          # installed contexts until this was added to package-data.
+          check "scripts/bias_data/bbq_sample.json"
+
+          # Jurisdiction YAML reference files (references/jurisdictions/)
+          check "references/jurisdictions/eu_ai_act.yaml"
+          check "references/jurisdictions/south_korea.yaml"
+          check "references/jurisdictions/colorado.yaml"
+
+          if [ "$MISSING" -eq 1 ]; then
+            echo ""
+            echo "::error::One or more required files are missing from the wheel."
+            echo "Check [tool.setuptools.package-data] in pyproject.toml."
+            exit 1
+          fi
+
+          echo ""
+          echo "All required files are present in the wheel."
+
+      # Upload dist/ so the publish job can download it without rebuilding.
+      # Artifacts are retained for 1 day (releases are immutable via the tag).
+      - name: Upload dist/ as artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # publish — upload the verified distribution to PyPI using OIDC trusted
+  # publishing (no API token stored in secrets).
+  # ──────────────────────────────────────────────────────────────────────────
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+
+    # The `pypi` environment gates this job behind PyPI's trusted-publisher
+    # configuration.  Configure it at:
+    # https://pypi.org/manage/project/regula-ai/settings/publishing/
+    environment: pypi
+
+    # id-token: write is required for the OIDC exchange that lets
+    # pypa/gh-action-pypi-publish authenticate without a stored API token.
+    permissions:
+      id-token: write
+
+    steps:
+      # Download the dist/ artifact produced by the build job.
+      # The publish action expects to find .whl and .tar.gz files here.
+      - name: Download dist/ artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist/
+
+      # Publish to PyPI using OIDC (no PYPI_API_TOKEN secret needed).
+      # Trusted publishing must be configured on the PyPI project first.
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@ba38be9e461d3875417946c167d0b5f3d385a247 # v1.14.1
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # verify — install the freshly published package from PyPI and run a
+  # smoke-test to confirm the release is functional end-to-end.
+  # ──────────────────────────────────────────────────────────────────────────
+  verify:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      # Strip the leading "v" from the tag (v1.7.4 → 1.7.4) so it matches
+      # the PEP 440 version on PyPI.
+      - name: Derive PyPI version from tag
+        id: version
+        env:
+          # Same reason as ci.yaml: keep tag names out of shell expansion.
+          RAW_REF: ${{ github.ref_name }}
+        run: |
+          RAW="$RAW_REF"
+          VERSION="${RAW#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      # PyPI CDN propagation typically takes 30–90 s after the upload
+      # completes.  60 s is the conservative minimum before pip can resolve
+      # the new version.
+      - name: Wait 60 s for PyPI propagation
+        run: sleep 60
+
+      # Set up a clean Python environment to simulate a fresh user install.
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      # Install the exact version that was just published.
+      # The == pin ensures we test the tag's release, not a cached older build.
+      - name: Install regula-ai from PyPI
+        run: pip install "regula-ai==${{ steps.version.outputs.version }}"
+
+      # Confirm the installed version string matches the tag.
+      - name: "Smoke-test: regula --version"
+        run: regula --version
+
+      # Run the built-in self-test suite (covers core classification logic).
+      - name: "Smoke-test: regula self-test"
+        run: regula self-test
+
+      # Run the packaged demo to confirm scripts/demos/ is present and
+      # executable after install.
+      - name: "Smoke-test: regula demo"
+        run: regula demo
+
+      # Confirm scripts/dpv_data/dpv_aiact_terms.json is packaged: `regula dpv`
+      # loads it at import and fails closed without it. 1.7.6 shipped this file
+      # unpackaged (repo-root data/), breaking `regula dpv` on install.
+      - name: "Smoke-test: regula dpv"
+        run: |
+          mkdir -p /tmp/dpvsmoke && printf 'x = 1\n' > /tmp/dpvsmoke/a.py
+          regula dpv --project /tmp/dpvsmoke -n smoke | python3 -c "import json,sys; json.load(sys.stdin)['@graph']; print('regula dpv OK')"
+
+      # Print attestation verification instructions so release notes and
+      # security-conscious users know how to validate the provenance of
+      # the published wheel.
+      - name: Print attestation verification instructions
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          echo ""
+          echo "Attestation can be verified at:"
+          echo "  https://pypi.org/project/regula-ai/#files"
+          echo "  (click the attestation badge next to the wheel)"
+          echo ""
+          echo "Or via the CLI:"
+          echo "  python3 -m pip download regula-ai==${VERSION} --no-deps -d /tmp"
+          echo "  python3 -m pip install pypi-attestation-models"
+          echo "  python3 -m pypi_attestations verify /tmp/regula_ai-*.whl"
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # github-release — retain the exact verified distributions and checksums
+  # against the immutable tag. This runs only after the PyPI smoke tests pass.
+  # ────────────────────────────────────────────────────────────────────────
+  github-release:
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download the verified distributions
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist/
+
+      - name: Generate SHA-256 checksums
+        working-directory: dist
+        run: sha256sum regula_ai-*.whl regula_ai-*.tar.gz > SHA256SUMS
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          gh release create "$RELEASE_TAG" \
+            dist/regula_ai-*.whl \
+            dist/regula_ai-*.tar.gz \
+            dist/SHA256SUMS \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --generate-notes \
+            --title "Regula ${RELEASE_TAG#v}"

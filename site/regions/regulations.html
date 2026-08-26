@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheets — see commit
+         0da1226 on site/index.html for the full diagnosis. TL;DR: external
+         CSS is render-blocking, so the browser's default white canvas shows
+         for hundreds of ms on cold loads. Inline critical CSS establishes the
+         dark theme immediately; `color-scheme: dark` hints the canvas colour
+         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         so they don't block first paint. <noscript> fallback for JS off. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>AI Regulation by Country: 7 Jurisdictions Compared (2026)</title>
+    <meta name="description" content="Side-by-side comparison of AI regulation in the EU, UK, US, South Korea, South Africa, UAE, and Brazil. Primary-source summaries updated as laws change.">
+    <meta name="keywords" content="AI regulation tracker, EU AI Act, South Africa AI policy, UK AI Bill, US AI executive order, Brazil Marco Legal IA, global AI governance, AI law by country">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://getregula.com/regions/regulations.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/regions/regulations.html">
+    <meta property="og:title" content="AI Regulation by Country: 7 Jurisdictions Compared (2026)">
+    <meta property="og:description" content="Side-by-side comparison of AI regulation in the EU, UK, US, South Korea, South Africa, UAE, and Brazil. Primary-source summaries updated as laws change.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:alt" content="Regula — open-source AI governance risk indication tool">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI Regulation by Country: 7 Jurisdictions Compared (2026)">
+    <meta name="twitter:description" content="Side-by-side comparison of AI regulation in the EU, UK, US, South Korea, South Africa, UAE, and Brazil. Primary-source summaries updated as laws change.">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/regions/regulations.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/regions/regulations.html">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Global AI Regulation Tracker — Regula",
+        "description": "Primary-source coverage of global AI regulation by jurisdiction.",
+        "url": "https://getregula.com/regions/regulations.html",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Regula",
+            "url": "https://getregula.com"
+        }
+    }
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <style>
+        .hub-hero {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 80px 32px 48px;
+        }
+        .hub-hero h1 {
+            font-size: 52px;
+            font-weight: 700;
+            line-height: 1.08;
+            margin-bottom: 18px;
+        }
+        .hub-hero h1 .hl { color: var(--accent); }
+        .hub-hero .lede {
+            font-size: 18px;
+            color: var(--text-2);
+            line-height: 1.7;
+            margin-bottom: 28px;
+            max-width: 720px;
+        }
+        .last-updated {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-faint);
+            margin-bottom: 32px;
+        }
+        .hub-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 32px 80px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        /* reg-card base styles in site.css */
+        .reg-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            gap: 12px;
+        }
+        .reg-flag {
+            font-size: 28px;
+            line-height: 1;
+        }
+        .reg-status {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 4px 10px;
+            border-radius: var(--r-pill);
+        }
+        .status-live {
+            color: var(--success);
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+        .status-tracked {
+            color: var(--warn);
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+        }
+        .status-planned {
+            color: var(--text);
+            background: rgba(136,136,170,0.08);
+            border: 1px solid rgba(136,136,170,0.2);
+        }
+        /* reg-card h2 styles in site.css */
+        .reg-sub {
+            font-size: 13px;
+            color: var(--text);
+            font-family: var(--font-mono);
+            margin-bottom: 16px;
+        }
+        .reg-body {
+            font-size: 14px;
+            color: var(--text-2);
+            line-height: 1.65;
+            margin-bottom: 16px;
+            flex: 1;
+        }
+        .reg-body strong { color: var(--text); }
+        .reg-cta {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: auto;
+        }
+        /* var(--text-faint) on .upcoming card bg fell under WCAG AA 4.5:1.
+           Using var(--text-dim) clears 5:1 on the card's #0c0c1a bg. */
+        .reg-cta.disabled { color: var(--text-dim); pointer-events: none; }
+        .hub-note {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 0 32px 80px;
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.75;
+        }
+        .hub-note h3 {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text);
+            margin-bottom: 14px;
+            font-weight: 500;
+        }
+        @media (max-width: 800px) {
+            .hub-hero h1 { font-size: 36px; }
+            .hub-grid { grid-template-columns: 1fr; padding: 0 24px 60px; }
+            .reg-card { padding: 22px 24px; }
+        }
+    </style>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Regula", "item": "https://getregula.com/"},
+            {"@type": "ListItem", "position": 2, "name": "Regulations"}
+        ]
+    }
+    </script>
+    <script>
+    </script>
+</head>
+<body>
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    <nav class="nav" id="nav" aria-label="Main navigation">
+        <a href="/" class="nav-brand">Regula</a>
+        <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+            <a href="/product.html">What it does</a>
+            <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+            <span class="active">Regulations</span>
+            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+            <a href="/about.html">About</a>
+            <a href="/">EN</a>
+            <a href="/locales/de.html">DE</a>
+            <a href="/locales/pt-br.html">BR</a>
+        </dialog>
+    </nav>
+
+    <header class="hub-hero">
+        <h1>Global <span class="hl">AI regulation</span> tracker</h1>
+        <p class="lede">Independent, primary-source-verified coverage of AI regulation by jurisdiction. We publish what is checkable against the actual legislation and clearly flag what is still reporting. Each jurisdiction we cover gets its own live page, updated as the regulation moves.</p>
+        <p class="last-updated"><strong>Last updated:</strong> 30 June 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+    </header>
+
+    <main id="main">
+        <div class="hub-grid">
+
+            <a class="card-base reg-card live" href="/regions/south-africa-ai-policy.html">
+                <div class="reg-head">
+                    <div class="reg-flag" aria-hidden="true">🇿🇦</div>
+                    <div class="reg-status status-live">Live tracker</div>
+                </div>
+                <h2>South Africa — Draft National AI Policy</h2>
+                <div class="reg-sub">Gazetted 10 Apr 2026 · withdrawal announced 26 Apr 2026 · gazetted 12 Jun 2026 · revised draft reported for Jan 2027</div>
+                <p class="reg-body">The draft National AI Policy was gazetted on 10 April 2026. After fictitious references were identified the Minister announced the withdrawal on 26 April 2026, Cabinet approved it on 5 June, and Notice 3880 was withdrawn by gazette on 12 June 2026, which is the operative act. The tracker separates that withdrawn draft from existing law, including POPIA.</p>
+                <span class="reg-cta">Read the tracker &rarr;</span>
+            </a>
+
+            <div class="card-base reg-card live" style="cursor: default;">
+                <div class="reg-head">
+                    <div class="reg-flag" aria-hidden="true">🇪🇺</div>
+                    <div class="reg-status status-live">Live in scanner</div>
+                </div>
+                <h2>EU — Artificial Intelligence Act</h2>
+                <div class="reg-sub">Regulation (EU) 2024/1689 · Digital Omnibus in the OJ 24 July 2026 (Regulation (EU) 2026/1744), in force from 27 July 2026</div>
+                <p class="reg-body">The EU AI Act is Regula's primary detection target. Regulation (EU) 2026/1744 is in force and sets <strong>2 December 2027</strong> for Annex III high-risk provisions and <strong>2 August 2028</strong> for the Annex I product path. Article 50 generally has applied since <strong>2 August 2026</strong>, with a specific 2 December 2026 transition for providers of Article 50(2) systems already on the market. Regula reports indicators; it does not decide legal classification or applicable duties.</p>
+                <a class="reg-cta" href="/">See Regula CLI &rarr;</a>
+            </div>
+
+            <a class="card-base reg-card live" href="/regions/uae.html">
+                <div class="reg-head">
+                    <div class="reg-flag" aria-hidden="true">🇦🇪</div>
+                    <div class="reg-status status-live">Live landing page</div>
+                </div>
+                <h2>UAE & GCC — EU AI Act extraterritorial exposure</h2>
+                <div class="reg-sub">For DIFC, ADGM, Hub71 and NEOM-portfolio AI teams</div>
+                <p class="reg-body">If a UAE-licensed company ships AI features that touch EU users, Article 2(1)(c) of Regulation (EU) 2024/1689 applies. Art 50 transparency obligations have applied since 2 August 2026. Annex III high-risk obligations are deferred to 2 December 2027 (Omnibus; EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in the OJ 24 Jul 2026, in force from 27 Jul 2026). Fines reach &euro;35M or 7% of global turnover. Dedicated landing page for GCC general counsel, heads of AI, and founders evaluating their EU market exposure.</p>
+                <span class="reg-cta">Read the UAE brief &rarr;</span>
+            </a>
+
+            <a class="card-base reg-card live" href="/regions/uk-ai-regulation.html">
+                <div class="reg-head">
+                    <div class="reg-flag" aria-hidden="true">🇬🇧</div>
+                    <div class="reg-status status-live">Live tracker</div>
+                </div>
+                <h2>United Kingdom — AI regulation framework</h2>
+                <div class="reg-sub">Principles-based, sector-specific · ICO &amp; DSIT · no dedicated AI Act</div>
+                <p class="reg-body">The UK has taken a principles-based, sector-specific approach distinct from the EU AI Act. ICO leads on data protection and automated decision-making (UK GDPR Art. 22), DSIT on cross-cutting policy, with FCA, MHRA, Ofcom and CMA applying their own mandates. Live tracker plus ICO/DSIT baseline plus what UK organisations should do today.</p>
+                <span class="reg-cta">Read the tracker &rarr;</span>
+            </a>
+
+            <a class="card-base reg-card live" href="/regions/brazil-ai-regulation.html">
+                <div class="reg-head">
+                    <div class="reg-flag" aria-hidden="true">🇧🇷</div>
+                    <div class="reg-status status-live">Live tracker</div>
+                </div>
+                <h2>Brazil — Marco Legal da IA &amp; LGPD</h2>
+                <div class="reg-sub">PL 2338/2023 in committee · LGPD Art. 20 in force · ANPD enforcement 2026–2027</div>
+                <p class="reg-body">PL 2338/2023 (Marco Legal da IA) passed the Senate on 10 December 2024 and is in a Special Commission at the Chamber of Deputies. LGPD already applies to AI via Article 20 (automated decisions), Article 38 (impact reports), and Article 11 (sensitive data). Regula's framework crosswalk covers both LGPD and Marco Legal. Penalties if enacted: up to R$50M or 2% annual revenue.</p>
+                <span class="reg-cta">Read the tracker &rarr;</span>
+            </a>
+
+            <a class="card-base reg-card live" href="/regions/colorado-ai-regulation.html">
+                <div class="reg-head">
+                    <div class="reg-flag" aria-hidden="true">🇺🇸</div>
+                    <div class="reg-status status-live">Live tracker</div>
+                </div>
+                <h2>Colorado — SB 205 Repealed, Replaced by SB 189</h2>
+                <div class="reg-sub">SB 24-205 repealed May 2026 · replaced by SB 26-189 (disclosure-focused, duties from 1 Jan 2027)</div>
+                <p class="reg-body">SB 24-205 (the Colorado Artificial Intelligence Act) was repealed in May 2026 before taking effect. It was replaced by SB 26-189, a narrower disclosure-focused regime whose duties apply from 1 January 2027 — developer documentation, consumer notice, and correction and human-review rights, enforced by the AG. The original SB 24-205 duties (developer reasonable-care, deployer impact assessments) were not reenacted. This page documents the legislative history and what SB 189 requires.</p>
+                <span class="reg-cta">Read the tracker &rarr;</span>
+            </a>
+
+            <a class="card-base reg-card live" href="/regions/south-korea-ai-regulation.html">
+                <div class="reg-head">
+                    <div class="reg-flag" aria-hidden="true">🇰🇷</div>
+                    <div class="reg-status status-live">Live tracker</div>
+                </div>
+                <h2>South Korea — AI Basic Act</h2>
+                <div class="reg-sub">In force 22 January 2026 · MSIT · extraterritorial</div>
+                <p class="reg-body">The second major horizontal AI statute after the EU AI Act. Took effect on 22 January 2026 with its Enforcement Decree. Defines high-impact AI (use-based) and high-performance AI (≥ 10²⁶ training FLOPs — distinct from the EU's 10²⁵ threshold), with generative AI disclosure and watermarking already required. Extraterritorial reach to foreign providers. Live tracker plus EU-vs-Korea comparison plus MSIT watchlist.</p>
+                <span class="reg-cta">Read the tracker &rarr;</span>
+            </a>
+
+            <div class="card-base reg-card upcoming">
+                <div class="reg-head">
+                    <div class="reg-flag" aria-hidden="true">🇺🇸</div>
+                    <div class="reg-status status-planned">Planned</div>
+                </div>
+                <h2>United States — federal &amp; other state laws</h2>
+                <div class="reg-sub">NIST AI RMF · NIST AI 600-1 · Texas TRAIGA · California successors</div>
+                <p class="reg-body">Beyond Colorado, the US approach remains a patchwork: federal NIST AI RMF 1.0 and the 2024 GenAI Profile (NIST AI 600-1) serve as voluntary frameworks, while Texas, California, Connecticut and New York have passed or proposed state-level AI laws. Regula's framework crosswalk maps findings to NIST AI 600-1's 12 GenAI risks. Additional state pages will land as statutes are enacted.</p>
+                <span class="reg-cta disabled">Coming soon</span>
+            </div>
+
+            <div class="card-base reg-card upcoming">
+                <div class="reg-head">
+                    <div class="reg-flag" aria-hidden="true">🌍</div>
+                    <div class="reg-status status-planned">Planned</div>
+                </div>
+                <h2>African Union — Continental AI Strategy</h2>
+                <div class="reg-sub">AU CAIS 2024 · SADC digital frameworks</div>
+                <p class="reg-body">The AU Continental AI Strategy (2024) sets the continental direction and several SADC member states are developing national responses. A regional tracker page is on the roadmap once the South Africa gazette clarifies the baseline.</p>
+                <span class="reg-cta disabled">Coming soon</span>
+            </div>
+
+        </div>
+
+        <div class="hub-note">
+            <h3>Our coverage principles</h3>
+            <p>Every claim on this site about regulation is either (a) checkable against the actual legislation or an official government source, or (b) explicitly labelled as secondary reporting with the secondary source named. Where a jurisdiction's text is not in the public domain, we say so, label the claim, and commit to verifying it against the primary source as soon as it publishes. We would rather publish a short page with clear provenance than a long page with silent assumptions.</p>
+            <p>If a jurisdiction matters to you and it is not yet on this list, <a href="https://github.com/kuzivaai/getregula/issues">open an issue</a>. We prioritise coverage by reader demand and by the quality of the primary source we can cite.</p>
+        </div>
+    <p style="max-width:720px;margin:32px auto 8px;color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 14 August 2026 &middot; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+
+</main>
+
+    <footer>
+    <div class="foot-inner">
+        <div class="foot-left">
+            <div class="foot-brand">Regula</div>
+            <div class="foot-links">
+                <a href="/assess/">Assess</a>
+                <a href="/guides/">Guides</a>
+                <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="/blog/writing.html">Blog</a>
+                <a href="/regions/regulations.html">Regulations</a>
+                <a href="/about.html">About</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+            </div>
+            <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 &middot; &copy; 2026 Regula</div>
+        </div>
+        <div class="foot-right">
+            <div class="foot-legal">
+                <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice. Consult a qualified legal professional for legal questions.
+            </div>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        const nav = document.getElementById('nav');
+        function onScroll() {
+            nav.classList.toggle('scrolled', window.scrollY > 20);
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+    </script>
+</body>
+</html>

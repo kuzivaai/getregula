@@ -1,0 +1,146 @@
+{
+  "schema_version": "1.0",
+  "protocol_version": "2026-08-25.1",
+  "status": "preregistration_template",
+  "measurement_target": {
+    "name": "code_observable_indicator_support",
+    "unit": "one emitted finding at one source location under one frozen rule and configuration",
+    "supported_outcomes": [
+      "indicator_supported",
+      "indicator_not_supported",
+      "uncertain",
+      "not_assessable"
+    ],
+    "excluded_outcomes": [
+      "legal_applicability",
+      "legal_risk_classification",
+      "conformity",
+      "compliance"
+    ]
+  },
+  "freeze": {
+    "required_digests": [
+      "regula_git_commit",
+      "ruleset_sha256",
+      "configuration_sha256",
+      "corpus_manifest_sha256",
+      "codebook_sha256"
+    ],
+    "required_versions": [
+      "regula_version",
+      "protocol_version",
+      "evaluator_version"
+    ],
+    "changes_create_new_evaluation_version": true
+  },
+  "corpus": {
+    "sampling_frame_required": true,
+    "exact_repository_commits_required": true,
+    "licence_compatibility_required": true,
+    "split_unit": "repository",
+    "split_strategy": "chronological_project_held_out",
+    "deduplicate_before_split": [
+      "exact_source_identity",
+      "normalised_snippet_sha256",
+      "reviewed_cross_project_near_duplicate_candidates"
+    ],
+    "separate_corpus_kinds": [
+      "synthetic",
+      "seeded",
+      "historical",
+      "naturally_occurring"
+    ],
+    "negatives_required_for": [
+      "recall",
+      "specificity",
+      "f1",
+      "mcc"
+    ],
+    "acquisition_failures_and_exclusions_recorded": true
+  },
+  "annotation": {
+    "minimum_independent_human_raters": 3,
+    "labels": [
+      "tp",
+      "fp",
+      "uncertain",
+      "not_assessable"
+    ],
+    "blinded_from": [
+      "other_rater_labels",
+      "adjudicated_label",
+      "detector_priority_score"
+    ],
+    "not_assessable_treatment": "missing_not_negative",
+    "rationale_required": true,
+    "context_sufficiency_required": true,
+    "original_ratings_immutable": true,
+    "public_rater_ids_non_identifying": true,
+    "qualifications_conflicts_and_recusals_recorded": true
+  },
+  "agreement": {
+    "primary": "krippendorff_alpha_nominal",
+    "confidence_interval": "item_bootstrap_95",
+    "report": [
+      "point_estimate",
+      "interval",
+      "pairable_items",
+      "rating_coverage",
+      "label_prevalence",
+      "raw_agreement",
+      "disagreement_cases"
+    ],
+    "universal_publishability_threshold": false,
+    "adjudication_after_agreement_freeze": true
+  },
+  "metrics": {
+    "integer_confusion_counts_before_derived_metrics": true,
+    "proportion_interval": "wilson_95",
+    "report_when_denominators_exist": [
+      "precision",
+      "recall",
+      "specificity",
+      "f1",
+      "mcc"
+    ],
+    "aggregation": [
+      "micro",
+      "macro",
+      "predeclared_strata"
+    ],
+    "strata": [
+      "language",
+      "domain",
+      "rule_id",
+      "analysis_mode",
+      "context_status"
+    ],
+    "priority_score_is_correctness_probability": false,
+    "calibration_requires_independent_representative_calibration_set": true,
+    "abstention_report": [
+      "coverage",
+      "selective_error",
+      "abstained_error",
+      "abstained_class_composition"
+    ]
+  },
+  "repeatability": {
+    "minimum_clean_runs": 2,
+    "deterministic_seed_required": true,
+    "compare_content_hashes_and_case_ids": true,
+    "completion_statuses": [
+      "completed",
+      "completed_with_skips",
+      "failed"
+    ],
+    "report_environment": [
+      "operating_system",
+      "python_version",
+      "hardware",
+      "duration",
+      "peak_resources",
+      "skipped_files",
+      "analysis_mode_by_language"
+    ]
+  }
+}

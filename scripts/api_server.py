@@ -1,0 +1,580 @@
+#!/usr/bin/env python3
+"""
+Regula REST API Server
+
+Exposes Regula's check, classify, gap analysis, and questionnaire
+functionality over HTTP using Python's stdlib http.server.
+
+SECURITY: This server has no authentication. Do NOT expose over public
+networks without adding auth (e.g. reverse proxy with API key validation).
+
+Endpoints:
+    GET  /health                     Health check
+    POST /v1/check                   Scan files for risk indicators
+    POST /v1/classify                Classify text against EU AI Act tiers
+    POST /v1/gap                     Compliance gap analysis
+    GET  /v1/questionnaire           Governance self-assessment questionnaire
+    POST /v1/questionnaire/evaluate  Evaluate questionnaire answers
+    GET  /v1/dashboard               Static dashboard (or JSON status)
+
+Usage:
+    python3 -m scripts.api_server --port 8487 --host localhost
+    python3 scripts/api_server.py --port 8487 --host 0.0.0.0
+"""
+
+import argparse
+import json
+import os
+import sys
+import traceback
+from datetime import datetime, timezone
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
+from pathlib import Path
+from urllib.parse import urlparse
+
+# Ensure scripts directory is importable
+sys.path.insert(0, str(Path(__file__).parent))
+
+from constants import VERSION
+from decision_kernel import DecisionInputError
+
+# Maximum request body size: 10 MB
+MAX_REQUEST_SIZE = 10 * 1024 * 1024
+
+# Maximum JSON nesting depth accepted in a request body. CPython's C JSON
+# decoder recurses on the C stack per nesting level; a body that is millions
+# of open brackets deep can crash the process (a Python try/except cannot catch
+# a C stack overflow). 100 is far above any legitimate Regula request.
+MAX_JSON_DEPTH = 100
+
+
+def _reject_deep_json(raw: str, max_depth: int = MAX_JSON_DEPTH) -> None:
+    """Raise ValueError if `raw` nests deeper than max_depth.
+
+    Scans once, tracking bracket depth while skipping bracket characters that
+    appear inside JSON strings. Early-exits as soon as the limit is exceeded,
+    so a nesting bomb is rejected in O(max_depth), before json.loads recurses.
+    """
+    depth = 0
+    in_string = False
+    escaped = False
+    for ch in raw:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                in_string = False
+            continue
+        if ch == '"':
+            in_string = True
+        elif ch == "[" or ch == "{":
+            depth += 1
+            if depth > max_depth:
+                raise ValueError(
+                    f"JSON nesting too deep (>{max_depth} levels)"
+                )
+        elif ch == "]" or ch == "}":
+            if depth > 0:
+                depth -= 1
+
+
+# ---------------------------------------------------------------------------
+# JSON envelope — single source of truth in envelope.py (shared with cli.py)
+# ---------------------------------------------------------------------------
+
+from envelope import build_envelope as _build_envelope
+
+
+def _json_bytes(obj: dict) -> bytes:
+    """Serialise a dict to UTF-8 JSON bytes."""
+    return json.dumps(obj, indent=2, sort_keys=True, default=str).encode("utf-8")
+
+
+# ---------------------------------------------------------------------------
+# Request handler
+# ---------------------------------------------------------------------------
+
+
+def _resolve_request_target(raw_path: object) -> Path:
+    """Resolve an API path without probing anything outside the server root.
+
+    ``Path.exists()`` and ``Path.is_dir()`` are filesystem probes.  Calling
+    either before the working-directory boundary check lets an unauthenticated
+    local client distinguish an existing outside path from a missing one.  Do
+    the lexical containment check first, then resolve symlinks and repeat the
+    check before a handler may inspect the target.
+
+    The server root is its launch directory.  Running the server from a broad
+    directory deliberately grants that broad scope; the default bind remains
+    localhost and the server still has no authentication.
+    """
+    if not isinstance(raw_path, str) or not raw_path.strip():
+        raise ValueError("Field 'path' must be a non-empty string")
+
+    root = Path.cwd().resolve()
+    candidate = Path(raw_path)
+    if not candidate.is_absolute():
+        candidate = root / candidate
+
+    # abspath normalises '..' without resolving symlinks or testing whether
+    # the outside target exists.  That makes the first rejection non-probing.
+    lexical = Path(os.path.abspath(candidate))
+    try:
+        lexical.relative_to(root)
+    except ValueError as exc:
+        raise PermissionError(
+            "Path must be within the current working directory"
+        ) from exc
+
+    resolved = lexical.resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise PermissionError(
+            "Path must be within the current working directory"
+        ) from exc
+    return resolved
+
+
+class RegulaHandler(BaseHTTPRequestHandler):
+    """HTTP request handler for the Regula REST API."""
+
+    # Per-connection socket timeout. Without it, a client that sends headers
+    # with a large Content-Length then stalls (Slowloris) keeps rfile.read()
+    # blocked indefinitely. With ThreadingHTTPServer the stalled read aborts
+    # only its own connection instead of freezing the whole server.
+    timeout = 30
+
+    # Silence default stderr logging per request — we do our own logging
+    def log_message(self, fmt, *args):
+        ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        sys.stderr.write(f"[{ts}] {fmt % args}\n")
+
+    # ---- CORS ----
+
+    def _set_cors_headers(self):
+        # No wildcard: this server has no authentication, so
+        # Access-Control-Allow-Origin: * would let any website the
+        # developer visits read local scan results via fetch() to
+        # localhost (drive-by CSRF-via-CORS). Browser access is opt-in
+        # via REGULA_API_ALLOW_ORIGIN; non-browser clients (curl, CI)
+        # never need CORS headers.
+        allowed = os.environ.get("REGULA_API_ALLOW_ORIGIN", "")
+        if allowed and allowed != "*":
+            self.send_header("Access-Control-Allow-Origin", allowed)
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type")
+
+    def do_OPTIONS(self):
+        """Handle CORS preflight requests."""
+        self.send_response(200)
+        self._set_cors_headers()
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+
+    # ---- Helpers ----
+
+    def _send_json(self, status: int, body: dict):
+        """Send a JSON response with the given HTTP status code."""
+        payload = _json_bytes(body)
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self._set_cors_headers()
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def _send_error(self, status: int, message: str):
+        """Send a JSON error response."""
+        body = {
+            "error": message,
+            "status": status,
+        }
+        self._send_json(status, body)
+
+    def _read_json_body(self) -> dict:
+        """Read and parse the JSON request body.
+
+        Returns the parsed dict, or raises ValueError on failure.
+        """
+        content_type = self.headers.get("Content-Type", "")
+        if "application/json" not in content_type:
+            raise ValueError(
+                f"Content-Type must be application/json, got: {content_type!r}"
+            )
+
+        length_str = self.headers.get("Content-Length", "0")
+        try:
+            length = int(length_str)
+        except (ValueError, TypeError):
+            raise ValueError(f"Invalid Content-Length: {length_str!r}")
+
+        if length < 0:
+            raise ValueError(f"Invalid Content-Length: {length_str!r}")
+
+        if length > MAX_REQUEST_SIZE:
+            raise ValueError(
+                f"Request body too large: {length} bytes (max {MAX_REQUEST_SIZE})"
+            )
+
+        raw = self.rfile.read(length)
+        if not raw:
+            raise ValueError("Empty request body")
+
+        text = raw.decode("utf-8")
+        _reject_deep_json(text)  # guard C-stack overflow before json.loads
+        return json.loads(text)
+
+    # ---- Routing ----
+
+    def do_GET(self):
+        parsed = urlparse(self.path)
+        path = parsed.path.rstrip("/") or "/"
+
+        if path == "/health":
+            self._handle_health()
+        elif path == "/v1/questionnaire":
+            self._handle_get_questionnaire()
+        elif path == "/v1/dashboard":
+            self._handle_dashboard()
+        else:
+            self._send_error(404, f"Not found: {path}")
+
+    def do_POST(self):
+        parsed = urlparse(self.path)
+        path = parsed.path.rstrip("/") or "/"
+
+        if path == "/v1/check":
+            self._handle_check()
+        elif path == "/v1/classify":
+            self._handle_classify()
+        elif path == "/v1/gap":
+            self._handle_gap()
+        elif path == "/v1/questionnaire/evaluate":
+            self._handle_questionnaire_evaluate()
+        else:
+            self._send_error(404, f"Not found: {path}")
+
+    # ---- Endpoint handlers ----
+
+    def _handle_health(self):
+        """GET /health — liveness check."""
+        self._send_json(200, {"status": "ok", "version": VERSION})
+
+    def _handle_check(self):
+        """POST /v1/check — scan files for risk indicators."""
+        try:
+            body = self._read_json_body()
+        except ValueError as e:
+            self._send_error(400, str(e))
+            return
+
+        path = body.get("path")
+        if not path:
+            self._send_error(400, "Missing required field: path")
+            return
+
+        try:
+            target = _resolve_request_target(path)
+        except ValueError as e:
+            self._send_error(400, str(e))
+            return
+        except PermissionError as e:
+            self._send_error(403, str(e))
+            return
+        if not target.exists():
+            self._send_error(400, f"Path does not exist: {path}")
+            return
+        if not target.is_dir() and not target.is_file():
+            self._send_error(400, f"Path is not a file or directory: {path}")
+            return
+
+        min_tier = body.get("min_tier", "")
+        valid_tiers = {"", "prohibited", "high_risk", "limited_risk", "minimal_risk"}
+        if min_tier not in valid_tiers:
+            self._send_error(400, f"Invalid min_tier: {min_tier!r}")
+            return
+        strict = bool(body.get("strict", False))
+        skip_tests = bool(body.get("skip_tests", False))
+
+        try:
+            from decision_adapters import detector_findings, empty_decision, evaluate_payload
+            from report import scan_files
+            findings = scan_files(
+                str(target),
+                respect_ignores=True,
+                skip_tests=skip_tests,
+                min_tier=min_tier,
+            )
+            # Sort findings for deterministic output
+            findings.sort(
+                key=lambda f: (f.get("file", ""), f.get("line", 0), f.get("pattern", ""))
+            )
+            
+            # DEF-008: Populate correct exit_code in envelope.
+            # Derived from the same helper the CLI uses so the two surfaces
+            # cannot drift; deriving it independently here meant a
+            # credential_exposure finding at confidence 95 blocked on the CLI
+            # and passed over the API.
+            from findings_view import compute_exit_code
+            _exit_code = compute_exit_code(findings, strict=bool(strict))
+
+
+            decision_request = body.get("decision_request")
+            decision = (
+                evaluate_payload(decision_request)
+                if decision_request is not None
+                else empty_decision("eu", "rest:/v1/check")
+            )
+            envelope = _build_envelope(
+                "check",
+                {
+                    "detector_findings": detector_findings(findings),
+                    "decision": decision,
+                },
+                _exit_code,
+            )
+            self._send_json(200, envelope)
+        except DecisionInputError as e:
+            self._send_error(400, str(e))
+        except Exception:
+            sys.stderr.write(f"Error in /v1/check: {traceback.format_exc()}\n")
+            self._send_error(500, "Scan failed. Check server logs for details.")
+
+    def _handle_classify(self):
+        """POST /v1/classify — classify text against EU AI Act risk tiers."""
+        try:
+            body = self._read_json_body()
+        except ValueError as e:
+            self._send_error(400, str(e))
+            return
+
+        text = body.get("input")
+        if not text:
+            self._send_error(400, "Missing required field: input")
+            return
+
+        if not isinstance(text, str):
+            self._send_error(400, "Field 'input' must be a string")
+            return
+
+        # Limit input size to prevent regex backtracking DoS
+        if len(text) > 1_048_576:  # 1 MB
+            self._send_error(400, "Field 'input' too large (max 1 MB)")
+            return
+
+        try:
+            from decision_adapters import detector_finding, empty_decision, evaluate_payload
+            from classify_risk import classify
+            result = classify(text)
+            
+            # DEF-008: Populate correct exit_code in envelope
+            _exit_code = 1 if result.tier.value == "prohibited" else 0
+            
+            decision_request = body.get("decision_request")
+            decision = (
+                evaluate_payload(decision_request)
+                if decision_request is not None
+                else empty_decision("eu", "rest:/v1/classify")
+            )
+            envelope = _build_envelope(
+                "classify",
+                {
+                    "detector_observation": detector_finding(result.to_dict()),
+                    "decision": decision,
+                },
+                _exit_code,
+            )
+            self._send_json(200, envelope)
+        except DecisionInputError as e:
+            self._send_error(400, str(e))
+        except Exception:
+            sys.stderr.write(f"Error in /v1/classify: {traceback.format_exc()}\n")
+            self._send_error(500, "Classification failed. Check server logs for details.")
+
+    def _handle_gap(self):
+        """POST /v1/gap — compliance gap analysis."""
+        try:
+            body = self._read_json_body()
+        except ValueError as e:
+            self._send_error(400, str(e))
+            return
+
+        path = body.get("path")
+        if not path:
+            self._send_error(400, "Missing required field: path")
+            return
+
+        try:
+            target = _resolve_request_target(path)
+        except ValueError as e:
+            self._send_error(400, str(e))
+            return
+        except PermissionError as e:
+            self._send_error(403, str(e))
+            return
+        if not target.is_dir():
+            self._send_error(400, f"Path is not a directory: {path}")
+            return
+
+        strict = bool(body.get("strict", False))
+        articles = body.get("articles")
+        if articles is not None:
+            if not isinstance(articles, list):
+                self._send_error(400, "Field 'articles' must be a list of article numbers")
+                return
+            if not all(isinstance(a, (str, int)) for a in articles):
+                self._send_error(400, "Each article must be a string or integer")
+                return
+
+        try:
+            from decision_adapters import empty_decision, evaluate_payload, resolved_gap_evidence
+            from compliance_check import assess_compliance
+            assessment = assess_compliance(str(target), articles=articles)
+
+            decision_request = body.get("decision_request")
+            decision = (
+                evaluate_payload(decision_request)
+                if decision_request is not None
+                else empty_decision("eu", "rest:/v1/gap")
+            )
+            evidence = resolved_gap_evidence(assessment, decision)
+            _exit_code = 1 if strict and decision["result_type"] != "indication" else 0
+            envelope = _build_envelope(
+                "gap", {"decision": decision, "evidence": evidence}, _exit_code
+            )
+            self._send_json(200, envelope)
+        except DecisionInputError as e:
+            self._send_error(400, str(e))
+        except Exception:
+            sys.stderr.write(f"Error in /v1/gap: {traceback.format_exc()}\n")
+            self._send_error(500, "Gap analysis failed. Check server logs for details.")
+
+    def _handle_get_questionnaire(self):
+        """GET /v1/questionnaire — return the governance self-assessment questionnaire."""
+        try:
+            from questionnaire import generate_questionnaire
+            questionnaire = generate_questionnaire()
+            envelope = _build_envelope("questionnaire", questionnaire)
+            self._send_json(200, envelope)
+        except Exception:
+            sys.stderr.write(f"Error in /v1/questionnaire: {traceback.format_exc()}\n")
+            self._send_error(500, "Questionnaire generation failed. Check server logs for details.")
+
+    def _handle_questionnaire_evaluate(self):
+        """POST /v1/questionnaire/evaluate — evaluate questionnaire answers."""
+        try:
+            body = self._read_json_body()
+        except ValueError as e:
+            self._send_error(400, str(e))
+            return
+
+        answers = body.get("answers")
+        if answers is None or not isinstance(answers, dict):
+            self._send_error(
+                400,
+                "Missing or invalid field: answers "
+                "(must be a dict of question_id -> yes/no/unsure/not_applicable)",
+            )
+            return
+
+        # Validate answer values
+        valid_answers = {"yes", "no", "unsure", "not_applicable"}
+        for qid, answer in answers.items():
+            if answer not in valid_answers:
+                self._send_error(400, f"Invalid answer for '{qid}': {answer!r} (must be yes/no/unsure/not_applicable)")
+                return
+
+        try:
+            decision_request = body.get("decision_request")
+            if decision_request is not None:
+                from decision_adapters import evaluate_payload
+                result = evaluate_payload(decision_request)
+            else:
+                from questionnaire import evaluate_questionnaire
+                result = evaluate_questionnaire(answers)
+            envelope = _build_envelope("questionnaire/evaluate", result)
+            self._send_json(200, envelope)
+        except DecisionInputError as e:
+            self._send_error(400, str(e))
+        except Exception:
+            sys.stderr.write(f"Error in /v1/questionnaire/evaluate: {traceback.format_exc()}\n")
+            self._send_error(500, "Questionnaire evaluation failed. Check server logs for details.")
+
+    def _handle_dashboard(self):
+        """GET /v1/dashboard — serve static dashboard or JSON status."""
+        dashboard_dir = Path(__file__).parent / "dashboard"
+        index_file = dashboard_dir / "index.html"
+
+        if index_file.is_file():
+            try:
+                html = index_file.read_text(encoding="utf-8")
+                payload = html.encode("utf-8")
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self._set_cors_headers()
+                self.send_header("Content-Length", str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
+            except (OSError, PermissionError) as e:
+                sys.stderr.write(f"Error reading dashboard: {e}\n")
+                self._send_error(500, "Failed to read dashboard. Check server logs for details.")
+        else:
+            # Fallback: JSON status
+            self._send_json(200, _build_envelope("dashboard", {
+                "status": "ok",
+                "version": VERSION,
+                "message": "No dashboard files found. Place index.html in scripts/dashboard/ to enable.",
+            }))
+
+
+# ---------------------------------------------------------------------------
+# Server startup
+# ---------------------------------------------------------------------------
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Regula REST API server",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument(
+        "--host",
+        default="localhost",
+        help="Bind address (default: localhost)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8487,
+        help="Listen port (default: 8487)",
+    )
+    args = parser.parse_args()
+
+    # ThreadingHTTPServer so one slow/stalled connection cannot block the rest
+    # (defends the RegulaHandler.timeout against Slowloris). daemon_threads is
+    # True by default on ThreadingHTTPServer, so workers don't block shutdown.
+    server = ThreadingHTTPServer((args.host, args.port), RegulaHandler)
+    sys.stderr.write(
+        f"Regula API v{VERSION} listening on http://{args.host}:{args.port}\n"
+        f"Security: No authentication — do NOT expose on public networks.\n"
+        f"Endpoints:\n"
+        f"  GET  /health\n"
+        f"  POST /v1/check\n"
+        f"  POST /v1/classify\n"
+        f"  POST /v1/gap\n"
+        f"  GET  /v1/questionnaire\n"
+        f"  POST /v1/questionnaire/evaluate\n"
+        f"  GET  /v1/dashboard\n"
+    )
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        sys.stderr.write("\nShutting down.\n")
+    finally:
+        server.server_close()
+
+
+if __name__ == "__main__":
+    main()

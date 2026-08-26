@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Critical inline CSS + non-render-blocking stylesheet loading.
+         Why: /assets/site.min.css is render-blocking, so Chrome shows a WHITE canvas
+         (the browser default) for the entire duration of the CSS fetch on cold
+         loads :  measured at ~600ms on simulated 3G, worse on real slow networks.
+         That white→dark snap is what users reported as "the demo flashing": the
+         hero terminal sits at the top of the fold and takes the full brunt of it.
+         The earlier attempt (93a833b) targeted panel opacity and font preload,
+         neither of which is the actual cause :  the cause is that the browser
+         cannot paint at all until the external stylesheet arrives.
+
+         Fix: establish the brand background + basic tokens inline so first paint
+         is already dark, then load site.css asynchronously via the media="print"
+         + onload swap trick (well-documented pattern). A <noscript> fallback
+         preserves styling for JS-disabled clients. -->
+    <style>
+      :root { color-scheme: dark }
+      html, body {
+        background: #070711;
+        color: #e2e2f0;
+        margin: 0;
+        font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+      }
+      /* Pre-external-CSS state for the hero terminal panels so the initial paint
+         shows the active panel at opacity 1 and hides the rest, matching the
+         post-CSS visual. Prevents a vertical stack of all four panels flashing
+         briefly before site.css loads. */
+      .term-panel { opacity: 0; position: absolute; top: 0; left: 0; right: 0 }
+      .term-panel.active { opacity: 1; position: relative }
+      .term-body { position: relative; min-height: 340px }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <!-- CSP: GitHub Pages cannot set server headers; meta tag is the only option.
+         'unsafe-inline' is required (inline scripts/styles throughout).
+         frame-ancestors is ignored in meta CSP per spec :  clickjacking protection
+         requires a server header or CDN proxy (e.g. Cloudflare). -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Does AI regulation reach your business? | Regula</title>
+    <meta name="description" content="Answer five plain-language questions to see what AI regulation may touch your business, what remains uncertain, and what to do next.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta property="og:title" content="Does AI regulation reach your business? | Regula">
+    <meta property="og:description" content="Five plain-language questions for founders and product owners, with honest limits and practical next steps.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://getregula.com/">
+    <meta property="og:site_name" content="Regula">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@kuzivaai">
+    <meta property="og:locale" content="en_GB">
+    <meta name="twitter:title" content="Does AI regulation reach your business? | Regula">
+    <meta name="twitter:description" content="Five plain-language questions for founders and product owners, with honest limits and practical next steps.">
+    <meta property="og:image" content="https://getregula.com/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Regula: a plain-language starting point for AI regulation">
+    <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
+    <meta name="twitter:image:alt" content="Regula: a plain-language starting point for AI regulation">
+    <meta name="author" content="Regula">
+    <link rel="canonical" href="https://getregula.com/">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Regula",
+        "description": "Open-source EU AI Act compliance CLI combining code scanning and governance questionnaires. 419 risk patterns, 13 compliance frameworks, structured self-assessments.",
+        "url": "https://getregula.com",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, macOS, Windows",
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "softwareVersion": "2.0.0",
+        "programmingLanguage": "Python",
+        "codeRepository": "https://github.com/kuzivaai/getregula"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Regula",
+        "alternateName": "Regula EU AI Act CLI",
+        "url": "https://getregula.com",
+        "logo": "https://getregula.com/assets/regula-logo.png",
+        "sameAs": [
+            "https://github.com/kuzivaai/getregula",
+            "https://pypi.org/project/regula-ai/"
+        ],
+        "description": "Open-source EU AI Act compliance CLI for developers.",
+        "disambiguatingDescription": "Open-source command-line tool for EU AI Act compliance scanning. Not affiliated with Regula Forensics (identity verification).",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "email": "support@getregula.com",
+            "contactType": "customer support"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Regula"}
+        ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Regula",
+        "url": "https://getregula.com",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://github.com/kuzivaai/getregula/search?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Is my AI app prohibited under the EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Article 5 prohibits specified practices, including certain forms of social scoring, manipulation, biometric identification, and emotion inference. The exact scope, conditions, and exceptions matter. Regula flags related code patterns for review; it does not determine that a prohibited practice exists."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does the EU AI Act apply to my company if I'm outside the EU?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Potentially. Article 2(1)(c) covers providers and deployers established outside the EU where an AI system's output is used in the Union, subject to the Act's roles, exclusions, and other scope conditions. Location alone does not decide applicability."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What makes an AI system high-risk under the EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Article 6 contains the classification routes and Annex III lists specified intended uses across eight areas. Conditions, exceptions, intended purpose, and deployment context matter. Regula reports related code indicators but does not determine high-risk status."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "When does the EU AI Act start being enforced?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "The original Article 5 prohibitions have applied since 2 February 2025. GPAI provisions began applying on 2 August 2025, subject to transition rules. Regulation (EU) 2026/1744 sets 2 December 2027 for Annex III high-risk provisions and 2 August 2028 for the Annex I product path. Article 50 generally has applied since 2 August 2026, with a specific 2 December 2026 transition for providers of Article 50(2) systems already on the market."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is Regula free?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Regula is open-source under the Apache 2.0 or EUPL 1.2 licence (your choice). Detection rule patterns carry a separate Detection Rule Licence (DRL 1.1) requiring attribution on redistribution :  see the NOTICE file. No account, no API key, no sales call. Install with pipx install regula-ai (see docs/installation.md for uv and pip alternatives) and run it locally on your codebase. The full CLI, all 62 commands (including `regula handoff` for Garak/Giskard/Promptfoo scoping and `regula regwatch` for delta-log drift warnings), all 419 risk patterns, and all 13 compliance framework mappings are free."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What are the fines under the EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Prohibited AI practices (Article 5) carry fines up to €35 million or 7% of global annual turnover, whichever is higher. High-risk violations carry fines up to €15 million or 3% of turnover. Non-compliance with information requirements carries fines up to €7.5 million or 1% of turnover."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Can Regula test AI models for bias?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Regula includes an optional bias evaluation command (regula bias) that runs CrowS-Pairs and BBQ stereotype benchmarks against a local Ollama model, with statistical confidence intervals. It is a development-time starting point for Article 10 bias documentation, not a production fairness testing tool. For production bias measurement, use dedicated platforms like IBM watsonx.governance or Fiddler AI."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does the EU AI Act overlap with GDPR, DORA, or NIS2?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes, significantly. High-risk AI systems that process personal data must also comply with GDPR, and other regulations like DORA and NIS2 may apply depending on your sector. Regula cross-maps each AI Act article to ISO 42001, NIST AI RMF, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, and other framework obligations in a single scan. Run regula gap --project . to see where your obligations overlap across all 13 mapped frameworks."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does Regula work with AI-generated code from Cursor, Claude Code, or Lovable?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Regula scans source code files regardless of who or what wrote them. Authorship alone does not determine whether the EU AI Act applies: Article 2 scope, the actor's role, intended purpose, deployment context, and applicable exclusions still require review. Run regula check . for code-observable indicators and regula assess to record context."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "What should I do right now to prepare for the EU AI Act?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Install Regula, run the declared-context questionnaire, then scan for code-observable indicators. Findings require human review and do not determine legal classification or compliance. Runtime varies by repository and environment."
+                }
+            }
+        ]
+    }
+    </script>
+    <link rel="alternate" hreflang="en" href="https://getregula.com/">
+    <link rel="alternate" hreflang="de" href="https://getregula.com/locales/de.html">
+    <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/locales/pt-br.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
+    <link rel="alternate" type="text/markdown" title="LLM-friendly version" href="/llms.txt">
+    <!-- Stylesheets loaded via media="print" + onload swap so they don't block
+         first paint. The inline critical CSS above already establishes the dark
+         theme; these sheets layer on the full design system once they arrive.
+         <noscript> fallback ensures JS-disabled clients still get full styling. -->
+    <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
+         If adding a Content Security Policy, migrate to a hashed <script> block. -->
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <!-- JetBrains Mono is used only inside the hero terminal demo. Preload
+         eliminates the font-swap reflow that otherwise reads as a flash
+         when the woff2 arrives late. -->
+    <link rel="preload" href="/assets/fonts/jetbrains-mono-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
+    <style>
+        /* index.html overrides :  values that intentionally differ from site.css */
+        body { line-height: 1.6; }
+        .nav { height: 52px; }
+        .badge { gap: 6px; padding: 4px 12px; }
+        .badge-dot { width: 5px; height: 5px; }
+        .hero h1 { font-size: 60px; line-height: 1.1; letter-spacing: -0.04em; }
+        .hero .sub { font-size: 16px; color: var(--text-dim); }
+        .term-bar { background: #080813; border-bottom-color: rgba(255,255,255,0.06); }
+        .td-r { background: var(--danger); } .td-y { background: #eab308; } .td-g { background: #22c55e; }
+        .sec { padding: 80px 32px 0; }
+        .sec-head { font-size: 28px; letter-spacing: -0.03em; line-height: 1.2; }
+        .sec-sub { margin-bottom: 32px; max-width: none; }
+        .sep { margin: 80px auto 0; height: 1px; background: rgba(255,255,255,0.06); border-top: none; }
+        .art-grid { gap: 10px; }
+        .cm { align-items: baseline; }
+        .cm code { background: none; padding: 0; border-radius: 0; }
+        .final-wrap { margin-top: 80px; border-color: rgba(255,255,255,0.06); }
+        .final { max-width: 640px; padding: 80px 32px; }
+        .final h2 { font-size: 36px; margin-bottom: 10px; }
+        .final p { font-size: 15px; margin-bottom: 28px; line-height: 1.6; }
+        .final .install-box { margin: 0 auto 24px; }
+        .foot { max-width: 1200px; margin: 0 auto; padding: 28px 32px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .foot-brand { font-size: 14px; }
+        .foot-links { margin-bottom: 8px; }
+        .foot-copy { font-size: 12px; margin-top: 8px; }
+        .foot-legal { border-color: rgba(255,255,255,0.05); }
+        .skip-link { text-decoration: none; }
+        @media (max-width: 768px) {
+            dialog.nav-right { top: 52px; }
+        }
+        @media (max-width: 900px) {
+            .hero { gap: 36px; padding: 48px 20px 32px; }
+            .hero h1 { font-size: 36px; }
+            .art-grid { grid-template-columns: 1fr; }
+            .scroll-hint { display: block !important; }
+        }
+        @media (max-width: 640px) {
+            .nav { padding: 0 16px; }
+            .hero { padding: 36px 16px 24px; }
+            .sec { padding: 56px 16px 0; }
+            .sep { margin: 56px auto 0; }
+            .final { padding: 56px 16px; }
+        }
+    </style>
+    <script>
+    </script>
+    <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+<!-- NAV -->
+<nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
+        <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
+        <a href="/product.html">What it does</a>
+        <a href="/guides/">Guides</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+        <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
+        <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
+        <a href="/about.html">About</a>
+        <span class="active">EN</span>
+        <a href="/locales/de.html">DE</a>
+        <a href="/locales/pt-br.html">BR</a>
+    </dialog>
+</nav>
+
+<!-- HERO -->
+<main id="main">
+<!-- QUALIFIER:BEGIN -->
+<!-- Generated by scripts/build_qualifier.py from data/qualifier_copy/en.json. Do not edit between the markers by hand: tests/test_qualifier.py compares the committed page against a fresh render and fails on any difference. -->
+<section class="qual-wrap" aria-labelledby="qual-h1">
+  <div class="qual">
+    <p class="qual-audience">For founders and people responsible for an AI product</p>
+    <h1 id="qual-h1">Does AI regulation reach your business?</h1>
+    <p class="qual-sub">Five questions, in plain words. No account, nothing to install, and nothing you type here leaves your browser. At the end you get a list of what your answers point at and what a person still has to settle.</p>
+    <p class="qual-meta">Regula indicates where to look. It does not decide your risk tier, your obligations, or whether you comply. This is not legal advice.</p>
+
+    <form id="qual-form" novalidate>
+      <ol class="qual-qs">
+      <li class="qual-q" id="qual-q1">
+        <fieldset>
+          <legend><span class="qual-n" aria-hidden="true">1/5</span>Do you sell to, or have users in, the EU?</legend>
+          <p class="qual-help">The rules can reach a business based anywhere. What matters is whether your product, or what your product produces, is used by people in the EU.</p>
+          <div class="qual-opts">
+            <span class="qual-opt"><input type="radio" id="qual-q1-yes" name="q1" value="yes"><label class="qual-face" for="qual-q1-yes">Yes</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q1-no" name="q1" value="no"><label class="qual-face" for="qual-q1-no">No</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q1-unsure" name="q1" value="unsure"><label class="qual-face" for="qual-q1-unsure">Not sure</label></span>
+          </div>
+        </fieldset>
+      </li>
+      <li class="qual-q" id="qual-q2">
+        <fieldset>
+          <legend><span class="qual-n" aria-hidden="true">2/5</span>Does your product use AI at all?</legend>
+          <p class="qual-help">This includes AI you did not build: a chatbot, a model you call through someone else&#x27;s service, or a feature a no-code tool added for you.</p>
+          <div class="qual-opts">
+            <span class="qual-opt"><input type="radio" id="qual-q2-yes" name="q2" value="yes"><label class="qual-face" for="qual-q2-yes">Yes</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q2-no" name="q2" value="no"><label class="qual-face" for="qual-q2-no">No</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q2-unsure" name="q2" value="unsure"><label class="qual-face" for="qual-q2-unsure">Not sure</label></span>
+          </div>
+        </fieldset>
+      </li>
+      <li class="qual-q" id="qual-q3">
+        <fieldset>
+          <legend><span class="qual-n" aria-hidden="true">3/5</span>Did you build the AI, or are you using someone else&#x27;s?</legend>
+          <p class="qual-help">The rules place different duties on the organisation that puts an AI system on the market and on the organisation that uses one. You can be both.</p>
+          <div class="qual-opts">
+            <span class="qual-opt"><input type="radio" id="qual-q3-built" name="q3" value="built"><label class="qual-face" for="qual-q3-built">We built or trained it</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q3-using" name="q3" value="using"><label class="qual-face" for="qual-q3-using">We use someone else&#x27;s</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q3-both" name="q3" value="both"><label class="qual-face" for="qual-q3-both">Both</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q3-unsure" name="q3" value="unsure"><label class="qual-face" for="qual-q3-unsure">Not sure</label></span>
+          </div>
+        </fieldset>
+      </li>
+      <li class="qual-q" id="qual-q4">
+        <fieldset>
+          <legend><span class="qual-n" aria-hidden="true">4/5</span>Do people see content your AI produced, or talk to it directly?</legend>
+          <p class="qual-help">Text, images, audio, video, or a chatbot. There are disclosure duties where someone might not realise they are dealing with AI, or with something AI made.</p>
+          <div class="qual-opts">
+            <span class="qual-opt"><input type="radio" id="qual-q4-yes" name="q4" value="yes"><label class="qual-face" for="qual-q4-yes">Yes</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q4-no" name="q4" value="no"><label class="qual-face" for="qual-q4-no">No</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q4-unsure" name="q4" value="unsure"><label class="qual-face" for="qual-q4-unsure">Not sure</label></span>
+          </div>
+        </fieldset>
+      </li>
+      <li class="qual-q" id="qual-q5">
+        <fieldset>
+          <legend><span class="qual-n" aria-hidden="true">5/5</span>Does AI help decide something about a person?</legend>
+          <p class="qual-help">Hiring, credit, insurance, a place on a course, access to healthcare, or a benefit. It counts even when a person signs the decision off at the end.</p>
+          <div class="qual-opts">
+            <span class="qual-opt"><input type="radio" id="qual-q5-yes" name="q5" value="yes"><label class="qual-face" for="qual-q5-yes">Yes</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q5-no" name="q5" value="no"><label class="qual-face" for="qual-q5-no">No</label></span>
+            <span class="qual-opt"><input type="radio" id="qual-q5-unsure" name="q5" value="unsure"><label class="qual-face" for="qual-q5-unsure">Not sure</label></span>
+          </div>
+        </fieldset>
+      </li>
+      </ol>
+      <p class="qual-err" id="qual-error" role="alert" hidden></p>
+      <div class="qual-actions">
+        <button type="submit" class="qual-go">Show me what this points at</button>
+        <button type="button" class="qual-quiet" id="qual-reset">Start again</button>
+      </div>
+    </form>
+
+    <div class="qual-nojs" id="qual-nojs" role="note">
+      <p>These five questions need JavaScript to work out what they point at.</p>
+      <p>The questions themselves are above and they are worth reading either way. To get the rest without JavaScript:</p>
+      <ul>
+        <li><a href="/blog/blog-does-ai-act-apply.html">Read the guide on whether the EU AI Act applies to your app.</a></li>
+        <li><a href="/pricing.html">Read what stays free and where Regula&#x27;s limits begin.</a></li>
+        <li><a href="mailto:support@getregula.com?subject=Where%20do%20I%20stand">Email us and describe your situation in your own words.</a></li>
+      </ul>
+    </div>
+
+    <div class="qual-result" id="qual-result" hidden></div>
+
+    <h2 class="qual-after-h">What happens after you answer</h2>
+    <p class="qual-meta">Three next steps, each described with its limits.</p>
+    <ul class="qual-unsettled">
+      <li><a href="/assess/">Keep going, free</a>. Free, in your browser or your terminal. No account, nothing uploaded.</li>
+      <li><a href="/product.html">Use the local CLI</a>. Local code observations and evidence scaffolds. Free and open source.</li>
+      <li><a href="/about.html">Get independent review</a>. Human judgment for context Regula cannot observe. Not provided by Regula.</li>
+    </ul>
+  </div>
+</section>
+<script type="application/json" id="qual-copy">{"afterHeading": "What happens after you answer", "afterLead": "Three next steps, each described with its limits.", "audience": "For founders and people responsible for an AI product", "clearedNotice": "Your answers have been cleared. The five questions are ready again.", "consultantWarranted": "Your answers name a use the Act treats most strictly, or a system you build and cannot yet place. Human review matters here because another automated signal cannot settle the missing context.", "dateFormat": "{d} {month} {y}", "dates": {"annexIII": "2027-12-02", "article50": "2026-08-02", "marking": "2026-12-02", "prohibited": "2025-02-02"}, "devBody": "The same indicators are available as a local command. It reads files on your machine and does not upload them. Below is real output from the committed test fixture, reproduced on every build by the project's own checks, not a mock-up. Note what it does with an unresolved question: it names the facts it needs rather than guessing a tier.", "devHeading": "If you are comfortable with a terminal", "englishOnlyCue": "", "errorMany": "{n} questions are still unanswered. They are highlighted below, and “Not sure” is a real answer if you do not know.", "errorNone": "You have not answered anything yet. Start with the first question, and “Not sure” is a real answer if you do not know.", "errorOne": "One question is still unanswered. It is highlighted below, and “Not sure” is a real answer if you do not know.", "h1": "Does AI regulation reach your business?", "lang": "en", "ledeIn": "Below is what your own answers point at, and what they cannot settle. None of it is a decision about your risk tier or your obligations, because those depend on facts that five questions cannot reach.", "ledeNoAi": "You have said your product does not use AI. The Act works from its own definition, which is broader than most people expect, so this is worth checking rather than assuming.", "ledeNoEu": "Nothing you have told us connects you to the EU market, so the EU AI Act may not be the first thing to look at. That is a scoping question rather than a conclusion, and what follows says why it is not settled.", "limits": ["Regula indicates where to look. It does not decide your risk tier, your obligations, or whether you comply. Conformity is determined by regulators and notified bodies, not by a questionnaire, and “not flagged” never means “compliant”.", "Nothing here is legal advice. Anything that turns on a legal conclusion needs an appropriately qualified professional."], "meta": "Regula indicates where to look. It does not decide your risk tier, your obligations, or whether you comply. This is not legal advice.", "months": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], "nojsItems": [{"href": "/blog/blog-does-ai-act-apply.html", "text": "Read the guide on whether the EU AI Act applies to your app."}, {"href": "/pricing.html", "text": "Read what stays free and where Regula's limits begin."}, {"href": "mailto:support@getregula.com?subject=Where%20do%20I%20stand", "text": "Email us and describe your situation in your own words."}], "nojsLead": "The questions themselves are above and they are worth reading either way. To get the rest without JavaScript:", "nojsTitle": "These five questions need JavaScript to work out what they point at.", "outsideScopeNote": "Nothing you have said establishes an EU AI scope connection. The free tools remain available if your situation changes, and an independent professional can review context the tool cannot observe.", "points": {"decisions": {"body": "You said AI helps decide something about a person. Annex III lists the uses treated as high risk and Article 6 sets out how a system in one of those areas is classified; those obligations apply from {annexIII}. Article 6(3) also sets out conditions under which such a system is not high risk, including a narrow procedural task or improving the result of a previously completed human activity, and it states that a system performing profiling of natural persons is always high risk. Which of these describes you is exactly what this page cannot answer.", "cite": "Article 6(2) and 6(3), Annex III", "href": "/guides/article-9-risk-management.html", "linkText": "What high-risk actually requires", "title": "Decisions about people are the strictest part"}, "definition": {"body": "This is the first thing a person has to settle, and five plain questions cannot settle it. Article 3(1) turns on what the system does with the input it receives, not on the product label, the library it imports, or whether anyone calls it AI.", "cite": "Article 3(1)", "href": "/blog/blog-classify-ai-system.html", "linkText": "How the definition works", "title": "Whether it is an AI system in the Act's own sense"}, "noAi": {"body": "You said your product does not use AI. The Act works from its own definition in Article 3(1), which turns on what a system does with the input it receives rather than on which technology built it. If anything in your product infers, predicts, recommends or generates, check it against the definition rather than assume.", "cite": "Article 3(1)", "href": "/blog/blog-classify-ai-system.html", "linkText": "How the definition works", "title": "The definition is broader than most people expect"}, "noEu": {"body": "You said your product is not sold to, and not used by, people in the EU. Article 2 can still reach an organisation established in a third country where the output produced by the AI system is used in the Union, so it is worth knowing where your output ends up. Other countries are legislating too, and this site tracks several of them.", "cite": "Regulation (EU) 2024/1689, Article 2(1)(c)", "href": "/regions/regulations.html", "linkText": "Rules in other countries", "title": "Nothing you told us connects you to the EU market"}, "prohibited": {"body": "Some practices are prohibited rather than regulated, and the prohibitions have applied since {prohibited}. This page did not ask about them, so read the list rather than assume it does not touch you.", "cite": "Article 5", "href": "/guides/article-5-prohibited-practices.html", "linkText": "The prohibited practices, listed", "title": "A few uses are banned outright"}, "roleBoth": {"body": "You said both, and both sets of duties can apply to the same organisation. Article 25 also sets out when a deployer, distributor or importer becomes the provider of a high-risk system: putting your own name or trademark on it, making a substantial modification to it, or modifying the intended purpose of a system so that it becomes high-risk.", "cite": "Articles 3(3), 3(4) and 25(1)", "href": "/guides/", "linkText": "Guides by article", "title": "You may be both, and the line can move"}, "roleDeployer": {"body": "You said you use someone else's. An organisation using an AI system under its own authority has its own duties, lighter than a provider's but not nothing. Running someone else's model inside a product you offer is not personal, non-professional use.", "cite": "Article 3(4)", "href": "/guides/", "linkText": "Guides by article", "title": "You would be reading the deployer duties"}, "roleProvider": {"body": "You said you built or trained it. The organisation that develops an AI system and places it on the market, or puts it into service under its own name or trademark, carries the heavier set of duties. Whether you are the provider of a given system is a legal question about how it reaches its users, not a description of your engineering.", "cite": "Article 3(3)", "href": "/guides/", "linkText": "Guides by article", "title": "You would be reading the provider duties"}, "roleUnsure": {"body": "You are not sure. The Act distinguishes the organisation that places an AI system on the market or puts it into service under its own name from the organisation that uses one under its own authority, and it puts different duties on each. Article 25 also sets out when using or modifying someone else's high-risk system makes you its provider.", "cite": "Articles 3(3), 3(4) and 25(1)", "href": "/guides/", "linkText": "Guides by article", "title": "Your role is one of the facts to settle first"}, "scope": {"body": "You said people in the EU use your product. Article 2 sets out who the Act applies to, and it covers providers and deployers established in a third country where the output produced by the AI system is used in the Union. Where you are registered is not the test.", "cite": "Regulation (EU) 2024/1689, Article 2(1)(c)", "href": "/blog/blog-does-ai-act-apply.html", "linkText": "Does the EU AI Act apply to your app?", "title": "The rules can reach you from outside the EU"}, "scopeUnsure": {"body": "You are not sure whether people in the EU use your product. That is the first question to answer, because Article 2 covers providers and deployers established in a third country where the output produced by the AI system is used in the Union. It turns on where your users are and where your output ends up.", "cite": "Regulation (EU) 2024/1689, Article 2(1)(c)", "href": "/blog/blog-does-ai-act-apply.html", "linkText": "Does the EU AI Act apply to your app?", "title": "Whether the rules reach you is the first thing to settle"}, "transparency": {"body": "You said people see AI-produced content or talk to your system directly. Article 50 sets out several transparency duties with different actors, conditions and exceptions. They have applied since {article50}, and the marking requirements carry a grace period to {marking}. A missing disclosure is something to review, not proof that every Article 50 duty applies to you.", "cite": "Article 50", "href": "/guides/article-50-transparency.html", "linkText": "Article 50 transparency, in detail", "title": "Telling people they are dealing with AI"}}, "pointsHeading": "Worth reading, based on what you said", "proof": {"deps": "zero dependencies in the core", "security": "security findings disclosed by tool and scope", "tests": "{tests} tests, re-run on every change", "trustHref": "https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md", "trustLabel": "trust pack", "upload": "the local core does not upload scanned files"}, "questions": [{"help": "The rules can reach a business based anywhere. What matters is whether your product, or what your product produces, is used by people in the EU.", "id": "q1", "legend": "Do you sell to, or have users in, the EU?", "options": [{"label": "Yes", "value": "yes"}, {"label": "No", "value": "no"}, {"label": "Not sure", "value": "unsure"}]}, {"help": "This includes AI you did not build: a chatbot, a model you call through someone else's service, or a feature a no-code tool added for you.", "id": "q2", "legend": "Does your product use AI at all?", "options": [{"label": "Yes", "value": "yes"}, {"label": "No", "value": "no"}, {"label": "Not sure", "value": "unsure"}]}, {"help": "The rules place different duties on the organisation that puts an AI system on the market and on the organisation that uses one. You can be both.", "id": "q3", "legend": "Did you build the AI, or are you using someone else's?", "options": [{"label": "We built or trained it", "value": "built"}, {"label": "We use someone else's", "value": "using"}, {"label": "Both", "value": "both"}, {"label": "Not sure", "value": "unsure"}]}, {"help": "Text, images, audio, video, or a chatbot. There are disclosure duties where someone might not realise they are dealing with AI, or with something AI made.", "id": "q4", "legend": "Do people see content your AI produced, or talk to it directly?", "options": [{"label": "Yes", "value": "yes"}, {"label": "No", "value": "no"}, {"label": "Not sure", "value": "unsure"}]}, {"help": "Hiring, credit, insurance, a place on a course, access to healthcare, or a benefit. It counts even when a person signs the decision off at the end.", "id": "q5", "legend": "Does AI help decide something about a person?", "options": [{"label": "Yes", "value": "yes"}, {"label": "No", "value": "no"}, {"label": "Not sure", "value": "unsure"}]}], "reset": "Start again", "resultHeading": "What your answers point at", "routes": {"consultant": {"body": "Regula does not operate a paid review, booking service, certification or law practice. When intended purpose, operator role, deployment context or legal interpretation changes the answer, take the relevant evidence to an appropriately qualified professional you select independently.", "cta": "Read Regula's limits", "href": "/about.html", "price": "Provided outside Regula", "short": "Human judgment for context Regula cannot observe. Not provided by Regula.", "title": "Get independent review"}, "free": {"body": "Work through the fuller assessment in your browser. It asks the same ground in the law's own terms and shows where each question comes from. No account, and nothing you enter is uploaded. If you are comfortable with a terminal, the same indicators are available on your own machine, and the scanner does not upload your code.", "cmd": "pipx install regula-ai && regula check .", "cta": "Open the free assessment", "href": "/assess/", "price": "Free, and it stays free", "short": "Free, in your browser or your terminal. No account, nothing uploaded.", "title": "Keep going, free"}, "paid": {"body": "Run the same code-observable indicators on your own machine. The CLI produces text and stable JSON output, unresolved facts, and evidence scaffolds without uploading scanned files. Its output is an input to review, not a compliance determination, certification or legal opinion.", "cta": "See the local CLI", "href": "/product.html", "price": "Free and open source", "short": "Local code observations and evidence scaffolds. Free and open source.", "title": "Use the local CLI"}}, "routesHeading": "What you can do next", "shareDone": "Link copied", "shareLabel": "Copy a link to these answers", "sub": "Five questions, in plain words. No account, nothing to install, and nothing you type here leaves your browser. At the end you get a list of what your answers point at and what a person still has to settle.", "submit": "Show me what this points at", "thousandsSep": ",", "unsettled": ["Whether what you have meets the Act's own definition of an AI system. Article 3(1) is the test, and it is not the same as whether you call it AI.", "Which role or roles you occupy. That depends on how the system reaches the people who use it, not on who wrote the code.", "Your intended purpose. Most classification turns on it, and it is a statement you make rather than something a tool can read.", "Whether any of the Article 6(3) conditions applies to you, and whether anything you do removes it.", "Everything that lives in your contracts, your governance and how the system behaves once it is running. No scanner can see any of it, and neither can five questions."], "unsettledHeading": "What this cannot settle"}</script>
+<script src="/assets/qualifier.js" defer></script>
+<!-- QUALIFIER:END -->
+
+<!-- HONESTY :  WHAT REGULA DOES AND DOESN'T DO -->
+<div class="sec reveal">
+    <h2 class="sec-head">What Regula does not do</h2>
+    <p class="sec-sub">A compliance tool that overstates its capabilities is worse than no tool at all. Here is what Regula actually is, and what it isn't.</p>
+    <div class="art-grid">
+        <div class="card-base art-card">
+            <h3>Not legal advice</h3>
+            <p>Regula identifies risk indicators in code for developer review. It does not determine compliance. A qualified legal professional should review any classification before you act on it.</p>
+        </div>
+        <div class="card-base art-card">
+            <h3>Pattern matching, not understanding</h3>
+            <p>Regula matches patterns in source code. It does not read intent, so it flags things that turn out to be fine and misses things a person would catch. Its own precision and recall measurements are under review and are not quoted here as current figures; the methodology and its limits are published in full. <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md" style="color:#8888aa;">Benchmark methodology and limits &rarr;</a></p>
+        </div>
+        <div class="card-base art-card">
+            <h3>Scaffolds, not substance</h3>
+            <p>Annex IV docs, evidence packs, and governance frameworks are pre-filled scaffolds. A human must complete them with substantive content. Regula cannot verify that a risk management system actually operates.</p>
+        </div>
+    </div>
+    <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Full limitations disclosure &rarr;</a></p>
+</div>
+
+<div class="sep"></div>
+
+<!-- DEVELOPER ENTRY -->
+<div class="sec reveal" id="terminal">
+    <h2 class="sec-head">If you are comfortable with a terminal</h2>
+    <p class="sec-sub">The same indicators are available as a local command. It reads files on your machine and does not upload them. Below is real output from the committed test fixture, reproduced on every build by the project&#x27;s own checks, not a mock-up. Note what it does with an unresolved question: it names the facts it needs rather than guessing a tier.</p>
+    <ul class="qual-proof"><li>2,897 tests, re-run on every change</li><li>security findings disclosed by tool and scope</li><li>zero dependencies in the core</li><li>the local core does not upload scanned files</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">trust pack</a></li></ul>
+    <div class="term-wrap" role="region" aria-label="Interactive Regula CLI demo. Switch tabs to see example output of regula check, plan, gap, and comply commands">
+            <div class="term-bar" aria-hidden="true">
+                <div class="term-dot td-r"></div>
+                <div class="term-dot td-y"></div>
+                <div class="term-dot td-g"></div>
+            </div>
+            <div class="term-tabs" role="tablist" aria-label="Regula command examples">
+                <div class="term-tab active" role="tab" id="tab-check-label" tabindex="0" aria-selected="true" aria-controls="tab-check" onclick="switchTab('check', this)" onkeydown="handleTabKey(event, this)">check</div>
+                <div class="term-tab" role="tab" id="tab-plan-label" tabindex="-1" aria-selected="false" aria-controls="tab-plan" onclick="switchTab('plan', this)" onkeydown="handleTabKey(event, this)">plan</div>
+                <div class="term-tab" role="tab" id="tab-gap-label" tabindex="-1" aria-selected="false" aria-controls="tab-gap" onclick="switchTab('gap', this)" onkeydown="handleTabKey(event, this)">gap</div>
+                <div class="term-tab" role="tab" id="tab-comply-label" tabindex="-1" aria-selected="false" aria-controls="tab-comply" onclick="switchTab('comply', this)" onkeydown="handleTabKey(event, this)">comply</div>
+            </div>
+            <div class="term-body">
+                <div class="term-panel active" id="tab-check" role="tabpanel" aria-labelledby="tab-check-label">
+                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check tests/fixtures/sample_high_risk --explain</span>
+
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-19.1
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
+
+Detector observations are reported separately and do not create obligations.</pre>
+                    <p class="term-provenance">Decision excerpt from real output. Bound to data/gap_demo.json and tests/test_gap_demo.py .</p>
+                </div>
+                <div class="term-panel" id="tab-plan" role="tabpanel" aria-labelledby="tab-plan-label">
+                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula plan --project tests/fixtures/sample_high_risk</span>
+
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-19.1
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
+
+No obligation plan or effort estimate was emitted because applicability is unresolved.</pre>
+                    <p class="term-provenance">Real output, not a mock-up. Bound to data/gap_demo.json and tests/test_gap_demo.py .</p>
+                </div>
+                <div class="term-panel" id="tab-gap" role="tabpanel" aria-labelledby="tab-gap-label">
+                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula gap tests/fixtures/sample_high_risk</span>
+
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-19.1
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
+
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</pre>
+                    <p class="term-provenance">Real output, not a mock-up. Reproduce it from a clone with the command shown; the fixture is committed at tests/fixtures/sample_high_risk and this page is diffed against a fresh run by tests/test_gap_demo.py .</p>
+                </div>
+                <div class="term-panel" id="tab-comply" role="tabpanel" aria-labelledby="tab-comply-label">
+                    <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
+
+<span class="t-h">Decision: insufficient_information</span>
+Model: 2026-08-19.1
+Jurisdiction: eu
+Rule resolution: unresolved
+Facts needed to resolve the next decision: 2
+  - is_ai_system: Does the subject meet the legal definition?
+  - jurisdiction_in_scope: Does the territorial and operator scope apply?
+
+Evidence scan:
+Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Article observations emitted: 0; held pending applicability: 8</pre>
+                    <p class="term-provenance">Real output, not a mock-up. No article table or readiness percentage is emitted until sourced facts resolve applicability. Bound to tests/test_gap_demo.py .</p>
+                </div>
+            </div>
+        </div>
+    <p class="sec-sub" style="margin-top:24px;"><a href="/product.html">What the scanner looks for, what it reports, and how it runs &rarr;</a></p>
+</div>
+
+
+<script>
+  // Flip panel transitions on AFTER the first paint so the terminal does
+  // not play its 0→1 opacity fade on page load. Uses requestAnimationFrame
+  // rather than DOMContentLoaded so the class lands just after the browser
+  // has committed initial styles :  guaranteed no flash.
+  requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+          document.body.classList.add('term-panels-ready');
+      });
+  });
+</script>
+
+<!-- FAQ (visible :  content mirrors the FAQPage schema for GEO extractability) -->
+<div class="sep"></div>
+<div class="sec reveal" id="faq">
+    <h2 class="sec-head">Common questions</h2>
+    <p class="sec-sub">Answers grounded in the regulation. Every claim cites a specific Article.</p>
+    <div class="faq" style="max-width:760px;margin:0 auto;">
+        <details>
+            <summary>Does the EU AI Act apply to my company if I'm outside the EU?</summary>
+            <p>Potentially. Article 2(1)(c) covers providers and deployers established outside the EU where an AI system's output is used in the Union, subject to the Act's roles, exclusions, and other scope conditions. Location alone does not decide applicability.</p>
+        </details>
+        <details>
+            <summary>Is my AI app prohibited under the EU AI Act?</summary>
+            <p>Article 5 prohibits specified practices, including certain forms of social scoring, manipulation, biometric identification, and emotion inference. The exact scope, conditions, and exceptions matter. Regula flags related code patterns for review; it does not determine that a prohibited practice exists.</p>
+        </details>
+        <details>
+            <summary>What makes an AI system high-risk?</summary>
+            <p>Article 6 contains the classification routes and Annex III lists specified intended uses across eight areas. Conditions, exceptions, intended purpose, and deployment context matter. Regula reports related code indicators but does not determine high-risk status.</p>
+        </details>
+        <details>
+            <summary>When does the EU AI Act start being enforced?</summary>
+            <p>The original Article 5 prohibitions have applied since 2 February 2025. GPAI provisions began applying on 2 August 2025, subject to transition rules. Regulation (EU) 2026/1744 sets 2 December 2027 for Annex III and 2 August 2028 for the Annex I product path. Article 50 generally has applied since 2 August 2026, with a specific transition for providers of Article 50(2) systems already on the market.</p>
+        </details>
+        <details>
+            <summary>What are the fines under the EU AI Act?</summary>
+            <p>Article 99 provides for fines up to &euro;35 million or 7% of global annual turnover for prohibited-practice infringements; up to &euro;15 million or 3% for certain other infringements; and up to &euro;7.5 million or 1% for supplying incorrect, incomplete, or misleading information. <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" rel="noopener">Read Article 99 in the primary legislation</a>.</p>
+        </details>
+        <details>
+            <summary>Is Regula free?</summary>
+            <p>Yes. Regula is open-source under the Apache 2.0 or EUPL 1.2 licence. No account or API key is required for local use. Install with <code>pipx install regula-ai</code> and run it locally. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md">The CLI reference</a> and <a href="https://github.com/kuzivaai/getregula/blob/main/references/framework_crosswalk.yaml">framework crosswalk</a> document the shipped surface.</p>
+        </details>
+        <details>
+            <summary>Does the EU AI Act overlap with GDPR, DORA, or NIS2?</summary>
+            <p>Yes, significantly. High-risk AI systems that process personal data must also comply with GDPR, and other regulations like DORA and NIS2 may apply depending on your sector. Regula cross-maps AI Act obligations to ISO 42001, NIST AI RMF, SOC 2, OWASP, and 9 other frameworks in a single scan.</p>
+        </details>
+        <details>
+            <summary>Does Regula work with AI-generated code?</summary>
+            <p>Yes. Regula scans source files regardless of who or what wrote them. Authorship alone does not determine whether the EU AI Act applies: Article 2 scope, the actor's role, intended purpose, deployment context, and applicable exclusions still require review. Run <code>regula check .</code> for code-observable indicators and <code>regula assess</code> to record context.</p>
+        </details>
+        <details>
+            <summary>What should I do right now to prepare?</summary>
+            <p>Install with <code>pipx install regula-ai</code>, use <code>regula assess</code> to record declared context, then run <code>regula check .</code> for code-observable indicators. Human review is required; these outputs do not determine legal classification or compliance.</p>
+        </details>
+    </div>
+</div>
+
+<div class="sep"></div>
+
+<!-- BLOG -->
+<div class="sec reveal">
+    <h2 class="sec-head">Guides &amp; analysis</h2>
+    <p class="sec-sub">Technical guides for developers and analysis of AI regulation.</p>
+    <div class="art-grid" style="margin-bottom:32px;">
+        <a href="/guides/eu-ai-act-python.html" class="card-base art-card">
+            <div class="tag tag-blue">Guide</div>
+            <h3>EU AI Act for Python Developers</h3>
+            <p>Scan Python AI code for risk patterns. PyTorch, TensorFlow, scikit-learn, LangChain.</p>
+        </a>
+        <a href="/guides/article-9-risk-management.html" class="card-base art-card">
+            <div class="tag tag-blue">Guide</div>
+            <h3>Article 9: Risk Management System</h3>
+            <p>What the regulation requires, what code scanning can detect, and what needs human review.</p>
+        </a>
+        <a href="/guides/eu-ai-act-healthcare.html" class="card-base art-card">
+            <div class="tag tag-blue">Guide</div>
+            <h3>EU AI Act for Healthcare AI</h3>
+            <p>Medical devices, clinical decision support, and the MDR/IVDR intersection.</p>
+        </a>
+        <a href="/guides/article-5-prohibited-practices.html" class="card-base art-card">
+            <div class="tag tag-blue">Guide</div>
+            <h3>Article 5: Prohibited Practices</h3>
+            <p>The 10 practices banned under Article 5, including the Omnibus additions.</p>
+        </a>
+    </div>
+    <p style="text-align:center;margin-bottom:32px;font-size:13px;"><a href="/blog/writing.html" style="color:#8888aa;">All 8 guides &amp; 15 articles &rarr;</a></p>
+
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <div class="foot">
+        <div class="foot-inner">
+            <div class="foot-left">
+                <div class="foot-brand">Regula</div>
+                <div class="foot-links">
+        <a href="/guides/">Guides</a>
+                    <a href="https://github.com/kuzivaai/getregula">GitHub</a>
+                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust pack</a>
+                    <a href="/pricing.html">Evidence packs</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/GOVERNANCE.md">Governance</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">Benchmarks</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Security</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contributing</a>
+                    <a href="/regions/uae.html">UAE &amp; GCC</a>
+                    <a href="/regions/brazil-ai-regulation.html">Brazil : LGPD &amp; Marco Legal</a>
+                    <a href="mailto:support@getregula.com">support@getregula.com</a>
+                <a href="/privacy.html">Privacy</a>
+                <a href="/terms.html">Terms</a>
+                </div>
+                <div class="foot-copy">Open source &middot; Apache 2.0 / EUPL 1.2 (code); <a href="https://github.com/kuzivaai/getregula/blob/main/NOTICE" class="foot-muted-link">detection rules under DRL 1.1</a> &middot; &copy; 2026 Regula &middot; <a href="mailto:support@getregula.com" class="foot-muted-link">support@getregula.com</a></div>
+            </div>
+            <div class="foot-middle">
+                <div class="foot-col-head">Reading</div>
+                <div class="foot-col-links">
+                    <a href="/blog/blog-static-analysis-ai-compliance.html">Code scanning vs questionnaires <span class="muted">Why you need both for EU AI Act compliance</span></a>
+                    <a href="/blog/blog-classify-ai-system.html">How to review your AI system context <span class="muted">Article 6 routes, candidate risk categories, and limits</span></a>
+                    <a href="/blog/blog-art50-code-of-practice.html">Art 50 Code of Practice mapping <span class="muted">What the 10 June 2026 final code means for your codebase</span></a>
+                    <a href="/blog/blog-aicdi-governance-gaps.html">AICDI corporate governance gaps <span class="muted">How Regula maps to the 2026 UNESCO/TRF report</span></a>
+                    <a href="/guides/eu-ai-act-python.html">EU AI Act for Python developers <span class="muted">Scan Python AI code for risk patterns</span></a>
+                    <a href="/guides/eu-ai-act-javascript.html">EU AI Act for JavaScript developers <span class="muted">Node.js, browser, TypeScript</span></a>
+                    <a href="/guides/eu-ai-act-recruitment-hiring.html">EU AI Act for recruitment AI <span class="muted">Annex III Category 4 hiring obligations</span></a>
+                </div>
+            </div>
+            <div class="foot-right">
+                <div class="foot-legal">
+                    <strong>Not legal advice.</strong> Regula identifies regulatory risk indicators in code for developer review. It does not constitute legal advice, and its output should not be relied upon as a definitive compliance determination. Consult a qualified legal professional for legal questions.
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // ===== NAV SCROLL =====
+    function updateNav() {
+        document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    }
+
+    window.addEventListener('scroll', () => {
+        updateNav();
+    }, { passive: true });
+
+    // ===== TERMINAL TABS =====
+    // Swap the currently-active tab and panel directly, rather than first
+    // deactivating ALL of them. The old approach briefly left zero panels
+    // with `.active`, so the outgoing panel started its opacity-fade to 0
+    // *before* the incoming one started fading in :  visible as a flash.
+    function switchTab(name, el) {
+        const currentTab = document.querySelector('.term-tab.active');
+        const currentPanel = document.querySelector('.term-panel.active');
+        const nextPanel = document.getElementById('tab-' + name);
+        if (!nextPanel || currentPanel === nextPanel) return;
+        if (currentTab && currentTab !== el) {
+            currentTab.classList.remove('active');
+            currentTab.setAttribute('aria-selected', 'false');
+            currentTab.setAttribute('tabindex', '-1');
+        }
+        if (currentPanel) currentPanel.classList.remove('active');
+        el.classList.add('active');
+        el.setAttribute('aria-selected', 'true');
+        el.setAttribute('tabindex', '0');
+        el.focus();
+        nextPanel.classList.add('active');
+    }
+
+    function handleTabKey(e, el) {
+        const tabs = Array.from(document.querySelectorAll('.term-tab'));
+        const i = tabs.indexOf(el);
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            const next = tabs[(i + 1) % tabs.length];
+            switchTab(next.textContent, next);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prev = tabs[(i - 1 + tabs.length) % tabs.length];
+            switchTab(prev.textContent, prev);
+        } else if (e.key === 'Home') {
+            e.preventDefault();
+            switchTab(tabs[0].textContent, tabs[0]);
+        } else if (e.key === 'End') {
+            e.preventDefault();
+            switchTab(tabs[tabs.length - 1].textContent, tabs[tabs.length - 1]);
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            switchTab(el.textContent, el);
+        }
+    }
+
+    // ===== COPY BUTTON =====
+    function copyInstall(el) {
+        const cp = el.querySelector('.cp');
+        navigator.clipboard.writeText('pipx install regula-ai').then(() => {
+            el.classList.add('copied');
+            cp.innerHTML = '&#10003;&nbsp;copied';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                cp.textContent = 'copy';
+            }, 2000);
+        }).catch(() => {
+            cp.textContent = 'copy failed';
+            setTimeout(() => { cp.textContent = 'copy'; }, 2000);
+        });
+    }
+
+    // ===== COPY ARBITRARY COMMAND =====
+    // ===== PILL BUTTON COPY =====
+    function copyPill(el, cmd) {
+        const original = el.innerHTML;
+        navigator.clipboard.writeText(cmd).then(() => {
+            el.classList.add('copied');
+            el.innerHTML = '<span>&#10003;</span> Copied! Paste it in your terminal';
+            setTimeout(() => {
+                el.classList.remove('copied');
+                el.innerHTML = original;
+            }, 2500);
+        }).catch(() => {
+            el.innerHTML = '<span>&#9888;</span> Copy failed. Type:' + cmd;
+            setTimeout(() => { el.innerHTML = original; }, 2500);
+        });
+    }
+
+    // ===== COPY PAGE URL (for business owner CTA) =====
+    function copyPageUrl(el) {
+        navigator.clipboard.writeText('https://getregula.com').then(() => {
+            const txt = el.querySelector('.fwd-txt');
+            txt.textContent = '✓ Link copied! Send it to your developer';
+            setTimeout(() => { txt.textContent = 'Copy link to send to your developer'; }, 3000);
+        });
+    }
+
+    // ===== SCROLL REVEAL =====
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Don't unobserve :  keep visible
+            }
+        });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal, .sec, .step, .art-card').forEach(el => {
+        // Only add reveal class if not already set
+        if (!el.classList.contains('reveal')) {
+            el.classList.add('reveal');
+        }
+        revealObserver.observe(el);
+    });
+</script>
+
+
+</body>
+</html>

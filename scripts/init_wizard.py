@@ -1,0 +1,267 @@
+# regula-ignore
+#!/usr/bin/env python3
+"""
+Regula Init — Guided Setup Wizard
+
+Detects the development environment, installs appropriate hooks,
+creates a default policy file, and runs an initial scan.
+"""
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+
+REGULA_ROOT = Path(__file__).parent.parent.resolve()
+
+
+def _detect_platforms(project_dir: Path) -> list:
+    """Detect which AI coding platforms are present."""
+    platforms = []
+
+    # Claude Code
+    if (project_dir / ".claude").exists() or (Path.home() / ".claude").exists():
+        platforms.append("claude-code")
+
+    # GitHub Copilot CLI
+    if (project_dir / ".github").exists():
+        platforms.append("copilot-cli")
+
+    # Windsurf
+    if (project_dir / ".windsurf").exists():
+        platforms.append("windsurf")
+
+    # Git (always available as fallback)
+    if (project_dir / ".git").exists():
+        platforms.append("git-hooks")
+
+    return platforms
+
+
+def _detect_python() -> str:
+    """Detect Python version."""
+    v = sys.version_info
+    return f"{v.major}.{v.minor}.{v.micro}"
+
+
+def _policy_exists(project_dir: Path) -> bool:
+    """Check if a policy file exists."""
+    return (project_dir / "regula-policy.yaml").exists() or \
+           (project_dir / "regula-policy.json").exists()
+
+
+def _create_default_policy(project_dir: Path) -> None:
+    """Create a default regula-policy.yaml."""
+    policy = """version: "1.0"
+organisation: "Your Organisation"
+
+frameworks:
+  - eu_ai_act
+
+rules:
+  risk_classification:
+    force_high_risk: []
+    exempt: []
+
+  logging:
+    retention_years: 10
+    pii_redaction: true
+    export_format: [json, csv]
+"""
+    project_dir.mkdir(parents=True, exist_ok=True)
+    (project_dir / "regula-policy.yaml").write_text(policy, encoding="utf-8")
+
+
+def _run_quick_scan(project_dir: Path) -> dict:
+    """Run a quick scan and return summary.
+
+    scan_files itself activates the project's declared system.domain
+    (domain_scoring.project_declared_domains), so init's summary can
+    never contradict a subsequent check on the same project
+    (walkthrough P5: init reported "0 AI files" on a project check
+    called HIGH-RISK). Domain-gated potential findings are reported
+    explicitly instead of silently counted as zero.
+    """
+    try:
+        from report import scan_files
+        findings = scan_files(str(project_dir))
+        stats = dict(getattr(scan_files, "last_stats", {}) or {})
+        active = [f for f in findings if not f.get("suppressed")]
+        return {
+            "total_files": len(set(f["file"] for f in findings)),
+            "prohibited": sum(1 for f in active if f["tier"] == "prohibited"),
+            "high_risk": sum(1 for f in active if f["tier"] == "high_risk"),
+            "limited_risk": sum(1 for f in active if f["tier"] == "limited_risk"),
+            "minimal_risk": sum(1 for f in active if f["tier"] == "minimal_risk"),
+            "domain_gated": stats.get("domain_gated_count", 0),
+            "domain_gated_categories": stats.get("domain_gated_categories", []),
+        }
+    except (OSError, ImportError) as e:
+        return {"error": str(e)}
+
+
+def run_init(project_dir: Path, interactive: bool = False, dry_run: bool = False) -> None:
+    """Run the init wizard."""
+    print()
+    print("=" * 60)
+    print("  Regula — AI Governance Setup")
+    print("=" * 60)
+    print()
+
+    if dry_run:
+        print("  (dry run — no changes will be made)\n")
+        platforms = _detect_platforms(project_dir)
+        py_version = _detect_python()
+        has_policy = _policy_exists(project_dir)
+        scan = _run_quick_scan(project_dir)
+
+        print(f"  Python:    {py_version}")
+        print(f"  Policy:    {'exists' if has_policy else 'not found'}")
+        print(f"  Platforms: {', '.join(platforms) if platforms else 'none detected'}")
+        if "error" not in scan:
+            total = scan.get("total_files", 0)
+            prohibited = scan.get("prohibited", 0)
+            high_risk = scan.get("high_risk", 0)
+            limited = scan.get("limited_risk", 0)
+            print(f"  Files with findings:  {total}")
+            print(f"  Findings:  {prohibited} prohibited, {high_risk} high-risk, {limited} limited-risk")
+            if scan.get("domain_gated", 0):
+                cats = ", ".join(scan.get("domain_gated_categories", []))
+                print(f"  Domain-gated: {scan['domain_gated']} potential finding(s) "
+                      f"inactive ({cats}) — declare your domain via --domain or "
+                      f"system.domain in regula-policy.yaml")
+        print()
+        print("  Recommended next steps:")
+        if not has_policy:
+            print("    regula init              Set up policy and hooks")
+        print("    regula check .           Full scan")
+        print("    regula gap --project .   Compliance gap assessment")
+        print()
+        return
+
+    # 1. Environment detection
+    python_version = _detect_python()
+    platforms = _detect_platforms(project_dir)
+    has_policy = _policy_exists(project_dir)
+
+    print(f"  Project:    {project_dir}")
+    print(f"  Python:     {python_version}")
+    print(f"  Platforms:  {', '.join(platforms) if platforms else 'none detected'}")
+    print(f"  Policy:     {'found' if has_policy else 'not found'}")
+    print()
+
+    # 2. Python version check
+    if sys.version_info < (3, 10):
+        print("  WARNING: Python 3.10+ required. Current version may not work.")
+        print()
+
+    # 3. Create policy if missing
+    if not has_policy:
+        if interactive:
+            try:
+                answer = input("  Create default regula-policy.yaml? [Y/n] ").strip().lower()
+            except EOFError:
+                answer = "y"
+            if answer in ("", "y", "yes"):
+                _create_default_policy(project_dir)
+                print("  Created regula-policy.yaml")
+            else:
+                print("  Skipped policy creation.")
+        else:
+            _create_default_policy(project_dir)
+            print("  Created regula-policy.yaml (edit to customise)")
+    else:
+        print("  Policy file already exists.")
+    print()
+
+    # 4. Install hooks for detected platform — ONLY with explicit consent.
+    # Hooks modify tool configuration outside the policy file
+    # (.claude/settings.local.json, .github/hooks, git hooks), so they
+    # are never written unprompted: non-interactive runs print the
+    # manual command instead, and an unanswerable prompt (EOF — piped
+    # stdin, CI) counts as a decline, not a yes (walkthrough P4).
+    if platforms:
+        primary = platforms[0]
+        if interactive:
+            print(f"  Detected platform: {primary}")
+            for i, p in enumerate(platforms):
+                print(f"    {i + 1}. {p}")
+            try:
+                choice = input(f"  Install hooks for {primary}? [Y/n/number] ").strip().lower()
+            except EOFError:
+                choice = "n"
+                print("  (no interactive input available — skipping hook installation)")
+            if choice.isdigit() and 1 <= int(choice) <= len(platforms):
+                primary = platforms[int(choice) - 1]
+            elif choice in ("n", "no"):
+                primary = None
+        else:
+            print(f"  Detected platform(s): {', '.join(platforms)}")
+            print("  Hooks not installed (requires consent). To install:")
+            print(f"    regula install {primary}")
+            print("  or re-run interactively: regula init --interactive")
+            primary = None
+
+        if primary:
+            try:
+                from install import PLATFORMS, _find_regula_root
+                regula_root = _find_regula_root()
+                installer = PLATFORMS.get(primary)
+                if installer:
+                    print(f"  Installing hooks for {primary}...")
+                    installer(regula_root, project_dir)
+                else:
+                    print(f"  No installer for {primary}.")
+            except (OSError, PermissionError) as e:
+                print(f"  Hook installation failed: {e}")
+                print(f"  Run manually: python3 scripts/install.py {primary}")
+    else:
+        print("  No AI coding platform detected.")
+        print("  Run 'python3 scripts/install.py list' to see options.")
+    print()
+
+    # 5. Quick scan
+    print("  Running initial scan...")
+    summary = _run_quick_scan(project_dir)
+
+    if "error" in summary:
+        print(f"  Scan error: {summary['error']}")
+    else:
+        print(f"  Files with findings: {summary['total_files']}")
+        print(f"  Prohibited:          {summary['prohibited']}")
+        print(f"  High-risk:           {summary['high_risk']}")
+        print(f"  Limited-risk:        {summary['limited_risk']}")
+        print(f"  Minimal-risk:        {summary['minimal_risk']}")
+        if summary.get("domain_gated", 0):
+            cats = ", ".join(summary.get("domain_gated_categories", []))
+            print(f"  Domain-gated:        {summary['domain_gated']} potential "
+                  f"finding(s) inactive ({cats})")
+            print("                       Declare your domain (--domain or "
+                  "system.domain in regula-policy.yaml) to activate them.")
+    print()
+
+    # 6. Next steps
+    print("  " + "-" * 56)
+    print("  Setup complete. Next steps:")
+    print()
+    print("  1. Edit regula-policy.yaml to customise for your org")
+    print("  2. Run 'regula check .' for a full scan")
+    print("  3. Run 'regula report --format html -o report.html' for a governance report")
+    print("  4. Run 'regula feed' for governance news")
+    print("  5. Run 'regula timeline' for EU AI Act dates")
+    print("  " + "-" * 56)
+    print()
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Regula guided setup")
+    parser.add_argument("--project", "-p", default=".", help="Project directory")
+    parser.add_argument("--interactive", "-i", action="store_true", help="Interactive mode")
+    args = parser.parse_args()
+
+    run_init(Path(args.project).resolve(), interactive=args.interactive)
+
+
+if __name__ == "__main__":
+    main()

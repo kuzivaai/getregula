@@ -1,0 +1,339 @@
+#!/usr/bin/env python3
+# regula-ignore
+"""
+Regula Secret Detection — Credential Leak Prevention in AI Tool Inputs
+
+Detects hardcoded credentials and API keys in tool inputs before they are
+executed. Focused on AI-related credentials (OpenAI, Anthropic, AWS, Google,
+GitHub) that commonly leak through AI coding assistant interactions.
+
+Evidence: GitGuardian found Copilot repositories have 6.4% secret leak rate,
+40% higher than average. 8.5% of prompts to AI tools include sensitive
+information (PurpleSec 2026). GitHub shipped MCP secret scanning 17 March 2026.
+
+Design decisions:
+  - HIGH confidence patterns (prefixed keys): BLOCK with bypass path
+    (matches GitHub push protection behaviour — 85% developer acceptance)
+  - MEDIUM confidence patterns (generic): WARN via additionalContext
+  - Never display full secret in any output — redact to first 4 chars
+  - Secrets detection is separate from AI risk classification (SRP)
+  - This module covers tool inputs only, not general file scanning
+    (use gitleaks/truffleHog/detect-secrets for file-level scanning)
+"""
+
+import re
+from dataclasses import dataclass
+@dataclass
+class SecretFinding:
+    pattern_name: str
+    confidence: str  # "high" or "medium"
+    confidence_score: int  # 0-100
+    redacted_value: str  # First 4 chars + ****
+    description: str
+    remediation: str
+
+
+# ---------------------------------------------------------------------------
+# Patterns — validated against secrets-patterns-db and GitGuardian
+#
+# High confidence: specific prefix format, very low false positive rate
+# Medium confidence: contextual patterns, moderate false positive rate
+# ---------------------------------------------------------------------------
+
+SECRET_PATTERNS = {
+    # --- HIGH confidence (prefixed, block-worthy) ---
+    "openai_api_key": {
+        "pattern": r"sk-(?!ant-)[a-zA-Z0-9][a-zA-Z0-9\-]{19,}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "OpenAI API key detected",
+        "remediation": "Use environment variable OPENAI_API_KEY instead of hardcoding.",
+        "source": "GitGuardian pattern database",
+    },
+    "anthropic_api_key": {
+        "pattern": r"sk-ant-[a-zA-Z0-9\-]{20,}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "Anthropic API key detected",
+        "remediation": "Use environment variable ANTHROPIC_API_KEY instead of hardcoding.",
+        "source": "GitGuardian pattern database",
+    },
+    "aws_access_key": {
+        "pattern": r"AKIA[0-9A-Z]{16}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "AWS access key ID detected",
+        "remediation": "Use AWS credential provider chain or environment variables.",
+        "source": "AWS documentation, GitGuardian",
+    },
+    "google_api_key": {
+        "pattern": r"AIza[0-9A-Za-z\-_]{35}",
+        "confidence": "high",
+        "confidence_score": 90,
+        "description": "Google API key detected",
+        "remediation": "Use environment variable or Google Cloud credential provider.",
+        "source": "GitGuardian pattern database",
+    },
+    "github_token": {
+        "pattern": r"gh[ps]_[A-Za-z0-9_]{36,}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "GitHub personal access token detected",
+        "remediation": "Use environment variable GITHUB_TOKEN or credential helper.",
+        "source": "GitHub documentation",
+    },
+    "private_key": {
+        # The header must be FOLLOWED by base64 key material. A PEM header on
+        # its own is a MARKER FOR a key, not a key.
+        #
+        # MEASURED 2026-08-17 on vercel/ai at 86892f3: the single
+        # highest-priority finding across 2,408 scanned files was this pattern
+        # firing on a constant holding the PEM header text, used to parse a key
+        # the caller supplies at runtime. There was no key material in the file,
+        # and the accusation was about a named third party's public repository,
+        # which is the shape most likely to be checked by a reader who knows the
+        # code. Recorded as .
+        #
+        # The separator class bridges the three shapes real key material takes
+        # in source: real newlines, an escaped `\n` inside a string literal
+        # (common in JS and Python config), and concatenation across lines with
+        # quotes and `+`. The bound is 40 characters, so a header and a body
+        # separated by a paragraph of prose is not read as one key.
+        #
+        # `ENCRYPTED ` is added at the same time. It is a real PEM header
+        # variant (PKCS#8 encrypted private keys) that the previous pattern
+        # could not match at all, so this change narrows one direction and
+        # widens another, and both are stated.
+        "pattern": (r"-----BEGIN (?:RSA |DSA |EC |OPENSSH |ENCRYPTED )?PRIVATE KEY-----"
+                    r"(?:[\s\"'`+,)(\[\]]|\\n|\\r){0,40}[A-Za-z0-9+/]{32,}"),
+        "confidence": "high",
+        "confidence_score": 98,
+        "description": "Private key material detected",
+        # The old remediation ("Use SSH agent or key file path") is advice for
+        # passing a key to a command, which is a different situation from a key
+        # committed into source. Corrected in the same change as the pattern,
+        # because a false positive with confident wrong advice is worse than a
+        # false positive alone.
+        "remediation": ("Remove the key from source and rotate it: anything committed "
+                        "to version control must be treated as disclosed. Load it at "
+                        "runtime from a secrets manager, an environment variable or a "
+                        "file outside the repository."),
+        "source": "Standard PEM format (RFC 7468)",
+    },
+
+    # --- MEDIUM confidence (contextual, warn-worthy) ---
+    "generic_api_key": {
+        "pattern": r"(?i)(?:api[_-]?key|api[_-]?secret|access[_-]?token|auth[_-]?token)\s*[:=]\s*['\"]([A-Za-z0-9\-_.]{20,})['\"]",
+        "confidence": "medium",
+        "confidence_score": 60,
+        "description": "Possible API key or token in assignment",
+        "remediation": "Move credentials to environment variables or a secrets manager.",
+        "source": "secrets-patterns-db",
+    },
+    "connection_string": {
+        "pattern": r"(?i)(?:mongodb|postgres|mysql|redis|amqp):\/\/(?!localhost)[^\s'\"]{10,}",
+        "confidence": "medium",
+        "confidence_score": 70,
+        "description": "Database connection string with possible credentials",
+        "remediation": "Use environment variable for connection strings. Never hardcode credentials.",
+        "source": "Standard URI format",
+    },
+    "aws_secret_key": {
+        "pattern": r"(?i)aws.{0,20}(?:secret|key).{0,20}['\"][0-9a-zA-Z/+=]{40}['\"]",
+        "confidence": "medium",
+        "confidence_score": 75,
+        "description": "Possible AWS secret access key",
+        "remediation": "Use AWS credential provider chain or environment variables.",
+        "source": "secrets-patterns-db",
+    },
+
+    # --- HIGH confidence: AI/ML service keys (prefixed, block-worthy) ---
+    "pinecone_api_key": {
+        "pattern": r"pcsk_[a-zA-Z0-9]{40,}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "Pinecone API key detected",
+        "remediation": "Use environment variable PINECONE_API_KEY instead of hardcoding.",
+        "source": "Pinecone documentation",
+    },
+    "langsmith_api_key": {
+        "pattern": r"ls__[a-zA-Z0-9]{32,}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "LangSmith/LangChain API key detected",
+        "remediation": "Use environment variable LANGCHAIN_API_KEY instead of hardcoding.",
+        "source": "LangSmith documentation",
+    },
+    "replicate_api_token": {
+        "pattern": r"r8_[a-zA-Z0-9]{36,}",
+        "confidence": "high",
+        "confidence_score": 95,
+        "description": "Replicate API token detected",
+        "remediation": "Use environment variable REPLICATE_API_TOKEN instead of hardcoding.",
+        "source": "Replicate documentation",
+    },
+    "fireworks_ai_key": {
+        "pattern": r"fw_[a-zA-Z0-9]{32,}",
+        "confidence": "high",
+        "confidence_score": 90,
+        "description": "Fireworks AI API key detected",
+        "remediation": "Use environment variable FIREWORKS_API_KEY instead of hardcoding.",
+        "source": "Fireworks AI documentation",
+    },
+
+    # --- MEDIUM confidence: AI/ML service keys (contextual) ---
+    "qdrant_api_key": {
+        "pattern": r"(?i)qdrant.*api[_\-]?key\s*[:=]\s*[\"'][^\"']{10,}",
+        "confidence": "medium",
+        "confidence_score": 70,
+        "description": "Possible Qdrant API key in assignment",
+        "remediation": "Use environment variable QDRANT_API_KEY instead of hardcoding.",
+        "source": "Qdrant documentation",
+    },
+    "cohere_api_key": {
+        "pattern": r"(?i)cohere.*api[_\-]?key\s*[:=]\s*[\"'][a-zA-Z0-9]{40,}",
+        "confidence": "medium",
+        "confidence_score": 70,
+        "description": "Possible Cohere API key in assignment",
+        "remediation": "Use environment variable CO_API_KEY instead of hardcoding.",
+        "source": "Cohere documentation",
+    },
+    "wandb_api_key": {
+        "pattern": r"(?i)wandb.*api[_\-]?key\s*[:=]\s*[\"'][a-f0-9]{40}",
+        "confidence": "medium",
+        "confidence_score": 70,
+        "description": "Weights & Biases API key detected",
+        "remediation": "Use environment variable WANDB_API_KEY instead of hardcoding.",
+        "source": "Weights & Biases documentation",
+    },
+    "mlflow_tracking_token": {
+        "pattern": r"(?i)mlflow.*token\s*[:=]\s*[\"'][^\"']{10,}",
+        "confidence": "medium",
+        "confidence_score": 65,
+        "description": "Possible MLflow tracking token in assignment",
+        "remediation": "Use environment variable MLFLOW_TRACKING_TOKEN instead of hardcoding.",
+        "source": "MLflow documentation",
+    },
+    "weaviate_api_key": {
+        "pattern": r"(?i)weaviate.*(?:api[_\-]?key|auth[_\-]?token)\s*[:=]\s*[\"'][^\"']{10,}",
+        "confidence": "medium",
+        "confidence_score": 65,
+        "description": "Possible Weaviate API key in assignment",
+        "remediation": "Use environment variable WEAVIATE_API_KEY instead of hardcoding.",
+        "source": "Weaviate documentation",
+    },
+}
+
+# ---------------------------------------------------------------------------
+# Compiled regex cache — avoids recompiling 18 patterns on every call
+# Lazily populated on first use of check_secrets / has_high_confidence_secret
+# ---------------------------------------------------------------------------
+_SECRET_COMPILED: dict[str, "re.Pattern[str]"] = {}
+
+
+def _get_compiled() -> dict[str, "re.Pattern[str]"]:
+    """Return compiled regex cache, populating on first call."""
+    if not _SECRET_COMPILED:
+        for name, config in SECRET_PATTERNS.items():
+            _SECRET_COMPILED[name] = re.compile(config["pattern"])
+    return _SECRET_COMPILED
+
+
+def _redact(value: str) -> str:
+    """Redact a secret value, showing only the first 4 characters."""
+    if len(value) <= 4:
+        return "****"
+    return value[:4] + "****"
+
+
+def check_secrets(text: str) -> list[SecretFinding]:
+    """Check text for hardcoded secrets and credentials.
+
+    Returns a list of SecretFinding objects, sorted by confidence (high first).
+    """
+    findings = []
+    compiled = _get_compiled()
+    for name, config in SECRET_PATTERNS.items():
+        match = compiled[name].search(text)
+        if match:
+            matched_value = match.group(0)
+            findings.append(SecretFinding(
+                pattern_name=name,
+                confidence=config["confidence"],
+                confidence_score=config["confidence_score"],
+                redacted_value=_redact(matched_value),
+                description=config["description"],
+                remediation=config["remediation"],
+            ))
+
+    # Sort: high confidence first
+    findings.sort(key=lambda f: -f.confidence_score)
+    return findings
+
+
+def has_high_confidence_secret(text: str) -> bool:
+    """Quick check: does the text contain any high-confidence secret?"""
+    compiled = _get_compiled()
+    for name, config in SECRET_PATTERNS.items():
+        if config["confidence"] == "high" and compiled[name].search(text):
+            return True
+    return False
+
+
+def redact_secrets(text: str) -> str:
+    """Replace every occurrence of every known secret pattern with a
+    [REDACTED:<pattern>] placeholder.
+
+    Used by the audit hooks before tool payloads are persisted: the
+    audit trail is embedded in client-facing deliverables (evidence
+    packs, conformity packs, reports with --include-audit), so raw
+    secret values must never reach it. The pre-tool hook only BLOCKS
+    high-confidence findings — medium/low-confidence secrets still
+    execute and would otherwise be logged verbatim.
+
+    Callers must redact BEFORE truncating: truncation can split a value
+    so the pattern no longer matches while most of the secret survives.
+    """
+    if not text:
+        return text
+    compiled = _get_compiled()
+    for name in SECRET_PATTERNS:
+        text = compiled[name].sub(f"[REDACTED:{name}]", text)
+    return text
+
+
+def format_secret_warning(findings: list[SecretFinding]) -> str:
+    """Format secret findings as a warning message for hooks."""
+    if not findings:
+        return ""
+
+    high = [f for f in findings if f.confidence == "high"]
+    medium = [f for f in findings if f.confidence == "medium"]
+
+    lines = []
+
+    if high:
+        lines.append("CREDENTIAL EXPOSURE RISK DETECTED")
+        lines.append("")
+        for f in high:
+            lines.append(f"  {f.description}")
+            lines.append(f"  Value: {f.redacted_value}")
+            lines.append(f"  Fix: {f.remediation}")
+            lines.append("")
+        lines.append("This action has been blocked to prevent credential leakage.")
+        lines.append("If this is a false positive or test value, you can proceed")
+        lines.append("by removing the credential from the command and using an")
+        lines.append("environment variable instead.")
+
+    if medium:
+        if high:
+            lines.append("")
+            lines.append("Additional warnings:")
+        else:
+            lines.append("CREDENTIAL WARNING")
+            lines.append("")
+        for f in medium:
+            lines.append(f"  {f.description}: {f.redacted_value}")
+            lines.append(f"  Fix: {f.remediation}")
+
+    return "\n".join(lines)

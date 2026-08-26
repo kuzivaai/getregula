@@ -1,0 +1,831 @@
+"""Tests for RFC 3161 manifest timestamping (Regula Evidence Format v1.1).
+
+Covers §4.6.3 verifier behaviour and the producer path. All network
+interactions go through a local mock TSA — no real TSA calls.
+
+Kept in a dedicated test file per project convention — do NOT extend
+tests/test_classification.py.
+
+Skipped if either `asn1crypto` or `cryptography` is missing (both ship
+under `regula[signing]`).
+"""
+from __future__ import annotations
+
+import base64
+import datetime
+import functools
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
+
+asn1crypto = pytest.importorskip("asn1crypto")
+cryptography = pytest.importorskip("cryptography")
+
+from asn1crypto import tsp, algos, cms, core  # noqa: E402
+
+
+# ── Mock TSA fixture ───────────────────────────────────────────────
+
+
+@functools.lru_cache(maxsize=1)
+def _mock_tsa_identity():
+    """Ephemeral TSA CA + signer, generated once per test run.
+
+    Uses EC P-256 (fast keygen, and exercises the same ECDSA verification
+    path that the real FreeTSA token uses). Returns
+    (ca_pem, signer_key, signer_cert_der).
+    """
+    from cryptography import x509
+    from cryptography.x509.oid import NameOID, ExtendedKeyUsageOID
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import ec
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+    ca_key = ec.generate_private_key(ec.SECP256R1())
+    ca_name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "Regula Test TSA Root")])
+    ca_cert = (x509.CertificateBuilder()
+               .subject_name(ca_name).issuer_name(ca_name)
+               .public_key(ca_key.public_key())
+               .serial_number(x509.random_serial_number())
+               .not_valid_before(now - datetime.timedelta(days=1))
+               .not_valid_after(now + datetime.timedelta(days=365))
+               .add_extension(x509.BasicConstraints(ca=True, path_length=None),
+                              critical=True)
+               .sign(ca_key, hashes.SHA256()))
+
+    signer_key = ec.generate_private_key(ec.SECP256R1())
+    signer_cert = (x509.CertificateBuilder()
+                   .subject_name(x509.Name([
+                       x509.NameAttribute(NameOID.COMMON_NAME, "Regula Test TSA Signer")]))
+                   .issuer_name(ca_cert.subject)
+                   .public_key(signer_key.public_key())
+                   .serial_number(x509.random_serial_number())
+                   .not_valid_before(now - datetime.timedelta(days=1))
+                   .not_valid_after(now + datetime.timedelta(days=365))
+                   .add_extension(
+                       x509.ExtendedKeyUsage([ExtendedKeyUsageOID.TIME_STAMPING]),
+                       critical=True)
+                   .sign(ca_key, hashes.SHA256()))
+
+    return (ca_cert.public_bytes(serialization.Encoding.PEM),
+            signer_key,
+            signer_cert.public_bytes(serialization.Encoding.DER))
+
+
+def _sign_token(tst_der: bytes):
+    """Build a properly signed SignerInfo + certificate set over `tst_der`."""
+    from asn1crypto import x509 as a_x509
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.asymmetric import ec
+
+    _, signer_key, signer_cert_der = _mock_tsa_identity()
+    a_cert = a_x509.Certificate.load(signer_cert_der)
+
+    signed_attrs = cms.CMSAttributes([
+        cms.CMSAttribute({"type": "content_type", "values": ["tst_info"]}),
+        cms.CMSAttribute({"type": "message_digest",
+                          "values": [hashlib.sha256(tst_der).digest()]}),
+    ])
+    signature = signer_key.sign(
+        signed_attrs.untag().dump(force=True), ec.ECDSA(hashes.SHA256()))
+
+    signer_info = cms.SignerInfo({
+        "version": 1,
+        "sid": cms.SignerIdentifier({
+            "issuer_and_serial_number": cms.IssuerAndSerialNumber({
+                "issuer": a_cert["tbs_certificate"]["issuer"],
+                "serial_number": a_cert["tbs_certificate"]["serial_number"].native,
+            })
+        }),
+        "digest_algorithm": algos.DigestAlgorithm({"algorithm": "sha256"}),
+        "signed_attrs": signed_attrs,
+        "signature_algorithm": algos.SignedDigestAlgorithm(
+            {"algorithm": "sha256_ecdsa"}),
+        "signature": signature,
+    })
+    return [a_cert], [signer_info]
+
+
+def _build_mock_tsr(message: bytes, imprint_hash_algo: str = "sha256",
+                    override_imprint: bytes | None = None,
+                    sign: bool = True) -> bytes:
+    """Build a DER-encoded TimeStampResp carrying a token over `message`.
+
+    By default the token is genuinely signed by an ephemeral test TSA
+    (see `_mock_tsa_identity`), so the RFC 3161 signature-verification path
+    in `timestamp.verify_timestamp_token_signature` is actually exercised
+    rather than mocked away. Pass `sign=False` to emit the legacy unsigned
+    token (empty SignerInfos), which the verifier must report as
+    UNSUPPORTED — not INVALID — and degrade to a hash-only verdict.
+
+    If `override_imprint` is provided, use it instead of sha256(message)
+    — simulates a TSA replacing the imprint or a tampered response.
+    """
+    if override_imprint is not None:
+        digest = override_imprint
+    else:
+        digest = hashlib.sha256(message).digest()
+
+    tst_info = tsp.TSTInfo({
+        "version": 1,
+        "policy": "1.2.3.4.5",
+        "message_imprint": tsp.MessageImprint({
+            "hash_algorithm": algos.DigestAlgorithm({"algorithm": imprint_hash_algo}),
+            "hashed_message": digest,
+        }),
+        "serial_number": 12345,
+        "gen_time": datetime.datetime.now(datetime.timezone.utc),
+    })
+
+    tst_der = tst_info.dump()
+    encap = cms.EncapsulatedContentInfo({
+        "content_type": "tst_info",
+        "content": core.ParsableOctetString(tst_der),
+    })
+    certificates, signer_infos = _sign_token(tst_der) if sign else ([], [])
+    signed_data = cms.SignedData({
+        "version": "v3",
+        "digest_algorithms": [algos.DigestAlgorithm({"algorithm": "sha256"})],
+        "encap_content_info": encap,
+        "certificates": certificates,
+        "signer_infos": signer_infos,
+    })
+    token = cms.ContentInfo({
+        "content_type": "signed_data",
+        "content": signed_data,
+    })
+    resp = tsp.TimeStampResp({
+        "status": tsp.PKIStatusInfo({"status": "granted"}),
+        "time_stamp_token": token,
+    })
+    return resp.dump()
+
+
+class _MockTSAHandler(BaseHTTPRequestHandler):
+    """HTTP handler that returns a TSR over whatever hash is in the request."""
+
+    # Set by the test fixture to control what the mock returns
+    imprint_override: bytes | None = None
+    fail_next: bool = False
+
+    def do_POST(self):
+        length = int(self.headers.get("Content-Length", 0))
+        req_der = self.rfile.read(length)
+
+        try:
+            req = tsp.TimeStampReq.load(req_der)
+            imprint_in_req = req["message_imprint"]["hashed_message"].native
+        except Exception:
+            self.send_response(400)
+            self.end_headers()
+            return
+
+        if self.__class__.fail_next:
+            self.send_response(500)
+            self.end_headers()
+            return
+
+        override = self.__class__.imprint_override
+        # We need to produce a TSR whose embedded imprint matches what the
+        # PRODUCER requested (otherwise our own producer will reject the
+        # mismatched response before it ever reaches the verifier). So we
+        # build the TSR with override_imprint = imprint_in_req normally,
+        # and only deviate when explicitly told to.
+        tsr = _build_mock_tsr(
+            b"",  # unused because override_imprint is provided
+            override_imprint=override if override is not None else imprint_in_req,
+        )
+        self.send_response(200)
+        self.send_header("Content-Type", "application/timestamp-reply")
+        self.send_header("Content-Length", str(len(tsr)))
+        self.end_headers()
+        self.wfile.write(tsr)
+
+    def log_message(self, *_args, **_kwargs):
+        pass  # silence test logs
+
+
+@pytest.fixture
+def mock_tsa(monkeypatch):
+    """Yield a local http://localhost:PORT/tsa that speaks RFC 3161."""
+    # Allow localhost for the mock TSA — production SSRF guard blocks 127.0.0.1.
+    monkeypatch.setenv("_REGULA_TESTING_ALLOW_LOCAL", "1")
+    _MockTSAHandler.imprint_override = None
+    _MockTSAHandler.fail_next = False
+    server = HTTPServer(("127.0.0.1", 0), _MockTSAHandler)
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        yield {
+            "url": f"http://127.0.0.1:{port}/tsa",
+            "handler": _MockTSAHandler,
+        }
+    finally:
+        server.shutdown()
+        thread.join(timeout=5)
+
+
+# ── Unit tests ─────────────────────────────────────────────────────
+
+
+def test_request_manifest_timestamp_happy_path(mock_tsa):
+    """Producer can request + parse a timestamp from a RFC 3161 TSA."""
+    from timestamp import request_manifest_timestamp
+
+    message = b"test canonical manifest bytes"
+    block = request_manifest_timestamp(message, tsa_url=mock_tsa["url"])
+
+    assert block["format"] == "rfc3161"
+    assert block["hash_algorithm"] == "sha256"
+    assert block["message_imprint"] == hashlib.sha256(message).hexdigest()
+    assert block["tsa_url"] == mock_tsa["url"]
+    assert block["chain_verified"] is False
+    assert "gen_time" in block
+    assert isinstance(block["token"], str)
+    # Token should decode as bytes
+    token_bytes = base64.b64decode(block["token"])
+    assert len(token_bytes) > 50
+
+
+def test_verify_manifest_timestamp_round_trip(mock_tsa):
+    """A freshly-timestamped manifest verifies cleanly."""
+    from timestamp import request_manifest_timestamp, verify_manifest_timestamp
+
+    manifest = {
+        "format": "regula.evidence.v1",
+        "format_version": "1.1",
+        "regula_version": "1.6.2",
+        "hash_algorithm": "sha256",
+        "files": [{"filename": "a.json", "sha256": "a" * 64, "size_bytes": 1}],
+    }
+    from signing import canonicalize_manifest_for_signing
+    canonical = canonicalize_manifest_for_signing(manifest)
+
+    block = request_manifest_timestamp(canonical, tsa_url=mock_tsa["url"])
+    manifest_ts = dict(manifest, timestamp_authority=block)
+
+    ok, detail = verify_manifest_timestamp(manifest_ts, canonical)
+    assert ok is True, detail
+    assert "matches manifest" in detail
+    assert "NOT independently verified" in detail  # chain caveat present
+
+
+def test_verify_detects_canonical_form_mismatch(mock_tsa):
+    """If the manifest changes after timestamping, verify fails."""
+    from timestamp import request_manifest_timestamp, verify_manifest_timestamp
+    from signing import canonicalize_manifest_for_signing
+
+    manifest = {
+        "format": "regula.evidence.v1",
+        "format_version": "1.1",
+        "regula_version": "1.6.2",
+        "hash_algorithm": "sha256",
+        "files": [{"filename": "a.json", "sha256": "a" * 64, "size_bytes": 1}],
+    }
+    canonical = canonicalize_manifest_for_signing(manifest)
+    block = request_manifest_timestamp(canonical, tsa_url=mock_tsa["url"])
+
+    # Tamper: change a file's sha256 after the timestamp was issued
+    tampered = dict(manifest, timestamp_authority=block)
+    tampered["files"] = [{"filename": "a.json", "sha256": "b" * 64, "size_bytes": 1}]
+    new_canonical = canonicalize_manifest_for_signing(tampered)
+
+    ok, detail = verify_manifest_timestamp(tampered, new_canonical)
+    assert ok is False
+    assert "does not match" in detail
+
+
+def test_no_timestamp_block_returns_marker():
+    from timestamp import verify_manifest_timestamp
+    manifest = {"format": "regula.evidence.v1", "files": []}
+    ok, detail = verify_manifest_timestamp(manifest, b"anything")
+    assert ok is False
+    assert detail == "no timestamp block"
+
+
+def test_non_sha256_imprint_rejected(mock_tsa):
+    """A timestamp using sha1 or sha384 is rejected by the v1.1 verifier."""
+    from timestamp import verify_manifest_timestamp
+
+    # Hand-build a timestamp block with a sha1 algorithm (not sha256)
+    tst_info = tsp.TSTInfo({
+        "version": 1,
+        "policy": "1.2.3.4.5",
+        "message_imprint": tsp.MessageImprint({
+            "hash_algorithm": algos.DigestAlgorithm({"algorithm": "sha1"}),
+            "hashed_message": hashlib.sha1(b"hello").digest(),
+        }),
+        "serial_number": 1,
+        "gen_time": datetime.datetime.now(datetime.timezone.utc),
+    })
+    encap = cms.EncapsulatedContentInfo({
+        "content_type": "tst_info",
+        "content": core.ParsableOctetString(tst_info.dump()),
+    })
+    signed_data = cms.SignedData({
+        "version": "v3",
+        "digest_algorithms": [algos.DigestAlgorithm({"algorithm": "sha1"})],
+        "encap_content_info": encap,
+        "signer_infos": [],
+    })
+    token = cms.ContentInfo({"content_type": "signed_data", "content": signed_data})
+    block = {
+        "format": "rfc3161",
+        "hash_algorithm": "sha256",  # declared sha256 but token uses sha1
+        "message_imprint": hashlib.sha256(b"hello").hexdigest(),
+        "tsa_url": "http://fake",
+        "token": base64.b64encode(token.dump()).decode("ascii"),
+    }
+    manifest = {"format": "regula.evidence.v1", "timestamp_authority": block}
+
+    ok, detail = verify_manifest_timestamp(manifest, b"hello")
+    assert ok is False
+    assert "sha" in detail.lower()
+
+
+def test_malformed_token_rejected():
+    from timestamp import verify_manifest_timestamp
+    manifest = {
+        "format": "regula.evidence.v1",
+        "timestamp_authority": {
+            "format": "rfc3161",
+            "hash_algorithm": "sha256",
+            "message_imprint": "a" * 64,
+            "tsa_url": "http://fake",
+            "token": "this-is-not-valid-base64-or-DER-either",
+        },
+    }
+    ok, detail = verify_manifest_timestamp(manifest, b"whatever")
+    assert ok is False
+
+
+def test_missing_token_field_rejected():
+    from timestamp import verify_manifest_timestamp
+    manifest = {
+        "format": "regula.evidence.v1",
+        "timestamp_authority": {
+            "format": "rfc3161",
+            "hash_algorithm": "sha256",
+        },
+    }
+    ok, detail = verify_manifest_timestamp(manifest, b"whatever")
+    assert ok is False
+    assert "token" in detail.lower()
+
+
+# ── CLI end-to-end tests ───────────────────────────────────────────
+
+
+def _run_regula(*argv, env=None):
+    merged = os.environ.copy()
+    if env:
+        merged.update(env)
+    proc = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", *argv],
+        cwd=str(ROOT),
+        env=merged,
+        capture_output=True,
+        text=True,
+        timeout=180,
+    )
+    return proc.returncode, proc.stdout, proc.stderr
+
+
+def test_cli_conform_sign_timestamp_verify_round_trip_json(tmp_path, mock_tsa):
+    """`conform --sign --timestamp --format json` then `verify --format json` succeeds.
+
+    Asserts on JSON envelope fields (stable contract) instead of stdout
+    text substrings. This is the primary timestamp round-trip test.
+    """
+    key_path = tmp_path / "signing.key"
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(key_path)}
+
+    rc, out, err = _run_regula(
+        "conform",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--sign",
+        "--timestamp",
+        "--tsa-url", mock_tsa["url"],
+        "--format", "json",
+        env=env,
+    )
+    assert rc == 0, f"conform failed: rc={rc}\nstdout={out}\nstderr={err}"
+    conform_data = json.loads(out)
+    assert conform_data["command"] == "conform"
+    assert conform_data["exit_code"] == 0
+    manifest = conform_data["data"]["manifest"]
+    assert manifest["format_version"] == "1.1"
+    assert "signing" in manifest
+    assert manifest["signing"]["algorithm"] == "ed25519"
+    assert "timestamp_authority" in manifest
+    assert manifest["timestamp_authority"]["format"] == "rfc3161"
+    assert manifest["timestamp_authority"]["hash_algorithm"] == "sha256"
+    pack_path = conform_data["data"]["pack_path"]
+
+    # Verify via JSON mode
+    rc2, out2, err2 = _run_regula(
+        "verify", pack_path, "--format", "json", env=env,
+    )
+    assert rc2 == 0, f"verify failed: rc={rc2}\nstdout={out2}\nstderr={err2}"
+    verify_data = json.loads(out2)
+    assert verify_data["command"] == "verify"
+    report = verify_data["data"]
+    assert report["signature_status"] == "VERIFIED"
+    # The mock TSA signs its tokens, so the verifier proves the RFC 3161
+    # SignedData signature as well as the imprint. It must still NOT say plain
+    # "VERIFIED": with no trust anchor the signer's identity is self-asserted
+    # by the token, which is exactly what SIGNATURE_VERIFIED claims and no more.
+    assert report["timestamp_status"] == "SIGNATURE_VERIFIED"
+    assert report["failed"] == 0
+    assert report["passed"] == report["total"]
+
+
+def test_cli_conform_sign_timestamp_verify_text_smoke(tmp_path, mock_tsa):
+    """Smoke test: text output mentions signing and timestamping.
+
+    Kept as a single text-mode sanity check; the JSON test above is the
+    authoritative round-trip assertion.
+    """
+    key_path = tmp_path / "signing.key"
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(key_path)}
+
+    rc, out, err = _run_regula(
+        "conform",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--sign",
+        "--timestamp",
+        "--tsa-url", mock_tsa["url"],
+        env=env,
+    )
+    assert rc == 0, f"conform failed: rc={rc}\nstdout={out}\nstderr={err}"
+    out_lower = out.lower()
+    assert "sign" in out_lower or "ed25519" in out_lower, (
+        f"expected signing mention in text output: {out!r}"
+    )
+    assert "timestamp" in out_lower or "rfc 3161" in out_lower or "rfc3161" in out_lower, (
+        f"expected timestamp mention in text output: {out!r}"
+    )
+
+    pack_dir = next(p for p in out_dir.iterdir() if p.is_dir())
+    rc2, out2, err2 = _run_regula("verify", str(pack_dir), env=env)
+    assert rc2 == 0, f"verify failed: rc={rc2}\nstdout={out2}\nstderr={err2}"
+    out2_lower = out2.lower()
+    assert "verified" in out2_lower, (
+        f"expected 'verified' in text output: {out2!r}"
+    )
+
+
+def test_cli_verify_detects_post_timestamp_tampering_json(tmp_path, mock_tsa):
+    """Editing a signed+timestamped manifest after the fact fails verification (JSON mode)."""
+    key_path = tmp_path / "signing.key"
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(key_path)}
+
+    rc, out, err = _run_regula(
+        "conform",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--sign", "--timestamp", "--tsa-url", mock_tsa["url"],
+        "--format", "json",
+        env=env,
+    )
+    assert rc == 0, err
+    conform_data = json.loads(out)
+    pack_path = conform_data["data"]["pack_path"]
+
+    manifest_path = Path(pack_path) / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+
+    # Tamper: change first file's hash
+    first = manifest["files"][0]
+    first["sha256"] = ("1" if first["sha256"][0] == "0" else "0") + first["sha256"][1:]
+    manifest_path.write_text(json.dumps(manifest, indent=2))
+
+    rc2, out2, err2 = _run_regula(
+        "verify", str(pack_path), "--format", "json", env=env,
+    )
+    assert rc2 != 0
+    # The CLI may sys.exit(1) before emitting JSON, so check combined text
+    combined = (out2 + err2).lower()
+    assert "signature" in combined or "timestamp" in combined or "modified" in combined
+
+
+def test_cli_verify_untimestamped_pack_passes_non_strict_json(tmp_path):
+    """A signed-but-not-timestamped pack verifies cleanly without --strict (JSON mode)."""
+    key_path = tmp_path / "signing.key"
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(key_path)}
+
+    rc, out, err = _run_regula(
+        "conform",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--sign",
+        "--format", "json",
+        env=env,
+    )
+    assert rc == 0, err
+    conform_data = json.loads(out)
+    manifest = conform_data["data"]["manifest"]
+    assert "timestamp_authority" not in manifest
+    pack_path = conform_data["data"]["pack_path"]
+
+    rc2, out2, err2 = _run_regula(
+        "verify", pack_path, "--format", "json", env=env,
+    )
+    assert rc2 == 0
+    verify_data = json.loads(out2)
+    report = verify_data["data"]
+    assert report["failed"] == 0
+    # No timestamp_status key when no timestamp block present and non-strict
+    assert "timestamp_status" not in report
+
+
+def test_cli_verify_untimestamped_pack_warns_under_strict_json(tmp_path):
+    """Under --strict, an un-timestamped manifest warns but still exits 0 (JSON mode)."""
+    key_path = tmp_path / "signing.key"
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(key_path)}
+
+    rc, _, err = _run_regula(
+        "conform",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--sign",
+        env=env,
+    )
+    assert rc == 0, err
+
+    pack_dir = next(p for p in out_dir.iterdir() if p.is_dir())
+    rc2, out2, err2 = _run_regula(
+        "verify", str(pack_dir), "--strict", "--format", "json", env=env,
+    )
+    assert rc2 == 0, f"strict verify of un-timestamped pack should exit 0: {err2}"
+    verify_data = json.loads(out2)
+    report = verify_data["data"]
+    assert "warnings" in report
+    warning_text = " ".join(report["warnings"]).lower()
+    assert "timestamp" in warning_text
+
+
+def test_cli_rejects_timestamp_without_sign(tmp_path):
+    """Using --timestamp without --sign is converted to --sign internally,
+    but attempts to bypass (if forced) would be caught by conform's invariant.
+
+    We test the CLI behaviour: `--timestamp` alone implies sign, so the
+    command should succeed (not error). The unit test for the invariant
+    lives further down."""
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(tmp_path / "k.key")}
+    # The CLI wiring auto-upgrades --timestamp to imply --sign. Even
+    # though we don't pass --sign explicitly, the producer should still
+    # produce a signed + timestamped pack (when TSA is reachable; with
+    # no mock here, the call will fail on the network).
+    rc, out, err = _run_regula(
+        "conform", "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--timestamp", "--tsa-url", "http://127.0.0.1:1",  # unreachable
+        env=env,
+    )
+    # Expect non-zero exit (can't reach TSA), but we should get a clean
+    # "Timestamping failed" message — not a raw traceback.
+    assert rc != 0
+    combined = (out + err).lower()
+    assert "timestamping failed" in combined or "tsa" in combined
+
+
+# ── RFC 3161 token signature verification ──────────────────────────
+#
+# These cover the layered timestamp_status model. The point of the layering
+# is that each status claims exactly what was proven and nothing beyond it,
+# so the negative cases below matter as much as the happy ones.
+
+
+def _token_bytes(message: bytes, **kw) -> bytes:
+    """Extract the raw TimeStampToken DER from a mock TSR."""
+    resp = tsp.TimeStampResp.load(_build_mock_tsr(message, **kw))
+    return resp["time_stamp_token"].dump()
+
+
+def _tamper_signature(token_bytes: bytes) -> bytes:
+    """Flip a byte of the SignerInfo signature, leaving everything else."""
+    ci = cms.ContentInfo.load(token_bytes)
+    si = ci["content"]["signer_infos"][0]
+    sig = bytearray(si["signature"].native)
+    sig[0] ^= 0xFF
+    si["signature"] = core.OctetString(bytes(sig))
+    return ci.dump(force=True)
+
+
+def test_token_signature_verified_without_anchor():
+    """A properly signed token verifies, but must not claim signer identity."""
+    from timestamp import verify_timestamp_token_signature
+
+    status, detail = verify_timestamp_token_signature(_token_bytes(b"hello"))
+    assert status == "SIGNATURE_VERIFIED", detail
+    # Must be explicit that identity is NOT established without an anchor.
+    assert "identity" in detail.lower()
+    assert "no revocation" in detail.lower()
+
+
+def test_token_chain_verified_with_trust_anchor():
+    """With the issuing anchor supplied, the status escalates to CHAIN_VERIFIED."""
+    from timestamp import verify_timestamp_token_signature
+
+    ca_pem, _, _ = _mock_tsa_identity()
+    status, detail = verify_timestamp_token_signature(_token_bytes(b"hello"), ca_pem)
+    assert status == "CHAIN_VERIFIED", detail
+    # Even at the strongest level it must disclose what it did NOT check.
+    assert "limited" in detail.lower()
+    assert "revocation" in detail.lower()
+
+
+def test_unsigned_token_is_unsupported_not_invalid():
+    """An unsigned token cannot be evaluated — that is not proof of tampering.
+
+    Regression guard: hard-failing here would break every previously-valid
+    pack produced against a TSA whose tokens we cannot parse.
+    """
+    from timestamp import verify_timestamp_token_signature
+
+    status, detail = verify_timestamp_token_signature(
+        _token_bytes(b"hello", sign=False))
+    assert status == "UNSUPPORTED", detail
+    assert status != "INVALID"
+
+
+def test_tampered_token_signature_is_invalid():
+    """A corrupted signature is provably bad and must be INVALID, not degraded."""
+    from timestamp import verify_timestamp_token_signature
+
+    tampered = _tamper_signature(_token_bytes(b"hello"))
+    status, detail = verify_timestamp_token_signature(tampered)
+    assert status == "INVALID", detail
+    assert "does not verify" in detail.lower()
+
+
+def test_wrong_trust_anchor_is_invalid():
+    """An anchor that did not issue the signer must fail, not silently pass."""
+    from timestamp import verify_timestamp_token_signature
+    from cryptography import x509
+    from cryptography.x509.oid import NameOID
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import ec
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+    key = ec.generate_private_key(ec.SECP256R1())
+    name = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, "Unrelated Root")])
+    other = (x509.CertificateBuilder()
+             .subject_name(name).issuer_name(name)
+             .public_key(key.public_key())
+             .serial_number(x509.random_serial_number())
+             .not_valid_before(now - datetime.timedelta(days=1))
+             .not_valid_after(now + datetime.timedelta(days=365))
+             .add_extension(x509.BasicConstraints(ca=True, path_length=None),
+                            critical=True)
+             .sign(key, hashes.SHA256()))
+
+    status, detail = verify_timestamp_token_signature(
+        _token_bytes(b"hello"), other.public_bytes(serialization.Encoding.PEM))
+    assert status == "INVALID", detail
+    assert "anchor" in detail.lower()
+
+
+def test_cli_verify_chain_verified_with_anchor(tmp_path, mock_tsa):
+    """End-to-end: --tsa-trust-anchor escalates the CLI verdict to CHAIN_VERIFIED."""
+    key_path = tmp_path / "signing.key"
+    out_dir = tmp_path / "pack-out"
+    env = {"REGULA_SIGNING_KEY": str(key_path)}
+
+    rc, out, err = _run_regula(
+        "conform",
+        "--project", "examples/code-completion-tool",
+        "--output", str(out_dir),
+        "--sign",
+        "--timestamp",
+        "--tsa-url", mock_tsa["url"],
+        "--format", "json",
+        env=env,
+    )
+    assert rc == 0, f"conform failed: rc={rc}\nstdout={out}\nstderr={err}"
+    pack_dir = json.loads(out)["data"]["pack_path"]
+
+    ca_pem, _, _ = _mock_tsa_identity()
+    anchor = tmp_path / "anchor.pem"
+    anchor.write_bytes(ca_pem)
+
+    rc2, out2, err2 = _run_regula(
+        "verify", pack_dir, "--format", "json",
+        "--tsa-trust-anchor", str(anchor), env=env,
+    )
+    assert rc2 == 0, f"verify failed: rc={rc2}\nstdout={out2}\nstderr={err2}"
+    report = json.loads(out2)["data"]
+    assert report["timestamp_status"] == "CHAIN_VERIFIED", report
+
+
+def _retag_signature_algorithm(token_bytes: bytes, oid: str) -> bytes:
+    """Rewrite the SignerInfo's signatureAlgorithm OID, changing nothing else.
+
+    Produces a token that a conforming TSA using that algorithm would emit,
+    as far as our algorithm dispatch is concerned. The signature bytes no
+    longer correspond to the declared algorithm, which is precisely the
+    point: we must decline to evaluate it rather than pass judgement.
+    """
+    ci = cms.ContentInfo.load(token_bytes)
+    si = ci["content"]["signer_infos"][0]
+    si["signature_algorithm"] = algos.SignedDigestAlgorithm({"algorithm": oid})
+    return ci.dump(force=True)
+
+
+def test_unknown_signature_algorithm_oid_is_unsupported_not_invalid():
+    """An OID we cannot even name is one we cannot evaluate.
+
+    Regression guard for a real defect: the algorithm-dispatch error and the
+    bad-signature error used to share one channel, so BOTH were reported as
+    INVALID. That hard-fails a pack from a conforming TSA over an algorithm
+    we simply have not implemented — the exact outcome spec §4.6.3 item 3
+    forbids.
+    """
+    from timestamp import verify_timestamp_token_signature
+
+    token = _retag_signature_algorithm(_token_bytes(b"hello"), "1.2.3.4.5.6.7.8.9")
+    status, detail = verify_timestamp_token_signature(token)
+    assert status == "UNSUPPORTED", f"got {status}: {detail}"
+    assert "1.2.3.4.5.6.7.8.9" in detail
+
+
+def test_known_but_unimplemented_algorithm_is_unsupported_not_invalid():
+    """Ed25519 is named by asn1crypto but not implemented by our verifier.
+
+    Distinct from the unknown-OID case above: this one reaches the algorithm
+    dispatch with a valid `signature_algo` string and falls through to the
+    else branch, which used to return INVALID.
+    """
+    from timestamp import verify_timestamp_token_signature
+
+    # 1.3.101.112 = id-Ed25519. asn1crypto resolves it to 'ed25519'.
+    token = _retag_signature_algorithm(_token_bytes(b"hello"), "1.3.101.112")
+    status, detail = verify_timestamp_token_signature(token)
+    assert status == "UNSUPPORTED", f"got {status}: {detail}"
+    assert "ed25519" in detail.lower()
+
+
+def test_unsupported_algorithm_does_not_mask_a_bad_signature():
+    """The degrade path must not become a way to launder a broken signature.
+
+    A token whose algorithm we DO implement and whose signature is corrupt
+    must still be INVALID — pinned here so a future widening of the
+    UNSUPPORTED branch cannot silently swallow real tampering.
+    """
+    from timestamp import verify_timestamp_token_signature
+
+    status, detail = verify_timestamp_token_signature(
+        _tamper_signature(_token_bytes(b"hello")))
+    assert status == "INVALID", f"got {status}: {detail}"
+
+
+def test_require_http_url_blocks_legacy_loopback_forms():
+    """The private-IP guard must reject the legacy IPv4 forms the resolver
+    honours, not only canonical dotted-quad.
+
+    ipaddress.ip_address accepts only canonical forms, so an earlier version
+    that relied on it alone let three loopback-equivalent spellings through
+    while refusing 127.0.0.1 (verified). urlopen resolves all of them to
+    127.0.0.1, so each was a live SSRF bypass of an operator-set TSA URL.
+    """
+    from timestamp import _require_http_url
+
+    must_refuse = [
+        "http://2130706433/x",     # decimal 32-bit form of 127.0.0.1
+        "http://127.1/x",          # short dotted form
+        "http://0x7f000001/x",     # hexadecimal form
+        "http://0177.0.0.1/x",     # octal first octet
+        "http://127.0.0.1/x",      # canonical loopback (control)
+        "http://169.254.169.254/x",  # cloud metadata
+        "http://10.0.0.1/x",       # RFC 1918
+    ]
+    for url in must_refuse:
+        try:
+            _require_http_url(url)
+            raise AssertionError(f"should have refused internal URL: {url}")
+        except ValueError:
+            pass
+
+    # Public TSA URLs must still be allowed, or timestamping breaks.
+    for url in ("https://freetsa.org/tsr", "http://example.com/tsa"):
+        _require_http_url(url)  # must not raise

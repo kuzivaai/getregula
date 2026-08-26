@@ -1,0 +1,199 @@
+{
+  "name": "regula-ai-act",
+  "displayName": "Regula: EU AI Act Review",
+  "description": "Local code-pattern scanning with an evidence-aware regulatory decision response. Your code stays on your machine.",
+  "version": "0.1.0",
+  "publisher": "kuzivaai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kuzivaai/getregula.git",
+    "directory": "vscode-extension"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "pricing": "Free",
+  "galleryBanner": {
+    "color": "#070711",
+    "theme": "dark"
+  },
+  "icon": "resources/icon.png",
+  "keywords": [
+    "eu-ai-act",
+    "compliance",
+    "ai-governance",
+    "regulatory",
+    "gdpr",
+    "static-analysis",
+    "security",
+    "linter"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Regula",
+      "properties": {
+        "regula.scanOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Scan files on save"
+        },
+        "regula.minTier": {
+          "type": "string",
+          "default": "limited_risk",
+          "enum": [
+            "prohibited",
+            "high_risk",
+            "limited_risk",
+            "minimal_risk"
+          ],
+          "description": "Minimum detector class to display"
+        },
+        "regula.scope": {
+          "type": "string",
+          "default": "all",
+          "enum": [
+            "all",
+            "production"
+          ],
+          "description": "Scan scope (production excludes test/example files)"
+        },
+        "regula.executablePath": {
+          "type": "string",
+          "default": "regula",
+          "scope": "machine-overridable",
+          "description": "Path to the regula executable. Machine-scoped: a workspace or folder settings.json cannot override it, so opening an untrusted repository cannot point Regula at an arbitrary binary."
+        },
+        "regula.scanTrigger": {
+          "type": "string",
+          "default": "onSave",
+          "enum": ["onSave", "onType"],
+          "enumDescriptions": [
+            "Scan when file is saved (default, recommended)",
+            "Scan as you type with a 2-second debounce (uses more CPU)"
+          ],
+          "description": "When to trigger compliance scanning"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "regula.scanFile",
+        "title": "Regula: Scan Current File",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "regula.scanWorkspace",
+        "title": "Regula: Scan Workspace",
+        "icon": "$(refresh)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "regula.scanWorkspace",
+          "when": "view == regulaFindings",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "regula.scanFile",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "regula",
+          "title": "Regula",
+          "icon": "resources/regula-sidebar.svg"
+        }
+      ]
+    },
+    "views": {
+      "regula": [
+        {
+          "id": "regulaFindings",
+          "name": "Findings"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "regulaFindings",
+        "contents": "No findings yet.\n[Scan Workspace](command:regula.scanWorkspace)\n[Scan Current File](command:regula.scanFile)",
+        "when": "!regula.hasFindings"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "regula.gettingStarted",
+        "title": "Get Started with Regula",
+        "description": "EU AI Act compliance scanning for your code",
+        "steps": [
+          {
+            "id": "regula.installCli",
+            "title": "Install the Regula CLI",
+            "description": "Regula VS Code runs the Regula CLI under the hood.\n\n[Install Regula](https://pypi.org/project/regula-ai/)\n\n```bash\npipx install regula-ai\n```",
+            "media": {
+              "markdown": "media/install.md"
+            },
+            "completionEvents": [
+              "onCommand:regula.scanFile"
+            ]
+          },
+          {
+            "id": "regula.firstScan",
+            "title": "Run your first scan",
+            "description": "Open a Python, JavaScript, or TypeScript file and save it. Regula scans automatically.\n\nOr run **Regula: Scan Current File** from the Command Palette.\n\n[Scan Current File](command:regula.scanFile)",
+            "media": {
+              "markdown": "media/first-scan.md"
+            },
+            "completionEvents": [
+              "onCommand:regula.scanFile"
+            ]
+          },
+          {
+            "id": "regula.understandFindings",
+            "title": "Understand your findings",
+            "description": "Detector observations appear in the **Problems** panel and as inline decorations. Severity prioritises review; it is not a legal classification or correctness probability. Open a finding to inspect its suggested provision, then resolve the facts reported by the decision kernel.",
+            "media": {
+              "markdown": "media/findings.md"
+            },
+            "completionEvents": [
+              "onView:regulaFindings"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node esbuild.js --production",
+    "compile": "node esbuild.js",
+    "typecheck": "tsc --noEmit",
+    "watch": "node esbuild.js --watch",
+    "test": "tsc -p . && vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
+    "esbuild": "^0.28.0",
+    "mocha": "^11.7.6",
+    "typescript": "^5.3.0"
+  }
+}
