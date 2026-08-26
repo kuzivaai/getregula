@@ -100,6 +100,42 @@ def test_the_packaging_coverage_check_can_fail():
     assert "scripts/dashboard/index.html" in via.uncovered_required_data(neutered)
 
 
+def test_every_conformance_shard_is_covered_by_a_packaging_pattern():
+    real = via._package_data()
+    assert via.CONFORMANCE_SHARDS
+    assert all(via.package_data_covers(rel, real)
+               for rel in via.CONFORMANCE_SHARDS)
+
+    neutered = {
+        key: [pattern for pattern in patterns
+              if pattern != "decision_conformance.v1/*.json"]
+        for key, patterns in real.items()
+    }
+    assert all(not via.package_data_covers(rel, neutered)
+               for rel in via.CONFORMANCE_SHARDS)
+
+
+def test_the_installed_conformance_bundle_is_complete_and_integrity_bound():
+    with tempfile.TemporaryDirectory(prefix="regula-conformance-install-") as tmp:
+        root = Path(tmp)
+        required = (via.CONFORMANCE_MANIFEST,) + via.CONFORMANCE_SHARDS
+        for relative in required:
+            source = REPO / relative
+            target = root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(source.read_bytes())
+
+        problems, count = via.check_conformance_bundle(root)
+        assert problems == []
+        assert count == len(via.CONFORMANCE_SHARDS) + 1
+
+        damaged = root / via.CONFORMANCE_SHARDS[0]
+        damaged.write_bytes(damaged.read_bytes() + b"\n")
+        problems, _ = via.check_conformance_bundle(root)
+        assert any("byte count" in problem for problem in problems)
+        assert any("SHA-256" in problem for problem in problems)
+
+
 def test_a_packaging_pattern_does_not_match_across_a_directory_separator():
     """`*` is a glob, not a regex. `bias_data/*.json` must not cover a nested file."""
     pd = {"scripts": ["bias_data/*.json"]}

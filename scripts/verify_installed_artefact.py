@@ -23,14 +23,16 @@ source tests do not catch packaging bugs.
 What this checks
 ----------------
 
-Five checks, each itemised, with every total reconciled against its itemisation.
+Six checks, each itemised, with every total reconciled against its itemisation.
 
 1. MANIFEST      every file the distribution's own RECORD names is present.
 2. MODULES       the decision kernel, the CLI entry point, and the transitive
                  closure of everything they import within the package.
 3. DATA          every packaged data file a shipped command reads at runtime.
-4. CLAIMS        `determination_guard --root`, over the installed files.
-5. TRANSCRIPTS   `retired_markers_are_unreachable`, against the installed
+4. CONFORMANCE   the packaged conformance manifest and every integrity-bound
+                 shard it names.
+5. CLAIMS        `determination_guard --root`, over the installed files.
+6. TRANSCRIPTS   `retired_markers_are_unreachable`, against the installed
                  console script, run from a working directory that is NOT this
                  repository, so no route exists by which the tree could answer
                  for the artefact.
@@ -48,6 +50,8 @@ from __future__ import annotations
 
 import argparse
 import ast
+import hashlib
+import json
 import shutil
 import subprocess
 import sys
@@ -60,6 +64,28 @@ import determination_guard as dg  # noqa: E402
 import verify_transcripts as vt  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+CONFORMANCE_MANIFEST = "references/decision_conformance.v1.json"
+
+
+def _conformance_entries(root: Path) -> list[dict]:
+    path = root / CONFORMANCE_MANIFEST
+    data = json.loads(path.read_text(encoding="utf-8"))
+    entries = data.get("shards")
+    if not isinstance(entries, list) or not entries:
+        raise ValueError(f"{path}: non-empty shards list required")
+    for entry in entries:
+        relative = entry.get("file") if isinstance(entry, dict) else None
+        parts = Path(relative).parts if isinstance(relative, str) else ()
+        if (not relative or Path(relative).is_absolute() or ".." in parts
+                or not relative.startswith("decision_conformance.v1/")
+                or "\\" in relative):
+            raise ValueError(f"{path}: unsafe shard path {relative!r}")
+    return entries
+
+
+CONFORMANCE_SHARDS = tuple(
+    f"references/{entry['file']}" for entry in _conformance_entries(REPO_ROOT)
+)
 
 # Modules whose absence would make the artefact a different product from the
 # tree rather than a broken copy of it. The closure of each is computed, not
@@ -78,6 +104,8 @@ ROOT_MODULES = ("decision_kernel", "cli")
 # from the wheel without any user noticing, and `references/corpora/*` is
 # exactly that case.
 REQUIRED_PACKAGED_DATA = {
+    CONFORMANCE_MANIFEST:
+        "the packaged manifest integrity-binds the cross-runtime conformance corpus",
     "references/decision_model.v1.json":
         "the decision kernel loads it; without it no command can reach a decision",
     "references/framework_crosswalk.yaml":
@@ -96,6 +124,10 @@ REQUIRED_PACKAGED_DATA = {
         "serves this file at /v1/dashboard; without it the endpoint returns a JSON "
         "message telling the user to place a file inside site-packages",
 }
+REQUIRED_PACKAGED_DATA.update({
+    relative: "the packaged conformance manifest names and integrity-binds this shard"
+    for relative in CONFORMANCE_SHARDS
+})
 
 
 class ArtefactUnreadable(RuntimeError):
@@ -234,6 +266,37 @@ def check_data(root: Path) -> tuple[list[str], int]:
     return problems, len(REQUIRED_PACKAGED_DATA)
 
 
+def check_conformance_bundle(root: Path) -> tuple[list[str], int]:
+    """Verify the installed manifest is identical and every shard is intact."""
+    installed_manifest = root / CONFORMANCE_MANIFEST
+    try:
+        installed_entries = _conformance_entries(root)
+        expected_entries = _conformance_entries(REPO_ROOT)
+    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as exc:
+        raise ArtefactUnreadable(f"conformance bundle unreadable ({exc})") from exc
+
+    problems = []
+    if installed_manifest.read_bytes() != (REPO_ROOT / CONFORMANCE_MANIFEST).read_bytes():
+        problems.append(
+            f"{CONFORMANCE_MANIFEST}: installed manifest differs from this tree")
+    if installed_entries != expected_entries:
+        problems.append(
+            f"{CONFORMANCE_MANIFEST}: installed shard register differs from this tree")
+
+    for entry in expected_entries:
+        relative = f"references/{entry['file']}"
+        path = root / relative
+        if not path.is_file():
+            problems.append(f"{relative}: conformance shard is absent")
+            continue
+        encoded = path.read_bytes()
+        if len(encoded) != entry.get("bytes"):
+            problems.append(f"{relative}: byte count differs from the manifest")
+        if hashlib.sha256(encoded).hexdigest() != entry.get("sha256"):
+            problems.append(f"{relative}: SHA-256 differs from the manifest")
+    return problems, len(expected_entries) + 1
+
+
 def check_packaging_config() -> tuple[list[str], int]:
     """Would a wheel built from this configuration carry every required file?
 
@@ -346,6 +409,8 @@ def run(argv=None) -> int:
         ("MODULES", lambda: check_modules(root), "module(s) in the import closure"),
         ("PACKAGING", check_packaging_config, "required data file(s) against pyproject"),
         ("DATA", lambda: check_data(root), "required data file(s) in this install"),
+        ("CONFORMANCE", lambda: check_conformance_bundle(root),
+         "manifest/shard item(s) verified"),
         ("CLAIMS", lambda: check_claims(root), "installed file(s) scanned"),
     ]
     if not args.skip_cli:
