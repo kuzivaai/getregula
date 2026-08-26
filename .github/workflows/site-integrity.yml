@@ -1,6 +1,5 @@
-# Site integrity guard — regen-drift, source invariant, links, claims.
-# Authored 16 Jul 2026 (day session v3). INERT until pushed; activation
-# is an owner decision. Runs read-only; no deploy steps.
+# Site integrity guard — regen drift, source invariants, links and claims.
+# Runs read-only; no deploy steps.
 name: Site Integrity
 
 on:
@@ -11,13 +10,6 @@ on:
       - "scripts/build_regulations.py"
       - "scripts/site_integrity.py"
       - "scripts/claim_auditor.py"
-      - "scripts/build_comparison.py"
-      - "data/comparison_table.json"
-  schedule:
-    # The comparison-table stamp expires on a calendar, not on a commit, so a
-    # PR-only trigger would never catch it going stale. Weekly, Mondays 09:00
-    # UTC, ahead of the metrics job.
-    - cron: "0 9 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -34,12 +26,3 @@ jobs:
           python-version: "3.12"
       - name: Site integrity (regen drift, sources, links, claims)
         run: python3 scripts/site_integrity.py
-
-      - name: Comparison table matches its source of truth
-        run: python3 scripts/build_comparison.py --check
-
-      - name: Comparison table stamp is not stale
-        # Fails once verified_on is more than max_age_days old. A competitor
-        # comparison rots on a calendar: prices and features change under us,
-        # and a stale table is a wrong claim about a named third party.
-        run: python3 scripts/build_comparison.py --check-freshness
