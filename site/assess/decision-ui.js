@@ -54,6 +54,7 @@
       },
       applies: "Applicable from",
       provision: "Provision",
+      condition: "Important condition",
       reason: "Current state",
       resolves: "Would resolve",
       noObligations: "No obligation was emitted from the supplied facts.",
@@ -107,7 +108,7 @@
       showMore: function (n) {
         return n + " weitere offene " + (n === 1 ? "Tatsache" : "Tatsachen") + " anzeigen";
       },
-      applies: "Anwendbar ab", provision: "Vorschrift", reason: "Aktueller Stand", resolves: "Würde klären", noObligations: "Aus den vorgelegten Tatsachen wurde keine Pflicht ausgegeben.", nextTitle: "Nächste Schritte",
+      applies: "Anwendbar ab", provision: "Vorschrift", condition: "Wichtige Bedingung", reason: "Aktueller Stand", resolves: "Würde klären", noObligations: "Aus den vorgelegten Tatsachen wurde keine Pflicht ausgegeben.", nextTitle: "Nächste Schritte",
       steps: {
         resolve: "Klären Sie die oben aufgeführten offenen Tatsachen. Beantworten Sie jede aus einer benennbaren Quelle und führen Sie die Bewertung erneut durch.",
         settled: "Ihre Antworten haben jede von diesem Modell berücksichtigte Tatsache geklärt. Führen Sie die Bewertung erneut durch, wenn sich Ihr System, sein Zweck oder sein Einsatzort ändert.",
@@ -148,7 +149,7 @@
       showMore: function (n) {
         return "Mostrar mais " + n + " " + (n === 1 ? "fato em aberto" : "fatos em aberto");
       },
-      applies: "Aplicável a partir de", provision: "Dispositivo", reason: "Estado atual", resolves: "Resolveria", noObligations: "Nenhuma obrigação foi emitida a partir dos fatos fornecidos.", nextTitle: "Próximos passos",
+      applies: "Aplicável a partir de", provision: "Dispositivo", condition: "Condição importante", reason: "Estado atual", resolves: "Resolveria", noObligations: "Nenhuma obrigação foi emitida a partir dos fatos fornecidos.", nextTitle: "Próximos passos",
       steps: {
         resolve: "Resolva os fatos em aberto listados acima. Responda cada um a partir de uma fonte identificável e execute a avaliação novamente.",
         settled: "Suas respostas resolveram todos os fatos considerados por este modelo. Execute novamente se o seu sistema, sua finalidade ou onde ele é usado mudar.",
@@ -221,7 +222,10 @@
     if (result.indications && result.indications.length) {
       detail += `<h2>${escapeHtml(copy.indications)}</h2><div class="obligations">`;
       for (const indication of result.indications) {
-        detail += `<div class="obl-card"><div class="obl-title">${escapeHtml(copy.classifications[indication.classification] || indication.classification)}</div><div class="obl-desc"><strong>${escapeHtml(copy.provision)}:</strong> ${escapeHtml(indication.provision)}</div>${indication.applicable_from ? `<div class="obl-deadline">${escapeHtml(copy.applies)}: ${escapeHtml(indication.applicable_from)}</div>` : ""}</div>`;
+        const condition = indication.applicability_note
+          ? `<div class="obl-desc" style="margin-top:8px;"><strong>${escapeHtml(copy.condition)}:</strong> ${escapeHtml(indication.applicability_note)}</div>`
+          : "";
+        detail += `<div class="obl-card"><div class="obl-title">${escapeHtml(copy.classifications[indication.classification] || indication.classification)}</div><div class="obl-desc"><strong>${escapeHtml(copy.provision)}:</strong> ${escapeHtml(indication.provision)}</div>${condition}${indication.applicable_from ? `<div class="obl-deadline">${escapeHtml(copy.applies)}: ${escapeHtml(indication.applicable_from)}</div>` : ""}</div>`;
       }
       detail += "</div>";
     }
@@ -230,7 +234,10 @@
       for (const obligation of result.obligations) {
         const dates = Object.values(obligation.applicability_by_rule || {});
         const date = obligation.applicable_from || (dates.length ? [...new Set(dates)].join(", ") : null);
-        detail += `<div class="obl-card"><div class="obl-title">${escapeHtml(obligation.name)}</div><div class="obl-desc"><strong>${escapeHtml(copy.provision)}:</strong> ${escapeHtml(obligation.provision)}</div>${date ? `<div class="obl-deadline">${escapeHtml(copy.applies)}: ${escapeHtml(date)}</div>` : ""}</div>`;
+        const condition = obligation.applicability_note
+          ? `<div class="obl-desc" style="margin-top:8px;"><strong>${escapeHtml(copy.condition)}:</strong> ${escapeHtml(obligation.applicability_note)}</div>`
+          : "";
+        detail += `<div class="obl-card"><div class="obl-title">${escapeHtml(obligation.name)}</div><div class="obl-desc"><strong>${escapeHtml(copy.provision)}:</strong> ${escapeHtml(obligation.provision)}</div>${condition}${date ? `<div class="obl-deadline">${escapeHtml(copy.applies)}: ${escapeHtml(date)}</div>` : ""}</div>`;
       }
       detail += "</div>";
     } else {

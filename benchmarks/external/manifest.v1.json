@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "corpus_id": "external-diagnostic-2026-08-26.v1",
+  "frozen_at": "2026-08-26",
+  "status": "preregistered_diagnostic",
+  "sampling_frame": "Purposive, licence-declared public GitHub repositories selected before scanning to cover infrastructure controls, general AI applications, and documented decision-support capabilities across Python, Go, C++, JavaScript and TypeScript. This is not a random or representative sample.",
+  "measurement_target": "Whether Regula emits code-observable review indicators under a frozen configuration; not legal applicability, risk classification, conformity or compliance.",
+  "selection_rules": [
+    "public GitHub repository",
+    "OSI-style licence declared in GitHub metadata",
+    "exact commit available on 26 August 2026",
+    "documented capability relevant to a predeclared corpus stratum",
+    "no repository selected or replaced after observing Regula output"
+  ],
+  "scan_configuration": {
+    "scope": "production",
+    "skip_tests": true,
+    "min_tier": "minimal_risk",
+    "jurisdictions": ["eu", "korea", "colorado"],
+    "declared_facts": "none",
+    "clean_repetitions": 2,
+    "target_code_execution": false
+  },
+  "repositories": [
+    {
+      "id": "openai-python", "repository": "openai/openai-python", "url": "https://github.com/openai/openai-python.git", "commit": "555ac487f450f24928d859478ea2f41b58906206", "license_spdx": "Apache-2.0", "primary_language": "Python", "stratum": "horizontal_infrastructure_control", "documented_capability": "Python client library for an AI service API", "evidence_url": "https://github.com/openai/openai-python/tree/555ac487f450f24928d859478ea2f41b58906206",
+      "variants": [{"id": "default", "domains": [], "expectations": [{"kind": "no_detector_classes", "classes": ["prohibited", "high_risk"], "rationale": "A horizontal client library should not be escalated solely because it implements generic AI API infrastructure."}]}]
+    },
+    {
+      "id": "ollama", "repository": "ollama/ollama", "url": "https://github.com/ollama/ollama.git", "commit": "e2c6c7e89493caf8389bd1363a8f34d97b54718b", "license_spdx": "MIT", "primary_language": "Go", "stratum": "horizontal_infrastructure_control", "documented_capability": "Local model runtime and API", "evidence_url": "https://github.com/ollama/ollama/tree/e2c6c7e89493caf8389bd1363a8f34d97b54718b",
+      "variants": [{"id": "default", "domains": [], "expectations": [{"kind": "no_detector_classes", "classes": ["prohibited", "high_risk"], "rationale": "A general model runtime is a negative control for domain-specific escalation."}]}]
+    },
+    {
+      "id": "llama-cpp", "repository": "ggml-org/llama.cpp", "url": "https://github.com/ggml-org/llama.cpp.git", "commit": "4d19b287691e8f47fc303be420f630c40ec45684", "license_spdx": "MIT", "primary_language": "C++", "stratum": "horizontal_infrastructure_control", "documented_capability": "C and C++ model inference runtime", "evidence_url": "https://github.com/ggml-org/llama.cpp/tree/4d19b287691e8f47fc303be420f630c40ec45684",
+      "variants": [{"id": "default", "domains": [], "expectations": [{"kind": "no_detector_classes", "classes": ["prohibited", "high_risk"], "rationale": "A general inference runtime is a negative control for domain-specific escalation."}]}]
+    },
+    {
+      "id": "fairlearn", "repository": "fairlearn/fairlearn", "url": "https://github.com/fairlearn/fairlearn.git", "commit": "0002791bfdd15bdc56b50831b187dbc36c695547", "license_spdx": "MIT", "primary_language": "Python", "stratum": "horizontal_infrastructure_control", "documented_capability": "Fairness assessment and mitigation library", "evidence_url": "https://github.com/fairlearn/fairlearn/tree/0002791bfdd15bdc56b50831b187dbc36c695547",
+      "variants": [{"id": "default", "domains": [], "expectations": [{"kind": "no_detector_classes", "classes": ["prohibited", "high_risk"], "rationale": "Evaluation and mitigation utilities should not become a domain-specific legal proxy merely because they discuss fairness."}]}]
+    },
+    {
+      "id": "crewai", "repository": "crewAIInc/crewAI", "url": "https://github.com/crewAIInc/crewAI.git", "commit": "871c9c5131f4097cf8c5bafe228e84b697361a43", "license_spdx": "MIT", "primary_language": "Python", "stratum": "general_capability_probe", "documented_capability": "Framework for orchestrating autonomous AI agents", "evidence_url": "https://github.com/crewAIInc/crewAI/tree/871c9c5131f4097cf8c5bafe228e84b697361a43",
+      "variants": [{"id": "default", "domains": [], "expectations": [{"kind": "any_detector_class", "classes": ["agent_autonomy"], "rationale": "The documented orchestration capability is observable enough to warrant an autonomy review indicator if implemented in supported source."}]}]
+    },
+    {
+      "id": "private-gpt", "repository": "zylon-ai/private-gpt", "url": "https://github.com/zylon-ai/private-gpt.git", "commit": "ab89a0d67bf6a30481081bdc7c487b484d82f91b", "license_spdx": "Apache-2.0", "primary_language": "Python", "stratum": "general_capability_probe", "documented_capability": "Application that generates answers from private documents", "evidence_url": "https://github.com/zylon-ai/private-gpt/tree/ab89a0d67bf6a30481081bdc7c487b484d82f91b",
+      "variants": [{"id": "default", "domains": [], "expectations": [{"kind": "any_detector_class", "classes": ["limited_risk"], "rationale": "A user-facing generated-answer path is a transparency-review probe, not an assertion that Article 50 applies."}]}]
+    },
+    {
+      "id": "openhands", "repository": "OpenHands/OpenHands", "url": "https://github.com/OpenHands/OpenHands.git", "commit": "59981caf7fd92971681b0ab5354c37e9f1cab406", "license_spdx": "MIT", "primary_language": "Python", "stratum": "general_capability_probe", "documented_capability": "Software-development agents that can modify code and use tools", "evidence_url": "https://github.com/OpenHands/OpenHands/tree/59981caf7fd92971681b0ab5354c37e9f1cab406",
+      "variants": [{"id": "default", "domains": [], "expectations": [{"kind": "any_detector_class", "classes": ["agent_autonomy"], "rationale": "Tool-using software agents are a predeclared autonomy-review probe."}]}]
+    },
+    {
+      "id": "comfyui", "repository": "Comfy-Org/ComfyUI", "url": "https://github.com/Comfy-Org/ComfyUI.git", "commit": "b133e48368d0f52bb014f0dd7ae1adb7403d515b", "license_spdx": "GPL-3.0", "primary_language": "Python", "stratum": "general_capability_probe", "documented_capability": "Node-based application for generating and editing media with AI models", "evidence_url": "https://github.com/Comfy-Org/ComfyUI/tree/b133e48368d0f52bb014f0dd7ae1adb7403d515b",
+      "variants": [{"id": "default", "domains": [], "expectations": [{"kind": "any_detector_class", "classes": ["limited_risk"], "rationale": "A generative-media application is a transparency-review probe; legal applicability remains contextual."}]}]
+    },
+    {
+      "id": "recruitment-agent", "repository": "Ancastal/AI-Recruitment-Agent", "url": "https://github.com/Ancastal/AI-Recruitment-Agent.git", "commit": "15cd50a0ea702c8174500c176449ce1b0f78df61", "license_spdx": "MIT", "primary_language": "Python", "stratum": "documented_decision_support_probe", "documented_capability": "Resume screening and candidate evaluation", "evidence_url": "https://github.com/Ancastal/AI-Recruitment-Agent/tree/15cd50a0ea702c8174500c176449ce1b0f78df61",
+      "variants": [{"id": "undeclared", "domains": [], "expectations": []}, {"id": "employment-declared", "domains": ["employment"], "expectations": [{"kind": "any_detector_class", "classes": ["high_risk"], "rationale": "With employment purpose declared, supported implementation code should produce a review indicator for the documented screening capability."}]}]
+    },
+    {
+      "id": "credit-scoring", "repository": "Machine-Learning-in-Credit-Scoring/Credit-Scoring", "url": "https://github.com/Machine-Learning-in-Credit-Scoring/Credit-Scoring.git", "commit": "b974445439208dcea6d0c69a62d7882febf06274", "license_spdx": "MIT", "primary_language": "Python", "stratum": "documented_decision_support_probe", "documented_capability": "Credit-scoring models used to support grant or deny decisions", "evidence_url": "https://github.com/Machine-Learning-in-Credit-Scoring/Credit-Scoring/tree/b974445439208dcea6d0c69a62d7882febf06274",
+      "variants": [{"id": "undeclared", "domains": [], "expectations": []}, {"id": "finance-declared", "domains": ["finance"], "expectations": [{"kind": "any_detector_class", "classes": ["high_risk"], "rationale": "With finance purpose declared, supported implementation code should produce a review indicator for the documented decision capability."}]}]
+    },
+    {
+      "id": "proctoring-ai", "repository": "vardanagarwal/Proctoring-AI", "url": "https://github.com/vardanagarwal/Proctoring-AI.git", "commit": "4f284a3f110d963cd7fba6f7febceadfe3c1b250", "license_spdx": "MIT", "primary_language": "Python", "stratum": "documented_decision_support_probe", "documented_capability": "Automated online-exam proctoring", "evidence_url": "https://github.com/vardanagarwal/Proctoring-AI/tree/4f284a3f110d963cd7fba6f7febceadfe3c1b250",
+      "variants": [{"id": "undeclared", "domains": [], "expectations": []}, {"id": "education-declared", "domains": ["education"], "expectations": [{"kind": "any_detector_class", "classes": ["high_risk"], "rationale": "With education purpose declared, supported implementation code should produce a review indicator for the documented proctoring capability."}]}]
+    },
+    {
+      "id": "medical-triage", "repository": "bharath2957s/MedTriage-Agentic-AI", "url": "https://github.com/bharath2957s/MedTriage-Agentic-AI.git", "commit": "dc6ade946b12e044157571db7ed65bb4a311d341", "license_spdx": "MIT", "primary_language": "Python", "stratum": "documented_decision_support_probe", "documented_capability": "Clinical triage and care-routing support", "evidence_url": "https://github.com/bharath2957s/MedTriage-Agentic-AI/tree/dc6ade946b12e044157571db7ed65bb4a311d341",
+      "variants": [{"id": "undeclared", "domains": [], "expectations": []}, {"id": "medical-declared", "domains": ["medical"], "expectations": [{"kind": "any_detector_class", "classes": ["high_risk"], "rationale": "With medical purpose declared, supported implementation code should produce a review indicator for the documented triage capability."}]}]
+    },
+    {
+      "id": "attendance-face-recognition", "repository": "amlanmohanty1/face-recognition-attendance-management-system-with-PowerBI-dashboard", "url": "https://github.com/amlanmohanty1/face-recognition-attendance-management-system-with-PowerBI-dashboard.git", "commit": "deacb360d2637ca2788734be85bf3b1ddce4c22f", "license_spdx": "MIT", "primary_language": "Python", "stratum": "documented_decision_support_probe", "documented_capability": "Face-recognition attendance recording", "evidence_url": "https://github.com/amlanmohanty1/face-recognition-attendance-management-system-with-PowerBI-dashboard/tree/deacb360d2637ca2788734be85bf3b1ddce4c22f",
+      "variants": [{"id": "undeclared", "domains": [], "expectations": []}, {"id": "biometrics-declared", "domains": ["biometrics"], "expectations": [{"kind": "any_detector_class", "classes": ["high_risk"], "rationale": "With biometric purpose declared, supported implementation code should produce a review indicator for the documented face-recognition capability."}]}]
+    }
+  ]
+}

@@ -43,7 +43,7 @@
       "@type": "WebApplication",
       "name": "Regula :  Avaliação de Regulamentação de IA",
       "url": "https://getregula.com/assess/pt-br.html",
-      "description": "Ferramenta gratuita de avaliação de risco de regulamentação de IA. Verifique suas obrigações sob a Lei de IA da UE, Lei Básica de IA da Coreia do Sul, ou Colorado SB 26-189. Equipes de desenvolvimento também podem analisar código contra 419 padrões de detecção.",
+      "description": "Ferramenta gratuita de avaliação de risco de regulamentação de IA. Verifique suas obrigações sob a Lei de IA da UE, Lei Básica de IA da Coreia do Sul, ou Colorado SB 26-189. Equipes de desenvolvimento também podem analisar código contra 423 padrões de detecção.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -374,14 +374,11 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
-        <a href="/assess/" class="active">Assess</a>
-        <a href="/product-pt-br.html">O que ele faz</a>
-        <a href="/guides/">Guides</a>
-        <a href="/pricing.html" hreflang="en">Pre&ccedil;os</a>
+        <span class="active">Avaliar escopo</span>
+        <a href="/product-pt-br.html">Revisar código</a>
+        <a href="/coverage-pt-br.html">Cobertura</a>
+        <a href="/coverage-pt-br.html#methods">Métodos e limites</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="/regions/regulations.html" hreflang="en">Regulations</a>
-        <a href="/blog/writing.html" hreflang="en">Blog</a>
-        <a href="/about.html" hreflang="en">About</a>
         <a href="/assess/">EN</a>
         <a href="/assess/de.html" hreflang="de">DE</a>
         <span class="active">BR</span>
@@ -411,7 +408,7 @@
     <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Iniciar avaliação</button>
     </div>
-    <div style="margin-top:16px;font-size:0.85rem;color:var(--text-dim);">Equipes de desenvolvimento também podem <button type="button" onclick="startScanner()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">analisar código-fonte</button> contra 419 padrões de detecção.</div>
+    <div style="margin-top:16px;font-size:0.85rem;color:var(--text-dim);">Equipes de desenvolvimento também podem <button type="button" onclick="startScanner()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">analisar código-fonte</button> contra 423 padrões de detecção.</div>
   </div>
 
   <!-- QUESTIONNAIRE -->
@@ -581,10 +578,22 @@ const QUESTIONS_KR = [
     article: "Artigo 33",
   },
   {
-    id: "kr_high_performance",
-    text: "A computação cumulativa de treinamento atinge o limiar prescrito por Decreto Presidencial para o Artigo 32?",
-    help: "O Artigo 32 delega o limiar ao Decreto Presidencial. Não responda com base em um valor não verificado citado por esta ferramenta.",
-    article: "Artigo 32",
+    id: "kr_training_compute",
+    text: "O cálculo cumulativo usado no treinamento foi de pelo menos 10²⁶ operações de ponto flutuante?",
+    help: "Este é apenas o primeiro de três critérios do Artigo 24(1) do Decreto. O cálculo, sozinho, não aciona o dever de segurança do Artigo 32.",
+    article: "Decreto, Artigo 24(1)(1)",
+  },
+  {
+    id: "kr_frontier_technology",
+    text: "Na data da análise, o sistema é configurado e operado com a tecnologia de IA mais avançada entre as atualmente usadas em sistemas de IA?",
+    help: "Este critério dependente do tempo é o segundo de três critérios cumulativos. Registre evidência datada em vez de inferir pelo tamanho ou pela marca do modelo.",
+    article: "Decreto, Artigo 24(1)(2)",
+  },
+  {
+    id: "kr_widespread_impact",
+    text: "O risco do sistema pode ter impacto amplo e significativo sobre a vida humana, a segurança física e os direitos fundamentais?",
+    help: "Este é o terceiro critério cumulativo. Os três critérios do Artigo 24(1) do Decreto precisam estar demonstrados para o indicador do Artigo 32.",
+    article: "Decreto, Artigo 24(1)(3)",
   },
   { id: "kr_significant_impact", text: "É provável que o sistema tenha impacto significativo ou represente risco à vida, à segurança física ou aos direitos fundamentais?", help: "O Artigo 2(4) exige tanto uma área listada quanto impacto ou risco significativo.", article: "Artigo 2(4)" },
   {
@@ -601,7 +610,10 @@ const QUESTIONS_KR = [
   },
   { id: "kr_virtual_media", text: "O sistema fornece som, imagem ou vídeo virtual difícil de distinguir do real?", help: "O Artigo 31(3) contém dever específico de aviso claro ou rotulagem.", article: "Artigo 31(3)" },
   { id: "kr_foreign_operator", text: "A operadora não possui endereço nem escritório comercial na Coreia do Sul?", help: "A condição de operadora estrangeira é necessária para o Artigo 36.", article: "Artigo 36" },
-  { id: "kr_agent_threshold", text: "A operadora atinge o limiar de usuários, vendas ou outro prescrito por Decreto Presidencial para representante doméstico?", help: "O Artigo 36 delega o limiar de porte ao Decreto Presidencial.", article: "Artigo 36" },
+  { id: "kr_total_revenue", text: "A receita total da operadora no ano anterior foi de pelo menos KRW 1 trilhão?", help: "Para pessoa jurídica, use o exercício fiscal anterior. Qualquer um dos quatro critérios do Artigo 29(1) do Decreto pode satisfazer a condição de porte.", article: "Decreto, Artigo 29(1)(1)" },
+  { id: "kr_ai_services_revenue", text: "A receita da operadora no setor de serviços de IA no ano anterior foi de pelo menos KRW 10 bilhões?", help: "Para pessoa jurídica, use o exercício fiscal anterior. Receita em moeda estrangeira é convertida pela taxa média do ano anterior, conforme o Artigo 29(2).", article: "Decreto, Artigo 29(1)(2)" },
+  { id: "kr_domestic_users", text: "Os produtos e serviços de IA da operadora foram usados por uma média de pelo menos 1 milhão de usuários domésticos por dia nos três meses imediatamente anteriores ao fim do ano anterior?", help: "Este é um critério alternativo distinto dos critérios de receita; não substitua por cadastros ou usuários mensais.", article: "Decreto, Artigo 29(1)(3)" },
+  { id: "kr_admin_fine", text: "A operadora foi sujeita à multa administrativa especificada no Artigo 43(1)(3) da Lei?", help: "Este critério de histórico de fiscalização é a quarta alternativa do teste de porte para representante doméstico.", article: "Decreto, Artigo 29(1)(4)" },
   {
     id: "kr_explanation",
     text: "Pessoas afetadas podem solicitar uma explicação sobre decisões de IA que as afetam?",
@@ -976,7 +988,8 @@ function renderScanResults(result) {
       <div class="tier-label">RESULTADO DA ANÁLISE DE CÓDIGO</div>
       <div class="tier-name">${tierNames[c.detector_class] || c.detector_class}</div>
       <div class="tier-desc">${c.message}</div>
-      ${(c.detector_class === 'article_5_pattern' || c.detector_class === 'annex_iii_pattern') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Isto é uma <strong>correspondência de padrão, não uma determinação</strong> :  verifique se o código sinalizado realmente implementa a prática descrita. Falsos positivos são possíveis; isto não é aconselhamento jurídico.</div>' : ''}
+      ${(c.detector_class === 'article_5_pattern' || c.detector_class === 'annex_iii_pattern') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Isto é uma <strong>correspondência de padrão, não uma determinação</strong>: verifique se o código sinalizado realmente implementa a prática descrita. Falsos positivos são possíveis; isto não é aconselhamento jurídico.</div>' : ''}
+      <div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;"><strong>Por que a CLI pode ser diferente:</strong> o navegador verifica um arquivo sem política do projeto, fingerprint de importações ou <code>--domain</code> declarado. Ele mostra candidatos brutos; a CLI pode adiar achados de domínios opcionais até você fornecer esse contexto.</div>
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
         Prioridade do detector: ${c.detector_priority}/100 &middot; Linguagem: ${result.language}
         ${c.indicators_matched.length ? ' &middot; Indicadores: ' + c.indicators_matched.join(', ') : ''}

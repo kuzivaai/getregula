@@ -14,7 +14,7 @@ Regula combines two approaches: (1) static code analysis for risk patterns, depe
 - [Installation guide](https://github.com/kuzivaai/getregula/blob/main/docs/installation.md): pipx, pip, uv, and platform-specific instructions
 - [Quick start](https://github.com/kuzivaai/getregula/blob/main/docs/QUICKSTART.md): First scan in under a minute
 - [Evidence pack guide](https://github.com/kuzivaai/getregula/blob/main/docs/evidence-pack-guide.md): Generating compliance documentation for auditors
-- [Runtime monitoring](https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md#runtime-monitoring-article-12): Article 12 runtime logging SDK and CLI (`regula monitor`) for recording LLM calls in production
+- [Opt-in runtime event logging](https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md#opt-in-runtime-event-logging-article-12-evidence-input): application instrumentation plus a CLI (`regula monitor`) for reporting self-attesting local event logs; not passive system monitoring
 - [Precision and recall benchmarks](https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md): Published accuracy data
 - [Trust pack](https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md): Security findings, test counts, verified numbers
 

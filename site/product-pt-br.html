@@ -84,11 +84,11 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Regula",
-        "alternateName": "Regula EU AI Act CLI",
+        "alternateName": "Regula CLI de governança de IA",
         "url": "https://getregula.com",
         "logo": "https://getregula.com/assets/regula-logo.png",
-        "description": "CLI open-source de conformidade com a Lei de IA da UE para desenvolvedores.",
-        "disambiguatingDescription": "Open-source command-line tool for EU AI Act compliance scanning. Not affiliated with Regula Forensics (identity verification).",
+        "description": "CLI open-source para evidências de governança de IA e revisão de indicadores no código-fonte.",
+        "disambiguatingDescription": "Ferramenta de linha de comando open-source para indicadores no código, contexto declarado e evidências a serem completadas por pessoas. Não determina conformidade jurídica e não tem vínculo com a Regula Forensics.",
         "sameAs": [
             "https://github.com/kuzivaai/getregula",
             "https://pypi.org/project/regula-ai/"
@@ -189,14 +189,11 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
-        <a href="/assess/pt-br.html" title="Free EU AI Act risk assessment">Assess</a>
-        <a href="/product-pt-br.html">O que ele faz</a>
-        <a href="/guides/">Guides</a>
-        <a href="/pricing.html" hreflang="en">Pre&ccedil;os</a>
+        <a href="/assess/pt-br.html" title="Registrar o contexto de uso para revisão">Avaliar escopo</a>
+        <span class="active">Revisar código</span>
+        <a href="/coverage-pt-br.html">Cobertura</a>
+        <a href="/coverage-pt-br.html#methods">Métodos e limites</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="/regions/regulations.html" hreflang="en" title="Rastreador global de regulacao de IA">Regulacao</a>
-        <a href="/blog/writing.html" hreflang="en" title="Blog">Blog</a>
-        <a href="/about.html" hreflang="en">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html" hreflang="de">DE</a>
         <span class="active">BR</span>
@@ -236,7 +233,7 @@
             <ul>
                 <li>Funciona com codigo gerado por IA (Cursor, Lovable, Bolt, Claude Code)</li>
                 <li>Gera documentacao Anexo IV a partir do seu codigo real</li>
-                <li>Integracao CI/CD &middot; JSON &middot; SARIF &middot; 13 frameworks de conformidade</li>
+                <li>Integra&ccedil;&atilde;o CI/CD &middot; JSON &middot; SARIF &middot; refer&ecirc;ncias selecionadas em 13 identificadores de frameworks</li>
             </ul>
             <span class="step-cmd" style="margin-top:18px;">regula check .</span>
         </div>
@@ -327,7 +324,7 @@
 <div class="stats-bar reveal">
     <div class="stats-inner">
         <div class="stat-item">
-            <div class="stat-num">419</div>
+            <div class="stat-num">423</div>
             <div class="stat-label">padr&otilde;es de risco <a href="https://github.com/kuzivaai/getregula/blob/main/scripts/risk_patterns.py" class="stat-source">(fonte)</a></div>
         </div>
         <div class="stat-item">
@@ -336,7 +333,7 @@
         </div>
         <div class="stat-item">
             <div class="stat-num">13</div>
-            <div class="stat-label">frameworks de conformidade</div>
+            <div class="stat-label">conjuntos de refer&ecirc;ncias</div>
         </div>
         <div class="stat-item">
             <div class="stat-num">0</div>
@@ -412,14 +409,14 @@
         </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Regulacao cruzada</div>
-            <h3>13 mapeamentos de frameworks</h3>
-            <p>Cada artigo da Lei de IA e mapeado para ISO 42001, NIST AI RMF, SOC 2, OWASP e outros frameworks. Uma varredura revela requisitos em todos os 13 frameworks.</p>
+            <h3>13 conjuntos de refer&ecirc;ncias</h3>
+            <p>&Aacute;reas selecionadas de obriga&ccedil;&otilde;es apontam para refer&ecirc;ncias selecionadas em ISO 42001, NIST AI RMF, SOC 2, OWASP e outros frameworks. O crosswalk ajuda a navega&ccedil;&atilde;o humana; n&atilde;o testa equival&ecirc;ncia, aplicabilidade ou implementa&ccedil;&atilde;o.</p>
             <code style="font-size:11px;color:#9898b4;">regula gap .</code>
         </div>
     </div>
 
     <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
-        62 comandos no total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Mapeamentos para ISO 42001, NIST AI RMF, OWASP LLM Top 10, EU CRA e 7 outros frameworks.
+        62 comandos no total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Refer&ecirc;ncias selecionadas em 13 identificadores de frameworks.
         <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Referencia completa da CLI &rarr;</a>
     </p>
 </div>
@@ -482,7 +479,7 @@
             <p class="price-desc">Escaneamento de c&oacute;digo + question&aacute;rios de governan&ccedil;a. Roda no seu laptop com um comando. O núcleo da biblioteca padrão não envia arquivos analisados; integrações opcionais e a plataforma podem usar rede. <code>pipx install regula-ai</code>, escaneie seu projeto e revise os indicadores. Apache 2.0 / EUPL 1.2; regras de detec&ccedil;&atilde;o sob DRL 1.1.</p>
         </div>
     </div>
-    <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Escolha a ferramenta cuja cobertura de linguagens e compromissos se encaixem no seu stack. O Regula cobre mais linguagens e mapeamentos de frameworks entre as opcoes open-source listadas acima. Para governanca de agentes em <em>runtime</em>, veja o <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:var(--text-dim);">Agent Governance Toolkit da Microsoft</a>.</p>
+    <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Avalie cobertura de linguagens, modelo de execu&ccedil;&atilde;o, licen&ccedil;a e limites de evid&ecirc;ncia de cada ferramenta no seu pr&oacute;prio contexto. A tabela n&atilde;o &eacute; uma avalia&ccedil;&atilde;o independente de desempenho. Para governan&ccedil;a de agentes em <em>runtime</em>, veja o <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:var(--text-dim);">Agent Governance Toolkit da Microsoft</a>.</p>
 </div>
 </details>
 

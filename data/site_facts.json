@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-26T01:58:07.663047+00:00",
+  "generated_at": "2026-08-26T14:39:21.280667+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -11,8 +11,8 @@
     "commands": 62,
     "patterns": {
       "tier_groups": 57,
-      "tier_regexes": 419,
-      "ai_indicators": 212,
+      "tier_regexes": 423,
+      "ai_indicators": 215,
       "gpai_training": 17,
       "architecture": 38,
       "data_source": 10,
@@ -20,15 +20,15 @@
       "oversight": 4,
       "credential": 17,
       "agentic_categories": 10,
-      "grand_total": 721,
-      "composite_tier_cred_agentic": 446,
-      "historical_330_bucket": 478
+      "grand_total": 728,
+      "composite_tier_cred_agentic": 450,
+      "historical_330_bucket": 482
     },
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2899,
-      "total_functions": 2851,
+      "total_collected": 2920,
+      "total_functions": 2869,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -60,7 +60,7 @@
         "tests/test_cross_file_flow.py": 103,
         "tests/test_crosswalk_omnibus.py": 10,
         "tests/test_decision_conformance.py": 5,
-        "tests/test_decision_kernel.py": 23,
+        "tests/test_decision_kernel.py": 25,
         "tests/test_delta_dataset.py": 10,
         "tests/test_delta_log_schema.py": 3,
         "tests/test_demo_doc.py": 7,
@@ -80,6 +80,8 @@
         "tests/test_evidence_format_v1.py": 14,
         "tests/test_evidence_pack_unit.py": 93,
         "tests/test_exec_summary.py": 10,
+        "tests/test_external_corpus.py": 9,
+        "tests/test_external_regressions.py": 7,
         "tests/test_fact_loop.py": 16,
         "tests/test_file_provenance.py": 9,
         "tests/test_first_run.py": 4,
@@ -143,11 +145,11 @@
         "tests/test_telemetry.py": 18,
         "tests/test_tracked_inputs.py": 14
       },
-      "runner_functions": 1268
+      "runner_functions": 1289
     }
   },
   "notes": {
     "pattern_count_methodology": "Regula's landing pages cite 'tier_regexes risk patterns'. That figure is the total individual regexes in risk_patterns.py across all tiered groups (prohibited, high-risk, limited-risk, AI security, bias, governance, GPAI training). The `historical_330_bucket` adds architecture, credential, and oversight patterns from code_analysis.py. The `grand_total` also includes AI_INDICATORS.",
-    "frameworks_vs_claim": "Regula's landing pages cite '13 compliance frameworks'. All 13 are in _FRAMEWORK_KEYS with crosswalk data (OWASP ASI added 2026-07). Colorado SB-189, Canada AIDA, Singapore AI, OECD AI and South Korea AI have display handlers only (no filter keys, no crosswalk)."
+    "frameworks_vs_claim": "Regula's landing pages cite '13 framework identifiers with selected references'. All 13 are in _FRAMEWORK_KEYS with crosswalk data (OWASP ASI added 2026-07). Colorado SB-189, Canada AIDA, Singapore AI, OECD AI and South Korea AI have display handlers only (no filter keys, no crosswalk)."
   }
 }

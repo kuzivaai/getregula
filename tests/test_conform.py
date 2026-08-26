@@ -54,7 +54,7 @@ def _resolved_decision_request():
             }]
         }
     return {
-        "model_version": "2026-08-19.1",
+        "model_version": "2026-08-26.1",
         "jurisdiction": "eu",
         "facts": {
             "jurisdiction_in_scope": value("jurisdiction_in_scope", "yes"),

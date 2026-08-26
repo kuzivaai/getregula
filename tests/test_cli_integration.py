@@ -208,7 +208,8 @@ def test_check_explain_keeps_detector_detail_separate_from_decision():
             encoding="utf-8",
         )
         rc, out, err = run_cli(
-            "check", d, "--explain", "--format", "json", "--no-skip-tests"
+            "check", d, "--explain", "--format", "json", "--no-skip-tests",
+            "--domain", "finance"
         )
     assert rc in (0, 1), err[:200]
     data = json.loads(out)["data"]

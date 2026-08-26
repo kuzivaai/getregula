@@ -25,10 +25,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>Regula — EU AI Act Compliance for UAE & GCC Companies</title>
+    <title>EU AI Act scope review for UAE &amp; GCC teams | Regula</title>
     <meta name="description" content="EU AI Act scope and code-indicator review for UAE and GCC companies whose AI outputs may be used in the EU.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="Regula — EU AI Act compliance for UAE & GCC companies selling into Europe">
+    <meta property="og:title" content="EU AI Act scope review for UAE & GCC teams">
     <meta property="og:description" content="Article 2 can apply to some UAE and GCC providers and deployers. Regula reports code indicators locally for contextual review.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/regions/uae.html">
@@ -36,18 +36,18 @@
     <meta property="og:image" content="https://getregula.com/assets/og-uae.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Regula — EU AI Act compliance for UAE and GCC teams. Free open-source CLI.">
+    <meta property="og:image:alt" content="Regula — EU AI Act scope and code-indicator review for UAE and GCC teams.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-uae.png">
     <meta property="og:locale" content="en_AE">
-    <meta name="twitter:title" content="EU AI Act compliance for UAE companies">
-    <meta name="twitter:description" content="Free CLI combining code scanning and governance questionnaires for EU AI Act compliance. Built for DIFC, ADGM and GCC AI teams selling into the EU.">
+    <meta name="twitter:title" content="EU AI Act scope review for UAE companies">
+    <meta name="twitter:description" content="Free local CLI for code indicators and declared context. It does not determine whether the EU AI Act applies or whether a system complies.">
     <link rel="canonical" href="https://getregula.com/regions/uae.html">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "Regula",
-        "description": "Open-source CLI for DIFC, ADGM and GCC AI teams selling into Europe. Audits code against EU AI Act risk patterns in one command.",
+        "description": "Open-source CLI for code indicators and declared-context review by DIFC, ADGM and GCC AI teams with possible EU exposure. It does not determine legal scope or compliance.",
         "url": "https://getregula.com/regions/uae.html",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, macOS, Windows",
@@ -277,15 +277,11 @@
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
         <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
-            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
-            <a href="/product.html">What it does</a>
-            <a href="/guides/">Guides</a>
-        <a href="/pricing.html">Pricing</a>
+            <a href="/assess/">Assess scope</a>
+            <a href="/product.html">Scan code</a>
+            <a href="/coverage.html">Coverage</a>
+            <a href="/coverage.html#methods">Methods &amp; limits</a>
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-            <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
-            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
-            <a href="/about.html">About</a>
             <a href="/">EN</a>
             <a href="/locales/de.html">DE</a>
             <a href="/locales/pt-br.html">BR</a>
@@ -314,7 +310,7 @@
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>zero runtime dependencies</span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
-        <span><a href="https://github.com/kuzivaai/getregula/tree/main/tests" style="color:inherit;text-decoration:underline dotted;">2,899 tests</a></span>
+        <span><a href="https://github.com/kuzivaai/getregula/tree/main/tests" style="color:inherit;text-decoration:underline dotted;">2,920 tests</a></span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>Versioned security-alert inventory</span>
     </div>
@@ -328,7 +324,7 @@
     <div class="liab-grid">
         <div class="card-base liab-card">
             <h3>Extraterritorial by design</h3>
-            <p>Article 2(1)(c) of Regulation (EU) 2024/1689 explicitly applies to providers and deployers established outside the EU when the output of the AI system is used in the Union. Where you incorporate is irrelevant.</p>
+            <p>Article 2(1)(c) of Regulation (EU) 2024/1689 covers providers and deployers established outside the EU where the output produced by the AI system is used in the Union, subject to the Act's definitions, exclusions and other conditions. Non-EU incorporation alone does not exclude that route.</p>
             <p class="ref">Source: Regulation (EU) 2024/1689 Article 2(1)(c)</p>
         </div>
         <div class="card-base liab-card">
@@ -351,8 +347,8 @@
 
 <!-- SECTORS -->
 <section class="sec">
-    <h2>Sectors with the highest exposure in the UAE</h2>
-    <p class="sec-sub">Where DIFC, ADGM, Dubai Internet City, and Abu Dhabi Hub71-licensed companies most often hit EU AI Act high-risk categories.</p>
+    <h2>Examples that may require closer scope and classification review</h2>
+    <p class="sec-sub">Sector labels alone do not make a system high-risk. Intended purpose and every condition in Article 6 and Annex I or III require separate review.</p>
 
     <div class="sectors">
         <div class="sector"><strong>Fintech &amp; lending</strong><span>Credit scoring, loan approval, KYC risk → Annex III Cat 5 (essential services)</span></div>
@@ -430,7 +426,7 @@ Detector observation (not a legal classification):
 <!-- TRUST -->
 <section class="sec">
     <h2>How you verify Regula independently</h2>
-    <p class="sec-sub">Procurement teams in DIFC and ADGM ask the same questions. Here are the answers, all in one document.</p>
+    <p class="sec-sub">Use the underlying artefacts to check reproducibility, security boundaries, evaluation limits, and what remains unvalidated.</p>
 
     <ul style="list-style: none; padding: 0; font-size: 15px; color: #aaaac0;">
         <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Trust Pack</strong> — every claim is paired with the exact shell command anyone can run to verify it. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">docs/TRUST.md</a></li>
@@ -442,7 +438,7 @@ Detector observation (not a legal classification):
     </ul>
 </section>
 
-<p style="max-width:720px;margin:32px auto 8px;color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Maintained by:</strong> Regula (open source) &middot; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+<p style="max-width:720px;margin:32px auto 8px;color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 26 August 2026 &middot; <strong>Coverage level:</strong> dated tracker and EU-oriented scope guidance, not UAE decision logic &middot; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
 
 </main>
 

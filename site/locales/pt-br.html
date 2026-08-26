@@ -87,11 +87,11 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Regula",
-        "alternateName": "Regula EU AI Act CLI",
+        "alternateName": "Regula CLI de governança de IA",
         "url": "https://getregula.com",
         "logo": "https://getregula.com/assets/regula-logo.png",
-        "description": "CLI open-source de conformidade com a Lei de IA da UE para desenvolvedores.",
-        "disambiguatingDescription": "Open-source command-line tool for EU AI Act compliance scanning. Not affiliated with Regula Forensics (identity verification).",
+        "description": "CLI open-source para evidências de governança de IA e revisão de indicadores no código-fonte.",
+        "disambiguatingDescription": "Ferramenta de linha de comando open-source para indicadores no código, contexto declarado e evidências a serem completadas por pessoas. Não determina conformidade jurídica e não tem vínculo com a Regula Forensics.",
         "sameAs": [
             "https://github.com/kuzivaai/getregula",
             "https://pypi.org/project/regula-ai/"
@@ -155,7 +155,7 @@
                 "name": "O Regula é gratuito?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Sim. O Regula é open source sob a licença Apache 2.0 ou EUPL 1.2 (as regras de detecção possuem a licença DRL 1.1, consulte o arquivo NOTICE). Sem conta, sem chave de API, sem ligação comercial. Instale com pipx install regula-ai e execute localmente no seu código. A CLI completa, todos os 62 comandos (incluindo regula handoff para escopo Garak/Giskard/Promptfoo e regula regwatch para alertas de drift delta-log), todos os 419 padrões de risco e todos os 13 mapeamentos de frameworks de conformidade são gratuitos."
+                    "text": "Sim. O Regula é open source sob a licença Apache 2.0 ou EUPL 1.2 (as regras de detecção possuem a licença DRL 1.1, consulte o arquivo NOTICE). Sem conta, sem chave de API, sem ligação comercial. Instale com pipx install regula-ai e execute localmente no seu código. A CLI completa, todos os 62 comandos, todos os 423 padrões de risco e referências selecionadas em 13 identificadores de frameworks são gratuitos."
                 }
             },
             {
@@ -187,7 +187,7 @@
                 "name": "A Lei de IA da UE se sobrepõe à LGPD, DORA ou NIS2?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Sim, significativamente. Sistemas de IA de alto risco que processam dados pessoais devem também cumprir a LGPD (ou GDPR, se na UE), e outras regulamentações como DORA e NIS2 podem se aplicar dependendo do seu sector. O Regula mapeia cada artigo da Lei de IA para obrigações correspondentes em ISO 42001, NIST AI RMF, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, MITRE ATLAS e outros frameworks em uma única varredura. Execute regula gap --project . para ver onde suas obrigações se sobrepõem nos 13 frameworks mapeados."
+                    "text": "Possivelmente. LGPD, GDPR, DORA, NIS2 e regras setoriais têm condições próprias de aplicação. O Regula liga áreas selecionadas da Lei de IA a referências selecionadas em ISO, NIST, SOC 2, OWASP e outros frameworks. O crosswalk auxilia a navegação; não demonstra aplicabilidade, equivalência ou implementação."
                 }
             },
             {
@@ -289,14 +289,11 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
-        <a href="/assess/pt-br.html" title="Free EU AI Act risk assessment">Assess</a>
-        <a href="/product-pt-br.html">O que ele faz</a>
-        <a href="/guides/">Guides</a>
-        <a href="/pricing.html" hreflang="en">Pre&ccedil;os</a>
+        <a href="/assess/pt-br.html" title="Registrar o contexto de uso para revisão">Avaliar escopo</a>
+        <a href="/product-pt-br.html">Revisar código</a>
+        <a href="/coverage-pt-br.html">Cobertura</a>
+        <a href="/coverage-pt-br.html#methods">Métodos e limites</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="/regions/regulations.html" hreflang="en" title="Rastreador global de regulacao de IA">Regulacao</a>
-        <a href="/blog/writing.html" hreflang="en" title="Blog">Blog</a>
-        <a href="/about.html" hreflang="en">About</a>
         <a href="/">EN</a>
         <a href="/locales/de.html" hreflang="de">DE</a>
         <span class="active">BR</span>
@@ -432,7 +429,7 @@
 <div class="sec reveal" id="terminal">
     <h2 class="sec-head">Se você tem familiaridade com um terminal</h2>
     <p class="sec-sub">Os mesmos indicadores existem como um comando local. Ele lê arquivos na sua máquina e não os envia. Abaixo está a saída real da fixture de teste versionada, reproduzida a cada build pelas próprias verificações do projeto, e não uma simulação. Repare no que ele faz com uma pergunta não resolvida: nomeia os fatos de que precisa em vez de adivinhar uma classe.</p>
-    <ul class="qual-proof"><li>2.899 testes, executados de novo a cada mudança</li><li>achados de segurança divulgados por ferramenta e escopo</li><li>zero dependências no núcleo</li><li>o núcleo local não envia os arquivos analisados</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">trust pack</a></li></ul>
+    <ul class="qual-proof"><li>2.920 testes, executados de novo a cada mudança</li><li>achados de segurança divulgados por ferramenta e escopo</li><li>zero dependências no núcleo</li><li>o núcleo local não envia os arquivos analisados</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">trust pack</a></li></ul>
     <div class="term-wrap" role="region" aria-label="Demo interativa da CLI Regula. Alterne as abas para ver exemplos de saida dos comandos regula check, plan, gap e comply">
             <div class="term-bar" aria-hidden="true">
                 <div class="term-dot td-r"></div>
@@ -450,7 +447,7 @@
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check tests/fixtures/sample_high_risk --explain</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-19.1
+Model: 2026-08-26.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -464,7 +461,7 @@ Detector observations are reported separately and do not create obligations.</pr
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula plan --project tests/fixtures/sample_high_risk</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-19.1
+Model: 2026-08-26.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -478,7 +475,7 @@ No obligation plan or effort estimate was emitted because applicability is unres
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula gap tests/fixtures/sample_high_risk</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-19.1
+Model: 2026-08-26.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -494,7 +491,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-19.1
+Model: 2026-08-26.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -548,7 +545,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
         </details>
         <details>
             <summary>O Regula &eacute; gratuito?</summary>
-            <p>Sim. O Regula &eacute; open source sob a licen&ccedil;a Apache 2.0 ou EUPL 1.2. Sem conta, sem chave de API, sem liga&ccedil;&atilde;o de vendas. Instale com <code>pipx install regula-ai</code>. Todos os 62 comandos, todos os 419 padr&otilde;es de risco e todos os 13 mapeamentos de frameworks de conformidade s&atilde;o gratuitos.</p>
+            <p>Sim. O Regula &eacute; open source sob a licen&ccedil;a Apache 2.0 ou EUPL 1.2. Sem conta, sem chave de API, sem liga&ccedil;&atilde;o de vendas. Instale com <code>pipx install regula-ai</code>. Todos os 62 comandos, todos os 423 padr&otilde;es de risco e refer&ecirc;ncias selecionadas em 13 identificadores de frameworks s&atilde;o gratuitos.</p>
         </details>
     </div>
 </div>

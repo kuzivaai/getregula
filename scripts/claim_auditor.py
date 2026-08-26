@@ -1270,13 +1270,13 @@ PRECISION_EXTRA_FILES = [
 #   2. the paragraph publishing it names a path AND a gate condition.
 #
 # (2) is not pedantry. MEASURED 2026-07-28: on this corpus the same tier
-# scores 10/30, 16/30 and 23/30 depending only on which gates are
+# scores 4/30, 16/30, 18/30 and 23/30 depending on path and gates
 # satisfied. A bare fraction is an average over conditions nobody chose.
 
 RECALL_ARTEFACT_PATH = REPO_ROOT / "benchmarks/synthetic/RECALL.json"
 
 # Paragraphs are only inspected when they are talking about recall.
-# Inflections included: "the scanner recalls 10/30" is a recall claim, and a
+# Inflections included: "the scanner recalls 4/30" is a recall claim, and a
 # bare `\brecall\b` silently skipped it. Found by a test of this check
 # passing for the wrong reason - the paragraph was never inspected at all.
 RECALL_CONTEXT = re.compile(r"\brecall(?:s|ed|ing)?\b", re.IGNORECASE)
@@ -1544,7 +1544,7 @@ def load_recall_artefact() -> dict:
 
 
 def known_recall_fractions(artefact: dict) -> dict[str, list[str]]:
-    """{"10/30": ["scanner/default high_risk"], ...}"""
+    """{"4/30": ["scanner/default high_risk"], ...}"""
     out: dict[str, list[str]] = {}
     for cond_id, cond in artefact.get("conditions", {}).items():
         for tier, stats in cond.get("tiers", {}).items():

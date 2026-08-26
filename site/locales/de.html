@@ -86,11 +86,11 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Regula",
-        "alternateName": "Regula EU AI Act CLI",
+        "alternateName": "Regula KI-Governance-CLI",
         "url": "https://getregula.com",
         "logo": "https://getregula.com/assets/regula-logo.png",
-        "description": "Open-Source-CLI für EU-KI-Gesetz-Konformität für Entwickler.",
-        "disambiguatingDescription": "Open-source command-line tool for EU AI Act compliance scanning. Not affiliated with Regula Forensics (identity verification).",
+        "description": "Open-Source-CLI für KI-Governance-Nachweise und die Prüfung von Quellcode-Indikatoren.",
+        "disambiguatingDescription": "Open-Source-Kommandozeilenwerkzeug für Code-Indikatoren, erklärten Kontext und durch Menschen zu vervollständigende Nachweise. Es bestimmt keine Rechtskonformität und ist nicht mit Regula Forensics verbunden.",
         "sameAs": [
             "https://github.com/kuzivaai/getregula",
             "https://pypi.org/project/regula-ai/"
@@ -154,7 +154,7 @@
                 "name": "Ist Regula kostenlos?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ja. Regula ist Open Source unter der Apache-2.0- oder EUPL-1.2-Lizenz (Erkennungsregeln unter DRL 1.1, siehe NOTICE-Datei). Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pipx install regula-ai (siehe docs/installation.md für uv- und pip-Alternativen) und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 62 Befehle (einschließlich `regula handoff` für Garak/Giskard/Promptfoo-Scoping und `regula regwatch` für Delta-Log-Drift-Warnungen), alle 419 Risikomuster und alle 13 Compliance-Framework-Zuordnungen sind kostenlos."
+                    "text": "Ja. Regula ist Open Source unter der Apache-2.0- oder EUPL-1.2-Lizenz (Erkennungsregeln unter DRL 1.1, siehe NOTICE-Datei). Kein Konto, kein API-Schlüssel, kein Verkaufsgespräch. Installieren Sie mit pipx install regula-ai (siehe docs/installation.md für uv- und pip-Alternativen) und führen Sie es lokal auf Ihrer Codebasis aus. Die vollständige CLI, alle 62 Befehle, alle 423 Risikomuster und ausgewählte Referenzzuordnungen in 13 Framework-Kennungen sind kostenlos."
                 }
             },
             {
@@ -178,7 +178,7 @@
                 "name": "Überschneidet sich das EU-KI-Gesetz mit DSGVO, DORA oder NIS2?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ja, erheblich. Hochrisiko-KI-Systeme, die personenbezogene Daten verarbeiten, müssen auch die DSGVO einhalten, und je nach Branche können weitere Vorschriften wie DORA und NIS2 gelten. Regula bildet jeden KI-Gesetz-Artikel auf die entsprechenden ISO-42001-, NIST-AI-RMF-, NIST-CSF-, SOC-2-, ISO-27001-, OWASP-LLM-Top-10-, MITRE-ATLAS- und weitere Framework-Pflichten in einem einzigen Scan ab. Führen Sie regula gap --project . aus, um zu sehen, wo sich Ihre Pflichten über alle 13 zugeordneten Frameworks überschneiden."
+                    "text": "Möglicherweise. DSGVO, DORA, NIS2 und Branchenregeln haben jeweils eigene Anwendungsbedingungen. Regula verknüpft ausgewählte Pflichtenbereiche der KI-Verordnung mit ausgewählten ISO-, NIST-, SOC-2-, OWASP- und weiteren Referenzen. Der Crosswalk ist eine Navigationshilfe; er belegt weder Anwendbarkeit noch Gleichwertigkeit oder Umsetzung."
                 }
             },
             {
@@ -280,14 +280,11 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
-        <a href="/assess/de.html" title="Free EU AI Act risk assessment">Assess</a>
-        <a href="/product-de.html">Was es tut</a>
-        <a href="/guides/">Guides</a>
-        <a href="/pricing.html" hreflang="en">Preise</a>
+        <a href="/assess/de.html" title="Einsatzkontext für die Prüfung erfassen">Geltungsbereich prüfen</a>
+        <a href="/product-de.html">Code prüfen</a>
+        <a href="/coverage-de.html">Abdeckung</a>
+        <a href="/coverage-de.html#methods">Methoden &amp; Grenzen</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="/regions/regulations.html" hreflang="en" title="Globaler KI-Regulierungstracker">Regulierung</a>
-        <a href="/blog/writing.html" hreflang="en" title="Blog">Blog</a>
-        <a href="/about.html" hreflang="en">About</a>
         <a href="/">EN</a>
         <span class="active">DE</span>
         <a href="/locales/pt-br.html" hreflang="pt-BR">BR</a>
@@ -423,7 +420,7 @@
 <div class="sec reveal" id="terminal">
     <h2 class="sec-head">Wenn Sie mit einem Terminal vertraut sind</h2>
     <p class="sec-sub">Dieselben Indikatoren gibt es als lokalen Befehl. Er liest Dateien auf Ihrem Rechner und lädt sie nicht hoch. Unten steht echte Ausgabe aus der eingecheckten Testvorlage, bei jedem Build von den eigenen Prüfungen des Projekts reproduziert, keine Nachbildung. Beachten Sie, wie er mit einer ungeklärten Frage umgeht: Er benennt die benötigten Tatsachen, statt eine Klasse zu raten.</p>
-    <ul class="qual-proof"><li>2.899 Tests, bei jeder Änderung erneut ausgeführt</li><li>Sicherheitsbefunde nach Werkzeug und Umfang offengelegt</li><li>null Abhängigkeiten im Kern</li><li>der lokale Kern lädt gescannte Dateien nicht hoch</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust Pack</a></li></ul>
+    <ul class="qual-proof"><li>2.920 Tests, bei jeder Änderung erneut ausgeführt</li><li>Sicherheitsbefunde nach Werkzeug und Umfang offengelegt</li><li>null Abhängigkeiten im Kern</li><li>der lokale Kern lädt gescannte Dateien nicht hoch</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust Pack</a></li></ul>
     <div class="term-wrap" role="region" aria-label="Interaktive Regula-CLI-Demo. Wechseln Sie die Tabs, um Beispielausgaben der Befehle regula check, plan, gap und comply zu sehen">
             <div class="term-bar" aria-hidden="true">
                 <div class="term-dot td-r"></div>
@@ -441,7 +438,7 @@
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check tests/fixtures/sample_high_risk --explain</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-19.1
+Model: 2026-08-26.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -455,7 +452,7 @@ Detector observations are reported separately and do not create obligations.</pr
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula plan --project tests/fixtures/sample_high_risk</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-19.1
+Model: 2026-08-26.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -469,7 +466,7 @@ No obligation plan or effort estimate was emitted because applicability is unres
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula gap tests/fixtures/sample_high_risk</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-19.1
+Model: 2026-08-26.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -485,7 +482,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
 
 <span class="t-h">Decision: insufficient_information</span>
-Model: 2026-08-19.1
+Model: 2026-08-26.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -539,7 +536,7 @@ Article observations emitted: 0; held pending applicability: 8</pre>
         </details>
         <details>
             <summary>Ist Regula kostenlos?</summary>
-            <p>Ja. Regula ist Open Source unter der Apache-2.0- oder EUPL-1.2-Lizenz. Kein Konto, kein API-Schl&uuml;ssel, kein Verkaufsgespr&auml;ch. Installation mit <code>pipx install regula-ai</code>. Alle 62 Befehle, alle 419 Risikomuster und alle 13 Compliance-Framework-Zuordnungen sind kostenlos.</p>
+            <p>Ja. Regula ist Open Source unter der Apache-2.0- oder EUPL-1.2-Lizenz. Kein Konto, kein API-Schl&uuml;ssel, kein Verkaufsgespr&auml;ch. Installation mit <code>pipx install regula-ai</code>. Alle 62 Befehle, alle 423 Risikomuster und ausgew&auml;hlte Referenzzuordnungen in 13 Framework-Kennungen sind kostenlos.</p>
         </details>
     </div>
 </div>

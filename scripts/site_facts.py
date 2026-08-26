@@ -531,7 +531,7 @@ def compute() -> dict:
                 "also includes AI_INDICATORS."
             ),
             "frameworks_vs_claim": (
-                "Regula's landing pages cite '13 compliance frameworks'. "
+                "Regula's landing pages cite '13 framework identifiers with selected references'. "
                 "All 13 are in _FRAMEWORK_KEYS with crosswalk data (OWASP ASI added "
                 "2026-07). Colorado SB-189, Canada AIDA, Singapore AI, OECD AI and "
                 "South Korea AI have display handlers only (no filter keys, no crosswalk)."
@@ -555,7 +555,7 @@ def render_markdown(data: dict) -> str:
         f"| Detection patterns (historical bucket) | **{p['historical_330_bucket']}** | see breakdown below |\n"
         f"| Detection patterns (grand total, inclusive) | **{p['grand_total']}** | see breakdown below |\n"
         f"| Tiered risk pattern groups | {p['tier_groups']} | `scripts/risk_patterns.py` |\n"
-        f"| Compliance frameworks | **{c['frameworks']}** | `references/framework_crosswalk.yaml` + EU AI Act |\n"
+        f"| Framework identifiers with selected references | **{c['frameworks']}** | `references/framework_crosswalk.yaml` + EU AI Act |\n"
         f"| Programming languages | {c['languages']} | `scripts/ast_engine.py` |\n"
         f"| Test functions (all files) | {c['tests']['total_functions']} | `tests/test_*.py` |\n\n"
         "## Detection pattern breakdown\n\n"

@@ -147,7 +147,7 @@ def scan_config_files(project_path: str) -> list:
 def _is_test_file(filepath: Path) -> bool:
     """Detect if a file is a test file (findings should be deprioritised).
 
-    Catches standard test conventions across Python, JS/TS ecosystems,
+    Catches standard test conventions across Python, JS/TS, Go and Java,
     plus package-level test directories (e.g. langchain_tests/, standard-tests/).
     """
     name = filepath.name.lower()
@@ -155,7 +155,11 @@ def _is_test_file(filepath: Path) -> bool:
     # File name patterns
     if name.startswith("test_") or name.endswith("_test.py") or name == "conftest.py":
         return True
-    if name.endswith(".spec.ts") or name.endswith(".spec.js") or name.endswith(".test.ts") or name.endswith(".test.js"):
+    if name.endswith("_test.go"):
+        return True
+    if re.search(r"\.(?:spec|test)\.(?:js|jsx|ts|tsx|mjs|cjs)$", name):
+        return True
+    if name.endswith("test.java") or name.endswith("tests.java"):
         return True
     # Directory patterns — exact matches
     if "test" in parts or "tests" in parts or "__tests__" in parts or "spec" in parts:
@@ -631,7 +635,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     _domain_to_subcats = {
         "employment": {"employment", "high_risk__worker_management"},
         "medical": {"medical_devices"},
-        "finance": {"essential_services"},
+        "finance": {"essential_services", "high_risk__credit_scoring",
+                    "high_risk__insurance"},
         "biometrics": {"biometrics"},
         "education": {"education"},
         "law_enforcement": {"law_enforcement"},
@@ -646,6 +651,17 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # Side-channel counters so cmd_check can show an honest "files scanned"
     # number without refactoring every caller. Exposed on scan_files.last_stats.
     _scanned_files = 0
+    # Population denominator for reproducible evaluation.  ``discovered`` is
+    # every file entry in a directory the walker actually visits (so files in
+    # intentionally pruned directories are disclosed separately, below).
+    # ``eligible`` is a supported source file after the explicit --skip-tests
+    # exclusion; it is counted before safety/read checks so an unreadable file
+    # cannot disappear from the denominator.  ``unsupported`` means only that
+    # Regula has no source/model handler for the suffix; it is not a judgment
+    # about the file or language's importance.
+    _discovered_files = 0
+    _eligible_files = 0
+    _unsupported_files = 0
     # Count test files that were skipped because skip_tests=True. Used by
     # cmd_check to decide whether the "test files excluded" suffix is
     # actually truthful — without this, a directory containing no code
@@ -894,6 +910,16 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         for filename in files:
             filepath = Path(root) / filename
 
+            _discovered_files += 1
+            _suffix = filepath.suffix.lower()
+            _is_code_source = _suffix in CODE_EXTENSIONS
+            _is_model_artifact = _suffix in MODEL_EXTENSIONS
+            is_test = _is_test_file(filepath)
+            if not _is_code_source and not _is_model_artifact:
+                _unsupported_files += 1
+            if _is_code_source and not (skip_tests and is_test):
+                _eligible_files += 1
+
             # Phase 5 threat model: reject symlink-escapes and oversized
             # files before any stat/read beyond this point. A scanned
             # repository is untrusted input (e.g. a third-party PR in CI).
@@ -902,7 +928,6 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 _record_skip(filepath, _unsafe_reason)
                 continue
 
-            is_test = _is_test_file(filepath)
             provenance = classify_provenance(filepath)
 
             # Skip test files entirely if requested
@@ -911,7 +936,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                 continue
 
             # Model files
-            if filepath.suffix.lower() in MODEL_EXTENSIONS:
+            if _is_model_artifact:
                 if min_tier_level <= 1:
                     finding = {
                         "file": str(filepath.relative_to(project)),
@@ -929,7 +954,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     findings.append(finding)
                 continue
 
-            if filepath.suffix not in CODE_EXTENSIONS:
+            if not _is_code_source:
                 continue
 
             # Skip type stub files — they declare interfaces with no
@@ -1419,6 +1444,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # instead of misreporting as len(unique files with findings).
     scan_files.last_stats = {
         "files_scanned": _scanned_files,
+        "discovered_files": _discovered_files,
+        "eligible_files": _eligible_files,
+        "unsupported_files": _unsupported_files,
         "skip_tests": skip_tests,
         "tests_skipped": _tests_skipped,
         "ai_files_no_indicators": _ai_files_no_indicators,

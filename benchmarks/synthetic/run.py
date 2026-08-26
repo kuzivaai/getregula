@@ -24,10 +24,9 @@ WHICH CONDITION THIS FILE MEASURES, AND WHY IT SAYS SO OUT LOUD
 This runner calls `report.scan_files` directly with all eight opt-in
 domains declared. That is the CLASSIFIER path with the domain gate
 satisfied, and it is NOT what a user gets from `regula check` with no
-flags. On this corpus the two disagree: high-risk recall is 16/30 here
-and 10/30 on the default scan, so a fraction printed with no condition
-beside it reads twenty percentage points better than the shipped
-default.
+flags. On this corpus the two disagree: high-risk label fidelity is 16/30
+here and currently 4/30 on the default scan. That reduction is the effect of
+the CLI's project/domain context gates, not a change to the fixture labels.
 
 `.github/workflows/benchmark.yml` runs this file and uploads its output,
 so that gap used to reach a reader as a bare number. Ledger N151.
@@ -55,7 +54,7 @@ RECALL_ARTEFACT = ROOT / "RECALL.json"
 # The condition THIS file measures. It is not the default a user gets, and
 # saying so beside every fraction is ledger N151's fix: the CI step that
 # runs this file uploaded a bare `recall=53%` while `regula check` with no
-# flags recalls 10/30 = 33% on the same corpus.
+# flags currently recalls 4/30 on the same corpus.
 THIS_CONDITION_ID = "classifier/domains-declared"
 THIS_CONDITION_LABEL = (
     "classifier path (report.scan_files called directly), all eight opt-in "

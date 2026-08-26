@@ -54,15 +54,15 @@ your lawyer's job, not Regula's.
 |---|---|
 | Contains rules intended to surface selected Article 5 prohibited-practice indicators | `regula classify --text "predictive policing system"`; this is one example, not a coverage proof |
 | Contains rules intended to surface selected Annex III and Annex I high-risk indicators | `regula classify --text "classify_resume function"`; intended purpose and deployment context remain unresolved |
-| Maps every finding to specific articles of the EU AI Act | `regula classify --text "credit scoring model" --format json` |
-| Maps every finding to ISO 42001, NIST AI RMF, NIST AI 600-1, NIST CSF 2.0, SOC 2 TSC, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, CRA, ICO/DSIT, LGPD, Marco Legal IA | `cat references/framework_crosswalk.yaml` |
+| Findings can carry selected EU AI Act references when a detector mapping exists; absence or presence is not an applicability decision | `regula classify --text "credit scoring model" --format json` |
+| Findings can carry selected references from the crosswalk; the crosswalk does not test control implementation, equivalence, conformity, or completeness | `cat references/framework_crosswalk.yaml` |
 | Generates Annex IV conformity evidence packs | `regula conform .` |
 | Generates Annex VIII registration packets | `regula register` |
 | Cross-file Article 14 human-oversight detection (Python) | `regula oversight` |
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,899 unique tests (2,899 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
+| 2,920 unique tests (2,920 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -84,14 +84,14 @@ your lawyer's job, not Regula's.
 > influence it. `tests/test_gap_demo.py` re-runs the commands and compares the
 > output with `data/gap_demo.json`.
 
-### 3.1 Internal test suite — 2,899 [unique](../tests/) / 2,899 pytest-collected cases
+### 3.1 Internal test suite — 2,920 [unique](../tests/) / 2,920 pytest-collected cases
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ --collect-only -q
-# Expected: 2899 collected. This command measures collection only.
-# 2,899 unique tests (sort -u of test IDs equals collected count).
+# Expected: 2920 collected. This command measures collection only.
+# 2,920 unique tests (sort -u of test IDs equals collected count).
 
 # Execute the full suite separately. Do not infer its result from collection.
 python3 -m pytest tests/ -q
@@ -99,7 +99,7 @@ python3 -m pytest tests/ -q
 
 Regula also ships a legacy auto-discovery runner for the classification
 suite — run `python3 tests/test_classification.py` for its current output.
-The runner currently discovers 1,268 functions, a count machine-checked by
+The runner currently discovers 1,289 functions, a count machine-checked by
 `tests/test_published_count_manifest.py`. **Read that line carefully:
 `1386 passed` is not a count of tests.** The runner's counter is incremented by
 the `assert_true` / `assert_eq` / `assert_false` helpers in `tests/helpers.py`,
@@ -164,32 +164,34 @@ is the human-authored fixture set in `benchmarks/synthetic/fixtures/`.
 > to sample categories that pass. Corrected here rather than left
 > unreproducible.
 >
-> **Gate conditions change this number more than anything else does.** The
-> 53% above is the **classifier** path (`report.scan_files`, what `run.py`
-> measures) with all eight opt-in domains declared. The **scanner** path
-> (`regula check`, what a user actually runs) with **no flags** gives
-> **10 of 30** on the same corpus, because opt-in domain suppression and an
-> AI-library-indicator requirement gate findings the classifier assigns.
+> **Gate conditions and runtime layer change the result materially.** The
+> 53% above is the `report.scan_files` path with all eight opt-in domains
+> declared. The **scanner** path (`regula check`, what a user actually runs)
+> with **no flags** currently gives **4 of 30** on the same corpus because
+> opt-in domain suppression and AI-indicator requirements gate raw matches.
+> The context-free core classifier used by the browser gives **18 of 30**; it
+> has no project policy, fingerprint or declared-domain context.
 >
 > Every figure below is reproducible from `benchmarks/synthetic/RECALL.json`,
 > which `scripts/build_recall_artefact.py` produces from an actual run:
-> **scanner path, default scan 10/30**; **scanner path, all domains declared
-> 16/30**; **scanner path, domains declared with an AI import injected
-> 23/30**; **classifier path, all domains declared 16/30**. Prohibited
-> recall is **5/5** on every one of them.
+> **core classifier, no context gates 18/30**; **scanner path, default scan
+> 4/30**; **scanner path, all domains declared 16/30**; **scanner path,
+> domains declared with an AI import injected 23/30**; **`report.scan_files`,
+> all domains declared 16/30**. Prohibited label fidelity is **5/5** on every
+> one of them.
 >
 > **No recall figure may be quoted without naming its path and its gate
 > condition** — `claim_auditor --verify-facts` now rejects one that is not.
 > The earlier "14/30 domain-declared" and "19/30 with both gates" figures
 > are WITHDRAWN as NOT REPRODUCIBLE: the conditions behind them were never
-> committed. Full decomposition, including the 17-vs-3
-> gates-vs-patterns split, is in
-> `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`.
+> committed. The current decomposition is in `docs/MODEL_CARD.md` and is
+> mechanically checked against the artefact.
 >
-> **Finding F8 (scanner and classifier disagree) is not supported by the
-> artefact.** Under the same gate condition the two paths miss the
-> identical 14 fixtures. The divergence previously recorded compared two
-> different gate conditions as well as two paths.
+> Core Python/JavaScript rule parity does not imply parity with the full CLI:
+> the CLI deliberately adds project discovery, policy, fingerprinting and
+> domain gates. The browser now tells users that it displays raw single-file
+> pattern candidates and may therefore surface candidates the default CLI
+> defers until domain context is declared.
 
 ### 3.5 Dated OSS precision records — limited and not current validation
 
@@ -410,7 +412,7 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,899 unique tests, 2,899 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,268 functions, 444 defined in-file) |
+| Test suite | `tests/` (2,920 unique tests, 2,920 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,289 functions, 444 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit integration source | `scripts/install.py` |
@@ -748,7 +750,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,899 unique tests (2,899 pytest-collected) |
+| Test suite | `tests/` | 2,920 unique tests (2,920 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |

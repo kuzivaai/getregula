@@ -76,7 +76,7 @@ def test_fact_state_contract_and_model_version_are_explicit():
         "yes", "no", "unknown", "not_applicable"
     }
     assert kernel.model["schema_version"] == "1.0"
-    assert kernel.model_version == "2026-08-19.1"
+    assert kernel.model_version == "2026-08-26.1"
 
 
 @pytest.mark.parametrize("jurisdiction", ["eu", "kr", "co"])
@@ -380,6 +380,57 @@ def test_korea_high_impact_indication_and_article_33_review():
     )
     assert all(item["applicable_from"] == "2026-01-22"
                for item in result["obligations"])
+
+
+def test_korea_article_32_requires_all_three_decree_criteria():
+    kernel = DecisionKernel()
+    facts = _resolved_map(kernel, "kr")
+    facts.update({
+        "jurisdiction_in_scope": _value("yes", "kr"),
+        "is_ai_system": _value("yes", "kr"),
+        "kr_ai_business_operator": _value("yes", "kr"),
+        "kr_provides_ai_product_or_service": _value("yes", "kr"),
+        "kr_training_compute_threshold_met": _value("yes", "kr"),
+    })
+    without_other_criteria = kernel.evaluate(_request(kernel, "kr", facts))
+    assert "kr_high_compute" not in {
+        item["predicate_id"] for item in without_other_criteria["indications"]
+    }
+
+    facts.update({
+        "kr_frontier_technology_configuration": _value("yes", "kr"),
+        "kr_widespread_significant_impact_risk": _value("yes", "kr"),
+    })
+    with_all_criteria = kernel.evaluate(_request(kernel, "kr", facts))
+    assert "kr_high_compute" in {
+        item["predicate_id"] for item in with_all_criteria["indications"]
+    }
+    assert {"kr_safety_32_1", "kr_submit_32_2"}.issubset(
+        _obligation_ids(with_all_criteria)
+    )
+
+
+@pytest.mark.parametrize("threshold_fact", [
+    "kr_total_revenue_at_least_1trn_krw",
+    "kr_ai_services_revenue_at_least_10bn_krw",
+    "kr_average_daily_domestic_users_at_least_1m",
+    "kr_article_43_1_3_administrative_fine",
+])
+def test_korea_domestic_agent_accepts_any_one_decree_threshold(threshold_fact):
+    kernel = DecisionKernel()
+    facts = _resolved_map(kernel, "kr")
+    facts.update({
+        "jurisdiction_in_scope": _value("yes", "kr"),
+        "is_ai_system": _value("yes", "kr"),
+        "kr_ai_business_operator": _value("yes", "kr"),
+        "kr_foreign_operator": _value("yes", "kr"),
+        threshold_fact: _value("yes", "kr"),
+    })
+    result = kernel.evaluate(_request(kernel, "kr", facts))
+    assert "kr_domestic_agent" in {
+        item["predicate_id"] for item in result["indications"]
+    }
+    assert "kr_agent_36" in _obligation_ids(result)
 
 
 def test_colorado_covered_admt_indication_and_future_applicability():

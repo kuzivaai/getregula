@@ -103,6 +103,11 @@ MODEL_EXTENSIONS = {
 # fingerprinting to fire. These produce 0% precision on random code
 # when matched by keyword alone. See benchmarks/results/random_corpus/.
 OPT_IN_CATEGORIES = {
+    # Biometric keywords are especially context-sensitive: TLS identity,
+    # anonymous speaker diarisation and face/image geometry are not remote
+    # biometric identification. Explicit declaration or a recognised
+    # biometric-library fingerprint activates the category.
+    "biometrics",
     "critical_infrastructure",
     "safety_components",
     "high_risk__worker_management",
@@ -113,6 +118,8 @@ OPT_IN_CATEGORIES = {
     # law_enforcement or explicit fingerprint to activate.
     "justice",
     "essential_services",
+    "high_risk__credit_scoring",
+    "high_risk__insurance",
     # The three categories below had 0 true positives in the dev corpus benchmark
     # and only produced false positives (employment: 4 FP, law_enforcement: 3 FP,
     # migration: 0 FP but noisy). They are gated behind domain declaration or

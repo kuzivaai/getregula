@@ -10,8 +10,8 @@ scope limits. That is useful for triage and for preparing a human review.
 Regula is **not yet validated as an accurate real-world regulatory-risk
 detector**, and it cannot validate compliance. The current evidence does not
 support calling it a compliance classifier, legal decision-maker, conformity
-assessment, or dependable clean/unsafe gate. Default high-risk detection found
-only 10 of 30 hand-authored synthetic fixtures. Available real-code labels were
+assessment, or dependable clean/unsafe gate. The final default CLI path found
+only 4 of 30 hand-authored high-risk synthetic fixtures. Available real-code labels were
 created by one maintainer, are Python-dominated, are not exhaustive enough to
 measure recall, and do not describe the current detector reliably. No
 independent representative user study establishes that people understand or
@@ -29,8 +29,8 @@ green test suite answers only part of them.
 
 ## Scope and appraisal method
 
-The audit covered the tracked checkout at commit `59fa3146` plus the changes
-listed below. It inspected the code, public claims, CI history, benchmark
+The final candidate was evaluated from parent commit `ba679fc1` plus the
+tracked changes listed below. It inspected the code, public claims, CI history, benchmark
 artefacts, CLI behaviour, browser assessment, responsive website, dependency
 environment and privacy guard. Research was refreshed on 26 August 2026.
 
@@ -75,16 +75,21 @@ negative fixtures. Fresh runs reproduced the committed artefact:
 
 | Runtime and gate condition | High-risk label fidelity | Prohibited label fidelity |
 |---|---:|---:|
-| Browser/default scanner, no domains | 10/30 (33.3%) | 5/5 |
+| Context-free Python/browser classifier, no project/domain gates | 18/30 (60.0%) | 5/5 |
+| CLI scanner, default scan, no flags | 4/30 (13.3%) | 5/5 |
 | Scanner with all domains declared | 16/30 (53.3%) | 5/5 |
 | Scanner with domains plus an injected AI import | 23/30 (76.7%) | 5/5 |
 | Python classifier with all domains declared | 16/30 (53.3%) | 5/5 |
 
 These are path-and-condition-specific label-fidelity measurements, not
-real-world recall. The three negatives remained negative. Domain and AI-import
-gating suppress many authored high-risk fixtures, and seven of the default
-misses were still not recovered under the most permissive measured scanner
-condition. This is material under-detection, not a wording problem.
+real-world recall. The three negatives remained negative. Core Python and
+browser JavaScript classification agree on all 38 fixtures, but the full CLI
+adds project policy, fingerprinting and opt-in domain gates. Consequently,
+same-file end-to-end labels differ: 12 of the CLI default misses are recovered
+by declaring all domains, seven more after injecting an AI import, and seven
+remain missed under the most permissive measured scanner condition. The 4/30
+default result is material under-detection in this authored corpus; the 18/30
+browser result is not evidence that the ungated browser is more accurate.
 
 ### Real-code development records
 
@@ -110,13 +115,13 @@ current product claim.
 
 ### Coverage and completion
 
-The optional analysis manifest correctly reports scanned and skipped counts
-and preserves unknown values as `null`. On the sampled repository scan it
-reported 139 scanned and zero skipped, but discovery, eligibility and
-unsupported-language denominators were unknown. “Zero skipped” therefore
-cannot be promoted to “complete coverage.” A defensible completeness claim
-needs discovered, eligible, scanned, unreadable, excluded, unsupported and
-pruned counts that reconcile to a declared population.
+The analysis manifest now reports discovered, eligible, scanned and
+unsupported counts, plus the normalised eligible suffix population. It retains
+the existing scanned/skipped evidence and explicit completion status. This
+closes the earlier defect where “zero skipped” could be misread as complete
+coverage despite unknown discovery and language denominators. Exclusions,
+unreadable inputs and pruning still need to remain explicit wherever those
+paths apply; a clean finding list is never a completeness statement.
 
 This principle appears in current open-source work such as
 [saasvista/aibom-scanner](https://github.com/saasvista/aibom-scanner): observed
@@ -124,6 +129,28 @@ and inferred inventory should be separate, unreadable/unsupported inputs must
 not look clean, and incomplete analysis needs a distinct status. The practice
 is useful; the repository's own claims are not independent validation of
 Regula.
+
+### Pinned external diagnostic corpus
+
+A frozen manifest now records 13 licence-declared public repositories at exact
+commits, 18 scan variants and 13 predeclared diagnostic assertions. Target code
+is fetched as untrusted data and is never imported, installed, built or run.
+Two isolated repetitions produced byte-stable result content for all 18
+variants. Of 36 repetitions, 26 completed fully and 10 completed with explicit
+skips.
+
+The unchanged manifest produced 6/13 passing assertions before error-led rule
+changes and 11/13 afterwards. The comparison exposed and supported fixes for a
+Go race-detector false escalation, broad identity/face/speaker vocabulary,
+cross-language agent command execution, and declared employment, finance and
+biometric context. The private-gpt transparency probe and education-declared
+proctoring probe still fail and were retained.
+
+The fraction is not precision, recall, legal validity or a product score. The
+assertions are heterogeneous hypotheses over a purposive sample and lack
+exhaustive independent labels. Exact method, projects, observed denominators
+and limitations are in
+[`EXTERNAL_DIAGNOSTIC_2026-08-26.md`](EXTERNAL_DIAGNOSTIC_2026-08-26.md).
 
 ## Research synthesis and decisions
 
@@ -217,9 +244,9 @@ strong match to task-completion and truthfulness requirements.
 
 ### Accessibility automation and manual follow-up
 
-Playwright 1.62.1 with axe-core 4.12.1 audited all 51 discovered canonical
-pages at both viewports: 102 runs, zero automatically detected violations and
-65 unresolved color-contrast reviews. Every unresolved result is retained as
+Playwright 1.62.1 with axe-core 4.12.1 audited all 54 discovered canonical
+pages at both viewports: 108 runs, zero automatically detected violations and
+71 unresolved color-contrast reviews containing 511 nodes. Every unresolved result is retained as
 incomplete, not counted as a pass. The audit runner now stores the rule, every
 target, relevant HTML and axe failure summary rather than discarding the
 evidence behind the count.
@@ -267,7 +294,7 @@ high-severity result.
 
 ## Public-repository and privacy audit
 
-`scripts/public_repo_guard.py` scanned 729 tracked files and reported zero
+`scripts/public_repo_guard.py` scanned 742 tracked files and reported zero
 findings. Targeted term searches found legitimate regulatory detection rules
 and synthetic regulatory fixtures, not private personal material. Deleting
 those rule fixtures merely because a word can also appear in personal context
@@ -299,24 +326,37 @@ replacement. Nothing was published by this audit.
 - Preserved complete axe incomplete-node evidence and fixed three contrast
   defects found during manual review.
 - Added this audit and the root performance report.
+- Added a pinned, licence-declared external diagnostic corpus with exact commits,
+  predeclared hypotheses, no target-code execution, isolated repetitions,
+  completion denominators and source/configuration/evaluator digests.
+- Corrected external-corpus failures without editing the frozen manifest and
+  added focused regressions for every adopted rule change.
+- Replaced Korea's opaque delegated-threshold facts with the three conjunctive
+  Enforcement Decree Article 24 criteria and four disjunctive Article 29
+  domestic-agent criteria, then regenerated and retested the CLI/browser model.
+- Published explicit capability levels, user archetypes, task journeys, failure
+  paths and task-first information architecture in all three website locales.
 
 ## Final verification evidence
 
 The completed post-change checks produced:
 
-- complete pytest under two-worker xdist: 2,861 passed, 38 skipped and 11
-  subtests passed in 157.68 seconds;
-- complete pytest in its default sequential order: identical result totals in
-  527.66 seconds;
+- final mandatory default-order pytest: 2,882 passed and 38 skipped across the
+  complete 2,920-test collection in 515.75 seconds;
 - alternate custom harness: 1,453 helper assertions passed, zero failed and 8
-  optional/local-tool skips across 1,268 discovered test functions;
-- built-in self-test and doctor: run as part of the required final gate;
-- public-repository guard: 729 tracked files and zero findings before the new
-  audit files, followed by a final post-change rescan;
+  optional/local-tool skips across 1,289 discovered test functions;
+- built-in self-test: 6/6 passed; doctor: 9 passed and 3 informational notices;
+- controlled speed experiment before the additional audit tests: the same
+  2,861 passes, 38 skips and 11 subtests took 157.68 seconds under two-worker
+  xdist versus 527.66 seconds in default sequential order;
+- pinned external diagnostic: 13 repositories, 18 variants, 36 repetitions,
+  18/18 byte-repeatable variants, 26 fully complete runs, 10
+  completed-with-skips runs, and 11/13 predeclared assertions observed;
+- public-repository guard: 742 tracked files and zero findings;
 - workflow YAML parse, JavaScript syntax, lock consistency, claim facts,
   quotations, transcripts, questionnaire scoring and source-of-truth checks;
-- final browser accessibility audit: 51 pages, two viewports, 102 runs, zero
-  automatically detected violations and 65 explicitly unresolved manual
+- final browser accessibility audit: 54 pages, two viewports, 108 runs, zero
+  automatically detected violations and 71 explicitly unresolved manual
   contrast reviews.
 
 The skip count is not presented as missing dependency coverage. The complete
@@ -328,23 +368,20 @@ previous optional-feature skips after the syntax-aware dependencies were added.
 
 1. **Independent detector study:** execute the preregistered multi-annotator
    protocol. Until then, keep accuracy claims frozen.
-2. **Complete analysis denominator:** add reconciling discovered/eligible/
-   scanned/excluded/unreadable/unsupported/pruned counts to manifests and user
-   output without changing the stable JSON envelope.
-3. **Error-led detector improvement:** improve high-risk default misses and
+2. **Error-led detector improvement:** improve high-risk default misses and
    TypeScript false-positive clusters one rule family at a time; compare on
    project-held-out data and publish regressions as well as gains.
-4. **Human comprehension study:** test primary scan and assessment tasks with
+3. **Human comprehension study:** test primary scan and assessment tasks with
    representative developers and governance reviewers; include clean,
    high-severity, unknown, incomplete and error states.
-5. **Assistive-technology matrix:** complete and record the manual WCAG work,
+4. **Assistive-technology matrix:** complete and record the manual WCAG work,
    including representative disabled-user testing.
-6. **Remote CI confirmation:** after the history/publication gate is cleared,
+5. **Remote CI confirmation:** after the history/publication gate is cleared,
    run the updated workflow and compare its critical path with the measured
    baseline. Do not infer the improvement from YAML alone.
-7. **Targeted mutation pilot:** use a small pure decision-critical module to
+6. **Targeted mutation pilot:** use a small pure decision-critical module to
    assess assertion efficacy, with full methodological disclosure.
-8. **Field performance:** collect privacy-preserving real-user Core Web Vitals
+7. **Field performance:** collect privacy-preserving real-user Core Web Vitals
    only if there is a lawful, transparent and sufficiently populated method;
    otherwise retain lab results as diagnostics.
 

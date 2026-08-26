@@ -45,7 +45,7 @@
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-04-25T00:00:00-03:00">
-    <meta property="article:modified_time" content="2026-08-14T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-08-26T00:00:00+00:00">
     <meta property="article:section" content="AI Governance">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -72,7 +72,7 @@
     "description": "PL 2338/2023 (Marco Legal da IA) is awaiting a rapporteur's report in the Chamber of Deputies Special Commission. LGPD already governs automated decisions via Article 20. Live reference covering legislative status, risk classification under the bill, ANPD enforcement priorities, and what developers should do now.",
     "image": "https://getregula.com/assets/og-image.png",
     "datePublished": "2026-04-25T00:00:00-03:00",
-    "dateModified": "2026-07-16T00:00:00-03:00",
+    "dateModified": "2026-08-26T00:00:00-03:00",
     "author": {
         "@type": "Organization",
         "name": "Regula",
@@ -167,7 +167,7 @@
             "name": "What is PL 2338/2023 (Marco Legal da IA)?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "PL 2338/2023, known as the Marco Legal da Intelig\u00eancia Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. The official Chamber status page, checked on 4 August 2026, records that the bill is awaiting the rapporteur's report in the Special Commission. It is not yet law."
+                "text": "PL 2338/2023, known as the Marco Legal da Intelig\u00eancia Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. The official Chamber status page, rechecked on 26 August 2026, records that the bill is awaiting the rapporteur's report in the Special Commission. It is not yet law."
             }
         },
         {
@@ -223,7 +223,7 @@
             "name": "Can Regula scan for LGPD and Marco Legal compliance?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. Regula's framework crosswalk includes both LGPD and Marco Legal da IA. The commands 'regula gap --framework lgpd' and 'regula gap --framework marco-legal-ia' map risk findings to the relevant articles of each framework. The command 'regula check --jurisdictions brazil' applies LGPD-mapped rules to your scan results."
+                "text": "No. Regula's framework crosswalk can link selected findings to LGPD and pending Marco Legal da IA references, and its gap commands produce reviewer-completable scaffolds. It does not implement a Brazil decision jurisdiction or determine Brazilian compliance."
             }
         }
     ]
@@ -251,16 +251,13 @@
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
         <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
-            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
-            <a href="/product.html">What it does</a>
-            <a href="/guides/">Guides</a>
+            <a href="/assess/">Assess scope</a>
+            <a href="/product.html">Scan code</a>
+            <a href="/coverage.html">Coverage</a>
+            <a href="/coverage.html#methods">Methods &amp; limits</a>
             <a href="/pricing.html">Pricing</a>
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-            <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
-            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
             <span class="active">🇧🇷 Brazil</span>
-            <a href="/about.html">About</a>
             <a href="/">EN</a>
             <a href="/locales/de.html">DE</a>
             <a href="/locales/pt-br.html">BR</a>
@@ -274,7 +271,7 @@
         <span class="status-badge "><span class="status-dot"></span>In committee &middot; Chamber of Deputies</span>
         <h1>Brazil AI Regulation &mdash; <span class="hl">LGPD &amp; Marco Legal da IA</span></h1>
         <p class="lede">Brazil's Marco Legal da Inteligencia Artificial (PL 2338/2023) passed the Senate on 10 December 2024 and is now in a Special Commission at the Chamber of Deputies. It is not yet law. In the meantime, the LGPD already applies to AI systems that process personal data, including automated decision-making under Article 20. This page is the live reference &mdash; what is in force, what is pending, and what developers building for the Brazilian market should do now.</p>
-        <p class="last-updated"><strong>Last reviewed:</strong> 14 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+        <p class="last-updated"><strong>Last reviewed:</strong> 26 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
 
 
 <div class="tracker">
@@ -319,7 +316,7 @@
             <h2>What is PL 2338/2023?</h2>
             <p>PL 2338/2023, known as the <strong>Marco Legal da Inteligencia Artificial</strong>, is a bill that would establish a comprehensive legal framework for the development and use of artificial intelligence in Brazil. It originated in the Senate, where it was approved by symbolic vote on 10 December 2024.</p>
 
-            <p>The bill was then sent to the Chamber of Deputies. On 4 April 2025, the Chamber created a Special Commission to analyse the text. The <a href="https://www.camara.leg.br/propostas-legislativas/2555663" target="_blank" rel="noopener">official Chamber status page</a>, checked on 4 August 2026, records that it is awaiting the rapporteur's report and lists 17 June 2026 as the latest legislative action. The Chamber may amend the text before voting; if it does, the bill returns to the Senate for conciliation.</p>
+            <p>The bill was then sent to the Chamber of Deputies. On 4 April 2025, the Chamber created a Special Commission to analyse the text. The <a href="https://www.camara.leg.br/propostas-legislativas/2555663" target="_blank" rel="noopener">official Chamber status page</a>, rechecked on 26 August 2026, records that it is awaiting the rapporteur's report and lists 17 June 2026 as the latest legislative action. The Chamber may amend the text before voting; if it does, the bill returns to the Senate for conciliation.</p>
 
             <p>The Senate-approved text phases entry into force, but the Chamber may modify the implementation timeline and penalties before enactment. <a href="https://www25.senado.leg.br/web/atividade/materias/-/materia/157233" target="_blank" rel="noopener">Senado Federal: bill text and procedural history</a>.</p>
 
@@ -397,15 +394,15 @@
 
         <section id="regula">
             <h2>How Regula helps</h2>
-            <p>Regula is an <strong>open-source compliance CLI</strong> that combines code scanning with governance questionnaires for AI risk assessment. Its framework crosswalk already includes both the LGPD and the Marco Legal da IA, so you can map risk findings to the relevant Brazilian articles today.</p>
+            <p>Regula is an <strong>open-source AI-governance evidence and source-code review CLI</strong>. Its framework crosswalk contains selected LGPD and PL 2338/2023 references. This is reference-level coverage: it does not decide Brazilian applicability, test compliance, or treat the pending bill as law.</p>
 
             <p>For a team building AI for the Brazilian market, the practically useful commands are:</p>
 
 <pre tabindex="0"><code><span class="term-comment"># Install</span>
 <span class="term-cmd">pipx install regula-ai</span>
 
-<span class="term-comment"># Scan for risk indicators with Brazil-specific mapping</span>
-<span class="term-cmd">regula check --jurisdictions brazil .</span>  <span class="term-comment"># Maps findings to LGPD articles</span>
+<span class="term-comment"># Scan for code indicators; inspect their selected crosswalk references</span>
+<span class="term-cmd">regula check .</span>
 
 <span class="term-comment"># Gap analysis against Brazilian frameworks</span>
 <span class="term-cmd">regula gap --framework lgpd</span>            <span class="term-comment"># LGPD article-by-article gap assessment</span>
@@ -423,7 +420,7 @@
 <span class="term-cmd">regula self-test</span>
 <span class="term-cmd">regula doctor</span></code></pre>
 
-            <p>The framework crosswalk covers all 7 EU AI Act obligation articles (Articles 9&ndash;15), each mapped to both LGPD and Marco Legal articles. This means you can use the same scan to understand your compliance posture across the EU AI Act, the LGPD, and the Marco Legal simultaneously.</p>
+            <p>The crosswalk links selected EU AI Act obligation areas to selected LGPD and pending PL 2338/2023 references. It is a navigation aid for a reviewer, not evidence that the obligations are equivalent or that a project satisfies any of them.</p>
 
             <p>Regula is open source, written in Python with <strong>zero production dependencies</strong>, and the entire detection ruleset is in the repository. Brazilian teams can fork it, add Brazil-specific patterns, and contribute them back.</p>
 
@@ -446,7 +443,7 @@
             <div class="faq">
                 <details>
                     <summary>What is PL 2338/2023 (Marco Legal da IA)?</summary>
-                    <p>PL 2338/2023, known as the Marco Legal da Inteligencia Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. It was sent to the Chamber of Deputies, where a Special Commission was created on 4 April 2025. The official Chamber status page, checked on 4 August 2026, records that the bill is awaiting the rapporteur's report. It is not yet law.</p>
+                    <p>PL 2338/2023, known as the Marco Legal da Inteligencia Artificial, is a bill that would establish a legal framework for AI in Brazil. The Senate approved it by symbolic vote on 10 December 2024. It was sent to the Chamber of Deputies, where a Special Commission was created on 4 April 2025. The official Chamber status page, rechecked on 26 August 2026, records that the bill is awaiting the rapporteur's report. It is not yet law.</p>
                 </details>
                 <details>
                     <summary>Does Brazil have an AI law?</summary>
@@ -470,7 +467,7 @@
                 </details>
                 <details>
                     <summary>Can Regula scan for LGPD and Marco Legal compliance?</summary>
-                    <p>Yes. Regula's framework crosswalk includes both LGPD and Marco Legal da IA. The commands <code>regula gap --framework lgpd</code> and <code>regula gap --framework marco-legal-ia</code> map risk findings to the relevant articles of each framework. The command <code>regula check --jurisdictions brazil</code> applies LGPD-mapped rules to your scan results.</p>
+                    <p>No. Regula can flag source-code indicators and its framework crosswalk can link selected findings to LGPD and pending PL 2338/2023 references. The <code>regula gap --framework lgpd</code> and <code>regula gap --framework marco-legal-ia</code> outputs are reviewer-completable crosswalk scaffolds, not Brazilian applicability or compliance decisions. Regula does not implement a <code>brazil</code> decision jurisdiction.</p>
                 </details>
                 <details>
                     <summary>How does the Marco Legal compare to the EU AI Act?</summary>
@@ -481,7 +478,7 @@
 
         <section id="honest-gaps">
             <h2>What we are tracking and what may change</h2>
-            <p>The Marco Legal is still in committee. The final text may differ significantly from the Senate-approved version. Here is what we are watching as of 4 August 2026:</p>
+            <p>The Marco Legal is still in committee. The final text may differ significantly from the Senate-approved version. Here is what we are watching as of 26 August 2026:</p>
             <div class="gaps-box">
                 <h3>To verify on enactment</h3>
                 <ol>

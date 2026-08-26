@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      :root { color-scheme: dark }
+      html, body { background: #070711; color: #e2e2f0; margin: 0; }
+    </style>
+    <meta name="theme-color" content="#070711">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+    <title>Abdeckung, Methoden und Grenzen | Regula</title>
+    <meta name="description" content="Was Regula als Entscheidungshilfe implementiert, was es nur zuordnet oder beobachtet, wie es getestet wird und welche Validierungsnachweise fehlen.">
+    <link rel="canonical" href="https://getregula.com/coverage-de.html">
+    <link rel="alternate" hreflang="en" href="https://getregula.com/coverage.html">
+    <link rel="alternate" hreflang="de" href="https://getregula.com/coverage-de.html">
+    <link rel="alternate" hreflang="pt-BR" href="https://getregula.com/coverage-pt-br.html">
+    <link rel="alternate" hreflang="x-default" href="https://getregula.com/coverage.html">
+    <link rel="stylesheet" href="/assets/fonts.min.css" media="print" onload="this.media='all';this.onload=null">
+    <link rel="stylesheet" href="/assets/site.min.css" media="print" onload="this.media='all';this.onload=null">
+    <noscript>
+        <link rel="stylesheet" href="/assets/fonts.min.css">
+        <link rel="stylesheet" href="/assets/site.min.css">
+    </noscript>
+    <style>
+        .coverage-main{max-width:1080px;margin:0 auto;padding:72px 32px 96px}.coverage-hero{max-width:800px;margin-bottom:56px}.eyebrow{color:var(--cyan);font:700 12px/1.4 var(--font-mono);letter-spacing:.08em;text-transform:uppercase}.coverage-hero h1{font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.04;margin:12px 0 20px}.coverage-hero p,.section-lead{color:var(--text-2);font-size:1.05rem;max-width:760px}.updated{color:var(--text-dim);font:12px/1.4 var(--font-mono);margin-top:20px}.coverage-section{margin-top:64px;scroll-margin-top:72px}.coverage-section h2{font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:12px}.card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}.coverage-card{border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.025);padding:24px}.coverage-card h3{font-size:1.2rem;margin:8px 0 12px}.coverage-card p,.coverage-card li{color:var(--text-2);font-size:.94rem}.coverage-card ul{padding-left:20px;margin-top:12px}.level{color:var(--cyan);font:700 11px/1.4 var(--font-mono);text-transform:uppercase;letter-spacing:.07em}.boundary{margin-top:28px;padding:18px 20px;border-left:3px solid var(--warn);background:rgba(245,158,11,.07);color:var(--text-2)}.journey{counter-reset:step;margin:28px 0 0;display:grid;gap:12px}.journey li{list-style:none;position:relative;padding:18px 20px 18px 58px;border:1px solid var(--border);border-radius:10px;color:var(--text-2)}.journey li::before{counter-increment:step;content:counter(step);position:absolute;left:18px;top:16px;width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:var(--action);color:#fff;font:700 12px/1 var(--font-mono)}.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}.links a{min-height:44px;display:inline-flex;align-items:center;padding:10px 14px;border:1px solid var(--border-strong);border-radius:8px;color:var(--text)}@media(max-width:800px){.coverage-main{padding:48px 20px 72px}.card-grid{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+    </style>
+</head>
+<body>
+<a href="#main" class="skip-link">Zum Inhalt springen</a>
+<nav class="nav scrolled" id="nav" aria-label="Hauptnavigation">
+    <a href="/" class="nav-brand">Regula</a>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menü" aria-expanded="false">&#9776;</button>
+    <dialog id="nav-menu" class="nav-right" aria-label="Seitennavigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
+        <a href="/assess/de.html">Geltungsbereich prüfen</a><a href="/product-de.html">Code prüfen</a><span class="active">Abdeckung</span><a href="#methods">Methoden &amp; Grenzen</a><a href="https://github.com/kuzivaai/getregula">GitHub</a><a href="/coverage.html" hreflang="en" lang="en">EN</a><span class="active" lang="de">DE</span><a href="/coverage-pt-br.html" hreflang="pt-BR" lang="pt-BR">BR</a>
+    </dialog>
+</nav>
+<main id="main" class="coverage-main">
+    <header class="coverage-hero"><div class="eyebrow">Fähigkeit statt Marketing</div><h1>Was Regula abdeckt – und was nicht</h1><p>„Abdeckung“ kann ausführbare Entscheidungslogik, eine Referenzzuordnung oder eine datierte regulatorische Zusammenfassung bedeuten. Das sind unterschiedliche Fähigkeiten. Diese Seite trennt sie, damit Sie den passenden Weg wählen und das Ergebnis korrekt einordnen.</p><div class="updated">Geprüft am 26. August 2026 · Fähigkeiten sind versionsabhängig</div></header>
+    <section class="coverage-section" aria-labelledby="levels-title"><h2 id="levels-title">Drei Abdeckungsstufen</h2><p class="section-lead">Eine höhere Stufe bescheinigt keine Rechtskonformität. Sie bedeutet, dass Regula mehr vom Prüfweg implementiert.</p><div class="card-grid">
+        <article class="coverage-card"><div class="level">Entscheidungshilfe implementiert</div><h3>EU · Südkorea · Colorado</h3><p>Ein versionierter Fragebogen und ein evidenzgebundenes Entscheidungsmodell werten von Ihnen erklärte Fakten aus. Detektortreffer bleiben Beobachtungen, nie Rechtsfakten.</p><ul><li>EU-KI-Verordnung</li><li>Südkoreanisches KI-Basisgesetz</li><li>Colorado SB 26-189</li></ul></article>
+        <article class="coverage-card"><div class="level">Ausgewählte Querverweise</div><h3>Navigation durch Rahmenwerke</h3><p>Treffer können auf ausgewählte Vorschriften oder Kontrollfamilien verweisen. Regula prüft weder Anwendbarkeit noch Umsetzung, Gleichwertigkeit oder Konformität.</p><ul><li>NIST- und ISO-Referenzen</li><li>OWASP, MITRE, SOC 2 und EU CRA</li><li>LGPD, brasilianischer Entwurf und britische Grundsätze</li></ul></article>
+        <article class="coverage-card"><div class="level">Datierter Regulierungstracker</div><h3>Recherche, keine Entscheidungslogik</h3><p>Regionalseiten unterscheiden geltendes Recht, Entwürfe, Politik, Leitlinien und Standards. Sie klassifizieren Ihren Einsatz nicht.</p><ul><li>Brasilien und Vereinigtes Königreich</li><li>Südafrika und VAE/GCC</li><li>Globale Vergleichsseiten</li></ul></article>
+    </div><div class="boundary"><strong>Keine Stufe bedeutet „rechtskonform“.</strong> Verwendungszweck, Einsatz, Betreiberrolle, reales Systemverhalten, Governance-Praxis und lokales Recht erfordern Nachweise außerhalb des Quellcodes und eine verantwortliche menschliche Prüfung.</div></section>
+    <section class="coverage-section" aria-labelledby="journey-title"><h2 id="journey-title">Der unterstützte Prüfweg</h2><p class="section-lead">Beginnen Sie mit der Aufgabe, bewahren Sie Unsicherheit und enden Sie mit einer menschlichen Entscheidung – nicht mit einem automatischen Abzeichen.</p><ol class="journey">
+        <li><strong>Umfang festlegen.</strong> Rechtsraum, Rolle, Verwendungszweck, Einsatz, Domäne und Quellbaum erfassen.</li><li><strong>Fakten erklären.</strong> Quelle, Person, Zeitpunkt sowie ja, nein, unbekannt oder nicht anwendbar festhalten.</li><li><strong>Lokal scannen.</strong> Gefundene, geeignete, geprüfte, übersprungene, nicht unterstützte und fehlgeschlagene Dateien prüfen.</li><li><strong>Beobachtungen prüfen.</strong> Grund jedes Treffers nachvollziehen und begründete Konfigurationen dokumentieren.</li><li><strong>Kontext klären.</strong> Blockierende Fakten beantworten; Widersprüche und Unbekanntes bleiben sichtbar.</li><li><strong>Nachweise vorbereiten.</strong> Erzeugte Dokumente sind von Prüfern zu vervollständigende Gerüste, kein Prüfungsurteil.</li><li><strong>Verantwortlich entscheiden.</strong> Eine qualifizierte Person bestätigt, verwirft oder fordert weitere Nachweise an.</li>
+    </ol></section>
+    <section class="coverage-section" id="methods" aria-labelledby="methods-title"><h2 id="methods-title">Methoden, Nachweise und offene Lücken</h2><p class="section-lead">Die Testsuite belegt technisches Verhalten. Sie belegt keine reale rechtliche oder detektorbezogene Validität.</p><div class="card-grid">
+        <article class="coverage-card"><div class="level">Reproduzierbarkeit</div><h3>Versionierte Konformitätstests</h3><p>Synthetische Fixtures, Mutationen des Entscheidungsmodells, Laufzeit-Parität und Ausgabe-Verträge sind versioniert und wiederholbar.</p></article>
+        <article class="coverage-card"><div class="level">Diagnostische Evaluation</div><h3>Fixierter Open-Source-Korpus</h3><p>Lizenzierte Repositories mit exakten Commits prüfen Vollständigkeit, Wiederholbarkeit und vorab festgelegte Erwartungen, ohne Zielcode auszuführen. Das ist keine Präzisions- oder Recall-Messung.</p><p><strong>Beobachtetes Korpusergebnis:</strong> 18/18 Varianten waren bytegenau wiederholbar; 11/13 vorab festgelegte diagnostische Aussagen trafen zu. Zwei beibehaltene Fehler und 10/36 Läufe mit dokumentierten Auslassungen bleiben sichtbar. Diese Anteile sind keine Genauigkeitsmetriken.</p></article>
+        <article class="coverage-card"><div class="level">Noch nicht nachgewiesen</div><h3>Unabhängige reale Validität</h3><p>Repräsentative Mehrfachannotation, qualifizierte Rechtsvalidierung, moderierte Usability-Forschung und kompetente Screenreader-Tests stehen aus.</p></article>
+    </div><div class="links"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/MODEL_CARD.md">Modellkarte</a><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Vertrauen und Reproduzierbarkeit</a><a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/external">Externer Korpus</a><a href="https://github.com/kuzivaai/getregula/blob/main/docs/EXTERNAL_DIAGNOSTIC_2026-08-26.md">Beobachtete Korpusergebnisse</a><a href="https://github.com/kuzivaai/getregula/blob/main/docs/accessibility/README.md">Barrierefreiheit</a><a href="/regions/regulations.html" hreflang="en" lang="en">Regulierungstracker <span class="sr-only">(Englisch)</span></a></div></section>
+</main>
+</body>
+</html>

@@ -45,7 +45,7 @@
     <meta property="og:locale" content="en_US">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-04-08T00:00:00+00:00">
-    <meta property="article:modified_time" content="2026-08-14T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-08-26T00:00:00+00:00">
     <meta property="article:section" content="AI Governance">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -64,7 +64,7 @@
     "description": "Live tracker of South Korea's AI Basic Act, in force since 22 January 2026: high-impact AI duties, the 10^26 FLOPs threshold, and watermarking rules.",
     "image": "https://getregula.com/assets/og-image.png",
     "datePublished": "2026-04-08T00:00:00+00:00",
-    "dateModified": "2026-08-14T00:00:00+00:00",
+    "dateModified": "2026-08-26T00:00:00+00:00",
     "author": {
         "@type": "Organization",
         "name": "Regula",
@@ -147,7 +147,7 @@
             "name": "Does the Korean AI Basic Act apply to foreign providers?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Yes. The statute has extraterritorial reach and applies to foreign providers whose AI systems affect users in the Republic of Korea. Foreign providers are likely to need a domestic representative under MSIT subordinate rules."
+                "text": "Yes. The statute has extraterritorial reach and applies to foreign providers whose AI systems affect users in the Republic of Korea. A domestic representative is conditional, however: Article 36 and Enforcement Decree Article 29 apply it only to foreign operators meeting a specified revenue, domestic-user, or administrative-fine threshold."
             }
         },
         {
@@ -199,16 +199,13 @@
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
         <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
-            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
-            <a href="/product.html">What it does</a>
-            <a href="/guides/">Guides</a>
+            <a href="/assess/">Assess scope</a>
+            <a href="/product.html">Scan code</a>
+            <a href="/coverage.html">Coverage</a>
+            <a href="/coverage.html#methods">Methods &amp; limits</a>
             <a href="/pricing.html">Pricing</a>
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-            <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
-            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
             <span class="active">🇰🇷 South Korea</span>
-            <a href="/about.html">About</a>
             <a href="/">EN</a>
             <a href="/locales/de.html">DE</a>
             <a href="/locales/pt-br.html">BR</a>
@@ -221,8 +218,8 @@
         </div>
         <span class="status-badge live"><span class="status-dot"></span>In force · effective 22 January 2026</span>
         <h1>South Korea — <span class="hl">AI Basic Act</span> tracker</h1>
-        <p class="lede">South Korea is the second major jurisdiction after the European Union to enact a horizontal AI statute. The <em>Act on the Development of Artificial Intelligence and Establishment of Trust</em> — commonly the AI Basic Act — took effect on <strong>22 January 2026</strong>, along with its Enforcement Decree. The Act is a framework statute: it defines categories (high-impact AI, high-performance AI, generative AI), imposes documentation and transparency obligations, and delegates technical detail to the Enforcement Decree and guidance from the Ministry of Science and ICT (MSIT). The decree and initial transparency guidance are in force; later amendments and revised guidance must be tracked separately. This page records the official position reviewed on 4 August 2026.</p>
-        <p class="last-updated"><strong>Last reviewed:</strong> 14 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+        <p class="lede">South Korea is the second major jurisdiction after the European Union to enact a horizontal AI statute. The <em>Act on the Development of Artificial Intelligence and Establishment of Trust</em> — commonly the AI Basic Act — took effect on <strong>22 January 2026</strong>, along with its Enforcement Decree. The Act is a framework statute: it defines categories (high-impact AI, high-performance AI, generative AI), imposes documentation and transparency obligations, and delegates technical detail to the Enforcement Decree and guidance from the Ministry of Science and ICT (MSIT). The decree and initial transparency guidance are in force; later amendments and revised guidance must be tracked separately. This page records the official position reviewed against the enacted Act, Enforcement Decree, and MSIT material on 26 August 2026.</p>
+        <p class="last-updated"><strong>Last reviewed:</strong> 26 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
 
         <div class="tracker">
             <h2>Live tracker</h2>
@@ -258,6 +255,10 @@
                 <div class="lbl">Extraterritorial reach</div>
                 <div class="val">Applies to foreign providers whose AI systems affect users in the Republic of Korea &nbsp;<span class="ok">VERIFIED</span></div>
             </div>
+            <div class="tracker-row">
+                <div class="lbl">Domestic representative</div>
+                <div class="val">Conditional for foreign operators meeting an Article 36 / Decree Article 29 threshold; not a rule for every foreign provider &nbsp;<span class="ok">VERIFIED</span></div>
+            </div>
         </div>
     </header>
 
@@ -270,7 +271,7 @@
 <p>The statute's core concepts:</p>
 <ul>
     <li><strong>AI system</strong> — a broad, EU-aligned definition covering machine-learning and logic-based systems that infer from inputs to generate outputs such as predictions, recommendations, or decisions.</li>
-    <li><strong>High-impact AI</strong> — a use-based risk category. AI systems deployed in healthcare, energy, public-sector contexts, identification, hiring, creditworthiness assessment, and other sensitive domains fall into this tier. Obligations include risk management, human oversight, and impact assessment.</li>
+    <li><strong>High-impact AI</strong> — a contextual, use-based category under Article 2(4), not an automatic label for every system used in a listed sector. Article 34 requires specified safety and reliability measures when the category applies. Article 35 separately says an operator should endeavour to assess effects on fundamental rights in advance; it is not drafted as an unconditional mandatory impact assessment.</li>
     <li><strong>High-performance AI</strong> — a compute-based category. MSIT has clarified that systems trained with a cumulative compute of at least <strong>10²⁶ FLOPs</strong> are designated high-performance AI with associated safety obligations. This threshold is notably different from the EU AI Act's Article 51 systemic-risk threshold of 10²⁵ FLOPs — a model can be a systemic-risk GPAI under the EU regime without being high-performance AI under the Korean regime, or vice versa, depending on the training run.</li>
     <li><strong>Generative AI</strong> — providers must clearly disclose to users that they are interacting with AI, and must apply watermarking or labelling to AI-generated content. The specific watermarking standard is delegated to MSIT subordinate regulation.</li>
     <li><strong>Extraterritoriality</strong> — the Act explicitly applies to foreign providers whose AI systems affect users in the Republic of Korea, similar in architecture to the EU AI Act's Article 2.</li>
@@ -282,18 +283,18 @@
             <h2>Obligations in force on 22 January 2026</h2>
 
 <p>The statute creates tiered obligations based on the category of the AI system. The summary below is based on the enacted text and the Enforcement Decree; details may shift as subordinate regulations are finalised.</p>
-<h3>All AI system providers</h3>
+<h3>Relevant AI business operators</h3>
 <ul>
-    <li>Register as an AI provider where required by MSIT.</li>
-    <li>Maintain a designated domestic representative for foreign providers serving Korean users.</li>
-    <li>Cooperate with MSIT requests for information during investigations.</li>
+    <li>Check the Act's territorial and operator scope, the role performed, and the category of the product or service. This page does not infer a universal provider-registration duty.</li>
+    <li>A foreign operator without a Korean domicile or place of business must designate and report a domestic representative only if an Article 36 and Enforcement Decree Article 29 threshold applies: prior-year total revenue of at least KRW 1 trillion; prior-year AI-service revenue of at least KRW 10 billion; an average of at least one million domestic users per day over the relevant prior three-month period; or the specified Article 43(1)(3) administrative-fine condition.</li>
+    <li>Follow applicable MSIT information, investigation, correction, and reporting requirements; the precise power and operator duty should be cited rather than described as a generic audit obligation.</li>
 </ul>
 <h3>High-impact AI providers</h3>
 <ul>
     <li>Establish and operate a risk management system across the AI lifecycle.</li>
     <li>Maintain documentation sufficient to demonstrate how the system works, how it is trained, and how it is monitored.</li>
     <li>Ensure meaningful human oversight of decisions that materially affect individuals.</li>
-    <li>Conduct impact assessments before deployment in high-impact domains, and on material change.</li>
+    <li>Under Article 35, endeavour to assess effects on fundamental rights in advance, reflecting characteristics of AI-vulnerable groups. State and public bodies must give preferential consideration to products or services that have undergone an impact assessment. This soft-duty wording is distinct from Article 34's required measures.</li>
     <li>Provide users and affected parties with clear information about the system's purpose, capabilities, and limitations.</li>
 </ul>
 <h3>High-performance AI providers (≥ 10²⁶ FLOPs)</h3>
@@ -318,7 +319,7 @@
     <li><strong>Estimate your training compute</strong> against the 10²⁶ FLOP threshold. Most production models today sit well below this. If you are building a frontier or near-frontier model, Regula's <code>regula inventory</code> command can annotate detected model references with their tier; add your own internal training-run metadata to confirm.</li>
     <li><strong>If you ship generative AI, audit your transparency path.</strong> MSIT's official transparency guidance distinguishes prior notice for high-impact or generative AI from labelling AI-generated content and permits specified visible or invisible methods depending on the content. Check the Act, decree, and current guideline rather than assuming one universal watermark format.</li>
     <li><strong>Document your risk management and human oversight.</strong> Regula's <code>regula gap</code> and <code>regula oversight</code> commands map cleanly onto the high-impact AI obligations. The outputs are not Korean-statute-specific, but the evidence is the same.</li>
-    <li><strong>Appoint a domestic representative</strong> if you are a foreign provider without a Korean legal entity. This is a common pattern in Korean tech regulation and is likely to be explicitly required under MSIT subordinate rules.</li>
+    <li><strong>Test the domestic-representative thresholds rather than assuming the duty.</strong> Article 36 applies to an operator without a Korean domicile or place of business only when at least one Enforcement Decree Article 29 threshold is met: KRW 1 trillion total revenue, KRW 10 billion AI-service revenue, the specified one-million-domestic-users measure, or the stated administrative-fine trigger.</li>
     <li><strong>Watch MSIT's official updates.</strong> The Act, decree, and initial guidelines are in force. MSIT has continued to amend the framework and refine guidance during the enforcement grace period.</li>
 </ol>
         </section>
@@ -381,7 +382,7 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
                 </details>
                 <details>
                     <summary>Does the Korean AI Basic Act apply to foreign providers?</summary>
-                    <p>Yes. The statute has extraterritorial reach and applies to foreign providers whose AI systems affect users in the Republic of Korea. Foreign providers are likely to need a domestic representative under MSIT subordinate rules.</p>
+                    <p>Yes. The statute has extraterritorial reach and applies to foreign providers whose AI systems affect users in the Republic of Korea. A domestic representative is conditional, however: Article 36 and Enforcement Decree Article 29 apply it only to foreign operators meeting a specified revenue, domestic-user, or administrative-fine threshold.</p>
                 </details>
                 <details>
                     <summary>Do generative AI providers need to watermark output in Korea?</summary>
@@ -401,6 +402,8 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
             <h2>Sources</h2>
             <div class="sources">
                 <ul>
+                    <li><strong><a href="https://elaw.klri.re.kr/eng_service/lawView.do?hseq=73499&lang=ENG" target="_blank" rel="noopener">Framework Act on the Development of Artificial Intelligence and the Creation of a Foundation for Trust — KLRI English statute database</a></strong> &mdash; Official English statute database text used for Articles 31–36, including the Article 35 endeavour wording and conditional Article 36 domestic-representative rule.</li>
+                    <li><strong><a href="https://elaw.klri.re.kr/eng_mobile/newLawViewer.do?hseq=73696&type=tot" target="_blank" rel="noopener">Enforcement Decree of the AI Framework Act — KLRI statute database</a></strong> &mdash; Official decree database entry used for Article 29's domestic-representative revenue, user, and administrative-fine thresholds.</li>
                     <li><strong><a href="https://www.msit.go.kr/eng/bbs/view.do?bbsSeqNo=42&mId=4&mPid=2&nttSeqNo=1214&sCode=eng" target="_blank" rel="noopener">AI Basic Act and Enforcement Decree enter into force — MSIT, 22 January 2026</a></strong> &mdash; Official ministry account of the effective date, decree, safety threshold, high-impact criteria, and enforcement grace period.</li>
                     <li><strong><a href="https://www.msit.go.kr/eng/bbs/view.do?bbsSeqNo=42&mId=4&mPid=2&nttSeqNo=1215&sCode=eng" target="_blank" rel="noopener">Guidelines on Ensuring AI Transparency — MSIT, 22 January 2026</a></strong> &mdash; Official ministry summary of Article 31 prior-notice and content-labelling guidance.</li>
                     <li><strong><a href="https://www.loc.gov/item/global-legal-monitor/2026-02-20/south-korea-comprehensive-ai-legal-framework-takes-effect" target="_blank" rel="noopener">South Korea: Comprehensive AI Legal Framework Takes Effect — Library of Congress Global Legal Monitor</a></strong> &mdash; Primary-adjacent official summary of the AI Basic Act and Enforcement Decree taking effect on 22 January 2026.</li>

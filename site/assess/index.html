@@ -44,7 +44,7 @@
       "@type": "WebApplication",
       "name": "Regula AI Regulation Assessment",
       "url": "https://getregula.com/assess/",
-      "description": "Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. Scan code against 419 detection patterns.",
+      "description": "Free AI regulation risk assessment. Check your obligations under the EU AI Act, South Korea AI Basic Act, or Colorado SB 26-189. Scan code against 423 detection patterns.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -375,14 +375,11 @@
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
-        <a href="/assess/" class="active">Assess</a>
-        <a href="/product.html">What it does</a>
-        <a href="/guides/">Guides</a>
-        <a href="/pricing.html">Pricing</a>
+        <span class="active">Assess scope</span>
+        <a href="/product.html">Scan code</a>
+        <a href="/coverage.html">Coverage</a>
+        <a href="/coverage.html#methods">Methods &amp; limits</a>
         <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-        <a href="/regions/regulations.html">Regulations</a>
-        <a href="/blog/writing.html">Blog</a>
-        <a href="/about.html">About</a>
         <span class="active">EN</span>
         <a href="/assess/de.html">DE</a>
         <a href="/assess/pt-br.html">BR</a>
@@ -412,7 +409,7 @@
     <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Start assessment</button>
     </div>
-    <div style="margin-top:16px;font-size:0.85rem;color:var(--text-dim);">Development teams can also <button type="button" onclick="startScanner()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">scan source code</button> against 419 detection patterns.</div>
+    <div style="margin-top:16px;font-size:0.85rem;color:var(--text-dim);">Development teams can also <button type="button" onclick="startScanner()" style="background:none;border:none;color:var(--accent);cursor:pointer;font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;">scan source code</button> against 423 detection patterns.</div>
   </div>
 
   <!-- QUESTIONNAIRE -->
@@ -596,10 +593,22 @@ const QUESTIONS_KR = [
     article: "Article 33",
   },
   {
-    id: "kr_high_performance",
-    text: "Does cumulative training computation meet the threshold prescribed by Presidential Decree for Article 32?",
-    help: "Article 32 delegates the threshold to Presidential Decree. Do not answer from an unverified threshold quoted by this tool.",
-    article: "Article 32",
+    id: "kr_training_compute",
+    text: "Was cumulative training computation at least 10²⁶ floating-point operations?",
+    help: "This is only the first of three criteria in Enforcement Decree Article 24(1). Compute alone does not trigger the Article 32 safety duty.",
+    article: "Decree Article 24(1)(1)",
+  },
+  {
+    id: "kr_frontier_technology",
+    text: "At the review date, is the system configured and operated using the most advanced AI technology among technologies currently used in AI systems?",
+    help: "This time-sensitive criterion is the second of three cumulative criteria. Record dated evidence rather than inferring it from model size or branding.",
+    article: "Decree Article 24(1)(2)",
+  },
+  {
+    id: "kr_widespread_impact",
+    text: "Is the system's risk likely to have a widespread and significant impact on human life, bodily safety, and fundamental rights?",
+    help: "This is the third cumulative criterion. All three Decree Article 24(1) criteria must be established for the Article 32 indication.",
+    article: "Decree Article 24(1)(3)",
   },
   {
     id: "kr_significant_impact",
@@ -632,10 +641,28 @@ const QUESTIONS_KR = [
     article: "Article 36"
   },
   {
-    id: "kr_agent_threshold",
-    text: "Does the operator meet the user, sales, or other threshold prescribed by Presidential Decree for a domestic agent?",
-    help: "Article 36 delegates the scale threshold to Presidential Decree.",
-    article: "Article 36"
+    id: "kr_total_revenue",
+    text: "Was the operator's total revenue in the previous year at least KRW 1 trillion?",
+    help: "For a corporation, use the previous fiscal year. Any one of the four Decree Article 29(1) criteria can satisfy the scale condition.",
+    article: "Decree Article 29(1)(1)"
+  },
+  {
+    id: "kr_ai_services_revenue",
+    text: "Was the operator's AI-services revenue in the previous year at least KRW 10 billion?",
+    help: "For a corporation, use the previous fiscal year. Foreign-currency revenue is converted using the previous year's average exchange rate under Article 29(2).",
+    article: "Decree Article 29(1)(2)"
+  },
+  {
+    id: "kr_domestic_users",
+    text: "Were the operator's AI products and services used by an average of at least 1 million domestic users per day over the three months immediately before the end of the previous year?",
+    help: "This is a distinct alternative to the two revenue criteria; do not substitute registrations or monthly users for the decree's measure.",
+    article: "Decree Article 29(1)(3)"
+  },
+  {
+    id: "kr_admin_fine",
+    text: "Has the operator been subject to the administrative fine specified in Act Article 43(1)(3)?",
+    help: "This enforcement-history criterion is the fourth alternative in the domestic-agent scale test.",
+    article: "Decree Article 29(1)(4)"
   },
   {
     id: "kr_explanation",
@@ -1056,7 +1083,8 @@ function renderScanResults(result) {
       <div class="tier-label">CODE SCAN RESULT</div>
       <div class="tier-name">${tierNames[c.detector_class] || c.detector_class}</div>
       <div class="tier-desc">${c.message}</div>
-      ${(c.detector_class === 'article_5_pattern' || c.detector_class === 'annex_iii_pattern') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">This is a <strong>pattern match, not a determination</strong> :  verify the flagged code actually implements the practice described. False positives are possible; this is not legal advice.</div>' : ''}
+      ${(c.detector_class === 'article_5_pattern' || c.detector_class === 'annex_iii_pattern') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">This is a <strong>pattern match, not a determination</strong>: verify the flagged code actually implements the practice described. False positives are possible; this is not legal advice.</div>' : ''}
+      <div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;"><strong>Why the CLI may differ:</strong> this browser checks one file without project policy, import fingerprinting or a declared <code>--domain</code>. It shows raw candidates; the CLI may defer opt-in domain findings until you provide that context.</div>
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
         Detector priority: ${c.detector_priority}/100 &middot; Language: ${result.language}
         ${c.indicators_matched.length ? ' &middot; Indicators: ' + c.indicators_matched.join(', ') : ''}

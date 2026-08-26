@@ -45,9 +45,9 @@ REGION = {
     "og_description": "South Africa's draft National AI Policy was gazetted on 10 April 2026, its withdrawal was announced on 26 April, approved by Cabinet on 5 June and gazetted on 12 June 2026. The draft is not current policy or law.",
     "twitter_title": "South Africa Draft AI Policy 2026 — Regula",
     "twitter_description": "Official publication and withdrawal records, plus a qualified summary of the existing South African legal baseline.",
-    "last_updated": "17 August 2026",
+    "last_updated": "26 August 2026",
     "published_time": "2026-04-07T00:00:00+02:00",
-    "modified_time": "2026-08-17T00:00:00+00:00",
+    "modified_time": "2026-08-26T00:00:00+00:00",
     "lede": "South Africa's draft National Artificial Intelligence Policy was published in <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf\">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy\">announced the withdrawal on 26 April 2026</a>, Cabinet <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.sanews.gov.za/node/81987\">approved it on 5 June 2026</a>, and <a style=\"text-decoration:underline;text-underline-offset:3px\" href=\"https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz\">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. The withdrawn draft is historical material, not current policy or law. Existing legislation may still apply within its own scope.",
     # Bespoke tracker (verbatim from the reviewed page) — used instead
     # of builder-rendered tracker_rows.
@@ -94,7 +94,7 @@ REGION = {
             "body": """\
             <p>The Draft National Artificial Intelligence Policy was published in <a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced the withdrawal on 26 April 2026</a>, Cabinet <a href="https://www.sanews.gov.za/node/81987">approved it on 5 June 2026</a>, and <a href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. The withdrawn draft is public historical material, not current policy or law.</p>
 
-            <p>The withdrawn text described the following policy direction:</p>
+            <p>The withdrawn text described the following policy direction. It is not a reliable authority for current policy: the government withdrew it after fictitious references and undisclosed generative-AI use undermined its evidential basis.</p>
 
             <ul>
                 <li><strong>A sector-specific, multi-regulator governance model.</strong> Rather than creating a single dedicated AI regulator, AI governance will be embedded within existing supervisory frameworks — the FSCA for financial services, the Information Regulator for data protection, the Council for Medical Schemes for health, ICASA for telecommunications, the Department of Higher Education and Training for education, and so on. Pragmatic, but creates a patchwork that is harder to navigate for smaller businesses operating across sectors.</li>
@@ -228,7 +228,7 @@ REGION = {
             "id": "honest-gaps",
             "heading": "What we are tracking and what we still need to verify",
             "body": """\
-            <p>The official records establish publication and withdrawal. The following questions remain unresolved as of 4 August 2026 and must not be answered from the withdrawn text:</p>
+            <p>The official records establish publication and withdrawal. The department subsequently appointed a seven-member expert review panel to authenticate sources and advise the redraft; that process does not make the withdrawn text current. The following questions remain unresolved as of 26 August 2026 and must not be answered from the withdrawn text:</p>
             <div class="gaps-box">
                 <h3>To verify if a replacement is officially published</h3>
                 <ol>

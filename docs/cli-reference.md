@@ -303,7 +303,13 @@ Checks: pinning quality (hash > exact > range > unpinned), lockfile presence, AI
 
 ### Cross-Framework Compliance Mapping
 
-Regula maps findings to 13 compliance frameworks internally: EU AI Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022, OWASP Top 10 for LLMs, OWASP Top 10 for Agentic Applications, MITRE ATLAS, LGPD (Brazil), Marco Legal da IA (Brazil), EU Cyber Resilience Act, and UK ICO AI Guidance. Framework mappings appear in check findings and gap assessments automatically.
+Regula has selected reference mappings for 13 framework identifiers: EU AI
+Act, NIST AI RMF 1.0, ISO 42001:2023, NIST CSF 2.0, SOC 2, ISO 27001:2022,
+OWASP Top 10 for LLMs, OWASP Top 10 for Agentic Applications, MITRE ATLAS,
+LGPD (Brazil), pending Marco Legal da IA (Brazil), EU Cyber Resilience Act,
+and UK ICO/DSIT guidance. Mappings can appear in check findings and gap
+scaffolds. They do not establish applicability, equivalence, implementation,
+or compliance.
 
 ### Development-corpus measurement utility
 
@@ -519,10 +525,14 @@ regula timeline                          # Display timeline
 regula timeline --format json            # Machine-readable
 ```
 
-### Runtime Monitoring (Article 12)
+### Opt-in runtime event logging (Article 12 evidence input)
 
-Runtime monitoring for AI applications, supporting Article 12 record-keeping
-obligations.
+`MonitorSession` and `Trace` are application instrumentation that a developer
+must integrate around model calls. They record selected metadata to local,
+self-attesting, hash-chained logs. The `regula monitor` CLI reports and
+verifies those supplied events; it does not passively observe a running system,
+validate event truth, monitor outputs for harm, or establish Article 12
+compliance.
 
 #### monitor status
 

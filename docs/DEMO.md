@@ -64,7 +64,7 @@ Measured: **0.3s**, exit 0, on 6 scanned files.
 
 ```
 Decision: insufficient_information
-Model: 2026-08-19.1
+Model: 2026-08-26.1
 Jurisdiction: eu
 Rule resolution: unresolved
 Facts needed to resolve the next decision: 2
@@ -111,7 +111,7 @@ regula check . --list-facts
 ```
 
 Measured: **0.1s**. Prints every fact id the running decision model defines, with
-its question. At model `2026-08-19.1` that is **73** ids across three
+its question. At model `2026-08-26.1` that is **78** ids across three
 jurisdictions.
 
 Two routes answer them. The questionnaire:

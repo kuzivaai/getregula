@@ -17,7 +17,7 @@ disagrees, so the artefact cannot be edited by hand and cannot drift.
 
 WHY EVERY FRACTION CARRIES A PATH AND A GATE CONDITION
 ------------------------------------------------------
-The same corpus yields different recall depending on which code path runs
+The same corpus yields different label fidelity depending on which code path runs
 and which gates are satisfied. Those are not rounding differences: the
 scanner path and the classifier path disagree on this corpus, which is
 finding F8. A recall number without both labels is not a measurement, it
@@ -143,6 +143,22 @@ def _run_classifier(domains: list[str]) -> dict[str, list[dict]]:
     return by_file
 
 
+def _run_core_classifier() -> dict[str, list[dict]]:
+    """The context-free classifier shared with the browser scanner.
+
+    This deliberately excludes project fingerprinting and domain gating.  It
+    measures raw pattern classification, not the default CLI experience.
+    ``tests/test_scanner_js.js`` independently pins JavaScript parity with
+    this Python path over every fixture.
+    """
+    from classify_risk import classify
+    by_file: dict[str, list[dict]] = defaultdict(list)
+    for path in sorted(FIXTURES.glob("*.py")):
+        result = classify(path.read_text(encoding="utf-8"), "python")
+        by_file[path.name].append({"file": path.name, "tier": result.tier.value})
+    return by_file
+
+
 def _fixtures_with_ai_import(dest: Path) -> Path:
     """A copy of the corpus with an AI-library import prepended to each
     fixture, so the AI-indicator gate is satisfied for every file."""
@@ -172,6 +188,17 @@ def _score(by_file: dict[str, list[dict]], expectations: dict) -> dict:
 
 
 CONDITIONS = [
+    {
+        "id": "core-classifier/default",
+        "path": "core-classifier",
+        "gates": "none",
+        "label": "context-free Python/JavaScript pattern classifier",
+        "invocation": "classify_risk.classify(<fixture text>, python)",
+        "note": ("Raw single-file pattern classification used by the browser "
+                 "scanner. It has no project fingerprint, policy or declared "
+                 "domain context and is not the default CLI path. JavaScript "
+                 "parity is verified separately by tests/test_scanner_js.js."),
+    },
     {
         "id": "scanner/default",
         "path": "scanner",
@@ -224,7 +251,9 @@ def build() -> dict:
 
     measured = {}
     for cond in CONDITIONS:
-        if cond["id"] == "scanner/default":
+        if cond["id"] == "core-classifier/default":
+            by_file = _run_core_classifier()
+        elif cond["id"] == "scanner/default":
             by_file = _run_cli(FIXTURES, None)
         elif cond["id"] == "scanner/domains-declared":
             by_file = _run_cli(FIXTURES, ALL_DOMAINS)
@@ -251,10 +280,10 @@ def build() -> dict:
             "A fixture is recalled when the HIGHEST tier detected in it "
             "equals the tier manifest.json expects."),
         "_publication_rule": (
-            "Every published recall fraction must state its path and gate "
-            "condition. A bare fraction is not a measurement: the same "
-            "corpus gives different answers per condition, and the scanner "
-            "and classifier paths disagree (finding F8)."),
+            "Every published synthetic label-fidelity fraction must state its "
+            "path and gate condition. A bare fraction is not a measurement: "
+            "the same corpus gives different answers when context gates or "
+            "runtime layers differ."),
         "_ai_import_injected": AI_IMPORT_LINE.strip(),
         "manifest_version": manifest.get("version"),
         "fixture_count": len(expectations),

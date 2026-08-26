@@ -135,13 +135,15 @@ hashes without needing Regula installed.
 regula evidence-pack . --bundle
 ```
 
-### `--runtime <system_id>` — include runtime monitoring data
+### `--runtime <system_id>` — include opt-in application event data
 
-Includes runtime monitoring logs for a registered system in the evidence
-pack as `08-runtime-monitor.json`. The logs come from `monitor.py`'s
-hash-chained JSONL storage and contain inference counts, error rates,
-human oversight rates, and safety events — Article 12 record-keeping
-evidence collected at runtime rather than at scan time.
+Includes developer-instrumented event logs for a registered system in the
+evidence pack as `08-runtime-monitor.json`. The logs come from
+`monitor.py`'s hash-chained JSONL storage and contain inference counts,
+error rates, human-oversight rates, and safety-event fields. This is
+self-attesting Article 12 evidence input collected by code the application
+owner chose to instrument, not independent runtime monitoring or proof that
+every relevant event was recorded.
 
 ```bash
 regula evidence-pack . --runtime my-system

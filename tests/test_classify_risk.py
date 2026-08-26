@@ -373,8 +373,9 @@ class TestCheckProhibited:
         assert result.tier == RiskTier.PROHIBITED
 
     def test_biometric_categorisation_sensitive(self):
-        # "race detection" but avoid concurrent/thread false positives
-        result = check_prohibited("race detection from photos")
+        # Sensitive categorisation needs an explicit biometric signal so a
+        # concurrency race detector cannot trigger this path.
+        result = check_prohibited("race detection from face photos")
         assert result is not None
         assert result.tier == RiskTier.PROHIBITED
 

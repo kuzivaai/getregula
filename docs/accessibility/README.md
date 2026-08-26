@@ -2,9 +2,9 @@
 
 **Target:** WCAG 2.2 Level AA<br>
 **Conformance status:** not claimed<br>
-**Last completed automated audit:** 26 August 2026, 51 canonical pages at
-desktop and mobile widths (102 runs), zero axe violations<br>
-**Incomplete automated checks:** 65 across 65 runs; these require manual review
+**Last completed automated audit:** 26 August 2026, 54 canonical pages at
+desktop and mobile widths (108 runs), zero axe violations<br>
+**Incomplete automated checks:** 71 across 71 runs; these require manual review
 and are not counted as passes<br>
 **Audit tools:** Playwright 1.62.1 and axe-core 4.12.1
 
@@ -13,8 +13,8 @@ breakpoint matters: horizontally scrolling content and collapsed navigation
 can create keyboard failures that do not exist at desktop width. Code blocks
 that may scroll are keyboard focusable without adding unnecessary landmarks.
 
-The current run returned **65 `incomplete` results across 65 runs**: all 51
-mobile runs and 14 desktop runs. Axe reports `incomplete` when it cannot decide
+The current run returned **71 `incomplete` results across 71 runs**: all 54
+mobile runs and 17 desktop runs. Axe reports `incomplete` when it cannot decide
 and a person must review the criterion. Those results are not passes, and
 automated checks reach only part of WCAG. Zero violations means zero violations
 of the rules this tool can evaluate; it is not a conformance claim.
@@ -71,10 +71,10 @@ approximations.
 
 ## Automated accessibility audit
 
-The audit completed on 26 August 2026 covered all 51 discovered canonical
-pages at 1400×900 and 390×844 (102 runs). It reported zero axe violations for
+The audit completed on 26 August 2026 covered all 54 discovered canonical
+pages at 1400×900 and 390×844 (108 runs). It reported zero axe violations for
 the `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, and `wcag22aa` tags. Axe also
-returned 65 incomplete checks across 65 runs. Those require human review and
+returned 71 incomplete checks across 71 runs. Those require human review and
 are not counted as passes.
 
 The audit runner now discovers every canonical HTML page under `site/` on each
@@ -170,7 +170,7 @@ still required.
 
 | Evidence | Current status | What it supports | What it cannot support |
 |---|---|---|---|
-| Axe audit, 26 August 2026 | 51 canonical pages × 2 viewports, zero detected violations; 65 incomplete checks on 65 runs; complete incomplete-node evidence retained | Current automated rules on the discovered canonical surface | Manual criteria or WCAG conformance |
+| Axe audit, 26 August 2026 | 54 canonical pages × 2 viewports, zero detected violations; 71 incomplete color-contrast checks on 71 runs; all 511 incomplete nodes retained | Current automated rules on the discovered canonical surface | Manual criteria or WCAG conformance |
 | Dynamic axe discovery | Implemented and exercised | Canonical-page selection and failing exit status | Manual criteria or user experience |
 | Limited keyboard browser review | Homepage menu/error/result and full assessment primary/unknown paths exercised at desktop and mobile widths | Operability, focus and visible state on those tested paths | Screen-reader experience, other paths or representative-user success |
 | Screen-reader review | Pending | Named assistive-technology behavior | All users and configurations |

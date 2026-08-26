@@ -2,7 +2,7 @@
   "_what_this_is": "The complete, authoritative list of files permitted to carry the published test count. Committed data, not prose. It exists because 'nine surfaces' was once inherited from a label whose own components summed to ten, and nobody checked — the same trusting-prose-over-measurement error that produced a false claim about verify_seo gating CI.",
   "_enforcement": "tests/test_published_count_manifest.py enumerates tracked files and fails on a count literal outside current carriers and exact centrally classified dated records. Broad path exclusions are forbidden; discovery, provenance, rename and content-hash failures fail closed.",
   "_canonical_source": "data/site_facts.json -> counts.tests.total_collected, produced by scripts/site_facts.count_tests() from `pytest --collect-only`. The number is generated, never hand-authored.",
-  "_updated": "2026-07-31",
+  "_updated": "2026-08-26",
   "published_surfaces": [
     "README.md",
     "SECURITY.md",
@@ -14,7 +14,8 @@
     "site/regions/uae.html",
     "site/locales/de.html",
     "site/locales/pt-br.html",
-    "docs/architecture.md"
+    "docs/architecture.md",
+    "PERF_REPORT.md"
   ],
   "non_surface_carriers": [
     {

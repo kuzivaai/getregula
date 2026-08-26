@@ -3,7 +3,7 @@
 
 ## What You'll Learn
 
-- Map findings to 10 compliance frameworks simultaneously
+- Navigate selected references across 13 framework identifiers
 - Understand the crosswalk between EU AI Act and other standards
 
 ## Supported Frameworks

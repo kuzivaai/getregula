@@ -1,10 +1,11 @@
-# Evidence review and engineering basis — 25 August 2026
+# Evidence review and engineering basis — 25–26 August 2026
 
 ## Scope and method
 
 This review asks how Regula can become more accurate, repeatable, scalable and
 useful without overstating what static code evidence can establish. Research
-was performed on 25 August 2026. Searches prioritised enacted law, regulator and
+was performed on 25 August 2026 and the repository/evaluation review was
+extended on 26 August 2026. Searches prioritised enacted law, regulator and
 standards-body material, peer-reviewed software-engineering and measurement
 research, then current official documentation and repository metadata for
 candidate tools. August 2026 preprints were included only as emerging evidence
@@ -25,6 +26,7 @@ unindexed source existed.
 | [Commission Article 50 guidelines](https://digital-strategy.ec.europa.eu/en/library/guidelines-transparency-obligations-providers-and-deployers-ai-systems) | Official Commission guidance, 20 July 2026 | Scope and practical interpretation of Article 50 transparency duties | Guidance is not legislation and does not replace case-specific legal analysis |
 | [Article 50 Code of Practice](https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content) | Final voluntary code, 10 June 2026 | Candidate practices for marking and labelling AI-generated content | Voluntary support instrument; not proof of conformity by itself |
 | [NIST TEVV-Athlon, NIST AI 200-2](https://doi.org/10.6028/NIST.AI.200-2.ipd) | Initial public draft, announced 7 August 2026; comments open to 6 October | Structured, adaptable, context-specific TEVV design | Draft, not a final standard and not validation of Regula |
+| [NIST AI Technology Evaluation](https://pages.nist.gov/ai-technology-evaluation/) | Official NIST programme launched July 2026 | Sequestered blind data, common tasks and metrics to reduce evaluation contamination | Its current tasks evaluate AI models, not source-code governance detectors; Regula adopts the separation principle, not an AITE result |
 | [NIST AI RMF Playbook — Measure](https://airc.nist.gov/airmf-resources/playbook/measure/) | Official voluntary guidance; living resource | Documented test sets and methods, independent assessors, representative users/data and disaggregated evaluation | Not a checklist or a product certification |
 | [PrimeVul](https://doi.org/10.1109/ICSE55347.2025.00038) | Peer-reviewed ICSE 2025 paper | Label quality, de-duplication, chronological splitting and realistic metrics; demonstrates severe benchmark inflation | Vulnerability detection is analogous, not identical, to regulatory-indicator detection |
 | [Top Score on the Wrong Exam](https://doi.org/10.1145/3728887) | Peer-reviewed ISSTA 2025 paper | Function-level binary labels often lack enough program context | Security-vulnerability construct; Regula needs its own construct-validity study |
@@ -40,6 +42,35 @@ unindexed source existed.
 | [CodeQL data flow](https://codeql.github.com/docs/writing-codeql-queries/about-data-flow-analysis/) | Current official docs; [MIT queries repository](https://github.com/github/codeql) active on 25 August | AST, control-flow and local/global data-flow modelling; explicit source/sink/barrier semantics | Database construction and global flow have language, build and resource costs; CLI licensing/distribution differs from the query repository |
 | [Joern code property graph](https://docs.joern.io/code-property-graph/) | Current official docs; [Apache-2.0 repository](https://github.com/joernio/joern) active on 25 August | Combining syntax, control and data-flow representations in a cross-language graph | JVM/tooling footprint conflicts with a small stdlib-only core; suitable for research baselines or an optional adapter |
 | [BenchProctor](https://github.com/TheAuditorTool/BenchProctor) | Apache-2.0 repository; 7 stars and active in July 2026 when observed | Candidate examples for SARIF-oriented benchmark orchestration | Very limited adoption and no peer-reviewed validity evidence found; do not inherit claims or scores uncritically |
+
+## Open-source and source-available repository review — 26 August
+
+Repository activity, stars, maintainers and self-descriptions are discovery
+signals only. They are not comparative accuracy evidence. Default branches can
+move, so every repository used as evaluation data is recorded at an exact
+commit in `benchmarks/external/manifest.v1.json`.
+
+| Project | What was examined | Decision for Regula |
+|---|---|---|
+| [Inspect AI](https://github.com/UKGovernmentBEIS/inspect_ai) and [Inspect Evals](https://github.com/UKGovernmentBEIS/inspect_evals) | Explicit task, dataset, solver/scorer and log separation; registered evaluation metadata | Use the separation and provenance concepts in Regula's evaluator. Do not add these non-stdlib Python packages to the core and do not treat model evaluation as detector validation. |
+| [garak](https://github.com/NVIDIA/garak) | Generator, probe, detector, harness and evaluator boundaries for dynamic model testing | Keep `regula handoff` as an explicit handoff to runtime red-team tools. Static source scanning must not claim to reproduce dynamic behaviour testing. |
+| [AI Verify](https://github.com/aiverify-foundation/aiverify) | Apache-2.0 plugin/test-engine architecture and evidence-oriented reporting | Treat as a workflow and interoperability reference. Do not copy its dependency-heavy application architecture into Regula's stdlib-only core. |
+| [VerifyWise](https://github.com/verifywise-ai/verifywise) | Inventory, risk, task, evidence and approval workflow information architecture | Useful product-workflow comparison only. The repository uses BSL 1.1 and is source-available rather than OSI open source; no code was imported and its claims are not validation evidence. |
+| [Tree-sitter](https://github.com/tree-sitter/tree-sitter), [Semgrep](https://github.com/semgrep/semgrep), [CodeQL queries](https://github.com/github/codeql), and [Joern](https://github.com/joernio/joern) | Syntax trees, rule schemas, explicit source/sink/barrier flow and code-property graphs | Use as separately reproducible baselines and query-design references. Any future adapter stays optional and must be evaluated per language/rule family before replacing a core path. |
+| [NIST AITE repository](https://github.com/usnistgov/ai-technology-evaluation) | Sequestered evaluation design and contamination control | A future independent Regula evaluation should keep hidden adjudication data outside the development repository. The public diagnostic corpus cannot provide that protection. |
+
+The diagnostic corpus itself deliberately mixes mature AI libraries and
+infrastructure with purposively selected application examples in employment,
+credit, proctoring, medical triage and biometric attendance. This breadth
+exposes obvious false positives, blind spots, language effects, scan
+completeness and runtime behaviour. It does **not** estimate prevalence,
+precision, recall, legal correctness or usefulness in a target population.
+
+Implemented safeguards are exact commit pins, recorded licences, predeclared
+expectations, no execution of target code, isolated caches, two clean
+repetitions, completion denominators, and digests for the evaluator, codebook,
+configuration, rules and scanner sources. Expectations are diagnostic
+hypotheses, not labels; observed failures are not removed from the manifest.
 
 ## Findings and decisions
 
