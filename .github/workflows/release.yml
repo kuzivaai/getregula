@@ -215,7 +215,7 @@ jobs:
       # Publish to PyPI using OIDC (no PYPI_API_TOKEN secret needed).
       # Trusted publishing must be configured on the PyPI project first.
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@ba38be9e461d3875417946c167d0b5f3d385a247 # v1.14.1
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
 
   # ──────────────────────────────────────────────────────────────────────────
   # verify — install the freshly published package from PyPI and run a
