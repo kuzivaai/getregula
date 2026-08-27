@@ -87,7 +87,7 @@ for one scope is not described as a clean bill of health for another.
 | Core dependency declaration | 2026-08-19 | No required third-party packages; this does not describe optional extras |
 | Semgrep | 2026-08-19 | Not re-run in this audit; no current zero-finding claim is made |
 | `regula self-test` | Release gate | Final branch result is recorded by CI before merge/release |
-| Custom regression suite | Collection manifest | 2,932 pytest-collected tests; collection count is not a pass result |
+| Custom regression suite | Collection manifest | 2,936 pytest-collected tests; collection count is not a pass result |
 | Release provenance | 2026-08-27 | No current public release artefact exists; provenance and registry-install gates therefore remain outstanding |
 | CodeQL static analysis | 2026-08-20 analysis; dispositions verified 2026-08-22 | Analysis `1646686319` at main commit `fe1f5e7` produced 41 results. All 41 were reviewed and individually dispositioned; the current main-branch CodeQL open count is 0. This is a reviewed static-analysis result, not proof of no vulnerabilities. |
 Source: reproducible commands and evidence are documented in [`docs/TRUST.md`](docs/TRUST.md); live workflow state is available in [GitHub Actions](https://github.com/kuzivaai/getregula/actions).
