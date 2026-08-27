@@ -156,3 +156,6 @@ vscode-extension/*.vsix
 # placeholders. Root-anchored so docs/MODEL_CARD.md stays tracked.
 /AI_GOVERNANCE.md
 /MODEL_CARD.md
+
+# Local Netlify folder
+.netlify
