@@ -670,15 +670,23 @@ def test_generator_commands_do_not_mutate_tracked_files(tmp_path):
     import pathlib
     repo = pathlib.Path(__file__).resolve().parents[1]
 
-    # Snapshot tracked-file state.
-    def porcelain():
+    # Snapshot tracked-file state. Parallel workers deliberately create
+    # short-lived untracked fixtures under the repository root, so including
+    # untracked paths here makes this assertion race with unrelated tests.
+    def tracked_porcelain():
         r = subprocess.run(
-            ["git", "status", "--porcelain"],
+            ["git", "status", "--porcelain", "--untracked-files=no"],
             cwd=str(repo), capture_output=True, text=True, timeout=15,
+            check=True,
         )
         return r.stdout
 
-    before = porcelain()
+    before = tracked_porcelain()
+
+    # Regression for the xdist race: another worker's repository-local,
+    # untracked fixture must not look like a tracked-file mutation.
+    with tempfile.TemporaryDirectory(dir=str(repo)):
+        assert tracked_porcelain() == before
 
     # regula docs — explicit tmp output.
     docs_out = tmp_path / "docs_out"
@@ -696,7 +704,7 @@ def test_generator_commands_do_not_mutate_tracked_files(tmp_path):
     )
     assert rc2 == 0, f"handoff failed: {err2[:200]}"
 
-    after = porcelain()
+    after = tracked_porcelain()
     assert after == before, (
         f"generator commands mutated tracked files in the repo tree.\n"
         f"before:\n{before}\n"
