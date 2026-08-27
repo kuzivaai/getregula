@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T12:07:40.433116+00:00",
+  "generated_at": "2026-08-27T21:17:49.797132+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2932,
-      "total_functions": 2881,
+      "total_collected": 2936,
+      "total_functions": 2885,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -107,6 +107,7 @@
         "tests/test_open_questions.py": 5,
         "tests/test_owasp_agentic.py": 24,
         "tests/test_packaged_data.py": 3,
+        "tests/test_pages_workflow.py": 4,
         "tests/test_pattern_sync.py": 2,
         "tests/test_policy_config.py": 5,
         "tests/test_precision_provenance.py": 7,
@@ -147,7 +148,7 @@
         "tests/test_telemetry.py": 18,
         "tests/test_tracked_inputs.py": 14
       },
-      "runner_functions": 1297
+      "runner_functions": 1301
     }
   },
   "notes": {

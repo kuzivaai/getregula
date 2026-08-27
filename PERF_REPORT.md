@@ -18,7 +18,7 @@ selection is explicitly excluded from required pull-request and release gates.
 
 - Host: Linux under WSL2, Python 3.12.3.
 - Test engine: pytest 9.1.1; parallel runner: pytest-xdist 3.8.0.
-- Population: 2,932 pytest-collected cases. Result totals include pytest's
+- Population: 2,936 pytest-collected cases. Result totals include pytest's
   subtest reporting and therefore should not be reverse-engineered into a
   second population count.
 - Commands were run from a clean checkout worktree with the same source tree.

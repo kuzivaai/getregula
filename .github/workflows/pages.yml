@@ -1,59 +1,78 @@
 name: Deploy to GitHub Pages
 
-# MANUAL ONLY since 2026-08-06. This workflow used to trigger on push to main
-# for `site/**`, and ci.yaml carries its OWN `deploy` job doing the same thing
-# on every push to main. Both create a GitHub Pages deployment for the same
-# commit, and both take the `pages` concurrency group with CONTRADICTORY
-# semantics: this file said `cancel-in-progress: false`, ci.yaml's job says
-# `true`.
+# This is the repository's only Pages deployer. Two concurrent deployers raced
+# on 6 August 2026, after which this workflow became manual-only and ci.yaml
+# remained the automatic writer. Commit 59fa3146 then removed the ci.yaml job
+# while Pages was deliberately unpublished, leaving no automatic deployer.
 #
-# MEASURED 2026-08-06: on the push of a82ce2d the two runs started one second
-# apart (13:10:08 and 13:10:09) and raced. Every Pages deployment afterwards
-# failed, first with `Timeout reached` while stuck in `deployment_queued` and
-# then with `Deployment request failed ... due to in progress deployment.
-# Please cancel a82ce2d... first`, for six attempts across two commits. The
-# cancel endpoint returned 204 and the deployment reported
-# `deployment_cancelled` while the create path still refused, which is the
-# shape of a backend left inconsistent by two writers.
-#
-# One automatic deployer only. ci.yaml's job is kept as the automatic one
-# because it is gated on `needs: test`, so a red suite cannot publish; this
-# workflow had no such gate. Retained here as workflow_dispatch so a manual
-# redeploy is still possible without re-adding the race.
+# Automatic deployments now start only after the complete CI workflow succeeds
+# for a push to main. The manual path is restricted to main by the build-job
+# condition and the github-pages environment branch policy. Both paths upload
+# the exact commit that passed the gate, then use the same pages concurrency
+# group with non-cancelling semantics.
 on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
+    name: Build verified Pages artifact
+    if: >-
+      (github.event_name == 'workflow_dispatch' &&
+       github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check out the verified main commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
-      - name: Setup Pages
-        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      - name: Verify checkout identity
+        env:
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Upload website artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: site
 
+  deploy:
+    name: Deploy verified artifact
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
         with:
-          # Same 1200000ms poll budget as ci.yaml's deploy job, and the same
-          # reason: measured on 2026-08-06 a deployment completed 82 seconds
-          # after the 600000ms default gave up. See the note in ci.yaml.
+          # A 20-minute poll budget is retained from the measured 6 August
+          # recovery. GitHub completed one deployment 82 seconds after the
+          # action's 10-minute default had reported a false failure.
           timeout: 1200000
