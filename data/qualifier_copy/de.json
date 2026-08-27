@@ -251,8 +251,8 @@
     "free": {
       "title": "Kostenlos weitermachen",
       "price": "Kostenlos, und bleibt kostenlos",
-      "body": "Arbeiten Sie die ausführlichere Bewertung im Browser durch. Sie deckt dasselbe Feld in den Begriffen des Rechtstextes ab und zeigt, woher jede Frage stammt. Kein Konto, und nichts, was Sie eingeben, wird hochgeladen. Wenn Sie mit einem Terminal vertraut sind, stehen dieselben Indikatoren auf Ihrem eigenen Rechner zur Verfügung, und der Scanner lädt Ihren Code nicht hoch.",
-      "cmd": "pipx install git+https://github.com/kuzivaai/getregula.git@main && regula check .",
+      "body": "Arbeiten Sie die ausführlichere Bewertung im Browser durch. Sie deckt dasselbe Feld in den Begriffen des Rechtstextes ab und zeigt, woher jede Frage stammt. Kein Konto, und nichts, was Sie eingeben, wird hochgeladen. Ersetzen Sie im Terminalbefehl unten COMMIT_SHA durch den vollständigen öffentlichen Commit-Hash, den Sie geprüft haben. Der Scanner läuft auf Ihrem eigenen Rechner und lädt Ihren Code nicht hoch.",
+      "cmd": "pipx install git+https://github.com/kuzivaai/getregula.git@COMMIT_SHA && regula check .",
       "cta": "Kostenlose Bewertung öffnen (auf Englisch)",
       "href": "/assess/",
       "short": "Kostenlos, im Browser oder im Terminal. Kein Konto, nichts wird hochgeladen."

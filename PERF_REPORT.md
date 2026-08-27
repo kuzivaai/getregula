@@ -18,7 +18,7 @@ selection is explicitly excluded from required pull-request and release gates.
 
 - Host: Linux under WSL2, Python 3.12.3.
 - Test engine: pytest 9.1.1; parallel runner: pytest-xdist 3.8.0.
-- Population: 2,922 pytest-collected cases. Result totals include pytest's
+- Population: 2,932 pytest-collected cases. Result totals include pytest's
   subtest reporting and therefore should not be reverse-engineered into a
   second population count.
 - Commands were run from a clean checkout worktree with the same source tree.
@@ -164,9 +164,12 @@ Software Engineering* (2026).
   mark it flaky or rerun it away.
 - Add an occasional random-order audit only after its failure triage and seed
   retention policy are defined.
-- Pilot mutation testing on a small, decision-critical pure module and publish
-  killed, survived, invalid and timeout counts. Do not report a mutation score
-  without operator set, exclusions and equivalent-mutant handling.
+- The decision-model mutation pilot was re-run on 27 August 2026. Its declared
+  operators invert each fact-state comparison and remove each
+  rule-to-obligation edge. It reconciled 136 mutants: 136 killed, 0 survived,
+  0 invalid and 0 timed out. Equivalent mutants were not assessed. This is
+  assertion-sensitivity evidence for those operators and that pure model only,
+  not detector validity or legal correctness.
 - Reprofile after material test-population or repository-size changes. Worker
   count is an empirical configuration, not a permanent constant.
 

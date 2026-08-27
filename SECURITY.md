@@ -83,11 +83,11 @@ for one scope is not described as a clean bill of health for another.
 | Check | Last verified | Result and scope |
 |---|---|---|
 | `bandit -c pyproject.toml -r scripts/` | 2026-08-27, current working tree | 0 findings across 44,228 lines; 16 specifically disabled findings remain visible in Bandit's metrics |
-| `pip-audit -r <locked-all-extras-export>` | 2026-08-19, all optional extras | 1 advisory in WeasyPrint 68.1 with no fixed release; four `cryptography` 46.0.7 advisories were removed by locking 50.0.0 |
+| `pip-audit -r <locked-all-extras-export>` | 2026-08-27, all optional extras | 1 advisory, `PYSEC-2026-3412`, in WeasyPrint 68.1 with no fixed release. Regula does not pass the affected `presentational_hints=True` option and retains an HTML fallback. No advisory is suppressed. Four earlier `cryptography` 46.0.7 advisories remain removed by locking 50.0.0. |
 | Core dependency declaration | 2026-08-19 | No required third-party packages; this does not describe optional extras |
 | Semgrep | 2026-08-19 | Not re-run in this audit; no current zero-finding claim is made |
 | `regula self-test` | Release gate | Final branch result is recorded by CI before merge/release |
-| Custom regression suite | Collection manifest | 2,922 pytest-collected tests; collection count is not a pass result |
+| Custom regression suite | Collection manifest | 2,932 pytest-collected tests; collection count is not a pass result |
 | Release provenance | 2026-08-27 | No current public release artefact exists; provenance and registry-install gates therefore remain outstanding |
 | CodeQL static analysis | 2026-08-20 analysis; dispositions verified 2026-08-22 | Analysis `1646686319` at main commit `fe1f5e7` produced 41 results. All 41 were reviewed and individually dispositioned; the current main-branch CodeQL open count is 0. This is a reviewed static-analysis result, not proof of no vulnerabilities. |
 Source: reproducible commands and evidence are documented in [`docs/TRUST.md`](docs/TRUST.md); live workflow state is available in [GitHub Actions](https://github.com/kuzivaai/getregula/actions).

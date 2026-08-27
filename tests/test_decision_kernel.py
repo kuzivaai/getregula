@@ -560,5 +560,12 @@ def test_every_predicate_and_obligation_edge_mutant_is_killed():
         summary["predicate_mutants"] + summary["obligation_edge_mutants"]
     )
     assert summary["reconciled"] is True
+    assert summary["operator_set"] == [
+        "invert each fact-state comparison",
+        "remove each rule-to-obligation edge",
+    ]
+    assert summary["invalid_mutants"] == 0
+    assert summary["timed_out_mutants"] == 0
+    assert summary["equivalent_mutants"] == "not_assessed"
     assert summary["surviving_mutants"] == 0, summary["itemisation"]
     assert summary["killed_mutants"] == summary["total_mutants"]

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "publication_allowed": false,
+  "reviewed_on": "2026-08-27",
+  "reason_code": "historical_pull_request_refs_pending_remediation",
+  "conditions": {
+    "durable_name_decision_recorded": false,
+    "fresh_reachable_privacy_audit_clear": false,
+    "historical_pull_request_refs_remediated": false,
+    "pypi_control_confirmed": false
+  }
+}

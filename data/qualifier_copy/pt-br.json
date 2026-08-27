@@ -251,8 +251,8 @@
     "free": {
       "title": "Continuar de graça",
       "price": "Gratuito, e continua gratuito",
-      "body": "Percorra a avaliação mais completa no navegador. Ela cobre o mesmo terreno nos termos da própria lei e mostra de onde vem cada pergunta. Sem conta, e nada do que você digitar é enviado. Se você tem familiaridade com um terminal, os mesmos indicadores estão disponíveis na sua própria máquina, e o scanner não envia o seu código.",
-      "cmd": "pipx install git+https://github.com/kuzivaai/getregula.git@main && regula check .",
+      "body": "Percorra a avaliação mais completa no navegador. Ela cobre o mesmo terreno nos termos da própria lei e mostra de onde vem cada pergunta. Sem conta, e nada do que você digitar é enviado. No comando de terminal abaixo, substitua COMMIT_SHA pelo hash público completo do commit que você avaliou. O scanner roda na sua própria máquina e não envia o seu código.",
+      "cmd": "pipx install git+https://github.com/kuzivaai/getregula.git@COMMIT_SHA && regula check .",
       "cta": "Abrir a avaliação gratuita (em inglês)",
       "href": "/assess/",
       "short": "Gratuito, no navegador ou no terminal. Sem conta, nada é enviado."

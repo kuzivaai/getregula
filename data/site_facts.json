@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T08:41:56.428484+00:00",
+  "generated_at": "2026-08-27T12:07:40.433116+00:00",
   "source_of_truth": {
     "commands": "scripts/cli*.py (grep '^def cmd_' across all topic modules)",
     "patterns": "scripts/risk_patterns.py + scripts/code_analysis.py + scripts/credential_check.py",
@@ -27,8 +27,8 @@
     "frameworks": 13,
     "languages": 8,
     "tests": {
-      "total_collected": 2922,
-      "total_functions": 2871,
+      "total_collected": 2932,
+      "total_functions": 2881,
       "per_file": {
         "tests/test_agent_governance.py": 28,
         "tests/test_ai_codegen.py": 32,
@@ -36,6 +36,7 @@
         "tests/test_analysis_manifest.py": 12,
         "tests/test_annotation_stats.py": 12,
         "tests/test_api_server.py": 80,
+        "tests/test_audit_reachable_privacy.py": 3,
         "tests/test_audit_scoping.py": 39,
         "tests/test_audit_surface_conformance.py": 11,
         "tests/test_bare_scan_decision.py": 1,
@@ -113,6 +114,7 @@
         "tests/test_public_claim_integrity.py": 18,
         "tests/test_public_repo_guard.py": 8,
         "tests/test_public_surface_inventory.py": 20,
+        "tests/test_publication_gate.py": 7,
         "tests/test_published_count_manifest.py": 30,
         "tests/test_qualifier.py": 19,
         "tests/test_recall_artefact.py": 15,
@@ -145,7 +147,7 @@
         "tests/test_telemetry.py": 18,
         "tests/test_tracked_inputs.py": 14
       },
-      "runner_functions": 1291
+      "runner_functions": 1297
     }
   },
   "notes": {

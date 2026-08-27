@@ -1,5 +1,27 @@
 # Pinned external-corpus diagnostic — 26 August 2026
 
+## Implementation rerun on 27 August 2026
+
+A fresh acquisition and scan of the unchanged frozen manifest produced the
+same aggregate result: 13 repositories, 18 variants, 36 isolated repetitions,
+18/18 byte-repeatable variants, 26 completed runs, 10
+`completed_with_skips` runs and 11/13 preregistered assertions. The same two
+probes failed: `private-gpt` produced no limited-risk indicator, and the
+education-declared `proctoring-ai` variant produced no high-risk indicator.
+Observed scan times ranged from 0.244 to 124.157 seconds on this host.
+
+The result was generated at `2026-08-27T12:24:31.491909+00:00`. Its manifest
+digest was
+`4f7f75f998c9edc679a31e60d36d51afee0465ad4d99c1140e50b1c90b9b3ac3`,
+its evaluator digest was
+`6e982483c4b45017006186821015b2d247dc8f48e545ed7a65ffbbbfab3427ad`,
+and its scanner/reference source digest was
+`ebafe0997f737c16e6ec6fa7b3a9a9c2e57b5575489af88b934b9aaec1af1e01`.
+The result correctly recorded a dirty tracked worktree, so the source digest,
+not the parent commit alone, identifies the candidate that ran. This rerun is
+repeatability and regression evidence. It is not accuracy, legal-validity or
+compliance evidence.
+
 ## Conclusion
 
 Regula produced byte-stable result content across two clean repetitions of all

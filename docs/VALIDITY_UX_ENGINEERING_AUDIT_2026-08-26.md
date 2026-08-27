@@ -246,13 +246,19 @@ strong match to task-completion and truthfulness requirements.
 
 Playwright 1.62.1 with axe-core 4.12.1 audited all 54 discovered canonical
 pages at both viewports: 108 runs, zero automatically detected violations and
-71 unresolved color-contrast reviews containing 511 nodes. Every unresolved result is retained as
+71 unresolved color-contrast reviews containing 516 nodes. Every unresolved result is retained as
 incomplete, not counted as a pass. The audit runner now stores the rule, every
 target, relevant HTML and axe failure summary rather than discarding the
 evidence behind the count.
 
 Manual calculation of shared translucent/gradient styles found three genuine
 AA contrast defects hidden inside the incomplete set:
+
+**Correction, re-derived 27 August 2026:** this paragraph originally said 511
+nodes. A fresh complete run over the same 54 canonical pages and two viewports
+enumerated 516 nodes across 71 incomplete results. Report SHA-256:
+`7a94a6d0698634fa848c3c421424d439fcb6629a309e5580c5e6be81aa8007b4`.
+The earlier 511 was a transcription error, not a different audit population.
 
 - 13px blue decision-tree numbers: 4.13:1; changed to 5.97:1;
 - the 11px pricing badge: white on blue at 3.68:1; changed to 5.17:1;
@@ -379,8 +385,11 @@ previous optional-feature skips after the syntax-aware dependencies were added.
 5. **Remote CI confirmation:** after the history/publication gate is cleared,
    run the updated workflow and compare its critical path with the measured
    baseline. Do not infer the improvement from YAML alone.
-6. **Targeted mutation pilot:** use a small pure decision-critical module to
-   assess assertion efficacy, with full methodological disclosure.
+6. **Targeted mutation pilot:** completed for the pure decision model on 27
+   August 2026. The two declared operators produced 136 reconciled mutants:
+   136 killed, 0 survived, 0 invalid and 0 timed out. Equivalent mutants were
+   not assessed. This scope does not establish detector validity or legal
+   correctness.
 7. **Field performance:** collect privacy-preserving real-user Core Web Vitals
    only if there is a lawful, transparent and sufficiently populated method;
    otherwise retain lab results as diagnostics.

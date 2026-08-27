@@ -7450,6 +7450,17 @@
       "reason": "README-reachable public documentation"
     },
     {
+      "stable_id": "repository_docs:5dce4cdcf2113ced",
+      "channel": "repository_docs",
+      "source": "docs/IMPLEMENTATION_PLAN_2026-08-27.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/IMPLEMENTATION_PLAN_2026-08-27.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
       "stable_id": "repository_docs:e8ba17051624754b",
       "channel": "repository_docs",
       "source": "docs/LICENSE.Detection.Rules.md",
@@ -7465,6 +7476,17 @@
       "channel": "repository_docs",
       "source": "docs/MODEL_CARD.md",
       "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/MODEL_CARD.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
+      "stable_id": "repository_docs:94ecc0c9ece03e72",
+      "channel": "repository_docs",
+      "source": "docs/OPEN_ITEMS_2026-08-27.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/OPEN_ITEMS_2026-08-27.md",
       "discovery_basis": "repository-relative Markdown link reachability from README.md",
       "content_kind": "repository-document",
       "claim_capable": true,
@@ -7751,6 +7773,17 @@
       "channel": "repository_docs",
       "source": "docs/installation.md",
       "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/installation.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
+      "stable_id": "repository_docs:42f472eb0c350290",
+      "channel": "repository_docs",
+      "source": "docs/operations/WEBSITE_RECOVERY_RUNBOOK.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/operations/WEBSITE_RECOVERY_RUNBOOK.md",
       "discovery_basis": "repository-relative Markdown link reachability from README.md",
       "content_kind": "repository-document",
       "claim_capable": true,
@@ -8886,11 +8919,11 @@
       "cli": 639,
       "mcp": 3,
       "package": 2,
-      "repository_docs": 43,
+      "repository_docs": 46,
       "website": 98
     },
     "classification": {
-      "active_product": 781,
+      "active_product": 784,
       "historical_record": 1,
       "non_claim_asset": 25
     }

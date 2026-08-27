@@ -61,6 +61,40 @@ jobs:
             exit 1
           fi
 
+      # A release tag is accepted only when GitHub verifies its signature and
+      # it identifies the exact current protected-main commit. A lightweight,
+      # stale or side-branch tag cannot reach the build or publisher.
+      - name: Assert verified annotated tag points at current main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG_OBJECT=$(git rev-parse "$GITHUB_REF")
+          if [ "$(git cat-file -t "$TAG_OBJECT")" != "tag" ]; then
+            echo "::error::Release tag must be an annotated signed tag."
+            exit 1
+          fi
+          TAG_COMMIT=$(git rev-parse "$GITHUB_REF^{commit}")
+          git fetch --no-tags origin main
+          MAIN_COMMIT=$(git rev-parse origin/main)
+          if [ "$TAG_COMMIT" != "$MAIN_COMMIT" ]; then
+            echo "::error::Release tag does not point at the current protected main commit."
+            exit 1
+          fi
+          VERIFIED=$(gh api \
+            "repos/$GITHUB_REPOSITORY/git/tags/$TAG_OBJECT" \
+            --jq '.verification.verified')
+          if [ "$VERIFIED" != "true" ]; then
+            echo "::error::GitHub did not verify the release-tag signature."
+            exit 1
+          fi
+
+      # This fail-closed record prevents an accidental tag push from reviving
+      # publication while historical-ref, naming or registry controls remain
+      # unresolved. Every condition changes through ordinary reviewed source.
+      - name: Publication status gate
+        run: python3 scripts/publication_gate.py
+
       # The bump must match the content: feat commits or an Added/
       # Deprecated changelog section require at least MINOR; BREAKING
       # or Removed require MAJOR. The 1.7.x line shipped features in

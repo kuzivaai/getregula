@@ -34,6 +34,7 @@ import test_site_facts as _test_site_facts  # noqa: F401
 import test_dpv_export as _test_dpv_export  # noqa: F401
 import test_hostile_sweep as _test_hostile_sweep  # noqa: F401
 import test_release_gate as _test_release_gate  # noqa: F401
+import test_publication_gate as _test_publication_gate  # noqa: F401
 import test_crosswalk_omnibus as _test_crosswalk_omnibus  # noqa: F401
 import test_tracked_inputs as _test_tracked_inputs  # noqa: F401
 import test_public_claim_integrity as _test_public_claim_integrity  # noqa: F401
@@ -58,6 +59,7 @@ import test_demo_doc as _test_demo_doc  # noqa: F401
 import test_qualifier as _test_qualifier  # noqa: F401
 import test_pattern_sync as _test_pattern_sync  # noqa: F401
 import test_public_repo_guard as _test_public_repo_guard  # noqa: F401
+import test_audit_reachable_privacy as _test_audit_reachable_privacy  # noqa: F401
 import test_distribution_privacy as _test_distribution_privacy  # noqa: F401
 import test_annotation_stats as _test_annotation_stats  # noqa: F401
 import test_evaluation_protocol as _test_evaluation_protocol  # noqa: F401
@@ -158,7 +160,7 @@ def _bind_runner_case(target, kwargs, case_id):
     return runner_case
 
 
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_hook_fail_open, _test_locale_link_language, _test_determination_guard, _test_svg_text, _test_claim_scan_coverage, _test_skipped_dir_disclosure, _test_installed_artefact, _test_fact_loop, _test_demo_doc, _test_qualifier, _test_pattern_sync, _test_public_repo_guard, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol, _test_external_corpus, _test_external_regressions):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_publication_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_hook_fail_open, _test_locale_link_language, _test_determination_guard, _test_svg_text, _test_claim_scan_coverage, _test_skipped_dir_disclosure, _test_installed_artefact, _test_fact_loop, _test_demo_doc, _test_qualifier, _test_pattern_sync, _test_public_repo_guard, _test_audit_reachable_privacy, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol, _test_external_corpus, _test_external_regressions):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -215,7 +217,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
                 continue
             _alias = f"{RUNNER_ALIAS_PREFIX}{_name}_{_case_index}"
             globals()[_alias] = _bind_runner_case(_fn, _kwargs, _case_index)
-del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_public_repo_guard, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol, _test_external_corpus, _test_external_regressions, _test_cli_integration
+del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_publication_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_public_repo_guard, _test_audit_reachable_privacy, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol, _test_external_corpus, _test_external_regressions, _test_cli_integration
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:

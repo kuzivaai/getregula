@@ -60,6 +60,9 @@ Background, context, and trade-offs.
 - [Trust](TRUST.md) — what's verified, reproducibility, security and privacy posture.
 - [Governance](../GOVERNANCE.md) — maintainership, access controls and bus-factor limits.
 - [Engineering roadmap](ENGINEERING_ROADMAP.md) — current technical priorities, evidence gates and known unknowns.
+- [Recovery and validity implementation plan](IMPLEMENTATION_PLAN_2026-08-27.md) — sequenced restoration, release, validity and UX work.
+- [Public engineering open-items register](OPEN_ITEMS_2026-08-27.md) — current completion conditions and evidence gaps.
+- [Owner-gated website recovery runbook](operations/WEBSITE_RECOVERY_RUNBOOK.md) — reversible DNS, TLS, smoke-test and rollback procedure.
 - [Evidence review and engineering basis](RESEARCH_BASIS_2026-08-25.md) — source appraisal and research-led implementation order as of 25 August 2026.
 - [Research quality evaluation](RESEARCH_EVALUATION_2026-08-26.md) — claim-by-claim source fitness, corrections, and limits as of 26 August 2026.
 - [Versioning and deprecation policy](VERSIONING.md) — what version numbers promise, the public API they cover, and the 1.9.0 realignment record.
