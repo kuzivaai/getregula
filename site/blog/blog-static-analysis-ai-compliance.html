@@ -107,7 +107,7 @@
                 "name": "Which AI Act compliance tools use code scanning versus questionnaires?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Code scanners include Regula (423 patterns, 8 languages, offline), AIR Blackbox (51 checks, Python-only, Apache 2.0), and Systima Comply (tree-sitter AST, TS/JS/Python). Questionnaire-based tools include the EU Commission ALTAI checker and EuroComply. Enterprise platforms like Credo AI and Holistic AI combine both approaches."
+                    "text": "Examples of code scanners include Regula, AIR Blackbox, and Systima Comply. Questionnaire-based approaches include the European Commission's ALTAI. Their observable scope differs by language, runtime path, rules, and required user declarations, so compare each project's documented method rather than treating feature counts as accuracy."
                 }
             },
             {
@@ -198,7 +198,7 @@
 
 <h2>Honest comparison: tools in this space</h2>
 
-<p>Code scanners include Regula (423 patterns, 8 languages, offline), AIR Blackbox (51 checks, Python-only, Apache 2.0), and Systima Comply (tree-sitter AST, TS/JS/Python). Questionnaire-based tools include the EU Commission ALTAI checker and EuroComply. Enterprise platforms like Credo AI and Holistic AI combine both approaches at enterprise pricing.</p>
+<p>Examples include <a href="https://github.com/kuzivaai/getregula/blob/main/data/site_facts.json">Regula</a> (423 tiered risk regexes, 8 detected source languages, offline), <a href="https://github.com/airblackbox/airblackbox">AIR Blackbox</a> (whose repository describes 51 checks and a local Python scanner), and <a href="https://github.com/systima-ai/comply">Systima Comply</a> (whose repository describes AST-assisted analysis for TypeScript/JavaScript and Python projects). Questionnaire-based approaches include the European Commission's <a href="https://digital-strategy.ec.europa.eu/en/library/assessment-list-trustworthy-artificial-intelligence-altai-self-assessment">ALTAI</a>. These are maintainers' published descriptions, not independently validated performance comparisons.</p>
 
 <table class="cmp-table" style="width:100%;border-collapse:collapse;margin:16px 0;font-size:0.95rem;">
 <thead>
@@ -213,20 +213,20 @@
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
     <td style="padding:8px;"><strong>Regula</strong></td>
     <td style="padding:8px;">Code scan (regex)</td>
-    <td style="padding:8px;">423 patterns, 8 languages, zero runtime dependencies, offline</td>
+    <td style="padding:8px;"><a href="https://github.com/kuzivaai/getregula/blob/main/data/site_facts.json">423 tiered risk regexes and 8 detected source languages</a>; zero runtime dependencies in the core; offline</td>
     <td style="padding:8px;">Regex-based &mdash; no semantic understanding. Deep coverage for Python; shallower for other languages. Cannot assess organisational compliance.</td>
 </tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
     <td style="padding:8px;"><strong>AIR Blackbox</strong></td>
     <td style="padding:8px;">Code scan (Python)</td>
-    <td style="padding:8px;">Checks across Articles 9&ndash;15, Apache 2.0 licence, and framework trust layers</td>
-    <td style="padding:8px;">Python-only. Narrower pattern set. Focused on high-risk obligations rather than full Act coverage.</td>
+    <td style="padding:8px;"><a href="https://github.com/airblackbox/airblackbox">Its repository describes 51 checks, an Apache 2.0 licence, and framework trust layers</a></td>
+    <td style="padding:8px;">Its public scanner is described for Python projects. This comparison has not independently validated its checks.</td>
 </tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
     <td style="padding:8px;"><strong>Systima Comply</strong></td>
     <td style="padding:8px;">Code scan (AST)</td>
-    <td style="padding:8px;">Tree-sitter AST analysis, 37+ frameworks, TS/JS/Python</td>
-    <td style="padding:8px;">Newer entrant. AST approach gives deeper understanding per file but limited language coverage.</td>
+    <td style="padding:8px;"><a href="https://github.com/systima-ai/comply">Its repository describes AST-assisted call-chain analysis and framework detection for TypeScript/JavaScript and Python projects</a></td>
+    <td style="padding:8px;">Its published scope is narrower by language than Regula's. This comparison has not independently validated its analysis.</td>
 </tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
     <td style="padding:8px;"><strong>EU Commission ALTAI checker</strong></td>

@@ -21,6 +21,16 @@ grace-period, KRW 30M fine ceiling, and 99-task action plan added
 - Generative AI providers have transparency and watermarking obligations.
 """
 
+KOREA_DECREE_URL = (
+    "https://elaw.klri.re.kr/eng_mobile/newLawViewer.do?"
+    "hseq=73696&key=%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5+%EB%B0%9C%EC%A0%84%EA%B3%BC+"
+    "%EC%8B%A0%EB%A2%B0+%EA%B8%B0%EB%B0%98+%EC%A1%B0%EC%84%B1+%EB%93%B1%EC%97%90+"
+    "%EA%B4%80%ED%95%9C+%EA%B8%B0%EB%B3%B8%EB%B2%95+%EC%8B%9C%ED%96%89%EB%A0%B9"
+    "&pCode=&pName=&type=tot"
+)
+KOREA_DECREE_HREF = KOREA_DECREE_URL.replace("&", "&amp;")
+
+
 REGION = {
     "slug": "south-korea-ai-regulation",
     "flag": "🇰🇷",
@@ -144,12 +154,12 @@ REGION = {
         {
             "id": "obligations",
             "heading": "Obligations in force on 22 January 2026",
-            "body": """
+            "body": f"""
 <p>The statute creates tiered obligations based on the category of the AI system. The summary below is based on the enacted text and the Enforcement Decree; details may shift as subordinate regulations are finalised.</p>
 <h3>Relevant AI business operators</h3>
 <ul>
     <li>Check the Act's territorial and operator scope, the role performed, and the category of the product or service. This page does not infer a universal provider-registration duty.</li>
-    <li>A foreign operator without a Korean domicile or place of business must designate and report a domestic representative only if an Article 36 and Enforcement Decree Article 29 threshold applies: prior-year total revenue of at least KRW 1 trillion; prior-year AI-service revenue of at least KRW 10 billion; an average of at least one million domestic users per day over the relevant prior three-month period; or the specified Article 43(1)(3) administrative-fine condition.</li>
+    <li>A foreign operator without a Korean domicile or place of business must designate and report a domestic representative only if an Article 36 and <a href="{KOREA_DECREE_HREF}" target="_blank" rel="noopener">Enforcement Decree Article 29</a> threshold applies: prior-year total revenue of at least KRW 1 trillion; prior-year AI-service revenue of at least KRW 10 billion; an average of at least one million domestic users per day over the relevant prior three-month period; or the specified Article 43(1)(3) administrative-fine condition.</li>
     <li>Follow applicable MSIT information, investigation, correction, and reporting requirements; the precise power and operator duty should be cited rather than described as a generic audit obligation.</li>
 </ul>
 <h3>High-impact AI providers</h3>
@@ -176,14 +186,14 @@ REGION = {
         {
             "id": "what-to-do-today",
             "heading": "What Korean operators and foreign providers should do today",
-            "body": """
+            "body": f"""
 <p>The statute and Enforcement Decree are in force, and MSIT released initial guidelines on 22 January 2026. The practical sequence:</p>
 <ol>
     <li><strong>Determine whether you are a high-impact AI provider</strong> by reviewing your deployment domains against the statute's list: healthcare, energy, public-sector use, identification, hiring, creditworthiness assessment, and related sensitive sectors. Extraterritorial reach means foreign providers serving Korean users are in scope.</li>
     <li><strong>Estimate your training compute</strong> against the 10\u00b2\u2076 FLOP threshold. Most production models today sit well below this. If you are building a frontier or near-frontier model, Regula's <code>regula inventory</code> command can annotate detected model references with their tier; add your own internal training-run metadata to confirm.</li>
     <li><strong>If you ship generative AI, audit your transparency path.</strong> MSIT's official transparency guidance distinguishes prior notice for high-impact or generative AI from labelling AI-generated content and permits specified visible or invisible methods depending on the content. Check the Act, decree, and current guideline rather than assuming one universal watermark format.</li>
     <li><strong>Document your risk management and human oversight.</strong> Regula's <code>regula gap</code> and <code>regula oversight</code> commands map cleanly onto the high-impact AI obligations. The outputs are not Korean-statute-specific, but the evidence is the same.</li>
-    <li><strong>Test the domestic-representative thresholds rather than assuming the duty.</strong> Article 36 applies to an operator without a Korean domicile or place of business only when at least one Enforcement Decree Article 29 threshold is met: KRW 1 trillion total revenue, KRW 10 billion AI-service revenue, the specified one-million-domestic-users measure, or the stated administrative-fine trigger.</li>
+    <li><strong>Test the domestic-representative thresholds rather than assuming the duty.</strong> Article 36 applies to an operator without a Korean domicile or place of business only when at least one <a href="{KOREA_DECREE_HREF}" target="_blank" rel="noopener">Enforcement Decree Article 29</a> threshold is met: KRW 1 trillion total revenue, KRW 10 billion AI-service revenue, the specified one-million-domestic-users measure, or the stated administrative-fine trigger.</li>
     <li><strong>Watch MSIT's official updates.</strong> The Act, decree, and initial guidelines are in force. MSIT has continued to amend the framework and refine guidance during the enforcement grace period.</li>
 </ol>
 """,
@@ -307,7 +317,7 @@ regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7)
         {
             "title": "Enforcement Decree of the AI Framework Act — KLRI statute database",
             "note": "Official decree database entry used for Article 29's domestic-representative revenue, user, and administrative-fine thresholds.",
-            "url": "https://elaw.klri.re.kr/eng_mobile/newLawViewer.do?hseq=73696&type=tot",
+            "url": KOREA_DECREE_URL,
         },
         {
             "title": "AI Basic Act and Enforcement Decree enter into force — MSIT, 22 January 2026",
