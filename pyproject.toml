@@ -82,7 +82,7 @@ signing = ["cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
 all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
 
 [project.urls]
-Homepage = "https://getregula.com"
+Homepage = "https://github.com/kuzivaai/getregula"
 Repository = "https://github.com/kuzivaai/getregula"
 Issues = "https://github.com/kuzivaai/getregula/issues"
 Documentation = "https://github.com/kuzivaai/getregula/blob/main/README.md"

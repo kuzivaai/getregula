@@ -2,7 +2,7 @@
 
 **Target:** WCAG 2.2 Level AA<br>
 **Conformance status:** not claimed<br>
-**Last completed automated audit:** 26 August 2026, 54 canonical pages at
+**Last completed automated audit:** 27 August 2026, 54 canonical pages at
 desktop and mobile widths (108 runs), zero axe violations<br>
 **Incomplete automated checks:** 71 across 71 runs; these require manual review
 and are not counted as passes<br>
@@ -71,7 +71,7 @@ approximations.
 
 ## Automated accessibility audit
 
-The audit completed on 26 August 2026 covered all 54 discovered canonical
+The audit completed on 27 August 2026 covered all 54 discovered canonical
 pages at 1400×900 and 390×844 (108 runs). It reported zero axe violations for
 the `wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`, and `wcag22aa` tags. Axe also
 returned 71 incomplete checks across 71 runs. Those require human review and
@@ -170,7 +170,7 @@ still required.
 
 | Evidence | Current status | What it supports | What it cannot support |
 |---|---|---|---|
-| Axe audit, 26 August 2026 | 54 canonical pages × 2 viewports, zero detected violations; 71 incomplete color-contrast checks on 71 runs; all 511 incomplete nodes retained | Current automated rules on the discovered canonical surface | Manual criteria or WCAG conformance |
+| Axe audit, 27 August 2026 | 54 canonical pages × 2 viewports, zero detected violations; 71 incomplete color-contrast checks on 71 runs; all 516 incomplete nodes retained | Current automated rules on the discovered canonical surface | Manual criteria or WCAG conformance |
 | Dynamic axe discovery | Implemented and exercised | Canonical-page selection and failing exit status | Manual criteria or user experience |
 | Limited keyboard browser review | Homepage menu/error/result and full assessment primary/unknown paths exercised at desktop and mobile widths | Operability, focus and visible state on those tested paths | Screen-reader experience, other paths or representative-user success |
 | Screen-reader review | Pending | Named assistive-technology behavior | All users and configurations |

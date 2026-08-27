@@ -516,7 +516,7 @@
                 <a href="/assess/">Assess</a>
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                 <a href="/blog/writing.html" hreflang="en">Blog</a>
                 <a href="/regions/regulations.html" hreflang="en">Regulations</a>
                 <a href="/about.html" hreflang="en">About</a>
@@ -1136,7 +1136,7 @@ function getScanNextSteps(tier) {
       { title: "Rechtsberatung einholen", desc: "Artikel-5-Verbote unterliegen den h\u00f6chsten Strafen. Ein qualifizierter Anwalt muss beurteilen, ob Ihr System in den Anwendungsbereich f\u00e4llt oder f\u00fcr eine enge Ausnahme in Frage kommt." },
       { title: "Die erkannten Muster \u00fcberpr\u00fcfen", desc: "Einige Treffer k\u00f6nnen falsch-positiv sein. Die obigen Muster zeigen, was dieses Scanner-Ergebnis ausgel\u00f6st hat. Pr\u00fcfen Sie, ob der markierte Code die beschriebene Praktik umsetzt." },
       { title: "Mit Ihrem Team teilen", desc: "Exportieren Sie diesen Scan als JSON oder drucken Sie ihn als PDF. Ihre Compliance- und Rechtsteams m\u00fcssen diese Ergebnisse pr\u00fcfen." },
-      { title: "F\u00fcr tiefere Analyse", desc: "Ihr Entwicklungsteam kann die Regula-CLI f\u00fcr dateiweise Analyse ausf\u00fchren: <code>pipx install regula-ai</code>, dann <code>regula check .</code>" },
+      { title: "F\u00fcr tiefere Analyse", desc: "Ihr Entwicklungsteam kann die Regula-CLI f\u00fcr dateiweise Analyse ausf\u00fchren: <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, dann <code>regula check .</code>" },
     ];
   }
   if (tier === "annex_iii_pattern") {
@@ -1144,14 +1144,14 @@ function getScanNextSteps(tier) {
       { title: "Die obigen Befunde \u00fcberpr\u00fcfen", desc: "Pr\u00fcfen Sie, ob die erkannten Indikatoren den Zweck Ihres Systems korrekt beschreiben. Musterbasierte Einstufung erfordert eine menschliche \u00dcberpr\u00fcfung zur Kontextbest\u00e4tigung." },
       { title: "Auch den Fragebogen beantworten", desc: "Der Fragebogen bewertet den Einsatzkontext, den Code-Scanning nicht erkennen kann. Beides zusammen liefert breitere Nachweise, erfordert aber weiterhin eine fachliche technische und rechtliche Pr\u00fcfung." },
       { title: "Mit den gr\u00f6\u00dften L\u00fccken beginnen", desc: "Technische Dokumentation (Artikel 11) und Daten-Governance (Artikel 10) sind typischerweise die gr\u00f6\u00dften Compliance-L\u00fccken." },
-      { title: "F\u00fcr projektweite Analyse", desc: "Dieser Scan hat eine einzelne Datei analysiert. Ihr Entwicklungsteam kann das gesamte Projekt scannen: <code>pipx install regula-ai</code>, dann <code>regula gap --project .</code>" },
+      { title: "F\u00fcr projektweite Analyse", desc: "Dieser Scan hat eine einzelne Datei analysiert. Ihr Entwicklungsteam kann das gesamte Projekt scannen: <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, dann <code>regula gap --project .</code>" },
     ];
   }
   if (tier === "article_50_pattern") {
     return [
       { title: "Transparenzhinweise hinzuf\u00fcgen", desc: "Artikel 50 verlangt, dass Nutzer wissen, wenn sie mit KI interagieren oder KI-generierte Inhalte konsumieren." },
       { title: "Auch den Fragebogen beantworten", desc: "Der Fragebogen bewertet den Einsatzkontext, den Code-Scanning nicht erkennen kann." },
-      { title: "F\u00fcr projektweites Scanning", desc: "Ihr Entwicklungsteam kann andere Dateien auf Risikomuster pr\u00fcfen: <code>pipx install regula-ai</code>, dann <code>regula check .</code>" },
+      { title: "F\u00fcr projektweites Scanning", desc: "Ihr Entwicklungsteam kann andere Dateien auf Risikomuster pr\u00fcfen: <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, dann <code>regula check .</code>" },
     ];
   }
   return [

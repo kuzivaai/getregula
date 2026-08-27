@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — sourced regulatory copy names automated-decision and employment practices but does not implement them
 """United Kingdom — AI regulation coverage page.
 
 Data file consumed by scripts/build_regulations.py to generate
@@ -145,7 +145,7 @@ REGION = {
             "heading": "Where Regula fits for UK teams",
             "body": """
 <p>Regula is an open-source AI-governance evidence and source-code review CLI. Its UK coverage is a selected DSIT / ICO framework crosswalk and this dated tracker, not a UK legal decision engine. For a UK team the practically useful starting commands are:</p>
-<pre tabindex="0"><code>pip install regula-ai
+<pre tabindex="0"><code>pip install git+https://github.com/kuzivaai/getregula.git@main
 
 regula discover .              # AI systems present in the project
 regula check .                 # Code indicators with selected framework references

@@ -145,7 +145,7 @@ REGION = {
             <p>For a South African team, the practically useful starting commands are:</p>
 
 <pre tabindex="0"><code><span class="term-comment"># Install</span>
-<span class="term-cmd">pipx install regula-ai</span>
+<span class="term-cmd">pipx install git+https://github.com/kuzivaai/getregula.git@main</span>
 
 <span class="term-comment"># Inventory what you have</span>
 <span class="term-cmd">regula discover .</span>                    <span class="term-comment"># AI systems present in the project</span>

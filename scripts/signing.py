@@ -63,7 +63,7 @@ def _require_cryptography() -> Any:
     except ImportError as exc:
         raise SigningUnavailable(
             "Ed25519 signing requires the `cryptography` package. "
-            "Install it with: pip install regula-ai[signing]"
+            "Install the signing extra from the reviewed source; see docs/installation.md"
         ) from exc
     return serialization, ed25519
 

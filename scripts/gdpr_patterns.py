@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — detector definitions necessarily contain the GDPR patterns they report
 """GDPR code pattern definitions for dual-compliance scanning.
 
 All patterns are framed as 'indicators that GDPR obligations may apply' —

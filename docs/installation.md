@@ -1,268 +1,169 @@
 # Installing Regula
 
-This page covers every supported install path, the errors you will hit if you pick the wrong one for your platform, and how to fix them.
+Regula requires Python 3.10 or later. The core has no required third-party runtime dependencies.
 
-**TL;DR:** use `pipx install regula-ai`. If you already use `uv`, use `uvx --from regula-ai regula`. Everything else is for people who know why they're doing it differently.
+## Current distribution status
 
----
+As verified on 27 August 2026, `https://pypi.org/pypi/regula-ai/json` returns HTTP 404 and the public GitHub repository has no GitHub Release for version 2.0.0. Do not use the bare registry commands `pip install regula-ai` or `pipx install regula-ai`: they do not currently resolve to a public package.
+
+The supported temporary path is installation from the public GitHub source:
+
+```bash
+pipx install git+https://github.com/kuzivaai/getregula.git@main
+```
+
+`main` is a moving source reference. It is convenient for evaluation, but it is not an immutable or signed release artefact. For reproducible use, pin the exact public commit you reviewed:
+
+```bash
+pipx install git+https://github.com/kuzivaai/getregula.git@COMMIT_SHA
+```
+
+Replace `COMMIT_SHA` with a full commit hash from the repository. Verify the commit and the project’s published security evidence before relying on it.
 
 ## Before you begin
 
-You need **Python 3.10 or newer**. Check with:
+Check Python:
 
 ```bash
 python3 --version
 ```
 
-If that prints `Python 3.10.x` or higher, you're set. If it prints an older version or `command not found`, install Python from [python.org/downloads](https://www.python.org/downloads/) or via your package manager (e.g. `brew install python@3.12`, `sudo apt install python3.12`).
+If it is older than 3.10, install a current Python from [python.org](https://www.python.org/downloads/) or your operating-system package manager.
 
----
+## Recommended temporary path: pipx
 
-## Recommended: pipx
+`pipx` keeps Regula isolated from the system Python and puts `regula` on the command path.
 
-`pipx` installs Regula into its own isolated virtualenv and puts the `regula` command on your PATH, without touching your system Python. This is the install that works on every platform and does not break on Debian/Ubuntu's externally-managed Python.
-
-### Install pipx (one-time)
-
-| Platform | Command |
+| Platform | Install pipx once |
 |---|---|
-| **macOS** | `brew install pipx && pipx ensurepath` |
-| **Debian / Ubuntu** | `sudo apt install pipx && pipx ensurepath` |
-| **Fedora** | `sudo dnf install pipx && pipx ensurepath` |
-| **Arch** | `sudo pacman -S python-pipx && pipx ensurepath` |
-| **openSUSE** | `sudo zypper install python3-pipx && pipx ensurepath` |
-| **Windows (PowerShell)** | `python -m pip install --user pipx` then `python -m pipx ensurepath` |
-| **Any Linux, no package available** | `python3 -m pip install --user pipx` then `python3 -m pipx ensurepath` |
+| macOS | `brew install pipx && pipx ensurepath` |
+| Debian / Ubuntu | `sudo apt install pipx && pipx ensurepath` |
+| Fedora | `sudo dnf install pipx && pipx ensurepath` |
+| Arch | `sudo pacman -S python-pipx && pipx ensurepath` |
+| openSUSE | `sudo zypper install python3-pipx && pipx ensurepath` |
+| Windows | `python -m pip install --user pipx` then `python -m pipx ensurepath` |
 
-After `pipx ensurepath` finishes, open a new terminal so the updated PATH is picked up.
-
-### Install Regula
+Open a new terminal after `pipx ensurepath`, then install and verify:
 
 ```bash
-pipx install regula-ai
+pipx install git+https://github.com/kuzivaai/getregula.git@main
+regula --version
+regula self-test
+regula doctor
 ```
 
-That's it. `regula --version` should now work from anywhere.
-
-### Upgrading and uninstalling
+To refresh a source installation after reviewing the new commit:
 
 ```bash
-pipx upgrade regula-ai
+pipx uninstall regula-ai
+pipx install git+https://github.com/kuzivaai/getregula.git@main
+```
+
+To remove it:
+
+```bash
 pipx uninstall regula-ai
 ```
 
----
+## Alternative: uv
 
-## Alternative: uv / uvx
-
-If you already use [uv](https://docs.astral.sh/uv/), it's faster than pipx and the install is one command.
-
-### Run without installing
+Run without a persistent installation:
 
 ```bash
-uvx --from regula-ai regula check .
+uvx --from git+https://github.com/kuzivaai/getregula.git@main regula check .
 ```
 
-`uvx` downloads, caches, and runs Regula in one step. The `--from regula-ai` flag is required because the PyPI package name (`regula-ai`) is different from the CLI command name (`regula`); plain `uvx regula-ai` will error with a hint.
-
-### Install permanently
+Or install it as a tool:
 
 ```bash
-uv tool install regula-ai
+uv tool install git+https://github.com/kuzivaai/getregula.git@main
+regula --version
 ```
 
-Then `regula` is on your PATH the same way pipx would put it there.
+Use a full commit hash instead of `main` when reproducibility matters.
 
----
-
-## Fallback: plain pip (only inside a venv or with a flag)
-
-Plain `pip install regula-ai` **will fail** on Ubuntu 22.04+, Debian 12+, Fedora, Arch, and macOS Homebrew Python with:
-
-```
-error: externally-managed-environment
-× This environment is externally managed
-```
-
-This is PEP 668 at work — your OS doesn't want you `pip install`-ing packages into the Python it uses to run system tools. You have three options:
-
-### Inside a virtualenv (safest)
+## Alternative: a virtual environment
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate     # or .venv\Scripts\activate on Windows
-pip install regula-ai
+source .venv/bin/activate  # Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install git+https://github.com/kuzivaai/getregula.git@main
+regula self-test
 ```
 
-### Inside a conda env
+Avoid installing into an operating system’s managed Python. If you see `error: externally-managed-environment`, use pipx or a virtual environment; do not disable the operating system’s protection.
 
-```bash
-conda create -n regula python=3.12
-conda activate regula
-pip install regula-ai
-```
+## Install from a reviewed local checkout
 
-### `pip --user --break-system-packages` (only if you know what this means)
-
-```bash
-pip install --user --break-system-packages regula-ai
-```
-
-This installs into `~/.local/` and explicitly overrides PEP 668. Use it only if you accept that you may step on your distro's Python packaging later. For most people, pipx is what this flag wanted to be.
-
----
-
-## Windows
-
-Windows does not enforce PEP 668, so `pip install regula-ai` technically works — but pipx is still recommended for the same reasons (isolated, upgradeable, on PATH).
-
-### PowerShell (recommended)
-
-```powershell
-python -m pip install --user pipx
-python -m pipx ensurepath
-# Close & reopen PowerShell so PATH updates, then:
-pipx install regula-ai
-regula --version
-```
-
-### cmd.exe
-
-Identical to PowerShell — `python -m pipx ensurepath` writes the PATH update to your user environment regardless of shell. You will need to open a fresh cmd window for the change to take effect.
-
-### PATH on Windows 11
-
-If `regula` still isn't found after reopening your terminal, the pipx bin directory may not be on PATH. pipx installs binaries to `%USERPROFILE%\.local\bin` on modern Windows. Add it manually:
-
-1. Start → "Edit environment variables for your account"
-2. Select **Path** → Edit → New
-3. Add `%USERPROFILE%\.local\bin`
-4. OK through every dialog; open a new terminal.
-
----
-
-## Verifying your install
-
-Regardless of install method, verify with:
-
-```bash
-regula --version
-```
-
-You should see a line like `regula 1.6.x`.
-
-To verify the scanner actually works, clone the repo and scan one of the fixtures:
+This is the clearest path for contributors and for organisations that archive the exact source they evaluated:
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
-regula check examples/cv-screening-app
+git checkout COMMIT_SHA
+pipx install .
+regula self-test
 ```
 
-You should see exactly one WARN finding flagging the high-risk employment pattern:
+Run directly from the checkout without installing:
 
+```bash
+python3 -m scripts.cli --version
+python3 -m scripts.cli self-test
 ```
-  HIGH-RISK INDICATORS:
-    [WARN] [ 68] app.py — Employment and workers management
-      Add human oversight before automated hiring/employment decisions
+
+## Optional features
+
+The core scan is standard-library only. Optional features add dependencies and may add network access. From a reviewed checkout, install only the extras you need:
+
+```bash
+pip install '.[yaml]'     # YAML policy support
+pip install '.[ast]'      # syntax-aware JavaScript/TypeScript analysis
+pip install '.[pdf]'      # PDF output
+pip install '.[signing]'  # Ed25519 signing and RFC 3161 verification
+pip install '.[all]'      # all user-facing optional features
 ```
 
-See [`examples/README.md`](../examples/README.md) for the other two fixtures (Article 50 limited-risk chatbot, minimal-risk code-completion tool).
+Review [`pyproject.toml`](../pyproject.toml) for the exact dependency boundaries. Telemetry remains opt-in; timestamping and configured remote integrations can make network requests.
 
----
+## Verify the installation
+
+```bash
+regula --version
+regula self-test
+regula doctor
+```
+
+To exercise a tracked fixture, use a repository checkout because examples are not included in the installed package:
+
+```bash
+regula check examples/cv-screening-app --scope all
+```
+
+The fixture should produce an employment-related code indicator. It does not prove the legal classification of a real product.
 
 ## Troubleshooting
 
-Error messages here are the literal strings you'll paste into a search engine. Match the one you're seeing and jump to the fix.
+### `command not found: regula`
+
+Open a new terminal after `pipx ensurepath`. If the problem remains, run `pipx ensurepath` again and inspect `pipx environment` rather than guessing the binary location.
 
 ### `error: externally-managed-environment`
 
-Your OS ships Python under PEP 668 protection. Use pipx:
+Use pipx or create a virtual environment. Do not use `--break-system-packages` merely to install this CLI.
 
-```bash
-# Linux
-sudo apt install pipx || sudo dnf install pipx || sudo pacman -S python-pipx
-pipx ensurepath
-pipx install regula-ai
+### `git` is not installed
 
-# macOS
-brew install pipx
-pipx ensurepath
-pipx install regula-ai
-```
+The temporary source-install path requires Git. Install Git from [git-scm.com](https://git-scm.com/downloads) or your package manager, then repeat the command.
 
-See the pipx section above for the full table.
+### Optional feature reports a missing module
 
-### `command not found: regula` (after install)
+Install the matching extra from a reviewed checkout. `regula doctor` reports available and missing optional capabilities.
 
-The install succeeded but your shell can't find the binary. pipx puts binaries in `~/.local/bin` (Linux/macOS) or `%USERPROFILE%\.local\bin` (Windows). These need to be on your PATH.
+### `regula check` reports zero scanned files
 
-**Quick check:**
+Confirm the path contains a supported source-code extension and inspect the command’s skipped-file summary. Default production scope deliberately excludes test, benchmark, example, dependency, generated, and other non-production directories. Use `--scope all` only when you intentionally want those paths included.
 
-```bash
-ls -l ~/.local/bin/regula     # should exist after pipx install
-echo $PATH | tr ':' '\n' | grep '.local/bin'  # should print the path
-```
+## Distribution limitation
 
-**Fix per shell:**
-
-- **bash:** add `export PATH="$HOME/.local/bin:$PATH"` to `~/.bashrc`, then `source ~/.bashrc`.
-- **zsh (macOS default):** add the same line to `~/.zshrc`.
-- **fish:** `fish_add_path ~/.local/bin` (persistent, no file editing).
-- **PowerShell (Windows):** the `pipx ensurepath` command above handles this. If it didn't, add `%USERPROFILE%\.local\bin` manually as described in the Windows section.
-
-Alternatively, run `pipx ensurepath` again and open a fresh terminal.
-
-### `pip: command not found`
-
-You don't have Python installed, or it was installed without pip. Install Python 3.10+ from [python.org/downloads](https://www.python.org/downloads/) or your package manager:
-
-- macOS: `brew install python@3.12`
-- Debian/Ubuntu: `sudo apt install python3 python3-pip`
-- Fedora: `sudo dnf install python3 python3-pip`
-- Windows: download the installer from python.org and tick "Add python.exe to PATH" during setup.
-
-Then rerun the install.
-
-### `ModuleNotFoundError: No module named 'yaml'` when running bias / pdf / ast features
-
-Regula's core is stdlib-only, but three optional subsystems (YAML policy parsing, PDF export, deep AST parsing) pull in extras. Install with:
-
-```bash
-pipx install "regula-ai[yaml,ast,pdf]"
-# or with pip inside a venv:
-pip install "regula-ai[yaml,ast,pdf]"
-```
-
-### `regula check` shows `Files scanned: 0`
-
-Two likely causes:
-
-1. **You pointed at a directory with no code files matching Regula's extensions.** Regula scans `.py, .js, .ts, .jsx, .tsx, .java, .go, .rs, .c, .cpp, .mjs, .cjs, .ipynb`. The CLI now tells you this with `(no code files matched; check path and extensions)` rather than the old misleading `(test files excluded)` suffix.
-2. **You're on an older release.** Earlier releases had a file-count telemetry bug. Upgrade with `pipx upgrade regula-ai`; check the [PyPI release history](https://pypi.org/project/regula-ai/) for published versions.
-
-### `regula: permission denied`
-
-On macOS/Linux, check the binary is executable: `ls -l $(which regula)`. If the `x` bit is missing, `chmod +x` it. If pipx installed it, uninstall and reinstall: `pipx uninstall regula-ai && pipx install regula-ai`.
-
----
-
-## Upgrading existing installs
-
-```bash
-pipx upgrade regula-ai        # pipx
-uv tool upgrade regula-ai     # uv
-pip install --upgrade regula-ai  # pip (inside venv)
-```
-
----
-
-## Uninstalling
-
-```bash
-pipx uninstall regula-ai      # pipx
-uv tool uninstall regula-ai   # uv
-pip uninstall regula-ai       # pip
-```
-
-All three remove only Regula. They do not remove the optional policy file at `~/.regula/regula-policy.yaml` or the audit log at `~/.regula/audit/` — delete those manually if you want a clean slate.
+Source installation is a stopgap, not a substitute for a release process. A future public release should provide an immutable tag, build provenance, signed or attested artefacts, checksums, an installation test from the public registry, and rollback instructions. Until then, treat the exact commit hash as part of your evidence.

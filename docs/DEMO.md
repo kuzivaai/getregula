@@ -30,7 +30,7 @@ decision moves, and the output records that **you** supplied them.
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
-pip install regula-ai
+pip install git+https://github.com/kuzivaai/getregula.git@main
 regula --version
 ```
 

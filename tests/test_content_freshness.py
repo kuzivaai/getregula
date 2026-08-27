@@ -96,6 +96,17 @@ def test_frozen_figure_sweep_actually_reaches_machine_readable_files():
     assert {"llms.txt", "llms-full.txt"} <= names, sorted(names)
 
 
+def test_llms_full_is_generated_from_current_authoritative_documents():
+    """The long LLM surface must not preserve hand-copied stale guidance."""
+    import sys
+
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import build_llms_full
+
+    actual = (ROOT / "site" / "llms-full.txt").read_text(encoding="utf-8")
+    assert actual == build_llms_full.render()
+
+
 # A <form> open tag, so its attributes can be judged rather than its existence.
 FORM_TAG_RE = re.compile(r"<form\b([^>]*)>", re.IGNORECASE)
 

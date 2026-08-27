@@ -246,8 +246,8 @@ def test_git_unavailable_and_ignored_or_untracked_inputs_fail_safe(monkeypatch, 
 
 def test_historical_record_and_valid_narrow_exclusion():
     payload = psi.discover()
-    excluded = next(r for r in payload["records"] if r["source"] == "site/assets/demo/landing-page.png")
-    assert excluded["classification"] == "non_claim_asset"
+    assert not any(r["source"] == "site/assets/demo/landing-page.png"
+                   for r in payload["records"])
     historical = psi.record("repository_docs", "CHANGELOG.md", "public", "link", "document", True,
                             "historical_record", "version history is not current product positioning")
     assert historical["classification"] == "historical_record"

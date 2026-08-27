@@ -31,8 +31,8 @@ def _check_optional_dep(module_name, install_hint):
     """Check if an optional dependency is importable.
 
     Optional dependencies fall back to INFO when missing, not WARN.
-    Reason: a fresh `pip install regula-ai` does not pull in optional
-    extras. Showing those as WARN made first-run users see "5 warnings"
+    Reason: a core source installation does not pull in optional extras.
+    Showing those as WARN made first-run users see "5 warnings"
     on a perfectly healthy install and assume something was broken.
     INFO communicates "this feature is available if you want it" which
     matches the actual state.
@@ -330,10 +330,10 @@ def run_doctor(format_type="text"):
     """
     checks = [
         _check_python_version(),
-        _check_optional_dep("yaml", "pip install regula[yaml]"),
-        _check_optional_dep("tree_sitter", "pip install regula[ast]"),
-        _check_optional_dep("tree_sitter_javascript", "pip install regula[ast]"),
-        _check_optional_dep("tree_sitter_typescript", "pip install regula[ast]"),
+        _check_optional_dep("yaml", "install the yaml extra; see docs/installation.md"),
+        _check_optional_dep("tree_sitter", "install the ast extra; see docs/installation.md"),
+        _check_optional_dep("tree_sitter_javascript", "install the ast extra; see docs/installation.md"),
+        _check_optional_dep("tree_sitter_typescript", "install the ast extra; see docs/installation.md"),
         _check_policy_file(),
         _check_audit_directory(),
         _check_hooks(),

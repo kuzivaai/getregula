@@ -651,7 +651,7 @@ regula mcp-server                          # Start MCP server (stdio)
 ```bash
 claude mcp add regula -- python3 /absolute/path/to/getregula/scripts/mcp_server.py
 
-# Or, if you installed Regula via `pip install regula-ai`:
+# Or, if you installed Regula via `pip install git+https://github.com/kuzivaai/getregula.git@main`:
 claude mcp add regula -- regula mcp-server
 ```
 

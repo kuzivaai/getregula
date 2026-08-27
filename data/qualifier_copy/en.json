@@ -252,7 +252,7 @@
       "title": "Keep going, free",
       "price": "Free, and it stays free",
       "body": "Work through the fuller assessment in your browser. It asks the same ground in the law's own terms and shows where each question comes from. No account, and nothing you enter is uploaded. If you are comfortable with a terminal, the same indicators are available on your own machine, and the scanner does not upload your code.",
-      "cmd": "pipx install regula-ai && regula check .",
+      "cmd": "pipx install git+https://github.com/kuzivaai/getregula.git@main && regula check .",
       "cta": "Open the free assessment",
       "href": "/assess/",
       "short": "Free, in your browser or your terminal. No account, nothing uploaded."

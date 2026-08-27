@@ -33,7 +33,9 @@ with governance questionnaires to produce code-observable indicators and
 review evidence. It is licensed
 under the Apache License 2.0. The full source is on GitHub at
 [github.com/kuzivaai/getregula](https://github.com/kuzivaai/getregula).
-PyPI package: [`regula-ai`](https://pypi.org/project/regula-ai/).
+As verified on 27 August 2026, PyPI distribution and the public website are
+unavailable and there is no public GitHub Release for 2.0.0. The temporary
+installation path is documented in [`installation.md`](installation.md).
 
 It is **not a SaaS or hosted service**. The CLI and optional local API server
 run on the developer's machine. Core scans do not transmit code or findings;
@@ -62,7 +64,7 @@ your lawyer's job, not Regula's.
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,920 unique tests (2,920 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
+| 2,922 unique tests (2,922 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -84,14 +86,14 @@ your lawyer's job, not Regula's.
 > influence it. `tests/test_gap_demo.py` re-runs the commands and compares the
 > output with `data/gap_demo.json`.
 
-### 3.1 Internal test suite — 2,920 [unique](../tests/) / 2,920 pytest-collected cases
+### 3.1 Internal test suite — 2,922 [unique](../tests/) / 2,922 pytest-collected cases
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ --collect-only -q
-# Expected: 2920 collected. This command measures collection only.
-# 2,920 unique tests (sort -u of test IDs equals collected count).
+# Expected: 2922 collected. This command measures collection only.
+# 2,922 unique tests (sort -u of test IDs equals collected count).
 
 # Execute the full suite separately. Do not infer its result from collection.
 python3 -m pytest tests/ -q
@@ -99,7 +101,7 @@ python3 -m pytest tests/ -q
 
 Regula also ships a legacy auto-discovery runner for the classification
 suite — run `python3 tests/test_classification.py` for its current output.
-The runner currently discovers 1,289 functions, a count machine-checked by
+The runner currently discovers 1,291 functions, a count machine-checked by
 `tests/test_published_count_manifest.py`. **Read that line carefully:
 `1386 passed` is not a count of tests.** The runner's counter is incremented by
 the `assert_true` / `assert_eq` / `assert_false` helpers in `tests/helpers.py`,
@@ -279,7 +281,7 @@ Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 ```bash
 # Audit source paths with the repository's documented Bandit policy:
 pip install bandit pip-audit
-bandit -c pyproject.toml -r scripts/ hooks/
+bandit -c pyproject.toml -r scripts/
 # 2026-08-19 branch result: 0 findings after URL/XML hardening.
 
 # Export the lock with every optional extra, then audit that export:
@@ -408,11 +410,11 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Resource | Where |
 |---|---|
 | Source code | <https://github.com/kuzivaai/getregula> |
-| PyPI package | <https://pypi.org/project/regula-ai/> |
+| Current distribution status | Source-only; see [`installation.md`](installation.md) |
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,920 unique tests, 2,920 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,289 functions, 444 defined in-file) |
+| Test suite | `tests/` (2,922 unique tests, 2,922 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,291 functions, 444 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit integration source | `scripts/install.py` |
@@ -480,9 +482,9 @@ scheme (e.g. an HMAC chain) cannot offer that separation: verification
 requires the same secret that creates the records, so any party able
 to verify is also able to forge, and third-party verification without
 key disclosure is impossible. The distribution pipeline carries the
-same property end-to-end — the PyPI release is published via OIDC
-trusted publishing with PEP 740 attestations, so the package itself
-is provenance-verifiable before you run it.
+Earlier PyPI releases used OIDC trusted publishing with PEP 740 attestations.
+That historical control does not establish provenance for the current source-only
+state; there is no current public release artefact to verify before execution.
 
 ---
 
@@ -492,7 +494,8 @@ is provenance-verifiable before you run it.
 
 - **Zero runtime dependencies.** Regula's core only uses Python's
   standard library. Optional features (YAML parsing, AST analysis, PDF
-  export) are explicit opt-ins via `pipx install "regula-ai[yaml,ast,pdf]"`.
+  export) are explicit opt-ins via a reviewed checkout and
+  `pip install '.[yaml,ast,pdf]'`.
   Verify with `pip show regula-ai`.
 - **Deterministic output.** Same input + same policy file produces
   byte-identical JSON output. Verify by running `regula check --format
@@ -536,17 +539,17 @@ Regula's supply chain attack surface is intentionally minimal.
   standard library. Verify with `pip show regula-ai` — the `Requires`
   field is empty. This eliminates transitive dependency compromise as
   an attack vector.
-- **Reproducible builds from source.** Anyone can rebuild the wheel from
-  a tagged commit and compare the SHA-256 against the PyPI artefact.
-  See [`SECURITY.md`](../SECURITY.md) "How to verify a release
-  independently" for the exact steps.
+- **Builds inspectable from source.** Anyone can pin a reviewed commit and
+  build a wheel locally. There is currently no registry artefact or public
+  2.0.0 release against which to compare its SHA-256; this is a documented
+  release-process gap, not a reproducibility claim.
 - **No compiled binaries or obfuscated bytecode.** Every file in the
   repository is human-readable source. There is no `.so`, `.dll`,
   `.pyc`, or minified code committed.
 - **Optional dependencies are explicit opt-ins.** `pyyaml`,
   `tree-sitter`, `weasyprint`, and `sentry-sdk` are declared as extras
-  in `pyproject.toml` (e.g. `pipx install "regula-ai[yaml,ast,pdf]"`).
-  They are never pulled in by a bare `pip install regula-ai`.
+  in `pyproject.toml` (e.g. `pip install '.[yaml,ast,pdf]'` from a reviewed checkout).
+  They are never pulled in by a bare `pip install git+https://github.com/kuzivaai/getregula.git@main`.
 - **SBOM self-generation.** Regula can generate a CycloneDX 1.7 ML-BOM
   of itself from any checkout: `regula sbom --ai-bom`. This includes
   component hashes and dependency declarations.
@@ -605,8 +608,8 @@ Crash reporting requires **both** of the following. Neither is the default:
 2. a Sentry endpoint is configured, via the `REGULA_SENTRY_DSN`
    environment variable.
 
-The published PyPI build ships `_SENTRY_DSN = ""` (empty) and reads the
-endpoint from the environment, so **even if the user opts in, nothing is
+The current source sets `_SENTRY_DSN = ""` (empty) and reads the endpoint
+from the environment, so **even if the user opts in, nothing is
 sent unless they point Regula at a Sentry instance themselves.** This is
 by design: Regula is a tool for compliance teams, many of whom cannot
 legally exfiltrate any data to a third party.
@@ -665,7 +668,7 @@ The questions a 2026 procurement team will ask, with copy-pasteable
 answers.
 
 **Q: What is the deployment model?**
-A: Local-only command-line tool. Installs via `pipx install regula-ai`.
+A: Local-only command-line tool. Installs via `pipx install git+https://github.com/kuzivaai/getregula.git@main`.
 No accounts, no servers, no SaaS tier exists.
 
 **Q: Where is data stored?**
@@ -750,7 +753,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,920 unique tests (2,920 pytest-collected) |
+| Test suite | `tests/` | 2,922 unique tests (2,922 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |

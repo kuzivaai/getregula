@@ -178,7 +178,7 @@ REGION = {
             <p>For a team building AI for the Brazilian market, the practically useful commands are:</p>
 
 <pre tabindex="0"><code><span class="term-comment"># Install</span>
-<span class="term-cmd">pipx install regula-ai</span>
+<span class="term-cmd">pipx install git+https://github.com/kuzivaai/getregula.git@main</span>
 
 <span class="term-comment"># Scan for code indicators; inspect their selected crosswalk references</span>
 <span class="term-cmd">regula check .</span>

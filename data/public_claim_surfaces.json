@@ -7945,17 +7945,6 @@
       "reason": "deployed non-claim asset"
     },
     {
-      "stable_id": "website:1756e5035902b18f",
-      "channel": "website",
-      "source": "site/assets/demo/landing-page.png",
-      "destination": "/assets/demo/landing-page.png",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "Tracked binary screenshot deployed by Pages; pixels are not scanned as public copy."
-    },
-    {
       "stable_id": "website:30f8fdea8360590f",
       "channel": "website",
       "source": "site/assets/fonts.css",
@@ -8898,12 +8887,12 @@
       "mcp": 3,
       "package": 2,
       "repository_docs": 43,
-      "website": 99
+      "website": 98
     },
     "classification": {
       "active_product": 781,
       "historical_record": 1,
-      "non_claim_asset": 26
+      "non_claim_asset": 25
     }
   },
   "exclusions": [
@@ -8917,17 +8906,6 @@
       "claim_capable": true,
       "classification": "historical_record",
       "reason": "README-linked version history records claims in their dated release context, not current product positioning."
-    },
-    {
-      "stable_id": "website:1756e5035902b18f",
-      "channel": "website",
-      "source": "site/assets/demo/landing-page.png",
-      "destination": "/assets/demo/landing-page.png",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "Tracked binary screenshot deployed by Pages; pixels are not scanned as public copy."
     }
   ],
   "active_not_claim_enforced": [],

@@ -89,8 +89,7 @@
         "description": "Open-Source-CLI für KI-Governance-Nachweise und die Prüfung von Quellcode-Indikatoren.",
         "disambiguatingDescription": "Open-Source-Kommandozeilenwerkzeug für Code-Indikatoren, erklärten Kontext und durch Menschen zu vervollständigende Nachweise. Es bestimmt keine Rechtskonformität und ist nicht mit Regula Forensics verbunden.",
         "sameAs": [
-            "https://github.com/kuzivaai/getregula",
-            "https://pypi.org/project/regula-ai/"
+            "https://github.com/kuzivaai/getregula"
         ],
         "contactPoint": {
             "@type": "ContactPoint",
@@ -240,7 +239,7 @@
             <div class="audience-label">Wenn Sie Compliance pr&uuml;fen</div>
             <h3>Pr&uuml;fbare Nachweisger&uuml;ste</h3>
             <p>Regula kann Nachweispaket-Ger&uuml;ste mit SHA-256-Manifesten erzeugen; optionale Befehle erg&auml;nzen Signaturen oder Zeitstempel, wenn deren Voraussetzungen konfiguriert sind. Die Pakete m&uuml;ssen von Menschen vervollst&auml;ndigt werden und belegen keine rechtliche Hinl&auml;nglichkeit. <a href="/sample-report.html" hreflang="en">Beispielbericht ansehen (auf Englisch) &rarr;</a> &middot; <a href="/pricing.html" hreflang="en">Kostenlose Fragen und geplante Beratung (auf Englisch) &rarr;</a></p>
-            <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula conform --sign .')">
+            <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula conform --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula conform --sign .</span>
             </button>
@@ -296,7 +295,7 @@
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Schritt 1</div>
             <h3>Installieren</h3>
-            <p><code>pipx install regula-ai</code><br>Funktioniert auf jedem Betriebssystem. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Andere Methoden &#8599;</a></p>
+            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code><br>Funktioniert auf jedem Betriebssystem. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Andere Methoden &#8599;</a></p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Schritt 2</div>
@@ -421,7 +420,7 @@
     <div class="art-grid">
         <div class="card-base art-card">
             <h3>Terminal</h3>
-            <p><code>pipx install regula-ai &amp;&amp; regula check .</code></p>
+            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula check .</code></p>
         </div>
         <div class="card-base art-card">
             <h3>CI/CD</h3>
@@ -467,7 +466,7 @@
         <div class="price-card featured">
             <div class="price-tier price-featured-tier">Regula</div>
             <div class="price-amount price-featured-amount">Kostenlos &amp; Open Source</div>
-            <p class="price-desc">Code-Scanning + Governance-Frageb&ouml;gen. L&auml;uft auf Ihrem Laptop mit einem Befehl. Der Standardbibliothek-Kern lädt gescannte Dateien nicht hoch; optionale Integrationen und die Plattform können Netzwerkzugriff haben. <code>pipx install regula-ai</code>, Projekt scannen, Hinweise menschlich prüfen. Apache 2.0 / EUPL 1.2; Erkennungsregeln unter DRL 1.1.</p>
+            <p class="price-desc">Code-Scanning + Governance-Frageb&ouml;gen. L&auml;uft auf Ihrem Laptop mit einem Befehl. Der Standardbibliothek-Kern lädt gescannte Dateien nicht hoch; optionale Integrationen und die Plattform können Netzwerkzugriff haben. <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, Projekt scannen, Hinweise menschlich prüfen. Apache 2.0 / EUPL 1.2; Erkennungsregeln unter DRL 1.1.</p>
         </div>
     </div>
     <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Prüfen Sie Sprachabdeckung, Ausführungsmodell, Lizenz und Evidenzgrenzen jedes Werkzeugs in Ihrem eigenen Kontext. Die Tabelle ist keine unabhängige Leistungsbewertung. Für <em>Runtime</em>-Agent-Governance siehe <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:var(--text-dim);">Microsofts Agent Governance Toolkit</a>.</p>
@@ -491,7 +490,7 @@
                 <div class="foot-links">
         <a href="/guides/">Guides</a>
                     <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust Pack</a>
                     <a href="/pricing.html" hreflang="en">Evidence Packs</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/GOVERNANCE.md">Governance</a>
@@ -545,7 +544,7 @@
     // ===== COPY BUTTON =====
     function copyInstall(el) {
         const cp = el.querySelector('.cp');
-        navigator.clipboard.writeText('pipx install regula-ai').then(() => {
+        navigator.clipboard.writeText('pipx install git+https://github.com/kuzivaai/getregula.git@main').then(() => {
             el.classList.add('copied');
             cp.innerHTML = '&#10003;&nbsp;kopiert';
             setTimeout(() => {

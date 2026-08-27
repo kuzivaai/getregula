@@ -209,7 +209,7 @@ REGION = {
             "heading": "Where Regula fits for Korean operators and foreign providers",
             "body": """
 <p>Regula includes a Korea-oriented assessment and can report related code indicators. It does not determine coverage or compliance under Korean law. You can <a href="/assess/?j=kr">take the Korea assessment</a> (9 questions, no signup) or scan your codebase:</p>
-<pre tabindex="0"><code>pipx install regula-ai
+<pre tabindex="0"><code>pipx install git+https://github.com/kuzivaai/getregula.git@main
 
 regula discover .              # AI systems present in the project
 regula check .                 # Risk indicators across all frameworks

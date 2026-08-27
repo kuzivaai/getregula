@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# regula-ignore
+# regula-ignore — scanner rule definitions name monitored AI behaviours but do not implement them
 """
 Regula Guardrail Scanner — Runtime AI Guardrail Detection
 

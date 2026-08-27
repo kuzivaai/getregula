@@ -234,7 +234,7 @@ precision of the wide INFO cast — the part the user almost never sees.
 | `agent_autonomy` | 5 | 2 | 3 | 40.0% | Autonomous tool-calling patterns. Small sample. |
 | `limited_risk` | 3 | 1 | 2 | 33.3% | Article 50 disclosure (chatbot, deepfake). Small sample. |
 | `minimal_risk` | 241 | 36 | 205 | 14.9% | The bulk of the OSS corpus. Most are AI library imports without high-risk context. |
-| `ai_security` | 6 | 0 | 6 | 0.0% | OWASP LLM Top 10 patterns. All 6 FPs are framework code, not application code. |
+| `ai_security` | 6 | 0 | 6 | 0.0% | OWASP LLM Top 10-aligned detectors. All 6 FPs are framework code, not application code. |
 | `credential_exposure` | 2 | 0 | 2 | 0.0% | Tiny sample. Both FPs are test fixtures. |
 Source: [`benchmarks/labels.json`](../../benchmarks/labels.json).
 

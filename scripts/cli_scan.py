@@ -794,6 +794,14 @@ def cmd_check(args) -> None:
                   "(examples, tests caches, vendored code).")
             print("        To scan one, pass it as the path: regula check <dir>")
 
+        # Test files are filtered separately from pruned directories. Disclose
+        # them even when production files were scanned; otherwise a non-empty
+        # result silently looks like coverage of the entire selected tree.
+        if tests_skipped > 0:
+            print(f"\n  INFO: {tests_skipped} test file(s) were not scanned")
+            print("        Test files are excluded by default from production scope.")
+            print("        Use --no-skip-tests to include them.")
+
         # Domain gating INFO: tell users about --domain when findings were suppressed
         gated_count = stats.get("domain_gated_count", 0)
         gated_cats = stats.get("domain_gated_categories", [])

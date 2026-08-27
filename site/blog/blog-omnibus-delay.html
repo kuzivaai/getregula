@@ -387,7 +387,7 @@
     <div class="blog-cta">
         <div class="install-box" onclick="copyInstall(this)">
             <span class="dollar">$</span>
-            <span class="cmd">pipx install regula-ai && regula timeline</span>
+            <span class="cmd">pipx install git+https://github.com/kuzivaai/getregula.git@main && regula timeline</span>
             <span class="cp">copy</span>
         </div>
         <p>Shows your current EU AI Act deadlines based on your codebase.</p>
@@ -431,7 +431,7 @@
                 <a href="/assess/">Assess</a>
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
                 <a href="/about.html">About</a>
@@ -460,7 +460,7 @@
 
     // Copy install command
     function copyInstall(el) {
-        navigator.clipboard.writeText('pipx install regula-ai && regula timeline').then(() => {
+        navigator.clipboard.writeText('pipx install git+https://github.com/kuzivaai/getregula.git@main && regula timeline').then(() => {
             el.classList.add('copied');
             el.querySelector('.cp').textContent = 'copied';
             setTimeout(() => {

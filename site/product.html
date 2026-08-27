@@ -90,8 +90,7 @@
         "url": "https://getregula.com",
         "logo": "https://getregula.com/assets/regula-logo.png",
         "sameAs": [
-            "https://github.com/kuzivaai/getregula",
-            "https://pypi.org/project/regula-ai/"
+            "https://github.com/kuzivaai/getregula"
         ],
         "description": "Open-source AI-governance evidence and source-code review CLI.",
         "disambiguatingDescription": "Open-source command-line tool for code indicators, declared context, and reviewer-completable evidence. It does not determine legal compliance and is not affiliated with Regula Forensics.",
@@ -244,7 +243,7 @@
             <div class="audience-label">If you audit compliance</div>
             <h3>Reviewable evidence scaffolds</h3>
             <p>Regula can generate evidence-pack scaffolds with SHA-256 manifests; optional commands can add signatures or timestamps when their prerequisites are configured. Packs require human completion and do not establish legal sufficiency. <a href="/sample-report.html">See a sample report &rarr;</a> &middot; <a href="/pricing.html">Evidence pack tiers &rarr;</a></p>
-            <button type="button" class="audience-fwd" aria-live="polite" onclick="copyPill(this, 'pipx install regula-ai &amp;&amp; regula conform --sign .')">
+            <button type="button" class="audience-fwd" aria-live="polite" onclick="copyPill(this, 'pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula conform --sign .')">
                 <span class="fwd-icon">&#9654;</span>
                 <span class="fwd-txt">regula conform --sign .</span>
             </button>
@@ -300,7 +299,7 @@
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 1</div>
             <h3>Install</h3>
-            <p><code>pipx install regula-ai</code><br>Requires Python 3.10 or later; see the tested installation paths. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Installation guide &#8599;</a></p>
+            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code><br>Requires Python 3.10 or later; see the tested installation paths. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Installation guide &#8599;</a></p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 2</div>
@@ -419,7 +418,7 @@
     <div class="art-grid">
         <div class="card-base art-card">
             <h3>Terminal</h3>
-            <p><code>pipx install regula-ai &amp;&amp; regula check .</code></p>
+            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula check .</code></p>
         </div>
         <div class="card-base art-card">
             <h3>CI/CD</h3>
@@ -465,7 +464,7 @@
         <div class="price-card featured">
             <div class="price-tier price-featured-tier">Regula</div>
             <div class="price-amount price-featured-amount">Free &amp; open source</div>
-            <p class="price-desc">Code scanning plus governance questionnaires. The stdlib-only core scans local files without uploading them; optional features have separate dependency and network boundaries. <code>pipx install regula-ai</code>, inspect the indicators, then complete contextual human review. Apache 2.0 / EUPL 1.2; detection rules under DRL 1.1.</p>
+            <p class="price-desc">Code scanning plus governance questionnaires. The stdlib-only core scans local files without uploading them; optional features have separate dependency and network boundaries. <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, inspect the indicators, then complete contextual human review. Apache 2.0 / EUPL 1.2; detection rules under DRL 1.1.</p>
         </div>
     </div>
     <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">These tools do different jobs, so the useful question is which one fits where you are rather than which scores highest. A code scanner reads what you have written; a questionnaire records what you declare; an authorised representative is a legal role, not a tool. Several of the entries above are complementary to each other rather than alternatives. For <em>runtime</em> agent governance, which none of the above covers, see <a href="https://github.com/microsoft/agent-governance-toolkit" rel="noopener" style="color:var(--text-dim);">Microsoft&rsquo;s Agent Governance Toolkit</a>.</p>
@@ -489,7 +488,7 @@
                 <div class="foot-links">
         <a href="/guides/">Guides</a>
                     <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                    <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust pack</a>
                     <a href="/pricing.html">Evidence packs</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/GOVERNANCE.md">Governance</a>
@@ -544,7 +543,7 @@
     // ===== COPY BUTTON =====
     function copyInstall(el) {
         const cp = el.querySelector('.cp');
-        navigator.clipboard.writeText('pipx install regula-ai').then(() => {
+        navigator.clipboard.writeText('pipx install git+https://github.com/kuzivaai/getregula.git@main').then(() => {
             el.classList.add('copied');
             cp.innerHTML = '&#10003;&nbsp;copied';
             setTimeout(() => {

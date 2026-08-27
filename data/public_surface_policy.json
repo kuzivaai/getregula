@@ -16,12 +16,6 @@
       "classification": "historical_record",
       "claim_capable": true,
       "reason": "README-linked version history records claims in their dated release context, not current product positioning."
-    },
-    {
-      "source": "site/assets/demo/landing-page.png",
-      "classification": "non_claim_asset",
-      "claim_capable": false,
-      "reason": "Tracked binary screenshot deployed by Pages; pixels are not scanned as public copy."
     }
   ]
 }

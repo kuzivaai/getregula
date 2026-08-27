@@ -3,11 +3,11 @@
 
 **Offline-capable, code-native AI governance scanning. The core scan runs locally, does not upload scanned file contents, and needs no account; telemetry is sent only with explicit opt-in consent. Regula flags patterns that may need review under the EU AI Act, South Korea's AI Basic Act, and Colorado SB 26-189, records the deployment facts code cannot show, and reports insufficient information rather than inventing a score.**
 
-[![PyPI](https://img.shields.io/pypi/v/regula-ai)](https://pypi.org/project/regula-ai/)
+[![Distribution: source](https://img.shields.io/badge/distribution-source%20install-orange.svg)](docs/installation.md)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2920%20collected-blue.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2922%20collected-blue.svg)](#verified-numbers)
 [![Accessibility target: WCAG 2.2 AA](https://img.shields.io/badge/accessibility%20target-WCAG%202.2%20AA-blue.svg)](docs/accessibility/README.md)
 
 ---
@@ -74,7 +74,7 @@ In plain English: give Regula a source-code folder and answer questions about ho
 
 | If you want to… | Start here |
 |---|---|
-| Explore the questions without installing anything | Use the [browser assessment](https://getregula.com/assess/). It records declared context for review; it does not inspect your code or make a legal determination. |
+| Explore the questions without installing anything | The browser assessment source is in [`site/assess/`](site/assess/). The public Pages deployment is currently unavailable; when restored, it records declared context for review but does not inspect your repository or make a legal determination. |
 | Check a local codebase | Follow the [Quick start](#quick-start), then run `regula check .`. |
 | Evaluate Regula before adopting it | Follow the [10-minute example journey](examples/cv-screening-app/) and read the [documented limitations and verification evidence](docs/TRUST.md). |
 | Add a repeatable team check | Use the [CI/CD example](#cicd) and review the exit-code policy before making it blocking. |
@@ -83,8 +83,10 @@ In plain English: give Regula a source-code folder and answer questions about ho
 ## Quick start
 
 ```bash
-pipx install regula-ai      # or: pip install regula-ai / uv pip install regula-ai
+pipx install git+https://github.com/kuzivaai/getregula.git@main
 ```
+
+PyPI distribution is currently unavailable. The command above installs a moving public source reference; pin a reviewed commit hash for reproducible use. See [`docs/installation.md`](docs/installation.md) for the verified status and alternatives.
 
 **Not sure if the AI Act applies?** No code needed:
 ```bash
@@ -142,9 +144,9 @@ If you don't have pipx yet, install it first (one-time):
 | Arch | `sudo pacman -S python-pipx && pipx ensurepath` |
 | Windows | `python -m pip install --user pipx && python -m pipx ensurepath` |
 
-**Already using uv?** `uvx --from regula-ai regula` runs it with no install step (the `--from` flag is required because the PyPI package name `regula-ai` differs from the CLI name `regula`). Or install it permanently with `uv tool install regula-ai`.
+**Already using uv?** `uvx --from git+https://github.com/kuzivaai/getregula.git@main regula` runs the public source without a persistent install. Or install it with `uv tool install git+https://github.com/kuzivaai/getregula.git@main`.
 
-**Running inside a venv or conda env?** `pip install regula-ai` works fine there :  the PEP 668 restriction only applies to system Python.
+**Running inside a venv or conda env?** Use `pip install git+https://github.com/kuzivaai/getregula.git@main`. The PEP 668 restriction applies to managed system Python, not an activated virtual environment.
 
 See [`docs/installation.md`](docs/installation.md) for troubleshooting (`externally-managed-environment`, `command not found: regula` after install, PATH setup per shell).
 
@@ -154,9 +156,9 @@ See [`docs/installation.md`](docs/installation.md) for troubleshooting (`externa
 regula check examples/cv-screening-app --scope all
 ```
 
-The `--scope all` flag is needed because Regula's default scope (`production`) skips example directories. This fixture intentionally triggers an Annex III Category 4 (Employment) high-risk classification.
+The `--scope all` flag is needed because Regula's default scope (`production`) skips example directories. This fixture intentionally contains employment-related code indicators that exercise the Annex III Category 4 detector; the resulting label is a detector observation, not a legal determination.
 
-See [`examples/`](examples/) for runnable reference projects covering each EU AI Act risk tier, or walk through the full 10-minute evaluation journey in [`examples/cv-screening-app/`](examples/cv-screening-app/) :  install, scan, plan, gap, conform, verify, handoff to red-team tooling.
+See [`examples/`](examples/) for runnable reference projects covering prohibited-practice, high-risk, transparency, and no-elevated-indicator scenarios, or walk through the full 10-minute evaluation journey in [`examples/cv-screening-app/`](examples/cv-screening-app/) :  install, scan, plan, gap, conform, verify, handoff to red-team tooling.
 
 For a deeper first-time-user walk-through (policy tuning, CI integration, baselining) see [`docs/QUICKSTART.md`](docs/QUICKSTART.md). The full documentation is indexed by type (tutorials / how-to / reference / explanation) in [`docs/README.md`](docs/README.md).
 
@@ -204,15 +206,15 @@ and `iso`, but it does not run an applicability decision. Use `--jurisdiction
 eu`, `korea`, or `colorado` on `regula assess` for the three implemented
 decision-support configurations.
 
-**Developer guides** on getregula.com:
-[Python](https://getregula.com/guides/eu-ai-act-python.html) |
-[JavaScript](https://getregula.com/guides/eu-ai-act-javascript.html) |
-[Healthcare](https://getregula.com/guides/eu-ai-act-healthcare.html) |
-[Recruitment](https://getregula.com/guides/eu-ai-act-recruitment-hiring.html) |
-[Article 5](https://getregula.com/guides/article-5-prohibited-practices.html) |
-[Article 9](https://getregula.com/guides/article-9-risk-management.html) |
-[Article 14](https://getregula.com/guides/article-14-human-oversight.html) |
-[Article 50](https://getregula.com/guides/article-50-transparency.html)
+**Developer guide sources:**
+[Python](site/guides/eu-ai-act-python.html) |
+[JavaScript](site/guides/eu-ai-act-javascript.html) |
+[Healthcare](site/guides/eu-ai-act-healthcare.html) |
+[Recruitment](site/guides/eu-ai-act-recruitment-hiring.html) |
+[Article 5](site/guides/article-5-prohibited-practices.html) |
+[Article 9](site/guides/article-9-risk-management.html) |
+[Article 14](site/guides/article-14-human-oversight.html) |
+[Article 50](site/guides/article-50-transparency.html)
 
 ## Key commands
 
@@ -353,14 +355,14 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 423 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Framework identifiers with selected references | 13 |
-| Tests (pytest --collect-only) | 2,920 |
+| Tests (pytest --collect-only) | 2,922 |
 | Required production dependencies | 0 |
 
 For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md). What version numbers promise, the public API they cover, and the deprecation policy: [`docs/VERSIONING.md`](docs/VERSIONING.md).
 
 ## Privacy and data handling
 
-Regula runs entirely on your machine. No code, findings, or metadata are transmitted to any external service. There is no account system, no API key, no telemetry by default (crash reporting requires both `regula telemetry enable` **and** an endpoint you configure yourself via `REGULA_SENTRY_DSN`; published builds ship none, and `DO_NOT_TRACK` suppresses it regardless). The tool reads your source files, analyses them locally, and writes output to your local filesystem. Network access is only used when you explicitly request it (RFC 3161 timestamps via `--timestamp`). See [`SECURITY.md`](SECURITY.md) for the full security posture.
+Regula's core scan runs on your machine. No code, findings, or metadata are transmitted during a default scan. There is no account system or API key, and no telemetry by default (crash reporting requires both `regula telemetry enable` **and** an endpoint you configure yourself via `REGULA_SENTRY_DSN`; published builds ship none, and `DO_NOT_TRACK` suppresses it regardless). The tool reads your source files, analyses them locally, and writes output to your local filesystem. Explicit network-enabled operations include RFC 3161 timestamping, feed or update checks, and integrations you configure. See [`SECURITY.md`](SECURITY.md) for the full security posture.
 
 ## Contributing
 

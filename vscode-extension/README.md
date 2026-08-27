@@ -16,7 +16,7 @@ Regula scans for code patterns across Python, JavaScript, TypeScript, Java, Go, 
 
 ## Requirements
 
-Install the Regula CLI: `pipx install regula-ai`
+Install the Regula CLI from the current public source: `pipx install git+https://github.com/kuzivaai/getregula.git@main`
 
 ## Privacy
 

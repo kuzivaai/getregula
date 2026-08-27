@@ -761,7 +761,7 @@ def cmd_demo(args):
     elif os.path.isdir(repo_dir):
         example_dir = repo_dir
     else:
-        print("Demo data not found. Reinstall: pipx install regula-ai")
+        print("Demo data not found. Reinstall from the reviewed source; see docs/installation.md")
         print("Or scan your own project: regula check .")
         return
     demo_label = os.path.basename(example_dir)

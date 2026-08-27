@@ -516,7 +516,7 @@
                 <a href="/assess/">Assess</a>
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                 <a href="/blog/writing.html" hreflang="en">Blog</a>
                 <a href="/regions/regulations.html" hreflang="en">Regulations</a>
                 <a href="/about.html" hreflang="en">About</a>
@@ -1137,7 +1137,7 @@ function getScanNextSteps(tier) {
       { title: "Obtenha aconselhamento jur\u00eddico", desc: "As proibi\u00e7\u00f5es do Artigo 5 preveem as penalidades mais altas. Um advogado qualificado precisa avaliar se seu sistema est\u00e1 dentro do escopo ou se qualifica para uma exce\u00e7\u00e3o restrita." },
       { title: "Revise os padr\u00f5es correspondentes", desc: "Algumas correspond\u00eancias podem ser falsos positivos. Os padr\u00f5es acima mostram o que acionou este resultado do scanner. Verifique se o c\u00f3digo sinalizado implementa a pr\u00e1tica descrita." },
       { title: "Compartilhe com sua equipe", desc: "Exporte esta an\u00e1lise como JSON ou imprima como PDF. Suas equipes de compliance e jur\u00eddica precisam revisar estes achados." },
-      { title: "Para an\u00e1lise mais profunda", desc: "Sua equipe de desenvolvimento pode executar a CLI do Regula para an\u00e1lise arquivo por arquivo: <code>pipx install regula-ai</code>, depois <code>regula check .</code>" },
+      { title: "Para an\u00e1lise mais profunda", desc: "Sua equipe de desenvolvimento pode executar a CLI do Regula para an\u00e1lise arquivo por arquivo: <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, depois <code>regula check .</code>" },
     ];
   }
   if (tier === "annex_iii_pattern") {
@@ -1145,14 +1145,14 @@ function getScanNextSteps(tier) {
       { title: "Revise os achados acima", desc: "Verifique se os indicadores correspondentes descrevem corretamente a finalidade do seu sistema. Classifica\u00e7\u00e3o baseada em padr\u00f5es requer revis\u00e3o humana para confirmar o contexto." },
       { title: "Responda o question\u00e1rio tamb\u00e9m", desc: "O question\u00e1rio avalia o contexto de implanta\u00e7\u00e3o que a an\u00e1lise de c\u00f3digo n\u00e3o consegue detectar. Usar ambos fornece evid\u00eancias mais amplas, mas ainda exige revis\u00e3o t\u00e9cnica e jur\u00eddica humana." },
       { title: "Comece pelas maiores lacunas", desc: "Documenta\u00e7\u00e3o t\u00e9cnica (Artigo 11) e governan\u00e7a de dados (Artigo 10) s\u00e3o tipicamente as maiores lacunas de conformidade." },
-      { title: "Para an\u00e1lise de todo o projeto", desc: "Esta an\u00e1lise avaliou um \u00fanico arquivo. Sua equipe de desenvolvimento pode analisar o projeto completo: <code>pipx install regula-ai</code>, depois <code>regula gap --project .</code>" },
+      { title: "Para an\u00e1lise de todo o projeto", desc: "Esta an\u00e1lise avaliou um \u00fanico arquivo. Sua equipe de desenvolvimento pode analisar o projeto completo: <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, depois <code>regula gap --project .</code>" },
     ];
   }
   if (tier === "article_50_pattern") {
     return [
       { title: "Adicione avisos de transpar\u00eancia", desc: "O Artigo 50 exige que os usu\u00e1rios saibam quando interagem com IA ou consomem conte\u00fado gerado por IA." },
       { title: "Responda o question\u00e1rio tamb\u00e9m", desc: "O question\u00e1rio avalia o contexto de implanta\u00e7\u00e3o que a an\u00e1lise de c\u00f3digo n\u00e3o consegue detectar." },
-      { title: "Para an\u00e1lise de todo o projeto", desc: "Sua equipe de desenvolvimento pode verificar outros arquivos: <code>pipx install regula-ai</code>, depois <code>regula check .</code>" },
+      { title: "Para an\u00e1lise de todo o projeto", desc: "Sua equipe de desenvolvimento pode verificar outros arquivos: <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, depois <code>regula check .</code>" },
     ];
   }
   return [
