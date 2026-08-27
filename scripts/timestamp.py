@@ -321,7 +321,7 @@ def _require_asn1crypto():
     except ImportError as exc:
         raise TimestampUnavailable(
             "RFC 3161 manifest timestamping requires the `asn1crypto` "
-            "package. Install it with: pip install regula-ai[signing]"
+            "package. Install the signing extra from the reviewed source; see docs/installation.md"
         ) from exc
     return tsp, algos, core
 
@@ -546,7 +546,7 @@ def _require_cryptography():
     except ImportError as exc:
         raise TimestampUnavailable(
             "RFC 3161 signature verification requires the `cryptography` "
-            "package. Install it with: pip install regula-ai[signing]"
+            "package. Install the signing extra from the reviewed source; see docs/installation.md"
         ) from exc
     return x509, hashes, padding, ec
 
@@ -928,5 +928,4 @@ def verify_timestamp_token_signature(
         f"check only — no revocation (CRL/OCSP), no name-constraint or policy "
         f"validation, no intermediate chain building."
     )
-
 

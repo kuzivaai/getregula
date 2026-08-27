@@ -10,63 +10,63 @@
       "obligation_edge": 46,
       "outside_scope": 3,
       "partial": 3,
-      "predicate_branch": 85
+      "predicate_branch": 90
     },
     "by_jurisdiction": {
       "co": 20,
       "eu": 99,
-      "kr": 36
+      "kr": 41
     },
     "reconciled_by_category": true,
     "reconciled_by_jurisdiction": true,
-    "total": 155
+    "total": 160
   },
   "generated_by": "scripts/build_decision_conformance.py",
-  "model_sha256": "a1b0b5729eb999c46e99da558939e9f16f359c605ed3bd735250ac19e4f3184b",
-  "model_version": "2026-08-19.1",
+  "model_sha256": "5701711459bc3a7cc64ffecd43900fb1f3750512ef59ac4a6218cffe539a395e",
+  "model_version": "2026-08-26.1",
   "schema_version": "1.0",
   "shards": [
     {
       "bytes": 1466621,
       "file": "decision_conformance.v1/part-000.json",
-      "sha256": "25b5fde6b2ef360b8ba565aed9a82292a6a8948516bb9423f04494d4f282a80d",
+      "sha256": "0aed12fdfd765a9422c000a01be4684ceb3c242e91b0d2933ceae9db2cb492b4",
       "vector_count": 25
     },
     {
       "bytes": 1465406,
       "file": "decision_conformance.v1/part-001.json",
-      "sha256": "34f0574e9904adfea6c335f30a86d057b3c00148e2b705f34d14f674cc14a1ff",
+      "sha256": "d419008e6b9f3ab0732685ef4612d6fa552c5e814224f08e652254e9e1f2fc2b",
       "vector_count": 21
     },
     {
       "bytes": 1469042,
       "file": "decision_conformance.v1/part-002.json",
-      "sha256": "f5a53d64d9a4eb2dc0527aa20199e093eed386729c7b5c15551bbace502a5502",
+      "sha256": "c01f03fd83b12bc38af244e5ae46f8504e0815b462292c6e81784dc253653d37",
       "vector_count": 20
     },
     {
       "bytes": 1433830,
       "file": "decision_conformance.v1/part-003.json",
-      "sha256": "6ea9d96a0a5c3bdc73ab87c8db1ff7bb7e6ecd1abbf96491546e6061c4fed6af",
+      "sha256": "6e454342f151b35ea19453734150a83a1d1489c1c37af3d11af8950d8a14b8cd",
       "vector_count": 13
     },
     {
       "bytes": 1448750,
       "file": "decision_conformance.v1/part-004.json",
-      "sha256": "3983ce43039ec66b6233181bb0b2056c084b5a1d53041d262dcb407c453f7b92",
+      "sha256": "67d90f7029dbe30c37ce87790b1b7e051705fa0fc20ec6680083c549bab1aed4",
       "vector_count": 12
     },
     {
-      "bytes": 1494857,
+      "bytes": 1465486,
       "file": "decision_conformance.v1/part-005.json",
-      "sha256": "fe50aa8a7f63d93ec09fa7d77c1e55f4417519b8aecb0cf83af34ea29ed6a5a6",
-      "vector_count": 40
+      "sha256": "a6e1211e9ebfb43f45f3aab0aebf798027021d6ac87065ff85846c0f59c35339",
+      "vector_count": 37
     },
     {
-      "bytes": 486966,
+      "bytes": 842651,
       "file": "decision_conformance.v1/part-006.json",
-      "sha256": "7669c20c333c51a7d6b57e556cf35f492eb72cb8eee356d83f48a4f6fddb1ab2",
-      "vector_count": 24
+      "sha256": "fb70643a227340d32987af03031776930184ab565f419659efc814df0df950c9",
+      "vector_count": 32
     }
   ],
   "storage": {

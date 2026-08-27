@@ -1595,7 +1595,7 @@
       "content_kind": "cli-option",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "Comma-separated jurisdictions (e.g. eu,colorado,korea). Applies all relevant framework mappings simultaneously. Valid: brazil, colorado, eu, iso, korea, nist, uk. Aliases: kr=korea, co=colorado"
+      "reason": "Comma-separated jurisdictions (e.g. eu,colorado,korea). Adds selected crosswalk references; it does not decide applicability or compliance. The assess command provides decision questionnaires for eu, korea, and colorado. Valid: brazil, colorado, eu, iso, korea, nist, uk. Aliases: kr=korea, co=colorado"
     },
     {
       "stable_id": "cli:301c2442b9015f88",
@@ -7439,6 +7439,28 @@
       "reason": "README-reachable public documentation"
     },
     {
+      "stable_id": "repository_docs:262ec0f493db66ae",
+      "channel": "repository_docs",
+      "source": "docs/EXTERNAL_DIAGNOSTIC_2026-08-26.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/EXTERNAL_DIAGNOSTIC_2026-08-26.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
+      "stable_id": "repository_docs:5dce4cdcf2113ced",
+      "channel": "repository_docs",
+      "source": "docs/IMPLEMENTATION_PLAN_2026-08-27.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/IMPLEMENTATION_PLAN_2026-08-27.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
       "stable_id": "repository_docs:e8ba17051624754b",
       "channel": "repository_docs",
       "source": "docs/LICENSE.Detection.Rules.md",
@@ -7454,6 +7476,28 @@
       "channel": "repository_docs",
       "source": "docs/MODEL_CARD.md",
       "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/MODEL_CARD.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
+      "stable_id": "repository_docs:94ecc0c9ece03e72",
+      "channel": "repository_docs",
+      "source": "docs/OPEN_ITEMS_2026-08-27.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/OPEN_ITEMS_2026-08-27.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
+      "stable_id": "repository_docs:30acd255e06ced94",
+      "channel": "repository_docs",
+      "source": "docs/PRODUCT_COVERAGE_AND_JOURNEYS.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/PRODUCT_COVERAGE_AND_JOURNEYS.md",
       "discovery_basis": "repository-relative Markdown link reachability from README.md",
       "content_kind": "repository-document",
       "claim_capable": true,
@@ -7494,10 +7538,32 @@
       "reason": "README-reachable public documentation"
     },
     {
+      "stable_id": "repository_docs:553bcee2fbe1b70f",
+      "channel": "repository_docs",
+      "source": "docs/RESEARCH_EVALUATION_2026-08-26.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/RESEARCH_EVALUATION_2026-08-26.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
       "stable_id": "repository_docs:1f6cd7809e73b27a",
       "channel": "repository_docs",
       "source": "docs/TRUST.md",
       "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
+      "stable_id": "repository_docs:7c7cc2e29adcaa0e",
+      "channel": "repository_docs",
+      "source": "docs/VALIDITY_UX_ENGINEERING_AUDIT_2026-08-26.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/VALIDITY_UX_ENGINEERING_AUDIT_2026-08-26.md",
       "discovery_basis": "repository-relative Markdown link reachability from README.md",
       "content_kind": "repository-document",
       "claim_capable": true,
@@ -7714,6 +7780,17 @@
       "reason": "README-reachable public documentation"
     },
     {
+      "stable_id": "repository_docs:42f472eb0c350290",
+      "channel": "repository_docs",
+      "source": "docs/operations/WEBSITE_RECOVERY_RUNBOOK.md",
+      "destination": "https://github.com/kuzivaai/getregula/blob/main/docs/operations/WEBSITE_RECOVERY_RUNBOOK.md",
+      "discovery_basis": "repository-relative Markdown link reachability from README.md",
+      "content_kind": "repository-document",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "README-reachable public documentation"
+    },
+    {
       "stable_id": "repository_docs:90f0fd421a1dc8ba",
       "channel": "repository_docs",
       "source": "docs/security/SECURITY-FINDINGS-2026-08-19.md",
@@ -7899,17 +7976,6 @@
       "claim_capable": false,
       "classification": "non_claim_asset",
       "reason": "deployed non-claim asset"
-    },
-    {
-      "stable_id": "website:1756e5035902b18f",
-      "channel": "website",
-      "source": "site/assets/demo/landing-page.png",
-      "destination": "/assets/demo/landing-page.png",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "Tracked binary screenshot deployed by Pages; pixels are not scanned as public copy."
     },
     {
       "stable_id": "website:30f8fdea8360590f",
@@ -8323,6 +8389,39 @@
       "channel": "website",
       "source": "site/colorado-ai-regulation.html",
       "destination": "/colorado-ai-regulation.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:aecd612155687552",
+      "channel": "website",
+      "source": "site/coverage-de.html",
+      "destination": "/coverage-de.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:20f069809845a214",
+      "channel": "website",
+      "source": "site/coverage-pt-br.html",
+      "destination": "/coverage-pt-br.html",
+      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
+      "content_kind": "web-page",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "deployed reader or machine-readable content"
+    },
+    {
+      "stable_id": "website:9cc3494260adcbf1",
+      "channel": "website",
+      "source": "site/coverage.html",
+      "destination": "/coverage.html",
       "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
       "content_kind": "web-page",
       "claim_capable": true,
@@ -8820,13 +8919,13 @@
       "cli": 639,
       "mcp": 3,
       "package": 2,
-      "repository_docs": 39,
-      "website": 96
+      "repository_docs": 46,
+      "website": 98
     },
     "classification": {
-      "active_product": 774,
+      "active_product": 784,
       "historical_record": 1,
-      "non_claim_asset": 26
+      "non_claim_asset": 25
     }
   },
   "exclusions": [
@@ -8840,17 +8939,6 @@
       "claim_capable": true,
       "classification": "historical_record",
       "reason": "README-linked version history records claims in their dated release context, not current product positioning."
-    },
-    {
-      "stable_id": "website:1756e5035902b18f",
-      "channel": "website",
-      "source": "site/assets/demo/landing-page.png",
-      "destination": "/assets/demo/landing-page.png",
-      "discovery_basis": "GitHub Pages workflow uploads tracked site/ as artifact root",
-      "content_kind": "asset",
-      "claim_capable": false,
-      "classification": "non_claim_asset",
-      "reason": "Tracked binary screenshot deployed by Pages; pixels are not scanned as public copy."
     }
   ],
   "active_not_claim_enforced": [],

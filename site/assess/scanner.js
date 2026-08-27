@@ -17,7 +17,7 @@
 // tests/test_scanner_js.js executes the canonical fixtures in both runtimes.
 // =====================================================================
 
-// Pattern data (648 detection patterns: 419 risk + 212 indicators + 17 GPAI)
+// Pattern data (652 detection patterns: 423 risk + 212 indicators + 17 GPAI)
 
 const PROHIBITED_PATTERNS = {
   "subliminal_manipulation": {
@@ -126,7 +126,8 @@ const PROHIBITED_PATTERNS = {
   },
   "biometric_categorisation_sensitive": {
     "patterns": [
-      "\\brace.?detect(?!.*(?:condition|thread|concurrent))",
+      "\\b(?:race|ethnicity).?(?:detect|infer|classif|categori[sz]).{0,30}(?:face|image|photo|voice|biometric)",
+      "\\b(?:face|image|photo|voice|biometric).{0,30}(?:race|ethnicity).?(?:detect|infer|classif|categori[sz])",
       "ethnicity.?infer",
       "political.?opinion.?biometric",
       "religion.?detect",
@@ -199,13 +200,14 @@ const HIGH_RISK_PATTERNS = {
       "\\bretina\\s*[\\W_]?(?:scan|recogn)",
       "\\bpalm\\s*[\\W_]?(?:print|recogn|scan)",
       "\\bgait\\s*[\\W_]?(?:recogn|analysis|identif)",
-      "\\b(?:face|voice|fingerprint|iris)[_\\W]?(?:match|verif|compar|enrol|template)",
-      "\\b(?:identify|recognise|recognize|verify|match|enrol)[_\\W]?(?:face|faces|person|people|identity)\\b",
+      "\\b(?:face|voice|fingerprint|iris)[_\\W]?(?:match|compar|identif|recogn)",
+      "\\b(?:identify|recognise|recognize)[_\\W]?(?:face|faces|person|people)\\b",
       "\\bbiometric[_\\W]?(?:categoris|categoriz|classif|template|verif|match|enrol)",
       "\\b(?:detect|infer|classify|predict)[_\\W]?(?:age|gender|ethnicity|race)[_\\W]?from[_\\W]?(?:face|image|photo|voice)",
-      "\\b(?:speaker|voice)[_\\W]?(?:identif|verif|recogn|diariz)",
+      "\\bspeaker[_\\W]?(?:biometric|voiceprint)",
+      "\\bvoice[_\\W]?(?:biometric|voiceprint|identif|verif|recogn)",
       "\\bface[_\\W]?embed(?:ding)?",
-      "(?:identify|match|recognise|recognize|verify)[^\\\"\\\\n]{0,30}(?:face|person|identity|suspect)"
+      "\\b(?:identify|match|recognise|recognize|verify)\\b[^\\\"\\\\n]{0,30}(?:face|person|identity|suspect)"
     ],
     "articles": [
       "9",
@@ -318,6 +320,7 @@ const HIGH_RISK_PATTERNS = {
       "\\b(?:classify|score|rank|evaluate|assess|filter|shortlist)[_\\W]?resumes?\\b",
       "\\bresumes?[_\\W]?(?:classif|scor|rank|evaluat|filter|shortlist|match)",
       "\\b(?:score|rank|evaluate|shortlist)[_\\W]?(?:job[_\\W]?)?candidates?\\b",
+      "\\b(?:evaluate|assess|screen)(?:s|ed|ing|ment)?[^\\\"\\\\n]{0,30}(?:candidate|applicant)\\b",
       "\\bjob[_\\W]?applicants?[_\\W]?(?:scor|rank|filter|evaluat|shortlist)",
       "\\b(?:score|rank|shortlist)[_\\W]?job[_\\W]?applicants?\\b",
       "(?:score|rank|classify|evaluate)[^\\\"\\\\n]{0,30}resumes?\\b",
@@ -554,6 +557,7 @@ const HIGH_RISK_PATTERNS = {
       "\\bfico\\b",
       "\\bcredit[_\\W]?rating",
       "\\b(?:credit|lending)[_\\W]?(?:model|predict|classif|algorithm|automat)",
+      "\\b(?:receive|grant|approve|deny|reject)[_\\W]{0,12}credit\\b",
       "\\b(?:score|assess|evaluate|rate)[_\\W]?(?:creditworth|borrower|applicant[_\\W]?credit)",
       "(?:score|assess|evaluate|predict)[^\\\"\\\\n]{0,30}(?:credit|creditworth|borrower|lending|fico)"
     ],
@@ -1196,6 +1200,9 @@ const AI_INDICATORS = {
     "coremltools",
     "\\.mlmodel",
     "mediapipe",
+    "face_recognition",
+    "import\\s+dlib\\b",
+    "from\\s+dlib\\b",
     "com\\.google\\.mlkit",
     "mlkit",
     "executorch",

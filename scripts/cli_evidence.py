@@ -377,7 +377,7 @@ def cmd_verify(args) -> None:
             signature_status = "UNVERIFIABLE"
             signature_detail = (
                 "manifest carries a signature but the cryptography package "
-                "is not installed (`pip install regula-ai[signing]` to verify)"
+                "is not installed (install the `signing` extra from the reviewed source; see docs/installation.md)"
             )
             if strict:
                 print(f"ERROR (strict mode): {signature_detail}")
@@ -487,7 +487,7 @@ def cmd_verify(args) -> None:
             timestamp_status = "UNVERIFIABLE"
             timestamp_detail = (
                 "manifest carries a timestamp but the asn1crypto package "
-                "is not installed (`pip install regula-ai[signing]`)"
+                "is not installed (install the `signing` extra from the reviewed source; see docs/installation.md)"
             )
             if strict:
                 print(f"ERROR (strict mode): {timestamp_detail}")

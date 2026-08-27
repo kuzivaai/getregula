@@ -53,7 +53,7 @@ Regulation (EU) 2026/1744 also amended provisions beyond the dates, including de
 `regula check .` identifies code patterns for review. It cannot determine intended purpose, reasonably foreseeable misuse, organisational role, jurisdiction, exceptions or the complete facts required for a legal classification.
 
 ```bash
-pipx install regula-ai
+pipx install git+https://github.com/kuzivaai/getregula.git@main
 regula check .
 ```
 

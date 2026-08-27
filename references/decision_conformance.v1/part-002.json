@@ -1,5 +1,5 @@
 {
-  "model_version": "2026-08-19.1",
+  "model_version": "2026-08-26.1",
   "schema_version": "1.0",
   "shard_index": 2,
   "vectors": [
@@ -1380,7 +1380,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -2125,7 +2125,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -3505,7 +3505,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -4250,7 +4250,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -5630,7 +5630,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -6375,7 +6375,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -7755,7 +7755,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -8500,7 +8500,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -9845,7 +9845,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -10691,7 +10691,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -12036,7 +12036,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -12882,7 +12882,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -14227,7 +14227,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -15073,7 +15073,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -16418,7 +16418,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -17264,7 +17264,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -18609,7 +18609,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -19455,7 +19455,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -20771,7 +20771,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -21601,7 +21601,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -22917,7 +22917,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -23747,7 +23747,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -25063,7 +25063,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -25893,7 +25893,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -27209,7 +27209,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -28039,7 +28039,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -29384,7 +29384,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -30230,7 +30230,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -31575,7 +31575,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -32421,7 +32421,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -33766,7 +33766,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -34612,7 +34612,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -35957,7 +35957,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -36803,7 +36803,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -38148,7 +38148,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -38994,7 +38994,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -40287,7 +40287,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -41101,7 +41101,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -42394,7 +42394,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [
             {
               "applicability_by_rule": {},
@@ -43208,7 +43208,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     }
   ]

@@ -5,7 +5,7 @@ Regula PDF Export
 Renders Annex IV documentation to PDF using weasyprint (optional).
 Falls back to HTML with print-to-PDF instructions when weasyprint is absent.
 
-Install weasyprint: pip install regula[pdf]
+Install the PDF extra from the reviewed source; see docs/installation.md.
 """
 
 import sys
@@ -184,7 +184,8 @@ def render_to_pdf(html_content: str, fallback_to_html: bool = True) -> bytes:
         if fallback_to_html:
             return html_content.encode("utf-8")
         raise ImportError(
-            "weasyprint is not installed. Install it with: pip install 'regula[pdf]'\n"
+            "weasyprint is not installed. Install the PDF extra from the reviewed source; "
+            "see docs/installation.md.\n"
             "Or open the HTML file in a browser and use File \u2192 Print \u2192 Save as PDF."
         )
 

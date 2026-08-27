@@ -266,7 +266,7 @@ def _print_remediation(finding):
 
 
 def _resolve_jurisdictions(jurisdictions_arg):
-    """Resolve a comma-separated jurisdictions string to framework keys.
+    """Resolve comma-separated selected-reference filters to framework keys.
 
     Returns a list of (short_name, framework_key) tuples for valid jurisdictions.
     Prints a warning to stderr for unknown jurisdiction names.
@@ -761,7 +761,7 @@ def cmd_demo(args):
     elif os.path.isdir(repo_dir):
         example_dir = repo_dir
     else:
-        print("Demo data not found. Reinstall: pipx install regula-ai")
+        print("Demo data not found. Reinstall from the reviewed source; see docs/installation.md")
         print("Or scan your own project: regula check .")
         return
     demo_label = os.path.basename(example_dir)
@@ -940,7 +940,9 @@ def _build_subparsers(subparsers):
                          help="Deterministic JSON output (omit timestamp) for CI baseline comparison")
     p_check.add_argument("--jurisdictions",
                          help="Comma-separated jurisdictions (e.g. eu,colorado,korea). "
-                              "Applies all relevant framework mappings simultaneously. "
+                              "Adds selected crosswalk references; it does not decide "
+                              "applicability or compliance. The assess command provides "
+                              "decision questionnaires for eu, korea, and colorado. "
                               "Valid: " + ", ".join(sorted(JURISDICTION_MAP))
                               + ". Aliases: kr=korea, co=colorado")
     p_check.add_argument("--include-gdpr", action="store_true",

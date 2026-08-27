@@ -171,7 +171,10 @@
             font-family: var(--font-mono);
             font-size: 13px;
             font-weight: 600;
-            color: var(--accent);
+            /* The translucent circular fill prevents axe from resolving this
+               automatically. --accent was 4.13:1 at the darkest measured
+               composite; --accent-hover is 5.97:1 and clears normal-text AA. */
+            color: var(--accent-hover);
             background: rgba(59,130,246,0.1);
             width: 32px; height: 32px;
             border-radius: 50%;
@@ -467,7 +470,7 @@
 
         <ul>
             <li><strong>Need a structured starting point?</strong> Run <code>regula assess</code> to record context for human review.</li>
-            <li><strong>Want to scan your code?</strong> Run <code>regula check .</code> to identify risk patterns against 419 detections across 8 languages.</li>
+            <li><strong>Want to scan your code?</strong> Run <code>regula check .</code> to identify risk patterns against 423 detections across 8 languages.</li>
             <li><strong>High-risk?</strong> Run <code>regula gap .</code> for an Articles 9&ndash;15 gap assessment, then <code>regula plan .</code> for a prioritised remediation list.</li>
             <li><strong>Limited-risk?</strong> Run <code>regula disclose .</code> to draft disclosure text to review for your chatbot or AI-generated content.</li>
             <li><strong>Want the full picture?</strong> Install and run:</li>
@@ -480,7 +483,7 @@
                 <span class="term-dot td-g"></span>
             </div>
             <pre tabindex="0">
-<span class="p">$</span> <span class="c">pipx install regula-ai</span>
+<span class="p">$</span> <span class="c">pipx install git+https://github.com/kuzivaai/getregula.git@main</span>
 <span class="p">$</span> <span class="c">regula assess</span>          <span class="m"># applicability check</span>
 <span class="p">$</span> <span class="c">regula check .</span>         <span class="m"># code-level risk scan</span>
 <span class="p">$</span> <span class="c">regula report . -f html</span> <span class="m"># full compliance report</span>
@@ -525,7 +528,7 @@
                 <a href="/assess/">Assess</a>
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
                 <a href="/about.html">About</a>

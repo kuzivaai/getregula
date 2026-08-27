@@ -145,7 +145,7 @@
           {
             "id": "regula.installCli",
             "title": "Install the Regula CLI",
-            "description": "Regula VS Code runs the Regula CLI under the hood.\n\n[Install Regula](https://pypi.org/project/regula-ai/)\n\n```bash\npipx install regula-ai\n```",
+            "description": "Regula VS Code runs the Regula CLI under the hood.\n\n[Install Regula](https://github.com/kuzivaai/getregula/blob/main/docs/installation.md)\n\n```bash\npipx install git+https://github.com/kuzivaai/getregula.git@main\n```",
             "media": {
               "markdown": "media/install.md"
             },

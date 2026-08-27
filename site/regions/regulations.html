@@ -206,15 +206,12 @@
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
         <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
-            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
-            <a href="/product.html">What it does</a>
-            <a href="/guides/">Guides</a>
-        <a href="/pricing.html">Pricing</a>
-            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
+            <a href="/assess/" title="Record deployment context for review">Assess scope</a>
+            <a href="/product.html">Scan code</a>
+            <a href="/coverage.html">Coverage</a>
+            <a href="/coverage.html#methods">Methods &amp; limits</a>
             <span class="active">Regulations</span>
-            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
-            <a href="/about.html">About</a>
+            <a href="https://github.com/kuzivaai/getregula">GitHub</a>
             <a href="/">EN</a>
             <a href="/locales/de.html">DE</a>
             <a href="/locales/pt-br.html">BR</a>
@@ -224,7 +221,7 @@
     <header class="hub-hero">
         <h1>Global <span class="hl">AI regulation</span> tracker</h1>
         <p class="lede">Independent, primary-source-verified coverage of AI regulation by jurisdiction. We publish what is checkable against the actual legislation and clearly flag what is still reporting. Each jurisdiction we cover gets its own live page, updated as the regulation moves.</p>
-        <p class="last-updated"><strong>Last updated:</strong> 30 June 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+        <p class="last-updated"><strong>Last updated:</strong> 26 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
     </header>
 
     <main id="main">
@@ -257,10 +254,10 @@
                     <div class="reg-flag" aria-hidden="true">🇦🇪</div>
                     <div class="reg-status status-live">Live landing page</div>
                 </div>
-                <h2>UAE & GCC — EU AI Act extraterritorial exposure</h2>
-                <div class="reg-sub">For DIFC, ADGM, Hub71 and NEOM-portfolio AI teams</div>
-                <p class="reg-body">If a UAE-licensed company ships AI features that touch EU users, Article 2(1)(c) of Regulation (EU) 2024/1689 applies. Art 50 transparency obligations have applied since 2 August 2026. Annex III high-risk obligations are deferred to 2 December 2027 (Omnibus; EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in the OJ 24 Jul 2026, in force from 27 Jul 2026). Fines reach &euro;35M or 7% of global turnover. Dedicated landing page for GCC general counsel, heads of AI, and founders evaluating their EU market exposure.</p>
-                <span class="reg-cta">Read the UAE brief &rarr;</span>
+                <h2>UAE &amp; GCC — sector rules and cross-border exposure</h2>
+                <div class="reg-sub">No federal horizontal AI Act identified in the 26 August 2026 review · sector and free-zone rules still matter</div>
+                <p class="reg-body">The tracker separates UAE sector, data-protection and free-zone requirements from EU exposure. An EU AI Act territorial-scope analysis depends on the operator, market and output-use facts in Article 2; merely serving a globally accessible product is not itself the complete test. The page records what Regula can map and what requires UAE, sector, data-protection and qualified legal review.</p>
+                <span class="reg-cta">Read the UAE tracker &rarr;</span>
             </a>
 
             <a class="card-base reg-card live" href="/regions/uk-ai-regulation.html">
@@ -303,7 +300,7 @@
                 </div>
                 <h2>South Korea — AI Basic Act</h2>
                 <div class="reg-sub">In force 22 January 2026 · MSIT · extraterritorial</div>
-                <p class="reg-body">The second major horizontal AI statute after the EU AI Act. Took effect on 22 January 2026 with its Enforcement Decree. Defines high-impact AI (use-based) and high-performance AI (≥ 10²⁶ training FLOPs — distinct from the EU's 10²⁵ threshold), with generative AI disclosure and watermarking already required. Extraterritorial reach to foreign providers. Live tracker plus EU-vs-Korea comparison plus MSIT watchlist.</p>
+                <p class="reg-body">The second major horizontal AI statute after the EU AI Act took effect on 22 January 2026 with its Enforcement Decree. It defines high-impact AI by use and impact. The separate Article 32 safety path requires all three Decree Article 24 criteria: at least 10²⁶ training FLOPs, current frontier-level configuration and operation, and risk likely to have a widespread and significant impact. The tracker also covers Article 31 transparency and the conditional Article 36 domestic-agent rule.</p>
                 <span class="reg-cta">Read the tracker &rarr;</span>
             </a>
 
@@ -336,7 +333,7 @@
             <p>Every claim on this site about regulation is either (a) checkable against the actual legislation or an official government source, or (b) explicitly labelled as secondary reporting with the secondary source named. Where a jurisdiction's text is not in the public domain, we say so, label the claim, and commit to verifying it against the primary source as soon as it publishes. We would rather publish a short page with clear provenance than a long page with silent assumptions.</p>
             <p>If a jurisdiction matters to you and it is not yet on this list, <a href="https://github.com/kuzivaai/getregula/issues">open an issue</a>. We prioritise coverage by reader demand and by the quality of the primary source we can cite.</p>
         </div>
-    <p style="max-width:720px;margin:32px auto 8px;color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 14 August 2026 &middot; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+    <p style="max-width:720px;margin:32px auto 8px;color:var(--text-dim);font-size:0.85rem;"><strong>Last reviewed:</strong> 26 August 2026 &middot; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
 
 </main>
 
@@ -348,7 +345,7 @@
                 <a href="/assess/">Assess</a>
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
                 <a href="/about.html">About</a>

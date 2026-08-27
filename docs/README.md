@@ -52,13 +52,19 @@ Dry, factual descriptions. No interpretation.
 Background, context, and trade-offs.
 
 - [Architecture](architecture.md) — how the scanner and precision layers work.
+- [Product coverage and user journeys](PRODUCT_COVERAGE_AND_JOURNEYS.md) — capability levels, target tasks, failure paths, and the public information architecture.
+- [Pinned external-corpus diagnostic](EXTERNAL_DIAGNOSTIC_2026-08-26.md) — exact public snapshots, retained failures, repeatability evidence, and the no-accuracy-claim boundary.
 - [What Regula does not do](what-regula-does-not-do.md) — the honest limits (read this).
 - [AI governance context](AI_GOVERNANCE.md) — how Regula fits the wider governance picture.
 - [Accessibility](accessibility/README.md) — the site/docs accessibility posture.
 - [Trust](TRUST.md) — what's verified, reproducibility, security and privacy posture.
 - [Governance](../GOVERNANCE.md) — maintainership, access controls and bus-factor limits.
 - [Engineering roadmap](ENGINEERING_ROADMAP.md) — current technical priorities, evidence gates and known unknowns.
+- [Recovery and validity implementation plan](IMPLEMENTATION_PLAN_2026-08-27.md) — sequenced restoration, release, validity and UX work.
+- [Public engineering open-items register](OPEN_ITEMS_2026-08-27.md) — current completion conditions and evidence gaps.
+- [Owner-gated website recovery runbook](operations/WEBSITE_RECOVERY_RUNBOOK.md) — reversible DNS, TLS, smoke-test and rollback procedure.
 - [Evidence review and engineering basis](RESEARCH_BASIS_2026-08-25.md) — source appraisal and research-led implementation order as of 25 August 2026.
+- [Research quality evaluation](RESEARCH_EVALUATION_2026-08-26.md) — claim-by-claim source fitness, corrections, and limits as of 26 August 2026.
 - [Versioning and deprecation policy](VERSIONING.md) — what version numbers promise, the public API they cover, and the 1.9.0 realignment record.
 
 ---

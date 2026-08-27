@@ -159,7 +159,7 @@
         <span>The Implementation Layer</span>
     </div>
     <h1>I scanned 10 open-source AI apps for EU AI Act compliance. Here&rsquo;s what I <span class="hl">found.</span></h1>
-    <p style="font-style:italic;color:var(--text-dim);font-size:0.85rem;margin-bottom:12px;">Original scan with Regula v1.6.1 (330 patterns); re-scan with v1.7.0 (387 tier regexes). Current version has 419.</p>
+    <p style="font-style:italic;color:var(--text-dim);font-size:0.85rem;margin-bottom:12px;">Original scan with Regula v1.6.1 (330 patterns); re-scan with v1.7.0 (387 tier regexes). Current version has 423.</p>
     <aside class="provenance-note" style="font-size:0.85rem;margin-bottom:16px;">
       <strong>Provenance note, added 28 July 2026.</strong> Three figures on this page are annotated rather than corrected, because correcting them would mean substituting a number nobody can reproduce for another.
       <ul>
@@ -398,7 +398,7 @@
 
         <p>Install Regula with pip and point it at a project directory to obtain a pattern-based risk scan. Regula is open-source, has zero core dependencies, and its local scan engine does not upload project files. Results include file paths, line numbers, and EU AI Act article references for matched findings; runtime varies with project size and hardware.</p>
 
-        <pre tabindex="0"><code>pip install regula-ai
+        <pre tabindex="0"><code>pip install git+https://github.com/kuzivaai/getregula.git@main
 regula check /path/to/your/project</code></pre>
 
         <p>Regula is open-source, has zero core dependencies, and processes scan inputs locally without uploading project files. Runtime varies with project size and hardware.</p>
@@ -445,7 +445,7 @@ regula check /path/to/your/project</code></pre>
                 <a href="/assess/">Assess</a>
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
                 <a href="/about.html">About</a>

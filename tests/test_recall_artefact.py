@@ -16,8 +16,8 @@ The repair has two halves and this file guards both:
    measurement and fails on any disagreement.
 2. `claim_auditor.check_recall_claims()` verifies published fractions
    against it AND requires each to name its path and gate condition,
-   because on this corpus the same tier scores 10/30, 16/30 and 23/30
-   depending only on which gates are satisfied.
+   because on this corpus the same tier scores 4/30, 16/30, 18/30 and 23/30
+   depending on the runtime layer and which gates are satisfied.
 
 The required regression pair (1.5c) is
 `test_pair_compliant_fraction_passes` / `test_pair_bare_fraction_fails`.
@@ -50,7 +50,7 @@ class TestF24RegressionPair(unittest.TestCase):
     def test_pair_compliant_fraction_passes(self):
         text = (
             "On the synthetic corpus the scanner path with no flags "
-            "(default scan) recalls 10/30 high-risk fixtures.\n")
+            "(default scan) recalls 4/30 high-risk fixtures.\n")
         problems = ca.check_recall_claims(text, "docs/EXAMPLE.md", _artefact())
         self.assertEqual(
             problems, [],
@@ -62,19 +62,19 @@ class TestF24RegressionPair(unittest.TestCase):
         # so the paragraph was never inspected and an empty problem list
         # meant nothing. Strip the labels from the same sentence and it
         # must fail, which proves the paragraph is genuinely in scope.
-        stripped = "The corpus recalls 10/30 high-risk fixtures.\n"
+        stripped = "The corpus recalls 4/30 high-risk fixtures.\n"
         self.assertTrue(
             ca.check_recall_claims(stripped, "docs/EXAMPLE.md", _artefact()),
             "the compliant case is passing because the paragraph is never "
             "inspected, not because it is compliant")
 
     def test_pair_bare_fraction_fails(self):
-        text = "Regula achieves 10/30 recall on the synthetic corpus.\n"
+        text = "Regula achieves 4/30 recall on the synthetic corpus.\n"
         problems = ca.check_recall_claims(text, "docs/EXAMPLE.md", _artefact())
         self.assertTrue(
             problems,
             "a bare recall fraction passed. On this corpus the same tier "
-            "scores 10/30, 16/30 and 23/30 depending on gates alone, so an "
+            "scores 4/30, 16/30, 18/30 and 23/30 depending on path and gates, so an "
             "unlabelled fraction is not a measurement.")
 
     def test_mismatched_fraction_fails(self):
@@ -87,13 +87,13 @@ class TestF24RegressionPair(unittest.TestCase):
 
 class TestLabellingIsEnforcedOnBothAxes(unittest.TestCase):
     def test_path_named_but_gate_condition_missing_fails(self):
-        text = "The scanner recalls 10/30 high-risk fixtures.\n"
+        text = "The scanner recalls 4/30 high-risk fixtures.\n"
         problems = ca.check_recall_claims(text, "docs/EXAMPLE.md", _artefact())
         self.assertTrue(problems)
         self.assertIn("gate condition", problems[0][1])
 
     def test_gate_condition_named_but_path_missing_fails(self):
-        text = "With a default scan, recall is 10/30 high-risk fixtures.\n"
+        text = "With a default scan, recall is 4/30 high-risk fixtures.\n"
         problems = ca.check_recall_claims(text, "docs/EXAMPLE.md", _artefact())
         self.assertTrue(problems)
         self.assertIn("path", problems[0][1])

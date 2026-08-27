@@ -15,7 +15,9 @@
 | 1.9.x | ⚠️ Critical security fixes only; 2.0.0 has breaking output/config changes documented in `CHANGELOG.md` |
 | < 1.9 | ❌ Unsupported — please upgrade |
 
-The latest release is on PyPI at <https://pypi.org/project/regula-ai/>.
+There is currently no public PyPI package or GitHub Release for 2.0.0. The
+temporary source-install path and its reproducibility limitation are documented
+in [`docs/installation.md`](docs/installation.md).
 
 ## Reporting a vulnerability
 
@@ -55,7 +57,6 @@ disclosure, etc.), include that in your initial report.
 ## What is in scope
 
 - The `regula` CLI commands and the `scripts/` package
-- The `hooks/` package (pre/post tool-use, stop hooks)
 - The `references/` data files when consumed by the scanner
 - The benchmark runner (`benchmarks/label.py`, `benchmarks/synthetic/run.py`)
 - The MCP server (`scripts/mcp_server.py`)
@@ -81,13 +82,13 @@ for one scope is not described as a clean bill of health for another.
 
 | Check | Last verified | Result and scope |
 |---|---|---|
-| `bandit -c pyproject.toml -r scripts/ hooks/` | 2026-08-19, working tree based on `20de310` | 0 findings after bounded URL/XML hardening; the pre-change run found 14 (3 low, 11 medium, 0 high) |
-| `pip-audit -r <locked-all-extras-export>` | 2026-08-19, all optional extras | 1 advisory in WeasyPrint 68.1 with no fixed release; four `cryptography` 46.0.7 advisories were removed by locking 50.0.0 |
+| `bandit -c pyproject.toml -r scripts/` | 2026-08-27, current working tree | 0 findings across 44,228 lines; 16 specifically disabled findings remain visible in Bandit's metrics |
+| `pip-audit -r <locked-all-extras-export>` | 2026-08-27, all optional extras | 1 advisory, `PYSEC-2026-3412`, in WeasyPrint 68.1 with no fixed release. Regula does not pass the affected `presentational_hints=True` option and retains an HTML fallback. No advisory is suppressed. Four earlier `cryptography` 46.0.7 advisories remain removed by locking 50.0.0. |
 | Core dependency declaration | 2026-08-19 | No required third-party packages; this does not describe optional extras |
 | Semgrep | 2026-08-19 | Not re-run in this audit; no current zero-finding claim is made |
 | `regula self-test` | Release gate | Final branch result is recorded by CI before merge/release |
-| Custom regression suite | Collection manifest | 2,899 pytest-collected tests; collection count is not a pass result |
-| PyPI provenance attestation (PEP 740, Trusted Publishing) | Each release | Expected on wheel and sdist; verify the individual release rather than infer it |
+| Custom regression suite | Collection manifest | 2,932 pytest-collected tests; collection count is not a pass result |
+| Release provenance | 2026-08-27 | No current public release artefact exists; provenance and registry-install gates therefore remain outstanding |
 | CodeQL static analysis | 2026-08-20 analysis; dispositions verified 2026-08-22 | Analysis `1646686319` at main commit `fe1f5e7` produced 41 results. All 41 were reviewed and individually dispositioned; the current main-branch CodeQL open count is 0. This is a reviewed static-analysis result, not proof of no vulnerabilities. |
 Source: reproducible commands and evidence are documented in [`docs/TRUST.md`](docs/TRUST.md); live workflow state is available in [GitHub Actions](https://github.com/kuzivaai/getregula/actions).
 
@@ -152,29 +153,29 @@ Regula's own PR scan also reports one high-risk biometrics *product indicator*
 in `scripts/cli_scan.py`. It is not a CodeQL vulnerability and must not be
 counted as one; it remains visible for separate product-governance review.
 
-## How to verify a release independently
+## How to verify the current source independently
 
 ```bash
-# Verify the wheel matches the published commit
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
-git checkout v1.7.3
+git checkout COMMIT_SHA
+git rev-parse HEAD
+python3 tests/test_classification.py
+python3 -m pytest tests/ -q
+python3 -m scripts.cli self-test
+python3 -m scripts.cli doctor
+
+# Optional local build inspection; requires the `build` package
 python3 -m build
-sha256sum dist/regula_ai-1.7.3-py3-none-any.whl
-
-# Compare against the wheel served by PyPI
-pip download --no-deps -d /tmp/verify regula-ai==1.7.3
-sha256sum /tmp/verify/regula_ai-1.7.3-py3-none-any.whl
-
-# Verify PyPI provenance attestations (PEP 740, Sigstore-backed)
-python3 -m pip install pypi-attestation-models
-python3 -m pypi_attestations verify /tmp/verify/regula_ai-1.7.3-py3-none-any.whl
+sha256sum dist/*
 ```
 
-The two SHA-256 hashes should match. If they do not, **stop and report
-to `support@getregula.com` immediately** — that would indicate either a
-PyPI compromise or a non-reproducible build, both of which we want to
-investigate.
+Replace `COMMIT_SHA` with the full public commit you intend to evaluate. A
+locally built hash identifies that build; it cannot be compared with a trusted
+current registry artefact because none exists. Do not treat source installation
+as release attestation. A restored release process must add an immutable public
+tag, checksums, provenance attestations, registry installation tests, and
+rollback instructions before this limitation can be closed.
 
 ## Acknowledgements
 

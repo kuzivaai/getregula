@@ -5,9 +5,9 @@
 > questions a sceptical buyer, auditor, or compliance officer asks before
 > they will consider running it on their codebase.
 >
-> Every claim below is paired with the **exact shell command** anyone can
-> run to verify it independently. If a claim is not verifiable, it is not
-> in this document.
+> Reproducible claims below are paired with the exact command and scope used
+> to check them. Historical evidence that cannot be independently re-derived
+> is retained only when the missing inputs and resulting limitation are stated.
 
 ---
 
@@ -29,15 +29,18 @@
 ## 1. Who built it and what is it
 
 Regula is an **open-source command-line tool** that combines code scanning
-with governance questionnaires for EU AI Act compliance at the point of
-creation. It is licensed
+with governance questionnaires to produce code-observable indicators and
+review evidence. It is licensed
 under the Apache License 2.0. The full source is on GitHub at
 [github.com/kuzivaai/getregula](https://github.com/kuzivaai/getregula).
-PyPI package: [`regula-ai`](https://pypi.org/project/regula-ai/).
+As verified on 27 August 2026, PyPI distribution and the public website are
+unavailable and there is no public GitHub Release for 2.0.0. The temporary
+installation path is documented in [`installation.md`](installation.md).
 
-It is **not a SaaS, not a hosted service, not an API**. It runs entirely
-on the developer's machine. No code, no findings, no telemetry leave the
-machine unless the user explicitly opts in to anonymous crash reporting.
+It is **not a SaaS or hosted service**. The CLI and optional local API server
+run on the developer's machine. Core scans do not transmit code or findings;
+timestamping, update/feed checks, configured telemetry, and other explicitly
+network-enabled features are separate opt-in paths.
 
 It is **not a legal opinion**, not a substitute for a Data Protection
 Impact Assessment, not a guarantee of Article 6(3) exemption, and not a
@@ -51,17 +54,17 @@ your lawyer's job, not Regula's.
 
 | Claim | Evidence |
 |---|---|
-| Detects 8 prohibited AI practices (Article 5 of Regulation (EU) 2024/1689) | `regula classify --text "predictive policing system"` |
-| Detects 10 high-risk categories (Annex III + 2 Annex I categories cross-referenced by Article 6(1)) | `regula classify --text "classify_resume function"` |
-| Maps every finding to specific articles of the EU AI Act | `regula classify --text "credit scoring model" --format json` |
-| Maps every finding to ISO 42001, NIST AI RMF, NIST AI 600-1, NIST CSF 2.0, SOC 2 TSC, ISO 27001, OWASP LLM Top 10, MITRE ATLAS, CRA, ICO/DSIT, LGPD, Marco Legal IA | `cat references/framework_crosswalk.yaml` |
+| Contains rules intended to surface selected Article 5 prohibited-practice indicators | `regula classify --text "predictive policing system"`; this is one example, not a coverage proof |
+| Contains rules intended to surface selected Annex III and Annex I high-risk indicators | `regula classify --text "classify_resume function"`; intended purpose and deployment context remain unresolved |
+| Findings can carry selected EU AI Act references when a detector mapping exists; absence or presence is not an applicability decision | `regula classify --text "credit scoring model" --format json` |
+| Findings can carry selected references from the crosswalk; the crosswalk does not test control implementation, equivalence, conformity, or completeness | `cat references/framework_crosswalk.yaml` |
 | Generates Annex IV conformity evidence packs | `regula conform .` |
 | Generates Annex VIII registration packets | `regula register` |
 | Cross-file Article 14 human-oversight detection (Python) | `regula oversight` |
 | CycloneDX 1.7 ML-BOM with GPAI signatory annotations | `regula sbom --ai-bom` |
 | Machine-readable risk indication as JSON-LD, *aligned to* (not certified against) the DPVCG EU-AIAct vocabulary — a W3C Community Group report, **not a ratified W3C Standard** | `regula dpv .` |
 | SHA-256 hash-chained tamper-evident audit log | `regula audit verify` |
-| 2,899 unique tests (2,899 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
+| 2,932 unique tests (2,932 pytest-collected), 6 self-tests; versioned open-alert inventory retained | see [§3](#3-reproducibility) and [SECURITY.md](../SECURITY.md) |
 
 | Claim Regula does **NOT** make | Why |
 |---|---|
@@ -69,7 +72,7 @@ your lawyer's job, not Regula's.
 | "100% precision" | Regula is intentionally tuned for recall on Annex III/Article 5. False positives at the INFO tier are documented and quantified — see [the precision/recall report](benchmarks/PRECISION_RECALL_2026_04.md). |
 | "Audits your AI vendor" | Regula sees your code, not the vendor's. It surfaces vendor names and their published GPAI Code of Practice signatory status, nothing more. |
 | "Replaces a DPIA / FRIA / HRIA" | These are organisational processes that involve people, policy, and stakeholder consultation. `regula conform --organisational` provides a structured self-assessment questionnaire for Articles 9/17/27/72, but the output is a self-reported evidence document, not a compliance certificate. A qualified assessor must verify the answers. |
-| "Works on every language" | Python and JS/TS have full AST + cross-file flow. Java/Go/Rust/C/C++ are regex-only. This is documented in [`docs/architecture.md`](architecture.md). |
+| "Works equally well on every language" | Python has the deepest rule set; JS/TS has optional syntax-aware analysis; other supported languages have more limited pattern coverage. Equivalent real-world validity has not been measured. See [`docs/architecture.md`](architecture.md). |
 
 ---
 
@@ -83,14 +86,14 @@ your lawyer's job, not Regula's.
 > influence it. `tests/test_gap_demo.py` re-runs the commands and compares the
 > output with `data/gap_demo.json`.
 
-### 3.1 Internal test suite — 2,899 [unique](../tests/) / 2,899 pytest-collected cases
+### 3.1 Internal test suite — 2,932 [unique](../tests/) / 2,932 pytest-collected cases
 
 ```bash
 git clone https://github.com/kuzivaai/getregula.git
 cd getregula
 python3 -m pytest tests/ --collect-only -q
-# Expected: 2899 collected. This command measures collection only.
-# 2,899 unique tests (sort -u of test IDs equals collected count).
+# Expected: 2932 collected. This command measures collection only.
+# 2,932 unique tests (sort -u of test IDs equals collected count).
 
 # Execute the full suite separately. Do not infer its result from collection.
 python3 -m pytest tests/ -q
@@ -98,7 +101,7 @@ python3 -m pytest tests/ -q
 
 Regula also ships a legacy auto-discovery runner for the classification
 suite — run `python3 tests/test_classification.py` for its current output.
-The runner currently discovers 1,268 functions, a count machine-checked by
+The runner currently discovers 1,297 functions, a count machine-checked by
 `tests/test_published_count_manifest.py`. **Read that line carefully:
 `1386 passed` is not a count of tests.** The runner's counter is incremented by
 the `assert_true` / `assert_eq` / `assert_false` helpers in `tests/helpers.py`,
@@ -163,40 +166,42 @@ is the human-authored fixture set in `benchmarks/synthetic/fixtures/`.
 > to sample categories that pass. Corrected here rather than left
 > unreproducible.
 >
-> **Gate conditions change this number more than anything else does.** The
-> 53% above is the **classifier** path (`report.scan_files`, what `run.py`
-> measures) with all eight opt-in domains declared. The **scanner** path
-> (`regula check`, what a user actually runs) with **no flags** gives
-> **10 of 30** on the same corpus, because opt-in domain suppression and an
-> AI-library-indicator requirement gate findings the classifier assigns.
+> **Gate conditions and runtime layer change the result materially.** The
+> 53% above is the `report.scan_files` path with all eight opt-in domains
+> declared. The **scanner** path (`regula check`, what a user actually runs)
+> with **no flags** currently gives **4 of 30** on the same corpus because
+> opt-in domain suppression and AI-indicator requirements gate raw matches.
+> The context-free core classifier used by the browser gives **18 of 30**; it
+> has no project policy, fingerprint or declared-domain context.
 >
 > Every figure below is reproducible from `benchmarks/synthetic/RECALL.json`,
 > which `scripts/build_recall_artefact.py` produces from an actual run:
-> **scanner path, default scan 10/30**; **scanner path, all domains declared
-> 16/30**; **scanner path, domains declared with an AI import injected
-> 23/30**; **classifier path, all domains declared 16/30**. Prohibited
-> recall is **5/5** on every one of them.
+> **core classifier, no context gates 18/30**; **scanner path, default scan
+> 4/30**; **scanner path, all domains declared 16/30**; **scanner path,
+> domains declared with an AI import injected 23/30**; **`report.scan_files`,
+> all domains declared 16/30**. Prohibited label fidelity is **5/5** on every
+> one of them.
 >
 > **No recall figure may be quoted without naming its path and its gate
 > condition** — `claim_auditor --verify-facts` now rejects one that is not.
 > The earlier "14/30 domain-declared" and "19/30 with both gates" figures
 > are WITHDRAWN as NOT REPRODUCIBLE: the conditions behind them were never
-> committed. Full decomposition, including the 17-vs-3
-> gates-vs-patterns split, is in
-> `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`.
+> committed. The current decomposition is in `docs/MODEL_CARD.md` and is
+> mechanically checked against the artefact.
 >
-> **Finding F8 (scanner and classifier disagree) is not supported by the
-> artefact.** Under the same gate condition the two paths miss the
-> identical 14 fixtures. The divergence previously recorded compared two
-> different gate conditions as well as two paths.
+> Core Python/JavaScript rule parity does not imply parity with the full CLI:
+> the CLI deliberately adds project discovery, policy, fingerprinting and
+> domain gates. The browser now tells users that it displays raw single-file
+> pattern candidates and may therefore surface candidates the default CLI
+> defers until domain context is declared.
 
-### 3.5 OSS precision benchmark — published, sliced, reproducible
+### 3.5 Dated OSS precision records — limited and not current validation
 
 The full report is at
 [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md).
 
 ```bash
-# Headline precision (blind-labelled random corpus, production code only):
+# Display the tracked v1.7.0 random-corpus score record:
 python3 benchmarks/label.py score --corpus random
 # Expected: 83.5% precision (N=115)
 # Labelled by a single reviewer; no inter-rater agreement measurement
@@ -213,18 +218,18 @@ python3 benchmarks/label.py score
 # Expected: 36.8% precision (N=446)
 ```
 
-**Two corpora, two numbers — both honest, different scopes.** The
-headline precision is **83.5%** (N=115, **measured on Regula v1.7.0**,
+**Two corpora, two dated records with different scopes.** The retired random
+corpus record is **83.5%** (N=115, **measured on Regula v1.7.0**,
 labelled by a **single reviewer** with no inter-rater agreement
 measurement, see [`benchmarks/README.md`](../benchmarks/README.md)),
 on production code from a random corpus of 50 Python AI repos selected
 via GitHub API (pool of 276, random seed 42) and blind-labelled
 (labeller saw only file path, code context, and finding description —
-no project name, README, or purpose). This measures what users see
-with default `--skip-tests` and domain-gating settings.
+no project name, README, or purpose). The measured subset membership and pinned
+repository snapshots are missing, so it cannot be re-derived and does not
+measure the current detector.
 
-> **Version note:** Precision figures are re-measured per release where
-> the corpus permits. Pattern additions in v1.7.1+ (including Article
+> **Version note:** Pattern additions in v1.7.1+ (including Article
 > 5(1)(ba)/(bb) NCII/CSAM detection) are not yet reflected in benchmark
 > numbers. Figures cite the Regula version they were measured on. Per-tier:
 `ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%),
@@ -239,10 +244,8 @@ rounded values from the N=115 published benchmark recorded in
 The development corpus (`python3 benchmarks/label.py score`, no flags)
 scores **36.8%** on 446 entries across 5 AI library projects and 12
 application projects. The library subset (scikit-learn, langchain,
-pydantic-ai, instructor, openai-python) alone is 15.2% — AI framework
-infrastructure code is the hardest corpus, analogous to running an SQL
-injection scanner on psycopg2 itself. Discovering this 36.8% figure is
-not a contradiction of the 83.5% headline (N=115, single reviewer, see
+pydantic-ai, instructor, openai-python) alone is 15.2%. The 36.8% figure is
+not directly comparable with the retired 83.5% record (N=115, single reviewer, see
 [`benchmarks/README.md`](../benchmarks/README.md)) — it is a different corpus
 measuring a different thing.
 
@@ -264,9 +267,13 @@ Source: `benchmarks/results/random_corpus/METHODOLOGY.json`, regenerated by `ben
 
 Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 
-### 3.5 Known limitations
+### 3.5a Known limitations
 
-- **TypeScript precision is 0% on the current benchmark** (0 TP, 6 FP). All six TypeScript false positives are domain-keyword matches in code where no AI inference occurs. Regula has no TypeScript-specific AST gating, so TypeScript findings should be treated as advisory. Source: [`benchmarks/results/random_corpus/METHODOLOGY.json`](../benchmarks/results/random_corpus/METHODOLOGY.json).
+- **TypeScript validity is unmeasured.** A dated six-finding development slice
+  contained 0 TP and 6 FP. That tiny selected slice is a warning signal, not a
+  current or generalisable precision rate. TypeScript findings should be
+  treated as advisory. Source:
+  [`benchmarks/results/random_corpus/METHODOLOGY.json`](../benchmarks/results/random_corpus/METHODOLOGY.json).
 - **Library source code** has 15.2% precision on the measured library corpus, compared with 66.1% for measured application code. AI frameworks implement APIs that the patterns flag, so use `--scope production` and `--skip-tests` to focus on application code. Source: [`benchmarks/results/random_corpus/METHODOLOGY.json`](../benchmarks/results/random_corpus/METHODOLOGY.json).
 
 ### 3.6 Security posture — bandit, semgrep, pip-audit
@@ -274,15 +281,16 @@ Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`.
 ```bash
 # Audit source paths with the repository's documented Bandit policy:
 pip install bandit pip-audit
-bandit -c pyproject.toml -r scripts/ hooks/
+bandit -c pyproject.toml -r scripts/
 # 2026-08-19 branch result: 0 findings after URL/XML hardening.
 
 # Export the lock with every optional extra, then audit that export:
 uv export --all-extras --no-dev --no-emit-project -o /tmp/regula-all-extras.txt
 pip-audit -r /tmp/regula-all-extras.txt
-# 2026-08-19 result: 1 advisory in WeasyPrint 68.1. The advisory has
-# no fixed release; Regula does not enable the affected
-# presentational_hints=True path. See SECURITY.md for the bounded residual.
+# 2026-08-27 result: 1 advisory, PYSEC-2026-3412, in WeasyPrint 68.1.
+# The advisory has no fixed release; Regula does not pass the affected
+# presentational_hints=True option and retains an HTML fallback. No advisory
+# is suppressed. See SECURITY.md for the bounded residual.
 ```
 
 The core dependency declaration is empty. That does not imply that optional
@@ -403,11 +411,11 @@ are tracked in a public delta log (`content/regulations/delta-log/`).
 | Resource | Where |
 |---|---|
 | Source code | <https://github.com/kuzivaai/getregula> |
-| PyPI package | <https://pypi.org/project/regula-ai/> |
+| Current distribution status | Source-only; see [`installation.md`](installation.md) |
 | Direct contact | `support@getregula.com` |
 | Issue tracker | <https://github.com/kuzivaai/getregula/issues> |
 | Security disclosures | <https://github.com/kuzivaai/getregula/security/advisories/new> or `support@getregula.com` |
-| Test suite | `tests/` (2,899 unique tests, 2,899 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,268 functions, 444 defined in-file) |
+| Test suite | `tests/` (2,932 unique tests, 2,932 pytest-collected; the legacy `tests/test_classification.py` runner executes 1,297 functions, 444 defined in-file) |
 | Pattern definitions | `scripts/risk_patterns.py` |
 | Framework mapping | `references/framework_crosswalk.yaml` |
 | Pre-commit integration source | `scripts/install.py` |
@@ -475,9 +483,9 @@ scheme (e.g. an HMAC chain) cannot offer that separation: verification
 requires the same secret that creates the records, so any party able
 to verify is also able to forge, and third-party verification without
 key disclosure is impossible. The distribution pipeline carries the
-same property end-to-end — the PyPI release is published via OIDC
-trusted publishing with PEP 740 attestations, so the package itself
-is provenance-verifiable before you run it.
+Earlier PyPI releases used OIDC trusted publishing with PEP 740 attestations.
+That historical control does not establish provenance for the current source-only
+state; there is no current public release artefact to verify before execution.
 
 ---
 
@@ -487,7 +495,8 @@ is provenance-verifiable before you run it.
 
 - **Zero runtime dependencies.** Regula's core only uses Python's
   standard library. Optional features (YAML parsing, AST analysis, PDF
-  export) are explicit opt-ins via `pipx install "regula-ai[yaml,ast,pdf]"`.
+  export) are explicit opt-ins via a reviewed checkout and
+  `pip install '.[yaml,ast,pdf]'`.
   Verify with `pip show regula-ai`.
 - **Deterministic output.** Same input + same policy file produces
   byte-identical JSON output. Verify by running `regula check --format
@@ -531,17 +540,17 @@ Regula's supply chain attack surface is intentionally minimal.
   standard library. Verify with `pip show regula-ai` — the `Requires`
   field is empty. This eliminates transitive dependency compromise as
   an attack vector.
-- **Reproducible builds from source.** Anyone can rebuild the wheel from
-  a tagged commit and compare the SHA-256 against the PyPI artefact.
-  See [`SECURITY.md`](../SECURITY.md) "How to verify a release
-  independently" for the exact steps.
+- **Builds inspectable from source.** Anyone can pin a reviewed commit and
+  build a wheel locally. There is currently no registry artefact or public
+  2.0.0 release against which to compare its SHA-256; this is a documented
+  release-process gap, not a reproducibility claim.
 - **No compiled binaries or obfuscated bytecode.** Every file in the
   repository is human-readable source. There is no `.so`, `.dll`,
   `.pyc`, or minified code committed.
 - **Optional dependencies are explicit opt-ins.** `pyyaml`,
   `tree-sitter`, `weasyprint`, and `sentry-sdk` are declared as extras
-  in `pyproject.toml` (e.g. `pipx install "regula-ai[yaml,ast,pdf]"`).
-  They are never pulled in by a bare `pip install regula-ai`.
+  in `pyproject.toml` (e.g. `pip install '.[yaml,ast,pdf]'` from a reviewed checkout).
+  They are never pulled in by a bare `pip install git+https://github.com/kuzivaai/getregula.git@main`.
 - **SBOM self-generation.** Regula can generate a CycloneDX 1.7 ML-BOM
   of itself from any checkout: `regula sbom --ai-bom`. This includes
   component hashes and dependency declarations.
@@ -600,8 +609,8 @@ Crash reporting requires **both** of the following. Neither is the default:
 2. a Sentry endpoint is configured, via the `REGULA_SENTRY_DSN`
    environment variable.
 
-The published PyPI build ships `_SENTRY_DSN = ""` (empty) and reads the
-endpoint from the environment, so **even if the user opts in, nothing is
+The current source sets `_SENTRY_DSN = ""` (empty) and reads the endpoint
+from the environment, so **even if the user opts in, nothing is
 sent unless they point Regula at a Sentry instance themselves.** This is
 by design: Regula is a tool for compliance teams, many of whom cannot
 legally exfiltrate any data to a third party.
@@ -660,7 +669,7 @@ The questions a 2026 procurement team will ask, with copy-pasteable
 answers.
 
 **Q: What is the deployment model?**
-A: Local-only command-line tool. Installs via `pipx install regula-ai`.
+A: Local-only command-line tool. Installs via `pipx install git+https://github.com/kuzivaai/getregula.git@main`.
 No accounts, no servers, no SaaS tier exists.
 
 **Q: Where is data stored?**
@@ -745,7 +754,7 @@ in this repository. Every row links to a verifiable artefact.
 | Precision and recall benchmark | [`docs/benchmarks/PRECISION_RECALL_2026_04.md`](benchmarks/PRECISION_RECALL_2026_04.md) | Labelled corpus, methodology, per-tier and per-project breakdown |
 | Framework crosswalk data | [`references/framework_crosswalk.yaml`](../references/framework_crosswalk.yaml) | EU AI Act ↔ ISO 42001 / NIST AI RMF / SOC 2 / etc. mappings |
 | Pattern definitions | [`scripts/risk_patterns.py`](../scripts/risk_patterns.py) | All detection regexes, grouped by risk tier and category |
-| Test suite | `tests/` | 2,899 unique tests (2,899 pytest-collected) |
+| Test suite | `tests/` | 2,932 unique tests (2,932 pytest-collected) |
 | Self-test | `regula self-test` | 6 round-trip assertions |
 | Environment health | `regula doctor` | 12 checks (pass/info split varies by environment) |
 | SBOM | `regula sbom --ai-bom` | CycloneDX 1.7 ML-BOM from any checkout |

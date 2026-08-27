@@ -410,6 +410,10 @@ _AI_OUTPUT_PATTERNS = [
 _EXTERNAL_ACTION_PATTERNS = [
     (r"subprocess\.(?:run|call|Popen)", "System command execution"),
     (r"os\.system\(", "System command execution"),
+    # Cross-language agent runtimes commonly wrap shell execution in a
+    # service method rather than calling Python's subprocess module directly.
+    # This remains gated by an AI signal or an agent/tool path below.
+    (r"(?:executeCommand|executeBashCommand)\(", "System command execution"),
     (r"requests\.(?:post|put|patch|delete)\(", "HTTP mutation request"),
     (r"httpx\.(?:post|put|patch|delete)\(", "HTTP mutation request"),
     (r"(?:cursor|conn|connection|session|db|engine)\.execute\(", "Database query execution"),

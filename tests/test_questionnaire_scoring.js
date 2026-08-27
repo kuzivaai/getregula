@@ -29,6 +29,12 @@ for (const generatedDataFile of ["decision-model.js", "decision-adapters.js"]) {
   check(source.startsWith("// regula-ignore: * -- "),
     `${generatedDataFile} carries a reasoned self-scan suppression`);
 }
+const decisionUiSource = fs.readFileSync(
+  path.join(root, "site", "assess", "decision-ui.js"), "utf8");
+check(decisionUiSource.includes("indication.applicability_note"),
+  "browser result cards visibly preserve rule applicability notes");
+check(decisionUiSource.includes("obligation.applicability_note"),
+  "browser obligation cards visibly preserve transition and applicability notes");
 
 function obligationIds(result) {
   return new Set((result.obligations || []).map(item => item.obligation_id));
@@ -41,10 +47,12 @@ const ALL_QUESTION_IDS = {
     "social_scoring", "emotion_recognition", "public_facing", "biometric_data",
     "risk_documentation", "logging_active", "autonomous_decisions"],
   kr: ["kr_scope", "kr_is_ai_system", "kr_operator", "kr_provides",
-    "kr_high_impact_domain", "kr_significant_impact", "kr_high_performance",
+    "kr_high_impact_domain", "kr_significant_impact", "kr_training_compute",
+    "kr_frontier_technology", "kr_widespread_impact",
     "kr_transparency", "kr_generative", "kr_virtual_media", "kr_explanation",
     "kr_risk_management", "kr_human_oversight", "kr_foreign_operator",
-    "kr_agent_threshold", "kr_representative"],
+    "kr_total_revenue", "kr_ai_services_revenue", "kr_domestic_users",
+    "kr_admin_fine", "kr_representative"],
   co: ["co_scope", "co_is_ai_system", "co_doing_business", "co_personal_data",
     "co_decisions", "co_domain", "co_material", "co_excluded",
     "co_other_law_exemption", "co_role", "co_pre_notice", "co_adverse",
@@ -120,17 +128,44 @@ const kr = adapters.evaluateQuestionnaireDecision("kr", {
   kr_provides: "yes",
   kr_high_impact_domain: "yes",
   kr_significant_impact: "yes",
-  kr_high_performance: "no",
+  kr_training_compute: "no",
+  kr_frontier_technology: "no",
+  kr_widespread_impact: "no",
   kr_generative: "no",
   kr_virtual_media: "no",
   kr_foreign_operator: "no",
-  kr_agent_threshold: "no",
+  kr_total_revenue: "no",
+  kr_ai_services_revenue: "no",
+  kr_domestic_users: "no",
+  kr_admin_fine: "no",
 }, NOW);
 equal(kr.result_type, "indication", "resolved Korea facts indicate");
 check(obligationIds(kr).has("kr_review_33"),
   "Korea result includes advance Article 33 review");
 check(obligationIds(kr).has("kr_risk_management_34"),
   "Korea result includes resolved Article 34 duty");
+
+const krSafety = adapters.evaluateQuestionnaireDecision("kr", {
+  kr_scope: "yes",
+  kr_is_ai_system: "yes",
+  kr_operator: "yes",
+  kr_provides: "yes",
+  kr_training_compute: "yes",
+  kr_frontier_technology: "yes",
+  kr_widespread_impact: "yes",
+}, NOW);
+check(obligationIds(krSafety).has("kr_safety_32_1"),
+  "Korea adapter requires and maps all three Decree Article 24 criteria");
+
+const krAgent = adapters.evaluateQuestionnaireDecision("kr", {
+  kr_scope: "yes",
+  kr_is_ai_system: "yes",
+  kr_operator: "yes",
+  kr_foreign_operator: "yes",
+  kr_domestic_users: "yes",
+}, NOW);
+check(obligationIds(krAgent).has("kr_agent_36"),
+  "Korea adapter maps each Decree Article 29 alternative independently");
 
 const co = adapters.evaluateQuestionnaireDecision("co", {
   co_scope: "yes",

@@ -189,7 +189,7 @@ The patterns aren't trying to be clever. They match the terms that developers ac
 Install Regula, point it at your project, and review the output. A clean scan means only that this pattern set found no match in the scanned files. It does not establish that no prohibited practice exists or that no obligation applies. A match is an indicator for contextual review, not proof that Article 5 is met.
 
 ```bash
-pipx install regula-ai && regula check .
+pipx install git+https://github.com/kuzivaai/getregula.git@main && regula check .
 ```
 
 If you want only prohibited findings, filter with `regula check . --format json | python3 -c "import sys,json; d=json.load(sys.stdin); [print(f['file'],f['description']) for f in d['data']['findings'] if f['tier']=='prohibited']"`. But honestly, just read the full output. It isn't long, and you should know your full risk profile.

@@ -307,8 +307,8 @@ def cmd_conform(args) -> None:
         print(
             f"Signing/timestamping unavailable: {exc}\n\n"
             f"Install the signing extra:\n"
-            f"  pipx install \"regula-ai[signing]\"\n"
-            f"  # or: pip install \"regula-ai[signing]\"",
+            f"  Install the signing extra from the reviewed source.\n"
+            f"  See docs/installation.md.",
             file=sys.stderr,
         )
         sys.exit(2)

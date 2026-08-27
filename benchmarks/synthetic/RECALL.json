@@ -1,7 +1,7 @@
 {
   "_ai_import_injected": "import torch  # injected by build_recall_artefact.py",
   "_hit_definition": "A fixture is recalled when the HIGHEST tier detected in it equals the tier manifest.json expects.",
-  "_publication_rule": "Every published recall fraction must state its path and gate condition. A bare fraction is not a measurement: the same corpus gives different answers per condition, and the scanner and classifier paths disagree (finding F8).",
+  "_publication_rule": "Every published synthetic label-fidelity fraction must state its path and gate condition. A bare fraction is not a measurement: the same corpus gives different answers when context gates or runtime layers differ.",
   "_what_this_is": "Canonical recall fractions for the synthetic corpus. Produced by scripts/build_recall_artefact.py from an actual run. Never hand-edited: tests/test_recall_artefact.py re-runs the measurement and fails if this file disagrees.",
   "conditions": {
     "classifier/domains-declared": {
@@ -42,6 +42,42 @@
         }
       }
     },
+    "core-classifier/default": {
+      "gates": "none",
+      "invocation": "classify_risk.classify(<fixture text>, python)",
+      "label": "context-free Python/JavaScript pattern classifier",
+      "note": "Raw single-file pattern classification used by the browser scanner. It has no project fingerprint, policy or declared domain context and is not the default CLI path. JavaScript parity is verified separately by tests/test_scanner_js.js.",
+      "path": "core-classifier",
+      "tiers": {
+        "high_risk": {
+          "fraction": "18/30",
+          "hits": 18,
+          "missed": [
+            "highrisk_admissions.py",
+            "highrisk_benefits_eligibility.py",
+            "highrisk_crime_forecast.py",
+            "highrisk_exam_proctor.py",
+            "highrisk_medical_triage.py",
+            "highrisk_polygraph_screen.py",
+            "highrisk_recidivism.py",
+            "highrisk_student_assessment.py",
+            "highrisk_task_allocation_shift.py",
+            "highrisk_voice_verify.py",
+            "highrisk_voter_targeting.py",
+            "highrisk_worker_monitoring.py"
+          ],
+          "percent": 60.0,
+          "total": 30
+        },
+        "prohibited": {
+          "fraction": "5/5",
+          "hits": 5,
+          "missed": [],
+          "percent": 100.0,
+          "total": 5
+        }
+      }
+    },
     "scanner/default": {
       "gates": "none",
       "invocation": "python3 -m scripts.cli check <fixtures> --format json",
@@ -50,18 +86,24 @@
       "path": "scanner",
       "tiers": {
         "high_risk": {
-          "fraction": "10/30",
-          "hits": 10,
+          "fraction": "4/30",
+          "hits": 4,
           "missed": [
             "highrisk_admissions.py",
             "highrisk_benefits_eligibility.py",
+            "highrisk_biometric_access.py",
+            "highrisk_biometrics.py",
             "highrisk_border_screening.py",
+            "highrisk_credit.py",
             "highrisk_crime_forecast.py",
             "highrisk_employment.py",
             "highrisk_energy_grid.py",
             "highrisk_exam_proctor.py",
+            "highrisk_insurance_pricing.py",
             "highrisk_judicial_support.py",
+            "highrisk_loan_underwriting.py",
             "highrisk_medical_triage.py",
+            "highrisk_migration.py",
             "highrisk_polygraph_screen.py",
             "highrisk_promotion_ranking.py",
             "highrisk_recidivism.py",
@@ -74,7 +116,7 @@
             "highrisk_water_supply.py",
             "highrisk_worker_monitoring.py"
           ],
-          "percent": 33.3,
+          "percent": 13.3,
           "total": 30
         },
         "prohibited": {
@@ -157,6 +199,6 @@
     }
   },
   "fixture_count": 38,
-  "generated_at": "2026-08-12T22:32:18.449377+00:00",
+  "generated_at": "2026-08-26T14:57:42.018800+00:00",
   "manifest_version": "2.0"
 }

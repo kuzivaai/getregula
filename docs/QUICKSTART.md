@@ -1,148 +1,107 @@
-# Regula Quickstart for AI Builders
+# Regula quick start
 
-You built an AI-powered app. Maybe with Claude, ChatGPT, Cursor, Lovable, or Bolt. It works. Now what?
+Regula helps a developer or governance reviewer find **code-observable AI-governance indicators**, record deployment facts that source code cannot establish, and prepare evidence for human review. It does not determine legal classification, compliance, or which duties apply to a real system.
 
-If your app is used by anyone in the EU — or you plan to sell it there — the **EU AI Act** may apply, depending on the roles and scope in Article 2. Article 99 provides for fines up to **EUR 35 million or 7% of global turnover** for prohibited-practice infringements. Article 50 transparency obligations apply from **2 August 2026**. Annex III high-risk obligations are deferred to **2 December 2027** under the Digital Omnibus (agreed 7 May 2026, EP approved 16 June 2026, Council approved 29 June 2026; published in the Official Journal on 24 July 2026 as Regulation (EU) 2026/1744, in force from 27 July 2026; the deferred dates are enacted law). [Primary legislation: Regulation (EU) 2024/1689, Articles 2, 99 and 113](https://eur-lex.europa.eu/eli/reg/2024/1689/oj).
+## 1. Install the current public source
 
-Regula reports code-observable indicators and asks for deployment context. It does not determine legal classification, compliance, or which obligations apply to a real deployment.
-
----
-
-## Step 1: Find Out Your Risk Tier
+PyPI distribution is currently unavailable. Until a new package release is published, install the public `main` branch with Python 3.10 or later:
 
 ```bash
-pipx install regula-ai
+pipx install git+https://github.com/kuzivaai/getregula.git@main
+regula --version
+regula self-test
+```
+
+This is a moving source reference, not an immutable release. For a reproducible evaluation, replace `main` with the exact public commit you reviewed. See [Installing Regula](installation.md) for `uv`, virtual-environment, upgrade, and uninstall instructions.
+
+## 2. Record the facts code cannot show
+
+Start with the guided assessment:
+
+```bash
+regula assess
+regula assess --save-facts
+```
+
+The assessment asks about intended purpose, jurisdiction, operator role, and deployment context. Saved answers are declarations from the operator, not facts inferred or verified by Regula. `unknown` remains unknown; it is never treated as `no`.
+
+You can inspect or provide facts explicitly:
+
+```bash
+regula check . --list-facts
+regula check . --fact is_ai_system=yes \
+               --fact jurisdiction_in_scope=yes
+```
+
+## 3. Scan the code
+
+```bash
 regula check .
+regula check . --explain
 ```
 
-Regula scans your code and tells you which **risk tier** your AI system falls into:
+The result separates:
 
-| Tier | What It Means | Example |
-|------|---------------|---------|
-| **PROHIBITED** | Banned in the EU. Stop. | Social credit scoring, subliminal manipulation |
-| **HIGH-RISK** | Heavy compliance required (Articles 9-15) | CV screening, credit scoring, healthcare services |
-| **LIMITED-RISK** | Must disclose AI to users (Article 50) | Chatbots, deepfakes, emotion recognition |
-| **NO ELEVATED RISK-TIER INDICATORS** | No prohibited, Annex III or Article 50 path detected in code; not legal clearance | Examples may include spam filters or recommendation engines, depending on context |
+- **detector observations** — patterns seen in the files that were scanned;
+- **declared facts** — contextual answers supplied by a person; and
+- **decision state** — often `insufficient_information` until required facts are resolved.
 
-If you built a chatbot — that's limited-risk. If it screens job applications — that's high-risk. If it scores people's social behaviour — that's prohibited.
+A prohibited-practice, Annex III, or transparency indicator is a prompt for contextual review. It is not a finding that the law applies. Likewise, no elevated indicator is not proof of low risk or compliance.
 
-**Regula detects this from your code patterns.** It doesn't need you to fill in a questionnaire.
-
----
-
-## Step 2: Understand Why
+For the three executable jurisdiction reference sets:
 
 ```bash
-regula check --explain .
+regula check . --jurisdictions eu,korea,colorado
 ```
 
-This tells you in plain English:
-- Which risk tier and why
-- Which EU AI Act articles apply to your system
-- What each article actually requires
-- Whether you're the **provider** (built it) or **deployer** (using someone else's model)
+Regula also maps selected findings to additional governance and security framework references. Those cross-references are review aids, not independent implementations of each framework.
 
----
-
-## Step 3: Check What's Missing
+## 4. Review coverage and unresolved work
 
 ```bash
 regula gap .
-```
-
-If you're high-risk, Articles 9-15 apply. This command scores you on each one:
-
-| Article | Requirement | What Regula Checks |
-|---------|-------------|-------------------|
-| Art. 9 | Risk management system | Error handling, risk documentation |
-| Art. 10 | Data governance | Training data documentation, bias checks |
-| Art. 11 | Technical documentation | Whether docs exist and cover required areas |
-| Art. 12 | Record-keeping (logging) | Whether your AI calls are logged |
-| Art. 13 | Transparency to deployers | Whether capabilities/limitations are documented |
-| Art. 14 | Human oversight | Whether humans can review/override AI outputs |
-| Art. 15 | Accuracy and cybersecurity | Input validation, dependency security, testing |
-
-You can also check against other frameworks:
-```bash
-regula gap . --framework cra            # EU Cyber Resilience Act
-regula gap . --framework nist-ai-rmf    # NIST AI Risk Management
-regula gap . --framework iso-42001      # ISO/IEC 42001
-```
-
----
-
-## Step 4: Generate Documentation
-
-```bash
-regula docs .
-```
-
-The EU AI Act requires technical documentation (Annex IV). This generates a skeleton with everything Regula can auto-detect — AI libraries, model references, function signatures, risk classification. You fill in the rest.
-
----
-
-## Step 5: Get a Fix Plan
-
-```bash
+regula gap . --framework nist-ai-rmf,iso-42001
 regula plan .
 ```
 
-Returns a prioritised list of tasks: what to fix first, estimated effort, which article each task addresses. Start with the highest-priority items.
+`gap` examines code-observable signals against an Articles 9–15 review scaffold. Its output cannot verify organisational controls, real-world performance, data provenance, contracts, or deployment behaviour. Framework options include `nist-ai-rmf`, `iso-42001`, `nist-csf`, `soc2`, `iso-27001`, `owasp-llm-top10`, and `mitre-atlas`.
 
----
+`plan` prioritises follow-up items derived from the available observations and facts. Its priorities are workflow aids, not legal advice, audit conclusions, or effort guarantees.
 
-## Step 6: Package Evidence
-
-```bash
-regula evidence-pack .
-```
-
-Bundles your scan results, gap assessment, documentation, and audit trail into a .zip file. Hand this to your compliance officer, lawyer, or auditor.
-
----
-
-## Common Scenarios
-
-### "I built a chatbot with the OpenAI API"
-- Risk tier: **LIMITED-RISK** (Article 50)
-- What you need: Tell users they're talking to AI. That's it.
-- Run: `regula check .` to confirm, `regula disclose .` for disclosure text
-
-### "I built a CV screening tool for recruiters"
-- Risk tier: **HIGH-RISK** (Annex III, Category 4 — Employment)
-- What you need: Full Articles 9-15 compliance, conformity assessment
-- Run: `regula check .` → `regula gap .` → `regula plan .` → `regula docs .`
-
-### "I built a recommendation engine for an online shop"
-- Risk tier: **MINIMAL-RISK**
-- What you need: Nothing mandatory. Optional: transparency is good practice.
-- Run: `regula check .` to identify code-level indicators, then review intended purpose and deployment context
-
-### "I fine-tuned an open-source model"
-- Risk tier: Depends on use case + whether you're distributing the model
-- GPAI obligations may apply if training compute exceeds thresholds
-- Run: `regula check .` — Regula detects training patterns and flags GPAI obligations
-
----
-
-## What Regula Does Not Do
-
-- **Does not catch general security bugs** (XSS, SQL injection). Use Bandit, Semgrep, or Snyk for that.
-- **Does not assess code quality or architecture.** It checks regulatory risk patterns, not whether your code is well-structured.
-- **Does not check EU Cyber Resilience Act obligations** beyond the overlap with AI Act Article 15. Use `regula gap . --framework cra` to see where CRA and AI Act intersect, but CRA-specific requirements (SBOM, 5-year update obligation, 24-hour vulnerability reporting) are not fully covered.
-- **Does not make you compliant.** It tells you where you stand. Compliance requires human judgement, legal review, and organisational measures that no tool can automate.
-
-Findings are indicators for human review, not legal determinations.
-
----
-
-## Install
+## 5. Prepare reviewer-completable evidence
 
 ```bash
-pipx install regula-ai    # PyPI
-regula check .           # scan current directory
-regula self-test         # verify installation
-regula doctor            # check dependencies
+regula docs . --all
+regula evidence-pack . --bundle
 ```
 
-Zero dependencies for core features. Optional: `pyyaml` for config, `tree-sitter` for JS/TS AST analysis.
+Generated documentation and evidence packs are scaffolds. Complete their contextual fields, verify every claim against source evidence, and have the result reviewed by an appropriately qualified person before relying on it.
+
+## Try a known fixture
+
+The examples are in the repository rather than the installed package:
+
+```bash
+git clone https://github.com/kuzivaai/getregula.git
+cd getregula
+regula check examples/cv-screening-app --scope all
+```
+
+The fixture deliberately contains employment-related indicators. The result demonstrates detection and fact handling; it does not demonstrate that an actual product is legally high-risk.
+
+## What Regula cannot establish
+
+Regula cannot establish from source code alone:
+
+- whether a system meets a legal definition of AI;
+- territorial scope, operator role, intended purpose, or actual deployment context;
+- whether an exception or exemption applies;
+- whether policies and controls work in practice;
+- real-world accuracy, bias, robustness, accessibility, or human oversight quality; or
+- legal compliance, certification, or readiness.
+
+It is also not a general vulnerability scanner. Use appropriate security, dependency, privacy, accessibility, model-evaluation, and operational-monitoring tools alongside it.
+
+## Interpret results conservatively
+
+The detector is deterministic and covered by regression tests, but repeatability is not validity. Current benchmark evidence shows both false-negative risk and dependence on declared domain context. Review [the trust evidence](TRUST.md), [the current validity audit](VALIDITY_UX_ENGINEERING_AUDIT_2026-08-26.md), and [the current self-scan](self-scan-results.md) before deciding whether Regula is suitable for a workflow.

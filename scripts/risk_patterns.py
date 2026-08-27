@@ -85,7 +85,12 @@ PROHIBITED_PATTERNS = {
     },
     "biometric_categorisation_sensitive": {
         "domain": "biometrics",
-        "patterns": [r"\brace.?detect(?!.*(?:condition|thread|concurrent))", r"ethnicity.?infer", r"political.?opinion.?biometric",
+        # "race detector" is the standard Go/Clang concurrency tool. Race or
+        # ethnicity detection is only a sensitive biometric indicator when
+        # image/face/voice/biometric context is present.
+        "patterns": [r"\b(?:race|ethnicity).?(?:detect|infer|classif|categori[sz]).{0,30}(?:face|image|photo|voice|biometric)",
+                     r"\b(?:face|image|photo|voice|biometric).{0,30}(?:race|ethnicity).?(?:detect|infer|classif|categori[sz])",
+                     r"ethnicity.?infer", r"political.?opinion.?biometric",
                      r"religion.?detect", r"sexual.?orientation.?infer"],
         "article": "5(1)(g)",
         "description": "Biometric categorisation inferring sensitive attributes (race, politics, religion, sexuality)",
@@ -159,14 +164,15 @@ HIGH_RISK_PATTERNS = {
                      r"\bretina\s*[\W_]?(?:scan|recogn)",
                      r"\bpalm\s*[\W_]?(?:print|recogn|scan)",
                      r"\bgait\s*[\W_]?(?:recogn|analysis|identif)",
-                     r"\b(?:face|voice|fingerprint|iris)[_\W]?(?:match|verif|compar|enrol|template)",
-                     r"\b(?:identify|recognise|recognize|verify|match|enrol)[_\W]?(?:face|faces|person|people|identity)\b",
+                     r"\b(?:face|voice|fingerprint|iris)[_\W]?(?:match|compar|identif|recogn)",
+                     r"\b(?:identify|recognise|recognize)[_\W]?(?:face|faces|person|people)\b",
                      r"\bbiometric[_\W]?(?:categoris|categoriz|classif|template|verif|match|enrol)",
                      r"\b(?:detect|infer|classify|predict)[_\W]?(?:age|gender|ethnicity|race)[_\W]?from[_\W]?(?:face|image|photo|voice)",
-                     r"\b(?:speaker|voice)[_\W]?(?:identif|verif|recogn|diariz)",
+                     r"\bspeaker[_\W]?(?:biometric|voiceprint)",
+                     r"\bvoice[_\W]?(?:biometric|voiceprint|identif|verif|recogn)",
                      r"\bface[_\W]?embed(?:ding)?",
                      # Prompt-string templates.
-                     r"(?:identify|match|recognise|recognize|verify)[^\"\\n]{0,30}(?:face|person|identity|suspect)"],
+                     r"\b(?:identify|match|recognise|recognize|verify)\b[^\"\\n]{0,30}(?:face|person|identity|suspect)"],
         "articles": ["9", "10", "11", "12", "13", "14", "15"],
         "category": "Annex III, Category 1",
         "description": "Biometric identification and categorisation",
@@ -248,6 +254,7 @@ HIGH_RISK_PATTERNS = {
                      r"\b(?:classify|score|rank|evaluate|assess|filter|shortlist)[_\W]?resumes?\b",
                      r"\bresumes?[_\W]?(?:classif|scor|rank|evaluat|filter|shortlist|match)",
                      r"\b(?:score|rank|evaluate|shortlist)[_\W]?(?:job[_\W]?)?candidates?\b",
+                     r"\b(?:evaluate|assess|screen)(?:s|ed|ing|ment)?[^\"\\n]{0,30}(?:candidate|applicant)\b",
                      r"\bjob[_\W]?applicants?[_\W]?(?:scor|rank|filter|evaluat|shortlist)",
                      r"\b(?:score|rank|shortlist)[_\W]?job[_\W]?applicants?\b",
                      # Prompt-string templates that embed hiring instructions.
@@ -437,6 +444,7 @@ HIGH_RISK_PATTERNS = {
                      r"\blending[_\W]?model", r"\bcredit[_\W]?assess",
                      r"\bfico\b", r"\bcredit[_\W]?rating",
                      r"\b(?:credit|lending)[_\W]?(?:model|predict|classif|algorithm|automat)",
+                     r"\b(?:receive|grant|approve|deny|reject)[_\W]{0,12}credit\b",
                      r"\b(?:score|assess|evaluate|rate)[_\W]?(?:creditworth|borrower|applicant[_\W]?credit)",
                      # Prompt-string templates.
                      r"(?:score|assess|evaluate|predict)[^\"\\n]{0,30}(?:credit|creditworth|borrower|lending|fico)"],
@@ -944,6 +952,7 @@ AI_INDICATORS = {
                   r"tflite", r"tf\.lite", r"tensorflow.?lite",
                   r"coremltools", r"\.mlmodel",
                   r"mediapipe",
+                  r"face_recognition", r"import\s+dlib\b", r"from\s+dlib\b",
                   r"com\.google\.mlkit", r"mlkit",
                   r"executorch",
                   # MLOps / Data

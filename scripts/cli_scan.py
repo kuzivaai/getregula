@@ -165,7 +165,11 @@ def _write_analysis_manifest(
 
     Counts sourced from the findings partition are exact. Per-file counts come
     from scan_files.last_stats where available; anything genuinely unmeasured
-    is recorded as null (explicitly unknown) rather than fabricated.
+    is recorded as null (explicitly unknown) rather than fabricated. A
+    discovered file is one visited after deliberate directory pruning;
+    eligible means a supported source file after --skip-tests; unsupported
+    means no source/model handler exists for its suffix (not that the file is
+    unimportant). Model artifacts are recognised but are not source files.
     """
     from datetime import datetime, timezone
     from constants import VERSION
@@ -182,6 +186,9 @@ def _write_analysis_manifest(
 
     stats = scan_stats or {}
     scanned = stats.get("files_scanned")
+    discovered = stats.get("discovered_files")
+    eligible = stats.get("eligible_files")
+    unsupported = stats.get("unsupported_files")
     skipped_files = stats.get("skipped_files", []) or []
     skipped_total = stats.get("skipped_total", len(skipped_files)) or 0
 
@@ -224,10 +231,11 @@ def _write_analysis_manifest(
             "scanned": scanned,
             "skipped_total": skipped_total,
             "skip_reasons": skip_reasons,
-            # Not yet measured — recorded null, never fabricated.
-            "discovered": None,
-            "eligible": None,
-            "unsupported": None,
+            # Measured by scan_files(); null only for compatibility with an
+            # older/injected scanner that did not publish these counters.
+            "discovered": discovered,
+            "eligible": eligible,
+            "unsupported": unsupported,
             # Exact, from the findings partition.
             "findings_total": len(active),
             "suppressed": len(view.get("suppressed", [])),
@@ -785,6 +793,14 @@ def cmd_check(args) -> None:
             print("        These directory names are excluded by default "
                   "(examples, tests caches, vendored code).")
             print("        To scan one, pass it as the path: regula check <dir>")
+
+        # Test files are filtered separately from pruned directories. Disclose
+        # them even when production files were scanned; otherwise a non-empty
+        # result silently looks like coverage of the entire selected tree.
+        if tests_skipped > 0:
+            print(f"\n  INFO: {tests_skipped} test file(s) were not scanned")
+            print("        Test files are excluded by default from production scope.")
+            print("        Use --no-skip-tests to include them.")
 
         # Domain gating INFO: tell users about --domain when findings were suppressed
         gated_count = stats.get("domain_gated_count", 0)

@@ -231,10 +231,20 @@ def _obligation_edge_mutations(model):
 def run_mutations():
     model = load_model()
     outcomes = [*_predicate_mutations(model), *_obligation_edge_mutations(model)]
-    survivors = [outcome for outcome in outcomes if not outcome.killed]
+    invalid = [
+        outcome for outcome in outcomes
+        if outcome.mutant_state.startswith("rejected:")
+    ]
+    valid = [outcome for outcome in outcomes if outcome not in invalid]
+    survivors = [outcome for outcome in valid if not outcome.killed]
     itemisation = [outcome.to_dict() for outcome in outcomes]
     summary = {
         "model_version": model["model_version"],
+        "target": "references/decision_model.v1.json",
+        "operator_set": [
+            "invert each fact-state comparison",
+            "remove each rule-to-obligation edge",
+        ],
         "predicate_mutants": sum(
             outcome.kind == "predicate_fact_comparison" for outcome in outcomes
         ),
@@ -242,9 +252,17 @@ def run_mutations():
             outcome.kind == "obligation_rule_edge" for outcome in outcomes
         ),
         "total_mutants": len(outcomes),
-        "killed_mutants": sum(outcome.killed for outcome in outcomes),
+        "killed_mutants": sum(outcome.killed for outcome in valid),
         "surviving_mutants": len(survivors),
-        "reconciled": len(itemisation) == len(outcomes),
+        "invalid_mutants": len(invalid),
+        "timed_out_mutants": 0,
+        "equivalent_mutants": "not_assessed",
+        "reconciled": (
+            len(itemisation)
+            == sum(outcome.killed for outcome in valid)
+            + len(survivors)
+            + len(invalid)
+        ),
         "itemisation": itemisation,
     }
     return summary
@@ -253,7 +271,7 @@ def run_mutations():
 def main():
     summary = run_mutations()
     print(json.dumps(summary, indent=2, sort_keys=True))
-    return 1 if summary["surviving_mutants"] else 0
+    return 1 if summary["surviving_mutants"] or summary["invalid_mutants"] else 0
 
 
 if __name__ == "__main__":

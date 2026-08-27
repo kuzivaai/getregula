@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# regula-ignore
+# regula-ignore — vocabulary export names regulated practices but does not implement them
 """
 DPV-AIAct machine-readable export for Regula scan results.
 

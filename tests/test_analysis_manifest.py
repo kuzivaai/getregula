@@ -89,20 +89,25 @@ def test_no_manifest_on_scan_failure():
         )
 
 
-def test_unknown_counts_are_null_not_fabricated():
-    """Per the fix's honesty constraint: per-file counts genuinely not measured
-    by scan_files() are recorded as null, never guessed. (scanned IS measured
-    now; discovered/eligible/unsupported remain unmeasured.)"""
+def test_population_denominator_is_measured_not_fabricated():
+    """The completion manifest reports the population the scanner observed.
+
+    Deliberately pruned directories are disclosed separately. Within visited
+    directories, every file is discovered, supported source is eligible, and
+    an extension without a source/model handler is unsupported.
+    """
     with tempfile.TemporaryDirectory() as d:
         proj = Path(d) / "proj"
         proj.mkdir()
         (proj / "ok.py").write_text("x = 1\n")
+        (proj / "notes.md").write_text("not source input\n")
+        (proj / "weights.onnx").write_bytes(b"model")
         _exit_code, out = _run_check(proj, d)
         m = json.loads((out / "m.json").read_text())
-        for k in ("discovered", "eligible", "unsupported"):
-            assert m["counts"][k] is None, f"{k} should be null (unknown), not fabricated"
-        # scanned IS measured — must be a real integer, not null.
-        assert isinstance(m["counts"]["scanned"], int)
+        assert m["counts"]["discovered"] == 3
+        assert m["counts"]["eligible"] == 1
+        assert m["counts"]["unsupported"] == 1
+        assert m["counts"]["scanned"] == 1
 
 
 def test_corrupt_notebook_forces_partial_status():

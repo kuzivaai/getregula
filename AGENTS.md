@@ -6,7 +6,7 @@ product code, reusable engineering evidence and user-facing documentation.
 
 EU AI Act compliance CLI for code. Python 3.10+ stdlib-only core.
 
-GitHub: kuzivaai/getregula | PyPI: regula-ai | CLI: `regula`
+GitHub: kuzivaai/getregula | Distribution: source-only while PyPI is unavailable | CLI: `regula`
 
 ## Build & Test
 
@@ -24,7 +24,7 @@ python3 tests/test_classification.py && python3 -m pytest tests/ -q && python3 -
 - **Do not delete** manual test list at bottom of `tests/test_classification.py`
 - **Locale sync**: changes to EN site content must also update DE and PT-BR versions
 - **Regulatory claims**: cite specific article numbers; include Omnibus caveat for EU AI Act deadlines; see `regulatory-context` skill for current status
-- **Hook awareness**: `hooks/pre_tool_use.py` scans all ops for credential patterns. Use char-code construction for test fixtures.
+- **Privacy-guard awareness**: repository operations are scanned for credential and private-data patterns. Use char-code construction for sensitive-shape test fixtures.
 - **Public-repository privacy**: never commit handovers, session logs, private
   plans, pricing experiments, outreach records, personal names or contact
   details, immigration/employment context, local usernames, hostnames or

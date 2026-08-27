@@ -255,7 +255,7 @@ async function scanFile(uri: vscode.Uri): Promise<void> {
         if (isEnoent(err)) {
             statusBar.text = '$(shield) Regula: CLI not found';
             vscode.window.showWarningMessage(
-                'Regula not found. Install with: pip install regula-ai'
+                'Regula not found. Install from the reviewed source; see docs/installation.md'
             );
             return;
         }
@@ -320,7 +320,7 @@ async function scanWorkspace(uri: vscode.Uri): Promise<void> {
                 if (isEnoent(err)) {
                     statusBar.text = '$(shield) Regula: CLI not found';
                     vscode.window.showWarningMessage(
-                        'Regula not found. Install with: pip install regula-ai'
+                        'Regula not found. Install from the reviewed source; see docs/installation.md'
                     );
                     return;
                 }

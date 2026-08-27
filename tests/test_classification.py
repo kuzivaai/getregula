@@ -34,6 +34,7 @@ import test_site_facts as _test_site_facts  # noqa: F401
 import test_dpv_export as _test_dpv_export  # noqa: F401
 import test_hostile_sweep as _test_hostile_sweep  # noqa: F401
 import test_release_gate as _test_release_gate  # noqa: F401
+import test_publication_gate as _test_publication_gate  # noqa: F401
 import test_crosswalk_omnibus as _test_crosswalk_omnibus  # noqa: F401
 import test_tracked_inputs as _test_tracked_inputs  # noqa: F401
 import test_public_claim_integrity as _test_public_claim_integrity  # noqa: F401
@@ -58,9 +59,13 @@ import test_demo_doc as _test_demo_doc  # noqa: F401
 import test_qualifier as _test_qualifier  # noqa: F401
 import test_pattern_sync as _test_pattern_sync  # noqa: F401
 import test_public_repo_guard as _test_public_repo_guard  # noqa: F401
+import test_audit_reachable_privacy as _test_audit_reachable_privacy  # noqa: F401
 import test_distribution_privacy as _test_distribution_privacy  # noqa: F401
 import test_annotation_stats as _test_annotation_stats  # noqa: F401
 import test_evaluation_protocol as _test_evaluation_protocol  # noqa: F401
+import test_external_corpus as _test_external_corpus  # noqa: F401
+import test_external_regressions as _test_external_regressions  # noqa: F401
+import test_cli_integration as _test_cli_integration  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -86,6 +91,13 @@ import itertools as _itertools
 # discovery stays automatic and no manual list is reintroduced.
 # Guarded by tests/test_collection_integrity.py.
 RUNNER_ALIAS_PREFIX = "_runner_test_"
+
+# This subprocess regression is deliberately bound on its own. Importing the
+# entire integration module into the custom runner would duplicate 48 existing
+# pytest journeys and materially lengthen the legacy gate for no added coverage.
+globals()[RUNNER_ALIAS_PREFIX + "nonempty_scan_discloses_excluded_test_files"] = (
+    _test_cli_integration.test_nonempty_scan_discloses_excluded_test_files
+)
 
 # The recall regression controls are unittest methods rather than module-level
 # functions, so the generic alias loop below cannot see them. Bind the two new
@@ -148,7 +160,7 @@ def _bind_runner_case(target, kwargs, case_id):
     return runner_case
 
 
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_hook_fail_open, _test_locale_link_language, _test_determination_guard, _test_svg_text, _test_claim_scan_coverage, _test_skipped_dir_disclosure, _test_installed_artefact, _test_fact_loop, _test_demo_doc, _test_qualifier, _test_pattern_sync, _test_public_repo_guard, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_publication_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_hook_fail_open, _test_locale_link_language, _test_determination_guard, _test_svg_text, _test_claim_scan_coverage, _test_skipped_dir_disclosure, _test_installed_artefact, _test_fact_loop, _test_demo_doc, _test_qualifier, _test_pattern_sync, _test_public_repo_guard, _test_audit_reachable_privacy, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol, _test_external_corpus, _test_external_regressions):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -205,7 +217,7 @@ for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_ne
                 continue
             _alias = f"{RUNNER_ALIAS_PREFIX}{_name}_{_case_index}"
             globals()[_alias] = _bind_runner_case(_fn, _kwargs, _case_index)
-del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_public_repo_guard, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol
+del _inspect, _itertools, _bind_runner_case, _mod, _name, _fn, _PYTEST_FIXTURES, _test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_publication_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_public_repo_guard, _test_audit_reachable_privacy, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol, _test_external_corpus, _test_external_regressions, _test_cli_integration
 
 # Check if pyyaml is available (needed for complex YAML in framework/advisory tests)
 try:
@@ -349,7 +361,7 @@ def test_prohibited_realtime_biometric():
 
 def test_prohibited_biometric_sensitive():
     """Biometric sensitive attributes → PROHIBITED"""
-    r = classify("race detection model using tensorflow")
+    r = classify("race detection from face photos using tensorflow")
     assert_eq(r.tier, RiskTier.PROHIBITED, "race detection")
 
     r = classify("ethnicity inference with sklearn")
@@ -1172,7 +1184,7 @@ def test_sarif_output_structure():
     test_file.write_text("import tensorflow\ncredit_scoring_model = True\n")
 
     try:
-        findings = scan_files(temp_dir)
+        findings = scan_files(temp_dir, declared_domains={"finance"})
         sarif = generate_sarif(findings, "test-project")
 
         assert_eq(sarif["version"], "2.1.0", "SARIF version")
@@ -1220,7 +1232,7 @@ def test_inline_suppression():
     test_file.write_text("# regula-ignore\nimport tensorflow\ncredit_scoring = True\n")
 
     try:
-        findings = scan_files(temp_dir)
+        findings = scan_files(temp_dir, declared_domains={"finance"})
         suppressed = [f for f in findings if f.get("suppressed")]
         assert_true(len(suppressed) > 0, "suppressed findings exist")
     finally:
@@ -1323,7 +1335,7 @@ def test_baseline_save_and_compare():
 
     temp_dir = tempfile.mkdtemp()
     test_file = Path(temp_dir) / "model.py"
-    test_file.write_text("import tensorflow\ncredit_scoring = True\n")
+    test_file.write_text("import openai\nchatbot_reply = True\n")
 
     try:
         bl = save_baseline(temp_dir)
@@ -7202,8 +7214,13 @@ def test_synthetic_fixture_precision_recall_matches_artefact():
 # Published precision matches the labelled benchmark
 # ---------------------------------------------------------------------------
 
-def test_published_precision_matches_labels():
-    """The README/benchmark precision number must match labels.json."""
+def test_dated_precision_is_not_a_current_product_claim():
+    """Keep the old arithmetic in its evidence record, not product copy.
+
+    The random-corpus artefact cannot be re-derived from a clean checkout and
+    predates the current detector. A previous guard required README.md to keep
+    publishing it, turning a provenance test into a stale-claim mandate.
+    """
     from pathlib import Path as _P
     root = _P(__file__).parent.parent
     labels_path = root / "benchmarks" / "labels.json"
@@ -7235,11 +7252,16 @@ def test_published_precision_matches_labels():
         f"benchmarks/README.md publishes a precision number that does not match "
         f"{source}. Source says {pct_str}; update the README table or relabel."
     )
-    assert pct_str in main_readme, (
-        f"README.md publishes a precision number that does not match {source}. "
-        f"Source says {pct_str}; update the README table or relabel."
+    assert pct_str not in main_readme, (
+        f"README.md republishes the dated {pct_str} result as current product "
+        "evidence; keep it in benchmarks/README.md with its limitations"
     )
-    print(f"✓ precision: published number {pct_str} matches {source}")
+    from exec_summary import generate_exec_summary
+    assert pct_str not in generate_exec_summary([], "test-project"), (
+        "generated executive summaries must not attach a superseded detector "
+        "measurement to a current scan"
+    )
+    print(f"✓ precision: dated {pct_str} retained only in evidence record")
 
 
 # ---------------------------------------------------------------------------

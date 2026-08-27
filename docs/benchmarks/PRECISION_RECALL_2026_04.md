@@ -39,8 +39,10 @@ Historical source: [`benchmarks/synthetic/`](../../benchmarks/synthetic/). This 
 > synthetic row.** It was measured on a 5+5 fixture corpus. That corpus
 > was expanded to 5 prohibited + 30 high-risk on 28 Jul 2026 and
 > re-measured: prohibited recall holds at 5/5, but on the scanner path
-> with no flags, which is the default a user gets, **high-risk recall is
-> 10/30 = 33%**. See
+> with no flags, which is the default a user gets, **high-risk label fidelity
+> was 10/30 = 33% in that dated run**. The current reproducible values are in
+> `benchmarks/synthetic/RECALL.json`; this historical result is not current
+> detector evidence. See
 > `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`. The 100%
 > recall figure above is not reproducible on the current corpus and a
 > correction is pending owner approval as finding **F23**.
@@ -232,7 +234,7 @@ precision of the wide INFO cast — the part the user almost never sees.
 | `agent_autonomy` | 5 | 2 | 3 | 40.0% | Autonomous tool-calling patterns. Small sample. |
 | `limited_risk` | 3 | 1 | 2 | 33.3% | Article 50 disclosure (chatbot, deepfake). Small sample. |
 | `minimal_risk` | 241 | 36 | 205 | 14.9% | The bulk of the OSS corpus. Most are AI library imports without high-risk context. |
-| `ai_security` | 6 | 0 | 6 | 0.0% | OWASP LLM Top 10 patterns. All 6 FPs are framework code, not application code. |
+| `ai_security` | 6 | 0 | 6 | 0.0% | OWASP LLM Top 10-aligned detectors. All 6 FPs are framework code, not application code. |
 | `credential_exposure` | 2 | 0 | 2 | 0.0% | Tiny sample. Both FPs are test fixtures. |
 Source: [`benchmarks/labels.json`](../../benchmarks/labels.json).
 

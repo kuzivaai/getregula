@@ -45,7 +45,7 @@
     <meta property="og:locale" content="en_ZA">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-04-07T00:00:00+02:00">
-    <meta property="article:modified_time" content="2026-08-17T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-08-26T00:00:00+00:00">
     <meta property="article:section" content="AI Governance">
 
     <meta name="twitter:card" content="summary_large_image">
@@ -242,16 +242,13 @@
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
         <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
-            <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
-            <a href="/product.html">What it does</a>
-            <a href="/guides/">Guides</a>
+            <a href="/assess/">Assess scope</a>
+            <a href="/product.html">Scan code</a>
+            <a href="/coverage.html">Coverage</a>
+            <a href="/coverage.html#methods">Methods &amp; limits</a>
             <a href="/pricing.html">Pricing</a>
             <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-            <a href="https://github.com/kuzivaai/getregula/blob/main/docs/course/README.md">Docs</a>
-            <a href="/regions/regulations.html" title="Global AI regulation tracker">Regulations</a>
-            <a href="/blog/writing.html" title="Research notes on AI governance">Blog</a>
             <span class="active">🇿🇦 South Africa</span>
-            <a href="/about.html">About</a>
             <a href="/">EN</a>
             <a href="/locales/de.html">DE</a>
             <a href="/locales/pt-br.html">BR</a>
@@ -265,7 +262,7 @@
         <span class="status-badge "><span class="status-dot"></span>Withdrawn by gazette, 12 June 2026</span>
         <h1>South Africa's <span class="hl">draft National AI Policy</span>: gazetted, then withdrawn</h1>
         <p class="lede">South Africa's draft National Artificial Intelligence Policy was published in <a style="text-decoration:underline;text-underline-offset:3px" href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a style="text-decoration:underline;text-underline-offset:3px" href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced the withdrawal on 26 April 2026</a>, Cabinet <a style="text-decoration:underline;text-underline-offset:3px" href="https://www.sanews.gov.za/node/81987">approved it on 5 June 2026</a>, and <a style="text-decoration:underline;text-underline-offset:3px" href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. The withdrawn draft is historical material, not current policy or law. Existing legislation may still apply within its own scope.</p>
-        <p class="last-updated"><strong>Last reviewed:</strong> 17 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
+        <p class="last-updated"><strong>Last reviewed:</strong> 26 August 2026 &nbsp;·&nbsp; <strong>Maintained by:</strong> Regula (open source) &nbsp;·&nbsp; <a href="https://github.com/kuzivaai/getregula/issues">Report a correction</a></p>
 
 
 <div class="tracker" id="sa-tracker" data-src="/sa-tracker.json">
@@ -310,7 +307,7 @@
             <h2>What was published and then withdrawn</h2>
             <p>The Draft National Artificial Intelligence Policy was published in <a href="https://www.gov.za/sites/default/files/gcis_document/202604/54477gen3880.pdf">Government Gazette No. 54477 on 10 April 2026</a>. After fictitious references were identified, the Minister <a href="https://www.sanews.gov.za/south-africa/minister-announces-withdrawal-draft-ai-policy">announced the withdrawal on 26 April 2026</a>, Cabinet <a href="https://www.sanews.gov.za/node/81987">approved it on 5 June 2026</a>, and <a href="https://www.itweb.co.za/article/sas-draft-ai-policy-officially-retracted/LPp6V7rBVwJ7DKQz">Notice 3880 was withdrawn by gazette on 12 June 2026</a>, which is the act that withdrew it. The withdrawn draft is public historical material, not current policy or law.</p>
 
-            <p>The withdrawn text described the following policy direction:</p>
+            <p>The withdrawn text described the following policy direction. It is not a reliable authority for current policy: the government withdrew it after fictitious references and undisclosed generative-AI use undermined its evidential basis.</p>
 
             <ul>
                 <li><strong>A sector-specific, multi-regulator governance model.</strong> Rather than creating a single dedicated AI regulator, AI governance will be embedded within existing supervisory frameworks — the FSCA for financial services, the Information Regulator for data protection, the Council for Medical Schemes for health, ICASA for telecommunications, the Department of Higher Education and Training for education, and so on. Pragmatic, but creates a patchwork that is harder to navigate for smaller businesses operating across sectors.</li>
@@ -355,7 +352,7 @@
             <p>For a South African team, the practically useful starting commands are:</p>
 
 <pre tabindex="0"><code><span class="term-comment"># Install</span>
-<span class="term-cmd">pipx install regula-ai</span>
+<span class="term-cmd">pipx install git+https://github.com/kuzivaai/getregula.git@main</span>
 
 <span class="term-comment"># Inventory what you have</span>
 <span class="term-cmd">regula discover .</span>                    <span class="term-comment"># AI systems present in the project</span>
@@ -434,7 +431,7 @@
 
         <section id="honest-gaps">
             <h2>What we are tracking and what we still need to verify</h2>
-            <p>The official records establish publication and withdrawal. The following questions remain unresolved as of 4 August 2026 and must not be answered from the withdrawn text:</p>
+            <p>The official records establish publication and withdrawal. The department subsequently appointed a seven-member expert review panel to authenticate sources and advise the redraft; that process does not make the withdrawn text current. The following questions remain unresolved as of 26 August 2026 and must not be answered from the withdrawn text:</p>
             <div class="gaps-box">
                 <h3>To verify if a replacement is officially published</h3>
                 <ol>
@@ -489,7 +486,7 @@
                 <a href="/assess/">Assess</a>
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
                 <a href="/about.html">About</a>

@@ -1,6 +1,12 @@
 # Model Card — Regula Detection Engine
 
-Regula's detection engine is a static analysis system that reports source-code indicators associated with EU AI Act risk categories. It does not determine legal classification. This document treats it as an AI system and documents its capabilities, limitations, and biases. To generate a model card scaffold for your own project, run `regula model-card --project /path/to/project`.
+Regula's detection engine is a static analysis system that reports source-code
+indicators associated with AI-governance review. A separate decision kernel
+evaluates explicitly declared facts for three implemented jurisdictions. It
+does not determine legal classification or compliance. This document treats
+the detector and kernel as an automated decision-support system and documents
+their capabilities, limitations, and biases. To generate a model card scaffold
+for your own project, run `regula model-card --project /path/to/project`.
 
 ---
 
@@ -9,12 +15,12 @@ Regula's detection engine is a static analysis system that reports source-code i
 | Field | Value |
 |---|---|
 | Name | Regula Detection Engine |
-| Version | 2.0.0 (this doc updated 2026-08-19) |
+| Version | 2.0.0 (this doc updated 2026-08-26) |
 | Type | Rule-based detector plus a separate evidence-gated legal decision kernel |
 | Training data | None — not a machine learning model |
-| Detection patterns | 419 tiered risk regexes across 57 categories (10 prohibited + 18 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Includes housing (Colorado SB 26-189), transportation (Korea AI Basic Act Art 33), and emotion inference split categories. Regenerate with `python3 scripts/site_facts.py`. |
+| Detection patterns | 423 tiered risk regexes across 57 categories (10 prohibited + 18 high-risk + 4 limited-risk + 17 AI security + 2 bias + 6 governance observations) + 17 GPAI training regexes. Includes housing (Colorado SB 26-189), transportation (Korea AI Basic Act Art 33), and emotion inference split categories. Regenerate with `python3 scripts/site_facts.py`. |
 | Languages supported | Python, JavaScript, TypeScript, Java, Go, Rust, C, C++ |
-| Compliance frameworks | 13 with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, OWASP Agentic (ASI), MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) |
+| Framework references | 13 identifiers with selected crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, OWASP Agentic (ASI), MITRE ATLAS, EU CRA, LGPD, pending Marco Legal IA, UK ICO/DSIT). A mapping does not test applicability, control implementation, equivalence, or conformity. |
 | Dependencies | Zero runtime (Python 3.10+ stdlib only); `regula[signing]` extra adds `cryptography` + `asn1crypto` for optional Ed25519 + RFC 3161 manifest signing. |
 
 ---
@@ -27,12 +33,18 @@ kernel for the EU AI Act, South Korea AI Basic Act, and Colorado SB26-189.
 Generated compliance documents are unverified scaffolds until the kernel has a
 resolved evidence path for the relevant obligation.
 
-**Intended users:**
+**Intended users and tasks:**
 
-- Developers building AI-powered applications that may be deployed in or affect the EU market
-- Small teams (1-20 people) who cannot afford enterprise governance SaaS
-- Compliance officers who need a technical evidence base for governance programmes
-- Auditors who need a starting point for code-level compliance assessment
+- Builders and maintainers locating source-code signals that warrant review.
+- Governance and assurance reviewers combining observations with sourced
+  deployment and operator facts while preserving unknowns and contradictions.
+- Evaluators testing Regula on a representative local sample before adoption
+  or CI enforcement.
+- Qualified legal, data-protection, security, accessibility, and domain
+  reviewers using Regula artefacts as inputs, not as Regula-authored opinions.
+
+The task journeys, failure paths, and three capability levels are defined in
+[`PRODUCT_COVERAGE_AND_JOURNEYS.md`](PRODUCT_COVERAGE_AND_JOURNEYS.md).
 
 **Deployment context:** Local CLI tool. Core scan paths are designed for local execution without an account or API key. Optional timestamping, configured telemetry, update/feed paths, and other explicitly network-enabled features are outside that boundary.
 
@@ -42,7 +54,7 @@ resolved evidence path for the relevant obligation.
 
 ### Decision meaning and evidence contract
 
-Decision model `2026-08-19.1` is stored in
+Decision model `2026-08-26.1` is stored in
 `references/decision_model.v1.json`. A decision-critical fact has one or more
 sourced values, each with `yes`, `no`, `unknown`, or `not_applicable` state,
 provenance, jurisdiction, and timestamp. Absence, explicit unknown, no, and
@@ -86,9 +98,10 @@ Current limitations of the decision model are material:
   current obligation schema does not yet express;
 - EU Article 25 role conversion must currently arrive as sourced
   `role_provider=yes`, rather than being derived by a dedicated predicate;
-- Korea Article 32 and Article 36 decree thresholds remain sourced input facts
-  because this review did not establish their numeric values from the official
-  delegated instruments;
+- Korea Article 32's three conjunctive Decree Article 24 criteria and Article
+  36's four disjunctive Decree Article 29 scale criteria are separate sourced
+  input facts; Regula does not infer current frontier status, revenue, user
+  counts, or enforcement history from code;
 - combined Colorado exclusion facts place the enumeration burden on the fact
   provider; and
 - application dates are reported on indications and obligations, but the
@@ -110,18 +123,24 @@ Not all 8 supported languages are equally well-covered:
 
 | Language | Pattern depth | Notes |
 |---|---|---|
-| Python | Deep | Most patterns were developed against Python codebases. Highest recall. |
-| JavaScript/TypeScript | Moderate | Good coverage for common AI frameworks (TensorFlow.js, OpenAI SDK). |
-| Java | Moderate | Covers Spring AI, DL4J, and common ML library imports. |
-| Go | Basic | Covers common Go AI library imports. Fewer domain-specific patterns. |
-| Rust | Basic | Covers tch-rs, candle, burn. Limited ecosystem coverage. |
-| C/C++ | Basic | Covers TensorFlow C API, ONNX Runtime. Limited pattern set. |
+| Python | Most developed | Most rules and the available labelled development records are Python-focused; current real-world recall is unknown. |
+| JavaScript/TypeScript | Intermediate | Recognises common frameworks and has an optional syntax-aware path; current real-world precision and recall are unknown. |
+| Java | Limited | Recognises selected framework imports and patterns; detector validity is unmeasured. |
+| Go | Limited | Recognises selected library imports and patterns; detector validity is unmeasured. |
+| Rust | Limited | Recognises selected library imports and patterns; detector validity is unmeasured. |
+| C/C++ | Limited | Recognises selected library imports and patterns; detector validity is unmeasured. |
 
 A Python project will receive more granular findings than an equivalent Rust project. This is a known bias in the pattern set, not a language limitation.
 
-### Precision baseline
+### Retired v1.7.0 precision record
 
-Published benchmark against 50 randomly selected Python AI repos (from 276 candidates, random seed 42), **N=115**, blind-labelled by a **single reviewer** with no inter-rater agreement measurement (labeller saw only file path, code context, and finding description; see [`benchmarks/README.md`](../benchmarks/README.md)). Production code only (default `--skip-tests` settings):
+Regula has no current independent real-world precision estimate. The table
+below preserves a dated v1.7.0 record rather than presenting it as a baseline
+for v2.0.0. It used 50 randomly selected Python AI repositories (from 276
+candidates, seed 42), an N=115 production subset, and one blind reviewer with
+no inter-rater agreement measurement. The measured subset and pinned source
+snapshots were not preserved, so the result cannot be re-derived from a clean
+checkout. See [`benchmarks/README.md`](../benchmarks/README.md).
 
 | Tier | TP | FP | Precision |
 |---|---:|---:|---:|
@@ -133,18 +152,20 @@ Published benchmark against 50 randomly selected Python AI repos (from 276 candi
 | **Overall** | **96** | **19** | **83.5%** |
 Source: [`benchmarks/README.md`](../benchmarks/README.md). N=115, single reviewer, no inter-rater agreement measurement.
 
-**Improvement from v1.7.4:** Domain-gated high-risk findings, LLM import
-gating, and justice opt-in reduced FP from 42 to 19 on the same labelled
-corpus, improving production precision from 70.0% to 83.5%. 3 borderline
-ai_security TPs were lost (LLM02 findings in files without LLM library imports).
-Both figures are from the same N=115 corpus recorded in [`benchmarks/README.md`](../benchmarks/README.md).
+Within that v1.7.0 analysis, domain-gated high-risk findings, LLM import
+gating, and justice opt-in changed the recorded false-positive count from 42
+to 19 and lost three borderline `ai_security` true-positive labels. This is a
+historical within-corpus comparison, not evidence about v2.0.0.
 
 The `high_risk` tier (33%) remains weakest — 6 subcategories (`critical_infrastructure`,
 `safety_components`, `worker_management`, `democratic_processes`, `justice`,
 `essential_services`) now require `--domain` declaration or import fingerprinting to fire. Including test
 code drops overall precision to 60.6%. Both figures are recorded in [`benchmarks/README.md`](../benchmarks/README.md); note that 33% rests on N=6 and is not statistically meaningful at that sample size.
 
-Full methodology and reproduction steps: `benchmarks/README.md`
+Available methodology and the reproducibility gap: `benchmarks/README.md`.
+The 26 August pinned external diagnostic, including all retained failures and
+the no-accuracy-claim boundary, is
+[`EXTERNAL_DIAGNOSTIC_2026-08-26.md`](EXTERNAL_DIAGNOSTIC_2026-08-26.md).
 
 ---
 
@@ -152,7 +173,11 @@ Full methodology and reproduction steps: `benchmarks/README.md`
 
 ### Systematic over-flagging
 
-- **AI library imports:** Projects that import AI frameworks (PyTorch, TensorFlow, OpenAI SDK) will receive findings even if they are building developer tools, not regulated AI systems. The OSS benchmark deliberately measures this: 5 AI libraries produced 218 false positives at INFO tier.
+- **AI library and infrastructure code:** Imports, prompts, tool execution, and
+  security terminology can appear in libraries and developer infrastructure
+  without implementing the regulated intended purpose suggested by a pattern.
+  The pinned external corpus exercises this failure mode, but its diagnostic
+  assertions are not independently adjudicated false-positive labels.
 - **Employment-related keywords:** Patterns for Annex III Category 4 (employment) match on keywords like `hiring`, `applicant`, `candidate`. HR software that is not an AI system may be flagged.
 
 ### Systematic under-flagging
@@ -161,9 +186,9 @@ Full methodology and reproduction steps: `benchmarks/README.md`
 - **Abstracted architectures:** Code that wraps AI operations behind generic interfaces (e.g., `service.process(request)`) will not be detected. The patterns expect explicit AI library usage.
 - **Uncommon languages:** Go, Rust, C, and C++ have fewer patterns than Python. AI applications in these languages will systematically receive fewer findings.
 
-### What is NOT a bias
-
-- **High false positive rate on AI libraries** is by design. Regula's OSS benchmark corpus consists of AI frameworks, not AI applications. Flagging `import openai` in the OpenAI SDK itself is expected. The tool is designed for application code, not library code.
+Calling systematic over-flagging “by design” would not make it harmless. Even
+when a broad signal is intentional, the review burden and misleading
+implication must be measured and reduced without hiding relevant observations.
 
 ---
 
@@ -183,7 +208,7 @@ Regula is explicitly **NOT** intended for:
 
 ## Evaluation Methodology
 
-### Synthetic corpus (recall measurement)
+### Synthetic corpus (path-specific label fidelity)
 
 38 hand-crafted Python files (`benchmarks/synthetic/manifest.json`, version 2.0):
 - 5 Article 5 prohibited practices (social scoring, subliminal manipulation, real-time biometric identification, emotion inference in workplaces, vulnerability exploitation)
@@ -194,27 +219,34 @@ Regula is explicitly **NOT** intended for:
 
 | Path and gate condition | High-risk | Prohibited |
 |---|---:|---:|
-| scanner, default scan, no flags | 10/30 = 33.3% | 5/5 |
+| context-free core classifier, no project/domain gates (Python and browser JavaScript) | 18/30 = 60.0% | 5/5 |
+| scanner, default scan, no flags | 4/30 = 13.3% | 5/5 |
 | scanner, all eight domains declared | 16/30 = 53.3% | 5/5 |
 | scanner, domains declared + AI-library import present | 23/30 = 76.7% | 5/5 |
 | classifier (`report.scan_files`), all domains declared | 16/30 = 53.3% | 5/5 |
 Source: `benchmarks/synthetic/RECALL.json`, produced from an actual run by `scripts/build_recall_artefact.py`.
 
-**Corrected 29 July 2026.** This section previously described a 13-file corpus and reported **100% precision, 100% recall**. The corpus was expanded to 38 fixtures (high-risk 5 to 30) and the claim was never re-measured against it. The withdrawn figures are recorded here rather than deleted; the measured replacements are in the table above, from `benchmarks/synthetic/RECALL.json`. **Corrected again 29 July 2026.** The decomposition published here until today read "13 suppressed by opt-in domain gating, 4 by the AI-indicator gate, and 3 are genuine pattern gaps, so 17 of 20 misses are gate behaviour". Every component of that was wrong, and it understated the pattern-side weakness by more than double. It was carried over from an earlier recall table whose two lower rows are marked NOT REPRODUCIBLE in `benchmarks/headtohead/RESULTS-synthetic-v2-2026-07-28.md`. Derived from the per-fixture `missed` lists in `benchmarks/synthetic/RECALL.json` by set difference across the three scanner conditions: of the 20 high-risk fixtures missed on a default scan, **6 are recovered by declaring the opt-in domains, a further 7 by also having an AI-library import present, and 7 are never recovered under any measured condition**. So **13 of 20 misses are gate behaviour and 7 are pattern-side exposure**. Regenerated and asserted by `tests/test_recall_decomposition.py`, which recomputes the three numbers from the artefact and fails if this paragraph disagrees.
+**Corrected 29 July 2026.** This section previously described a 13-file corpus and reported **100% precision, 100% recall**. The corpus was expanded to 38 fixtures (high-risk 5 to 30) and the claim was never re-measured against it. The withdrawn figures are recorded here rather than deleted; the measured replacements are in the table above, from `benchmarks/synthetic/RECALL.json`. **Corrected again 29 July 2026.** The decomposition then published as “17 of 20 misses are gate behaviour” was not supported by the per-fixture artefact and was withdrawn. **Re-measured 26 August 2026 after the finance subcategories were brought under their intended opt-in domain gate and broad biometric matches were narrowed:** of the 26 high-risk fixtures missed by the default CLI, **12 are recovered by declaring the opt-in domains, a further 7 by also having an AI-library import present, and 7 are never recovered under any measured condition**. Thus **19 of 26 misses are gate behaviour and 7 are pattern-side exposure**. The context-free Python/browser classifier is reported separately because it has no project-policy, fingerprint or domain-gating layer. `tests/test_recall_decomposition.py` recomputes the three scanner-path numbers and fails if this paragraph disagrees.
 
 ### Curated library corpus (development baseline)
 
 257 findings hand-labelled across 5 mature open-source AI libraries (instructor, pydantic-ai, langchain, scikit-learn, openai-python). Each finding manually classified as TP or FP. Labels committed at `benchmarks/labels.json`. This corpus was used during development to tune patterns and is **not** the headline precision number — library code is mostly infrastructure, producing 15.2% precision at the `minimal_risk` tier.
 
-### Random corpus (headline precision measurement)
+### Random corpus (retired dated measurement)
 
 50 randomly selected Python AI repos (from 276 candidates, seed=42), scanned with Regula v1.7.0. 201 findings stratified-sampled and blind-labelled by a **single reviewer** (labeller saw only file path, code context, and finding description — no project name, README, or purpose, see `benchmarks/labels.json`).
 
-**Result:** 83.5% precision on production code (N=115, measured on Regula v1.7.0). **Labelled by one reviewer; no inter-rater agreement measurement exists.** Previous baseline was 70.0% before domain gating and LLM import gating. Figures re-measured per release where corpus permits; v1.7.1+ additions not yet reflected. Full methodology: `benchmarks/results/random_corpus/METHODOLOGY.json`; labelling limits: [`benchmarks/README.md`](../benchmarks/README.md) (the only repo-wide disclosure of the single-reviewer basis).
+**Recorded result:** 83.5% precision on the N=115 production subset for
+Regula v1.7.0. One reviewer supplied the labels and no inter-rater agreement
+measurement exists. The subset membership and pinned repository snapshots are
+not tracked, so this is neither re-runnable nor evidence of current detector
+accuracy. Full available methodology:
+`benchmarks/results/random_corpus/METHODOLOGY.json`; limitations:
+[`benchmarks/README.md`](../benchmarks/README.md).
 
 ### Continuous validation
 
-- 2,899 pytest-collected tests, produced by collection rather than
+- 2,932 pytest-collected tests, produced by collection rather than
   hand-maintained (measured 2026-08-25). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 48 CLI integration tests (`tests/test_cli_integration.py`), enumerated by
@@ -231,4 +263,4 @@ This model card describes Regula v2.0.0. If the detection patterns, classificati
 
 ---
 
-*Last updated: 12 August 2026.*
+*Last updated: 26 August 2026.*

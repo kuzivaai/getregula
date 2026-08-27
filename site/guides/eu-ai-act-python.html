@@ -118,7 +118,7 @@
           "name": "How do I scan my Python code for EU AI Act compliance?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Install Regula with pipx install regula-ai, then run regula check . in your project directory. Regula scans Python files for import patterns, function calls, and variable names that indicate AI system behaviour covered by the EU AI Act. It reports a risk tier (prohibited, high-risk, limited-risk, or minimal) and lists specific findings with article references."
+            "text": "Install Regula with pipx install git+https://github.com/kuzivaai/getregula.git@main, then run regula check . in your project directory. Regula scans Python files for import patterns, function calls, and variable names that indicate AI system behaviour covered by the EU AI Act. It reports a risk tier (prohibited, high-risk, limited-risk, or minimal) and lists specific findings with article references."
           }
         },
         {
@@ -201,7 +201,7 @@
 
 <h2>Quick start: scanning a Python project</h2>
 
-<pre tabindex="0"><code>pipx install regula-ai
+<pre tabindex="0"><code>pipx install git+https://github.com/kuzivaai/getregula.git@main
 regula check .                      # scan current directory
 regula check . --domain healthcare  # activate domain-specific patterns
 regula assess                       # interactive: does the AI Act apply?</code></pre>
@@ -326,7 +326,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install Regula
-        run: pipx install regula-ai
+        run: pipx install git+https://github.com/kuzivaai/getregula.git@main
 
       - name: Scan for AI Act risk patterns
         run: regula check . --format json &gt; regula-report.json
@@ -375,7 +375,7 @@ jobs:
                 <a href="/assess/">Assess</a>
                 <a href="/guides/">Guides</a>
                 <a href="https://github.com/kuzivaai/getregula">GitHub</a>
-                <a href="https://pypi.org/project/regula-ai/">PyPI</a>
+                <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md">Install</a>
                 <a href="/blog/writing.html">Blog</a>
                 <a href="/regions/regulations.html">Regulations</a>
                 <a href="/about.html">About</a>

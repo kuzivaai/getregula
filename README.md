@@ -3,11 +3,11 @@
 
 **Offline-capable, code-native AI governance scanning. The core scan runs locally, does not upload scanned file contents, and needs no account; telemetry is sent only with explicit opt-in consent. Regula flags patterns that may need review under the EU AI Act, South Korea's AI Basic Act, and Colorado SB 26-189, records the deployment facts code cannot show, and reports insufficient information rather than inventing a score.**
 
-[![PyPI](https://img.shields.io/pypi/v/regula-ai)](https://pypi.org/project/regula-ai/)
+[![Distribution: source](https://img.shields.io/badge/distribution-source%20install-orange.svg)](docs/installation.md)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2899%20collected-blue.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2932%20collected-blue.svg)](#verified-numbers)
 [![Accessibility target: WCAG 2.2 AA](https://img.shields.io/badge/accessibility%20target-WCAG%202.2%20AA-blue.svg)](docs/accessibility/README.md)
 
 ---
@@ -74,7 +74,7 @@ In plain English: give Regula a source-code folder and answer questions about ho
 
 | If you want to… | Start here |
 |---|---|
-| Explore the questions without installing anything | Use the [browser assessment](https://getregula.com/assess/). It records declared context for review; it does not inspect your code or make a legal determination. |
+| Explore the questions without installing anything | The browser assessment source is in [`site/assess/`](site/assess/). The public Pages deployment is currently unavailable; when restored, it records declared context for review but does not inspect your repository or make a legal determination. |
 | Check a local codebase | Follow the [Quick start](#quick-start), then run `regula check .`. |
 | Evaluate Regula before adopting it | Follow the [10-minute example journey](examples/cv-screening-app/) and read the [documented limitations and verification evidence](docs/TRUST.md). |
 | Add a repeatable team check | Use the [CI/CD example](#cicd) and review the exit-code policy before making it blocking. |
@@ -83,8 +83,10 @@ In plain English: give Regula a source-code folder and answer questions about ho
 ## Quick start
 
 ```bash
-pipx install regula-ai      # or: pip install regula-ai / uv pip install regula-ai
+pipx install git+https://github.com/kuzivaai/getregula.git@main
 ```
+
+PyPI distribution is currently unavailable. The command above installs a moving public source reference; pin a reviewed commit hash for reproducible use. See [`docs/installation.md`](docs/installation.md) for the verified status and alternatives.
 
 **Not sure if the AI Act applies?** No code needed:
 ```bash
@@ -110,8 +112,8 @@ risk tier, a compliance score, a readiness percentage or an effort estimate.
 
 **Want to scan your code?**
 ```bash
-regula check .              # 419 tier patterns, 8 language families; runtime varies
-regula check . --jurisdictions eu,korea,colorado  # all 3 jurisdictions
+regula check .              # 423 tier patterns, 8 language families; runtime varies
+regula check . --jurisdictions eu,korea,colorado  # selected reference mappings
 ```
 
 **Need a review pack?**
@@ -142,9 +144,9 @@ If you don't have pipx yet, install it first (one-time):
 | Arch | `sudo pacman -S python-pipx && pipx ensurepath` |
 | Windows | `python -m pip install --user pipx && python -m pipx ensurepath` |
 
-**Already using uv?** `uvx --from regula-ai regula` runs it with no install step (the `--from` flag is required because the PyPI package name `regula-ai` differs from the CLI name `regula`). Or install it permanently with `uv tool install regula-ai`.
+**Already using uv?** `uvx --from git+https://github.com/kuzivaai/getregula.git@main regula` runs the public source without a persistent install. Or install it with `uv tool install git+https://github.com/kuzivaai/getregula.git@main`.
 
-**Running inside a venv or conda env?** `pip install regula-ai` works fine there :  the PEP 668 restriction only applies to system Python.
+**Running inside a venv or conda env?** Use `pip install git+https://github.com/kuzivaai/getregula.git@main`. The PEP 668 restriction applies to managed system Python, not an activated virtual environment.
 
 See [`docs/installation.md`](docs/installation.md) for troubleshooting (`externally-managed-environment`, `command not found: regula` after install, PATH setup per shell).
 
@@ -154,9 +156,9 @@ See [`docs/installation.md`](docs/installation.md) for troubleshooting (`externa
 regula check examples/cv-screening-app --scope all
 ```
 
-The `--scope all` flag is needed because Regula's default scope (`production`) skips example directories. This fixture intentionally triggers an Annex III Category 4 (Employment) high-risk classification.
+The `--scope all` flag is needed because Regula's default scope (`production`) skips example directories. This fixture intentionally contains employment-related code indicators that exercise the Annex III Category 4 detector; the resulting label is a detector observation, not a legal determination.
 
-See [`examples/`](examples/) for runnable reference projects covering each EU AI Act risk tier, or walk through the full 10-minute evaluation journey in [`examples/cv-screening-app/`](examples/cv-screening-app/) :  install, scan, plan, gap, conform, verify, handoff to red-team tooling.
+See [`examples/`](examples/) for runnable reference projects covering prohibited-practice, high-risk, transparency, and no-elevated-indicator scenarios, or walk through the full 10-minute evaluation journey in [`examples/cv-screening-app/`](examples/cv-screening-app/) :  install, scan, plan, gap, conform, verify, handoff to red-team tooling.
 
 For a deeper first-time-user walk-through (policy tuning, CI integration, baselining) see [`docs/QUICKSTART.md`](docs/QUICKSTART.md). The full documentation is indexed by type (tutorials / how-to / reference / explanation) in [`docs/README.md`](docs/README.md).
 
@@ -191,17 +193,28 @@ The EU AI Act defines four risk tiers. Regula maps code patterns to each:
 
 Every finding includes the relevant Article reference and explains when exceptions may apply. Regula flags patterns -- it does not make legal determinations.
 
-**Multi-jurisdiction support.** Beyond the EU AI Act, Regula maps risk patterns to South Korea's AI Basic Act (Act No. 20676, in force 22 January 2026) and Colorado SB 26-189 (disclosure-focused, plus consumer correction and human-review rights, duties from 1 January 2027). Use `--jurisdictions eu,korea,colorado` on `regula check` or `--jurisdiction korea` on `regula assess` to apply the relevant framework. Each jurisdiction has its own YAML config (`references/jurisdictions/`) and tailored web questionnaire.
+**Coverage has explicit levels.** Regula has an evidence-gated questionnaire
+and decision model for the EU AI Act, South Korea's AI Basic Act (Act No.
+20676), and Colorado SB 26-189. It separately maps findings to selected control
+or provision references in 13 frameworks, and publishes dated regional
+trackers. A crosswalk or tracker is not an executable applicability decision or
+a compliance assessment. See [product coverage and user
+journeys](docs/PRODUCT_COVERAGE_AND_JOURNEYS.md) for the current capability
+matrix and claim boundary. Use `--jurisdictions` on `regula check` to filter
+selected reference mappings; that option also accepts `uk`, `brazil`, `nist`,
+and `iso`, but it does not run an applicability decision. Use `--jurisdiction
+eu`, `korea`, or `colorado` on `regula assess` for the three implemented
+decision-support configurations.
 
-**Developer guides** on getregula.com:
-[Python](https://getregula.com/guides/eu-ai-act-python.html) |
-[JavaScript](https://getregula.com/guides/eu-ai-act-javascript.html) |
-[Healthcare](https://getregula.com/guides/eu-ai-act-healthcare.html) |
-[Recruitment](https://getregula.com/guides/eu-ai-act-recruitment-hiring.html) |
-[Article 5](https://getregula.com/guides/article-5-prohibited-practices.html) |
-[Article 9](https://getregula.com/guides/article-9-risk-management.html) |
-[Article 14](https://getregula.com/guides/article-14-human-oversight.html) |
-[Article 50](https://getregula.com/guides/article-50-transparency.html)
+**Developer guide sources:**
+[Python](site/guides/eu-ai-act-python.html) |
+[JavaScript](site/guides/eu-ai-act-javascript.html) |
+[Healthcare](site/guides/eu-ai-act-healthcare.html) |
+[Recruitment](site/guides/eu-ai-act-recruitment-hiring.html) |
+[Article 5](site/guides/article-5-prohibited-practices.html) |
+[Article 9](site/guides/article-9-risk-management.html) |
+[Article 14](site/guides/article-14-human-oversight.html) |
+[Article 50](site/guides/article-50-transparency.html)
 
 ## Key commands
 
@@ -226,7 +239,7 @@ Every finding includes the relevant Article reference and explains when exceptio
 | `regula oversight .` | Article 14 human oversight analysis (cross-file flow tracing) |
 | `regula guardrails .` | Article 15 guardrail implementation coverage detection |
 | `regula owasp-agentic` | OWASP Top 10 for Agentic Applications assessment |
-| `regula monitor` | Runtime monitoring for AI applications (Article 12) |
+| `regula monitor` | Analyse locally recorded agent/tool events for selected Article 12 record-keeping signals; it does not observe a running system by itself |
 | `regula gdpr` | GDPR cross-reference scan ([14 focused checks](scripts/gdpr_scan.py), 4 AI Act/GDPR hotspots) |
 | `regula bias` | CrowS-Pairs bias evaluation (1,508 sentence pairs) with optional BBQ benchmark. Aligned with Digital Omnibus bias-testing safeguards (Article 4a, COM(2025)836). |
 | `regula mcp-server` | MCP server (JSON-RPC stdio) exposing three tools :  `regula_check`, `regula_classify`, `regula_gap` :  for Claude Code, Cursor, and other MCP clients |
@@ -247,16 +260,22 @@ Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questio
 
 ## Who is this for?
 
-- **Solo founders and indie hackers** building AI products who need an initial list of code patterns to investigate before contextual and legal review.
-- **Small teams** who want to understand their compliance exposure before it becomes a sales blocker. Enterprise procurement is already asking for AI Act evidence.
-- **Engineering teams** who want EU AI Act scanning in CI/CD to catch high-risk or prohibited patterns before they ship.
-- **AI governance reviewers** :  use Regula's code observations, gap-review scaffolds, and hash-manifested documents as inputs to a broader review. Deliverables can carry optional engagement metadata via the `engagement:` policy section or `--client`/`--prepared-by`/`--engagement-ref` flags. Regula does not make a legal or conformity determination.
+- **Builders and maintainers** who need an initial list of source-code signals to investigate before contextual and legal review.
+- **Governance and assurance reviewers** who need observations, declared facts, unresolved questions, and provenance kept visibly separate.
+- **Evaluators and adopters** who need reproducible tests, completion data, known failure modes, and a non-blocking path to test Regula on their own representative sample.
+- **Qualified contextual reviewers** who may use Regula artefacts as inputs. Regula does not make their legal, conformity, security, accessibility, or domain determination.
+
+The detailed tasks, failure paths, and required interface states are defined in
+[product coverage and user journeys](docs/PRODUCT_COVERAGE_AND_JOURNEYS.md).
 
 ## What Regula is (and isn't)
 
 **Regula is:**
 
-- A development-time compliance tool that combines static code analysis with governance questionnaires, mapping both to obligations across 3 jurisdictions (EU AI Act, South Korea AI Basic Act, Colorado SB 26-189)
+- A development-time evidence and triage tool that combines static code
+  analysis with governance questionnaires, mapping observations and declared
+  facts to possible obligations across 3 jurisdictions (EU AI Act, South
+  Korea AI Basic Act, Colorado SB 26-189)
 - A shift-left code-indicator scanner -- like ESLint for governance review, running in your terminal or CI/CD pipeline
 - A questionnaire-based assessment tool for organisational obligations that code patterns cannot verify (Articles 9, 17, 27, 72)
 - Pattern-based risk indication across 3 jurisdictions, not a legal compliance certificate
@@ -270,7 +289,13 @@ Seven endpoints: `/health`, `/v1/check`, `/v1/classify`, `/v1/gap`, `/v1/questio
 - A production fairness testing platform (`regula bias` runs benchmark probes against a local model as a starting point, but does not replace runtime fairness monitoring)
 - Legal advice (consult qualified legal counsel for compliance decisions)
 
-Regula helps development teams understand their EU AI Act exposure early. It does not replace the organisational, procedural, and legal work required for full compliance. For a detailed account of what falls outside Regula's scope, see [`docs/what-regula-does-not-do.md`](docs/what-regula-does-not-do.md), and for Regula's own model card (intended use, training data, evaluation, known failure modes) see [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md).
+Regula helps development teams find AI-governance questions earlier across its
+implemented jurisdictions and reference frameworks. It does not replace the
+organisational, procedural, domain, and legal work required for compliance. For
+a detailed account of what falls outside Regula's scope, see
+[`docs/what-regula-does-not-do.md`](docs/what-regula-does-not-do.md), and for
+Regula's own model card (intended use, training data, evaluation, known failure
+modes) see [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md).
 
 ## Bias evaluation: methodology and ethics
 
@@ -306,8 +331,17 @@ documentation, not a production fairness monitor :  see "What Regula is
 Regula performs **pattern-based risk indication**, not legal risk classification.
 
 - The EU AI Act classifies risk based on intended purpose and deployment context (Article 6), not code patterns. Regula's findings are indicators that warrant human review.
-- **False positives will occur.** Blind-labelled benchmark on 50 randomly selected Python AI repos measured **83.5% precision on production code** (N=115, measured on v1.7.0, labelled by a single reviewer with no inter-rater agreement measurement). Per-tier: `ai_security` (85%), `agent_autonomy` (83%), `limited_risk` (88%), `minimal_risk` (100%). The `high_risk` tier (33%, N=6) is statistically unmeasurable at this sample size. Full methodology, corpus selection, and reproduction steps: [`benchmarks/README.md`](benchmarks/README.md).
-- **TypeScript findings are advisory:** 0% precision on the current benchmark (6 FP, 0 TP). Language-specific AST gating is not yet implemented for TypeScript.
+- **False positives will occur.** Regula has no current, independently
+  labelled real-world precision estimate. Its development corpora are
+  single-reviewer records, and the older random-corpus result cannot be
+  re-derived from a clean checkout because its measured subset and pinned
+  source snapshots were not preserved. The arithmetic, limitations, and
+  superseded measurement remain available as a dated research record in
+  [`benchmarks/README.md`](benchmarks/README.md); they are not evidence of the
+  current detector's accuracy.
+- **TypeScript findings are advisory:** current real-world precision is
+  unmeasured. A dated six-finding development slice contained six false
+  positives, which is a warning signal rather than a dependable rate.
 - **False negatives will occur.** Novel risk patterns not in the database will be missed.
 - Article 5 prohibitions have conditions and exceptions that require human judgment.
 - The audit trail is self-attesting (locally verifiable, not externally witnessed).
@@ -318,17 +352,17 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | What | Count |
 |------|------:|
 | CLI commands | 62 |
-| Risk detection patterns (regexes) | 419 |
+| Risk detection patterns (regexes) | 423 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
-| Compliance frameworks mapped | 13 |
-| Tests (pytest --collect-only) | 2,899 |
+| Framework identifiers with selected references | 13 |
+| Tests (pytest --collect-only) | 2,932 |
 | Required production dependencies | 0 |
 
 For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md). What version numbers promise, the public API they cover, and the deprecation policy: [`docs/VERSIONING.md`](docs/VERSIONING.md).
 
 ## Privacy and data handling
 
-Regula runs entirely on your machine. No code, findings, or metadata are transmitted to any external service. There is no account system, no API key, no telemetry by default (crash reporting requires both `regula telemetry enable` **and** an endpoint you configure yourself via `REGULA_SENTRY_DSN`; published builds ship none, and `DO_NOT_TRACK` suppresses it regardless). The tool reads your source files, analyses them locally, and writes output to your local filesystem. Network access is only used when you explicitly request it (RFC 3161 timestamps via `--timestamp`). See [`SECURITY.md`](SECURITY.md) for the full security posture.
+Regula's core scan runs on your machine. No code, findings, or metadata are transmitted during a default scan. There is no account system or API key, and no telemetry by default (crash reporting requires both `regula telemetry enable` **and** an endpoint you configure yourself via `REGULA_SENTRY_DSN`; published builds ship none, and `DO_NOT_TRACK` suppresses it regardless). The tool reads your source files, analyses them locally, and writes output to your local filesystem. Explicit network-enabled operations include RFC 3161 timestamping, feed or update checks, and integrations you configure. See [`SECURITY.md`](SECURITY.md) for the full security posture.
 
 ## Contributing
 

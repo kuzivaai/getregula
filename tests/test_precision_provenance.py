@@ -58,6 +58,10 @@ KNOWN_SURFACES = [
     # surface most likely to be read aloud, and the figure must not travel
     # on it without its basis.
     "docs/DEMO.md",
+    # The dated audit carries the same N=115 and single-reviewer disclosure
+    # in its detector-evidence section; registering it makes that section
+    # subject to the same point-of-use provenance check.
+    "docs/VALIDITY_UX_ENGINEERING_AUDIT_2026-08-26.md",
 ]
 
 # Excluded with a stated reason each, never a blanket directory sweep.

@@ -1,4 +1,4 @@
-# regula-ignore
+# regula-ignore — sourced regulatory copy names automated-decision and employment practices but does not implement them
 """United Kingdom — AI regulation coverage page.
 
 Data file consumed by scripts/build_regulations.py to generate
@@ -18,7 +18,7 @@ REGION = {
     "geo_placename": "United Kingdom",
 
     "status_cls": "live",
-    "status_text": "Coverage in progress · frameworks live",
+    "status_text": "Sector-specific law and guidance · no horizontal AI Act",
 
     "title_tag": "UK AI Regulation Tracker — ICO and DSIT | Regula",
     "title_html": 'United Kingdom — <span class="hl">AI regulation</span> tracker',
@@ -40,9 +40,9 @@ REGION = {
         "ICO + DSIT-led, principles-based, sector-specific. Regula's live coverage."
     ),
 
-    "last_updated": "14 August 2026",
+    "last_updated": "26 August 2026",
     "published_time": "2026-04-08T00:00:00+00:00",
-    "modified_time": "2026-08-14T00:00:00+00:00",
+    "modified_time": "2026-08-26T00:00:00+00:00",
 
     "lede": (
         "The United Kingdom has taken a deliberately different path to the EU. "
@@ -52,7 +52,8 @@ REGION = {
         "government's five cross-cutting principles. This page tracks what is "
         "already in force, what is in consultation, and what Regula can tell "
         "you about your code today — regardless of whether a dedicated UK AI "
-        "Act materialises."
+        "Act materialises. Regula's UK material is a framework crosswalk and "
+        "dated tracker, not a UK applicability or compliance decision engine."
     ),
 
     "tracker_rows": [
@@ -101,7 +102,7 @@ REGION = {
             "body": """
 <p>Unlike the EU AI Act, the UK does not have a single piece of AI legislation. But UK organisations deploying AI are already bound by a substantial body of existing law and regulator guidance. None of this requires waiting for a future Act.</p>
 <ul>
-    <li><strong>UK GDPR and the Data Protection Act 2018</strong> — in particular <strong>Articles 22A–22D</strong> on automated decision-making. The Data (Use and Access) Act 2025 (s. 80, in force <strong>5 February 2026</strong> via SI 2026/82) replaced the old Article 22: significant solely-automated decisions are now generally permitted subject to safeguards — information, the right to make representations, human intervention on request, and contestability (Art. 22C) — with the old-style restriction retained where special category data is involved (Art. 22B). The ICO is consulting on updated ADM guidance; its <strong>AI and Data Protection Risk Toolkit</strong> remains the operational baseline. This binds every UK AI deployment that touches personal data.</li>
+    <li><strong>UK GDPR and the Data Protection Act 2018</strong> — in particular <strong>Articles 22A–22D</strong> on automated decision-making. The Data (Use and Access) Act 2025 (s. 80, in force <strong>5 February 2026</strong> via SI 2026/82) replaced the old Article 22: significant solely-automated decisions are now generally permitted subject to safeguards — information, the right to make representations, human intervention on request, and contestability (Art. 22C) — with the old-style restriction retained where special category data is involved (Art. 22B). The ICO is consulting on updated ADM guidance; its <strong>AI and Data Protection Risk Toolkit</strong> remains operational guidance. These rules apply when their personal-data, controller/processor, territorial, and decision conditions are met; the presence of AI alone does not establish every condition.</li>
     <li><strong>ICO Guidance on Explaining Decisions Made with AI</strong> (co-developed with the Alan Turing Institute) — the working standard for what "appropriate transparency" looks like in practice. Sets expectations for rationale, responsibility, data, fairness, safety and impact explanations.</li>
     <li><strong>Sector regulator guidance</strong> — the FCA on algorithmic trading and credit decisions, the MHRA on software as a medical device, Ofcom on online safety (including the Online Safety Act 2023 illegal-harms and children's-safety duties where AI is a material part of the service), the CMA on algorithmic pricing and consumer protection. Each of these applies independently of any future AI Act.</li>
     <li><strong>Equality Act 2010</strong> — the statutory baseline for AI fairness claims. An AI system that produces discriminatory outputs on protected characteristics is actionable today under existing anti-discrimination law, not in 2027 under a new Act.</li>
@@ -134,7 +135,7 @@ REGION = {
     <li><strong>Complete an AI-focused DPIA</strong> for every high-stakes AI deployment — hiring, credit, healthcare, benefits, content moderation, biometric processing. The ICO's AI and Data Protection Risk Toolkit is the operational spec. Regula's <code>regula gap</code> and <code>regula oversight</code> commands produce inputs that map directly onto the ICO's risk categories.</li>
     <li><strong>Document human oversight</strong> for each automated decision path. UK GDPR Articles 22A–22D (human intervention on request) plus ICO guidance plus the "contestability and redress" principle all point at the same control: a named human function that can review and override. Regula's <code>regula oversight</code> traces AI model outputs through call chains cross-file and flags the gate-or-no-gate question.</li>
     <li><strong>Map your exposure to sector regulators.</strong> If you are in finance, the FCA's algorithmic trading and consumer credit guidance applies. If medical, MHRA SaMD guidance. If online services, Ofcom's Online Safety Act duties. Do this mapping before a regulator asks you to.</li>
-    <li><strong>Run a framework crosswalk scan.</strong> Regula ships with the UK DSIT / ICO principles in <code>references/framework_crosswalk.yaml</code>. A single <code>regula check</code> run reports findings against the five cross-cutting principles alongside EU AI Act, NIST AI RMF, ISO 42001 and the ten other frameworks it covers.</li>
+    <li><strong>Use the framework crosswalk as a reference index.</strong> Regula ships with selected UK DSIT / ICO references in <code>references/framework_crosswalk.yaml</code>. A <code>regula check</code> finding can link to those references alongside other frameworks. The mapping does not test whether a UK duty applies or whether a control operates.</li>
     <li><strong>Keep a watching brief on the AI Security Institute's evaluations</strong> — they set the standard for what "safety" means in practice for frontier-scale models. If you are fine-tuning or deploying GPAI, their evaluation methodology is the closest thing the UK has to an operational safety bar today.</li>
 </ol>
 """,
@@ -143,12 +144,12 @@ REGION = {
             "id": "where-regula-fits",
             "heading": "Where Regula fits for UK teams",
             "body": """
-<p>Regula is an open-source compliance CLI that combines code scanning with governance questionnaires for AI risk assessment. It was built primarily against the EU AI Act, but every finding is also mapped to UK DSIT / ICO principles (among twelve other frameworks). For a UK team the practically useful starting commands are:</p>
-<pre tabindex="0"><code>pip install regula-ai
+<p>Regula is an open-source AI-governance evidence and source-code review CLI. Its UK coverage is a selected DSIT / ICO framework crosswalk and this dated tracker, not a UK legal decision engine. For a UK team the practically useful starting commands are:</p>
+<pre tabindex="0"><code>pip install git+https://github.com/kuzivaai/getregula.git@main
 
 regula discover .              # AI systems present in the project
-regula check .                 # Risk indicators against all thirteen frameworks
-regula gap --project .         # Principles-based gap assessment
+regula check .                 # Code indicators with selected framework references
+regula gap --project .         # Reviewer-completable gap scaffold
 regula oversight .             # Cross-file human oversight detection (Arts 22A-22D / contestability)
 regula conform .               # Evidence pack — works for DPIA source material too
 regula sbom --ai-bom .         # AI Bill of Materials (CycloneDX 1.7 ML-BOM)
@@ -226,10 +227,11 @@ regula doctor                  # Installation health check
         {
             "q": "Does Regula cover UK frameworks?",
             "a": (
-                "Yes. Regula's framework crosswalk includes the UK DSIT/ICO principles "
+                "Partially. Regula's framework crosswalk includes selected UK DSIT/ICO references "
                 "alongside the EU AI Act, NIST AI RMF, NIST AI 600-1, ISO 42001, ISO 27001, "
                 "SOC 2, OWASP LLM Top 10, OWASP Top 10 for Agentic Applications, MITRE ATLAS, CRA, LGPD and Marco Legal IA. A "
-                "single regula check run reports findings against all of them."
+                "single regula check run can link findings to those references. It does not "
+                "evaluate whether UK law applies or whether a mapped control is implemented."
             ),
         },
     ],

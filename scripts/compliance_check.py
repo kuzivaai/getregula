@@ -1162,7 +1162,11 @@ def _score_to_status(score: int) -> str:
 # The 2 Feb 2026 deadline was missed; the Commission published DRAFT Article 6
 # classification guidelines on 19 May 2026 with a targeted consultation to
 # 23 July 2026 (verified against digital-strategy.ec.europa.eu). They are not
-# yet finalised. TODO: when the FINAL guidelines are adopted, set
+# yet finalised. The Commission's AI Act Service Desk still described the
+# document as a draft awaiting further consultation and adoption when checked
+# on 27 August 2026:
+# https://ai-act-service-desk.ec.europa.eu/en/guideline-explorer
+# TODO: when the FINAL guidelines are adopted, set
 # "current_status" to "finalised" (the renderer then flips to the PUBLISHED
 # branch), refresh "verified_on", and revise "implication" to the final text.
 ARTICLE_6_GUIDELINES_STATUS = {
@@ -1173,7 +1177,7 @@ ARTICLE_6_GUIDELINES_STATUS = {
     "draft_published_on": "2026-05-19",
     "consultation_until": "2026-07-23",
     "current_status": "draft_published",
-    "verified_on": "2026-07-23",
+    "verified_on": "2026-08-27",
     "implication": (
         "The Commission published DRAFT Article 6 classification guidelines on "
         "19 May 2026 (targeted consultation to 23 July 2026); they are not yet "

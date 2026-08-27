@@ -1,6 +1,7 @@
 # Contributing to Regula
 
-Thanks for your interest in improving EU AI Act compliance tooling. This guide covers everything you need to get started.
+Thanks for your interest in improving code-observable AI governance tooling.
+This guide covers everything you need to get started.
 
 ## Quick Start
 
@@ -9,15 +10,17 @@ Thanks for your interest in improving EU AI Act compliance tooling. This guide c
 git clone https://github.com/<your-username>/getregula.git
 cd getregula
 
-# No install needed for core — it's pure Python 3.10+
-regula --help
+# No install is needed to run the stdlib-only core from the checkout
+python3 -m scripts.cli --help
 
-# Optional dependencies (for YAML config and AST analysis)
-pip install pyyaml tree-sitter
+# Create the complete, locked contributor test environment
+uv sync --extra test --locked
 
-# Run the test suite
-pytest tests/ -q
-# Must output: "X passed"
+# Run every verification surface before opening a pull request
+.venv/bin/python tests/test_classification.py
+.venv/bin/python -m pytest tests/ -q
+.venv/bin/python -m scripts.cli self-test
+.venv/bin/python -m scripts.cli doctor
 ```
 
 ## Import convention (important)
@@ -79,13 +82,21 @@ Regula scans source code for AI-related patterns. To add support for a new progr
 
 ## Testing
 
-Tests are spread across 58 files in `tests/`. The main classification tests live in `tests/test_classification.py` (a custom runner with 437 test functions); the rest are pytest-native. Run the full verification before any PR:
+Tests are spread across dedicated modules in `tests/`. Pytest collection is
+the canonical complete test population. `tests/test_classification.py` is a
+separate zero-argument runner that automatically discovers its own tests and
+fixture-free aliases from selected sibling modules. It is an alternate harness,
+not a hand-maintained list and not a substitute for pytest. Run both before a PR.
 
 The test pattern is:
 
 1. Define a test function that exercises the behaviour you want to verify.
-2. Add it to the appropriate test file (or `test_classification.py` for classification logic).
-3. Run with `pytest tests/ -q`.
+2. Add it to the appropriate test file (or `test_classification.py` for core
+   classification logic).
+3. If a new fixture-free sibling test must also run under the custom harness,
+   add its module to the alias-import loop near the top of
+   `test_classification.py`; do not create a manual test list.
+4. Run the focused test, then the complete verification block above.
 
 ```python
 def test_my_new_pattern():
@@ -93,11 +104,6 @@ def test_my_new_pattern():
     result = classify_something(...)
     assert result.risk_level == "high", f"Expected high, got {result.risk_level}"
 
-# Add to the tests list:
-tests = [
-    # ... existing tests ...
-    test_my_new_pattern,
-]
 ```
 
 **Write failing tests first.** This is not optional. The workflow is:
@@ -116,7 +122,7 @@ tests = [
 2. Create a feature branch: `git checkout -b my-feature`.
 3. Write a failing test for your change.
 4. Implement the change.
-5. Run `pytest tests/ -q` — all tests must pass.
+5. Run the complete verification block above — every required surface must pass.
 6. Commit with a clear message: `feat: add detection for XYZ library`.
 7. Push and open a PR against `main`.
 

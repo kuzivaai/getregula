@@ -18,7 +18,7 @@ no registrations — every command below runs locally.
 ## Step 0 — install
 
 ```bash
-pipx install regula-ai    # or: uvx --from regula-ai regula
+pipx install git+https://github.com/kuzivaai/getregula.git@main
 regula --version           # expect regula 1.7.6 or newer
 ```
 
@@ -326,8 +326,7 @@ attacker" gap that the SHA-256 manifest alone does not protect against.
 Install the optional crypto extra once:
 
 ```bash
-pipx install "regula-ai[signing]"
-# or:  pip install "regula-ai[signing]"
+pip install 'regula-ai[signing] @ git+https://github.com/kuzivaai/getregula.git@main'
 ```
 
 Regenerate the pack with both signatures:

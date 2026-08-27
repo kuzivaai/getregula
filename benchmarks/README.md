@@ -86,7 +86,7 @@ No `prohibited` or `high_risk` findings were generated because library
 code does not typically trigger domain-specific patterns (hiring,
 credit scoring, biometrics, etc.).
 
-## Precision — Random Corpus, Blind-Labelled
+## Precision — retired random-corpus record, blind-labelled
 
 **N=115, labelled by a single reviewer; no inter-rater agreement
 measurement exists** (see "Limitations" below).
@@ -116,7 +116,8 @@ Source: [`benchmarks/results/random_corpus/BLIND_LABELS.json`](results/random_co
 The underlying labels and methodology are in
 [`benchmarks/results/random_corpus/`](results/random_corpus/).
 
-**Interpretation:** the measured production subset was 83.5% precise. The
+**Interpretation:** the measured production subset was recorded as 83.5%
+precise for Regula v1.7.0. This is not a current product-accuracy estimate. The
 `high_risk` tier result rests on N=6 and is too small for a reliable tier-level
 conclusion. See [`METHODOLOGY.json`](results/random_corpus/METHODOLOGY.json).
 
@@ -195,7 +196,7 @@ Source: [`benchmarks/labels.json`](labels.json) and development-corpus records u
 
 | Metric | Status |
 |--------|--------|
-| Precision | **83.5%** on random corpus production code (blind-labelled, N=115, single reviewer, no inter-rater agreement — see "Limitations") |
+| Precision | No current independent estimate. Historical record: **83.5%** on a v1.7.0 random-corpus production subset (N=115, single reviewer, no inter-rater agreement, not re-runnable — see above) |
 | Recall | Measured on synthetic fixtures only (`benchmarks/synthetic/run.py`) |
 | F1 Score | Not computable (requires recall on same corpus as precision) |
 | Youden Index (J) | Not computable (requires TN count — OWASP standard) |

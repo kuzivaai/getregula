@@ -38,7 +38,11 @@ jobs:
         # worksteal is the xdist scheduler intended for highly uneven test
         # durations. This remains manual and non-gating until its results
         # demonstrate that Git/worktree-sensitive tests are parallel-safe.
-        run: pytest tests/ -q -n auto --dist worksteal --durations=50 --durations-min=0.1
+        # An explicit two workers is reproducible across public (4-vCPU) and
+        # private (2-vCPU) hosted runners. `auto` over-allocated on the measured
+        # public runner and gave little extra wall-time benefit for much more
+        # CPU contention.
+        run: pytest tests/ -q -n 2 --dist worksteal --durations=50 --durations-min=0.1
       - name: Built-in self-test
         if: matrix.suite == 'custom'
         run: python3 -m scripts.cli self-test

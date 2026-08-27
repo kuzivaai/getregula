@@ -208,7 +208,8 @@ def test_check_explain_keeps_detector_detail_separate_from_decision():
             encoding="utf-8",
         )
         rc, out, err = run_cli(
-            "check", d, "--explain", "--format", "json", "--no-skip-tests"
+            "check", d, "--explain", "--format", "json", "--no-skip-tests",
+            "--domain", "finance"
         )
     assert rc in (0, 1), err[:200]
     data = json.loads(out)["data"]
@@ -638,6 +639,22 @@ def test_examples_code_completion_tool_scans_one_file():
         assert mt.group(1) == "0", (
             f"{tier_label} expected 0, got {mt.group(1)}\n{stdout}"
         )
+
+
+def test_nonempty_scan_discloses_excluded_test_files():
+    """A successful production scan must still disclose skipped test files."""
+    from pathlib import Path
+
+    with tempfile.TemporaryDirectory(prefix="coverage-service-") as td:
+        project = Path(td)
+        (project / "app.py").write_text("value = 1\n", encoding="utf-8")
+        (project / "test_helper.py").write_text("value = 2\n", encoding="utf-8")
+        rc, stdout, stderr = run_cli("check", str(project))
+
+    assert rc == 0, f"expected rc=0, got {rc}\nstderr={stderr}"
+    assert "Files scanned:      1" in stdout, stdout
+    assert "INFO: 1 test file(s) were not scanned" in stdout, stdout
+    assert "Use --no-skip-tests to include them." in stdout, stdout
 
 
 def test_generator_commands_do_not_mutate_tracked_files(tmp_path):

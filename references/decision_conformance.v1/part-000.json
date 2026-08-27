@@ -1,5 +1,5 @@
 {
-  "model_version": "2026-08-19.1",
+  "model_version": "2026-08-26.1",
   "schema_version": "1.0",
   "shard_index": 0,
   "vectors": [
@@ -43,7 +43,7 @@
           },
           "jurisdiction": "eu",
           "matched_evidence": [],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "probability_calibration": {
             "available": false,
             "condition": "Representative labelled outcomes are required before a correctness probability can be calibrated."
@@ -85,7 +85,7 @@
       "request": {
         "facts": {},
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -128,7 +128,7 @@
           },
           "jurisdiction": "eu",
           "matched_evidence": [],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "probability_calibration": {
             "available": false,
             "condition": "Representative labelled outcomes are required before a correctness probability can be calibrated."
@@ -919,7 +919,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -995,7 +995,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "outside_scope_basis": {
             "predicate_id": "eu_scope",
             "provision": "Regulation (EU) 2024/1689, Article 2",
@@ -1762,7 +1762,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -1838,7 +1838,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "outside_scope_basis": {
             "predicate_id": "eu_scope",
             "provision": "Regulation (EU) 2024/1689, Article 2",
@@ -2605,7 +2605,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -2665,7 +2665,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "probability_calibration": {
             "available": false,
             "condition": "Representative labelled outcomes are required before a correctness probability can be calibrated."
@@ -2708,7 +2708,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -2768,7 +2768,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "probability_calibration": {
             "available": false,
             "condition": "Representative labelled outcomes are required before a correctness probability can be calibrated."
@@ -2852,7 +2852,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -4466,7 +4466,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "outside_scope_basis": {
             "predicate_id": "no_traced_rule_matched",
             "provision": "All named predicates for the selected jurisdiction",
@@ -5921,7 +5921,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -7214,7 +7214,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -7959,7 +7959,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -9252,7 +9252,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -9997,7 +9997,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -11290,7 +11290,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -12035,7 +12035,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -13328,7 +13328,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -14073,7 +14073,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -15366,7 +15366,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -16111,7 +16111,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -17404,7 +17404,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -18149,7 +18149,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -19546,7 +19546,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -20291,7 +20291,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -21688,7 +21688,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -22433,7 +22433,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -23830,7 +23830,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -24575,7 +24575,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -25972,7 +25972,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -26717,7 +26717,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -28114,7 +28114,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -28859,7 +28859,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -30256,7 +30256,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -31001,7 +31001,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -32398,7 +32398,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -33143,7 +33143,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -34436,7 +34436,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -35181,7 +35181,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -36474,7 +36474,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -37219,7 +37219,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -38512,7 +38512,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -39257,7 +39257,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -40550,7 +40550,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -41295,7 +41295,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     },
     {
@@ -42588,7 +42588,7 @@
               ]
             }
           ],
-          "model_version": "2026-08-19.1",
+          "model_version": "2026-08-26.1",
           "obligations": [],
           "probability_calibration": {
             "available": false,
@@ -43333,7 +43333,7 @@
           }
         },
         "jurisdiction": "eu",
-        "model_version": "2026-08-19.1"
+        "model_version": "2026-08-26.1"
       }
     }
   ]

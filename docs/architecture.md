@@ -45,7 +45,7 @@ regula/
 ├── references/                    # Regulatory reference documents
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
-├── tests/                         # 112 test files, 2,899 tests (pytest --collect-only)
+├── tests/                         # 116 test files, 2,932 tests (pytest --collect-only)
 │   ├── test_classification.py     # Core classification tests (main test file)
 │   └── ...                        # See tests/ for full list
 ├── docs/
@@ -80,7 +80,15 @@ regula/
 - **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.
 - **AI-specific supply chain security.** Dependency pinning checks focus on AI libraries, not general packages.
 - **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
-- **Multi-framework mapping.** 13 frameworks with full crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO 27001, OWASP LLM Top 10, OWASP Top 10 for Agentic Applications, MITRE ATLAS, EU CRA, LGPD, Marco Legal IA, UK ICO) mapped via [references/framework_crosswalk.yaml](../references/framework_crosswalk.yaml). 5 additional frameworks have display handlers but no crosswalk data and no filter keys (Colorado SB-205, Canada AIDA, Singapore AI, OECD AI, South Korea AI) — filter keys removed in commit 2e45540 to prevent silent empty results.
+- **Multi-framework reference mapping.** 13 framework identifiers have selected
+  crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO
+  27001, OWASP LLM Top 10, OWASP Top 10 for Agentic Applications, MITRE ATLAS,
+  EU CRA, LGPD, pending Marco Legal IA, UK ICO/DSIT) in
+  [references/framework_crosswalk.yaml](../references/framework_crosswalk.yaml).
+  A crosswalk is not a control assessment. Five additional frameworks have
+  display handlers but no crosswalk data and no filter keys (Colorado SB-205,
+  Canada AIDA, Singapore AI, OECD AI, South Korea AI); their filter keys were
+  removed to prevent silent empty results.
 
 
 ## Site integrity guard
