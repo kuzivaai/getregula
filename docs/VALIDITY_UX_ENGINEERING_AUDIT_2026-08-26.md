@@ -73,13 +73,13 @@ day remain in [`RESEARCH_BASIS_2026-08-25.md`](RESEARCH_BASIS_2026-08-25.md).
 The committed 38-fixture corpus contains 5 prohibited, 30 high-risk and 3
 negative fixtures. Fresh runs reproduced the committed artefact:
 
-| Runtime and gate condition | High-risk label fidelity | Prohibited label fidelity |
-|---|---:|---:|
-| Context-free Python/browser classifier, no project/domain gates | 18/30 (60.0%) | 5/5 |
-| CLI scanner, default scan, no flags | 4/30 (13.3%) | 5/5 |
-| Scanner with all domains declared | 16/30 (53.3%) | 5/5 |
-| Scanner with domains plus an injected AI import | 23/30 (76.7%) | 5/5 |
-| Python classifier with all domains declared | 16/30 (53.3%) | 5/5 |
+| Runtime and gate condition | High-risk label fidelity | Prohibited label fidelity | Source |
+|---|---:|---:|---|
+| Context-free Python/browser classifier, no project/domain gates | 18/30 (60.0%) | 5/5 | [`benchmarks/synthetic/RECALL.json`](../benchmarks/synthetic/RECALL.json) |
+| CLI scanner, default scan, no flags | 4/30 (13.3%) | 5/5 | [`benchmarks/synthetic/RECALL.json`](../benchmarks/synthetic/RECALL.json) |
+| Scanner with all domains declared | 16/30 (53.3%) | 5/5 | [`benchmarks/synthetic/RECALL.json`](../benchmarks/synthetic/RECALL.json) |
+| Scanner with domains plus an injected AI import | 23/30 (76.7%) | 5/5 | [`benchmarks/synthetic/RECALL.json`](../benchmarks/synthetic/RECALL.json) |
+| Python classifier with all domains declared | 16/30 (53.3%) | 5/5 | [`benchmarks/synthetic/RECALL.json`](../benchmarks/synthetic/RECALL.json) |
 
 These are path-and-condition-specific label-fidelity measurements, not
 real-world recall. The three negatives remained negative. Core Python and
@@ -94,13 +94,16 @@ browser result is not evidence that the ungated browser is more accurate.
 ### Real-code development records
 
 - Dated library labels: 39 TP and 218 FP, 15.2% arithmetic precision over 257
-  labelled findings.
+  labelled findings in [`benchmarks/labels.json`](../benchmarks/labels.json).
 - Dated hand-picked application labels: 125 TP and 64 FP, 66.1% arithmetic
-  precision over 189 labelled findings.
-- Combined dated labels: 164 TP and 282 FP, 36.8% over 446 findings.
+  precision over 189 labelled findings in
+  [`benchmarks/labels.json`](../benchmarks/labels.json).
+- Combined dated labels: 164 TP and 282 FP, 36.8% over 446 findings in
+  [`benchmarks/labels.json`](../benchmarks/labels.json).
 - The old random-corpus artefact records 83.5% over an N=115 production
   subset, but the subset membership and pinned repository snapshots were not
-  preserved. It used one reviewer and Regula v1.7.0.
+  preserved. It used one reviewer and Regula v1.7.0. The retained record is
+  [`benchmarks/results/random_corpus/PRECISION.json`](../benchmarks/results/random_corpus/PRECISION.json).
 
 None is a current independent detector-accuracy estimate. The library command
 can reproduce arithmetic over its label file; it cannot prove that those labels
@@ -255,8 +258,10 @@ Manual calculation of shared translucent/gradient styles found three genuine
 AA contrast defects hidden inside the incomplete set:
 
 **Correction, re-derived 27 August 2026:** this paragraph originally said 511
-nodes. A fresh complete run over the same 54 canonical pages and two viewports
-enumerated 516 nodes across 71 incomplete results. Report SHA-256:
+nodes. A fresh complete run with
+[`docs/accessibility/run-axe.js`](accessibility/run-axe.js) over the same 54
+canonical pages and two viewports enumerated 516 nodes across 71 incomplete
+results. Report SHA-256:
 `7a94a6d0698634fa848c3c421424d439fcb6629a309e5580c5e6be81aa8007b4`.
 The earlier 511 was a transcription error, not a different audit population.
 
@@ -348,22 +353,29 @@ replacement. Nothing was published by this audit.
 The completed post-change checks produced:
 
 - final mandatory default-order pytest: 2,882 passed and 38 skipped across the
-  complete 2,920-test collection in 515.75 seconds;
+  complete 2,920-test collection in 515.75 seconds; the required command is
+  recorded in [`AGENTS.md`](../AGENTS.md);
 - alternate custom harness: 1,453 helper assertions passed, zero failed and 8
-  optional/local-tool skips across 1,289 discovered test functions;
+  optional/local-tool skips across 1,289 discovered test functions in
+  [`tests/test_classification.py`](../tests/test_classification.py);
 - built-in self-test: 6/6 passed; doctor: 9 passed and 3 informational notices;
+  both commands are implemented in [`scripts/cli.py`](../scripts/cli.py);
 - controlled speed experiment before the additional audit tests: the same
   2,861 passes, 38 skips and 11 subtests took 157.68 seconds under two-worker
-  xdist versus 527.66 seconds in default sequential order;
+  xdist versus 527.66 seconds in default sequential order, as recorded in
+  [`PERF_REPORT.md`](../PERF_REPORT.md);
 - pinned external diagnostic: 13 repositories, 18 variants, 36 repetitions,
   18/18 byte-repeatable variants, 26 fully complete runs, 10
-  completed-with-skips runs, and 11/13 predeclared assertions observed;
-- public-repository guard: 742 tracked files and zero findings;
+  completed-with-skips runs, and 11/13 predeclared assertions observed in
+  [`docs/EXTERNAL_DIAGNOSTIC_2026-08-26.md`](EXTERNAL_DIAGNOSTIC_2026-08-26.md);
+- public-repository guard: 742 tracked files and zero findings from
+  [`scripts/public_repo_guard.py`](../scripts/public_repo_guard.py);
 - workflow YAML parse, JavaScript syntax, lock consistency, claim facts,
-  quotations, transcripts, questionnaire scoring and source-of-truth checks;
+  quotations, transcripts, questionnaire scoring and source-of-truth checks
+  specified by [`.github/workflows/ci.yaml`](../.github/workflows/ci.yaml);
 - final browser accessibility audit: 54 pages, two viewports, 108 runs, zero
   automatically detected violations and 71 explicitly unresolved manual
-  contrast reviews.
+  contrast reviews using [`docs/accessibility/run-axe.js`](accessibility/run-axe.js).
 
 The skip count is not presented as missing dependency coverage. The complete
 test extra was installed; remaining skips are reported by the tests for their

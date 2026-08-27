@@ -9,6 +9,9 @@ same aggregate result: 13 repositories, 18 variants, 36 isolated repetitions,
 probes failed: `private-gpt` produced no limited-risk indicator, and the
 education-declared `proctoring-ai` variant produced no high-risk indicator.
 Observed scan times ranged from 0.244 to 124.157 seconds on this host.
+The frozen inputs and timing-producing runner are
+[`benchmarks/external/manifest.v1.json`](../benchmarks/external/manifest.v1.json)
+and [`benchmarks/run_external_corpus.py`](../benchmarks/run_external_corpus.py).
 
 The result was generated at `2026-08-27T12:24:31.491909+00:00`. Its manifest
 digest was
@@ -140,6 +143,9 @@ population. llama.cpp had 3,212 discovered files, 1,125 eligible/scanned files,
 Observed local wall times ranged from sub-second small-project scans to roughly
 211 seconds per llama.cpp repetition. These are environment- and
 snapshot-specific diagnostic timings, not performance guarantees.
+They were produced by
+[`benchmarks/run_external_corpus.py`](../benchmarks/run_external_corpus.py)
+against [`benchmarks/external/manifest.v1.json`](../benchmarks/external/manifest.v1.json).
 
 ## What this cannot establish
 
