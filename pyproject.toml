@@ -58,7 +58,7 @@ test = [
 # against; the upper bound tracks dependabot's tested bumps (<69 at commit
 # cad76a0, <70 on 16 Jul 2026). Tighter compatible-release
 # (e.g. ~=68.0) would break existing installs, so the bounded range stands.
-pdf = ["weasyprint>=62,<70"]
+pdf = ["weasyprint>=62,<71"]
 # sentry-sdk 2.x stable; 3.x not yet released. ~=2.8 is equivalent to
 # >=2.8,<3 but classifies as compatible-release for clearer intent.
 sentry = ["sentry-sdk~=2.8"]
@@ -79,7 +79,7 @@ web = ["flask~=3.1"]
 # certificates, so carrying the vulnerable wheel would be needless residual
 # risk. The upper bound remains explicit for release reproducibility.
 signing = ["cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
-all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<70", "sentry-sdk~=2.8", "cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
+all = ["pyyaml~=6.0", "tree-sitter~=0.23", "tree-sitter-javascript~=0.23", "tree-sitter-typescript~=0.23", "weasyprint>=62,<71", "sentry-sdk~=2.8", "cryptography>=50.0.0,<51", "asn1crypto>=1.5.1,<2"]
 
 [project.urls]
 Homepage = "https://github.com/kuzivaai/getregula"
