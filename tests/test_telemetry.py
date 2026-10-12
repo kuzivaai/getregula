@@ -110,6 +110,70 @@ def test_feedback_command_false_positive(capsys, monkeypatch, tmp_path):
     out = capsys.readouterr().out
     assert "github.com/kuzivaai/getregula/issues/new" in out
     assert "HIGH_RISK_BIOMETRIC" in out
+    assert "No data has been sent" in out
+    assert "Outgoing issue fields" in out
+
+
+def test_feedback_minimises_absolute_local_path():
+    import urllib.parse
+    import telemetry
+
+    url = telemetry.build_feedback_url(
+        kind="false-positive",
+        pattern_id="PATTERN",
+        file_path="/home/USER/private-project/src/model.py",
+        line_number=7,
+        regula_version="1.5.0",
+        description=None,
+    )
+    body = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)["body"][0]
+    assert "private-project" not in body
+    assert "model.py" in body
+
+
+def test_feedback_cancellation_never_opens_browser(capsys, monkeypatch):
+    import argparse
+    import cli
+    from unittest.mock import MagicMock
+
+    fake_stdin = MagicMock()
+    fake_stdin.isatty.return_value = True
+    monkeypatch.delenv("CI", raising=False)
+    monkeypatch.setattr("cli_governance.sys.stdin", fake_stdin)
+    monkeypatch.setattr("builtins.input", lambda _prompt: "no")
+    opened = []
+    monkeypatch.setattr("webbrowser.open", lambda url: opened.append(url))
+    args = argparse.Namespace(
+        feedback_kind="bug", pattern=None, file=None, line=None,
+        description="A bounded failure", no_browser=False,
+    )
+    cli.cmd_feedback(args)
+    out = capsys.readouterr().out
+    assert "No data has been sent" in out
+    assert "Cancelled" in out
+    assert opened == []
+
+
+def test_feedback_opens_only_after_explicit_confirmation(capsys, monkeypatch):
+    import argparse
+    import cli
+    from unittest.mock import MagicMock
+
+    fake_stdin = MagicMock()
+    fake_stdin.isatty.return_value = True
+    monkeypatch.delenv("CI", raising=False)
+    monkeypatch.setattr("cli_governance.sys.stdin", fake_stdin)
+    monkeypatch.setattr("builtins.input", lambda _prompt: "yes")
+    opened = []
+    monkeypatch.setattr("webbrowser.open", lambda url: opened.append(url))
+    args = argparse.Namespace(
+        feedback_kind="bug", pattern=None, file=None, line=None,
+        description="A bounded failure", no_browser=False,
+    )
+    cli.cmd_feedback(args)
+    out = capsys.readouterr().out
+    assert len(opened) == 1
+    assert "Opening GitHub" in out
 
 
 def test_telemetry_status_enabled(capsys, monkeypatch, tmp_path):

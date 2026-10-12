@@ -18,6 +18,11 @@ from log_event import compute_hash
 from monitor import _get_monitor_dir
 
 
+def _print_json_result(command: str, result: dict, exit_code: int = 0) -> None:
+    from cli import json_output
+    json_output(command, result, exit_code=exit_code)
+
+
 def _read_all_events(system_id: str, monitor_dir: str = None) -> list:
     """Read all events from all log files for a system.
 
@@ -83,10 +88,14 @@ def cmd_monitor_verify(args) -> dict:
         "chain_message": message,
         "event_count": len(events),
     }
+    exit_code = 0 if valid else 1
     if getattr(args, "format", "text") == "json":
-        return result
-    status = "PASS" if valid else "FAIL"
-    print(f"  {status}  {message}")
+        _print_json_result("monitor verify", result, exit_code)
+    else:
+        status = "PASS" if valid else "FAIL"
+        print(f"  {status}  {message}")
+    if exit_code:
+        raise SystemExit(exit_code)
     return result
 
 
@@ -100,6 +109,8 @@ def cmd_monitor_report(args) -> dict:
     consequential = [e for e in inferences if e.get("consequential")]
     reviewed = [e for e in inferences
                 if e.get("human_oversight", {}).get("performed")]
+    consequential_reviewed = [e for e in consequential
+                              if e.get("human_oversight", {}).get("performed")]
 
     latencies = [e["latency_ms"] for e in inferences if e.get("latency_ms") is not None]
     models = sorted({e.get("model") for e in inferences if e.get("model")})
@@ -123,13 +134,15 @@ def cmd_monitor_report(args) -> dict:
         "models_used": models,
         "consequential_calls": len(consequential),
         "human_reviewed": len(reviewed),
-        "oversight_rate": round(len(reviewed) / max(len(consequential), 1), 3) if consequential else None,
+        "consequential_human_reviewed": len(consequential_reviewed),
+        "oversight_rate": round(len(consequential_reviewed) / len(consequential), 3) if consequential else None,
         "avg_latency_ms": int(sum(latencies) / max(len(latencies), 1)) if latencies else 0,
         "p95_latency_ms": int(sorted(latencies)[int(len(latencies) * 0.95)]) if latencies else 0,
         "safety_events": safety_counts,
     }
 
     if getattr(args, "format", "text") == "json":
+        _print_json_result("monitor report", result)
         return result
 
     print(f"\nRegula Monitor Report: {args.system_id}")
@@ -143,7 +156,8 @@ def cmd_monitor_report(args) -> dict:
         print(f"  Latency:     avg {result['avg_latency_ms']}ms, p95 {result['p95_latency_ms']}ms")
     if consequential:
         print(f"  Consequential calls: {len(consequential)}")
-        print(f"  Human reviewed:      {len(reviewed)} ({result['oversight_rate']:.0%})")
+        print(f"  Consequential calls reviewed: {len(consequential_reviewed)} "
+              f"({result['oversight_rate']:.0%})")
     if safety_counts:
         print(f"  Safety events: {safety_counts}")
     print()
@@ -178,6 +192,7 @@ def cmd_monitor_status(args) -> dict:
 
     result = {"systems": systems}
     if getattr(args, "format", "text") == "json":
+        _print_json_result("monitor status", result)
         return result
 
     if not systems:
@@ -213,6 +228,7 @@ def cmd_monitor_prune(args) -> dict:
 
     result = {"system_id": args.system_id, "deleted": deleted, "retention_months": retention}
     if getattr(args, "format", "text") == "json":
+        _print_json_result("monitor prune", result)
         return result
     if deleted:
         print(f"Pruned {len(deleted)} log files older than {retention} months")
@@ -228,7 +244,10 @@ def cmd_monitor_export(args) -> dict:
 
     events = _read_all_events(args.system_id, getattr(args, "monitor_dir", None))
     if not events:
-        print("No events to export.")
+        if getattr(args, "format", "text") == "json":
+            _print_json_result("monitor export", {"exported": 0})
+        else:
+            print("No events to export.")
         return {"exported": 0}
 
     output = io.StringIO()
@@ -242,9 +261,17 @@ def cmd_monitor_export(args) -> dict:
 
     csv_text = output.getvalue()
     out_file = getattr(args, "output", None)
+    result = {"exported": len(events)}
     if out_file:
         Path(out_file).write_text(csv_text, encoding="utf-8")
+        result["output"] = str(out_file)
+    elif getattr(args, "format", "text") == "json":
+        result["csv"] = csv_text
+
+    if getattr(args, "format", "text") == "json":
+        _print_json_result("monitor export", result)
+    elif out_file:
         print(f"Exported {len(events)} events to {out_file}")
     else:
         print(csv_text)
-    return {"exported": len(events)}
+    return result

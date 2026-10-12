@@ -60,6 +60,12 @@ class TestTheGuardCanFail(unittest.TestCase):
             ("markup split", "is <strong>compliant</strong> with Article 50"),
             ("german inflected", "Ein EU-AI-Act-konformes Ergebnis."),
             ("portuguese copula", "O seu sistema est&aacute; em conformidade."),
+            ("legal tier", "Your system is a high-risk AI system."),
+            ("legal result", "The regulatory result is now determined."),
+            ("compliance-tool metadata", "Regula: EU AI Act compliance tool for code."),
+            ("legal duty", "Articles 9-15 obligations apply to your system."),
+            ("german legal tier", "Ihr System ist ein Hochrisikosystem."),
+            ("portuguese legal tier", "O seu sistema é automaticamente de alto risco."),
         ):
             if not dg.determinations_in_text(text):
                 missed.append(f"{name}: {text!r}")
@@ -75,12 +81,17 @@ class TestTheGuardCanFail(unittest.TestCase):
         for name, text in (
             ("negation", "A clean scan does not mean a system is compliant."),
             ("limitation", "Presence of a document is not compliance with Art 50."),
+            ("product-boundary negation", "Regula is not an EU AI Act compliance tool."),
             ("technical standard", "Verify an RFC 3161-compliant TSA works."),
             ("de live negation", "Es bestimmt keine Konformit&auml;t."),
             ("de compound noun",
              "sollte nicht als endg&uuml;ltige Konformit&auml;tsbestimmung"),
             ("pt statement about the law",
              "N&atilde;o conformidade com requisitos acarreta multa"),
+            ("qualified tier",
+             "If contextual review establishes that the system is high-risk, review Article 9."),
+            ("historical quotation",
+             "Historical example: the old output said ‘Your system is high-risk.’"),
         ):
             hits = dg.determinations_in_text(text)
             if hits:

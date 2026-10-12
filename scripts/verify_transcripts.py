@@ -177,7 +177,7 @@ RETIRED_MARKER_PATTERNS = {
 #     Detector observation (not a legal classification):
 #     HIGH-RISK: Employment and workers management - Articles 9, 10, ... 15
 #
-# beneath a full `Decision: insufficient_information` block. Four tracked
+# beneath a full `Review status: insufficient_information` block. Four tracked
 # surfaces published the last line ALONE. Every one of them was quoting the tool
 # accurately and every one of them read as a legal classification attributed to
 # the tool, which is the one thing this project's hard rule forbids. Adding the
@@ -199,11 +199,11 @@ QUALIFIED_OUTPUT = {
             "Detector observation (not a legal classification)",
             "Detector observations (not legal facts)",
             "not a legal classification",
-            "Decision: insufficient_information",
+            "Review status: insufficient_information",
         ),
         "window": 400,
         "why": ("a bare tier line reads as a legal classification made by the tool; "
-                "the CLI prints it under a qualifier and a decision block, and a "
+                "the CLI prints it under a qualifier and a review-status block, and a "
                 "transcript that drops those is quoting the tool into a claim it "
                 "does not make"),
         "proof_command": ["classify", "--file", "examples/cv-screening-app/app.py"],

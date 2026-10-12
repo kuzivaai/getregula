@@ -16,6 +16,7 @@ import json
 import re
 import subprocess
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -196,6 +197,62 @@ def test_verify_catches_missing_file(tmp_path):
     result = _run("verify", str(pack_dir))
     assert result.returncode == 1
     assert "MISSING" in result.stdout
+
+
+def test_verify_json_failure_matches_process_exit():
+    """Automation rejects altered, missing and escaped files in JSON mode."""
+    with tempfile.TemporaryDirectory() as directory:
+        pack = Path(directory)
+        original = b"review evidence\n"
+        target = pack / "evidence.txt"
+        manifest = {
+            "format": "regula.evidence.v1",
+            "format_version": "1.0",
+            "hash_algorithm": "sha256",
+            "files": [{"filename": target.name,
+                       "sha256": hashlib.sha256(original).hexdigest()}],
+        }
+        for status, filename, content in (
+            ("MODIFIED", "evidence.txt", b"changed\n"),
+            ("MISSING", "absent.txt", original),
+            ("INVALID_PATH", "../outside.txt", original),
+        ):
+            target.write_bytes(content)
+            manifest["files"][0]["filename"] = filename
+            (pack / "manifest.json").write_text(json.dumps(manifest))
+            result = _run("verify", str(pack), "--strict", "--format", "json")
+            envelope = json.loads(result.stdout)
+            assert result.returncode == envelope["exit_code"] == 1
+            assert envelope["data"]["failed"] == 1
+            assert envelope["data"]["results"][0]["status"] == status
+
+
+def test_verify_json_rejection_is_machine_readable():
+    """Invalid inputs and signer expectations retain a JSON error envelope."""
+    with tempfile.TemporaryDirectory() as directory:
+        pack = Path(directory)
+        path = pack / "manifest.json"
+        cases = [
+            ([], [], 2),
+            ({"files": []}, ["--strict"], 2),
+            ({"format": "regula.evidence.v1", "hash_algorithm": "md5"}, [], 2),
+            ({"format": "regula.evidence.v1", "files": ["invalid"]}, [], 2),
+            ({"format": "regula.evidence.v1", "files": [{"filename": None}]}, [], 2),
+            ({"format": "regula.evidence.v1"}, ["--expect-public-key", "fixture"], 1),
+            ({"format": "regula.evidence.v1", "signing": {"invalid": True}}, [], 1),
+            ({"format": "regula.evidence.v1", "timestamp_authority": {"invalid": True}}, [], 1),
+        ]
+        for manifest, flags, expected in cases:
+            path.write_text(json.dumps(manifest))
+            result = _run("verify", str(pack), "--format", "json", *flags)
+            envelope = json.loads(result.stdout)
+            assert result.returncode == envelope["exit_code"] == expected
+            assert envelope["data"]["error"]
+        path.write_text("{malformed")
+        result = _run("verify", str(pack), "--format", "json")
+        envelope = json.loads(result.stdout)
+        assert result.returncode == envelope["exit_code"] == 2
+        assert "Cannot parse manifest" in envelope["data"]["error"]
 
 
 def test_verify_emits_v1_report(tmp_path):

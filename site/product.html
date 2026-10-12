@@ -7,21 +7,21 @@
          Why: /assets/site.min.css is render-blocking, so Chrome shows a WHITE canvas
          (the browser default) for the entire duration of the CSS fetch on cold
          loads :  measured at ~600ms on simulated 3G, worse on real slow networks.
-         That white→dark snap is what users reported as "the demo flashing": the
+         That canvas shift is what users reported as "the demo flashing": the
          hero terminal sits at the top of the fold and takes the full brunt of it.
          The earlier attempt (93a833b) targeted panel opacity and font preload,
          neither of which is the actual cause :  the cause is that the browser
          cannot paint at all until the external stylesheet arrives.
 
          Fix: establish the brand background + basic tokens inline so first paint
-         is already dark, then load site.css asynchronously via the media="print"
+         already uses the brand canvas, then load site.css asynchronously via the media="print"
          + onload swap trick (well-documented pattern). A <noscript> fallback
          preserves styling for JS-disabled clients. -->
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
@@ -32,7 +32,7 @@
          post-CSS visual. Prevents a vertical stack of all four panels flashing
          briefly before site.css loads. */
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <!-- CSP: GitHub Pages cannot set server headers; meta tag is the only option.
          'unsafe-inline' is required (inline scripts/styles throughout).
          frame-ancestors is ignored in meta CSP per spec :  clickjacking protection
@@ -118,7 +118,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="alternate" type="text/markdown" title="LLM-friendly version" href="/llms.txt">
     <!-- Stylesheets loaded via media="print" + onload swap so they don't block
-         first paint. The inline critical CSS above already establishes the dark
+         first paint. The inline critical CSS above already establishes the light
          theme; these sheets layer on the full design system once they arrive.
          <noscript> fallback ensures JS-disabled clients still get full styling. -->
     <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
@@ -189,7 +189,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Record deployment context for review">Assess scope</a>
         <span class="active">Scan code</span>
@@ -204,7 +204,7 @@
 
 <!-- HERO -->
 <main id="main">
-<div class="sec" style="padding:80px 0 0;">
+<div class="sec">
     <h1 class="sec-head">What Regula does</h1>
     <p class="sec-sub">The detail behind the five questions on the front page: what the scanner looks for, what it reports, how it runs, and where it sits next to other tools. None of it changes what the tool can establish. Regula indicates where to look; it does not decide your risk tier, your obligations, or whether you comply.</p>
     <p class="sec-sub"><a href="/">&larr; Back to the five questions</a></p>
@@ -220,11 +220,11 @@
             <h3>Start with deployment context</h3>
             <p>If your team builds or uses AI, jurisdiction, intended purpose, role and deployment context determine which rules may apply. Record that context in <code>regula assess</code>, then have the result reviewed by the appropriate technical and legal owners.</p>
             <button type="button" class="audience-fwd" onclick="copyPageUrl(this)">
-                <span class="fwd-icon">&#8599;</span>
+                <span class="fwd-icon" aria-hidden="true">&#8599;</span>
                 <span class="fwd-txt">Copy link to send to your developer</span>
             </button>
             <a class="audience-fwd" href="/assess/">
-                <span class="fwd-icon">&#8594;</span>
+                <span class="fwd-icon" aria-hidden="true">&#8594;</span>
                 <span class="fwd-txt">Assess in your browser (no install, no terminal)</span>
             </a>
         </div>
@@ -242,9 +242,9 @@
         <div class="audience-card audience-audit">
             <div class="audience-label">If you audit compliance</div>
             <h3>Reviewable evidence scaffolds</h3>
-            <p>Regula can generate evidence-pack scaffolds with SHA-256 manifests; optional commands can add signatures or timestamps when their prerequisites are configured. Packs require human completion and do not establish legal sufficiency. <a href="/sample-report.html">See a sample report &rarr;</a> &middot; <a href="/pricing.html">Evidence pack tiers &rarr;</a></p>
+            <p>Regula can generate evidence-pack scaffolds with SHA-256 manifests; optional commands can add signatures or timestamps when their prerequisites are configured. Packs require human completion and do not establish legal sufficiency. <a href="/sample-report.html">See a sample report &rarr;</a> &middot; <a href="/pricing.html">Free tools and limits &rarr;</a></p>
             <button type="button" class="audience-fwd" aria-live="polite" onclick="copyPill(this, 'pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula conform --sign .')">
-                <span class="fwd-icon">&#9654;</span>
+                <span class="fwd-icon" aria-hidden="true">&#9654;</span>
                 <span class="fwd-txt">regula conform --sign .</span>
             </button>
         </div>
@@ -299,7 +299,7 @@
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 1</div>
             <h3>Install</h3>
-            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code><br>Requires Python 3.10 or later; see the tested installation paths. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Installation guide &#8599;</a></p>
+            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code><br>Requires Python 3.10 or later; see the tested installation paths. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#075f4e;">Installation guide &#8599;</a></p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Step 2</div>
@@ -349,19 +349,19 @@
             <div class="tag tag-blue">Gaps</div>
             <h3>What's missing?</h3>
             <p>Separates code observations from legal decisions. When applicability facts are unresolved, it names the facts needed next instead of emitting article scores or effort estimates.</p>
-            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+            <code style="font-size:11px;color:#485b51;">regula gap .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Security</div>
             <h3>Is your AI code secure?</h3>
             <p>Prompt injection, unsafe model loading, unvalidated AI output, hardcoded keys, and other AI-specific vulnerabilities.</p>
-            <code style="font-size:11px;color:#9898b4;">regula check . &middot; regula guardrails .</code>
+            <code style="font-size:11px;color:#485b51;">regula check . &middot; regula guardrails .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Oversight</div>
             <h3>Human review analysis</h3>
             <p>Traces AI outputs across files. Checks whether each path to a user-facing endpoint passes through a human review gate.</p>
-            <code style="font-size:11px;color:#9898b4;">regula oversight .</code>
+            <code style="font-size:11px;color:#485b51;">regula oversight .</code>
         </div>
     </div>
 
@@ -371,19 +371,19 @@
             <div class="tag tag-blue">Documentation</div>
             <h3>Need evidence for review?</h3>
             <p>Annex IV technical documentation generated from your actual code. Functions, dependencies, and logging coverage pre-populated.</p>
-            <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform .</code>
+            <code style="font-size:11px;color:#485b51;">regula docs . &middot; regula conform .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Evidence</div>
             <h3>Conformity assessment pack</h3>
             <p>Reviewer-completable evidence pack with a reliance gate, unresolved-facts list, and SHA-256 integrity hashes. Article duties are attached only after the decision kernel resolves applicability. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/evidence-pack-guide.md">Evidence-pack specification</a>.</p>
-            <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
+            <code style="font-size:11px;color:#485b51;">regula conform . &middot; regula evidence-pack .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Integrity</div>
             <h3>Integrity checks and optional signatures</h3>
             <p>SHA-256 manifests, Ed25519 signatures, and RFC 3161 timestamps can help reviewers check when an assessment was produced and whether files changed afterward.</p>
-            <code style="font-size:11px;color:#9898b4;">regula conform --sign --timestamp .</code>
+            <code style="font-size:11px;color:#485b51;">regula conform --sign --timestamp .</code>
         </div>
     </div>
 
@@ -393,19 +393,19 @@
             <div class="tag tag-blue">Multi-jurisdiction</div>
             <h3>3 jurisdictions, one scan</h3>
             <p>Beyond the EU AI Act: the same scan maps findings to South Korea's AI Basic Act (Act No. 20676, in force 22 January 2026) and Colorado SB 26-189 (disclosure-focused, duties from 1 January 2027), each with its own domain-to-obligation mapping and questionnaire.</p>
-            <code style="font-size:11px;color:#9898b4;">regula check . --jurisdictions eu,korea,colorado</code>
+            <code style="font-size:11px;color:#485b51;">regula check . --jurisdictions eu,korea,colorado</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Cross-regulation</div>
             <h3>13 framework reference sets</h3>
             <p>Selected AI Act obligation areas link to selected ISO 42001, NIST AI RMF, SOC 2, OWASP, and other references. The crosswalk helps a reviewer navigate; it does not test equivalence, applicability, or implementation.</p>
-            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+            <code style="font-size:11px;color:#485b51;">regula gap .</code>
         </div>
     </div>
 
-    <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
+    <p style="font-size:12px;color:#485b51;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
         62 commands total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Selected references across 13 framework identifiers.
-        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Full CLI reference &rarr;</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#075f4e;margin-left:4px;">Full CLI reference &rarr;</a>
     </p>
 </div>
 

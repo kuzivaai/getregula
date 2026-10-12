@@ -226,17 +226,20 @@ class TestMakeCoverage:
         result = _make_coverage("9", auto, gap)
         assert result["article"] == 9
         assert result["title"] == "Risk Management"
-        assert result["auto_detected"] == auto
-        assert result["requires_human_input"] == ARTICLES["9"]["requires_human"]
-        assert result["readiness"] == "42%"
+        assert result["code_and_documentation_observations"] == auto
+        assert result["reviewer_questions"] == ARTICLES["9"]["requires_human"]
+        assert result["review_status"] == "human_review_required"
+        assert result["human_decision"] is None
 
     def test_zero_score_when_no_gap_data(self):
         result = _make_coverage("10", [], None)
-        assert result["readiness"] == "0%"
+        assert result["review_status"] == "human_review_required"
+        assert result["human_decision"] is None
 
     def test_zero_score_when_gap_has_no_score(self):
         result = _make_coverage("11", [], {})
-        assert result["readiness"] == "0%"
+        assert result["review_status"] == "human_review_required"
+        assert "readiness" not in result
 
     def test_all_articles_produce_valid_coverage(self):
         for art_num in ARTICLES:
@@ -246,8 +249,8 @@ class TestMakeCoverage:
 
     def test_coverage_includes_human_items_from_article(self):
         result = _make_coverage("13", [], {"score": 10})
-        assert result["requires_human_input"] == ARTICLES["13"]["requires_human"]
-        assert "Instructions for use document" in result["requires_human_input"]
+        assert result["reviewer_questions"] == ARTICLES["13"]["requires_human"]
+        assert "Instructions for use document" in result["reviewer_questions"]
 
 
 class TestDeriveDeadlineSummary:
@@ -326,7 +329,8 @@ class TestDeclarationTemplate:
     def test_contains_score(self):
         now = datetime(2026, 5, 1, 12, 0, 0, tzinfo=timezone.utc)
         result = _generate_declaration_template("test", now, 88, "high_risk")
-        assert "88%" in result
+        assert "88%" not in result
+        assert "Human conformity decision:** [NOT RECORDED]" in result
 
     def test_contains_regula_version(self):
         now = datetime(2026, 5, 1, 12, 0, 0, tzinfo=timezone.utc)
@@ -336,7 +340,8 @@ class TestDeclarationTemplate:
     def test_contains_risk_tier(self):
         now = datetime(2026, 5, 1, 12, 0, 0, tzinfo=timezone.utc)
         result = _generate_declaration_template("test", now, 50, "limited_risk")
-        assert "limited_risk" in result
+        assert "limited_risk" not in result
+        assert "legal tier" in result
 
     def test_contains_module_a_reference(self):
         now = datetime(2026, 5, 1, 12, 0, 0, tzinfo=timezone.utc)
@@ -351,7 +356,8 @@ class TestDeclarationTemplate:
     def test_honesty_disclaimer(self):
         now = datetime(2026, 5, 1, 12, 0, 0, tzinfo=timezone.utc)
         result = _generate_declaration_template("test", now, 50, "high_risk")
-        assert "not constitute a legal determination" in result
+        assert "Regula has not determined" in result
+        assert "conformity decision" in result
 
 
 # ---------------------------------------------------------------------------
@@ -538,7 +544,9 @@ def test_default_pack_holds_article_duties_until_facts_resolve(tmp_path, project
         project_name="unresolved-test",
     )
     summary = result["summary"]
-    assert summary["decision"]["result_type"] == "insufficient_information"
+    assert summary["decision"]["review_status"] == "insufficient_information"
+    assert summary["decision"]["human_decision"] is None
+    assert "result_type" not in summary["decision"]
     assert summary["article_duties_attached"] == []
     assert summary["readiness_assessment"] is None
     assert "overall_readiness" not in summary
@@ -645,7 +653,8 @@ class TestGenerateConformityPack:
             project_name="test",
         )
         summary = result["summary"]
-        assert summary["overall_readiness"] == "42%"
+        assert summary["readiness_assessment"] is None
+        assert "overall_readiness" not in summary
 
     def test_summary_has_project_name(self, tmp_path, project_dir, mock_conform_deps):
         result = generate_conformity_pack(
@@ -661,7 +670,8 @@ class TestGenerateConformityPack:
             output_dir=str(tmp_path / "output"),
             project_name="test",
         )
-        assert "Module A" in result["summary"]["conformity_type"]
+        assert result["summary"]["pack_purpose"] == "reviewable_evidence"
+        assert "conformity_type" not in result["summary"]
 
     def test_summary_has_human_required_items(self, tmp_path, project_dir, mock_conform_deps):
         result = generate_conformity_pack(
@@ -681,7 +691,7 @@ class TestGenerateConformityPack:
         )
         auto = result["summary"]["auto_generated"]
         assert len(auto) > 0
-        assert "Risk classification" in auto
+        assert "Code-observation summary" in auto
 
     def test_summary_has_deadline_info(self, tmp_path, project_dir, mock_conform_deps):
         result = generate_conformity_pack(
@@ -689,9 +699,8 @@ class TestGenerateConformityPack:
             output_dir=str(tmp_path / "output"),
             project_name="test",
         )
-        deadline = result["summary"]["deadline"]
-        assert "earliest_enforceable" in deadline
-        assert "note" in deadline
+        assert "deadline" not in result["summary"]
+        assert result["summary"]["human_required"]
 
     def test_summary_articles_cover_9_to_15(self, tmp_path, project_dir, mock_conform_deps):
         result = generate_conformity_pack(
@@ -699,12 +708,12 @@ class TestGenerateConformityPack:
             output_dir=str(tmp_path / "output"),
             project_name="test",
         )
-        articles = result["summary"]["articles"]
+        articles = result["summary"]["article_observations"]
         for art_num in ["9", "10", "11", "12", "13", "14", "15"]:
             assert art_num in articles
             assert "title" in articles[art_num]
-            assert "status" in articles[art_num]
-            assert "auto_coverage" in articles[art_num]
+            assert articles[art_num]["review_status"] == "human_review_required"
+            assert articles[art_num]["human_decision"] is None
 
     # --- Directory structure ---
 
@@ -864,8 +873,9 @@ class TestGenerateConformityPack:
         summary_path = pack / "00-assessment-summary.json"
         assert summary_path.exists()
         data = json.loads(summary_path.read_text(encoding="utf-8"))
-        assert data["overall_readiness"] == "42%"
-        assert data["conformity_type"] == "internal (Annex VI, Module A)"
+        assert data["readiness_assessment"] is None
+        assert data["article_duties_attached"] == []
+        assert data["review_status"] == "human_review_required"
 
     # --- Project name fallback ---
 
@@ -975,7 +985,8 @@ class TestEmptyFindings:
             output_dir=str(tmp_path / "output"),
             project_name="empty-project",
         )
-        assert result["summary"]["overall_readiness"] == "0%"
+        assert result["summary"]["readiness_assessment"] is None
+        assert "overall_readiness" not in result["summary"]
 
     def test_risk_classification_readiness_is_not_run(self, tmp_path, project_dir, mock_empty_deps):
         result = generate_conformity_pack(
@@ -987,7 +998,9 @@ class TestEmptyFindings:
         coverage = json.loads(
             (pack / "01-risk-classification" / "coverage.json").read_text(encoding="utf-8")
         )
-        assert coverage["readiness"] == "not-run"
+        assert coverage["review_status"] == "human_review_required"
+        assert coverage["human_decision"] is None
+        assert "readiness" not in coverage
 
     def test_article_gaps_default_to_zero(self, tmp_path, project_dir, mock_empty_deps):
         result = generate_conformity_pack(
@@ -1000,8 +1013,12 @@ class TestEmptyFindings:
             ev = json.loads(
                 (pack / meta["folder"] / "evidence.json").read_text(encoding="utf-8")
             )
-            assert ev["gap_score"] == 0
-            assert ev["status"] == "not_found"
+            assert ev["review_status"] == "human_review_required"
+            assert ev["human_decision"] is None
+            assert "gap_score" not in ev
+            assert ev["code_and_documentation_observations"] == []
+            assert ev["unresolved_reviewer_questions"] == []
+            assert "status" not in ev
 
     def test_supply_chain_placeholder_when_no_deps(self, tmp_path, project_dir, mock_empty_deps):
         result = generate_conformity_pack(
@@ -1241,7 +1258,7 @@ class TestWithOversightAnalysis:
             (pack / "07-human-oversight-art14" / "coverage.json").read_text(encoding="utf-8")
         )
         # Should mention the 3/5 ratio from mock data
-        auto = " ".join(coverage["auto_detected"])
+        auto = " ".join(coverage["code_and_documentation_observations"])
         assert "3/5" in auto
 
     def test_oversight_warns_about_unreviewed(self, tmp_path, project_dir, mock_with_oversight):
@@ -1254,7 +1271,7 @@ class TestWithOversightAnalysis:
         coverage = json.loads(
             (pack / "07-human-oversight-art14" / "coverage.json").read_text(encoding="utf-8")
         )
-        auto = " ".join(coverage["auto_detected"])
+        auto = " ".join(coverage["code_and_documentation_observations"])
         assert "WARNING" in auto
         assert "2" in auto
 
@@ -1311,7 +1328,7 @@ class TestOversightNotAnalysed:
         coverage = json.loads(
             (pack / "07-human-oversight-art14" / "coverage.json").read_text(encoding="utf-8")
         )
-        auto = " ".join(coverage["auto_detected"])
+        auto = " ".join(coverage["code_and_documentation_observations"])
         assert "NOT ANALYSED" in auto
 
 
@@ -1367,7 +1384,7 @@ class TestOversightNoSources:
         coverage = json.loads(
             (pack / "07-human-oversight-art14" / "coverage.json").read_text(encoding="utf-8")
         )
-        auto = " ".join(coverage["auto_detected"])
+        auto = " ".join(coverage["code_and_documentation_observations"])
         assert "no AI output sources detected" in auto
 
 
@@ -1423,7 +1440,7 @@ class TestRiskClassificationCoverage:
         coverage = json.loads(
             (pack / "01-risk-classification" / "coverage.json").read_text(encoding="utf-8")
         )
-        auto_text = " ".join(coverage["auto_detected"])
+        auto_text = " ".join(coverage["code_and_documentation_observations"])
         assert "4 findings" in auto_text
         assert "1 prohibited" in auto_text
         assert "2 high-risk" in auto_text
@@ -1439,7 +1456,9 @@ class TestRiskClassificationCoverage:
         coverage = json.loads(
             (pack / "01-risk-classification" / "coverage.json").read_text(encoding="utf-8")
         )
-        assert coverage["readiness"] == "complete"
+        assert coverage["review_status"] == "human_review_required"
+        assert coverage["human_decision"] is None
+        assert "readiness" not in coverage
 
 
 class TestEvidenceJsonStructure:
@@ -1455,8 +1474,11 @@ class TestEvidenceJsonStructure:
         ev = json.loads(
             (pack / "02-risk-management-art9" / "evidence.json").read_text(encoding="utf-8")
         )
-        assert ev["gap_score"] == 35
-        assert ev["status"] == "partial"
+        assert ev["review_status"] == "human_review_required"
+        assert ev["human_decision"] is None
+        assert "gap_score" not in ev
+        assert ev["code_and_documentation_observations"] == ["risk log found"]
+        assert "status" not in ev
 
     def test_evidence_contains_string_evidence(self, tmp_path, project_dir, mock_conform_deps):
         result = generate_conformity_pack(
@@ -1468,7 +1490,7 @@ class TestEvidenceJsonStructure:
         ev = json.loads(
             (pack / "02-risk-management-art9" / "evidence.json").read_text(encoding="utf-8")
         )
-        assert "risk log found" in ev["evidence_found"]
+        assert "risk log found" in ev["code_and_documentation_observations"]
 
     def test_evidence_contains_gaps(self, tmp_path, project_dir, mock_conform_deps):
         result = generate_conformity_pack(
@@ -1480,7 +1502,7 @@ class TestEvidenceJsonStructure:
         ev = json.loads(
             (pack / "02-risk-management-art9" / "evidence.json").read_text(encoding="utf-8")
         )
-        assert "no risk matrix" in ev["gaps_identified"]
+        assert "no risk matrix" in ev["unresolved_reviewer_questions"]
 
 
 class TestCoverageAutoDetectedFromGap:
@@ -1496,7 +1518,7 @@ class TestCoverageAutoDetectedFromGap:
         cov = json.loads(
             (pack / "02-risk-management-art9" / "coverage.json").read_text(encoding="utf-8")
         )
-        auto = " ".join(cov["auto_detected"])
+        auto = " ".join(cov["code_and_documentation_observations"])
         assert "risk log found" in auto
 
     def test_dict_evidence_description_in_auto_detected(self, tmp_path, project_dir, mock_conform_deps):
@@ -1509,7 +1531,7 @@ class TestCoverageAutoDetectedFromGap:
         cov = json.loads(
             (pack / "03-data-governance-art10" / "coverage.json").read_text(encoding="utf-8")
         )
-        auto = " ".join(cov["auto_detected"])
+        auto = " ".join(cov["code_and_documentation_observations"])
         assert "data pipeline detected" in auto
 
     def test_article_11_auto_detected_includes_annex_iv(self, tmp_path, project_dir, mock_conform_deps):
@@ -1522,7 +1544,7 @@ class TestCoverageAutoDetectedFromGap:
         cov = json.loads(
             (pack / "04-technical-documentation-art11" / "coverage.json").read_text(encoding="utf-8")
         )
-        auto = " ".join(cov["auto_detected"])
+        auto = " ".join(cov["code_and_documentation_observations"])
         assert "Annex IV" in auto
 
 
@@ -1753,7 +1775,7 @@ class TestArticleSummaryStructure:
             project_name="test",
         )
         for art_num in ["9", "10", "11", "12", "13", "14", "15"]:
-            art = result["summary"]["articles"][art_num]
+            art = result["summary"]["article_observations"][art_num]
             assert "evidence_files" in art
             # Each article should reference at least evidence.json and coverage.json
             assert len(art["evidence_files"]) >= 2
@@ -1764,6 +1786,7 @@ class TestArticleSummaryStructure:
             output_dir=str(tmp_path / "output"),
             project_name="test",
         )
-        art9 = result["summary"]["articles"]["9"]
-        assert art9["auto_coverage"] == "35%"
-        assert art9["status"] == "partial"
+        art9 = result["summary"]["article_observations"]["9"]
+        assert art9["observation_count"] == 1
+        assert art9["unresolved_question_count"] == 1
+        assert art9["review_status"] == "human_review_required"

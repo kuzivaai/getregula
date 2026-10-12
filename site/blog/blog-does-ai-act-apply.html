@@ -7,21 +7,21 @@
          0da1226 on site/index.html for the full diagnosis. TL;DR: external
          CSS is render-blocking, so the browser's default white canvas shows
          for hundreds of ms on cold loads. Inline critical CSS establishes the
-         dark theme immediately; `color-scheme: dark` hints the canvas colour
-         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         brand canvas immediately; `color-scheme: light` hints the canvas colour
+         for browser chrome; stylesheets load via media="print" + onload swap
          so they don't block first paint. <noscript> fallback for JS off. -->
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -42,11 +42,11 @@
     <meta property="og:title" content="Does the EU AI Act Apply to You? Article 2 Decision Tree">
     <meta property="og:description" content="Walk through Article 2 scope rules step by step. Covers extraterritorial reach, provider vs deployer roles, open-source exemptions, and the 4 risk tiers.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:image:alt" content="Regula: EU AI Act code observations and evidence preparation">
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-04-10T00:00:00+00:00">
-    <meta property="article:modified_time" content="2026-04-10T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-09-16T00:00:00+00:00">
     <meta property="article:section" content="AI Governance">
     <meta property="article:tag" content="EU AI Act">
     <meta property="article:tag" content="Compliance">
@@ -68,7 +68,7 @@
       "description": "A developer's decision tree for EU AI Act applicability, covering extraterritorial scope, provider vs deployer distinctions, risk tiers, and practical next steps.",
       "image": "https://getregula.com/assets/og-image.png",
       "datePublished": "2026-04-10T00:00:00+00:00",
-      "dateModified": "2026-04-10T00:00:00+00:00",
+      "dateModified": "2026-09-16T00:00:00+00:00",
       "author": {
         "@type": "Person",
         "name": "Regula maintainers",
@@ -114,7 +114,7 @@
           "name": "Does the EU AI Act apply to US companies?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Article 2(1)(c) of the EU AI Act applies to providers and deployers established outside the EU where the output of their AI system is used in the EU. This is extraterritorial scope similar to GDPR. If your AI product has EU users, the regulation applies regardless of where your company is incorporated."
+            "text": "Potentially. Article 2(1)(c) covers providers and deployers established outside the EU where an AI system's output is used in the Union. Article 2 also contains other scope routes and exclusions. Confirm the relevant operator, system, deployment facts and exclusions before concluding that an obligation applies."
           }
         },
         {
@@ -122,7 +122,7 @@
           "name": "Am I a provider or deployer if I use the OpenAI API?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "If you integrate OpenAI's API into your own product and serve it to end users, you are typically a deployer under Article 3(4) of the EU AI Act. OpenAI is the general-purpose AI (GPAI) model provider. You become a provider yourself only if you place the AI system on the market under your own name or substantially modify the model."
+            "text": "Calling an API does not determine your role. Under Article 3(3), a business that develops an AI system or has one developed and places it on the market or puts it into service under its own name or trademark can be its provider, including when it integrates a third-party model. Article 3(4) concerns use of a system under your authority. Assess the system and model separately, and review Article 25(1) when branding, modification or intended purpose changes involve a high-risk system."
           }
         },
         {
@@ -130,7 +130,7 @@
           "name": "Does the EU AI Act have a size threshold for small companies?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. The EU AI Act does not exempt companies based on size, revenue, or user count. Article 2 applies based on where the AI system's output is used, not the size of the provider or deployer. However, Article 62 requires Member States to provide SMEs with testing environments and proportionate support."
+            "text": "Article 2 does not provide a general exemption merely because a business is small. Applicability still depends on the operator, system and scope conditions, including exclusions. Article 62 provides support for SMEs, and Regulation (EU) 2026/1744 extends simplification measures. Size alone establishes neither exemption nor applicability."
           }
         }
       ]
@@ -182,7 +182,7 @@
             align-items: center;
             justify-content: center;
         }
-        .dt-body h4 {
+        .dt-body h3 {
             font-family: var(--font-body);
             font-size: 15px;
             font-weight: 600;
@@ -217,7 +217,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
@@ -249,13 +249,13 @@
         <span>6 min read</span>
     </div>
     <h1>Does the EU AI Act <span class="hl">apply</span> to your AI app?</h1>
-    <p class="standfirst">The question every developer building with OpenAI, Anthropic, or any AI API is asking. The answer is almost certainly yes if you have EU users &mdash; and the regulation does not care where your company is incorporated. Here is how to work it out, with every claim traced to a specific Article.</p>
+    <p class="standfirst">EU users can create a scope connection, but an API call or a user count cannot settle your obligations. Start with the system, the role your business holds, where it is supplied or used, and the exclusions that may apply.</p>
 </div>
 
 <div class="blog-sep"></div>
 
 <aside style="background:rgba(59,130,246,0.08);border-left:3px solid var(--accent);padding:12px 16px;margin:0 0 24px;border-radius:4px;font-size:0.9rem;color:var(--text-2);">
-<strong>Editor's note (June 2026):</strong> The Digital Omnibus reached provisional agreement on 7 May 2026. Annex III high-risk deadlines are deferred to 2 December 2027 (EP approved 16 Jun 2026, Council approved 29 Jun 2026; published in the OJ 24 Jul 2026, in force from 27 Jul 2026). References in this article to the Omnibus being "under active trilogue negotiation" and "not yet law" are now historical. See <a href="/blog/writing.html" style="color:var(--accent);">the blog index</a> for current coverage.
+<strong>Update, 16 September 2026:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng">Regulation (EU) 2026/1744</a> was published on 24 July 2026 and entered into force on 27 July 2026. It changes the application dates for Chapter III, Sections 1 to 3, except Article 6(5), to 2 December 2027 for Annex III systems and 2 August 2028 for the Annex I product path. Article 50 generally applies from 2 August 2026, with a specific Article 50(2) transition for systems already on the market before that date. These dates do not settle whether a particular system or duty is in scope.
 </aside>
 
 <div class="blog-body">
@@ -266,15 +266,15 @@
 
         <p>Using AI and having users in the EU is usually enough to make the question live, but it does not settle it. Scope turns on the role you hold, what the system is for, and whether one of the Article 2 exclusions catches you. The rest of this page walks the actual test rather than assuming the answer.</p>
 
-        <p>Article 2(1) defines three categories of entity that fall within scope:</p>
+        <p>Article 2(1) includes these three scope routes for providers and deployers:</p>
 
         <ul>
-            <li><strong>Article 2(1)(a):</strong> Providers placing an AI system on the EU market, regardless of whether they are established in the EU or a third country.</li>
+            <li><strong>Article 2(1)(a):</strong> Providers placing AI systems on the EU market or putting them into service, or placing general-purpose AI models on that market, whether established in the EU or a third country.</li>
             <li><strong>Article 2(1)(b):</strong> Deployers of AI systems who are established in, or located in, the EU.</li>
             <li><strong>Article 2(1)(c):</strong> Providers and deployers of AI systems established in a third country, <strong>where the output produced by the system is used in the Union</strong>.</li>
         </ul>
 
-        <p>That third clause is the one that catches most developers off guard. It means a SaaS product built in San Francisco, Lagos, or London that serves even a single EU user is in scope.</p>
+        <p>The full provision also addresses importers, distributors, product manufacturers, authorised representatives and affected persons. An organisation outside the EU may therefore fall within scope, but the relevant role and any Article 2 exclusions must still be assessed.</p>
 
         <p class="cite">Source: <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689" target="_blank" rel="noopener">Regulation (EU) 2024/1689</a>, Article 2(1). Published in the Official Journal of the European Union on 12 July 2024.</p>
     </section>
@@ -283,7 +283,7 @@
     <section id="decision-tree">
         <h2>A decision tree</h2>
 
-        <p>Five questions determine your position under the EU AI Act: whether your product uses AI, whether you have EU users, whether you are the provider or deployer, which risk tier applies, and what obligations follow. Working through them in order takes under a minute and gives you a clear regulatory classification under Regulation (EU) 2024/1689.</p>
+        <p>These five questions organise the facts a reviewer needs. They do not determine legal classification or establish compliance. If a fact is unknown, record the uncertainty and identify who can resolve it.</p>
 
         <p>Work through these five questions in order. Each one narrows your position under the regulation.</p>
 
@@ -291,35 +291,35 @@
             <div class="dt-step">
                 <div class="dt-num">1</div>
                 <div class="dt-body">
-                    <h4>Does your product use AI?</h4>
-                    <p>Article 3(1) defines an AI system as "a machine-based system that is designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, and that, for explicit or implicit objectives, infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments." If you call an LLM API, run an ML model, or have a system that learns from data &mdash; yes, this is AI under the regulation. If no: you are not in scope. Stop here.</p>
+                    <h3>Does your product use AI?</h3>
+                    <p>Compare the actual system with Article 3(1): consider its autonomy, objectives, inference from inputs and outputs that can influence physical or virtual environments. A library name or API call is evidence to investigate, not a legal determination. Record the system boundary and its intended purpose before reviewing the definition.</p>
                 </div>
             </div>
             <div class="dt-step">
                 <div class="dt-num">2</div>
                 <div class="dt-body">
-                    <h4>Do you have EU users?</h4>
-                    <p>If the output of your AI system is used by anyone located in the EU, Article 2(1)(c) brings you into scope. "Used in the Union" includes EU-based end users of a globally available SaaS product. If you have zero EU users today and no plans to serve them: you are not currently in scope, but this changes the moment your first EU user signs up.</p>
+                    <h3>What connects the system to the EU?</h3>
+                    <p>Review where the system is placed on the market or put into service, where the deployer is established or located, and where outputs are used. Article 2(1)(a) to (c) sets out these routes. Check the relevant exclusions, including Article 2(6), (8), (10) and (12), rather than deciding scope from the number of EU users alone.</p>
                 </div>
             </div>
             <div class="dt-step">
                 <div class="dt-num">3</div>
                 <div class="dt-body">
-                    <h4>Are you the provider or the deployer?</h4>
-                    <p><strong>Provider</strong> (Article 3(3)): the entity that develops an AI system or has it developed, and places it on the market or puts it into service under its own name or trademark. <strong>Deployer</strong> (Article 3(4)): any entity that uses an AI system under its authority. Most SaaS companies integrating OpenAI, Anthropic, or Google APIs into their product are <em>deployers</em>. The API provider is the general-purpose AI (GPAI) model provider. See Section 4 below for the full breakdown.</p>
+                    <h3>Are you the provider or the deployer?</h3>
+                    <p><strong>Provider</strong> (Article 3(3)): the entity that develops an AI system or has it developed, and places it on the market or puts it into service under its own name or trademark. <strong>Deployer</strong> (Article 3(4)): an entity that uses an AI system under its authority, excluding personal non-professional use. Integrating a third-party model does not settle these roles: you may provide the resulting system while another organisation provides the model. See Section 4 for the facts to review.</p>
                 </div>
             </div>
             <div class="dt-step">
                 <div class="dt-num">4</div>
                 <div class="dt-body">
-                    <h4>What risk tier are you in?</h4>
+                    <h3>What risk tier are you in?</h3>
                     <p>The EU AI Act uses prohibited practices, high-risk classifications, and transparency duties rather than a universal four-tier clearance scheme. A system with no elevated indicator may still have duties under Articles 4 and 5 or other applicable law. High-risk areas include employment, essential services, education, law enforcement, and critical infrastructure, subject to Article 6 and its exceptions.</p>
                 </div>
             </div>
             <div class="dt-step">
                 <div class="dt-num">5</div>
                 <div class="dt-body">
-                    <h4>What are your obligations?</h4>
+                    <h3>What are your obligations?</h3>
                     <p><strong>Possible Article 5 indicator:</strong> pause the affected use and obtain qualified review. <strong>Candidate high-risk:</strong> assess Article 6 and any exception before applying Articles 9&ndash;15. <strong>Article 50 indicator:</strong> confirm the applicable transparency duty. <strong>No elevated indicator:</strong> do not treat the result as legal clearance.</p>
                 </div>
             </div>
@@ -330,73 +330,70 @@
     <section id="non-eu">
         <h2>I am based in the US / UK / outside the EU &mdash; does it still apply?</h2>
 
-        <p>Yes. The mechanism is Article 2(1)(c), which states that the regulation applies to:</p>
+        <p>It can. Article 2(1)(c) includes:</p>
 
         <blockquote>
             <p>"providers and deployers of AI systems that have their place of establishment or are located in a third country, where the output produced by the AI system is used in the Union"</p>
         </blockquote>
 
-        <p>This is deliberately modelled on GDPR's extraterritorial reach (Article 3(2) of the GDPR). The regulation does not require you to have an office in the EU, a legal entity in the EU, or even a contract with an EU customer. If the <em>output</em> of your AI system is used by someone in the EU, you are in scope.</p>
+        <p>This route does not depend on having an EU office. It still requires the provider or deployer role and the relevant use of outputs in the Union, and must be read with Article 2's exclusions. Keep the territorial facts and the legal assessment separate.</p>
 
-        <p>For non-EU providers of <strong>high-risk</strong> AI systems, there is an additional requirement: Article 22 requires you to appoint an <strong>authorised representative</strong> established in the EU before placing the system on the market. This is a legal prerequisite, not optional.</p>
+        <p>Article 22 sets out an authorised-representative requirement for non-EU providers of high-risk systems. Assess it with the applicable Chapter III dates and transition rules, including the changes made by Regulation (EU) 2026/1744.</p>
 
         <p class="cite">Source: Regulation (EU) 2024/1689, Article 2(1)(c) and Article 22.</p>
     </section>
 
     <!-- Section 4: Provider vs deployer -->
     <section id="provider-deployer">
-        <h2>I use the OpenAI API &mdash; am I a provider or a deployer?</h2>
+        <h2>I use the OpenAI API: am I a provider or a deployer?</h2>
 
-        <p>If you integrate a hosted model (OpenAI, Anthropic, Google) into your product and serve it to end users, you are a deployer under Article 3(4). The API provider is the GPAI model provider. You only become a provider yourself if you place the AI system on the market under your own name or make a substantial modification to a high-risk system under Article 25.</p>
+        <p><strong>Calling an API does not determine your legal role.</strong> Assess the AI system you supply or use separately from the model it integrates. A business can provide an AI system built with a third-party model without training or fine-tuning that model.</p>
 
-        <p>This is the single most common question on developer forums, and the answer is more straightforward than most people expect.</p>
+        <p>Under Article 3(3), a provider develops an AI system or has it developed, then places it on the market or puts it into service under its own name or trademark. That definition can apply to an application built around a hosted model. Article 3(4) addresses an organisation using an AI system under its authority, excluding personal non-professional use. The relevant facts include what the system does, who develops or commissions it, whose name it carries, and who controls its use.</p>
 
-        <p><strong>You are almost certainly a deployer.</strong></p>
+        <p>For example, a business developing and selling its own customer-support application that incorporates a hosted model may be the provider of that application. A business using a supplier's completed application under its authority may be its deployer. These examples illustrate the definitions; an actual role assessment still needs the deployment facts.</p>
 
-        <p>Article 3(4) defines a deployer as "a natural or legal person, public authority, agency or other body using an AI system under its authority except where the AI system is used in the course of a personal non-professional activity". If you integrate OpenAI's GPT, Anthropic's Claude, Google's Gemini, or any other hosted model into your product, you are using that AI system under your authority, and using it in a product you ship is not personal non-professional use. You are the deployer.</p>
+        <p>The model provider has a separate role. Article 3(63) defines a general-purpose AI model; it does not define the provider role. Article 53(1)(b) expressly addresses information that model providers make available to providers of systems integrating their models, subject to the exceptions in Article 53(2).</p>
 
-        <p>OpenAI (or Anthropic, or Google) is the <strong>GPAI model provider</strong> under Article 3(63). They have their own obligations under Articles 53&ndash;55, which have been in force since 2 August 2025.</p>
-
-        <p><strong>When do you become a provider instead?</strong> Article 3(3) says you are a provider if you:</p>
+        <p><strong>Article 25(1) adds specific routes to provider responsibilities for high-risk systems.</strong> Review these where you:</p>
 
         <ul>
-            <li>Place an AI system on the market or put it into service <strong>under your own name or trademark</strong>, or</li>
-            <li>Make a <strong>substantial modification</strong> to a high-risk AI system that is already on the market (Article 25)</li>
+            <li>Put your name or trademark on a high-risk AI system already on the market or in service, taking account of Article 25(1)(a) and contractual allocations.</li>
+            <li>Substantially modify an existing high-risk AI system so that it remains high-risk, under Article 25(1)(b).</li>
+            <li>Change the intended purpose of an existing system so that it becomes high-risk, under Article 25(1)(c).</li>
         </ul>
 
-        <p>So if you fine-tune a model significantly, wrap it in a product, and market it as your own AI system &mdash; you may cross the line from deployer to provider. The distinction matters because providers of high-risk systems have heavier obligations (conformity assessment, CE marking, registration in the EU database).</p>
+        <p>Keep role, classification and applicable dates as separate questions. For high-risk systems, provider obligations are set out in Article 16 and deployer obligations in Article 26. Article 50 assigns different transparency duties to providers and deployers. Neither an API call nor the absence of model training determines which duties apply.</p>
 
-        <p>For most SaaS developers calling an API: you are a deployer. Your obligations are lighter but they are real &mdash; particularly around transparency (Article 50) and, if you are in a high-risk domain, around human oversight (Article 14) and record-keeping (Article 12).</p>
-
-        <p class="cite">Source: Regulation (EU) 2024/1689, Articles 3(3), 3(4), 3(63), 25, and 53&ndash;55.</p>
+        <p class="cite">Role section reviewed 16 September 2026 against <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng" target="_blank" rel="noopener">Regulation (EU) 2024/1689</a>, Articles 3(3), 3(4), 3(63), 16, 25(1), 26, 50 and 53, and <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng" target="_blank" rel="noopener">Regulation (EU) 2026/1744</a>. The Omnibus amendment changes the application dates for Chapter III, Sections 1 to 3: review the applicable date and transition provisions separately from the role definitions.</p>
     </section>
 
     <!-- Section 5: Solo founder -->
     <section id="solo-founder">
         <h2>I am a solo founder with 3 users &mdash; do I really need to worry?</h2>
 
-        <p>Honest answer: the regulation does not have a size threshold.</p>
+        <p>There is no general exemption simply because a business is small.</p>
 
-        <p>Article 2 applies based on where the AI system's output is used, not the size of the company behind it. There is no "small company exemption" and no minimum user count. A solo developer with a SaaS product used by three EU customers is technically in scope.</p>
+        <p>Article 2 does not provide a general exemption merely because a business is small. Its scope routes and exclusions still need to be assessed. A small customer count does not by itself establish either applicability or exemption.</p>
 
-        <p><strong>However.</strong> Practical enforcement risk is proportionate. The EU AI Office and national competent authorities have finite resources. They will focus on high-impact, high-risk systems first &mdash; not a three-user side project.</p>
+        <p>Do not assume a small business will be ignored by enforcement authorities. Article 99(1), as amended by Regulation (EU) 2026/1744, requires proportionate penalties and consideration of smaller enterprises' interests and economic viability. That is not a promise that a particular infringement will go unenforced.</p>
 
         <p>Article 62 requires Member States to provide SMEs and startups with priority access to AI regulatory sandboxes and to take the specific interests and needs of SME providers into account when setting fees and compliance costs. Recital 141 explicitly acknowledges that compliance costs should be proportionate.</p>
 
         <p>The practical move is to document the system's intended purpose, roles, deployment context, and any detected indicators early. A tool can support that review but cannot establish that no obligations apply.</p>
 
         <div class="callout">
-            <p><strong>Omnibus status.</strong> <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32026R1744">Regulation (EU) 2026/1744</a> entered into force on 27 July 2026. Annex III high-risk obligations apply from 2 December 2027 and Annex I product-embedded obligations from 2 August 2028.</p>
+            <p><strong>Omnibus status.</strong> <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng">Regulation (EU) 2026/1744</a> entered into force on 27 July 2026. It changes the application dates for Chapter III, Sections 1 to 3, except Article 6(5), to 2 December 2027 for Annex III systems and 2 August 2028 for the Annex I product path. Other provisions and other applicable laws must be reviewed separately.</p>
         </div>
 
-        <p class="cite">Source: Regulation (EU) 2024/1689, Articles 2, 62, and Recital 141. Omnibus status: <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=COM:2025:0037:FIN" target="_blank" rel="noopener">COM(2025) 37 final</a>.</p>
+        <p class="cite">Sources: Regulation (EU) 2024/1689, Articles 2 and 62; <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng" target="_blank" rel="noopener">Regulation (EU) 2026/1744</a>, Article 1(38) and (40), and Article 4.</p>
     </section>
 
-    <!-- Section 6: Automate the decision -->
+    <!-- Section 6: Record context for a reviewer -->
     <section id="automate">
-        <h2>Automate the decision</h2>
+        <h2>Record context for a reviewer</h2>
 
-        <p>The decision tree above is exactly what <code>regula assess</code> implements as an interactive CLI flow. It walks you through the same five questions &mdash; AI usage, EU scope, prohibited practices, high-risk domains, and transparency triggers &mdash; and tells you your tier, your role, and your obligations.</p>
+        <p><code>regula assess</code> uses supplied answers to identify context and candidate indicators for review. It cannot decide your legal role, classification or applicable obligations. The following is an excerpt from a non-interactive run on 16 September 2026, using example answers.</p>
 
         <div class="term">
             <div class="term-bar">
@@ -405,45 +402,19 @@
                 <span class="term-dot td-g"></span>
             </div>
             <pre tabindex="0">
-<span class="p">$</span> <span class="c">regula assess</span>
+<span class="p">$</span> <span class="c">python3 -m scripts.cli assess --answers yes,yes,no,no,yes</span>
 
-<span class="h">EU AI Act — Applicability Check</span>
+  <span class="h">Regula -- EU AI Act Context Review</span>
 
-<span class="m">  Does your product use AI, machine learning, or an AI API?</span>
-<span class="m">  (Examples: OpenAI, Anthropic, Google AI, Hugging Face...)</span>
-  <span class="g">yes</span>
+  <span class="h">Result: CANDIDATE ARTICLE 50 INDICATORS</span>
 
-<span class="m">  Do any users interact with your product from within the EU?</span>
-  <span class="g">yes</span>
-
-<span class="m">  Does your product do any of the following?</span>
-<span class="m">  a) Score or rank people's social behaviour...</span>
-<span class="m">  b) Influence user decisions outside their awareness...</span>
-  <span class="g">no</span>
-
-<span class="m">  Does your product do any of the following?</span>
-<span class="m">  a) Screen, rank, or filter job candidates...</span>
-<span class="m">  b) Make or influence credit decisions...</span>
-  <span class="g">no</span>
-
-<span class="m">  Does your product do any of the following?</span>
-<span class="m">  a) Interact with users via chat or voice...</span>
-<span class="m">  b) Generate text, images, audio, or video...</span>
-  <span class="g">yes</span>
-
-<span class="m">  Are you based outside the EU?</span>
-  <span class="g">yes</span>
-<hr>
-  <span class="h">Result: LIMITED-RISK (Article 50 transparency obligation)</span>
-
-  Your product is in scope, but the obligation is lightweight:
-  inform users they are interacting with AI or consuming
-  AI-generated content.
-
-  <span class="y">Generally applicable since 2 August 2026.</span>
-  Article 50(2) providers with systems already on the market before that date have until 2 December 2026 under Regulation (EU) 2026/1744.
+  Your answers indicate a use that may trigger Article 50
+  transparency duties. Confirm the exact system and deployment
+  context before treating a listed duty as applicable.
 </pre>
         </div>
+
+        <p>Article 50 generally applies from 2 August 2026. Article 111(4), inserted by Regulation (EU) 2026/1744, gives providers of covered Article 50(2) systems placed on the market before that date until 2 December 2026 to comply with that paragraph. Review the exact paragraph and system facts; this transition does not defer every transparency duty.</p>
 
         <p style="margin-top: var(--s5);">You can also run it non-interactively in CI or scripts:</p>
 
@@ -486,7 +457,7 @@
 <span class="p">$</span> <span class="c">pipx install git+https://github.com/kuzivaai/getregula.git@main</span>
 <span class="p">$</span> <span class="c">regula assess</span>          <span class="m"># applicability check</span>
 <span class="p">$</span> <span class="c">regula check .</span>         <span class="m"># code-level risk scan</span>
-<span class="p">$</span> <span class="c">regula report . -f html</span> <span class="m"># full compliance report</span>
+<span class="p">$</span> <span class="c">regula report . -f html</span> <span class="m"># evidence-preparation report</span>
 </pre>
         </div>
     </section>

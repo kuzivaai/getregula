@@ -1,7 +1,7 @@
-"""Guard tests for the FOUC fix applied site-wide in commits 0da1226 / b9e1f9a.
+"""Guard tests for the first-paint fix applied site-wide.
 
 Every landing page under site/ carries an inline critical-CSS <style> block
-that establishes the dark brand background on first paint, plus two external
+that establishes the light brand canvas on first paint, plus two external
 stylesheet links loaded via the media="print" + onload swap pattern so they
 don't block paint. These tests lock the pattern in: any page that regresses
 back to a render-blocking <link rel="stylesheet"> for site.css will fail.
@@ -28,11 +28,11 @@ REDIRECT_STUBS = {
 
 # Canonical critical-CSS markers every FOUC-fixed page must contain.
 REQUIRED_MARKERS = (
-    "color-scheme: dark",                    # canvas hint for pre-paint
-    "background: #070711",                   # brand dark bg
+    "color-scheme: light",                   # canvas hint for pre-paint
+    "background: #f5f7f3",                   # brand canvas before CSS
     'media="print" onload="this.media=',     # non-render-blocking swap
     '<noscript>',                            # JS-disabled fallback
-    'theme-color" content="#070711"',        # mobile browser chrome
+    'theme-color" content="#f5f7f3"',        # mobile browser chrome
 )
 
 # Pages with the hero terminal demo must additionally carry pre-CSS
@@ -110,7 +110,7 @@ def test_critical_css_style_block_is_in_head():
     for path, rel in _fouc_fixed_pages():
         src = path.read_text()
         # Find the critical-CSS marker
-        idx = src.find("color-scheme: dark")
+        idx = src.find("color-scheme: light")
         assert idx != -1, f"{rel} missing critical-CSS marker (covered by the main test)"
 
         # Check it appears before </head>

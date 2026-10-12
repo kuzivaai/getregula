@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      :root { color-scheme: dark }
-      html, body { background: #070711; color: #e2e2f0; margin: 0; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
+      :root { color-scheme: light }
+      html, body { background: #f5f7f3; color: #14231c; margin: 0; font-family: 'DM Sans', system-ui, -apple-system, sans-serif; }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>KI-Regulierung-Bewertung: EU AI Act, Südkorea, Colorado | Regula</title>
-    <meta name="description" content="Kostenlose KI-Regulierung-Risikobewertung. Prüfen Sie Ihre Risikostufe unter dem EU AI Act, dem KI-Grundgesetz oder Colorado SB 26-189. Keine Anmeldung.">
+    <title>Kontextprüfung zur KI-Regulierung: EU, Südkorea, Colorado | Regula</title>
+    <meta name="description" content="Erfassen Sie den Einsatzkontext und prüfen Sie mögliche Hinweise nach dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189. Keine Anmeldung.">
     <meta name="author" content="Regula maintainers">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://getregula.com/assess/de.html">
@@ -22,15 +22,15 @@
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/assess/">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/assess/de.html">
-    <meta property="og:title" content="KI-Regulierung-Bewertung: EU AI Act, Südkorea, Colorado">
-    <meta property="og:description" content="Kostenlose KI-Regulierung-Risikobewertung. Prüfen Sie Ihre Pflichten unter dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189. Keine Anmeldung, keine Installation.">
+    <meta property="og:title" content="Kontextprüfung zur KI-Regulierung: EU, Südkorea, Colorado">
+    <meta property="og:description" content="Erfassen Sie den Einsatzkontext und prüfen Sie mögliche Hinweise nach dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189. Keine Anmeldung oder Installation.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula :  open-source AI governance risk indication tool">
+    <meta property="og:image:alt" content="Regula Open-Source-Werkzeug zur Kontextprüfung von KI-Regulierung">
     <meta property="og:locale" content="de_DE">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="KI-Regulierung-Bewertung: EU AI Act, Südkorea, Colorado">
-    <meta name="twitter:description" content="Kostenlose KI-Regulierung-Risikobewertung. Prüfen Sie Ihre Pflichten unter dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189.">
+    <meta name="twitter:title" content="Kontextprüfung zur KI-Regulierung: EU, Südkorea, Colorado">
+    <meta name="twitter:description" content="Erfassen Sie den Einsatzkontext und prüfen Sie mögliche Hinweise nach dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189.">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <link rel="preload" href="/assets/fonts/dm-sans-latin.woff2" as="font" type="font/woff2" fetchpriority="high" crossorigin>
@@ -41,9 +41,9 @@
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      "name": "Regula KI-Regulierung-Bewertung",
+      "name": "Regula Kontextprüfung zur KI-Regulierung",
       "url": "https://getregula.com/assess/de.html",
-      "description": "Kostenlose KI-Regulierung-Risikobewertung. Prüfen Sie Ihre Pflichten unter dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189. Entwicklungsteams können auch Code gegen 423 Erkennungsmuster scannen.",
+      "description": "Erfassen Sie den Einsatzkontext und prüfen Sie mögliche Hinweise nach dem EU AI Act, dem südkoreanischen KI-Grundgesetz oder Colorado SB 26-189. Entwicklungsteams können auch Code gegen 423 Erkennungsmuster scannen.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Any (web browser)",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
@@ -54,20 +54,21 @@
     </script>
     <style>
       :root {
-        --bg: #070711; --bg-card: #0f0f1a; --bg-hover: #151528;
-        --border: #1e1e3a; --border-active: #3b82f6;
-        --text: #e2e2f0; --text-dim: #8888a8; --text-muted: #7a7a92;
-        --accent: #3b82f6; --accent-dim: rgba(59,130,246,0.12);
-        --red: #e74c3c; --red-dim: rgba(231,76,60,0.12);
-        --amber: #f39c12; --amber-dim: rgba(243,156,18,0.12);
-        --green: #27ae60; --green-dim: rgba(39,174,96,0.12);
-        --purple: #6c5ce7; --purple-dim: rgba(108,92,231,0.12);
-        --radius: 10px;
+        --bg: #f5f7f3; --bg-card: #ffffff; --bg-hover: #edf1eb;
+        --border: #d8dfd8; --border-active: #086b57;
+        --text: #14231c; --text-dim: #596b61; --text-muted: #697970;
+        --accent: #086b57; --accent-dim: #e5f2ed;
+        --red: #b42318; --red-dim: #fef0ee;
+        --amber: #8a5700; --amber-dim: #fff4dd;
+        --green: #087052; --green-dim: #e6f4ee;
+        --purple: #5b47a8; --purple-dim: #eeebfa;
+        --radius: 16px;
         --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+        --serif: 'Fraunces', Georgia, serif;
         --mono: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
       }
       *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-      html { color-scheme: dark; }
+      html { color-scheme: light; }
       body {
         background: var(--bg); color: var(--text);
         font-family: var(--font); line-height: 1.6;
@@ -82,11 +83,13 @@
           position: sticky; top: 0; z-index: 100;
           height: 56px; padding: 0 24px;
           display: flex; align-items: center; justify-content: space-between;
-          border-bottom: 1px solid transparent;
+          border-bottom: 1px solid var(--border);
+          background: rgba(245,247,243,0.94);
+          backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
           transition: background 0.2s, border-color 0.2s;
       }
       .nav.scrolled {
-          background: rgba(7,7,17,0.92);
+          background: rgba(245,247,243,0.97);
           backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
           border-color: var(--border);
       }
@@ -113,9 +116,9 @@
               display: none; position: fixed;
               top: 52px; right: 0; left: 0; bottom: 0;
               flex-direction: column; gap: 0;
-              background: rgba(7,7,17,0.97);
+              background: rgba(245,247,243,0.98);
               backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-              border: none; border-top: 1px solid rgba(255,255,255,0.07);
+              border: none; border-top: 1px solid var(--border);
               padding: 12px 32px 16px;
               max-width: 100%; max-height: 100%;
           }
@@ -125,11 +128,11 @@
       }
 
       /* Layout */
-      .shell { max-width: 680px; margin: 0 auto; padding: 24px 20px 80px; }
+      .shell { max-width: 820px; margin: 0 auto; padding: 40px 20px 96px; }
 
       /* Hero */
-      .hero { padding: 48px 0 32px; text-align: center; }
-      .hero h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; line-height: 1.25; }
+      .hero { padding: clamp(32px, 7vw, 64px); text-align: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; box-shadow: 0 24px 60px rgba(29,55,43,0.09); }
+      .hero h1 { font-family: var(--serif); font-size: clamp(2.25rem, 6vw, 3.7rem); font-weight: 700; margin-bottom: 16px; line-height: 1.02; letter-spacing: -0.045em; }
       .hero h1 span { color: var(--accent); }
       .hero p { color: var(--text-dim); font-size: 1.05rem; max-width: 520px; margin: 0 auto; }
       .hero-stats {
@@ -154,7 +157,8 @@
       /* Question card */
       .q-card {
         background: var(--bg-card); border: 1px solid var(--border);
-        border-radius: var(--radius); padding: 28px; margin-bottom: 16px;
+        border-radius: 20px; padding: clamp(22px, 5vw, 36px); margin-bottom: 16px;
+        box-shadow: 0 18px 46px rgba(29,55,43,0.07);
       }
       .q-card.hidden { display: none; }
       .q-number { font-size: 0.75rem; color: var(--accent); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 8px; }
@@ -199,8 +203,8 @@
            start-over controls previously rendered at 40px. */
         min-height: 44px;
       }
-      .btn-primary { background: #1d4ed8; color: #fff; }
-      .btn-primary:hover { background: #1e40af; }
+      .btn-primary { background: #086b57; color: #fff; }
+      .btn-primary:hover { background: #064f41; }
       .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
       .btn-secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
       .btn-secondary:hover { border-color: var(--text-dim); color: var(--text); }
@@ -268,7 +272,7 @@
       .next-steps h2 { font-size: 1rem; margin-bottom: 12px; }
       .step-item {
         display: flex; gap: 12px; padding: 12px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
+        border-bottom: 1px solid var(--border);
       }
       .step-num {
         min-width: 28px; height: 28px; background: var(--accent-dim);
@@ -332,7 +336,7 @@
       footer {
           border-top: 1px solid var(--border);
           padding: 32px 24px 24px;
-          background: #04040b;
+          background: #12231c;
           margin-top: 40px;
       }
       .foot-inner {
@@ -340,16 +344,16 @@
           display: flex; justify-content: space-between; align-items: flex-start;
           gap: 24px; flex-wrap: wrap;
       }
-      .foot-brand { font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 6px; }
+      .foot-brand { font-weight: 700; font-size: 1rem; color: #f4fbf7; margin-bottom: 6px; }
       .foot-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
-      .foot-links a { color: var(--text-dim); font-size: 0.85rem; text-decoration: none; }
-      .foot-links a:hover { color: var(--text); }
-      .foot-copy { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+      .foot-links a { color: #bfd0c6; font-size: 0.85rem; text-decoration: none; }
+      .foot-links a:hover { color: #fff; }
+      .foot-copy { font-size: 0.75rem; color: #9db2a7; margin-top: 6px; }
       .foot-right { text-align: right; max-width: 400px; }
       .foot-legal {
-          font-size: 0.75rem; color: var(--text-muted); line-height: 1.6;
-          padding: 10px 14px; background: rgba(255,255,255,0.02);
-          border: 1px solid var(--border); border-radius: 6px;
+          font-size: 0.75rem; color: #bfd0c6; line-height: 1.6;
+          padding: 10px 14px; background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.12); border-radius: 8px;
       }
       @media (max-width: 600px) {
           .foot-inner { flex-direction: column; }
@@ -372,7 +376,7 @@
 
 <nav class="nav" id="nav" aria-label="Hauptnavigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <span class="active">Geltungsbereich prüfen</span>
         <a href="/product-de.html">Code prüfen</a>
@@ -389,7 +393,7 @@
 
   <!-- HERO -->
   <div class="hero" id="heroSection">
-    <h1>Gilt die KI-Regulierung <span>für Sie?</span></h1>
+    <h1>Welche KI-Regeln <span>könnten relevant sein?</span></h1>
     <p>Wählen Sie eine Rechtsordnung und erfassen Sie den Einsatzkontext. Der Fragebogen meldet mögliche Indikatoren, zu prüfende Vorschriften und offene Fragen; er bestimmt weder die rechtliche Einstufung noch Compliance oder anwendbare Pflichten.</p>
     <div class="hero-stats">
       <span>Im Browser ausfüllen</span>
@@ -397,13 +401,13 @@
       <span>Die Fragebogenverarbeitung bleibt in diesem Browser</span>
     </div>
     <div style="margin-top:24px;">
-      <label style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Welche Regulierung betrifft Sie?</label>
-      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <p id="jurisdiction-label" style="font-size:0.85rem;color:var(--text-dim);display:block;margin-bottom:8px;">Welche Regulierung betrifft Sie?</p>
+      <div role="group" aria-labelledby="jurisdiction-label" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
         <button type="button" class="jurisdiction-btn selected" onclick="selectJurisdiction('eu')" id="jur-eu" aria-pressed="true" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border-active);background:var(--accent-dim);color:var(--accent);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">EU AI Act</button>
         <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('kr')" id="jur-kr" aria-pressed="false" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Südkorea</button>
         <button type="button" class="jurisdiction-btn" onclick="selectJurisdiction('co')" id="jur-co" aria-pressed="false" style="min-width:44px;min-height:44px;padding:10px 20px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;font-family:var(--font);font-size:0.9rem;font-weight:600;transition:all 0.15s;">Colorado</button>
       </div>
-      <div id="jurisdictionInfo" style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);"></div>
+      <div id="jurisdictionInfo" aria-live="polite" style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);"></div>
     </div>
     <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
       <button type="button" class="btn btn-primary" onclick="startAssessment()" style="padding:14px 36px;font-size:1rem;">Bewertung starten</button>
@@ -426,7 +430,7 @@
       <button type="button" class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Zurück</button>
       <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled title="Bitte eine Antwort auswählen, um fortzufahren">Weiter</button>
     </div>
-    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;" aria-hidden="true">Tastatur: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">Y</kbd> Ja &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> Nein &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">U</kbd> Unsicher &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">A</kbd> nicht anwendbar &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> Weiter</div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--text-muted);margin-top:8px;">Tastatur: <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">Y</kbd> Ja &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">N</kbd> Nein &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">U</kbd> Unsicher &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">A</kbd> nicht anwendbar &middot; <kbd style="background:var(--bg);border:1px solid var(--border);padding:1px 5px;border-radius:3px;font-size:0.7rem;">&rarr;</kbd> Weiter</div>
     <div id="earlyExit" style="display:none;"></div>
   </div>
 
@@ -738,13 +742,13 @@ const QUESTIONS = [
   {
     id: "social_scoring",
     text: "Bewertet oder benotet dieses System Einzelpersonen anhand ihres Sozialverhaltens, ihrer Persönlichkeitsmerkmale oder vorhergesagter Eigenschaften?",
-    help: "Social Scoring durch öffentliche Stellen ist nach Artikel 5(1)(c) verboten. Auch privates Social Scoring, das zu nachteiliger Behandlung führt, kann erfasst sein.",
+    help: "Diese Antwort macht Artikel 5(1)(c) potenziell relevant. Eine prüfende Person muss Akteur, Zweck, Behandlung, Bedingungen und Ausnahmen bestätigen; der Fragebogen stellt keine verbotene Praxis fest.",
     article: "Artikel 5(1)(c)",
   },
   {
     id: "emotion_recognition",
     text: "Leitet dieses System Emotionen aus biometrischen Daten am Arbeitsplatz oder in Bildungseinrichtungen ab?",
-    help: "Artikel 5(1)(f) verbietet Emotionserkennung am Arbeitsplatz und in Bildungseinrichtungen, mit engen Ausnahmen für medizinische oder sicherheitsrelevante Zwecke.",
+    help: "Diese Antwort macht Artikel 5(1)(f) potenziell relevant. Biometrische Verarbeitung, Umfeld, Zweck, Bedingungen und Ausnahmen müssen geprüft werden.",
     article: "Artikel 5(1)(f)",
   },
   {
@@ -756,44 +760,44 @@ const QUESTIONS = [
   {
     id: "narrow_procedural",
     text: "Führt dieses System NUR eng begrenzte Verfahrensaufgaben aus (z. B. Daten zwischen Formaten konvertieren, Dokumente nach Metadaten sortieren, Datensätze gegen eine feste Vorlage abgleichen)?",
-    help: "Artikel 6(3)(a) nimmt KI-Systeme, die eng begrenzte Verfahrensaufgaben ausführen, von der Hochrisiko-Einstufung aus, auch wenn sie in einem Anhang-III-Bereich tätig sind. Die Aufgabe muss rein verfahrenstechnisch sein, ohne Entscheidungsfindung über Einzelpersonen.",
+    help: "Diese Antwort erfasst eine mögliche Voraussetzung des Artikels 6(3)(a). Sie stellt keine Ausnahme fest; Zweckbestimmung, tatsächliche Aufgabe, Anhang-III-Kontext und weitere Voraussetzungen müssen geprüft werden.",
     article: "Artikel 6(3)(a)",
   },
   {
     id: "improves_human_activity",
     text: "Verbessert dieses System NUR das Ergebnis einer bereits abgeschlossenen menschlichen Tätigkeit (z. B. Grammatikprüfung von menschlich verfasstem Text, Verbesserung eines menschlich aufgenommenen Fotos, automatische Formatierung eines menschlich erstellten Dokuments)?",
-    help: "Artikel 6(3)(b) nimmt KI-Systeme aus, die bereits abgeschlossene menschliche Tätigkeiten verbessern. Die menschliche Tätigkeit muss abgeschlossen sein, bevor die KI eingreift :  die KI verfeinert, sie erstellt nicht.",
+    help: "Diese Antwort erfasst eine mögliche Voraussetzung des Artikels 6(3)(b). Eine prüfende Person muss bestätigen, dass die menschliche Tätigkeit abgeschlossen war und das System nur ihr Ergebnis verbessert.",
     article: "Artikel 6(3)(b)",
   },
   {
     id: "risk_documentation",
     text: "Führt Ihre Organisation ein Risikoregister oder eine Risikomanagement-Dokumentation für dieses KI-System?",
-    help: "Artikel 9 verlangt ein dokumentiertes, kontinuierlich aktualisiertes Risikomanagementsystem. Diese Frage hilft, Ihren aktuellen Compliance-Stand zu bewerten.",
+    help: "Diese Frage erfasst, ob Risikomanagement-Nachweise angegeben wurden. Vorhandensein oder Fehlen bestimmt weder die Anwendbarkeit des Artikels 9 noch Konformität.",
     article: "Artikel 9",
   },
   {
     id: "logging_active",
     text: "Protokolliert dieses System seine Vorgänge automatisch (Eingaben, Ausgaben, Entscheidungen, Zeitstempel)?",
-    help: "Artikel 12 verlangt die automatische Aufzeichnung von Ereignissen während des Betriebs des KI-Systems, um die Rückverfolgbarkeit zu ermöglichen.",
+    help: "Diese Frage erfasst einen Code- oder Kontextindikator für Betriebsprotokolle. Anwendbarkeit des Artikels 12 und erforderliche Aufzeichnungen bleiben Prüffragen.",
     article: "Artikel 12",
   },
   // --- New questions (positions 12-14, appended to preserve URL encoding) ---
   {
     id: "profiling",
     text: "Erstellt dieses System Profile von Einzelpersonen auf Basis ihrer personenbezogenen Daten (z. B. Leistungsverfolgung, Verhaltensanalyse, Präferenzmodellierung, Risikobewertung auf Grundlage persönlicher Merkmale)?",
-    help: "Wenn ein System natürliche Personen im Sinne von Artikel 4 Absatz 4 DSGVO profiliert, können Ausnahmen nach Artikel 6 Absatz 3 NICHT greifen :  das System gilt automatisch als hochriskant, unabhängig davon, wie eng begrenzt oder verfahrenstechnisch es ist. Profiling bedeutet jede automatisierte Verarbeitung personenbezogener Daten zur Bewertung persönlicher Aspekte.",
+    help: "Profiling kann die Prüfung nach Artikel 6(3) wesentlich beeinflussen. Eine prüfende Person muss die Definition des Artikels 4 Absatz 4 DSGVO, Zweckbestimmung, Verarbeitung und weitere Voraussetzungen bestätigen; diese Antwort bestimmt keine Hochrisiko-Einstufung.",
     article: "Article 6(3), GDPR Article 4(4)",
   },
   {
     id: "pattern_detection",
     text: "Erkennt dieses System Muster zur menschlichen Überprüfung, OHNE die eigene Beurteilung des Menschen zu ersetzen oder zu substituieren (z. B. Anomalien für einen Analysten kennzeichnen, potenzielle Übereinstimmungen für einen Prüfer hervorheben)?",
-    help: "Artikel 6(3)(c) nimmt KI-Systeme aus, die Muster oder Abweichungen von früheren Mustern erkennen, ohne die menschliche Beurteilung zu ersetzen. Der Mensch muss die endgültige Entscheidung treffen, nicht die KI.",
+    help: "Diese Antwort erfasst eine mögliche Voraussetzung des Artikels 6(3)(c). Eine prüfende Person muss bestätigen, dass das System die abgeschlossene menschliche Beurteilung ohne angemessene Prüfung weder ersetzt noch beeinflusst.",
     article: "Artikel 6(3)(c)",
   },
   {
     id: "preparatory_task",
     text: "Führt dieses System NUR vorbereitende Aufgaben für einen menschlichen Beurteiler aus (z. B. Anträge vorsortieren, zentrale Datenpunkte zur Überprüfung extrahieren, Zusammenfassungen für menschliche Entscheidungsträger erstellen)?",
-    help: "Artikel 6(3)(d) nimmt KI-Systeme aus, die vorbereitende Aufgaben für Beurteilungen ausführen, die von einer natürlichen Person durchgeführt werden. Der menschliche Beurteiler muss weiterhin die inhaltliche Entscheidung treffen.",
+    help: "Diese Antwort erfasst eine mögliche Voraussetzung des Artikels 6(3)(d). Eine prüfende Person muss bestätigen, dass die Aufgabe nur vorbereitend ist und wer die inhaltliche Beurteilung trifft.",
     article: "Artikel 6(3)(d)",
   }
 ];
@@ -824,18 +828,26 @@ RegulaAssessFlow.install({
       unsure: "Unsicher",
       notApplicable: "Nicht anwendbar",
     },
-    answerLegend: "Ja, Nein und Nicht anwendbar werden als Antworten erfasst und können eine rechtliche Prüfung klären. Unsicher wird als ausdrücklich unbekannt erfasst und niemals als Nein gewertet.",
+    answerLegend: "Ja, Nein und Nicht anwendbar werden als Ihre Angaben erfasst, nicht als rechtliche Feststellungen. Unsicher bleibt ausdrücklich unbekannt und wird niemals als Nein gewertet.",
     keys: { yes: "j", no: "n", unsure: "u", notApplicable: "a" },
     readiness: {
-      title: "Das regulatorische Ergebnis steht nun fest.",
-      body: "Die restlichen Fragen erfassen Ihre derzeitigen Maßnahmen. Sie sind für Ihre eigenen Notizen und für eine prüfende Person nützlich, ändern das Ergebnis oben aber nicht. Sie können jederzeit aufhören.",
+      title: "Der Kernkontext ist erfasst; menschliche Prüfung bleibt erforderlich.",
+      body: "Die restlichen optionalen Fragen erfassen Maßnahmen und Nachweise. Sie helfen bei der Prüfung, erzeugen aber kein rechtliches Ergebnis. Sie können jederzeit aufhören.",
     },
     earlyExit: {
       seeResult: "Ergebnisse jetzt anzeigen",
       note: "Sie können jederzeit aufhören. Unbeantwortete Fragen werden als offen ausgewiesen, nie als Nein.",
-      finalBody: "Sie haben die Frage zum Geltungsbereich mit Nein beantwortet, daher scheint diese Verordnung nicht einschlägig zu sein. Die restlichen Fragen können an diesem Ergebnis nichts ändern.",
+      finalBody: "Sie haben die Frage zum Geltungsbereich mit Nein beantwortet. Diese Angabe bleibt eine offene Anwendbarkeitsfrage und ist keine Feststellung der Nichtanwendbarkeit. Sie können jetzt die Teilprüfung ansehen oder weiteren Kontext ergänzen.",
     },
     storageNotice: "Dies ist keine Rechtsberatung. Ihre Antworten bleiben in diesem Browser: Sie werden im Sitzungsspeicher abgelegt, damit Sie fortfahren können, beim Neustart gelöscht und niemals an einen Server gesendet. Ergebnisse können über einen zustandslosen Link geteilt werden.",
+    shareRecovery: {
+      legacy: "Dieser Link verwendet ein älteres, verlustbehaftetes Freigabeformat. Fehlende Antworten wurden in diesem Format als Unsicher gespeichert. Prüfen Sie die Antworten, bevor Sie dieses Ergebnis verwenden.",
+      malformed_payload: "Dieser Freigabelink ist fehlerhaft. Es wurde kein Ergebnis erstellt. Beginnen Sie eine neue Prüfung oder bitten Sie die sendende Person um einen neuen Link.",
+      unsupported_version: "Dieser Freigabelink verwendet ein neueres oder nicht unterstütztes Beweisformat. Es wurde kein Ergebnis erstellt.",
+      jurisdiction_mismatch: "Dieser Freigabelink stimmt nicht mit der ausgewählten Rechtsordnung überein. Es wurde kein Ergebnis erstellt. Bitten Sie die sendende Person um den richtigen Link.",
+      question_set_mismatch: "Die Fragen in diesem Freigabelink stimmen nicht mit dem aktuellen Fragebogen überein. Es wurde kein Ergebnis erstellt. Bitten Sie die sendende Person um einen neuen Link.",
+      contradictory: "Dieser Link enthält widersprüchliche Angaben und kann nicht automatisch ausgewertet werden. Es wurde kein Ergebnis erstellt. Prüfen Sie die ursprünglichen Antworten mit einer verantwortlichen prüfenden Person.",
+    },
     intros: {
       eu: "Die EU-KI-Verordnung stellt bei den rechtlichen Pflichten auf Zweckbestimmung und Einsatzkontext ab. Dieser Fragebogen nennt Anhaltspunkte für eine menschliche Prüfung; er stellt weder Ihre rechtliche Einstufung noch die Konformität oder die anwendbaren Pflichten fest.",
       kr: "Das südkoreanische KI-Grundgesetz regelt bestimmte KI-Systeme. Dieser Fragebogen nennt Anhaltspunkte für eine menschliche Prüfung; er stellt nicht fest, ob Ihr System rechtlich erfasst oder konform ist.",
@@ -981,13 +993,20 @@ function renderScanResults(result) {
     no_elevated_pattern: "Kein erhöhter Code-Indikator",
     no_ai_pattern: "Keine KI-Indikatoren erkannt",
   };
+  const tierDescriptions = {
+    article_5_pattern: "Der konfigurierte Browser-Scan hat ein Code-Muster mit möglichem Bezug zu Artikel 5 gefunden. Umsetzung, Zweck, Geltungsbedingungen und Ausnahmen müssen qualifiziert geprüft werden.",
+    annex_iii_pattern: "Der konfigurierte Browser-Scan hat ein Code-Muster mit möglichem Bezug zu einer Verwendung in Anhang III gefunden. Zweckbestimmung, Betreiberrolle, Bedingungen und Ausnahmen nach Artikel 6 bleiben offen.",
+    article_50_pattern: "Der konfigurierte Browser-Scan hat einen Code-Indikator gefunden, der für Artikel 50 relevant sein könnte. Die Anwendbarkeit hängt von Akteur, Zweck, Kontext, Absatz, Bedingungen und Ausnahmen ab.",
+    no_elevated_pattern: "In dieser Eingabe wurde kein konfigurierter erhöhter Indikator gefunden. Dies belegt weder ein geringes Risiko noch Nichtanwendbarkeit oder das Fehlen rechtlicher Pflichten.",
+    no_ai_pattern: "In dieser Eingabe wurde kein konfigurierter KI-Indikator gefunden. Dies belegt nicht, dass das System außerhalb einer rechtlichen Definition oder eines Geltungsbereichs liegt.",
+  };
 
   html += `
     <div class="result-tier ${tierStyles[c.detector_class] || 'tier-minimal'}">
       <div class="tier-label">CODE-SCAN-ERGEBNIS</div>
       <div class="tier-name">${tierNames[c.detector_class] || c.detector_class}</div>
-      <div class="tier-desc">${c.message}</div>
-      ${(c.detector_class === 'article_5_pattern' || c.detector_class === 'annex_iii_pattern') ? '<div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Dies ist ein <strong>Mustertreffer, keine Feststellung</strong>: Prüfen Sie, ob der markierte Code die beschriebene Praktik tatsächlich umsetzt. Fehlalarme sind möglich; dies ist keine Rechtsberatung.</div>' : ''}
+      <div class="tier-desc">${tierDescriptions[c.detector_class] || 'Code-Beobachtung, die menschlich geprüft werden muss.'}</div>
+      <div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;">Dies ist eine <strong>Code-Beobachtung, keine rechtliche Feststellung</strong>. Fehlalarme und übersehene Indikatoren sind möglich. Menschliche Prüfung ist erforderlich.</div>
       <div class="tier-caveat" style="margin-top:10px;font-size:0.82rem;line-height:1.45;"><strong>Warum die CLI abweichen kann:</strong> Der Browser prüft eine einzelne Datei ohne Projekt-Richtlinie, Import-Fingerprinting oder deklarierte <code>--domain</code>. Er zeigt rohe Kandidaten; die CLI kann optionale Domänenbefunde zurückstellen, bis Sie diesen Kontext angeben.</div>
       <div style="margin-top:12px;font-size:0.8rem;opacity:0.6;">
         Detektor-Priorität: ${c.detector_priority}/100 &middot; Sprache: ${result.language}
@@ -998,7 +1017,7 @@ function renderScanResults(result) {
 
   // Summary stats
   html += `<div class="scan-summary">`;
-  html += `<div class="scan-stat"><div class="scan-stat-value" style="color:${c.detector_class === 'article_5_pattern' ? 'var(--red)' : c.detector_class === 'annex_iii_pattern' ? 'var(--red)' : c.detector_class === 'article_50_pattern' ? 'var(--amber)' : 'var(--green)'};">${c.indicators_matched.length}</div><div class="scan-stat-label">Risikoindikatoren</div></div>`;
+  html += `<div class="scan-stat"><div class="scan-stat-value" style="color:${c.detector_class === 'article_5_pattern' ? 'var(--red)' : c.detector_class === 'annex_iii_pattern' ? 'var(--red)' : c.detector_class === 'article_50_pattern' ? 'var(--amber)' : 'var(--green)'};">${c.indicators_matched.length}</div><div class="scan-stat-label">Code-Indikatoren</div></div>`;
   html += `<div class="scan-stat"><div class="scan-stat-value" style="color:${result.security.length > 0 ? 'var(--amber)' : 'var(--green)'};">${result.security.length}</div><div class="scan-stat-label">Sicherheitsbefunde</div></div>`;
   html += `<div class="scan-stat"><div class="scan-stat-value">${result.observations.length + result.bias.length}</div><div class="scan-stat-label">Beobachtungen</div></div>`;
   html += `<div class="scan-stat"><div class="scan-stat-value">${result.is_training ? 'Ja' : 'Nein'}</div><div class="scan-stat-label">Trainingsaktivität</div></div>`;
@@ -1141,16 +1160,17 @@ function getScanNextSteps(tier) {
   }
   if (tier === "annex_iii_pattern") {
     return [
-      { title: "Die obigen Befunde \u00fcberpr\u00fcfen", desc: "Pr\u00fcfen Sie, ob die erkannten Indikatoren den Zweck Ihres Systems korrekt beschreiben. Musterbasierte Einstufung erfordert eine menschliche \u00dcberpr\u00fcfung zur Kontextbest\u00e4tigung." },
-      { title: "Auch den Fragebogen beantworten", desc: "Der Fragebogen bewertet den Einsatzkontext, den Code-Scanning nicht erkennen kann. Beides zusammen liefert breitere Nachweise, erfordert aber weiterhin eine fachliche technische und rechtliche Pr\u00fcfung." },
-      { title: "Mit den gr\u00f6\u00dften L\u00fccken beginnen", desc: "Technische Dokumentation (Artikel 11) und Daten-Governance (Artikel 10) sind typischerweise die gr\u00f6\u00dften Compliance-L\u00fccken." },
+      { title: "Die obigen Beobachtungen prüfen", desc: "Prüfen Sie, was jeder Indikator tatsächlich tut und ob er mit der Zweckbestimmung zusammenhängt. Die Detektorklasse ist keine rechtliche Einstufung." },
+      { title: "Einsatzkontext erfassen", desc: "Der Fragebogen bewahrt Kontext, den Code-Scanning nicht beobachten kann. Beide Quellen bleiben Eingaben für fachliche technische und rechtliche Prüfung." },
+      { title: "Nachweisbereiche prüfen", desc: "Wenn eine prüfende Person die Relevanz bestätigt, prüfen Sie technische Dokumentation und Daten-Governance-Nachweise, ohne eine Pflicht oder Lücke anzunehmen." },
       { title: "F\u00fcr projektweite Analyse", desc: "Dieser Scan hat eine einzelne Datei analysiert. Ihr Entwicklungsteam kann das gesamte Projekt scannen: <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, dann <code>regula gap --project .</code>" },
     ];
   }
   if (tier === "article_50_pattern") {
     return [
-      { title: "Transparenzhinweise hinzuf\u00fcgen", desc: "Artikel 50 verlangt, dass Nutzer wissen, wenn sie mit KI interagieren oder KI-generierte Inhalte konsumieren." },
-      { title: "Auch den Fragebogen beantworten", desc: "Der Fragebogen bewertet den Einsatzkontext, den Code-Scanning nicht erkennen kann." },
+      { title: "Den beobachteten Indikator prüfen", desc: "Bestätigen Sie, was der gefundene Code tut, wo er vorkommt und ob er im eingesetzten Produkt Nutzer oder Empfänger von Inhalten erreicht." },
+      { title: "Die Frage zu Artikel 50 klären", desc: "Bestimmen Sie Akteur, Zweckbestimmung, Einsatzkontext, einschlägigen Absatz, Bedingungen und Ausnahmen. Der Code-Treffer entscheidet nicht, ob eine Offenlegungs- oder Kennzeichnungspflicht gilt." },
+      { title: "Verantwortliche Prüfung dokumentieren", desc: "Bewahren Sie Quellort und deklarierten Kontext und lassen Sie eine qualifizierte prüfende Person die menschliche Entscheidung und ihre Nachweise erfassen." },
       { title: "F\u00fcr projektweites Scanning", desc: "Ihr Entwicklungsteam kann andere Dateien auf Risikomuster pr\u00fcfen: <code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code>, dann <code>regula check .</code>" },
     ];
   }

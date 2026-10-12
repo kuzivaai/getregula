@@ -7,21 +7,21 @@
          Why: /assets/site.min.css is render-blocking, so Chrome shows a WHITE canvas
          (the browser default) for the entire duration of the CSS fetch on cold
          loads :  measured at ~600ms on simulated 3G, worse on real slow networks.
-         That white→dark snap is what users reported as "the demo flashing": the
+         That canvas shift is what users reported as "the demo flashing": the
          hero terminal sits at the top of the fold and takes the full brunt of it.
          The earlier attempt (93a833b) targeted panel opacity and font preload,
          neither of which is the actual cause :  the cause is that the browser
          cannot paint at all until the external stylesheet arrives.
 
          Fix: establish the brand background + basic tokens inline so first paint
-         is already dark, then load site.css asynchronously via the media="print"
+         already uses the brand canvas, then load site.css asynchronously via the media="print"
          + onload swap trick (well-documented pattern). A <noscript> fallback
          preserves styling for JS-disabled clients. -->
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
@@ -35,29 +35,29 @@
       .term-panel.active { opacity: 1; position: relative }
       .term-body { position: relative; min-height: 340px }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <title>Erreicht KI-Regulierung Ihr Unternehmen? | Regula</title>
-    <meta name="description" content="Fünf verständliche Fragen zeigen, wo KI-Regulierung Ihr Unternehmen berühren kann, was ungeklärt bleibt und was Sie als Nächstes tun können.">
+    <title>KI-Regulierungsprüfung für Code und Kontext | Regula</title>
+    <meta name="description" content="Verbinden Sie erklärten Einsatzkontext mit im Code beobachtbaren Indikatoren, offenen Fragen und prüfbaren nächsten Schritten. Regula liefert kein Compliance-Urteil.">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:title" content="Erreicht KI-Regulierung Ihr Unternehmen? | Regula">
-    <meta property="og:description" content="Fünf verständliche Fragen für Gründende und Produktverantwortliche, mit ehrlichen Grenzen und konkreten nächsten Schritten.">
+    <meta property="og:title" content="Was kann Ihr Code zeigen? Was braucht weiterhin menschliches Urteil? | Regula">
+    <meta property="og:description" content="Erklärter Kontext, im Code beobachtbare Indikatoren und offene Fragen für eine menschliche Prüfung, ohne automatisches Compliance-Urteil.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/locales/de.html">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@kuzivaai">
     <meta property="og:locale" content="de_DE">
-    <meta name="twitter:title" content="Erreicht KI-Regulierung Ihr Unternehmen? | Regula">
-    <meta name="twitter:description" content="Fünf verständliche Fragen für Gründende und Produktverantwortliche, mit ehrlichen Grenzen und konkreten nächsten Schritten.">
+    <meta name="twitter:title" content="KI-Regulierungsprüfung für Code und Kontext | Regula">
+    <meta name="twitter:description" content="Erklärter Kontext, im Code beobachtbare Indikatoren und offene Fragen für eine menschliche Prüfung, ohne automatisches Compliance-Urteil.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Regula: ein verständlicher Einstieg in die KI-Regulierung">
+    <meta property="og:image:alt" content="Regula verbindet erklärten Kontext, Code-Beobachtungen und Fragen für die menschliche Prüfung">
     <meta name="twitter:image" content="https://getregula.com/assets/og-image.png">
-    <meta name="twitter:image:alt" content="Regula: ein verständlicher Einstieg in die KI-Regulierung">
+    <meta name="twitter:image:alt" content="Regula verbindet erklärten Kontext, Code-Beobachtungen und Fragen für die menschliche Prüfung">
     <meta name="author" content="Regula">
     <link rel="canonical" href="https://getregula.com/locales/de.html">
     <script type="application/ld+json">
@@ -205,7 +205,7 @@
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <!-- Stylesheets loaded via media="print" + onload swap so they don't block
-         first paint. The inline critical CSS above already establishes the dark
+         first paint. The inline critical CSS above already establishes the light
          theme; these sheets layer on the full design system once they arrive.
          <noscript> fallback ensures JS-disabled clients still get full styling. -->
     <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
@@ -277,7 +277,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav" aria-label="Hauptnavigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/de.html" title="Einsatzkontext für die Prüfung erfassen">Geltungsbereich prüfen</a>
         <a href="/product-de.html">Code prüfen</a>
@@ -294,14 +294,100 @@
 <main id="main">
 <!-- QUALIFIER:BEGIN -->
 <!-- Generated by scripts/build_qualifier.py from data/qualifier_copy/de.json. Do not edit between the markers by hand: tests/test_qualifier.py compares the committed page against a fresh render and fails on any difference. -->
-<section class="qual-wrap" aria-labelledby="qual-h1">
-  <div class="qual">
+<section class="home-hero" aria-labelledby="home-h1">
+  <div class="home-hero-grid">
+    <div class="home-promise">
+      <p class="home-eyebrow">Lokale Code-Beobachtung und Nachweisvorbereitung</p>
+      <h1 id="home-h1">Erkennen Sie, was Ihr Code zeigen kann. Und wo menschliches Urteil nötig bleibt.</h1>
+      <p class="home-lead">Regula verbindet erklärte Einsatzfakten mit im Code beobachtbaren Hinweisen und zeigt danach die Fragen, die ein Mensch noch klären muss. Es ist ein Prüfpfad, kein automatisches Konformitätsurteil.</p>
+      <div class="home-actions">
+        <a class="home-cta home-cta-primary" href="#qualifier">
+          <span>Einsatzkontext erfassen</span><small>Fünf Fragen · bleibt in Ihrem Browser</small>
+        </a>
+        <a class="home-cta home-cta-secondary" href="/product-de.html">
+          <span>Repository scannen</span><small>Läuft lokal · Quellcode bleibt auf Ihrem Gerät</small>
+        </a>
+      </div>
+      <ul class="home-proof" aria-label="Product facts">
+        <li>Kein Konto</li>
+        <li>Quellcode bleibt lokal</li>
+        <li>Die menschliche Entscheidung bleibt leer</li>
+      </ul>
+    </div>
+    <aside class="home-path" aria-labelledby="home-path-title">
+      <p class="home-eyebrow">Ein Prüfpfad, kein Urteil</p>
+      <h2 id="home-path-title">Vom Quellcode zum überprüfbaren nächsten Schritt</h2>
+      <ol>
+          <li class="home-path-step">
+            <span class="home-path-n" aria-hidden="true">01</span>
+            <div><h3>Erklärte Fakten</h3><p>Sie geben Zweckbestimmung, Betreiberrolle, Rechtsraum und Einsatzkontext an.</p></div>
+          </li>
+          <li class="home-path-step">
+            <span class="home-path-n" aria-hidden="true">02</span>
+            <div><h3>Code-Beobachtungen</h3><p>Regula meldet gefundene Muster, Quellstellen und Grenzen der Analyse.</p></div>
+          </li>
+          <li class="home-path-step">
+            <span class="home-path-n" aria-hidden="true">03</span>
+            <div><h3>Offene Fragen</h3><p>Unbekannte, widersprüchliche und nicht verfügbare Fakten bleiben sichtbar, statt zu Nein zu werden.</p></div>
+          </li>
+          <li class="home-path-step">
+            <span class="home-path-n" aria-hidden="true">04</span>
+            <div><h3>Menschliche Entscheidung</h3><p>Eine verantwortliche prüfende Person entscheidet, was die Hinweise im echten Einsatz bedeuten.</p></div>
+          </li>
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<section class="journeys" aria-labelledby="journeys-title">
+  <div class="journeys-head">
+    <p class="home-eyebrow">Beginnen Sie mit Ihrer aktuellen Aufgabe</p>
+    <h2 id="journeys-title">Vier klare Wege zu Regula</h2>
+    <p>Wählen Sie den Weg, der zu Ihrer Verantwortung passt. Jeder Weg zeigt, was das Werkzeug liefern kann und wo menschliches Urteil beginnt.</p>
+  </div>
+  <div class="journey-grid">
+        <article class="journey-card">
+          <p class="journey-role">Gründung oder Produktleitung</p>
+          <h3>System einordnen</h3>
+          <p>Halten Sie fest, wo das System eingesetzt wird, was es tut und welche Betreiberrolle gelten könnte.</p>
+          <a href="/assess/de.html">Browser-Einordnung starten<span aria-hidden="true"> →</span></a>
+        </article>
+        <article class="journey-card">
+          <p class="journey-role">Entwicklung oder Wartung</p>
+          <h3>Quellcode prüfen</h3>
+          <p>Führen Sie die lokale CLI aus, prüfen Sie gefundene Hinweise und behalten Sie geschützten Quellcode auf Ihrem Gerät.</p>
+          <a href="/product-de.html">Code-Prüfpfad ansehen<span aria-hidden="true"> →</span></a>
+        </article>
+        <article class="journey-card">
+          <p class="journey-role">Governance oder Assurance</p>
+          <h3>Prüfmaterial vorbereiten</h3>
+          <p>Trennen Sie erklärte Fakten, Beobachtungen, offene Fragen und Nachweisgerüste voneinander.</p>
+          <a href="/product-de.html#features">Nachweisfunktionen prüfen<span aria-hidden="true"> →</span></a>
+        </article>
+        <article class="journey-card">
+          <p class="journey-role">Evaluierung oder Einführung</p>
+          <h3>Werkzeug evaluieren</h3>
+          <p>Prüfen Sie Abdeckungsstufen, Methoden, Benchmark-Grenzen, Sicherheit und Barrierefreiheitsnachweise.</p>
+          <a href="/coverage-de.html#methods">Methoden und Grenzen lesen<span aria-hidden="true"> →</span></a>
+        </article>
+  </div>
+</section>
+
+<section class="qual-wrap" id="qualifier" aria-labelledby="qual-h1">
+  <div class="qual-layout">
+    <div class="qual-intro">
     <p class="qual-audience">Für Gründerinnen, Gründer und Verantwortliche eines KI-Produkts</p>
-    <h1 id="qual-h1">Erreicht die KI-Regulierung Ihr Unternehmen?</h1>
+    <h2 id="qual-h1">Erreicht die KI-Regulierung Ihr Unternehmen?</h2>
     <p class="qual-sub">Fünf Fragen in einfacher Sprache. Kein Konto, keine Installation, und nichts, was Sie hier eingeben, verlässt Ihren Browser. Am Ende erhalten Sie eine Liste dessen, worauf Ihre Antworten hindeuten, und dessen, was ein Mensch noch klären muss.</p>
     <p class="qual-meta">Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Dies ist keine Rechtsberatung.</p>
+    </div>
 
+    <div class="qual-card">
     <form id="qual-form" novalidate>
+      <div class="qual-progress" id="qual-progress" hidden>
+        <p><span id="qual-progress-label">Frage 1 von 5</span></p>
+        <span class="qual-progress-track" role="progressbar" aria-labelledby="qual-progress-label" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1"><span id="qual-progress-fill"></span></span>
+      </div>
       <ol class="qual-qs">
       <li class="qual-q" id="qual-q1">
         <fieldset>
@@ -328,7 +414,7 @@
       <li class="qual-q" id="qual-q3">
         <fieldset>
           <legend><span class="qual-n" aria-hidden="true">3/5</span>Haben Sie die KI selbst gebaut, oder nutzen Sie die eines Dritten?</legend>
-          <p class="qual-help">Die Regeln legen der Organisation, die ein KI-System in Verkehr bringt, andere Pflichten auf als der Organisation, die eines verwendet. Beides zugleich ist möglich.</p>
+          <p class="qual-help">Ihre Rolle ist ein Sachverhalt für die Prüfung. Je nach Einsatz können Anbieter-, Betreiber- oder mehrere Rollen und Bestimmungen potenziell relevant sein; diese Antwort entscheidet das nicht.</p>
           <div class="qual-opts">
             <span class="qual-opt"><input type="radio" id="qual-q3-built" name="q3" value="built"><label class="qual-face" for="qual-q3-built">Wir haben sie gebaut oder trainiert</label></span>
             <span class="qual-opt"><input type="radio" id="qual-q3-using" name="q3" value="using"><label class="qual-face" for="qual-q3-using">Wir nutzen die eines Dritten</label></span>
@@ -340,7 +426,7 @@
       <li class="qual-q" id="qual-q4">
         <fieldset>
           <legend><span class="qual-n" aria-hidden="true">4/5</span>Sehen Menschen von Ihrer KI erzeugte Inhalte oder sprechen sie direkt mit ihr?</legend>
-          <p class="qual-help">Text, Bilder, Audio, Video oder ein Chatbot. Es bestehen Transparenzpflichten, wenn jemand nicht erkennen könnte, dass er es mit KI oder mit etwas von KI Erzeugtem zu tun hat.</p>
+          <p class="qual-help">Text, Bilder, Audio, Video oder ein Chatbot können eine Prüfung von Artikel 50 auslösen. Ob eine Bestimmung gilt, hängt von Rolle, Zweck, Absatz, Voraussetzungen und Ausnahmen ab.</p>
           <div class="qual-opts">
             <span class="qual-opt"><input type="radio" id="qual-q4-yes" name="q4" value="yes"><label class="qual-face" for="qual-q4-yes">Ja</label></span>
             <span class="qual-opt"><input type="radio" id="qual-q4-no" name="q4" value="no"><label class="qual-face" for="qual-q4-no">Nein</label></span>
@@ -351,7 +437,7 @@
       <li class="qual-q" id="qual-q5">
         <fieldset>
           <legend><span class="qual-n" aria-hidden="true">5/5</span>Hilft KI dabei, etwas über eine Person zu entscheiden?</legend>
-          <p class="qual-help">Einstellung, Kredit, Versicherung, ein Studienplatz, Zugang zu Gesundheitsversorgung oder eine Sozialleistung. Es zählt auch dann, wenn am Ende ein Mensch die Entscheidung freigibt.</p>
+          <p class="qual-help">Einstellung, Kredit, Versicherung, Studienplatz, Gesundheitsversorgung oder Sozialleistung können auf Anhang III verweisen. Zweckbestimmung und die Voraussetzungen des Artikels 6 müssen menschlich geprüft werden.</p>
           <div class="qual-opts">
             <span class="qual-opt"><input type="radio" id="qual-q5-yes" name="q5" value="yes"><label class="qual-face" for="qual-q5-yes">Ja</label></span>
             <span class="qual-opt"><input type="radio" id="qual-q5-no" name="q5" value="no"><label class="qual-face" for="qual-q5-no">Nein</label></span>
@@ -360,8 +446,11 @@
         </fieldset>
       </li>
       </ol>
+      <p class="qual-step-hint" id="qual-step-hint" hidden>Wählen Sie eine Antwort, um fortzufahren. Sie können zurückgehen und sie ändern.</p>
       <p class="qual-err" id="qual-error" role="alert" hidden></p>
       <div class="qual-actions">
+        <button type="button" class="qual-quiet" id="qual-back" hidden>Zurück</button>
+        <button type="button" class="qual-go" id="qual-next" hidden>Weiter</button>
         <button type="submit" class="qual-go">Zeigen, worauf das hindeutet</button>
         <button type="button" class="qual-quiet" id="qual-reset">Neu beginnen</button>
       </div>
@@ -386,9 +475,10 @@
       <li><a href="/product.html" hreflang="en">Lokale CLI verwenden (auf Englisch)</a>. Lokale Codebeobachtungen und Nachweisvorlagen. Kostenlos und quelloffen.</li>
       <li><a href="/about.html" hreflang="en">Unabhängige Prüfung einholen (auf Englisch)</a>. Menschliche Beurteilung für Kontext, den Regula nicht beobachten kann. Nicht von Regula angeboten.</li>
     </ul>
+    </div>
   </div>
 </section>
-<script type="application/json" id="qual-copy">{"afterHeading": "Was nach Ihren Antworten passiert", "afterLead": "Drei nächste Schritte, jeweils mit ihren Grenzen beschrieben.", "audience": "Für Gründerinnen, Gründer und Verantwortliche eines KI-Produkts", "clearedNotice": "Ihre Antworten wurden gelöscht. Die fünf Fragen stehen wieder bereit.", "consultantWarranted": "Ihre Antworten benennen eine besonders streng behandelte Verwendung oder ein System, das Sie noch nicht einordnen können. Hier ist menschliche Prüfung wichtig, weil ein weiteres automatisiertes Signal den fehlenden Kontext nicht klären kann.", "dateFormat": "{d}. {month} {y}", "dates": {"annexIII": "2027-12-02", "article50": "2026-08-02", "marking": "2026-12-02", "prohibited": "2025-02-02"}, "devBody": "Dieselben Indikatoren gibt es als lokalen Befehl. Er liest Dateien auf Ihrem Rechner und lädt sie nicht hoch. Unten steht echte Ausgabe aus der eingecheckten Testvorlage, bei jedem Build von den eigenen Prüfungen des Projekts reproduziert, keine Nachbildung. Beachten Sie, wie er mit einer ungeklärten Frage umgeht: Er benennt die benötigten Tatsachen, statt eine Klasse zu raten.", "devHeading": "Wenn Sie mit einem Terminal vertraut sind", "englishOnlyCue": "(auf Englisch)", "errorMany": "{n} Fragen sind noch unbeantwortet. Sie sind unten hervorgehoben, und „Nicht sicher“ ist eine echte Antwort, wenn Sie es nicht wissen.", "errorNone": "Sie haben noch nichts beantwortet. Beginnen Sie mit der ersten Frage; „Nicht sicher“ ist eine echte Antwort, wenn Sie es nicht wissen.", "errorOne": "Eine Frage ist noch unbeantwortet. Sie ist unten hervorgehoben, und „Nicht sicher“ ist eine echte Antwort, wenn Sie es nicht wissen.", "h1": "Erreicht die KI-Regulierung Ihr Unternehmen?", "lang": "de", "ledeIn": "Nachfolgend steht, worauf Ihre eigenen Antworten hindeuten und was sie nicht klären können. Nichts davon ist eine Entscheidung über Ihre Risikoklasse oder Ihre Pflichten, denn diese hängen von Tatsachen ab, die fünf Fragen nicht erreichen.", "ledeNoAi": "Sie haben angegeben, dass Ihr Produkt keine KI nutzt. Die Verordnung arbeitet mit einer eigenen Definition, die weiter reicht als die meisten erwarten. Das lohnt eine Prüfung statt einer Annahme.", "ledeNoEu": "Nichts von dem, was Sie angegeben haben, verbindet Sie mit dem EU-Markt. Die KI-Verordnung ist daher vielleicht nicht das Erste, worauf Sie schauen sollten. Das ist eine Frage des Anwendungsbereichs und keine Schlussfolgerung; nachfolgend steht, warum sie nicht geklärt ist.", "limits": ["Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Über Konformität entscheiden Behörden und notifizierte Stellen, nicht ein Fragebogen, und „nicht markiert“ bedeutet niemals „rechtskonform“.", "Nichts hiervon ist Rechtsberatung. Alles, was von einer rechtlichen Schlussfolgerung abhängt, braucht eine entsprechend qualifizierte Fachperson."], "meta": "Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Dies ist keine Rechtsberatung.", "months": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"], "nojsItems": [{"href": "/blog/blog-does-ai-act-apply.html", "text": "Den Leitfaden dazu lesen, ob die KI-Verordnung für Ihre Anwendung gilt. (auf Englisch)"}, {"href": "/pricing.html", "text": "Nachlesen, was kostenlos bleibt und wo Regulas Grenzen beginnen. (auf Englisch)"}, {"href": "mailto:support@getregula.com?subject=Where%20do%20I%20stand", "text": "Uns schreiben und Ihre Lage in eigenen Worten schildern."}], "nojsLead": "Die Fragen selbst stehen oben und lohnen das Lesen ohnehin. Ohne JavaScript kommen Sie so weiter:", "nojsTitle": "Diese fünf Fragen brauchen JavaScript, um auszuwerten, worauf sie hindeuten.", "outsideScopeNote": "Nichts in Ihren Antworten stellt bisher einen Bezug zum Anwendungsbereich der EU-KI-Verordnung her. Die kostenlosen Werkzeuge bleiben verfügbar; eine unabhängige Fachperson kann Kontext prüfen, den das Werkzeug nicht beobachten kann.", "points": {"decisions": {"body": "Sie haben angegeben, dass KI dabei hilft, etwas über eine Person zu entscheiden. Anhang III listet die als hochriskant behandelten Verwendungen auf, und Artikel 6 regelt, wie ein System in einem dieser Bereiche eingestuft wird; diese Pflichten gelten ab dem {annexIII}. Artikel 6 Absatz 3 nennt zudem Voraussetzungen, unter denen ein solches System nicht hochriskant ist, etwa eine eng gefasste verfahrenstechnische Aufgabe oder die Verbesserung des Ergebnisses einer zuvor abgeschlossenen menschlichen Tätigkeit, und bestimmt, dass ein System, das ein Profiling natürlicher Personen vornimmt, stets hochriskant ist. Was davon auf Sie zutrifft, kann diese Seite gerade nicht beantworten.", "cite": "Artikel 6 Absätze 2 und 3, Anhang III", "href": "/guides/article-9-risk-management.html", "linkText": "Was hochriskant tatsächlich verlangt (auf Englisch)", "title": "Entscheidungen über Menschen sind der strengste Teil"}, "definition": {"body": "Das ist das Erste, was ein Mensch klären muss, und fünf einfache Fragen können es nicht klären. Artikel 3 Nummer 1 stellt darauf ab, was das System mit den erhaltenen Eingaben macht, nicht auf die Produktbezeichnung, die eingebundene Bibliothek oder darauf, ob jemand es KI nennt.", "cite": "Artikel 3 Nummer 1", "href": "/blog/blog-classify-ai-system.html", "linkText": "Wie die Definition funktioniert (auf Englisch)", "title": "Ob es ein KI-System im Sinne der Verordnung ist"}, "noAi": {"body": "Sie haben angegeben, dass Ihr Produkt keine KI nutzt. Die Verordnung arbeitet mit ihrer eigenen Definition in Artikel 3 Nummer 1, die darauf abstellt, was ein System mit den erhaltenen Eingaben macht, und nicht darauf, mit welcher Technik es gebaut wurde. Wenn irgendetwas in Ihrem Produkt ableitet, vorhersagt, empfiehlt oder erzeugt, prüfen Sie es an der Definition, statt es anzunehmen.", "cite": "Artikel 3 Nummer 1", "href": "/blog/blog-classify-ai-system.html", "linkText": "Wie die Definition funktioniert (auf Englisch)", "title": "Die Definition reicht weiter, als die meisten erwarten"}, "noEu": {"body": "Sie haben angegeben, dass Ihr Produkt nicht in die EU verkauft und nicht von Menschen in der EU genutzt wird. Artikel 2 kann eine Organisation mit Sitz in einem Drittland dennoch erreichen, wenn die vom KI-System hervorgebrachte Ausgabe in der Union verwendet wird; es lohnt sich also zu wissen, wo Ihre Ausgabe landet. Auch andere Länder regulieren, und diese Website verfolgt mehrere davon.", "cite": "Verordnung (EU) 2024/1689, Artikel 2 Absatz 1 Buchstabe c", "href": "/regions/regulations.html", "linkText": "Regeln in anderen Ländern (auf Englisch)", "title": "Nichts von Ihren Angaben verbindet Sie mit dem EU-Markt"}, "prohibited": {"body": "Manche Praktiken sind verboten statt reguliert, und die Verbote gelten seit dem {prohibited}. Diese Seite hat nicht danach gefragt; lesen Sie daher die Liste, statt anzunehmen, dass sie Sie nicht betrifft.", "cite": "Artikel 5", "href": "/guides/article-5-prohibited-practices.html", "linkText": "Die verbotenen Praktiken, aufgelistet (auf Englisch)", "title": "Einige Verwendungen sind vollständig verboten"}, "roleBoth": {"body": "Sie haben beides angegeben, und beide Pflichtenkreise können dieselbe Organisation treffen. Artikel 25 legt zudem fest, wann ein Betreiber, Händler oder Einführer zum Anbieter eines Hochrisiko-Systems wird: wenn er seinen Namen oder seine Handelsmarke darauf anbringt, eine wesentliche Änderung daran vornimmt oder die Zweckbestimmung eines Systems so ändert, dass es zum Hochrisiko-System wird.", "cite": "Artikel 3 Nummern 3 und 4 sowie Artikel 25 Absatz 1", "href": "/guides/", "linkText": "Leitfäden nach Artikel (auf Englisch)", "title": "Sie können beides sein, und die Grenze kann sich verschieben"}, "roleDeployer": {"body": "Sie haben angegeben, die KI eines Dritten zu nutzen. Eine Organisation, die ein KI-System in eigener Verantwortung verwendet, hat eigene Pflichten. Sie sind leichter als die eines Anbieters, aber sie sind nicht nichts. Das Modell eines Dritten in einem Produkt zu betreiben, das Sie anbieten, ist keine persönliche, nicht berufliche Tätigkeit.", "cite": "Artikel 3 Nummer 4", "href": "/guides/", "linkText": "Leitfäden nach Artikel (auf Englisch)", "title": "Sie würden die Betreiberpflichten lesen"}, "roleProvider": {"body": "Sie haben angegeben, die KI selbst gebaut oder trainiert zu haben. Die Organisation, die ein KI-System entwickelt und unter eigenem Namen oder eigener Handelsmarke in Verkehr bringt oder in Betrieb nimmt, trägt die schwereren Pflichten. Ob Sie Anbieter eines bestimmten Systems sind, ist eine Rechtsfrage danach, wie es seine Nutzerinnen und Nutzer erreicht, keine Beschreibung Ihrer Entwicklungsarbeit.", "cite": "Artikel 3 Nummer 3", "href": "/guides/", "linkText": "Leitfäden nach Artikel (auf Englisch)", "title": "Sie würden die Anbieterpflichten lesen"}, "roleUnsure": {"body": "Sie sind sich nicht sicher. Die Verordnung unterscheidet die Organisation, die ein KI-System unter eigenem Namen in Verkehr bringt oder in Betrieb nimmt, von der Organisation, die eines in eigener Verantwortung verwendet, und legt beiden unterschiedliche Pflichten auf. Artikel 25 regelt außerdem, wann die Nutzung oder Änderung eines fremden Hochrisiko-Systems Sie zu dessen Anbieter macht.", "cite": "Artikel 3 Nummern 3 und 4 sowie Artikel 25 Absatz 1", "href": "/guides/", "linkText": "Leitfäden nach Artikel (auf Englisch)", "title": "Ihre Rolle gehört zu den zuerst zu klärenden Tatsachen"}, "scope": {"body": "Sie haben angegeben, dass Menschen in der EU Ihr Produkt nutzen. Artikel 2 legt fest, für wen die Verordnung gilt, und erfasst Anbieter und Betreiber mit Sitz in einem Drittland, wenn die vom KI-System hervorgebrachte Ausgabe in der Union verwendet wird. Der Ort Ihrer Eintragung ist nicht der Maßstab.", "cite": "Verordnung (EU) 2024/1689, Artikel 2 Absatz 1 Buchstabe c", "href": "/blog/blog-does-ai-act-apply.html", "linkText": "Gilt die KI-Verordnung für Ihre Anwendung? (auf Englisch)", "title": "Die Regeln können Sie auch von außerhalb der EU erreichen"}, "scopeUnsure": {"body": "Sie sind sich nicht sicher, ob Menschen in der EU Ihr Produkt nutzen. Das ist die erste zu beantwortende Frage, denn Artikel 2 erfasst Anbieter und Betreiber mit Sitz in einem Drittland, wenn die vom KI-System hervorgebrachte Ausgabe in der Union verwendet wird. Es kommt darauf an, wo Ihre Nutzerinnen und Nutzer sind und wo Ihre Ausgabe landet.", "cite": "Verordnung (EU) 2024/1689, Artikel 2 Absatz 1 Buchstabe c", "href": "/blog/blog-does-ai-act-apply.html", "linkText": "Gilt die KI-Verordnung für Ihre Anwendung? (auf Englisch)", "title": "Ob die Regeln Sie erreichen, ist zuerst zu klären"}, "transparency": {"body": "Sie haben angegeben, dass Menschen von KI erzeugte Inhalte sehen oder direkt mit Ihrem System sprechen. Artikel 50 enthält mehrere Transparenzpflichten mit unterschiedlichen Adressaten, Voraussetzungen und Ausnahmen. Sie gelten seit dem {article50}, und für die Kennzeichnungsanforderungen läuft eine Übergangsfrist bis zum {marking}. Ein fehlender Hinweis ist etwas zu Prüfendes, kein Beleg dafür, dass jede Pflicht aus Artikel 50 für Sie gilt.", "cite": "Artikel 50", "href": "/guides/article-50-transparency.html", "linkText": "Artikel 50 Transparenz, im Detail (auf Englisch)", "title": "Den Menschen sagen, dass sie es mit KI zu tun haben"}}, "pointsHeading": "Lesenswert, ausgehend von Ihren Angaben", "proof": {"deps": "null Abhängigkeiten im Kern", "security": "Sicherheitsbefunde nach Werkzeug und Umfang offengelegt", "tests": "{tests} Tests, bei jeder Änderung erneut ausgeführt", "trustHref": "https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md", "trustLabel": "Trust Pack", "upload": "der lokale Kern lädt gescannte Dateien nicht hoch"}, "questions": [{"help": "Die Regeln können ein Unternehmen mit Sitz an jedem Ort erreichen. Entscheidend ist, ob Ihr Produkt, oder das, was Ihr Produkt hervorbringt, von Menschen in der EU genutzt wird.", "id": "q1", "legend": "Verkaufen Sie in die EU oder haben Sie Nutzerinnen und Nutzer in der EU?", "options": [{"label": "Ja", "value": "yes"}, {"label": "Nein", "value": "no"}, {"label": "Nicht sicher", "value": "unsure"}]}, {"help": "Dazu zählt auch KI, die Sie nicht selbst gebaut haben: ein Chatbot, ein Modell, das Sie über den Dienst eines Dritten aufrufen, oder eine Funktion, die ein No-Code-Werkzeug für Sie ergänzt hat.", "id": "q2", "legend": "Nutzt Ihr Produkt überhaupt KI?", "options": [{"label": "Ja", "value": "yes"}, {"label": "Nein", "value": "no"}, {"label": "Nicht sicher", "value": "unsure"}]}, {"help": "Die Regeln legen der Organisation, die ein KI-System in Verkehr bringt, andere Pflichten auf als der Organisation, die eines verwendet. Beides zugleich ist möglich.", "id": "q3", "legend": "Haben Sie die KI selbst gebaut, oder nutzen Sie die eines Dritten?", "options": [{"label": "Wir haben sie gebaut oder trainiert", "value": "built"}, {"label": "Wir nutzen die eines Dritten", "value": "using"}, {"label": "Beides", "value": "both"}, {"label": "Nicht sicher", "value": "unsure"}]}, {"help": "Text, Bilder, Audio, Video oder ein Chatbot. Es bestehen Transparenzpflichten, wenn jemand nicht erkennen könnte, dass er es mit KI oder mit etwas von KI Erzeugtem zu tun hat.", "id": "q4", "legend": "Sehen Menschen von Ihrer KI erzeugte Inhalte oder sprechen sie direkt mit ihr?", "options": [{"label": "Ja", "value": "yes"}, {"label": "Nein", "value": "no"}, {"label": "Nicht sicher", "value": "unsure"}]}, {"help": "Einstellung, Kredit, Versicherung, ein Studienplatz, Zugang zu Gesundheitsversorgung oder eine Sozialleistung. Es zählt auch dann, wenn am Ende ein Mensch die Entscheidung freigibt.", "id": "q5", "legend": "Hilft KI dabei, etwas über eine Person zu entscheiden?", "options": [{"label": "Ja", "value": "yes"}, {"label": "Nein", "value": "no"}, {"label": "Nicht sicher", "value": "unsure"}]}], "reset": "Neu beginnen", "resultHeading": "Worauf Ihre Antworten hindeuten", "routes": {"consultant": {"body": "Regula betreibt keine kostenpflichtige Prüfung, Buchungsleistung, Zertifizierung oder Rechtsberatung. Wenn Zweckbestimmung, Betreiberrolle, Einsatzkontext oder Rechtsauslegung die Antwort verändert, geben Sie die erforderlichen Nachweise an eine entsprechend qualifizierte Fachperson Ihrer Wahl.", "cta": "Regulas Grenzen lesen (auf Englisch)", "href": "/about.html", "price": "Außerhalb von Regula erbracht", "short": "Menschliche Beurteilung für Kontext, den Regula nicht beobachten kann. Nicht von Regula angeboten.", "title": "Unabhängige Prüfung einholen"}, "free": {"body": "Arbeiten Sie die ausführlichere Bewertung im Browser durch. Sie deckt dasselbe Feld in den Begriffen des Rechtstextes ab und zeigt, woher jede Frage stammt. Kein Konto, und nichts, was Sie eingeben, wird hochgeladen. Ersetzen Sie im Terminalbefehl unten COMMIT_SHA durch den vollständigen öffentlichen Commit-Hash, den Sie geprüft haben. Der Scanner läuft auf Ihrem eigenen Rechner und lädt Ihren Code nicht hoch.", "cmd": "pipx install git+https://github.com/kuzivaai/getregula.git@COMMIT_SHA && regula check .", "cta": "Kostenlose Bewertung öffnen (auf Englisch)", "href": "/assess/", "price": "Kostenlos, und bleibt kostenlos", "short": "Kostenlos, im Browser oder im Terminal. Kein Konto, nichts wird hochgeladen.", "title": "Kostenlos weitermachen"}, "paid": {"body": "Führen Sie dieselben codebeobachtbaren Indikatoren auf Ihrem eigenen Rechner aus. Die CLI erzeugt Text und stabiles JSON, offene Tatsachen und Nachweisvorlagen, ohne gescannte Dateien hochzuladen. Die Ausgabe ist ein Eingang für die Prüfung, keine Konformitätsfeststellung, Zertifizierung oder Rechtsmeinung.", "cta": "Lokale CLI ansehen (auf Englisch)", "href": "/product.html", "price": "Kostenlos und quelloffen", "short": "Lokale Codebeobachtungen und Nachweisvorlagen. Kostenlos und quelloffen.", "title": "Lokale CLI verwenden"}}, "routesHeading": "Was Sie als Nächstes tun können", "shareDone": "Link kopiert", "shareLabel": "Link zu diesen Antworten kopieren", "sub": "Fünf Fragen in einfacher Sprache. Kein Konto, keine Installation, und nichts, was Sie hier eingeben, verlässt Ihren Browser. Am Ende erhalten Sie eine Liste dessen, worauf Ihre Antworten hindeuten, und dessen, was ein Mensch noch klären muss.", "submit": "Zeigen, worauf das hindeutet", "thousandsSep": ".", "unsettled": ["Ob das, was Sie haben, die eigene Definition eines KI-Systems der Verordnung erfüllt. Artikel 3 Nummer 1 ist der Maßstab, und er ist nicht dasselbe wie die Frage, ob Sie es KI nennen.", "Welche Rolle oder Rollen Sie einnehmen. Das hängt davon ab, wie das System die Menschen erreicht, die es nutzen, nicht davon, wer den Code geschrieben hat.", "Ihre Zweckbestimmung. Die meiste Einstufung hängt daran, und sie ist eine Erklärung, die Sie abgeben, nicht etwas, das ein Werkzeug auslesen kann.", "Ob eine der Voraussetzungen des Artikels 6 Absatz 3 auf Sie zutrifft und ob etwas an Ihrem Vorgehen sie entfallen lässt.", "Alles, was in Ihren Verträgen, Ihrer Governance und im Verhalten des Systems im Betrieb steckt. Kein Scanner kann davon etwas sehen, und fünf Fragen können es auch nicht."], "unsettledHeading": "Was dies nicht klären kann"}</script>
+<script type="application/json" id="qual-copy">{"afterHeading": "Was nach Ihren Antworten passiert", "afterLead": "Drei nächste Schritte, jeweils mit ihren Grenzen beschrieben.", "audience": "Für Gründerinnen, Gründer und Verantwortliche eines KI-Produkts", "back": "Zurück", "clearedNotice": "Ihre Antworten wurden gelöscht. Die fünf Fragen stehen wieder bereit.", "consultantWarranted": "Ihre Antworten enthalten Kontext, der eine fachkundige menschliche Prüfung rechtfertigt. Regula hält die offenen Fragen fest, entscheidet aber weder Einstufung noch Pflichten.", "continue": "Weiter", "dateFormat": "{d}. {month} {y}", "dates": {"annexIII": "2027-12-02", "article50": "2026-08-02", "marking": "2026-12-02", "prohibited": "2025-02-02"}, "declaredHeading": "Von Ihnen deklarierter Kontext", "devBody": "Dieselben Indikatoren gibt es als lokalen Befehl. Er liest Dateien auf Ihrem Rechner und lädt sie nicht hoch. Unten steht echte Ausgabe aus der eingecheckten Testvorlage, bei jedem Build von den eigenen Prüfungen des Projekts reproduziert, keine Nachbildung. Beachten Sie, wie er mit einer ungeklärten Frage umgeht: Er benennt die benötigten Tatsachen, statt eine Klasse zu raten.", "devHeading": "Wenn Sie mit einem Terminal vertraut sind", "englishOnlyCue": "(auf Englisch)", "errorMany": "{n} Fragen sind noch unbeantwortet. Sie sind unten hervorgehoben, und „Nicht sicher“ ist eine echte Antwort, wenn Sie es nicht wissen.", "errorNone": "Sie haben noch nichts beantwortet. Beginnen Sie mit der ersten Frage; „Nicht sicher“ ist eine echte Antwort, wenn Sie es nicht wissen.", "errorOne": "Eine Frage ist noch unbeantwortet. Sie ist unten hervorgehoben, und „Nicht sicher“ ist eine echte Antwort, wenn Sie es nicht wissen.", "explicitUnknownHeading": "Als ausdrücklich unbekannt bewahrte Antworten", "h1": "Erreicht die KI-Regulierung Ihr Unternehmen?", "home": {"eyebrow": "Lokale Code-Beobachtung und Nachweisvorbereitung", "journeys": [{"body": "Halten Sie fest, wo das System eingesetzt wird, was es tut und welche Betreiberrolle gelten könnte.", "cta": "Browser-Einordnung starten", "href": "/assess/de.html", "role": "Gründung oder Produktleitung", "task": "System einordnen"}, {"body": "Führen Sie die lokale CLI aus, prüfen Sie gefundene Hinweise und behalten Sie geschützten Quellcode auf Ihrem Gerät.", "cta": "Code-Prüfpfad ansehen", "href": "/product-de.html", "role": "Entwicklung oder Wartung", "task": "Quellcode prüfen"}, {"body": "Trennen Sie erklärte Fakten, Beobachtungen, offene Fragen und Nachweisgerüste voneinander.", "cta": "Nachweisfunktionen prüfen", "href": "/product-de.html#features", "role": "Governance oder Assurance", "task": "Prüfmaterial vorbereiten"}, {"body": "Prüfen Sie Abdeckungsstufen, Methoden, Benchmark-Grenzen, Sicherheit und Barrierefreiheitsnachweise.", "cta": "Methoden und Grenzen lesen", "href": "/coverage-de.html#methods", "role": "Evaluierung oder Einführung", "task": "Werkzeug evaluieren"}], "journeysEyebrow": "Beginnen Sie mit Ihrer aktuellen Aufgabe", "journeysLead": "Wählen Sie den Weg, der zu Ihrer Verantwortung passt. Jeder Weg zeigt, was das Werkzeug liefern kann und wo menschliches Urteil beginnt.", "journeysTitle": "Vier klare Wege zu Regula", "lead": "Regula verbindet erklärte Einsatzfakten mit im Code beobachtbaren Hinweisen und zeigt danach die Fragen, die ein Mensch noch klären muss. Es ist ein Prüfpfad, kein automatisches Konformitätsurteil.", "pathEyebrow": "Ein Prüfpfad, kein Urteil", "pathSteps": [{"body": "Sie geben Zweckbestimmung, Betreiberrolle, Rechtsraum und Einsatzkontext an.", "label": "01", "title": "Erklärte Fakten"}, {"body": "Regula meldet gefundene Muster, Quellstellen und Grenzen der Analyse.", "label": "02", "title": "Code-Beobachtungen"}, {"body": "Unbekannte, widersprüchliche und nicht verfügbare Fakten bleiben sichtbar, statt zu Nein zu werden.", "label": "03", "title": "Offene Fragen"}, {"body": "Eine verantwortliche prüfende Person entscheidet, was die Hinweise im echten Einsatz bedeuten.", "label": "04", "title": "Menschliche Entscheidung"}], "pathTitle": "Vom Quellcode zum überprüfbaren nächsten Schritt", "primary": {"href": "#qualifier", "label": "Einsatzkontext erfassen", "meta": "Fünf Fragen · bleibt in Ihrem Browser"}, "proof": ["Kein Konto", "Quellcode bleibt lokal", "Die menschliche Entscheidung bleibt leer"], "secondary": {"href": "/product-de.html", "label": "Repository scannen", "meta": "Läuft lokal · Quellcode bleibt auf Ihrem Gerät"}, "title": "Erkennen Sie, was Ihr Code zeigen kann. Und wo menschliches Urteil nötig bleibt."}, "humanDecisionEmpty": "Nicht erfasst. Dieses Feld bleibt leer, bis eine verantwortliche prüfende Person die Nachweise auslegt.", "humanDecisionHeading": "Menschliche Entscheidung", "lang": "de", "ledeIn": "Nachfolgend steht, worauf Ihre eigenen Antworten hindeuten und was sie nicht klären können. Nichts davon ist eine Entscheidung über Ihre Risikoklasse oder Ihre Pflichten, denn diese hängen von Tatsachen ab, die fünf Fragen nicht erreichen.", "ledeNoAi": "Sie haben angegeben, dass Ihr Produkt keine KI nutzt. Die Verordnung arbeitet mit einer eigenen Definition, die weiter reicht als die meisten erwarten. Das lohnt eine Prüfung statt einer Annahme.", "ledeNoEu": "Nichts von dem, was Sie angegeben haben, verbindet Sie mit dem EU-Markt. Die KI-Verordnung ist daher vielleicht nicht das Erste, worauf Sie schauen sollten. Das ist eine Frage des Anwendungsbereichs und keine Schlussfolgerung; nachfolgend steht, warum sie nicht geklärt ist.", "limits": ["Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Über Konformität entscheiden Behörden und notifizierte Stellen, nicht ein Fragebogen, und „nicht markiert“ bedeutet niemals „rechtskonform“.", "Nichts hiervon ist Rechtsberatung. Alles, was von einer rechtlichen Schlussfolgerung abhängt, braucht eine entsprechend qualifizierte Fachperson."], "meta": "Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Dies ist keine Rechtsberatung.", "months": ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"], "nojsItems": [{"href": "/blog/blog-does-ai-act-apply.html", "text": "Den Leitfaden dazu lesen, ob die KI-Verordnung für Ihre Anwendung gilt. (auf Englisch)"}, {"href": "/pricing.html", "text": "Nachlesen, was kostenlos bleibt und wo Regulas Grenzen beginnen. (auf Englisch)"}, {"href": "mailto:support@getregula.com?subject=Where%20do%20I%20stand", "text": "Uns schreiben und Ihre Lage in eigenen Worten schildern."}], "nojsLead": "Die Fragen selbst stehen oben und lohnen das Lesen ohnehin. Ohne JavaScript kommen Sie so weiter:", "nojsTitle": "Diese fünf Fragen brauchen JavaScript, um auszuwerten, worauf sie hindeuten.", "outsideScopeNote": "Nichts in Ihren Antworten stellt bisher einen Bezug zum Anwendungsbereich der EU-KI-Verordnung her. Die kostenlosen Werkzeuge bleiben verfügbar; eine unabhängige Fachperson kann Kontext prüfen, den das Werkzeug nicht beobachten kann.", "points": {"decisions": {"body": "Sie haben angegeben, dass KI bei einer Entscheidung über eine Person hilft. Das macht Anhang III und Artikel 6 potenziell relevant. Zweckbestimmung, konkrete Verwendung, Ausnahmen, Profiling und weitere Voraussetzungen fehlen; diese Seite stuft das System nicht ein.", "cite": "Artikel 6 Absätze 2 und 3, Anhang III", "href": "/guides/article-9-risk-management.html", "linkText": "Was hochriskant tatsächlich verlangt (auf Englisch)", "title": "Anhang III und Artikel 6 müssen geprüft werden"}, "definition": {"body": "Das ist das Erste, was ein Mensch klären muss, und fünf einfache Fragen können es nicht klären. Artikel 3 Nummer 1 stellt darauf ab, was das System mit den erhaltenen Eingaben macht, nicht auf die Produktbezeichnung, die eingebundene Bibliothek oder darauf, ob jemand es KI nennt.", "cite": "Artikel 3 Nummer 1", "href": "/blog/blog-classify-ai-system.html", "linkText": "Wie die Definition funktioniert (auf Englisch)", "title": "Ob es ein KI-System im Sinne der Verordnung ist"}, "noAi": {"body": "Sie haben angegeben, dass Ihr Produkt keine KI nutzt. Die Verordnung arbeitet mit ihrer eigenen Definition in Artikel 3 Nummer 1, die darauf abstellt, was ein System mit den erhaltenen Eingaben macht, und nicht darauf, mit welcher Technik es gebaut wurde. Wenn irgendetwas in Ihrem Produkt ableitet, vorhersagt, empfiehlt oder erzeugt, prüfen Sie es an der Definition, statt es anzunehmen.", "cite": "Artikel 3 Nummer 1", "href": "/blog/blog-classify-ai-system.html", "linkText": "Wie die Definition funktioniert (auf Englisch)", "title": "Die Definition reicht weiter, als die meisten erwarten"}, "noEu": {"body": "Sie haben angegeben, dass Ihr Produkt nicht in die EU verkauft und nicht von Menschen in der EU genutzt wird. Artikel 2 kann eine Organisation mit Sitz in einem Drittland dennoch erreichen, wenn die vom KI-System hervorgebrachte Ausgabe in der Union verwendet wird; es lohnt sich also zu wissen, wo Ihre Ausgabe landet. Auch andere Länder regulieren, und diese Website verfolgt mehrere davon.", "cite": "Verordnung (EU) 2024/1689, Artikel 2 Absatz 1 Buchstabe c", "href": "/regions/regulations.html", "linkText": "Regeln in anderen Ländern (auf Englisch)", "title": "Nichts von Ihren Angaben verbindet Sie mit dem EU-Markt"}, "prohibited": {"body": "Diese fünf Fragen erfassen nicht die für Artikel 5 nötigen Tatsachen. Eine verantwortliche prüfende Person muss die tatsächliche Verwendung und die Bestimmungen untersuchen; aus dem fehlenden Fragebogenhinweis folgt keine Nichtanwendbarkeit.", "cite": "Artikel 5", "href": "/guides/article-5-prohibited-practices.html", "linkText": "Die verbotenen Praktiken, aufgelistet (auf Englisch)", "title": "Artikel 5 wurde nicht durch diese Fragen geprüft"}, "roleBoth": {"body": "Sie haben Entwicklung oder Training und die Nutzung fremder KI angegeben. Artikel 3 Nummern 3 und 4 sowie Artikel 25 sind potenziell relevant. Welche Rolle tatsächlich vorliegt, bleibt eine menschliche Entscheidung auf Grundlage des Einsatzkontexts.", "cite": "Artikel 3 Nummern 3 und 4 sowie Artikel 25 Absatz 1", "href": "/guides/", "linkText": "Leitfäden nach Artikel (auf Englisch)", "title": "Mehrere Rollen müssen geprüft werden"}, "roleDeployer": {"body": "Sie haben angegeben, die KI eines Dritten zu nutzen. Das macht Artikel 3 Nummer 4 potenziell relevant, entscheidet Ihre rechtliche Rolle aber nicht. Nutzung, Verantwortungsbereich und Bereitstellungskontext müssen geprüft werden.", "cite": "Artikel 3 Nummer 4", "href": "/guides/", "linkText": "Leitfäden nach Artikel (auf Englisch)", "title": "Betreiberrolle als offene Prüffrage"}, "roleProvider": {"body": "Sie haben angegeben, die KI selbst gebaut oder trainiert zu haben. Das ist deklarierter Kontext, kein Beleg für eine rechtliche Rolle. Eine verantwortliche prüfende Person muss untersuchen, wie das System angeboten, in Verkehr gebracht oder in Betrieb genommen wird.", "cite": "Artikel 3 Nummer 3", "href": "/guides/", "linkText": "Leitfäden nach Artikel (auf Englisch)", "title": "Anbieterrolle als offene Prüffrage"}, "roleUnsure": {"body": "Sie sind sich nicht sicher. Diese Ungewissheit bleibt erhalten. Eine verantwortliche prüfende Person muss anhand des Angebots-, Nutzungs- und Änderungskontexts klären, welche Definitionen oder Bestimmungen potenziell relevant sind.", "cite": "Artikel 3 Nummern 3 und 4 sowie Artikel 25 Absatz 1", "href": "/guides/", "linkText": "Leitfäden nach Artikel (auf Englisch)", "title": "Ihre Rolle gehört zu den zuerst zu klärenden Tatsachen"}, "scope": {"body": "Sie haben angegeben, dass Menschen in der EU Ihr Produkt nutzen. Artikel 2 legt fest, für wen die Verordnung gilt, und erfasst Anbieter und Betreiber mit Sitz in einem Drittland, wenn die vom KI-System hervorgebrachte Ausgabe in der Union verwendet wird. Der Ort Ihrer Eintragung ist nicht der Maßstab.", "cite": "Verordnung (EU) 2024/1689, Artikel 2 Absatz 1 Buchstabe c", "href": "/blog/blog-does-ai-act-apply.html", "linkText": "Gilt die KI-Verordnung für Ihre Anwendung? (auf Englisch)", "title": "Die Regeln können Sie auch von außerhalb der EU erreichen"}, "scopeUnsure": {"body": "Sie sind sich nicht sicher, ob Menschen in der EU Ihr Produkt nutzen. Das ist die erste zu beantwortende Frage, denn Artikel 2 erfasst Anbieter und Betreiber mit Sitz in einem Drittland, wenn die vom KI-System hervorgebrachte Ausgabe in der Union verwendet wird. Es kommt darauf an, wo Ihre Nutzerinnen und Nutzer sind und wo Ihre Ausgabe landet.", "cite": "Verordnung (EU) 2024/1689, Artikel 2 Absatz 1 Buchstabe c", "href": "/blog/blog-does-ai-act-apply.html", "linkText": "Gilt die KI-Verordnung für Ihre Anwendung? (auf Englisch)", "title": "Ob die Regeln Sie erreichen, ist zuerst zu klären"}, "transparency": {"body": "Sie haben angegeben, dass Menschen KI-generierte Inhalte sehen oder direkt mit dem System sprechen. Prüfen Sie Rolle, Zweck, betroffenen Absatz, Voraussetzungen, Ausnahmen und die maßgeblichen Daten. Diese Antwort stellt keine Transparenzpflicht fest.", "cite": "Artikel 50", "href": "/guides/article-50-transparency.html", "linkText": "Artikel 50 Transparenz, im Detail (auf Englisch)", "title": "Artikel 50 als potenziell relevante Prüffrage"}}, "pointsHeading": "Lesenswert, ausgehend von Ihren Angaben", "progressOf": "von", "progressPrefix": "Frage", "proof": {"deps": "null Abhängigkeiten im Kern", "security": "Sicherheitsbefunde nach Werkzeug und Umfang offengelegt", "tests": "{tests} Tests, bei jeder Änderung erneut ausgeführt", "trustHref": "https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md", "trustLabel": "Trust Pack", "upload": "der lokale Kern lädt gescannte Dateien nicht hoch"}, "questions": [{"help": "Die Regeln können ein Unternehmen mit Sitz an jedem Ort erreichen. Entscheidend ist, ob Ihr Produkt, oder das, was Ihr Produkt hervorbringt, von Menschen in der EU genutzt wird.", "id": "q1", "legend": "Verkaufen Sie in die EU oder haben Sie Nutzerinnen und Nutzer in der EU?", "options": [{"label": "Ja", "value": "yes"}, {"label": "Nein", "value": "no"}, {"label": "Nicht sicher", "value": "unsure"}]}, {"help": "Dazu zählt auch KI, die Sie nicht selbst gebaut haben: ein Chatbot, ein Modell, das Sie über den Dienst eines Dritten aufrufen, oder eine Funktion, die ein No-Code-Werkzeug für Sie ergänzt hat.", "id": "q2", "legend": "Nutzt Ihr Produkt überhaupt KI?", "options": [{"label": "Ja", "value": "yes"}, {"label": "Nein", "value": "no"}, {"label": "Nicht sicher", "value": "unsure"}]}, {"help": "Ihre Rolle ist ein Sachverhalt für die Prüfung. Je nach Einsatz können Anbieter-, Betreiber- oder mehrere Rollen und Bestimmungen potenziell relevant sein; diese Antwort entscheidet das nicht.", "id": "q3", "legend": "Haben Sie die KI selbst gebaut, oder nutzen Sie die eines Dritten?", "options": [{"label": "Wir haben sie gebaut oder trainiert", "value": "built"}, {"label": "Wir nutzen die eines Dritten", "value": "using"}, {"label": "Beides", "value": "both"}, {"label": "Nicht sicher", "value": "unsure"}]}, {"help": "Text, Bilder, Audio, Video oder ein Chatbot können eine Prüfung von Artikel 50 auslösen. Ob eine Bestimmung gilt, hängt von Rolle, Zweck, Absatz, Voraussetzungen und Ausnahmen ab.", "id": "q4", "legend": "Sehen Menschen von Ihrer KI erzeugte Inhalte oder sprechen sie direkt mit ihr?", "options": [{"label": "Ja", "value": "yes"}, {"label": "Nein", "value": "no"}, {"label": "Nicht sicher", "value": "unsure"}]}, {"help": "Einstellung, Kredit, Versicherung, Studienplatz, Gesundheitsversorgung oder Sozialleistung können auf Anhang III verweisen. Zweckbestimmung und die Voraussetzungen des Artikels 6 müssen menschlich geprüft werden.", "id": "q5", "legend": "Hilft KI dabei, etwas über eine Person zu entscheiden?", "options": [{"label": "Ja", "value": "yes"}, {"label": "Nein", "value": "no"}, {"label": "Nicht sicher", "value": "unsure"}]}], "reset": "Neu beginnen", "resultHeading": "Worauf Ihre Antworten hindeuten", "routes": {"consultant": {"body": "Regula betreibt keine kostenpflichtige Prüfung, Buchungsleistung, Zertifizierung oder Rechtsberatung. Wenn Zweckbestimmung, Betreiberrolle, Einsatzkontext oder Rechtsauslegung die Antwort verändert, geben Sie die erforderlichen Nachweise an eine entsprechend qualifizierte Fachperson Ihrer Wahl.", "cta": "Regulas Grenzen lesen (auf Englisch)", "href": "/about.html", "price": "Außerhalb von Regula erbracht", "short": "Menschliche Beurteilung für Kontext, den Regula nicht beobachten kann. Nicht von Regula angeboten.", "title": "Unabhängige Prüfung einholen"}, "free": {"body": "Arbeiten Sie die ausführlichere Bewertung im Browser durch. Sie deckt dasselbe Feld in den Begriffen des Rechtstextes ab und zeigt, woher jede Frage stammt. Kein Konto, und nichts, was Sie eingeben, wird hochgeladen. Ersetzen Sie im Terminalbefehl unten COMMIT_SHA durch den vollständigen öffentlichen Commit-Hash, den Sie geprüft haben. Der Scanner läuft auf Ihrem eigenen Rechner und lädt Ihren Code nicht hoch.", "cmd": "pipx install git+https://github.com/kuzivaai/getregula.git@COMMIT_SHA && regula check .", "cta": "Kostenlose Bewertung öffnen (auf Englisch)", "href": "/assess/", "price": "Kostenlos, und bleibt kostenlos", "short": "Kostenlos, im Browser oder im Terminal. Kein Konto, nichts wird hochgeladen.", "title": "Kostenlos weitermachen"}, "paid": {"body": "Führen Sie dieselben codebeobachtbaren Indikatoren auf Ihrem eigenen Rechner aus. Die CLI erzeugt Text und stabiles JSON, offene Tatsachen und Nachweisvorlagen, ohne gescannte Dateien hochzuladen. Die Ausgabe ist ein Eingang für die Prüfung, keine Konformitätsfeststellung, Zertifizierung oder Rechtsmeinung.", "cta": "Lokale CLI ansehen (auf Englisch)", "href": "/product.html", "price": "Kostenlos und quelloffen", "short": "Lokale Codebeobachtungen und Nachweisvorlagen. Kostenlos und quelloffen.", "title": "Lokale CLI verwenden"}}, "routesHeading": "Was Sie als Nächstes tun können", "shareDone": "Link kopiert", "shareLabel": "Link zu diesen Antworten kopieren", "stepHint": "Wählen Sie eine Antwort, um fortzufahren. Sie können zurückgehen und sie ändern.", "sub": "Fünf Fragen in einfacher Sprache. Kein Konto, keine Installation, und nichts, was Sie hier eingeben, verlässt Ihren Browser. Am Ende erhalten Sie eine Liste dessen, worauf Ihre Antworten hindeuten, und dessen, was ein Mensch noch klären muss.", "submit": "Zeigen, worauf das hindeutet", "thousandsSep": ".", "unsettled": ["Ob das, was Sie haben, die eigene Definition eines KI-Systems der Verordnung erfüllt. Artikel 3 Nummer 1 ist der Maßstab, und er ist nicht dasselbe wie die Frage, ob Sie es KI nennen.", "Welche Rolle oder Rollen Sie einnehmen. Das hängt davon ab, wie das System die Menschen erreicht, die es nutzen, nicht davon, wer den Code geschrieben hat.", "Ihre Zweckbestimmung. Die meiste Einstufung hängt daran, und sie ist eine Erklärung, die Sie abgeben, nicht etwas, das ein Werkzeug auslesen kann.", "Ob eine der Voraussetzungen des Artikels 6 Absatz 3 auf Sie zutrifft und ob etwas an Ihrem Vorgehen sie entfallen lässt.", "Alles, was in Ihren Verträgen, Ihrer Governance und im Verhalten des Systems im Betrieb steckt. Kein Scanner kann davon etwas sehen, und fünf Fragen können es auch nicht."], "unsettledHeading": "Was dies nicht klären kann"}</script>
 <script src="/assets/qualifier.js" defer></script>
 <!-- QUALIFIER:END -->
 
@@ -403,14 +493,14 @@
         </div>
         <div class="card-base art-card">
             <h3>Mustererkennung, nicht Verst&auml;ndnis</h3>
-            <p>Regula gleicht Muster im Quellcode ab. Es erkennt keine Absicht, meldet daher Stellen, die sich als unproblematisch erweisen, und &uuml;bersieht Stellen, die ein Mensch bemerken w&uuml;rde. Die eigenen Pr&auml;zisions- und Trefferquotenmessungen werden derzeit &uuml;berpr&uuml;ft und werden hier nicht als aktuelle Zahlen genannt; die Methodik und ihre Grenzen sind vollst&auml;ndig ver&ouml;ffentlicht. <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md" style="color:#8888aa;">Methodik und Grenzen &rarr;</a></p>
+            <p>Regula gleicht Muster im Quellcode ab. Es erkennt keine Absicht, meldet daher Stellen, die sich als unproblematisch erweisen, und &uuml;bersieht Stellen, die ein Mensch bemerken w&uuml;rde. Die eigenen Pr&auml;zisions- und Trefferquotenmessungen werden derzeit &uuml;berpr&uuml;ft und werden hier nicht als aktuelle Zahlen genannt; die Methodik und ihre Grenzen sind vollst&auml;ndig ver&ouml;ffentlicht. <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md" style="color:#075f4e;">Methodik und Grenzen &rarr;</a></p>
         </div>
         <div class="card-base art-card">
             <h3>Ger&uuml;ste, nicht Substanz</h3>
             <p>Anhang-IV-Dokumente, Evidenzpakete und Governance-Ger&uuml;ste sind vorausgef&uuml;llte Vorlagen. Ein Mensch muss sie mit inhaltlicher Substanz vervollst&auml;ndigen. Regula kann nicht verifizieren, dass ein Risikomanagementsystem tats&auml;chlich funktioniert.</p>
         </div>
     </div>
-    <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#8888aa;">Vollst&auml;ndige Einschr&auml;nkungen &rarr;</a></p>
+    <p class="sec-sub" style="margin-top:24px;font-size:13px;"><a href="https://github.com/kuzivaai/getregula/blob/main/docs/what-regula-does-not-do.md" style="color:#075f4e;">Vollst&auml;ndige Einschr&auml;nkungen &rarr;</a></p>
 </div>
 
 <div class="sep"></div>
@@ -419,7 +509,7 @@
 <div class="sec reveal" id="terminal">
     <h2 class="sec-head">Wenn Sie mit einem Terminal vertraut sind</h2>
     <p class="sec-sub">Dieselben Indikatoren gibt es als lokalen Befehl. Er liest Dateien auf Ihrem Rechner und lädt sie nicht hoch. Unten steht echte Ausgabe aus der eingecheckten Testvorlage, bei jedem Build von den eigenen Prüfungen des Projekts reproduziert, keine Nachbildung. Beachten Sie, wie er mit einer ungeklärten Frage umgeht: Er benennt die benötigten Tatsachen, statt eine Klasse zu raten.</p>
-    <ul class="qual-proof"><li>2.936 Tests, bei jeder Änderung erneut ausgeführt</li><li>Sicherheitsbefunde nach Werkzeug und Umfang offengelegt</li><li>null Abhängigkeiten im Kern</li><li>der lokale Kern lädt gescannte Dateien nicht hoch</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust Pack</a></li></ul>
+    <ul class="qual-proof"><li>2.990 Tests, bei jeder Änderung erneut ausgeführt</li><li>Sicherheitsbefunde nach Werkzeug und Umfang offengelegt</li><li>null Abhängigkeiten im Kern</li><li>der lokale Kern lädt gescannte Dateien nicht hoch</li><li><a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">Trust Pack</a></li></ul>
     <div class="term-wrap" role="region" aria-label="Interaktive Regula-CLI-Demo. Wechseln Sie die Tabs, um Beispielausgaben der Befehle regula check, plan, gap und comply zu sehen">
             <div class="term-bar" aria-hidden="true">
                 <div class="term-dot td-r"></div>
@@ -436,13 +526,13 @@
                 <div class="term-panel active" id="tab-check" role="tabpanel" aria-labelledby="tab-check-label">
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula check tests/fixtures/sample_high_risk --explain</span>
 
-<span class="t-h">Decision: insufficient_information</span>
+<span class="t-h">Review status: insufficient_information</span>
 Model: 2026-08-26.1
 Jurisdiction: eu
-Rule resolution: unresolved
-Facts needed to resolve the next decision: 2
-  - is_ai_system: Does the subject meet the legal definition?
-  - jurisdiction_in_scope: Does the territorial and operator scope apply?
+Human decision: not recorded
+Declared context needed for review: 2
+  - is_ai_system: Does the subject meet the governing law&#x27;s definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction&#x27;s territorial and operator scope apply?
 
 Detector observations are reported separately and do not create obligations.</pre>
                     <p class="term-provenance">Entscheidungsauszug aus echter Ausgabe. Gebunden an data/gap_demo.json und tests/test_gap_demo.py .</p>
@@ -450,13 +540,13 @@ Detector observations are reported separately and do not create obligations.</pr
                 <div class="term-panel" id="tab-plan" role="tabpanel" aria-labelledby="tab-plan-label">
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula plan --project tests/fixtures/sample_high_risk</span>
 
-<span class="t-h">Decision: insufficient_information</span>
+<span class="t-h">Review status: insufficient_information</span>
 Model: 2026-08-26.1
 Jurisdiction: eu
-Rule resolution: unresolved
-Facts needed to resolve the next decision: 2
-  - is_ai_system: Does the subject meet the legal definition?
-  - jurisdiction_in_scope: Does the territorial and operator scope apply?
+Human decision: not recorded
+Declared context needed for review: 2
+  - is_ai_system: Does the subject meet the governing law&#x27;s definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction&#x27;s territorial and operator scope apply?
 
 No obligation plan or effort estimate was emitted because applicability is unresolved.</pre>
                     <p class="term-provenance">Echte Ausgabe, kein Mock-up. Gebunden an data/gap_demo.json und tests/test_gap_demo.py .</p>
@@ -464,13 +554,13 @@ No obligation plan or effort estimate was emitted because applicability is unres
                 <div class="term-panel" id="tab-gap" role="tabpanel" aria-labelledby="tab-gap-label">
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula gap tests/fixtures/sample_high_risk</span>
 
-<span class="t-h">Decision: insufficient_information</span>
+<span class="t-h">Review status: insufficient_information</span>
 Model: 2026-08-26.1
 Jurisdiction: eu
-Rule resolution: unresolved
-Facts needed to resolve the next decision: 2
-  - is_ai_system: Does the subject meet the legal definition?
-  - jurisdiction_in_scope: Does the territorial and operator scope apply?
+Human decision: not recorded
+Declared context needed for review: 2
+  - is_ai_system: Does the subject meet the governing law&#x27;s definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction&#x27;s territorial and operator scope apply?
 
 Evidence scan:
 Article evidence is attached only where the decision kernel resolved the corresponding obligation.
@@ -480,13 +570,13 @@ Article observations emitted: 0; held pending applicability: 8</pre>
                 <div class="term-panel" id="tab-comply" role="tabpanel" aria-labelledby="tab-comply-label">
                     <pre tabindex="0"><span class="t-p">$</span> <span class="t-c">regula comply tests/fixtures/sample_high_risk --all</span>
 
-<span class="t-h">Decision: insufficient_information</span>
+<span class="t-h">Review status: insufficient_information</span>
 Model: 2026-08-26.1
 Jurisdiction: eu
-Rule resolution: unresolved
-Facts needed to resolve the next decision: 2
-  - is_ai_system: Does the subject meet the legal definition?
-  - jurisdiction_in_scope: Does the territorial and operator scope apply?
+Human decision: not recorded
+Declared context needed for review: 2
+  - is_ai_system: Does the subject meet the governing law&#x27;s definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction&#x27;s territorial and operator scope apply?
 
 Evidence scan:
 Article evidence is attached only where the decision kernel resolved the corresponding obligation.

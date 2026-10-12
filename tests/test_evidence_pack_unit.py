@@ -532,8 +532,20 @@ class TestGenerateEvidencePack:
             "overall_score": 55,
             "highest_risk": "prohibited",
             "articles": {
-                "5": {"title": "Prohibited Practices", "score": 0, "status": "fail"},
-                "9": {"title": "Risk Management", "score": 70, "status": "partial"},
+                "5": {
+                    "title": "Prohibited Practices",
+                    "score": 0,
+                    "status": "fail",
+                    "evidence": ["model.py:10 indicator recorded"],
+                    "gaps": ["deployment purpose is not declared"],
+                },
+                "9": {
+                    "title": "Risk Management",
+                    "score": 70,
+                    "status": "partial",
+                    "evidence": ["risk register file observed"],
+                    "gaps": ["review ownership is not declared"],
+                },
             },
         }
 
@@ -708,8 +720,22 @@ class TestGenerateEvidencePack:
         result, _ = self._run_with_mocks(tmp_path, project_name="test-proj")
         pack_path = Path(result["pack_path"])
         data = json.loads((pack_path / "02-gap-assessment.json").read_text(encoding="utf-8"))
-        assert data["decision"]["result_type"] == "insufficient_information"
-        assert data["evidence"]["article_observations"] == {}
+        decision = data["decision"]
+        assert decision["schema_version"] == "2.0"
+        assert decision["review_status"] == "insufficient_information"
+        assert decision["human_decision"] is None
+        assert "result_type" not in decision
+        assert "rule_resolution" not in decision
+        evidence = data["evidence"]
+        assert evidence["article_observations"] == {}
+        held = evidence["held_article_observations"]
+        assert set(held) == {"5", "9"}
+        assert held["5"]["review_status"] == "held_for_human_review"
+        assert held["5"]["observed_evidence"]
+        assert held["9"]["not_observed_by_configured_scan"]
+        assert evidence["review_status"] == "held_for_human_review"
+        assert "do not establish applicability" in evidence["note"]
+        assert "article_duties" not in evidence
         assert "overall_score" not in data
 
     def test_annex_iv_content(self, tmp_path):

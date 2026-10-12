@@ -15,8 +15,9 @@ def test_check_output_contains_resolvable_decision(tmp_path):
         cwd=str(Path(__file__).resolve().parent.parent),
     )
     assert result.returncode == 0, result.stderr
-    assert "Decision: insufficient_information" in result.stdout
-    assert "Facts needed to resolve the next decision:" in result.stdout
+    assert "Review status: insufficient_information" in result.stdout
+    assert "Human decision: not recorded" in result.stdout
+    assert "Declared context needed for review:" in result.stdout
     assert "is_ai_system:" in result.stdout
     assert "jurisdiction_in_scope:" in result.stdout
     assert "Verdict" not in result.stdout
@@ -42,7 +43,8 @@ def test_check_no_detector_match_does_not_become_outside_scope(tmp_path):
         cwd=str(Path(__file__).resolve().parent.parent),
     )
     assert result.returncode == 0, result.stderr
-    assert "Decision: insufficient_information" in result.stdout
+    assert "Review status: insufficient_information" in result.stdout
+    assert "Human decision: not recorded" in result.stdout
     assert "NO AI DETECTED" not in result.stdout
     assert "MINIMAL" not in result.stdout
     assert "is_ai_system:" in result.stdout

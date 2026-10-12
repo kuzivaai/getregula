@@ -20,16 +20,12 @@ import math
 import sys
 from pathlib import Path
 
+from rating_packet import load_labels as load_packet_labels
+
 
 def load_labels(path: Path) -> dict[str, str]:
-    """Load {id: label} from a JSON file. Expects list of dicts with 'id' and 'label'."""
-    data = json.load(path.open())
-    entries = data if isinstance(data, list) else data.get("labels", data.get("candidates", []))
-    return {
-        e["id"]: e["label"].strip().lower()
-        for e in entries
-        if e.get("label", "").strip().lower() in ("tp", "fp")
-    }
+    """Load the shared versioned packet schema and canonical item IDs."""
+    return load_packet_labels(path)
 
 
 def cohen_kappa(labels_a: dict[str, str], labels_b: dict[str, str]) -> dict:
@@ -38,7 +34,12 @@ def cohen_kappa(labels_a: dict[str, str], labels_b: dict[str, str]) -> dict:
     n = len(common)
 
     if n == 0:
-        return {"error": "No overlapping labelled findings", "n": 0}
+        return {
+            "status": "incomplete",
+            "agreement_complete": False,
+            "error": "No overlapping labelled findings",
+            "n": 0,
+        }
 
     # Build confusion matrix
     both_tp = sum(1 for fid in common if labels_a[fid] == "tp" and labels_b[fid] == "tp")
@@ -97,6 +98,8 @@ def cohen_kappa(labels_a: dict[str, str], labels_b: dict[str, str]) -> dict:
             })
 
     return {
+        "status": "complete",
+        "agreement_complete": True,
         "n": n,
         "observed_agreement": round(p_o, 4),
         "expected_agreement": round(p_e, 4),
@@ -176,10 +179,11 @@ def main():
 
     if args.format == "json":
         print(json.dumps(result, indent=2))
+        return 1 if result.get("status") == "incomplete" else 0
     else:
         if "error" in result:
-            print(f"ERROR: {result['error']}")
-            sys.exit(1)
+            print(f"INCOMPLETE: {result['error']}")
+            return 1
         print(f"\nCohen's Kappa: {result['kappa']:.4f}")
         print(f"95% CI: [{result['ci_95_lower']:.4f}, {result['ci_95_upper']:.4f}]")
         print(f"Interpretation: {result['interpretation']} (Landis & Koch 1977)")
@@ -196,7 +200,8 @@ def main():
             print(f"\nDisagreements ({result['disagree']}):")
             for d in result["disagreements"]:
                 print(f"  {d['id']}: rater1={d['rater_1']}, rater2={d['rater_2']}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

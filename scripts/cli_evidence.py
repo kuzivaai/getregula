@@ -226,6 +226,13 @@ def cmd_verify(args) -> None:
     """
     from cli import json_output
 
+    def fail(message: str, code: int, *, stderr: bool = False) -> None:
+        if args.format == "json":
+            json_output("verify", {"error": message}, exit_code=code)
+        else:
+            print(message, file=sys.stderr if stderr else sys.stdout)
+        raise SystemExit(code)
+
     pack_path = Path(args.pack_path).resolve()
     warnings: list[str] = []
     extracted_tmpdir = None  # keep reference so it isn't GC'd mid-function
@@ -245,9 +252,8 @@ def cmd_verify(args) -> None:
             with zipfile.ZipFile(pack_path) as zf:
                 infos = zf.infolist()
                 if len(infos) > _MAX_EXTRACT_MEMBERS:
-                    print(f"Refusing to extract {pack_path}: {len(infos)} members "
-                          f"(limit {_MAX_EXTRACT_MEMBERS})")
-                    sys.exit(2)
+                    fail(f"Refusing to extract {pack_path}: {len(infos)} members "
+                         f"(limit {_MAX_EXTRACT_MEMBERS})", 2)
                 # Do NOT trust the declared `zi.file_size` — a crafted bundle
                 # can under-declare it while the real stream is far larger.
                 # Extract member-by-member, counting the ACTUAL decompressed
@@ -261,9 +267,8 @@ def cmd_verify(args) -> None:
                     try:
                         target.relative_to(dest_root)
                     except ValueError:
-                        print(f"Refusing to extract {pack_path}: member "
-                              f"{zi.filename!r} escapes the extraction directory")
-                        sys.exit(2)
+                        fail(f"Refusing to extract {pack_path}: member "
+                             f"{zi.filename!r} escapes the extraction directory", 2)
                     if zi.is_dir():
                         target.mkdir(parents=True, exist_ok=True)
                         continue
@@ -275,15 +280,13 @@ def cmd_verify(args) -> None:
                                 break
                             written += len(chunk)
                             if written > _MAX_EXTRACT_BYTES:
-                                print(f"Refusing to extract {pack_path}: "
-                                      "decompressed output exceeds "
-                                      f"{_MAX_EXTRACT_BYTES // 1_048_576} MB "
-                                      "— possible decompression bomb")
-                                sys.exit(2)
+                                fail(f"Refusing to extract {pack_path}: "
+                                     "decompressed output exceeds "
+                                     f"{_MAX_EXTRACT_BYTES // 1_048_576} MB, "
+                                     "possible decompression bomb", 2)
                             dst.write(chunk)
         except zipfile.BadZipFile as exc:
-            print(f"Cannot read zip bundle {pack_path}: {exc}")
-            sys.exit(2)
+            fail(f"Cannot read zip bundle {pack_path}: {exc}", 2)
         # Find the single top-level pack directory inside the zip
         entries = [p for p in Path(extracted_tmpdir.name).iterdir() if p.is_dir()]
         if len(entries) == 1 and (entries[0] / "manifest.json").exists():
@@ -303,31 +306,28 @@ def cmd_verify(args) -> None:
                 manifest_path = p
                 break
         else:
-            print(
+            fail(
                 f"Error: No manifest.json or 00-assessment-summary.json "
-                f"found in {pack_path}",
-                file=sys.stderr,
-            )
-            print(
+                f"found in {pack_path}\n"
                 "  This does not look like a Regula evidence pack. Pass the "
                 "pack directory, its manifest.json, or a .regula.zip bundle.",
-                file=sys.stderr,
+                2, stderr=True,
             )
-            sys.exit(2)
     else:
-        print(f"Error: Path does not exist: {pack_path}", file=sys.stderr)
-        print(
+        fail(
+            f"Error: Path does not exist: {pack_path}\n"
             "  Check the path is correct. `regula verify` accepts a pack "
             "directory, a manifest.json file, or a .regula.zip bundle.",
-            file=sys.stderr,
+            2, stderr=True,
         )
-        sys.exit(2)
 
     try:
         manifest_data = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError) as exc:
-        print(f"Cannot parse manifest {manifest_path}: {exc}")
-        sys.exit(2)
+        fail(f"Cannot parse manifest {manifest_path}: {exc}", 2)
+
+    if not isinstance(manifest_data, dict):
+        fail("Manifest must be a JSON object.", 2)
 
     # --- Format declaration check (spec §7.1 step 2) ---
     pack_format = manifest_data.get("format", "unknown")
@@ -341,14 +341,12 @@ def cmd_verify(args) -> None:
             f"(got {pack_format!r}). Proceeding under v0 best-effort semantics."
         )
         if strict:
-            print(f"ERROR (strict mode): {msg}")
-            sys.exit(2)
+            fail(f"ERROR (strict mode): {msg}", 2)
         warnings.append(msg)
 
     hash_algo = manifest_data.get("hash_algorithm", "sha256")
     if hash_algo != "sha256":
-        print(f"Unsupported hash_algorithm: {hash_algo}. v1 requires sha256.")
-        sys.exit(2)
+        fail(f"Unsupported hash_algorithm: {hash_algo}. v1 requires sha256.", 2)
 
     # --- Signature verification (spec §4.5 / §7.1 v1.1 addition) ---
     signature_status = None
@@ -366,13 +364,11 @@ def cmd_verify(args) -> None:
                 else:
                     signature_status = "INVALID"
                     signature_detail = detail
-                    print(f"ERROR: manifest signature did not verify: {detail}")
-                    sys.exit(1)
+                    fail(f"ERROR: manifest signature did not verify: {detail}", 1)
             except Exception as exc:
                 signature_status = "INVALID"
                 signature_detail = f"{exc.__class__.__name__}: {exc}"
-                print(f"ERROR: signature verification raised: {signature_detail}")
-                sys.exit(1)
+                fail(f"ERROR: signature verification raised: {signature_detail}", 1)
         except ImportError:
             signature_status = "UNVERIFIABLE"
             signature_detail = (
@@ -380,8 +376,7 @@ def cmd_verify(args) -> None:
                 "is not installed (install the `signing` extra from the reviewed source; see docs/installation.md)"
             )
             if strict:
-                print(f"ERROR (strict mode): {signature_detail}")
-                sys.exit(2)
+                fail(f"ERROR (strict mode): {signature_detail}", 2)
             warnings.append(signature_detail)
     else:
         if strict:
@@ -399,15 +394,13 @@ def cmd_verify(args) -> None:
     expected_key = getattr(args, "expect_public_key", None)
     if expected_key:
         if not signing_block_present:
-            print("ERROR (--expect-public-key): pack is unsigned — cannot match "
-                  "the pinned signer key.")
-            sys.exit(1)
+            fail("ERROR (--expect-public-key): pack is unsigned, cannot match "
+                 "the pinned signer key.", 1)
         actual_key = (manifest_data.get("signing") or {}).get("public_key", "")
         if actual_key.strip() != expected_key.strip():
-            print("ERROR (--expect-public-key): manifest signing key does NOT "
-                  "match the pinned key — this pack was not signed by the "
-                  "expected signer.")
-            sys.exit(1)
+            fail("ERROR (--expect-public-key): manifest signing key does NOT "
+                 "match the pinned key. This pack was not signed by the "
+                 "expected signer.", 1)
         signature_detail = (
             (signature_detail + "; " if signature_detail else "")
             + "signer public key matches the pinned --expect-public-key"
@@ -441,9 +434,8 @@ def cmd_verify(args) -> None:
                         try:
                             anchor_bytes = Path(anchor_path).read_bytes()
                         except OSError as exc:
-                            print(f"ERROR (--tsa-trust-anchor): cannot read "
-                                  f"{anchor_path}: {exc}")
-                            sys.exit(1)
+                            fail(f"ERROR (--tsa-trust-anchor): cannot read "
+                                 f"{anchor_path}: {exc}", 1)
 
                     from timestamp import verify_timestamp_token_signature
                     token_b64 = manifest_data["timestamp_authority"].get("token")
@@ -455,9 +447,8 @@ def cmd_verify(args) -> None:
                         # it asserts provenance it cannot back. Always fail.
                         timestamp_status = "INVALID"
                         timestamp_detail = sig_detail
-                        print(f"ERROR: manifest timestamp token signature did "
-                              f"not verify: {sig_detail}")
-                        sys.exit(1)
+                        fail(f"ERROR: manifest timestamp token signature did "
+                             f"not verify: {sig_detail}", 1)
                     elif sig_status in ("UNVERIFIABLE", "UNSUPPORTED"):
                         # Not evidence of tampering — we simply could not
                         # evaluate the signature. Stay at HASH_MATCHED and say
@@ -476,13 +467,11 @@ def cmd_verify(args) -> None:
                 else:
                     timestamp_status = "INVALID"
                     timestamp_detail = detail
-                    print(f"ERROR: manifest timestamp did not verify: {detail}")
-                    sys.exit(1)
+                    fail(f"ERROR: manifest timestamp did not verify: {detail}", 1)
             except Exception as exc:
                 timestamp_status = "INVALID"
                 timestamp_detail = f"{exc.__class__.__name__}: {exc}"
-                print(f"ERROR: timestamp verification raised: {timestamp_detail}")
-                sys.exit(1)
+                fail(f"ERROR: timestamp verification raised: {timestamp_detail}", 1)
         except ImportError:
             timestamp_status = "UNVERIFIABLE"
             timestamp_detail = (
@@ -490,8 +479,7 @@ def cmd_verify(args) -> None:
                 "is not installed (install the `signing` extra from the reviewed source; see docs/installation.md)"
             )
             if strict:
-                print(f"ERROR (strict mode): {timestamp_detail}")
-                sys.exit(2)
+                fail(f"ERROR (strict mode): {timestamp_detail}", 2)
             warnings.append(timestamp_detail)
     else:
         if strict:
@@ -501,9 +489,14 @@ def cmd_verify(args) -> None:
             )
 
     files = manifest_data.get("files", [])
-    if not files:
-        print("No files listed in manifest.")
-        sys.exit(2)
+    if not isinstance(files, list) or not files:
+        fail("No files listed in manifest, or files is not a list.", 2)
+    for entry in files:
+        if not isinstance(entry, dict):
+            fail("Every manifest file record must be an object.", 2)
+        filename = entry.get("filename", entry.get("name", entry.get("path", "")))
+        if not isinstance(filename, str) or not filename:
+            fail("Every manifest file record needs a non-empty filename.", 2)
 
     # --- File-by-file verification (spec §7.1 step 3) ---
     passed = 0
@@ -577,8 +570,9 @@ def cmd_verify(args) -> None:
         report_path.parent.mkdir(parents=True, exist_ok=True)
         report_path.write_text(json.dumps(verify_report, indent=2), encoding="utf-8")
 
+    exit_code = 1 if failed else 0
     if args.format == "json":
-        json_output("verify", verify_report)
+        json_output("verify", verify_report, exit_code=exit_code)
     else:
         print(f"\nVerifying: {pack_dir}")
         if pack_format != "unknown":
@@ -608,7 +602,6 @@ def cmd_verify(args) -> None:
         print(f"  {passed}/{len(files)} files verified, {failed} issues")
         if failed > 0:
             print("  WARNING: Pack integrity compromised. Do not submit to auditor.")
-            sys.exit(1)
         elif signature_status == "VERIFIED":
             print("  All files match manifest. Pack integrity confirmed (authenticated).")
         else:
@@ -619,6 +612,9 @@ def cmd_verify(args) -> None:
             print("  (internally consistent). NOTE: this pack is unsigned, so the")
             print("  hashes are not tamper-evident on their own — run")
             print("  `regula evidence-pack --sign` for authenticated provenance.")
+
+    if exit_code:
+        raise SystemExit(exit_code)
 
 
 def _regula_version() -> str:

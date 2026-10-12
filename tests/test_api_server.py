@@ -28,6 +28,7 @@ from api_server import (
     _build_envelope,
     _json_bytes,
     _resolve_request_target,
+    _validate_bind_host,
     MAX_REQUEST_SIZE,
     RegulaHandler,
 )
@@ -496,7 +497,10 @@ def test_classify_success():
     assert observation["detector_class"] == "minimal_risk"
     assert "tier" not in observation
     assert "confidence" not in observation
-    assert body["data"]["decision"]["result_type"] == "insufficient_information"
+    decision = body["data"]["decision"]
+    assert decision["review_status"] == "insufficient_information"
+    assert decision["human_decision"] is None
+    assert "result_type" not in decision
     assert body["format_version"] == "1.0"
     assert body["regula_version"] == VERSION
 
@@ -526,7 +530,9 @@ def test_classify_prohibited_exit_code_in_envelope():
         )
     assert status == 200
     assert body["data"]["detector_observation"]["detector_class"] == "prohibited"
-    assert body["data"]["decision"]["result_type"] == "insufficient_information"
+    decision = body["data"]["decision"]
+    assert decision["review_status"] == "insufficient_information"
+    assert decision["human_decision"] is None
     assert body["exit_code"] == 1, (
         "envelope exit_code must be 1 for a prohibited classification, "
         f"got {body['exit_code']}"
@@ -934,7 +940,9 @@ def test_gap_success():
             )
     assert status == 200
     assert body["command"] == "gap"
-    assert body["data"]["decision"]["result_type"] == "insufficient_information"
+    decision = body["data"]["decision"]
+    assert decision["review_status"] == "insufficient_information"
+    assert decision["human_decision"] is None
     assert body["data"]["evidence"]["article_observations"] == {}
 
     # Verify articles were passed through
@@ -1173,6 +1181,7 @@ def test_main_default_args():
         mock_args = MagicMock()
         mock_args.host = "localhost"
         mock_args.port = 8487
+        mock_args.unsafe_network = False
         mock_parse.return_value = mock_args
 
         mock_server = MagicMock()
@@ -1188,7 +1197,7 @@ def test_main_default_args():
 
 
 def test_main_custom_args():
-    """main() respects custom --host and --port."""
+    """main() permits a custom non-loopback bind only with acknowledgement."""
     with patch("argparse.ArgumentParser.parse_args") as mock_parse, \
          patch("api_server.ThreadingHTTPServer") as mock_server_cls, \
          patch("sys.stderr", io.StringIO()):
@@ -1196,6 +1205,7 @@ def test_main_custom_args():
         mock_args = MagicMock()
         mock_args.host = "0.0.0.0"
         mock_args.port = 9999
+        mock_args.unsafe_network = True
         mock_parse.return_value = mock_args
 
         mock_server = MagicMock()
@@ -1218,6 +1228,7 @@ def test_main_startup_banner():
         mock_args = MagicMock()
         mock_args.host = "localhost"
         mock_args.port = 8487
+        mock_args.unsafe_network = False
         mock_parse.return_value = mock_args
 
         mock_server = MagicMock()
@@ -1236,6 +1247,26 @@ def test_main_startup_banner():
     assert "/v1/questionnaire" in banner
     assert "/v1/dashboard" in banner
     assert "No authentication" in banner
+
+
+def test_loopback_bind_hosts_are_accepted_without_acknowledgement():
+    for host in ("localhost", "127.0.0.1", "127.99.4.2", "::1"):
+        _validate_bind_host(host, unsafe_network=False)
+
+
+def test_non_loopback_bind_refuses_without_acknowledgement():
+    for host in ("0.0.0.0", "::", "192.168.1.20", "example.test"):
+        try:
+            _validate_bind_host(host, unsafe_network=False)
+        except ValueError as exc:
+            assert "no authentication" in str(exc).lower()
+            assert "unsafe-network" in str(exc)
+        else:
+            raise AssertionError(f"non-loopback host was accepted: {host}")
+
+
+def test_non_loopback_bind_accepts_explicit_unsafe_acknowledgement():
+    _validate_bind_host("0.0.0.0", unsafe_network=True)
 
 
 # ===================================================================
@@ -1282,10 +1313,11 @@ def test_questionnaire_evaluate_empty_answers_dict():
     status, body = _dispatch_request("POST", "/v1/questionnaire/evaluate",
                                      json_body={"answers": {}})
     assert status == 200
-    assert body["data"]["result_type"] == "insufficient_information"
-    assert body["data"]["unresolved_predicates"]
+    assert body["data"]["review_status"] == "insufficient_information"
+    assert body["data"]["human_decision"] is None
+    assert body["data"]["missing_context"]
     assert all(item["reason"] == "absent"
-               for item in body["data"]["unresolved_predicates"])
+               for item in body["data"]["missing_context"])
     assert "obligations" not in body["data"]
 
 
@@ -1369,11 +1401,15 @@ def test_check_findings_sorted_deterministically():
     data = body["data"]["detector_findings"]
     assert len(data) == 5
     # Should be sorted: a.py:1:x, a.py:5:a, a.py:5:b, b.py:3:y, c.py:1:z
-    assert data[0] == {"file": "a.py", "line": 1, "pattern": "x_pattern"}
-    assert data[1] == {"file": "a.py", "line": 5, "pattern": "a_pattern"}
-    assert data[2] == {"file": "a.py", "line": 5, "pattern": "b_pattern"}
-    assert data[3] == {"file": "b.py", "line": 3, "pattern": "y_pattern"}
-    assert data[4] == {"file": "c.py", "line": 1, "pattern": "z_pattern"}
+    assert [(item["file"], item["line"], item["pattern"]) for item in data] == [
+        ("a.py", 1, "x_pattern"),
+        ("a.py", 5, "a_pattern"),
+        ("a.py", 5, "b_pattern"),
+        ("b.py", 3, "y_pattern"),
+        ("c.py", 1, "z_pattern"),
+    ]
+    assert all(item["reviewable_evidence"]["human_decision"] is None
+               for item in data)
 
 
 def test_gap_valid_articles_str_and_int():

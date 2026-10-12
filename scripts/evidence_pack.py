@@ -228,7 +228,7 @@ def _generate_pack_contents(
     # standard); risk indication, not classification.
     include_dpv = (
         bool(kwargs.get("include_dpv"))
-        and decision["result_type"] == "indication"
+        and decision.get("review_status") == "human_review_required"
     )
     if include_dpv:
         try:
@@ -378,7 +378,7 @@ def _generate_summary(name, now, findings, decision, scan_stats=None):
     prohibited_count = sum(1 for f in findings if f.get("tier") == "prohibited")
     high_risk_count = sum(1 for f in findings if f.get("tier") == "high_risk")
     limited_count = sum(1 for f in findings if f.get("tier") == "limited_risk")
-    unresolved_count = len(decision.get("unresolved_predicates", []))
+    unresolved_count = len(decision.get("missing_context", []))
     coverage = _coverage_section(scan_stats or {})
 
     return f"""# Evidence Pack: Review Handoff
@@ -387,12 +387,12 @@ def _generate_summary(name, now, findings, decision, scan_stats=None):
 **Generated:** {now.strftime("%Y-%m-%d %H:%M UTC")}
 **Tool:** Regula v{VERSION}
 
-## Decision status
+## Review status
 
-**Kernel result:** `{decision['result_type']}`
+**Context review:** `{decision['review_status']}`
 **Model:** `{decision['model_version']}`
-**Rule resolution:** `{decision['rule_resolution']}`
 **Unresolved facts:** {unresolved_count}
+**Human decision:** `not recorded`
 
 No legal classification, article duty, readiness percentage, or effort estimate
 is emitted because the generator received no sourced decision facts. Resolve
@@ -415,7 +415,7 @@ conclusion.
 |------|-------------|
 | 00-summary.md | This reliance gate and handoff summary |
 | 01-scan-results.json | Code detector observations, not legal facts |
-| 02-gap-assessment.json | Kernel decision plus evidence held pending applicability |
+| 02-gap-assessment.json | Code and documentation observations for contextual review |
 | 03-annex-iv-draft.md | Unverified documentation draft |
 | 04-dependency-report.json | Supply-chain observations |
 | 05-audit-trail.json | Project-scoped audit events and integrity observations |
@@ -435,14 +435,8 @@ def _generate_resolvable_facts(decision):
         "The generator received no sourced decision facts. Each answer must include provenance and a timestamp.",
         "",
     ]
-    for index, item in enumerate(decision.get("unresolved_predicates", []), 1):
+    for index, item in enumerate(decision.get("missing_context", []), 1):
         lines.append(f"{index}. `{item['fact_id']}`: {item['question']}")
-        paths = "; ".join(
-            f"{path['predicate_id']} ({path['provision']})"
-            for path in item.get("would_resolve", [])
-        )
-        if paths:
-            lines.append(f"   Resolves: {paths}")
     lines.extend(["", "Do not infer an answer from the absence of a detector finding.", ""])
     return "\n".join(lines)
 
@@ -544,9 +538,18 @@ def main():
         filename = entry["filename"]
         expected_sha = entry["sha256"]
         if Path(filename).is_absolute() or ".." in Path(filename).parts:
-            print(f"  SKIP (invalid path): {filename}", file=sys.stderr)
+            print(f"  INVALID_PATH: {filename}", file=sys.stderr)
+            errors += 1
             continue
         fpath = Path(filename)
+        try:
+            inside = fpath.resolve().is_relative_to(Path.cwd().resolve())
+        except OSError:
+            inside = False
+        if not inside or (fpath.exists() and not fpath.is_file()):
+            print(f"  INVALID_PATH: {filename}", file=sys.stderr)
+            errors += 1
+            continue
         if not fpath.exists():
             print(f"  MISSING: {filename}")
             errors += 1

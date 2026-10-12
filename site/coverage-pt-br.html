@@ -4,10 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-      :root { color-scheme: dark }
-      html, body { background: #070711; color: #e2e2f0; margin: 0; }
+      :root { color-scheme: light }
+      html, body { background: #f5f7f3; color: #14231c; margin: 0; }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23086b57'/><text x='50' y='71' font-family='Georgia' font-size='62' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <title>Cobertura, métodos e limites | Regula</title>
     <meta name="description" content="O que o Regula implementa como apoio à decisão, o que apenas relaciona ou acompanha, como é testado e quais evidências de validade ainda faltam.">
@@ -30,7 +31,7 @@
 <a href="#main" class="skip-link">Pular para o conteúdo</a>
 <nav class="nav scrolled" id="nav" aria-label="Navegação principal">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Navegação do site" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/pt-br.html">Avaliar escopo</a><a href="/product-pt-br.html">Revisar código</a><span class="active">Cobertura</span><a href="#methods">Métodos e limites</a><a href="https://github.com/kuzivaai/getregula">GitHub</a><a href="/coverage.html" hreflang="en" lang="en">EN</a><a href="/coverage-de.html" hreflang="de" lang="de">DE</a><span class="active" lang="pt-BR">BR</span>
     </dialog>

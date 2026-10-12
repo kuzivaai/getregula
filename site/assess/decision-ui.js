@@ -1,4 +1,4 @@
-// Shared tagged-result presentation. All presentation strings are locale data.
+// Shared review-record presentation. Locale copy is kept in this one renderer.
 (function (root, factory) {
   const api = factory(root.RegulaDecisionAdapters);
   if (typeof module === "object" && module.exports) module.exports = api;
@@ -6,159 +6,103 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function (adapters) {
   "use strict";
 
-  // How many unresolved-fact cards are shown before the rest are collapsed.
-  // The full list stays in the DOM inside a <details>, so nothing is hidden
-  // from export, print or assistive technology; it is only folded away.
-  const UNRESOLVED_VISIBLE = 5;
-
+  const VISIBLE_MISSING = 5;
   const COPY = {
     en: {
-      eyebrow: "Assessment result",
-      labels: {
-        indication: "Regulatory indication",
-        insufficient_information: "More facts required",
-        outside_scope_candidate: "Outside-scope candidate",
-      },
+      eyebrow: "Review record",
+      status: { insufficient_information: "More context is needed", human_review_required: "Human review required" },
       plain: {
-        indication: "Based on the answers you gave, at least one named rule in this regulation appears to apply to your system. The provisions to review are listed below.",
-        insufficient_information: "This cannot be settled yet. Your answers do not resolve the question either way. The facts still needed are listed below, and anything you marked “Not sure” was left open rather than counted as a no.",
-        outside_scope_candidate: "Based on the answers you gave, this regulation does not appear to be triggered. Check the evidence path below, and run this again if any of those answers change.",
+        insufficient_information: "The answers preserve open or contradictory context. Nothing here is a completed legal decision.",
+        human_review_required: "The answers name potentially relevant provisions, but an accountable person must decide what they mean for the real deployment.",
       },
-      descriptions: {
-        indication: "One or more named legal predicates are satisfied by the supplied evidence. Review unresolved predicates before relying on the result.",
-        insufficient_information: "The supplied facts do not support a determination. Resolve the questions below; missing and unsure answers have not been treated as no.",
-        outside_scope_candidate: "A named scope predicate is resolved false, or all traced rules are resolved false. This result includes the evidence path used.",
-      },
-      evidence: "Evidence resolution",
-      resolved: "resolved",
-      absent: "absent",
-      unknown: "explicitly unknown",
-      contradictory: "contradictory",
-      evidencePlain: function (c) {
-        const parts = [
-          c.resolved_fact_count + " settled by your answers",
-          c.absent_fact_count + " not supplied",
-          c.explicit_unknown_fact_count + " marked not sure",
-        ];
-        if (c.contradictory_fact_count) {
-          parts.push(c.contradictory_fact_count + " contradictory");
-        }
-        return "Facts considered: " + parts.join(", ") + ".";
-      },
-      indications: "Indications",
-      obligations: "Obligations supported by resolved predicate paths",
-      unresolved: "Facts that would resolve more of the decision",
-      unresolvedIntro: "Each one names the provision it would settle. None of these has been counted for or against you.",
-      showMore: function (n) {
-        return "Show " + n + " more open " + (n === 1 ? "fact" : "facts");
-      },
-      applies: "Applicable from",
-      provision: "Provision",
-      condition: "Important condition",
-      reason: "Current state",
-      resolves: "Would resolve",
-      noObligations: "No obligation was emitted from the supplied facts.",
+      evidence: function (c) { return "Context considered: " + c.resolved_fact_count + " resolved, " + c.absent_fact_count + " absent, " + c.explicit_unknown_fact_count + " explicitly unknown, " + c.contradictory_fact_count + " contradictory."; },
+      declared: "Declared context", noDeclared: "No context has been declared.",
+      provisions: "Potentially relevant provisions", provisionState: "Unresolved applicability question",
+      noProvisions: "No provision was selected from the supplied context. This is not a non-applicability conclusion.",
+      missing: "Missing or explicitly unknown context", missingIntro: "These questions remain open and have not been counted as No.",
+      contradictions: "Contradictory context", contradictionsIntro: "Conflicting declarations require manual resolution.",
+      reason: "Current state", reasons: { absent: "Not answered", explicit_unknown: "You selected Not sure" }, showMore: function (n) { return "Show " + n + " more open facts"; },
+      human: "Human decision", humanEmpty: "Not recorded. This field remains empty until an accountable reviewer completes it.",
+      limitations: "Limits of this record",
+      limitationItems: [
+        "Declared answers and code observations do not determine legal applicability, risk tier, duties or compliance.",
+        "A missing code indicator does not prove that legal relevance is absent.",
+        "This record does not replace qualified legal, governance, security or technical review.",
+      ],
       nextTitle: "What to do next",
       steps: {
-        resolve: "Resolve the open facts listed above. Answer each one from a source you can point to, then run this assessment again.",
-        settled: "Your answers settled every fact this model considered. Run this again if your system, its purpose or where it is used changes.",
-        scan: "Scan your source code. The questionnaire records what you know; the scanner reads what the code actually does. Together they are stronger evidence than either alone.",
-        review: "Save or print this result and have a qualified reviewer confirm the legal interpretation. Regula indicates possible relevance; it does not determine compliance.",
+        resolve: "Resolve the open facts from sources you can identify, while preserving any uncertainty or contradiction.",
+        settled: "Check each declaration against a source you can identify and update it if the deployment changes.",
+        scan: "Scan source code for observable indicators, then keep those observations separate from declared context.",
+        review: "Ask an accountable qualified reviewer to interpret the evidence and record the human decision separately.",
       },
       scanCta: "Scan source code",
-      exportDisclaimer: "Tagged decision result based on self-reported facts. Not legal advice.",
-      classifications: {
-        high_risk_candidate: "High-risk candidate",
-        prohibited_practice_candidate: "Prohibited-practice candidate",
-        transparency_duty_candidate: "Transparency-duty candidate",
-        high_impact_candidate: "High-impact candidate",
-        advance_review_duty_candidate: "Advance-review duty candidate",
-        article_32_safety_duty_candidate: "Article 32 safety-duty candidate",
-        domestic_agent_duty_candidate: "Domestic-agent duty candidate",
-        covered_admt_candidate: "Covered-ADMT candidate",
-      },
+      states: { yes: "Yes", no: "No", unknown: "Not sure", not_applicable: "Not applicable" },
+      exportDisclaimer: "Evidence-preparation record based on self-reported facts. No legal determination. Not legal advice.",
     },
     de: {
-      eyebrow: "Bewertungsergebnis",
-      labels: { indication: "Regulatorischer Hinweis", insufficient_information: "Weitere Tatsachen erforderlich", outside_scope_candidate: "Möglicherweise außerhalb des Geltungsbereichs" },
+      eyebrow: "Prüfprotokoll",
+      status: { insufficient_information: "Mehr Kontext erforderlich", human_review_required: "Menschliche Prüfung erforderlich" },
       plain: {
-        indication: "Nach Ihren Angaben scheint mindestens eine benannte Regel dieser Verordnung für Ihr System zu gelten. Die zu prüfenden Vorschriften stehen unten.",
-        insufficient_information: "Das lässt sich noch nicht klären. Ihre Angaben beantworten die Frage in keine Richtung. Die noch fehlenden Tatsachen stehen unten; alles, was Sie mit „Unsicher“ beantwortet haben, bleibt offen und wurde nicht als Nein gewertet.",
-        outside_scope_candidate: "Nach Ihren Angaben scheint diese Verordnung nicht einschlägig zu sein. Prüfen Sie den Nachweispfad unten und führen Sie die Bewertung erneut durch, wenn sich eine dieser Antworten ändert.",
+        insufficient_information: "Die Antworten bewahren offene oder widersprüchliche Angaben. Dies ist keine abgeschlossene rechtliche Entscheidung.",
+        human_review_required: "Die Antworten benennen möglicherweise relevante Vorschriften. Eine verantwortliche Person muss ihre Bedeutung für den tatsächlichen Einsatz prüfen.",
       },
-      descriptions: {
-        indication: "Mindestens ein benanntes rechtliches Prädikat wird durch die vorgelegten Nachweise erfüllt. Prüfen Sie offene Prädikate vor einer Verwendung des Ergebnisses.",
-        insufficient_information: "Die vorgelegten Tatsachen tragen keine Feststellung. Klären Sie die folgenden Fragen; fehlende und unsichere Antworten wurden nicht als Nein behandelt.",
-        outside_scope_candidate: "Ein benanntes Geltungsbereichsprädikat ist als falsch geklärt oder alle geprüften Regeln sind als falsch geklärt. Der verwendete Nachweispfad ist enthalten.",
-      },
-      evidence: "Nachweisstand", resolved: "geklärt", absent: "fehlend", unknown: "ausdrücklich unbekannt", contradictory: "widersprüchlich",
-      evidencePlain: function (c) {
-        const parts = [
-          c.resolved_fact_count + " durch Ihre Antworten geklärt",
-          c.absent_fact_count + " nicht angegeben",
-          c.explicit_unknown_fact_count + " als unsicher markiert",
-        ];
-        if (c.contradictory_fact_count) {
-          parts.push(c.contradictory_fact_count + " widersprüchlich");
-        }
-        return "Berücksichtigte Tatsachen: " + parts.join(", ") + ".";
-      },
-      indications: "Hinweise", obligations: "Durch geklärte Prädikatpfade gestützte Pflichten", unresolved: "Tatsachen, die weitere Teile der Entscheidung klären",
-      unresolvedIntro: "Zu jeder ist die Vorschrift benannt, die sie klären würde. Keine davon wurde zu Ihren Gunsten oder Lasten gewertet.",
-      showMore: function (n) {
-        return n + " weitere offene " + (n === 1 ? "Tatsache" : "Tatsachen") + " anzeigen";
-      },
-      applies: "Anwendbar ab", provision: "Vorschrift", condition: "Wichtige Bedingung", reason: "Aktueller Stand", resolves: "Würde klären", noObligations: "Aus den vorgelegten Tatsachen wurde keine Pflicht ausgegeben.", nextTitle: "Nächste Schritte",
+      evidence: function (c) { return "Berücksichtigter Kontext: " + c.resolved_fact_count + " geklärt, " + c.absent_fact_count + " fehlend, " + c.explicit_unknown_fact_count + " ausdrücklich unbekannt, " + c.contradictory_fact_count + " widersprüchlich."; },
+      declared: "Deklarierter Kontext", noDeclared: "Es wurde kein Kontext deklariert.",
+      provisions: "Möglicherweise relevante Vorschriften", provisionState: "Offene Anwendungsfrage",
+      noProvisions: "Aus dem angegebenen Kontext wurde keine Vorschrift ausgewählt. Dies ist keine Feststellung der Nichtanwendbarkeit.",
+      missing: "Fehlender oder ausdrücklich unbekannter Kontext", missingIntro: "Diese Fragen bleiben offen und wurden nicht als Nein gewertet.",
+      contradictions: "Widersprüchlicher Kontext", contradictionsIntro: "Widersprüchliche Angaben müssen manuell geklärt werden.",
+      reason: "Aktueller Stand", reasons: { absent: "Nicht beantwortet", explicit_unknown: "Sie haben Unsicher ausgewählt" }, showMore: function (n) { return n + " weitere offene Tatsachen anzeigen"; },
+      human: "Menschliche Entscheidung", humanEmpty: "Nicht erfasst. Dieses Feld bleibt leer, bis eine verantwortliche prüfende Person es ausfüllt.",
+      limitations: "Grenzen dieses Protokolls",
+      limitationItems: [
+        "Deklarierte Antworten und Code-Beobachtungen bestimmen weder rechtliche Anwendbarkeit, Risikoklasse, Pflichten noch Konformität.",
+        "Ein fehlender Code-Indikator beweist nicht, dass keine rechtliche Relevanz besteht.",
+        "Dieses Protokoll ersetzt keine qualifizierte rechtliche, Governance-, Sicherheits- oder technische Prüfung.",
+      ],
+      nextTitle: "Nächste Schritte",
       steps: {
-        resolve: "Klären Sie die oben aufgeführten offenen Tatsachen. Beantworten Sie jede aus einer benennbaren Quelle und führen Sie die Bewertung erneut durch.",
-        settled: "Ihre Antworten haben jede von diesem Modell berücksichtigte Tatsache geklärt. Führen Sie die Bewertung erneut durch, wenn sich Ihr System, sein Zweck oder sein Einsatzort ändert.",
-        scan: "Prüfen Sie Ihren Quellcode. Der Fragebogen erfasst, was Sie wissen; der Scanner liest, was der Code tatsächlich tut. Zusammen sind sie ein stärkerer Nachweis als jedes für sich.",
-        review: "Speichern oder drucken Sie dieses Ergebnis und lassen Sie die Rechtsauslegung qualifiziert prüfen. Regula weist auf mögliche Relevanz hin; es stellt keine Konformität fest.",
+        resolve: "Klären Sie offene Tatsachen aus benennbaren Quellen und bewahren Sie Unsicherheit oder Widersprüche.",
+        settled: "Prüfen Sie jede Angabe anhand einer benennbaren Quelle und aktualisieren Sie sie bei Änderungen des Einsatzes.",
+        scan: "Prüfen Sie den Quellcode auf beobachtbare Indikatoren und halten Sie diese von deklariertem Kontext getrennt.",
+        review: "Lassen Sie die Nachweise qualifiziert und verantwortlich auslegen und erfassen Sie die menschliche Entscheidung separat.",
       },
       scanCta: "Quellcode prüfen",
-      exportDisclaimer: "Markiertes Entscheidungsergebnis auf Grundlage selbst angegebener Tatsachen. Keine Rechtsberatung.",
-      classifications: { high_risk_candidate: "Hochrisiko-Kandidat", prohibited_practice_candidate: "Kandidat für eine verbotene Praktik", transparency_duty_candidate: "Kandidat für eine Transparenzpflicht", high_impact_candidate: "Kandidat für KI mit hoher Auswirkung", advance_review_duty_candidate: "Kandidat für die Vorabprüfung", article_32_safety_duty_candidate: "Kandidat für die Sicherheitspflicht nach Artikel 32", domestic_agent_duty_candidate: "Kandidat für die Pflicht zu einem inländischen Vertreter", covered_admt_candidate: "Kandidat für abgedeckte ADMT" },
+      states: { yes: "Ja", no: "Nein", unknown: "Unsicher", not_applicable: "Nicht anwendbar" },
+      exportDisclaimer: "Protokoll zur Nachweisvorbereitung auf Grundlage selbst angegebener Tatsachen. Keine rechtliche Feststellung. Keine Rechtsberatung.",
     },
     "pt-br": {
-      eyebrow: "Resultado da avaliação",
-      labels: { indication: "Indicação regulatória", insufficient_information: "Mais fatos necessários", outside_scope_candidate: "Candidato a fora do escopo" },
+      eyebrow: "Registro para revisão",
+      status: { insufficient_information: "Mais contexto é necessário", human_review_required: "Revisão humana necessária" },
       plain: {
-        indication: "Com base nas respostas que você deu, pelo menos uma regra nomeada desta regulamentação parece se aplicar ao seu sistema. Os dispositivos a revisar estão listados abaixo.",
-        insufficient_information: "Ainda não é possível resolver. Suas respostas não decidem a questão em nenhuma direção. Os fatos que ainda faltam estão listados abaixo, e tudo que você marcou como “Não sei” permaneceu em aberto, sem ser contado como não.",
-        outside_scope_candidate: "Com base nas respostas que você deu, esta regulamentação não parece ser acionada. Verifique o caminho de evidência abaixo e refaça a avaliação se alguma dessas respostas mudar.",
+        insufficient_information: "As respostas preservam contexto em aberto ou contraditório. Isto não é uma decisão jurídica concluída.",
+        human_review_required: "As respostas indicam dispositivos possivelmente relevantes, mas uma pessoa responsável deve decidir o que significam para a implantação real.",
       },
-      descriptions: {
-        indication: "Um ou mais predicados jurídicos nomeados são satisfeitos pelas evidências fornecidas. Revise os predicados não resolvidos antes de confiar no resultado.",
-        insufficient_information: "Os fatos fornecidos não sustentam uma determinação. Resolva as perguntas abaixo; respostas ausentes e incertas não foram tratadas como não.",
-        outside_scope_candidate: "Um predicado de escopo nomeado foi resolvido como falso ou todas as regras rastreadas foram resolvidas como falsas. O caminho de evidência usado está incluído.",
-      },
-      evidence: "Resolução da evidência", resolved: "resolvidos", absent: "ausentes", unknown: "explicitamente desconhecidos", contradictory: "contraditórios",
-      evidencePlain: function (c) {
-        const parts = [
-          c.resolved_fact_count + " resolvidos pelas suas respostas",
-          c.absent_fact_count + " não informados",
-          c.explicit_unknown_fact_count + " marcados como não sei",
-        ];
-        if (c.contradictory_fact_count) {
-          parts.push(c.contradictory_fact_count + " contraditórios");
-        }
-        return "Fatos considerados: " + parts.join(", ") + ".";
-      },
-      indications: "Indicações", obligations: "Obrigações sustentadas por caminhos de predicados resolvidos", unresolved: "Fatos que resolveriam mais da decisão",
-      unresolvedIntro: "Cada um indica o dispositivo que resolveria. Nenhum deles foi contado a seu favor ou contra você.",
-      showMore: function (n) {
-        return "Mostrar mais " + n + " " + (n === 1 ? "fato em aberto" : "fatos em aberto");
-      },
-      applies: "Aplicável a partir de", provision: "Dispositivo", condition: "Condição importante", reason: "Estado atual", resolves: "Resolveria", noObligations: "Nenhuma obrigação foi emitida a partir dos fatos fornecidos.", nextTitle: "Próximos passos",
+      evidence: function (c) { return "Contexto considerado: " + c.resolved_fact_count + " resolvidos, " + c.absent_fact_count + " ausentes, " + c.explicit_unknown_fact_count + " explicitamente desconhecidos, " + c.contradictory_fact_count + " contraditórios."; },
+      declared: "Contexto declarado", noDeclared: "Nenhum contexto foi declarado.",
+      provisions: "Dispositivos possivelmente relevantes", provisionState: "Questão de aplicabilidade em aberto",
+      noProvisions: "Nenhum dispositivo foi selecionado a partir do contexto informado. Isso não é uma conclusão de não aplicabilidade.",
+      missing: "Contexto ausente ou explicitamente desconhecido", missingIntro: "Estas perguntas continuam em aberto e não foram contadas como Não.",
+      contradictions: "Contexto contraditório", contradictionsIntro: "Declarações conflitantes exigem resolução manual.",
+      reason: "Estado atual", reasons: { absent: "Sem resposta", explicit_unknown: "Você selecionou Não sei" }, showMore: function (n) { return "Mostrar mais " + n + " fatos em aberto"; },
+      human: "Decisão humana", humanEmpty: "Não registrada. Este campo permanece vazio até ser preenchido por uma pessoa revisora responsável.",
+      limitations: "Limites deste registro",
+      limitationItems: [
+        "Respostas declaradas e observações de código não determinam aplicabilidade jurídica, classe de risco, deveres ou conformidade.",
+        "A ausência de um indicador de código não prova a ausência de relevância jurídica.",
+        "Este registro não substitui revisão jurídica, de governança, de segurança ou técnica qualificada.",
+      ],
+      nextTitle: "Próximos passos",
       steps: {
-        resolve: "Resolva os fatos em aberto listados acima. Responda cada um a partir de uma fonte identificável e execute a avaliação novamente.",
-        settled: "Suas respostas resolveram todos os fatos considerados por este modelo. Execute novamente se o seu sistema, sua finalidade ou onde ele é usado mudar.",
-        scan: "Analise o seu código-fonte. O questionário registra o que você sabe; o analisador lê o que o código realmente faz. Juntos são uma evidência mais forte do que cada um isoladamente.",
-        review: "Salve ou imprima este resultado e obtenha revisão qualificada da interpretação jurídica. O Regula indica possível relevância; ele não determina conformidade.",
+        resolve: "Resolva os fatos em aberto a partir de fontes identificáveis, preservando incertezas ou contradições.",
+        settled: "Verifique cada declaração em uma fonte identificável e atualize-a se a implantação mudar.",
+        scan: "Analise o código-fonte em busca de indicadores observáveis e mantenha essas observações separadas do contexto declarado.",
+        review: "Peça a uma pessoa revisora qualificada e responsável que interprete as evidências e registre a decisão humana separadamente.",
       },
       scanCta: "Analisar código-fonte",
-      exportDisclaimer: "Resultado de decisão marcado com base em fatos autodeclarados. Não é aconselhamento jurídico.",
-      classifications: { high_risk_candidate: "Candidato a alto risco", prohibited_practice_candidate: "Candidato a prática proibida", transparency_duty_candidate: "Candidato a dever de transparência", high_impact_candidate: "Candidato a alto impacto", advance_review_duty_candidate: "Candidato a revisão prévia", article_32_safety_duty_candidate: "Candidato a dever de segurança do Artigo 32", domestic_agent_duty_candidate: "Candidato a dever de representante doméstico", covered_admt_candidate: "Candidato a TATD abrangida" },
+      states: { yes: "Sim", no: "Não", unknown: "Não sei", not_applicable: "Não aplicável" },
+      exportDisclaimer: "Registro de preparação de evidências baseado em fatos autodeclarados. Sem determinação jurídica. Não é aconselhamento jurídico.",
     },
   };
 
@@ -183,100 +127,74 @@
     return labels;
   }
 
-  function unresolvedCard(unresolved, labels, copy) {
-    const question = labels[unresolved.fact_id] || unresolved.question;
-    const provisions = unresolved.would_resolve.map(item => item.provision).join("; ");
-    return `<div class="obl-card"><div class="obl-title">${escapeHtml(question)}</div>` +
-      `<div class="obl-desc"><strong>${escapeHtml(copy.reason)}:</strong> ${escapeHtml(unresolved.reason)}` +
-      `<br><strong>${escapeHtml(copy.resolves)}:</strong> ${escapeHtml(provisions)}</div></div>`;
+  function card(title, body) {
+    return `<div class="obl-card"><div class="obl-title">${escapeHtml(title)}</div>` +
+      `<div class="obl-desc">${escapeHtml(body)}</div></div>`;
   }
 
   function renderQuestionnaireResult(result, options) {
     const copy = copyFor(options.locale);
-    const completeness = result.evidence_completeness;
     const labels = factLabels(result.jurisdiction, options.questions);
-    const styleClass = result.result_type === "indication" ? "tier-high" :
-      result.result_type === "outside_scope_candidate" ? "tier-minimal" : "tier-limited";
-    // The eyebrow is a generic section label. Repeating the specific result
-    // name in both slots read as a rendering fault, so the name appears once.
+    const completeness = result.evidence_completeness;
+    const styleClass = result.review_status === "insufficient_information" ? "tier-limited" : "tier-high";
     options.tierElement.innerHTML = `
       <div class="result-tier ${styleClass}" role="status" aria-live="polite">
         <div class="tier-label">${escapeHtml(copy.eyebrow)}</div>
-        <div class="tier-name">${escapeHtml(copy.labels[result.result_type])}</div>
-        <div class="tier-desc">${escapeHtml(copy.plain[result.result_type])}</div>
-        <div class="tier-desc" style="margin-top:10px;font-size:0.85rem;opacity:0.75;">${escapeHtml(copy.descriptions[result.result_type])}</div>
-        <div style="margin-top:12px;font-size:0.8rem;opacity:0.75;">
-          ${escapeHtml(copy.evidencePlain(completeness))}
-        </div>
+        <div class="tier-name">${escapeHtml(copy.status[result.review_status])}</div>
+        <div class="tier-desc">${escapeHtml(copy.plain[result.review_status])}</div>
+        <div style="margin-top:12px;font-size:0.8rem;opacity:0.75;">${escapeHtml(copy.evidence(completeness))}</div>
       </div>`;
-    // The question card previously held focus when it was hidden, leaving
-    // keyboard and screen-reader users at <body> after completion. Move focus
-    // to the newly rendered status without adding it to the normal tab order.
     const resultTier = options.tierElement.querySelector(".result-tier");
-    if (resultTier) {
-      resultTier.tabIndex = -1;
-      resultTier.focus();
+    if (resultTier) { resultTier.tabIndex = -1; resultTier.focus(); }
+
+    let detail = `<h2>${escapeHtml(copy.declared)}</h2><div class="obligations">`;
+    if (!result.declared_context.length) detail += `<p>${escapeHtml(copy.noDeclared)}</p>`;
+    for (const context of result.declared_context) {
+      const title = labels[context.fact_id] || context.fact_id;
+      const state = context.state === null ? context.status : (copy.states[context.state] || context.state);
+      detail += card(title, state);
+    }
+    detail += "</div>";
+
+    detail += `<h2 style="margin-top:20px;">${escapeHtml(copy.provisions)}</h2>`;
+    if (!result.potentially_relevant_provisions.length) detail += `<p>${escapeHtml(copy.noProvisions)}</p>`;
+    else {
+      detail += '<div class="obligations">';
+      for (const provision of result.potentially_relevant_provisions) detail += card(provision.reference, copy.provisionState);
+      detail += "</div>";
     }
 
-    let detail = "";
-    if (result.indications && result.indications.length) {
-      detail += `<h2>${escapeHtml(copy.indications)}</h2><div class="obligations">`;
-      for (const indication of result.indications) {
-        const condition = indication.applicability_note
-          ? `<div class="obl-desc" style="margin-top:8px;"><strong>${escapeHtml(copy.condition)}:</strong> ${escapeHtml(indication.applicability_note)}</div>`
-          : "";
-        detail += `<div class="obl-card"><div class="obl-title">${escapeHtml(copy.classifications[indication.classification] || indication.classification)}</div><div class="obl-desc"><strong>${escapeHtml(copy.provision)}:</strong> ${escapeHtml(indication.provision)}</div>${condition}${indication.applicable_from ? `<div class="obl-deadline">${escapeHtml(copy.applies)}: ${escapeHtml(indication.applicable_from)}</div>` : ""}</div>`;
-      }
+    const missing = result.missing_context || [];
+    if (missing.length) {
+      detail += `<h2 style="margin-top:20px;">${escapeHtml(copy.missing)}</h2><p>${escapeHtml(copy.missingIntro)}</p><div class="obligations">`;
+      for (const item of missing.slice(0, VISIBLE_MISSING)) detail += card(labels[item.fact_id] || item.question, `${copy.reason}: ${copy.reasons[item.reason] || item.reason}`);
       detail += "</div>";
-    }
-    if (result.obligations && result.obligations.length) {
-      detail += `<h2 style="margin-top:20px;">${escapeHtml(copy.obligations)}</h2><div class="obligations">`;
-      for (const obligation of result.obligations) {
-        const dates = Object.values(obligation.applicability_by_rule || {});
-        const date = obligation.applicable_from || (dates.length ? [...new Set(dates)].join(", ") : null);
-        const condition = obligation.applicability_note
-          ? `<div class="obl-desc" style="margin-top:8px;"><strong>${escapeHtml(copy.condition)}:</strong> ${escapeHtml(obligation.applicability_note)}</div>`
-          : "";
-        detail += `<div class="obl-card"><div class="obl-title">${escapeHtml(obligation.name)}</div><div class="obl-desc"><strong>${escapeHtml(copy.provision)}:</strong> ${escapeHtml(obligation.provision)}</div>${condition}${date ? `<div class="obl-deadline">${escapeHtml(copy.applies)}: ${escapeHtml(date)}</div>` : ""}</div>`;
-      }
-      detail += "</div>";
-    } else {
-      detail += `<p>${escapeHtml(copy.noObligations)}</p>`;
-    }
-    const unresolvedList = result.unresolved_predicates || [];
-    if (unresolvedList.length) {
-      // A long unresolved list buried the obligations above it. The first few
-      // stay visible; the remainder are folded but still present in the DOM.
-      const visible = unresolvedList.slice(0, UNRESOLVED_VISIBLE);
-      const hidden = unresolvedList.slice(UNRESOLVED_VISIBLE);
-      detail += `<h2 style="margin-top:20px;">${escapeHtml(copy.unresolved)}</h2>`;
-      detail += `<p style="font-size:0.85rem;color:var(--text-dim);margin:0 0 12px 0;">${escapeHtml(copy.unresolvedIntro)}</p>`;
-      detail += `<div class="obligations">`;
-      for (const unresolved of visible) {
-        detail += unresolvedCard(unresolved, labels, copy);
-      }
-      detail += "</div>";
-      if (hidden.length) {
-        detail += `<details style="margin-top:4px;"><summary style="cursor:pointer;padding:10px 4px;min-height:44px;box-sizing:border-box;color:var(--accent);font-size:0.9rem;">${escapeHtml(copy.showMore(hidden.length))}</summary><div class="obligations">`;
-        for (const unresolved of hidden) {
-          detail += unresolvedCard(unresolved, labels, copy);
-        }
+      if (missing.length > VISIBLE_MISSING) {
+        detail += `<details><summary>${escapeHtml(copy.showMore(missing.length - VISIBLE_MISSING))}</summary><div class="obligations">`;
+        for (const item of missing.slice(VISIBLE_MISSING)) detail += card(labels[item.fact_id] || item.question, `${copy.reason}: ${copy.reasons[item.reason] || item.reason}`);
         detail += "</div></details>";
       }
     }
+
+    const contradictions = result.contradictory_context || [];
+    if (contradictions.length) {
+      detail += `<h2 style="margin-top:20px;">${escapeHtml(copy.contradictions)}</h2><p>${escapeHtml(copy.contradictionsIntro)}</p><div class="obligations">`;
+      for (const item of contradictions) detail += card(labels[item.fact_id] || item.fact_id, item.status);
+      detail += "</div>";
+    }
+
+    const humanDecision = result.human_decision;
+    const humanText = humanDecision === null ? copy.humanEmpty : String(humanDecision);
+    detail += `<h2 style="margin-top:20px;">${escapeHtml(copy.human)}</h2>` +
+      `<div class="obl-card"><div class="obl-title">${escapeHtml(humanText)}</div></div>`;
+    detail += `<h2 style="margin-top:20px;">${escapeHtml(copy.limitations)}</h2><ul>` +
+      copy.limitationItems.map(item => `<li>${escapeHtml(item)}</li>`).join("") + "</ul>";
     options.detailsElement.innerHTML = detail;
 
-    // Next steps are adaptive: telling someone to resolve open facts when
-    // none are open is a dead end, so that step is swapped for a re-run cue.
-    const steps = [
-      unresolvedList.length ? copy.steps.resolve : copy.steps.settled,
-      copy.steps.scan,
-      copy.steps.review,
-    ];
+    const steps = [missing.length ? copy.steps.resolve : copy.steps.settled, copy.steps.scan, copy.steps.review];
     let next = `<h2>${escapeHtml(copy.nextTitle)}</h2>`;
     steps.forEach((text, index) => {
-      next += `<div class="step-item"><div class="step-num">${index + 1}</div>` +
-        `<div class="step-text"><span>${escapeHtml(text)}</span></div></div>`;
+      next += `<div class="step-item"><div class="step-num">${index + 1}</div><div class="step-text"><span>${escapeHtml(text)}</span></div></div>`;
     });
     next += `<div style="margin-top:16px;"><button type="button" class="btn btn-secondary" style="min-height:44px;" onclick="if(window.startScanner)window.startScanner()">${escapeHtml(copy.scanCta)}</button></div>`;
     options.nextElement.innerHTML = next;
@@ -285,12 +203,9 @@
   function exportResult(result, options) {
     const copy = copyFor(options.locale);
     const data = {
-      tool: "Regula Web Assessment",
-      model_version: result.model_version,
-      date: new Date().toISOString(),
-      disclaimer: copy.exportDisclaimer,
-      answers: options.answers,
-      decision: result,
+      tool: "Regula Web Assessment", model_version: result.model_version,
+      date: new Date().toISOString(), disclaimer: copy.exportDisclaimer,
+      answers: options.answers, review_record: result,
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const anchor = document.createElement("a");

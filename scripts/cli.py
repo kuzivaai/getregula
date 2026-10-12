@@ -1049,10 +1049,18 @@ def _build_subparsers(subparsers):
     p_api = subparsers.add_parser("api-server", help="Start the REST API server with web dashboard")
     p_api.add_argument("--port", type=int, default=8487, help="Port to listen on (default: 8487)")
     p_api.add_argument("--host", default="localhost", help="Host to bind to (default: localhost)")
+    p_api.add_argument(
+        "--unsafe-network", action="store_true",
+        help="Acknowledge an unauthenticated non-loopback network bind",
+    )
     p_api.set_defaults(func=cmd_api_server)
 
     # --- mcp-server ---
     p_mcp = subparsers.add_parser("mcp-server", help="Start the Regula MCP server (stdio transport)")
+    p_mcp.add_argument(
+        "--workspace-root", required=True,
+        help="Explicit directory that MCP path tools are authorised to read",
+    )
     p_mcp.set_defaults(func=cmd_mcp_server)
 
     # --- bias ---

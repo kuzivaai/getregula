@@ -9,6 +9,7 @@ GDPR Article 7(3): withdrawal must be as easy as giving consent.
 Use: regula telemetry disable
 """
 import os
+import re
 import sys
 import urllib.parse
 from pathlib import Path
@@ -164,7 +165,31 @@ def dsn_is_configured() -> bool:
     return bool(_resolve_dsn())
 
 
-def build_feedback_url(
+def _minimise_feedback_path(file_path: "str | None") -> "str | None":
+    """Return only a filename, never an absolute or repository-local path."""
+    if not file_path:
+        return file_path
+    normalised = str(file_path).replace("\\", "/").rstrip("/")
+    return normalised.rsplit("/", 1)[-1] or "unknown"
+
+
+def _redact_description_paths(description: "str | None") -> "str | None":
+    """Redact common absolute local paths from an owner-supplied summary."""
+    if not description:
+        return description
+    value = re.sub(
+        r"(?<!\w)(?:/home/|/Users/|/mnt/[A-Za-z]/Users/)[^\s`'\"]+",
+        "<local-path>",
+        description,
+    )
+    return re.sub(
+        r"(?<!\w)[A-Za-z]:\\Users\\[^\s`'\"]+",
+        "<local-path>",
+        value,
+    )
+
+
+def build_feedback_fields(
     kind: str,
     pattern_id: "str | None",
     file_path: "str | None",
@@ -173,12 +198,14 @@ def build_feedback_url(
     description: "str | None",
     confidence_score: "int | None" = None,
     tier: "str | None" = None,
-) -> str:
+) -> dict:
     """
-    Build a pre-filled GitHub Issue URL.
+    Build the exact, minimised fields for a pre-filled GitHub Issue.
 
     kind: "false-positive" | "false-negative" | "bug"
     """
+    file_path = _minimise_feedback_path(file_path)
+    description = _redact_description_paths(description)
     if kind == "false-positive":
         title = f"False positive: {pattern_id or 'unknown'}"
         label = "false-positive"
@@ -224,9 +251,29 @@ def build_feedback_url(
             "<!-- e.g. Python 3.11, Ubuntu 22.04 -->\n"
         )
 
-    params = urllib.parse.urlencode({
-        "title": title,
-        "body": body,
-        "labels": label,
-    })
+    return {"title": title, "body": body, "labels": label}
+
+
+def build_feedback_url(
+    kind: str,
+    pattern_id: "str | None",
+    file_path: "str | None",
+    line_number: "int | None",
+    regula_version: str,
+    description: "str | None",
+    confidence_score: "int | None" = None,
+    tier: "str | None" = None,
+) -> str:
+    """Build a pre-filled GitHub Issue URL from minimised fields."""
+    fields = build_feedback_fields(
+        kind=kind,
+        pattern_id=pattern_id,
+        file_path=file_path,
+        line_number=line_number,
+        regula_version=regula_version,
+        description=description,
+        confidence_score=confidence_score,
+        tier=tier,
+    )
+    params = urllib.parse.urlencode(fields)
     return f"https://github.com/kuzivaai/getregula/issues/new?{params}"

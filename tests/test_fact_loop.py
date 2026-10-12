@@ -116,8 +116,8 @@ def test_the_loop_closes_end_to_end():
         assert set(BARE_FACTS) <= _named_facts(again.stdout), again.stdout[:2000]
 
 
-def test_declared_facts_can_reach_an_indication():
-    """The point of the loop: a resolved fact set changes the result type."""
+def test_declared_facts_can_prepare_context_for_human_review():
+    """Resolved declarations produce review leads, never a legal outcome."""
     with tempfile.TemporaryDirectory(prefix="regula-factloop-") as tmp:
         project = _project(tmp)
         cache = str(Path(tmp) / "cache")
@@ -128,7 +128,12 @@ def test_declared_facts_can_reach_an_indication():
                       "--fact", "role_provider=yes",
                       "--fact", "eu_significant_risk=yes", cache=cache)
         payload = json.loads(result.stdout)["data"]
-        assert payload["decision"]["result_type"] == "indication", payload["decision"]
+        decision = payload["decision"]
+        assert decision["review_status"] == "human_review_required", decision
+        assert decision["human_decision"] is None
+        assert decision["potentially_relevant_provisions"]
+        assert "obligations" not in decision
+        assert "indications" not in decision
         assert payload["declared_facts"], "declared facts absent from the payload"
         assert len(payload["declared_facts"]) == 5
 
@@ -159,7 +164,8 @@ def test_unknown_is_an_answer_and_is_never_read_as_no():
         payload = json.loads(result.stdout)["data"]
         value = payload["declared_facts"]["is_ai_system"]["values"][0]
         assert value["state"] == "unknown", value
-        assert payload["decision"]["result_type"] == "insufficient_information"
+        assert payload["decision"]["review_status"] == "insufficient_information"
+        assert payload["decision"]["human_decision"] is None
 
 
 def test_contradictory_and_unknown_declarations_are_refused_with_exit_two():

@@ -8,7 +8,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "benchmarks"))
 
 import annotation_stats
+import compute_kappa
 import dedup_check
+import rating_packet
 import temporal_split
 
 
@@ -51,6 +53,58 @@ class TestFleissKappa(unittest.TestCase):
         labels = annotation_stats.load_rater(path)
         self.assertEqual(len(labels), 50)
         self.assertTrue(all(v in ("tp", "fp") for v in labels.values()))
+
+    def test_real_packets_share_one_versioned_identifier_schema(self):
+        root = Path(__file__).parent.parent / "benchmarks"
+        first = rating_packet.load_packet(root / "rater1_blind_subset.json")
+        second = rating_packet.load_packet(root / "rater2_blind_subset.json")
+        self.assertEqual(first["schema_version"], "1.0")
+        self.assertEqual(first["item_id_scheme"], second["item_id_scheme"])
+        self.assertEqual(first["item_ids"], second["item_ids"])
+        self.assertEqual(first["rated_count"], 50)
+        self.assertEqual(second["rated_count"], 0)
+
+    def test_real_packets_report_incomplete_agreement_without_crashing(self):
+        root = Path(__file__).parent.parent / "benchmarks"
+        first = compute_kappa.load_labels(root / "rater1_blind_subset.json")
+        second = compute_kappa.load_labels(root / "rater2_blind_subset.json")
+        result = compute_kappa.cohen_kappa(first, second)
+        self.assertEqual(result["status"], "incomplete")
+        self.assertFalse(result["agreement_complete"])
+        self.assertEqual(result["n"], 0)
+        self.assertNotIn("kappa", result)
+
+    def test_both_utilities_consume_the_same_completed_packet_schema(self):
+        import json
+        import tempfile
+
+        base = {
+            "schema_version": "1.0",
+            "item_id_scheme": "corpus-project-file-line-v1",
+            "corpus": "integration-fixture",
+            "labels": [
+                {"project": "p", "file": "a.py", "line": 1, "label": "tp"},
+                {"project": "p", "file": "b.py", "line": 2, "label": "fp"},
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            one = Path(tmp) / "one.json"
+            two = Path(tmp) / "two.json"
+            one.write_text(json.dumps(base), encoding="utf-8")
+            two.write_text(json.dumps(base), encoding="utf-8")
+            annotation_labels = annotation_stats.load_rater(one)
+            kappa_labels = compute_kappa.load_labels(one)
+            self.assertEqual(annotation_labels, kappa_labels)
+            self.assertEqual(
+                compute_kappa.cohen_kappa(kappa_labels, compute_kappa.load_labels(two))["status"],
+                "complete",
+            )
+            self.assertEqual(
+                annotation_stats.fleiss_kappa(
+                    [annotation_labels, annotation_stats.load_rater(two)]
+                )["status"],
+                "complete",
+            )
 
 
 def test_krippendorff_alpha_nominal_handles_missing_ratings():

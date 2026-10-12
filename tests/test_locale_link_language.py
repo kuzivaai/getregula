@@ -94,6 +94,27 @@ class TestLocaleLinkLanguage(unittest.TestCase):
         self.assertEqual(lla.target_language("/locales/pt-br.html"), "pt-br")
         self.assertEqual(lla.target_language("/terms-pt-br.html"), "pt-br")
 
+    def test_core_pt_br_pages_do_not_carry_demonstrated_unaccented_forms(self):
+        """Hold the recurring source defect without claiming fluent review."""
+        forms = re.compile(
+            r"\b(?:nao|voce|codigo|juridic[oa]|revisao|classificacao|"
+            r"padroes|evidencias?|governanca|seguranca|obrigacoes?)\b",
+            re.IGNORECASE,
+        )
+        for rel in (
+            "site/locales/pt-br.html",
+            "site/product-pt-br.html",
+            "site/coverage-pt-br.html",
+            "site/privacy-pt-br.html",
+            "site/terms-pt-br.html",
+            "site/assess/pt-br.html",
+        ):
+            text = (REPO / rel).read_text(encoding="utf-8")
+            self.assertIsNone(
+                forms.search(text),
+                f"{rel} contains a demonstrated unaccented PT-BR form",
+            )
+
     # The English-only destinations where landing on an unreadable page is a
     # task failure rather than a mild surprise: the pricing page and the
     # worked example. Footer and navigation links are deliberately excluded,

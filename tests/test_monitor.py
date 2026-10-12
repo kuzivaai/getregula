@@ -493,6 +493,101 @@ def test_cli_monitor_report():
         assert 0 < result["error_rate"] < 1
 
 
+def test_monitor_oversight_rate_uses_consequential_population():
+    """Reviewed ordinary calls cannot mask unreviewed consequential calls."""
+    import tempfile
+    from types import SimpleNamespace
+    from monitor import MonitorSession
+    from cli_monitor import cmd_monitor_report
+
+    with tempfile.TemporaryDirectory() as directory:
+        session = MonitorSession("mixed-oversight", monitor_dir=directory)
+        args = SimpleNamespace(system_id="mixed-oversight", monitor_dir=directory,
+                               format="json")
+        for consequential, reviewed in [(True, False), (False, True), (False, True)]:
+            with session.trace() as trace:
+                trace.record({"model": "fixture", "usage": {}},
+                             consequential=consequential,
+                             human_oversight={"performed": reviewed})
+        result = cmd_monitor_report(args)
+        assert result["consequential_calls"] == 1
+        assert result["human_reviewed"] == 2
+        assert result["consequential_human_reviewed"] == 0
+        assert result["oversight_rate"] == 0.0
+        with session.trace() as trace:
+            trace.record({"model": "fixture", "usage": {}}, consequential=True,
+                         human_oversight={"performed": True})
+        result = cmd_monitor_report(args)
+        assert result["consequential_human_reviewed"] == 1
+        assert result["oversight_rate"] == 0.5
+
+
+def test_monitor_oversight_rate_without_consequential_calls_is_unknown():
+    """An empty eligible population cannot establish oversight coverage."""
+    import tempfile
+    from types import SimpleNamespace
+    from monitor import MonitorSession
+    from cli_monitor import cmd_monitor_report
+
+    with tempfile.TemporaryDirectory() as directory:
+        args = SimpleNamespace(system_id="ordinary", monitor_dir=directory,
+                               format="json")
+        assert cmd_monitor_report(args)["oversight_rate"] is None
+        session = MonitorSession("ordinary", monitor_dir=directory)
+        with session.trace() as trace:
+            trace.record({"model": "fixture", "usage": {}},
+                         human_oversight={"performed": True})
+        result = cmd_monitor_report(args)
+        assert result["human_reviewed"] == 1
+        assert result["consequential_human_reviewed"] == 0
+        assert result["oversight_rate"] is None
+
+
+def test_monitor_cli_json_outputs_and_rejects_invalid_chain():
+    """Every monitor command emits JSON and a broken chain fails automation."""
+    import json
+    import subprocess
+    import tempfile
+    from monitor import MonitorSession, _get_monitor_file
+
+    root = Path(__file__).resolve().parent.parent
+    with tempfile.TemporaryDirectory() as directory:
+        environment = dict(os.environ, REGULA_MONITOR_DIR=directory)
+        session = MonitorSession("fixture", monitor_dir=directory)
+        with session.trace() as trace:
+            trace.record({"model": "fixture", "usage": {}})
+        for arguments in (
+            ["status"], ["report", "fixture"], ["verify", "fixture"],
+            ["prune", "empty"], ["export", "fixture"], ["export", "empty"],
+        ):
+            result = subprocess.run(
+                [sys.executable, "-m", "scripts.cli", "monitor", *arguments,
+                 "--format", "json"], cwd=root, env=environment,
+                capture_output=True, text=True, timeout=15,
+            )
+            envelope = json.loads(result.stdout)
+            assert result.returncode == envelope["exit_code"] == 0
+            assert envelope["command"] == "monitor " + arguments[0]
+            if arguments == ["export", "fixture"]:
+                assert envelope["data"]["exported"] == 1
+                assert "event_id" in envelope["data"]["csv"]
+        log_file = _get_monitor_file("fixture", directory)
+        event = json.loads(log_file.read_text())
+        event["model"] = "altered"
+        log_file.write_text(json.dumps(event) + "\n")
+        for format_name in ["text", "json"]:
+            result = subprocess.run(
+                [sys.executable, "-m", "scripts.cli", "monitor", "verify", "fixture",
+                 "--format", format_name], cwd=root, env=environment,
+                capture_output=True, text=True, timeout=15,
+            )
+            assert result.returncode == 1
+            if format_name == "json":
+                envelope = json.loads(result.stdout)
+                assert envelope["exit_code"] == 1
+                assert envelope["data"]["chain_valid"] is False
+
+
 def test_evidence_pack_runtime_section():
     """--runtime flag includes section 08-runtime-monitor.json."""
     from monitor import MonitorSession

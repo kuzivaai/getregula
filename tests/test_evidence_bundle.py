@@ -3,6 +3,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -94,3 +95,35 @@ def test_bundle_verify_script_runs(tmp_path):
         capture_output=True, text=True, cwd=str(extract_dir),
     )
     assert result.returncode == 0, f"verify.py failed: {result.stderr}"
+
+
+def test_bundle_verifier_rejects_invalid_and_escaping_paths():
+    """Skipped or escaping files cannot make a portable verifier pass."""
+    from evidence_pack import generate_bundle
+
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        pack = root / "pack"
+        pack.mkdir()
+        (pack / "manifest.json").write_text(json.dumps({
+            "files": [{"filename": "../outside.txt", "sha256": "0" * 64}],
+        }))
+        with zipfile.ZipFile(generate_bundle(str(pack))) as bundle:
+            bundle.extractall(root / "extracted")
+        extracted = root / "extracted"
+        result = subprocess.run([sys.executable, "verify.py"], cwd=extracted,
+                                capture_output=True, text=True, timeout=10)
+        assert result.returncode == 1
+        assert "INVALID_PATH" in result.stderr
+        assert "OK: 1 files verified" not in result.stdout
+
+        outside = root / "outside.txt"
+        outside.write_text("fixture")
+        (extracted / "escape.txt").symlink_to(outside)
+        (extracted / "manifest.json").write_text(json.dumps({
+            "files": [{"filename": "escape.txt", "sha256": hashlib.sha256(b"fixture").hexdigest()}],
+        }))
+        result = subprocess.run([sys.executable, "verify.py"], cwd=extracted,
+                                capture_output=True, text=True, timeout=10)
+        assert result.returncode == 1
+        assert "INVALID_PATH" in result.stderr

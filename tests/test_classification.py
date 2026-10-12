@@ -67,6 +67,12 @@ import test_external_corpus as _test_external_corpus  # noqa: F401
 import test_external_regressions as _test_external_regressions  # noqa: F401
 import test_cli_integration as _test_cli_integration  # noqa: F401
 import test_pages_workflow as _test_pages_workflow  # noqa: F401
+import test_product_boundary_contract as _test_product_boundary_contract  # noqa: F401
+import test_scan_cache as _test_scan_cache  # noqa: F401
+import test_weekly_digest as _test_weekly_digest  # noqa: F401
+import test_evidence_format_v1 as _test_evidence_format_v1  # noqa: F401
+import test_monitor as _test_monitor  # noqa: F401
+import test_evidence_bundle as _test_evidence_bundle  # noqa: F401
 
 import helpers
 from helpers import assert_eq, assert_true, assert_false
@@ -92,6 +98,18 @@ import itertools as _itertools
 # discovery stays automatic and no manual list is reintroduced.
 # Guarded by tests/test_collection_integrity.py.
 RUNNER_ALIAS_PREFIX = "_runner_test_"
+
+for _regression_name, _regression_module in (
+    ("test_verify_json_failure_matches_process_exit", _test_evidence_format_v1),
+    ("test_verify_json_rejection_is_machine_readable", _test_evidence_format_v1),
+    ("test_monitor_oversight_rate_uses_consequential_population", _test_monitor),
+    ("test_monitor_oversight_rate_without_consequential_calls_is_unknown", _test_monitor),
+    ("test_monitor_cli_json_outputs_and_rejects_invalid_chain", _test_monitor),
+    ("test_bundle_verifier_rejects_invalid_and_escaping_paths", _test_evidence_bundle),
+):
+    globals()[RUNNER_ALIAS_PREFIX + _regression_name] = getattr(
+        _regression_module, _regression_name
+    )
 
 # This subprocess regression is deliberately bound on its own. Importing the
 # entire integration module into the custom runner would duplicate 48 existing
@@ -161,7 +179,7 @@ def _bind_runner_case(target, kwargs, case_id):
     return runner_case
 
 
-for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_publication_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_hook_fail_open, _test_locale_link_language, _test_determination_guard, _test_svg_text, _test_claim_scan_coverage, _test_skipped_dir_disclosure, _test_installed_artefact, _test_fact_loop, _test_demo_doc, _test_qualifier, _test_pattern_sync, _test_public_repo_guard, _test_audit_reachable_privacy, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol, _test_external_corpus, _test_external_regressions, _test_pages_workflow):
+for _mod in (_test_register, _test_build_regulations, _test_gpai_check, _test_new_commands, _test_site_critical_css, _test_file_provenance, _test_open_questions, _test_api_server, _test_domain_scoring, _test_project_fingerprint, _test_cross_file_flow, _test_compliance_check, _test_policy_config, _test_multi_jurisdiction, _test_omnibus_status, _test_source_of_truth, _test_analysis_manifest, _test_scan_security, _test_site_facts, _test_dpv_export, _test_hostile_sweep, _test_release_gate, _test_publication_gate, _test_crosswalk_omnibus, _test_tracked_inputs, _test_public_claim_integrity, _test_public_surface_inventory, _test_gap_demo, _test_decision_kernel, _test_decision_conformance, _test_documentation, _test_bare_scan_decision, _test_content_freshness, _test_documented_transcripts, _test_hook_fail_open, _test_locale_link_language, _test_determination_guard, _test_svg_text, _test_claim_scan_coverage, _test_skipped_dir_disclosure, _test_installed_artefact, _test_fact_loop, _test_demo_doc, _test_qualifier, _test_pattern_sync, _test_public_repo_guard, _test_audit_reachable_privacy, _test_distribution_privacy, _test_annotation_stats, _test_evaluation_protocol, _test_external_corpus, _test_external_regressions, _test_pages_workflow, _test_product_boundary_contract, _test_scan_cache, _test_weekly_digest):
     for _name in dir(_mod):
         if not _name.startswith("test_"):
             continue
@@ -1204,9 +1222,10 @@ def test_html_report_contains_disclaimer():
     from report import generate_html_report
 
     html = generate_html_report([], "test-project")
-    assert_true("not legal risk classification" in html.lower() or "not legal" in html.lower(),
-                "HTML contains legal disclaimer")
-    assert_true("pattern-based" in html.lower(), "HTML mentions pattern-based")
+    assert_true("does not determine legal applicability" in html.lower(),
+                "HTML contains the legal-applicability boundary")
+    assert_true("code-observable indicators" in html.lower(),
+                "HTML identifies its evidence as code observations")
     print("✓ Report: HTML contains disclaimer")
 
 
@@ -1259,7 +1278,7 @@ def test_questionnaire_generation():
 
 
 def test_questionnaire_evaluation_high_risk():
-    """Resolved Article 6 facts produce a traced indication and duties."""
+    """Resolved declarations produce review leads, not a legal tier or duties."""
     from questionnaire import evaluate_questionnaire
     answers = {
         "deployment_eu": "yes",
@@ -1275,24 +1294,33 @@ def test_questionnaire_evaluation_high_risk():
         "preparatory_task": "no",
     }
     result = evaluate_questionnaire(answers)
-    assert_eq(result["result_type"], "indication", "resolved facts → indication")
-    predicates = {item["predicate_id"] for item in result["indications"]}
-    assert_true("eu_high_risk_annex_iii" in predicates, "Article 6 path satisfied")
-    duties = {item["obligation_id"] for item in result["obligations"]}
-    assert_true("eu_requirement_9" in duties, "Article 9 duty has predicate path")
+    assert_eq(result["review_status"], "human_review_required",
+              "resolved facts require accountable review")
+    references = {item["reference"]
+                  for item in result["potentially_relevant_provisions"]}
+    assert_true(any("Annex III" in reference for reference in references),
+                "Annex III is a potentially relevant review reference")
+    assert_true(result["human_decision"] is None, "human decision remains empty")
+    assert_eq("obligations" in result, False, "no machine-attached duties")
+    assert_eq("indications" in result, False, "no machine legal tier output")
     assert_true("confidence_score" not in result, "no correctness probability")
     print("✓ Questionnaire: resolved Article 6 facts produce traced indication")
 
 
 def test_questionnaire_evaluation_minimal_risk():
-    """Out-of-scope facts produce an evidenced outside-scope candidate."""
+    """Scope declarations remain review evidence, not non-applicability."""
     from questionnaire import evaluate_questionnaire
     answers = {
         "deployment_eu": "no",
         "is_ai_system": "yes",
     }
     result = evaluate_questionnaire(answers)
-    assert_eq(result["result_type"], "outside_scope_candidate", "scope false")
+    assert_eq(result["review_status"], "human_review_required", "scope needs review")
+    assert_true(any(item["status"] == "unresolved_scope_question"
+                    for item in result["potentially_relevant_provisions"]),
+                "scope path is a question, not a legal conclusion")
+    assert_true(result["human_decision"] is None, "human decision remains empty")
+    assert_eq("outside_scope_basis" in result, False, "no legal non-applicability")
     assert_eq("obligations" in result, False, "outside scope has no duties")
     print("✓ Questionnaire: evidenced scope exclusion produces outside-scope candidate")
 
@@ -1301,8 +1329,9 @@ def test_questionnaire_all_unsure_requires_resolvable_facts():
     """All unsure cannot create a tier, duty, percentage, or effort estimate."""
     from questionnaire import QUESTIONS, evaluate_questionnaire
     result = evaluate_questionnaire({question["id"]: "unsure" for question in QUESTIONS})
-    assert_eq(result["result_type"], "insufficient_information", "unsure is unresolved")
-    assert_true(bool(result["unresolved_predicates"]), "questions identify blockers")
+    assert_eq(result["review_status"], "insufficient_information", "unsure is unresolved")
+    assert_true(bool(result["missing_context"]), "questions identify blockers")
+    assert_true(result["human_decision"] is None, "human decision remains empty")
     assert_eq("obligations" in result, False, "no duties from unknown facts")
     assert_eq("confidence_score" in result, False, "no numeric confidence")
     print("✓ Questionnaire: all unsure returns resolvable facts, not a tier")
@@ -1312,9 +1341,10 @@ def test_questionnaire_missing_answers_remain_absent():
     """Missing answers remain absent rather than defaulting to unsure or no."""
     from questionnaire import evaluate_questionnaire
     result = evaluate_questionnaire({})
-    assert_eq(result["result_type"], "insufficient_information", "missing unresolved")
+    assert_eq(result["review_status"], "insufficient_information", "missing unresolved")
     assert_true(all(item["reason"] == "absent"
-                    for item in result["unresolved_predicates"]), "absence preserved")
+                    for item in result["missing_context"]), "absence preserved")
+    assert_true(result["human_decision"] is None, "human decision remains empty")
     assert_eq("obligations" in result, False, "no duties from absent facts")
     print("✓ Questionnaire: missing answers remain absent and block determination")
 
@@ -2591,10 +2621,14 @@ def test_integration_full_check_cli():
         findings = envelope["data"]["detector_findings"]
         assert_true(isinstance(findings, list), "CLI envelope data is a list")
         assert_eq(
-            envelope["data"]["decision"]["result_type"],
+            envelope["data"]["decision"]["review_status"],
             "insufficient_information",
-            "CLI scan does not convert detector observations into legal facts",
+            "CLI scan leaves legal context unresolved",
         )
+        assert_eq(envelope["data"]["decision"]["human_decision"], None,
+                  "CLI scan does not manufacture a human decision")
+        assert_true(len(envelope["data"]["decision"]["missing_context"]) > 0,
+                    "CLI scan lists context required for review")
         assert_true(len(findings) > 0, "CLI finds issues in high-risk project")
     except json.JSONDecodeError:
         assert_true(False, f"CLI output is not valid JSON: {result.stdout[:200]}")
@@ -3307,8 +3341,11 @@ def test_exempt_format_result_exempt_includes_disclosure():
     text = format_result(result)
     assert_true("Article 6" in text, "mentions Article 6")
     assert_true("2 February 2026" in text, "mentions missed deadline")
-    assert_true("EXEMPT" in text, "shows EXEMPT result")
-    print("✓ Exempt: format_result includes guidelines disclosure")
+    assert_true("CONDITION INDICATORS DECLARED" in text,
+                "shows a review status rather than an exemption decision")
+    assert_true("human decision empty" in text,
+                "leaves the accountable decision unrecorded")
+    print("✓ Exempt: format_result preserves context without deciding exemption")
 
 
 def test_gap_assessment_includes_article_6_disclosure():
@@ -5356,10 +5393,11 @@ def test_explain_format_output():
     code = "import torch\ndef cv_screening(resume):\n    score = model.predict(resume)\n    return score > threshold"
     result = explain_classification(code, filepath="screen.py")
     output = format_explanation(result, filepath="screen.py")
-    assert_true("Classification:" in output, "should have classification header")
-    assert_true("WHY:" in output, "should have WHY section")
-    assert_true("ROLE:" in output, "should have ROLE section")
-    assert_true("OBLIGATIONS:" in output, "should have OBLIGATIONS section")
+    assert_true("Detector explanation:" in output, "should have detector header")
+    assert_true("Detector class:" in output, "should identify the detector class")
+    assert_true("Role detector candidate:" in output, "should qualify the role observation")
+    assert_true("No obligation or effort estimate" in output,
+                "should preserve the product boundary")
     assert_true("screen.py:" in output, "should reference the file path")
     print("✓ Explain: formatted output has all required sections")
 
@@ -5679,13 +5717,13 @@ def test_plan_cli_integration():
     plan_data = data["data"]
     assert_eq(plan_data["plan"], None, "unresolved input must not emit a plan")
     assert_eq(
-        plan_data["decision"]["result_type"],
+        plan_data["decision"]["review_status"],
         "insufficient_information",
-        "plan must expose the unresolved decision",
+        "plan must expose the unresolved review status",
     )
     assert_true(
-        len(plan_data["decision"]["unresolved_predicates"]) > 0,
-        "plan must enumerate facts that can resolve the decision",
+        len(plan_data["decision"]["missing_context"]) > 0,
+        "plan must enumerate context required for review",
     )
     print("✓ Plan: CLI integration")
 
@@ -6347,14 +6385,20 @@ def test_assess_format_result_not_in_scope():
 def test_assess_format_result_limited_risk():
     """format_result returns candidate Article 50 review information."""
     from assess import format_result, TIER_LIMITED
-    from omnibus import ORIGINAL_PROSE
+    from omnibus import LIMITED_PROSE, ORIGINAL_PROSE
     result = format_result(TIER_LIMITED, False)
     assert "CANDIDATE ARTICLE 50 INDICATORS" in result
     assert "Article 50" in result
     # Art 50's applicability date is statutory and derives from omnibus.py
     assert ORIGINAL_PROSE in result
     assert "unchanged by the Digital Omnibus" in result
-    print("✓ assess: limited-risk result includes Article 50 and correct deadline")
+    assert "General Article 50 application" in result
+    assert "Article 111(4)" in result
+    assert "providers of Article 50(2) systems" in result
+    assert f"placed on the market before {ORIGINAL_PROSE}" in result
+    assert LIMITED_PROSE in result
+    assert "This does not defer every Article 50 duty." in result
+    print("✓ assess: Article 50 general date and specific provider transition distinguished")
 
 
 def test_assess_format_result_high_risk_eu():
@@ -6375,13 +6419,14 @@ def test_assess_format_result_high_risk_eu():
 
 
 def test_assess_format_result_high_risk_non_eu():
-    """format_result includes Authorised Representative requirement for non-EU providers."""
+    """format_result presents Article 22 as a conditional review question."""
     from assess import format_result, TIER_HIGH
     result = format_result(TIER_HIGH, True)
     assert "Authorised Representative" in result
     assert "Article 22" in result
-    assert "EUR 2-10K" in result
-    print("✓ assess: high-risk non-EU provider includes AR requirement")
+    assert "does not\n  establish either predicate" in result
+    assert "EUR 2-10K" not in result
+    print("✓ assess: Article 22 is conditional on predicates requiring review")
 
 
 def test_assess_format_result_minimal_risk():
@@ -6411,8 +6456,9 @@ def test_default_scope_does_not_translate_exclusions_into_no_ai():
 
     rc, stdout, stderr = run_cli("check", "examples/customer-chatbot")
     assert rc == 0, f"expected rc=0, got {rc}\nstderr={stderr}"
-    assert "Decision: insufficient_information" in stdout
-    assert "Facts needed to resolve the next decision" in stdout
+    assert "Review status: insufficient_information" in stdout
+    assert "Human decision: not recorded" in stdout
+    assert "Declared context needed for review" in stdout
     assert "NO ACTIVE PRODUCTION-SCOPE PATTERNS" in stdout
     assert "Run with --scope all" in stdout
     assert "No AI components" not in stdout
@@ -6489,12 +6535,13 @@ def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
     assert "resultTier.tabIndex = -1" in shared_ui
     assert "resultTier.focus()" in shared_ui
     for phrase in (
-        "Prohibited-practice candidate",
-        "Kandidat für eine verbotene Praktik",
-        "Candidato a prática proibida",
-        "The supplied facts do not support a determination.",
-        "Die vorgelegten Tatsachen tragen keine Feststellung.",
-        "Os fatos fornecidos não sustentam uma determinação.",
+        "Review record",
+        "Prüfprotokoll",
+        "Registro para revisão",
+        "Human decision",
+        "Menschliche Entscheidung",
+        "Decisão humana",
+        "No provision was selected from the supplied context. This is not a non-applicability conclusion.",
     ):
         assert phrase in shared_ui, f"shared locale copy missing {phrase!r}"
 
@@ -6514,6 +6561,18 @@ def test_web_assessment_locales_preserve_candidate_framing_and_current_status():
         "what triggered the classification",
         "was die Einstufung ausgelöst hat",
         "acionou a classifica\\u00e7\\u00e3o",
+        "The regulatory result is now determined.",
+        "Das regulatorische Ergebnis steht nun fest.",
+        "O resultado regulatório já está determinado.",
+        "can resolve a legal test",
+        "können eine rechtliche Prüfung klären",
+        "podem resolver um teste jurídico",
+        "the system is automatically high-risk",
+        "das System gilt automatisch als hochriskant",
+        "o sistema é automaticamente de alto risco",
+        "this regulation does not appear to be triggered",
+        "diese Verordnung nicht einschlägig",
+        "esta regulamentação não parece ser acionada",
     ):
         assert stale not in all_locales
 
@@ -6806,14 +6865,14 @@ def test_deadline_in_json_output():
         data = _json.loads(result.stdout)
         payload = data.get("data", {})
         decision = payload.get("decision", {})
-        assert_eq(decision.get("result_type"), "insufficient_information",
+        assert_eq(decision.get("review_status"), "insufficient_information",
                   "unsourced scan has tagged unresolved result")
         assert_eq("deadline" in decision, False,
                   "unresolved decision has no unconditional deadline")
         assert_eq("obligations" in decision, False,
                   "unresolved decision has no unconditional obligations")
-        assert_true(len(decision.get("unresolved_predicates", [])) > 0,
-                    "unresolved decision enumerates facts to collect")
+        assert_true(len(decision.get("missing_context", [])) > 0,
+                    "unresolved review enumerates context to collect")
         print("✓ deadline: unresolved JSON check output emits no deadline")
     else:
         print("✓ deadline: JSON output test skipped (non-zero exit)")
@@ -6856,10 +6915,15 @@ def test_git_ref_validation():
     print("✓ git ref validation: safe refs accepted, injections blocked")
 
 def test_mcp_path_validation():
-    """MCP server blocks scanning root/system directories."""
-    from mcp_server import _call_regula_check
-    result = _call_regula_check({"path": "/"})
-    assert_eq("not permitted" in result, True, "root scan blocked")
+    """MCP rejects targets outside its explicit workspace capability."""
+    import mcp_server
+    previous = mcp_server._WORKSPACE_ROOT
+    try:
+        mcp_server.configure_workspace_root(Path(__file__).parent / "fixtures")
+        result = mcp_server._call_regula_check({"path": "/"})
+    finally:
+        mcp_server._WORKSPACE_ROOT = previous
+    assert_eq("workspace" in result.lower(), True, "root scan blocked")
     print("✓ MCP: root path scan blocked")
 
 def test_timeline_has_omnibus_entries():
@@ -6917,14 +6981,14 @@ def test_conform_end_to_end():
                       f"manifest file exists: {record['filename']}")
         # The summary carries the decision and no unsupported claim fields.
         summary = _json.load(open(pack_path / "00-assessment-summary.json"))
-        assert_eq(summary["decision"]["result_type"], "insufficient_information",
+        assert_eq(summary["decision"]["review_status"], "insufficient_information",
                   "summary is explicitly unresolved")
         assert_eq(summary["article_duties_attached"], [], "summary has no article duties")
         assert_eq(summary["readiness_assessment"], None, "summary has no readiness assessment")
         assert_eq("overall_readiness" in summary, False, "summary has no readiness percentage")
         assert_eq("deadline" in summary, False, "summary has no deadline")
-        assert_true(len(summary["decision"]["unresolved_predicates"]) > 0,
-                    "summary enumerates facts that would resolve the decision")
+        assert_true(len(summary["decision"]["missing_context"]) > 0,
+                    "summary enumerates context required for review")
         print("✓ conform: unresolved pack fails closed and remains actionable")
     finally:
         shutil.rmtree(tmpdir)
@@ -7527,7 +7591,8 @@ def test_mcp_server_initialize_and_list_tools():
     payload = init_req + "\n" + list_req + "\n"
 
     proc = subprocess.run(
-        [sys.executable, str(server)],
+        [sys.executable, str(server), "--workspace-root",
+         str(_P(__file__).parent.parent)],
         input=payload, capture_output=True, text=True, timeout=15
     )
     lines = [ln for ln in proc.stdout.splitlines() if ln.strip().startswith("{")]

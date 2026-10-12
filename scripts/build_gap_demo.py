@@ -64,11 +64,11 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 FIXTURE = "tests/fixtures/sample_high_risk"
 ARTEFACT = REPO_ROOT / "data/gap_demo.json"
 
-RESULT_TYPE = re.compile(r"^Decision:\s+(\S+)", re.MULTILINE)
+RESULT_TYPE = re.compile(r"^Review status:\s+(\S+)", re.MULTILINE)
 MODEL_VERSION = re.compile(r"^Model:\s+(\S+)", re.MULTILINE)
-RULE_RESOLUTION = re.compile(r"^Rule resolution:\s+(\S+)", re.MULTILINE)
+HUMAN_DECISION = re.compile(r"^Human decision:\s+(.+)$", re.MULTILINE)
 UNRESOLVED_COUNT = re.compile(
-    r"^Facts needed to resolve the next decision:\s+(\d+)", re.MULTILINE)
+    r"^Declared context needed for review:\s+(\d+)", re.MULTILINE)
 FACT_ID = re.compile(r"^\s+-\s+([a-z0-9_]+):", re.MULTILINE)
 ARTICLE_COUNTS = re.compile(
     r"^Article observations emitted:\s+(\d+); held pending applicability:\s+(\d+)",
@@ -132,7 +132,7 @@ def _decision_output(text: str, require_article_counts: bool = False) -> dict:
     matches = {
         "result_type": RESULT_TYPE.search(text),
         "model_version": MODEL_VERSION.search(text),
-        "rule_resolution": RULE_RESOLUTION.search(text),
+        "human_decision": HUMAN_DECISION.search(text),
         "unresolved_count": UNRESOLVED_COUNT.search(text),
     }
     article_counts = ARTICLE_COUNTS.search(text)
@@ -146,7 +146,7 @@ def _decision_output(text: str, require_article_counts: bool = False) -> dict:
     output = {
         "result_type": matches["result_type"].group(1),
         "model_version": matches["model_version"].group(1),
-        "rule_resolution": matches["rule_resolution"].group(1),
+        "human_decision": matches["human_decision"].group(1).strip(),
         "unresolved_count": int(matches["unresolved_count"].group(1)),
         "unresolved_fact_ids": FACT_ID.findall(text),
     }

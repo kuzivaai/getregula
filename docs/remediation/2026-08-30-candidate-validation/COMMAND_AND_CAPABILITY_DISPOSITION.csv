@@ -1,0 +1,63 @@
+command,support_class,disposition,user_purpose,compatibility_note,controlling_tests
+init,CORE,retain,Create local project configuration,None,tests/test_first_run.py
+check,CORE,retain,Report code-observable indicators,Primary workflow,tests/test_cli_integration.py
+comply,ADVANCED,clarify,Review provision-linked evidence and unresolved facts,Legacy name retained; output must not determine duties,tests/test_compliance_check.py
+classify,DEPRECATED,deprecate,Label detector indicators in text,Legacy name retained; use check for normal workflows,tests/test_classify_risk.py
+gdpr,ADVANCED,clarify,Report GDPR-related code patterns,Reference aid only,tests/test_gdpr_patterns.py
+report,CORE,retain,Render reviewable scan evidence,HTML JSON and SARIF adapters,tests/test_report.py
+audit,ADVANCED,retain,Manage the local audit trail,Local filesystem authority,tests/test_audit_surface_conformance.py
+api-server,EXPERIMENTAL,clarify,Expose bounded local REST adapters,Loopback development server without authentication,tests/test_api_server.py
+mcp-server,EXPERIMENTAL,clarify,Expose bounded local MCP tools,Explicit workspace root required,tests/test_mcp_server.py
+bias,EXPERIMENTAL,clarify,Run optional model-bias benchmarks,Not production fairness validation,tests/test_bias_bbq.py
+discover,ADVANCED,retain,Inventory code-visible AI components,Does not establish legal system scope,tests/test_new_commands.py
+install,ADVANCED,retain,Install a local pre-commit integration,Changes the selected repository only,tests/test_cli_integration.py
+status,CORE,retain,Show locally recorded system state,Human-entered state is not a verdict,tests/test_registry.py
+feed,EXPERIMENTAL,retain,Read curated regulatory-source updates,Network boundary is optional and explicit,tests/test_new_commands.py
+questionnaire,CORE,clarify,Record declared governance context,Answers remain declarations,tests/test_questionnaire_scoring.js
+session,ADVANCED,retain,Aggregate indicators from local tool-call records,Session scope is not system scope,tests/test_session.py
+baseline,ADVANCED,retain,Compare detector observations between runs,Comparison is configuration-sensitive,tests/test_cli_integration.py
+docs,ADVANCED,clarify,Generate reviewer-completable documentation scaffolds,Generated text requires completion and review,tests/test_documentation.py
+compliance,DEPRECATED,deprecate,Record human-entered workflow status,Legacy name must not imply a compliance verdict,tests/test_compliance_check.py
+gap,ADVANCED,clarify,Prepare an evidence-gap review scaffold,No organisational control is verified,tests/test_gap_demo.py
+plan,ADVANCED,clarify,Suggest review work from available evidence,No legal duty or effort guarantee,tests/test_exec_summary.py
+roadmap,ADVANCED,clarify,Prepare a provisional review work plan,Dates and applicability require review,tests/test_omnibus_status.py
+disclose,ADVANCED,clarify,Generate Article 50 disclosure templates,Applicability and exceptions remain unresolved,tests/test_new_commands.py
+exempt,ADVANCED,clarify,Record Article 6(3) exception context,Does not decide an exception,tests/test_fact_loop.py
+gpai-check,ADVANCED,clarify,Map code indicators to GPAI review references,Does not determine provider duties,tests/test_gpai_check.py
+register,ADVANCED,clarify,Generate an Annex VIII registration scaffold,Not a registry submission,tests/test_register.py
+fix,ADVANCED,clarify,Generate reviewable code scaffolds from findings,Does not remediate legal compliance,tests/test_new_commands.py
+evidence-pack,CORE,retain,Bundle reviewable evidence and provenance,Human decision remains empty,tests/test_evidence_pack_unit.py
+doc-audit,ADVANCED,clarify,Report document-evidence indicators,No compliance quality verdict,tests/test_doc_audit.py
+conform,ADVANCED,clarify,Generate reviewer-completable conformity evidence material,Not a conformity assessment or certificate,tests/test_conform.py
+governance,ADVANCED,clarify,Generate a governance scaffold,Organisational implementation is not verified,tests/test_new_commands.py
+model-card,ADVANCED,clarify,Generate a model-card scaffold,Declared and unknown fields remain visible,tests/test_documentation.py
+benchmark,EXPERIMENTAL,clarify,Run local detector benchmark utilities,Not representative validity evidence,tests/test_external_corpus.py
+timeline,ADVANCED,clarify,Show recorded regulatory dates and sources,Applicability and transitions require review,tests/test_omnibus_status.py
+deps,ADVANCED,retain,Report AI dependency supply-chain observations,Not a complete vulnerability assessment,tests/test_dependency_scan_safety.py
+doctor,CORE,retain,Check local installation capabilities,Health output is not production readiness,tests/test_cli_integration.py
+metrics,ADVANCED,retain,Show local usage metrics,No external transmission by default,tests/test_engagement.py
+handoff,EXPERIMENTAL,retain,Prepare bounded external-tool configuration,Does not execute the external tool,tests/test_new_commands.py
+regwatch,EXPERIMENTAL,clarify,Compare local rule age with recorded source changes,Does not establish current legal effect,tests/test_omnibus_status.py
+security-self-check,ADVANCED,clarify,Run bounded self-security checks,Not a security certification,tests/test_security_hardening.py
+self-test,CORE,retain,Exercise installed core workflows,Not representative validity evidence,tests/test_installed_artefact.py
+sbom,ADVANCED,retain,Generate a software component inventory,Inventory completeness is bounded by inputs,tests/test_sbom_enrichment.py
+aibom,ADVANCED,retain,Generate an AI component inventory,Does not establish legal system scope,tests/test_aibom.py
+dpv,ADVANCED,clarify,Export review evidence using DPV terms,Community vocabulary mapping is not a legal decision,tests/test_dpv_export.py
+agent,EXPERIMENTAL,clarify,Inspect local agent-session evidence,Not autonomous monitoring or enforcement,tests/test_agent_governance.py
+inventory,ADVANCED,retain,Inventory code-visible model references,No legal tier is inferred,tests/test_new_commands.py
+assess,CORE,clarify,Record declared context and unresolved questions,Does not decide applicability,tests/test_fact_loop.py
+quickstart,CORE,retain,Create configuration and run a first scan,Uses the bounded check workflow,tests/test_first_run.py
+demo,CORE,retain,Run a tracked illustrative example,Example output is not validity evidence,tests/test_demo_doc.py
+risks,ADVANCED,clarify,Summarise a human-maintained risk register,Registered labels are not legal determinations,tests/test_register.py
+feedback,CORE,clarify,Preview and optionally open a feedback issue,Explicit consent required before external action,tests/test_cli_integration.py
+telemetry,CORE,retain,Manage opt-in telemetry consent,Disabled unless affirmatively enabled,tests/test_telemetry.py
+config,CORE,retain,Validate local configuration,Configuration validity is not policy adequacy,tests/test_policy_config.py
+oversight,ADVANCED,clarify,Report code-visible oversight indicators,Does not verify effective human oversight,tests/test_new_commands.py
+owasp-agentic,ADVANCED,clarify,Map agentic code indicators to OWASP references,Does not assess complete security posture,tests/test_owasp_agentic.py
+guardrails,ADVANCED,clarify,Report code-visible guardrail indicators,Does not verify guardrail effectiveness,tests/test_guardrails.py
+ai-codegen,ADVANCED,clarify,Report code-generation governance indicators,Authorship does not determine Article 50 applicability,tests/test_ai_codegen.py
+badge,EXPERIMENTAL,clarify,Render detector observation counts,Badge must not show compliance or legal status,tests/test_new_commands.py
+attest,ADVANCED,clarify,Create integrity metadata for scan evidence,Attestation is not certification,tests/test_signing.py
+explain-article,ADVANCED,clarify,Show sourced plain-language provision context,Not legal advice or an applicability decision,tests/test_command_citation.py
+verify,CORE,clarify,Verify evidence-pack integrity,Integrity does not validate legal meaning,tests/test_evidence_bundle.py
+monitor,EXPERIMENTAL,clarify,Review local runtime event evidence,Not passive or production monitoring,tests/test_monitor.py

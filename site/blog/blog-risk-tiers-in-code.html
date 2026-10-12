@@ -7,21 +7,21 @@
          0da1226 on site/index.html for the full diagnosis. TL;DR: external
          CSS is render-blocking, so the browser's default white canvas shows
          for hundreds of ms on cold loads. Inline critical CSS establishes the
-         dark theme immediately; `color-scheme: dark` hints the canvas colour
-         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         brand canvas immediately; `color-scheme: light` hints the canvas colour
+         for browser chrome; stylesheets load via media="print" + onload swap
          so they don't block first paint. <noscript> fallback for JS off. -->
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -35,7 +35,7 @@
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:image:alt" content="Regula: EU AI Act code observations and evidence preparation">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="EU AI Act 4 Risk Tiers Explained with Code Examples">
     <meta name="twitter:description" content="Prohibited, high-risk, limited-risk, and minimal: what each EU AI Act tier looks like in Python. Includes the code patterns that trigger each classification.">
@@ -95,10 +95,10 @@
             letter-spacing: 0.04em;
             text-transform: uppercase;
         }
-        .tier-prohibited { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
-        .tier-high { background: rgba(245,158,11,0.12); color: #f59e0b; border: 1px solid rgba(245,158,11,0.25); }
-        .tier-limited { background: rgba(59,130,246,0.12); color: #3b82f6; border: 1px solid rgba(59,130,246,0.25); }
-        .tier-minimal { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid rgba(16,185,129,0.25); }
+        .tier-prohibited { background: rgba(239,68,68,0.15); color: #a61b12; border: 1px solid rgba(166,27,18,0.3); }
+        .tier-high { background: rgba(245,158,11,0.12); color: #744500; border: 1px solid rgba(116,69,0,0.3); }
+        .tier-limited { background: rgba(59,130,246,0.12); color: #1e4f8f; border: 1px solid rgba(30,79,143,0.3); }
+        .tier-minimal { background: rgba(16,185,129,0.12); color: #056449; border: 1px solid rgba(16,185,129,0.25); }
 
         /* ===== CODE BLOCK (source code) ===== */
         .code-block {
@@ -117,14 +117,14 @@
             border-bottom: 1px solid var(--border);
             font-family: var(--font-mono);
             font-size: 11px;
-            color: var(--text-faint);
+            color: #a9bbb2;
         }
         .code-block pre {
             padding: 18px 20px;
             font-family: var(--font-mono);
             font-size: 12.5px;
             line-height: 1.75;
-            color: var(--text-2);
+            color: #d7e2dc;
             overflow-x: auto;
             margin: 0;
             white-space: pre;
@@ -154,7 +154,7 @@
             font-family: var(--font-mono);
             font-size: 12px;
             line-height: 1.75;
-            color: var(--text-dim);
+            color: #a9bbb2;
             overflow-x: auto;
             margin: 0;
             white-space: pre;
@@ -189,12 +189,12 @@
         .callout-warn {
             background: rgba(245,158,11,0.07);
             border: 1px solid rgba(245,158,11,0.2);
-            color: #d4a054;
+            color: #744500;
         }
         .callout-info {
             background: rgba(59,130,246,0.07);
             border: 1px solid rgba(59,130,246,0.2);
-            color: #7eb8f0;
+            color: #244c72;
         }
         .callout strong { color: var(--text); }
 
@@ -202,7 +202,7 @@
         .install-cta {
             margin: 48px 0;
             padding: 36px;
-            background: #0e0e1a;
+            background: #ffffff;
             border: 1px solid var(--border);
             border-radius: 12px;
             text-align: center;
@@ -221,15 +221,15 @@
             transition: border-color 0.2s, background 0.2s;
         }
         .install-box:hover { border-color: rgba(255,255,255,0.2); background: #141428; }
-        .install-box .dollar { color: var(--text-faint); font-family: var(--font-mono); font-size: 14px; }
-        .install-box .cmd { color: var(--cyan); font-family: var(--font-mono); font-size: 14px; }
+        .install-box .dollar { color: #a9bbb2; font-family: var(--font-mono); font-size: 14px; }
+        .install-box .cmd { color: #7dd3fc; font-family: var(--font-mono); font-size: 14px; }
         .install-box .cp {
-            color: var(--text-faint);
+            color: #a9bbb2;
             font-size: 11px;
             font-family: var(--font-mono);
             transition: color 0.2s;
         }
-        .install-box.copied .cp { color: var(--success); }
+        .install-box.copied .cp { color: #6ee7b7; }
 
         @media (max-width: 600px) {
             .install-cta { padding: 24px 16px; }
@@ -256,7 +256,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
@@ -563,7 +563,7 @@ Regula Scan: recommender.py
                 <span class="cp">copy</span>
             </div>
         <a href="/guides/">Guides</a>
-            <p style="margin-top:16px; font-size:13px; color:#9898b4;">Runs locally. The local core does not upload scanned files. <a href="https://github.com/kuzivaai/getregula">Source on GitHub</a>.</p>
+            <p style="margin-top:16px; font-size:13px; color:#485b51;">Runs locally. The local core does not upload scanned files. <a href="https://github.com/kuzivaai/getregula">Source on GitHub</a>.</p>
         </div>
 
     <p style="color:var(--text-dim);font-size:0.85rem;margin-top:32px;">

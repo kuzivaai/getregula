@@ -129,6 +129,18 @@ def test_actual_bump_rejects_non_monotonic_targets():
         raise AssertionError(f"actual_bump accepted {prev} -> {tgt}")
 
 
+def test_controlling_ci_uses_the_committed_lock():
+    """The controlling test lanes must not resolve ranged extras afresh."""
+    workflow = (
+        Path(__file__).parent.parent / ".github" / "workflows" / "ci.yaml"
+    ).read_text(encoding="utf-8")
+
+    assert 'pip install ".[test]"' not in workflow
+    assert workflow.count("python -m pip install uv==0.11.0") == 3
+    assert workflow.count("uv sync --locked --extra test") == 3
+    assert "uv run --python" in workflow
+
+
 def test_the_v1_7_10_misnumbering_would_have_been_caught():
     """Regression pin for the incident this gate exists to prevent: the
     real v1.7.10 release carried feat commits (OWASP ASI framework, the

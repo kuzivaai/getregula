@@ -4,6 +4,31 @@
   "h1": "A regulação de IA alcança o seu negócio?",
   "sub": "Cinco perguntas, em linguagem simples. Sem conta, sem instalar nada, e nada do que você digitar aqui sai do seu navegador. No final você recebe uma lista do que as suas respostas indicam e do que ainda precisa ser resolvido por uma pessoa.",
   "meta": "O Regula indica onde olhar. Ele não decide a sua classe de risco, as suas obrigações nem se você está em conformidade. Isto não é aconselhamento jurídico.",
+  "home": {
+    "eyebrow": "Observação local de código e preparação de evidências",
+    "title": "Saiba o que o seu código pode mostrar. E o que ainda exige julgamento humano.",
+    "lead": "O Regula conecta fatos declarados sobre a implantação a indicadores observáveis no código e mostra as perguntas que uma pessoa ainda precisa resolver. É um caminho de revisão, não um veredito automático de conformidade.",
+    "primary": {"label": "Registrar contexto de implantação", "meta": "Cinco perguntas · permanece no navegador", "href": "#qualifier"},
+    "secondary": {"label": "Escanear um repositório", "meta": "Roda localmente · o código fica na sua máquina", "href": "/product-pt-br.html"},
+    "proof": ["Sem conta", "O código-fonte permanece local", "A decisão humana permanece vazia"],
+    "pathEyebrow": "Um caminho de revisão, não um veredito",
+    "pathTitle": "Do código-fonte ao próximo passo revisável",
+    "pathSteps": [
+      {"label": "01", "title": "Fatos declarados", "body": "Você informa a finalidade prevista, o papel do operador, a jurisdição e o contexto de implantação."},
+      {"label": "02", "title": "Observações do código", "body": "O Regula relata padrões encontrados, locais no código-fonte e limites da análise."},
+      {"label": "03", "title": "Perguntas em aberto", "body": "Fatos desconhecidos, contraditórios ou indisponíveis continuam visíveis em vez de virarem Não."},
+      {"label": "04", "title": "Decisão humana", "body": "Uma pessoa revisora responsável decide o que as evidências significam na implantação real."}
+    ],
+    "journeysEyebrow": "Comece pela tarefa à sua frente",
+    "journeysTitle": "Quatro caminhos claros para o Regula",
+    "journeysLead": "Escolha a rota que corresponde à sua responsabilidade. Cada caminho diz o que a ferramenta pode produzir e onde começa o julgamento humano.",
+    "journeys": [
+      {"task": "Delimitar um sistema", "role": "Fundação ou liderança de produto", "body": "Registre onde o sistema é usado, o que ele faz e qual papel de operador pode se aplicar.", "cta": "Iniciar a avaliação no navegador", "href": "/assess/pt-br.html"},
+      {"task": "Inspecionar o código-fonte", "role": "Desenvolvimento ou manutenção", "body": "Rode a CLI local, revise os indicadores encontrados e mantenha o código proprietário na sua máquina.", "cta": "Ver o caminho de escaneamento", "href": "/product-pt-br.html"},
+      {"task": "Preparar material de revisão", "role": "Governança ou assurance", "body": "Mantenha separados os fatos declarados, as observações, as perguntas em aberto e as estruturas de evidência.", "cta": "Revisar recursos de evidência", "href": "/product-pt-br.html#features"},
+      {"task": "Avaliar a ferramenta", "role": "Avaliação ou adoção", "body": "Examine níveis de cobertura, métodos, limites de benchmarks, segurança e evidências de acessibilidade.", "cta": "Ler métodos e limites", "href": "/coverage-pt-br.html#methods"}
+    ]
+  },
   "questions": [
     {
       "id": "q1",
@@ -46,7 +71,7 @@
     {
       "id": "q3",
       "legend": "Você construiu a IA ou está usando a de outra pessoa?",
-      "help": "As regras impõem deveres diferentes à organização que coloca um sistema de IA no mercado e à organização que usa um. É possível ser as duas coisas.",
+      "help": "O seu papel é um fato para revisão. Conforme a implantação, papéis e disposições diferentes podem ser relevantes; esta resposta não determina quais se aplicam.",
       "options": [
         {
           "value": "built",
@@ -69,7 +94,7 @@
     {
       "id": "q4",
       "legend": "As pessoas veem conteúdo gerado pela sua IA ou falam diretamente com ela?",
-      "help": "Texto, imagens, áudio, vídeo ou um chatbot. Existem deveres de divulgação quando alguém pode não perceber que está lidando com IA, ou com algo feito por IA.",
+      "help": "Texto, imagens, áudio, vídeo ou um chatbot podem exigir revisão do Artigo 50. A aplicabilidade depende do papel, da finalidade, do parágrafo, das condições e das exceções.",
       "options": [
         {
           "value": "yes",
@@ -88,7 +113,7 @@
     {
       "id": "q5",
       "legend": "A IA ajuda a decidir algo sobre uma pessoa?",
-      "help": "Contratação, crédito, seguro, uma vaga em um curso, acesso a cuidados de saúde ou um benefício. Conta mesmo quando uma pessoa aprova a decisão no final.",
+      "help": "Contratação, crédito, seguro, educação, saúde ou benefícios podem apontar para o Anexo III. A finalidade prevista e as condições do Artigo 6 exigem revisão humana.",
       "options": [
         {
           "value": "yes",
@@ -107,6 +132,11 @@
   ],
   "submit": "Mostrar o que isso indica",
   "reset": "Começar de novo",
+  "progressPrefix": "Pergunta",
+  "progressOf": "de",
+  "back": "Voltar",
+  "continue": "Continuar",
+  "stepHint": "Escolha uma resposta para continuar. Você pode voltar e alterá-la.",
   "nojsTitle": "Estas cinco perguntas precisam de JavaScript para calcular o que indicam.",
   "nojsLead": "As perguntas em si estão acima e valem a leitura de qualquer forma. Sem JavaScript, siga por aqui:",
   "nojsItems": [
@@ -191,50 +221,50 @@
       "linkText": "Como a definição funciona (em inglês)"
     },
     "roleProvider": {
-      "title": "Você leria os deveres do fornecedor",
-      "body": "Você disse que construiu ou treinou a IA. A organização que desenvolve um sistema de IA e o coloca no mercado, ou o coloca em serviço sob o próprio nome ou marca, carrega o conjunto mais pesado de deveres. Se você é o fornecedor de um determinado sistema é uma questão jurídica sobre como ele chega aos seus usuários, não uma descrição da sua engenharia.",
+      "title": "Papel de fornecedor como pergunta em aberto",
+      "body": "Você declarou que construiu ou treinou a IA. Isso é contexto declarado, não prova de um papel jurídico. Uma pessoa revisora responsável precisa examinar como o sistema é oferecido, colocado no mercado ou colocado em serviço.",
       "cite": "Artigo 3(3)",
       "href": "/guides/",
       "linkText": "Guias por artigo (em inglês)"
     },
     "roleDeployer": {
-      "title": "Você leria os deveres do implantador",
-      "body": "Você disse que usa a IA de outra pessoa. Uma organização que usa um sistema de IA sob a sua própria autoridade tem deveres próprios, mais leves que os de um fornecedor, mas não inexistentes. Rodar o modelo de terceiros dentro de um produto que você oferece não é uso pessoal e não profissional.",
+      "title": "Papel de implantador como pergunta em aberto",
+      "body": "Você declarou que usa a IA de terceiros. Isso torna o Artigo 3(4) potencialmente relevante, mas não determina o seu papel jurídico. Uso, autoridade e contexto de disponibilização precisam ser revisados.",
       "cite": "Artigo 3(4)",
       "href": "/guides/",
       "linkText": "Guias por artigo (em inglês)"
     },
     "roleBoth": {
-      "title": "Você pode ser as duas coisas, e a linha pode se mover",
-      "body": "Você disse as duas coisas, e os dois conjuntos de deveres podem recair sobre a mesma organização. O Artigo 25 também estabelece quando um implantador, distribuidor ou importador passa a ser o fornecedor de um sistema de alto risco: ao apor o próprio nome ou marca, ao fazer uma modificação substancial, ou ao alterar a finalidade prevista de um sistema de modo que ele passe a ser de alto risco.",
+      "title": "Vários papéis precisam ser revisados",
+      "body": "Você declarou desenvolvimento ou treinamento e uso de IA de terceiros. Os Artigos 3(3), 3(4) e 25 são potencialmente relevantes. O papel efetivo continua sendo uma decisão humana baseada no contexto de implantação.",
       "cite": "Artigos 3(3), 3(4) e 25(1)",
       "href": "/guides/",
       "linkText": "Guias por artigo (em inglês)"
     },
     "roleUnsure": {
       "title": "O seu papel é um dos fatos a resolver primeiro",
-      "body": "Você não tem certeza. A Lei distingue a organização que coloca um sistema de IA no mercado ou em serviço sob o próprio nome daquela que usa um sob a sua própria autoridade, e impõe deveres diferentes a cada uma. O Artigo 25 também define quando usar ou modificar o sistema de alto risco de outra pessoa faz de você o seu fornecedor.",
+      "body": "Você não tem certeza. Essa incerteza é preservada. Uma pessoa revisora responsável precisa usar o contexto de oferta, uso e modificação para verificar quais definições ou disposições podem ser relevantes.",
       "cite": "Artigos 3(3), 3(4) e 25(1)",
       "href": "/guides/",
       "linkText": "Guias por artigo (em inglês)"
     },
     "transparency": {
-      "title": "Dizer às pessoas que elas estão lidando com IA",
-      "body": "Você disse que as pessoas veem conteúdo gerado por IA ou falam diretamente com o seu sistema. O Artigo 50 traz vários deveres de transparência, com atores, condições e exceções diferentes. Eles se aplicam desde {article50}, e os requisitos de marcação têm um período de tolerância até {marking}. Uma divulgação ausente é algo a revisar, não prova de que todo dever do Artigo 50 se aplica a você.",
+      "title": "Artigo 50 como pergunta potencialmente relevante",
+      "body": "Você declarou que pessoas veem conteúdo gerado por IA ou falam diretamente com o sistema. Revise o papel, a finalidade, o parágrafo, as condições, as exceções e as datas pertinentes. Esta resposta não determina uma obrigação de transparência.",
       "cite": "Artigo 50",
       "href": "/guides/article-50-transparency.html",
       "linkText": "Artigo 50, transparência em detalhe (em inglês)"
     },
     "decisions": {
-      "title": "Decisões sobre pessoas são a parte mais rigorosa",
-      "body": "Você disse que a IA ajuda a decidir algo sobre uma pessoa. O Anexo III lista os usos tratados como de alto risco e o Artigo 6 define como um sistema em uma dessas áreas é classificado; essas obrigações se aplicam a partir de {annexIII}. O Artigo 6(3) também traz condições em que tal sistema não é de alto risco, entre elas executar uma tarefa procedimental restrita ou melhorar o resultado de uma atividade humana já concluída, e determina que um sistema que faz definição de perfis de pessoas naturais é sempre de alto risco. Qual dessas descreve você é exatamente o que esta página não pode responder.",
+      "title": "O Anexo III e o Artigo 6 precisam ser revisados",
+      "body": "Você declarou que a IA ajuda em uma decisão sobre uma pessoa. Isso torna o Anexo III e o Artigo 6 potencialmente relevantes. Finalidade prevista, uso concreto, exceções, perfilamento e outras condições continuam ausentes; esta página não classifica o sistema.",
       "cite": "Artigo 6(2) e 6(3), Anexo III",
       "href": "/guides/article-9-risk-management.html",
       "linkText": "O que alto risco realmente exige (em inglês)"
     },
     "prohibited": {
-      "title": "Alguns usos são proibidos por completo",
-      "body": "Algumas práticas são proibidas, e não reguladas, e as proibições se aplicam desde {prohibited}. Esta página não perguntou sobre elas, então leia a lista em vez de presumir que não alcança você.",
+      "title": "O Artigo 5 não foi avaliado por estas perguntas",
+      "body": "Estas cinco perguntas não recolhem os fatos necessários para o Artigo 5. Uma pessoa revisora responsável precisa examinar o uso real e as disposições; a ausência de um indicador no questionário não demonstra não aplicabilidade.",
       "cite": "Artigo 5",
       "href": "/guides/article-5-prohibited-practices.html",
       "linkText": "As práticas proibidas, listadas (em inglês)"
@@ -274,7 +304,11 @@
       "short": "Julgamento humano para contexto que o Regula não observa. Não é prestado pelo Regula."
     }
   },
-  "consultantWarranted": "As suas respostas apontam um uso tratado com maior rigor ou um sistema que você ainda não consegue enquadrar. A revisão humana importa aqui porque outro sinal automatizado não resolve o contexto ausente.",
+  "consultantWarranted": "As suas respostas contêm contexto que justifica revisão humana qualificada. O Regula preserva as perguntas em aberto, mas não decide classificação nem obrigações.",
+  "declaredHeading": "Contexto declarado",
+  "explicitUnknownHeading": "Respostas preservadas como explicitamente desconhecidas",
+  "humanDecisionHeading": "Decisão humana",
+  "humanDecisionEmpty": "Não registrada. Este campo permanece vazio até uma pessoa revisora responsável interpretar as evidências.",
   "limits": [
     "O Regula indica onde olhar. Ele não decide a sua classe de risco, as suas obrigações nem se você está em conformidade. A conformidade é determinada por autoridades reguladoras e organismos notificados, não por um questionário, e “não sinalizado” nunca significa “em conformidade”.",
     "Nada aqui é aconselhamento jurídico. Qualquer coisa que dependa de uma conclusão jurídica precisa de um profissional devidamente qualificado."

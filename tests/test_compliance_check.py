@@ -205,7 +205,8 @@ def test_comply_article50_json_exposes_observations_without_a_determination():
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
     data = payload["data"]
-    assert data["decision"]["result_type"] == "insufficient_information"
+    assert data["decision"]["review_status"] == "insufficient_information"
+    assert data["decision"]["human_decision"] is None
     evidence = data["evidence"]
     assert evidence["project_path"] == expected
     assert evidence["not_assessed_article_count"] == 1
@@ -213,7 +214,7 @@ def test_comply_article50_json_exposes_observations_without_a_determination():
     assert evidence["technical_observations"]["50"]["branches"]["50(1)"]["trigger_observations"]
 
 
-def test_comply_article50_accepts_declared_facts_and_resolves_an_obligation():
+def test_comply_article50_preserves_declared_facts_without_resolving_a_duty():
     tmp = _make_project({"app.py": "kind = 'chatbot'\n"})
     try:
         proc = subprocess.run(
@@ -237,13 +238,12 @@ def test_comply_article50_accepts_declared_facts_and_resolves_an_obligation():
 
     assert proc.returncode == 0, proc.stderr
     data = json.loads(proc.stdout)["data"]
-    assert data["decision"]["result_type"] == "indication"
-    assert data["evidence"]["applicability_resolution"] == "resolved_applicable"
-    assert data["evidence"]["not_assessed_article_count"] == 0
-    assert "eu_notice_50_1" in {
-        item["obligation_id"]
-        for item in data["evidence"]["resolved_article50_obligations"]
-    }
+    assert data["decision"]["review_status"] == "human_review_required"
+    assert data["decision"]["human_decision"] is None
+    assert data["evidence"]["applicability_resolution"] == "unresolved_human_review"
+    assert data["evidence"]["not_assessed_article_count"] == 1
+    assert data["evidence"]["potentially_relevant_provisions"]
+    assert "resolved_article50_obligations" not in data["evidence"]
     unresolved_static_context = {
         item["fact_id"]
         for item in data["evidence"]["technical_observations"]["50"][

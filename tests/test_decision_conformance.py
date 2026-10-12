@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from build_decision_conformance import MAX_SHARD_BYTES, render_bundle
 from decision_kernel import DecisionInputError, DecisionKernel
+from decision_adapters import public_review_result
 from mcp_server import handle_request
 from cli_analysis import cmd_questionnaire
 from test_api_server import _dispatch_request
@@ -87,7 +88,9 @@ def test_rest_matches_every_decision_conformance_vector():
             assert body["error"], vector["id"]
         else:
             assert status == 200, vector["id"]
-            assert body["data"] == vector["expected"]["result"], vector["id"]
+            assert body["data"] == public_review_result(
+                vector["expected"]["result"]
+            ), vector["id"]
 
 
 def test_mcp_matches_every_decision_conformance_vector():
@@ -109,7 +112,9 @@ def test_mcp_matches_every_decision_conformance_vector():
             assert response["error"]["message"], vector["id"]
         else:
             actual = response["result"]["structuredContent"]["decision"]
-            assert actual == vector["expected"]["result"], vector["id"]
+            assert actual == public_review_result(
+                vector["expected"]["result"]
+            ), vector["id"]
 
 
 def test_cli_matches_every_decision_conformance_vector():
@@ -132,6 +137,7 @@ def test_cli_matches_every_decision_conformance_vector():
         else:
             with patch.dict("sys.modules", {"cli": fake_cli}):
                 cmd_questionnaire(args)
-            assert captured == [
-                ("questionnaire", vector["expected"]["result"])
-            ], vector["id"]
+            assert captured == [(
+                "questionnaire",
+                public_review_result(vector["expected"]["result"]),
+            )], vector["id"]

@@ -674,6 +674,17 @@
       "reason": "Port to listen on (default: 8487)"
     },
     {
+      "stable_id": "cli:20cd788cd4b4150d",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula api-server:--unsafe-network",
+      "destination": "regula api-server --unsafe-network",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Acknowledge an unauthenticated non-loopback network bind"
+    },
+    {
       "stable_id": "cli:86929175011a4e3d",
       "channel": "cli",
       "source": "scripts/cli.py#regula api-server:-h",
@@ -5041,6 +5052,17 @@
       "reason": "show this help message and exit"
     },
     {
+      "stable_id": "cli:2f1020d064ca93db",
+      "channel": "cli",
+      "source": "scripts/cli.py#regula mcp-server:--workspace-root",
+      "destination": "regula mcp-server --workspace-root",
+      "discovery_basis": "registered argparse option",
+      "content_kind": "cli-option",
+      "claim_capable": true,
+      "classification": "active_product",
+      "reason": "Explicit directory that MCP path tools are authorised to read"
+    },
+    {
       "stable_id": "cli:4f3311e1ea843d48",
       "channel": "cli",
       "source": "scripts/cli.py#regula mcp-server:-h",
@@ -7282,7 +7304,7 @@
       "content_kind": "mcp-tool-descriptor",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "{\"description\": \"Scan a project directory for code indicators relevant to EU AI Act review. Detects prohibited practices (Article 5), high-risk patterns (Annex III), limited-risk systems (Article 50), credential exposure, and agent autonomy signals. Returns detector observations separately from an evidence-aware legal decision.\", \"inputSchema\": {\"properties\": {\"decision_request\": {\"description\": \"Canonical versioned fact request for the decision kernel.\", \"type\": \"object\"}, \"min_tier\": {\"description\": \"Only return findings at or above this risk tier.\", \"enum\": [\"minimal_risk\", \"limited_risk\", \"high_risk\", \"prohibited\"], \"type\": \"string\"}, \"path\": {\"description\": \"Absolute or relative path to the project directory to scan. Defaults to current directory.\", \"type\": \"string\"}, \"skip_tests\": {\"description\": \"Exclude test files from findings.\", \"type\": \"boolean\"}}, \"required\": [], \"type\": \"object\"}}"
+      "reason": "{\"description\": \"Scan a project directory for code indicators relevant to EU AI Act review. Detects prohibited practices (Article 5), high-risk patterns (Annex III), limited-risk systems (Article 50), credential exposure, and agent autonomy signals. Returns detector observations separately from a human-review record.\", \"inputSchema\": {\"properties\": {\"decision_request\": {\"description\": \"Canonical versioned fact request for the decision kernel.\", \"type\": \"object\"}, \"min_tier\": {\"description\": \"Only return findings at or above this risk tier.\", \"enum\": [\"minimal_risk\", \"limited_risk\", \"high_risk\", \"prohibited\"], \"type\": \"string\"}, \"path\": {\"description\": \"Path within the explicitly authorised workspace. Defaults to the workspace root.\", \"type\": \"string\"}, \"skip_tests\": {\"description\": \"Exclude test files from findings.\", \"type\": \"boolean\"}}, \"required\": [], \"type\": \"object\"}}"
     },
     {
       "stable_id": "mcp:c283e59ed6693730",
@@ -7293,7 +7315,7 @@
       "content_kind": "mcp-tool-descriptor",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "{\"description\": \"Return a provisional, pattern-based risk indication for code or text; this is not a legal classification of an AI system. Returns detector observations separately from an evidence-aware legal decision.\", \"inputSchema\": {\"properties\": {\"decision_request\": {\"description\": \"Canonical versioned fact request for the decision kernel.\", \"type\": \"object\"}, \"input\": {\"description\": \"Code snippet or description to classify.\", \"type\": \"string\"}}, \"required\": [\"input\"], \"type\": \"object\"}}"
+      "reason": "{\"description\": \"Return a provisional, pattern-based risk indication for code or text; this is not a legal classification of an AI system. Returns detector observations separately from a human-review record.\", \"inputSchema\": {\"properties\": {\"decision_request\": {\"description\": \"Canonical versioned fact request for the decision kernel.\", \"type\": \"object\"}, \"input\": {\"description\": \"Code snippet or description to classify.\", \"type\": \"string\"}}, \"required\": [\"input\"], \"type\": \"object\"}}"
     },
     {
       "stable_id": "mcp:410cecad29448282",
@@ -7304,7 +7326,7 @@
       "content_kind": "mcp-tool-descriptor",
       "claim_capable": true,
       "classification": "active_product",
-      "reason": "{\"description\": \"Assess the presence of project evidence relevant to Articles 9-15 of the EU AI Act. Returns observed evidence only for duties resolved by the decision kernel. Article 9: Risk Management, 10: Data Governance, 11: Technical Docs, 12: Record-Keeping, 13: Transparency, 14: Human Oversight, 15: Accuracy/Security.\", \"inputSchema\": {\"properties\": {\"article\": {\"description\": \"Specific article to assess (9-15). If omitted, assesses all.\", \"maximum\": 15, \"minimum\": 9, \"type\": \"integer\"}, \"decision_request\": {\"description\": \"Canonical versioned fact request for the decision kernel.\", \"type\": \"object\"}, \"path\": {\"description\": \"Absolute or relative path to the project directory.\", \"type\": \"string\"}}, \"required\": [], \"type\": \"object\"}}"
+      "reason": "{\"description\": \"Assess the presence of project evidence relevant to Articles 9-15 of the EU AI Act. Returns code and documentation observations for human review. Article 9: Risk Management, 10: Data Governance, 11: Technical Docs, 12: Record-Keeping, 13: Transparency, 14: Human Oversight, 15: Accuracy/Security.\", \"inputSchema\": {\"properties\": {\"article\": {\"description\": \"Specific article to assess (9-15). If omitted, assesses all.\", \"maximum\": 15, \"minimum\": 9, \"type\": \"integer\"}, \"decision_request\": {\"description\": \"Canonical versioned fact request for the decision kernel.\", \"type\": \"object\"}, \"path\": {\"description\": \"Path within the explicitly authorised workspace.\", \"type\": \"string\"}}, \"required\": [], \"type\": \"object\"}}"
     },
     {
       "stable_id": "package:c169b1e084c02b09",
@@ -8916,14 +8938,14 @@
   "totals": {
     "channel": {
       "action": 22,
-      "cli": 639,
+      "cli": 641,
       "mcp": 3,
       "package": 2,
       "repository_docs": 46,
       "website": 98
     },
     "classification": {
-      "active_product": 784,
+      "active_product": 786,
       "historical_record": 1,
       "non_claim_asset": 25
     }

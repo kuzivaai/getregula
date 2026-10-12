@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="robots" content="noindex">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex">
-<title>Regula Report — cv-screening-app (bundled example)</title>
+<title>Regula Evidence-Preparation Report - cv-screening-app</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f8f9fa; color: #212529; line-height: 1.6; }
@@ -68,12 +68,12 @@ footer { text-align: center; padding: 24px; font-size: 0.8rem; color: #6c757d; }
 <header>
 <div class="container">
 <div>
-<h1>Regula — AI Governance Report</h1>
-<div style="margin-top:4px;font-size:0.9rem;">cv-screening-app (bundled example)</div>
+<h1>Regula Evidence-Preparation Report</h1>
+<div style="margin-top:4px;font-size:0.9rem;">cv-screening-app</div>
 </div>
 <div class="meta">
-Generated: 2026-07-17 06:15 UTC<br>
-Regula v1.7.9
+Generated: 2026-09-15 23:41 UTC<br>
+Regula v2.0.0
 </div>
 </div>
 </header>
@@ -81,24 +81,24 @@ Regula v1.7.9
 <div class="container">
 
 <div class="disclaimer">
-<strong>Important:</strong> This report contains pattern-based risk <em>indications</em>,
-not legal risk classifications. The EU AI Act (Article 6) requires contextual assessment
-of intended purpose and deployment context. Results should be reviewed by qualified
-personnel. This is not legal advice.
+<strong>Human review required:</strong> This report records Code-observable indicators
+and potentially relevant provisions. It does not determine legal applicability, legal
+risk tier, duties, compliance, safety, conformity, certification, or non-applicability.
+Unknown context remains unresolved and the human decision is not recorded.
 </div>
 
 <div class="summary-grid">
 <div class="card red">
 <div class="number">0</div>
-<div class="label">Prohibited Patterns</div>
+<div class="label">Article 5 indicators</div>
 </div>
 <div class="card amber">
 <div class="number">1</div>
-<div class="label">High-Risk Indicators</div>
+<div class="label">Annex III indicators</div>
 </div>
 <div class="card blue">
 <div class="number">0</div>
-<div class="label">Limited-Risk</div>
+<div class="label">Article 50 indicators</div>
 </div>
 <div class="card purple">
 <div class="number">0</div>
@@ -112,14 +112,14 @@ personnel. This is not legal advice.
 
 <div class="section" style="border-left:4px solid #d97706;padding-left:20px;margin-bottom:24px;">
 <h2 style="color:#d97706;margin-bottom:8px;">Executive Summary</h2>
-<p style="font-size:1.05rem;font-weight:600;color:#1a1a2e;margin-bottom:8px;">High-risk indicators detected — compliance review needed</p>
-<p style="color:#5a5a6e;line-height:1.6;">This codebase contains 1 indicator(s) of high-risk AI functionality (Article 6). If this system is deployed in the EU in a high-risk context (e.g. credit scoring, employment, healthcare), it will be subject to mandatory obligations including risk management, data governance, human oversight, and technical documentation. A compliance review is recommended before deployment.</p>
+<p style="font-size:1.05rem;font-weight:600;color:#1a1a2e;margin-bottom:8px;">Human review required: Annex III-related indicator found</p>
+<p style="color:#5a5a6e;line-height:1.6;">This configured scan found 1 code-observable indicator(s) associated with Annex III or Article 6 review paths. Source code does not establish intended purpose, deployment context, actor role, exclusions, or the legal tier. Review those unknowns before recording any human decision.</p>
 <p style="margin-top:12px;font-size:0.85rem;color:#9b9baa;">
-Illustrative output from the <a href="https://github.com/kuzivaai/getregula/tree/main/examples/cv-screening-app">example application</a>: scanned 1 file(s) &middot; 0 prohibited &middot; 1 high-risk &middot;
-0 limited-risk &middot; 0 credential finding(s) &middot; Generated 2026-07-17 06:15 UTC
+Scanned 1 file(s) &middot; 1 review record(s) &middot;
+0 credential indicator(s) &middot; Generated 2026-09-15 23:41 UTC
 </p>
 </div>
-<div class="section"><h2>Priority Risk Indicators</h2><ul class="top3"><li><span class="badge high-risk">HIGH-RISK</span> <strong>Annex III, Category 4</strong> — Employment and workers management (app.py)</li></ul></div>
+<div class="section"><h2>Priority code observations</h2><ul class="top3"><li><span class="badge high-risk">ANNEX III INDICATOR</span> <strong>Annex III, Category 4</strong> — Employment and workers management (app.py)</li></ul></div>
 <div class="section">
 <h2>Regulatory Framework Mappings</h2>
 <table class="framework-table">
@@ -181,17 +181,17 @@ Illustrative output from the <a href="https://github.com/kuzivaai/getregula/tree
 </div>
 
 <div class="section">
-<h2>All Findings</h2>
+<h2>Code observations</h2>
 <table>
 <thead>
-<tr><th>File</th><th>Risk Tier</th><th>Category</th><th>Confidence</th><th>Description</th><th>Remediation</th></tr>
+<tr><th>File</th><th>Detector class</th><th>Indicator</th><th>Detector priority</th><th>Observation</th><th>Suggested review step</th></tr>
 </thead>
 <tbody>
 <tr>
 <td>app.py</td>
-<td><span class="badge high-risk">HIGH-RISK</span></td>
+<td><span class="badge high-risk">ANNEX III INDICATOR</span></td>
 <td>Annex III, Category 4</td>
-<td><span class="confidence-bar"><span class="confidence-fill" style="width:63%;background:#fd7e14"></span></span> 63</td>
+<td><span class="confidence-bar"><span class="confidence-fill" style="width:43%;background:#198754"></span></span> 43</td>
 <td>Employment and workers management</td>
 <td><strong>Add human oversight before automated hiring/employment decisions</strong><br><em>Articles 9-15 (current law: Aug 2026; Omnibus agreed: Dec 2027 for Annex III)</em></td>
 </tr>
@@ -203,8 +203,8 @@ Illustrative output from the <a href="https://github.com/kuzivaai/getregula/tree
 </div>
 
 <footer>
-Generated by Regula v1.7.9 — AI Governance Risk Indication<br>
-Pattern-based analysis only. Not a substitute for legal advice or DPO review.
+Generated by Regula v2.0.0 - reviewable evidence from configured code patterns.<br>
+Human decision not recorded. This report does not replace legal, governance, security, or technical review.
 </footer>
 
 </body>

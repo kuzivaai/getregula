@@ -140,8 +140,8 @@ def generate_questionnaire(pattern_result: Optional[Classification] = None) -> d
         },
         "instructions": (
             "Answer from sourced evidence. Missing and unsure answers do not "
-            "become no. The result may identify additional facts needed before "
-            "a determination can be made."
+            "become no. The result identifies context and questions for an "
+            "accountable human reviewer."
         ),
         "questions": [
             {
@@ -185,32 +185,19 @@ def evaluate_questionnaire(
             source_type="user_attestation",
         )
     kernel = DecisionKernel()
-    return kernel.evaluate({
+    internal_result = kernel.evaluate({
         "model_version": kernel.model_version,
         "jurisdiction": "eu",
         "facts": facts,
     })
+    from decision_adapters import public_review_result
+    return public_review_result(internal_result)
 
 
 def format_decision_result_cli(result: dict) -> str:
-    """Render the tagged decision result without inventing a tier or score."""
-    lines = [f"Decision result: {result['result_type']}"]
-    if result["result_type"] == "indication":
-        for indication in result.get("indications", []):
-            lines.append(
-                f"- {indication['classification']}: {indication['provision']}"
-            )
-        if result.get("unresolved_predicates"):
-            lines.append("Additional unresolved facts:")
-    elif result["result_type"] == "outside_scope_candidate":
-        lines.append(
-            f"Basis: {result['outside_scope_basis']['provision']}"
-        )
-    else:
-        lines.append("Facts needed before a determination:")
-    for unresolved in result.get("unresolved_predicates", []):
-        lines.append(f"- {unresolved['question']} ({unresolved['reason']})")
-    return "\n".join(lines)
+    """Render the shared review result without inventing a legal outcome."""
+    from decision_adapters import format_decision_text
+    return format_decision_text(result, command="questionnaire")
 
 
 def format_questionnaire_cli(questionnaire: dict) -> str:

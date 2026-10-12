@@ -73,18 +73,29 @@ def test_assess_json_uses_standard_envelope():
     }, f"envelope keys wrong: {sorted(payload)}"
     assert payload["command"] == "assess"
     assert payload["exit_code"] == 0
-    assert payload["data"]["tier"] == "high_risk"
-    assert payload["data"]["answers"]["uses_ai"] == "yes"
+    data = payload["data"]
+    assert data["schema_version"] == "2.0"
+    assert data["review_status"] == "human_review_required"
+    assert data["human_decision"] is None
+    assert "tier" not in data
+    assert "answers" not in data
+    assert any(item["fact_id"] == "uses_ai" and item["state"] == "yes"
+               for item in data["declared_context"])
 
 
-def test_assess_json_prohibited_exit_code_in_envelope():
-    """Envelope exit_code must match the process exit code on the
-    prohibited path (both are 1)."""
+def test_assess_json_article_5_path_is_review_only():
+    """An Article 5 answer must not become a legal tier or blocking verdict."""
     rc, out, err = run_cli("assess", "--answers", "yes,yes,yes", "--format", "json")
-    assert rc == 1, f"expected rc=1 for prohibited tier, got {rc}: {err[:200]}"
+    assert rc == 0, f"expected informational rc=0, got {rc}: {err[:200]}"
     payload = json.loads(out)
-    assert payload["exit_code"] == 1
-    assert payload["data"]["tier"] == "prohibited"
+    assert payload["exit_code"] == 0
+    assert payload["data"]["human_decision"] is None
+    assert "tier" not in payload["data"]
+    assert any(
+        row["reference"] == "Article 5"
+        and row["status"] == "potentially_relevant"
+        for row in payload["data"]["potentially_relevant_provisions"]
+    )
 
 
 def test_check_json_exit_code_in_envelope_matches_process_exit_code():
@@ -181,8 +192,10 @@ def test_classify_json_exit_code_matches_process_exit_code():
     data = payload["data"]
     assert data["detector_observation"]["detector_class"] == "prohibited"
     assert "tier" not in data["detector_observation"]
-    assert data["decision"]["result_type"] == "insufficient_information"
-    assert data["decision"]["rule_resolution"] == "unresolved"
+    assert data["decision"]["review_status"] == "insufficient_information"
+    assert data["decision"]["human_decision"] is None
+    assert "result_type" not in data["decision"]
+    assert "rule_resolution" not in data["decision"]
 
 
 def test_classify_json_exit_code_zero_on_benign_input():
@@ -213,7 +226,8 @@ def test_check_explain_keeps_detector_detail_separate_from_decision():
         )
     assert rc in (0, 1), err[:200]
     data = json.loads(out)["data"]
-    assert data["decision"]["result_type"] == "insufficient_information"
+    assert data["decision"]["review_status"] == "insufficient_information"
+    assert data["decision"]["human_decision"] is None
     assert data["detector_explanations"], "fixture must exercise explain output"
     for finding in data["detector_findings"]:
         assert "deadline" not in finding
@@ -235,8 +249,9 @@ def test_plan_and_roadmap_withhold_claims_when_facts_are_absent():
         assert rc == 0, f"{command} failed: {err[:200]}"
         data = json.loads(out)["data"]
         assert data[output_key] is None
-        assert data["decision"]["result_type"] == "insufficient_information"
-        assert data["decision"]["unresolved_predicates"]
+        assert data["decision"]["review_status"] == "insufficient_information"
+        assert data["decision"]["human_decision"] is None
+        assert data["decision"]["missing_context"]
 
 
 def test_gap_strict_json_exit_code_matches_process_exit_code():

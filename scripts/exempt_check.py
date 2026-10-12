@@ -1,12 +1,10 @@
 # regula-ignore — Article 6(3) decision tree describes the high-risk use cases it screens for
 #!/usr/bin/env python3
 """
-Regula Exempt — Article 6(3) self-assessment decision tree
+Regula Exempt — Article 6(3) context-review decision tree
 
-Helps a provider determine whether an AI system in an Annex III area is
-NOT high-risk under Article 6(3) of the EU AI Act, on the basis that it
-does not pose significant risk of harm to the health, safety, or
-fundamental rights of natural persons.
+Records answers relevant to an accountable review of Article 6(3). It does not
+determine whether a system is high-risk or exempt.
 
 Article 6(3) lists four conditions, of which at least one must apply:
     (a) narrow procedural task
@@ -84,7 +82,8 @@ Q_PROFILING = (
     "   to evaluate personal aspects, in particular to analyse or predict\n"
     "   performance at work, economic situation, health, preferences,\n"
     "   reliability, behaviour, location, or movements.)\n"
-    "  If YES, the system is high-risk regardless of the other conditions."
+    "  A YES answer makes Article 6(3)'s second subparagraph relevant; a\n"
+    "  reviewer must confirm the definition, context, conditions, and exceptions."
 )
 
 Q_NARROW_PROCEDURAL = (
@@ -133,7 +132,7 @@ def _header() -> str:
     return (
         "\n"
         "================================================================\n"
-        "  Regula - Article 6(3) Exemption Self-Assessment\n"
+        "  Regula - Article 6(3) Context Review\n"
         "================================================================\n"
     )
 
@@ -192,28 +191,28 @@ def format_result(result: dict) -> str:
 
     if tier == RESULT_NOT_IN_ANNEX_III:
         lines += [
-            "  Result: NOT IN ANNEX III",
+            "  Review status: ANNEX III ANSWER RECORDED",
             "",
-            "  Your system is not in any of the Annex III high-risk areas.",
-            "  Article 6(3) does not apply because the system is not",
-            "  high-risk in the first place.",
+            "  You answered that the system is not in an Annex III area.",
+            "  This declaration does not establish legal non-applicability.",
+            "  Confirm intended purpose, actual use and Article 6 conditions",
+            "  with an accountable reviewer.",
             "",
-            "  Your system may still have transparency obligations under",
-            "  Article 50, GPAI obligations under Articles 53-55, or",
-            "  general product safety obligations. Run `regula assess`",
-            "  for the full applicability check.",
+            "  Article 50, Articles 53 to 55 and product-safety provisions",
+            "  may still be relevant. Run `regula assess` to record more",
+            "  context, not to obtain an applicability decision.",
             "",
         ]
 
     elif tier == RESULT_NOT_EXEMPT and answers.get("profiling") == "yes":
         lines += [
-            "  Result: NOT EXEMPT - profiling triggers high-risk",
+            "  Review status: PROFILING ANSWER REQUIRES ARTICLE 6 REVIEW",
             "",
-            "  Article 6(3) second subparagraph: a system that performs",
-            "  profiling of natural persons (GDPR Art 4(4)) IS high-risk",
-            "  regardless of conditions (a)-(d).",
+            "  You declared profiling of natural persons. Article 6(3)'s",
+            "  second subparagraph is potentially relevant. A reviewer must",
+            "  confirm the profiling definition and the system context.",
             "",
-            "  Articles 9-15 obligations apply to your system. Run:",
+            "  If a reviewer confirms the required predicates, consider:",
             "    regula gap          - Articles 9-15 gap assessment",
             "    regula conform      - generate the Annex IV evidence pack",
             "    regula register     - generate the Annex VIII registration",
@@ -223,13 +222,13 @@ def format_result(result: dict) -> str:
 
     elif tier == RESULT_NOT_EXEMPT:
         lines += [
-            "  Result: NOT EXEMPT under Article 6(3)",
+            "  Review status: NO ARTICLE 6(3) CONDITION DECLARED",
             "",
-            "  None of the four exemption conditions (a)-(d) applies.",
-            "  Your system remains classified as high-risk under Article",
-            "  6(2) + Annex III.",
+            "  You answered no to each of the four Article 6(3) conditions.",
+            "  That is declared context, not a legal classification. A reviewer",
+            "  must confirm intended purpose, Annex III context and the answers.",
             "",
-            "  Articles 9-15 obligations apply to your system. Run:",
+            "  If a reviewer confirms the required predicates, consider:",
             "    regula gap          - Articles 9-15 gap assessment",
             "    regula conform      - generate the Annex IV evidence pack",
             "    regula register     - generate the Annex VIII registration",
@@ -240,19 +239,17 @@ def format_result(result: dict) -> str:
     elif tier == RESULT_EXEMPT:
         cond_text = ", ".join(f"({c})" for c in conditions_met)
         lines += [
-            "  Result: POTENTIALLY EXEMPT under Article 6(3)",
+            "  Review status: ARTICLE 6(3) CONDITION INDICATORS DECLARED",
             "",
-            f"  Conditions met: {cond_text}",
+            f"  Conditions answered yes: {cond_text}",
             "",
-            "  Your self-assessment indicates the system meets at least",
-            "  one of the four Article 6(3) conditions and does not perform",
-            "  profiling. This is a self-assessment, NOT a legal determination.",
+            "  Your answers mark at least one condition yes and profiling no.",
+            "  They do not establish that a condition is legally satisfied or",
+            "  that the system is exempt.",
             "",
-            "  Article 6(4) requires you to:",
-            "  1. Document the rationale for the exemption.",
-            "  2. Keep the documentation for 10 years (Article 18).",
-            "  3. Register the self-assessment in the EU database",
-            "     (Article 49(2)) BEFORE placing the system on the market.",
+            "  If an accountable review confirms Article 6(3) treatment,",
+            "  review Article 6(4), Article 18 and Article 49(2), including",
+            "  rationale, retention and registration conditions.",
             "",
             "  Generate the Annex VIII registration packet with the",
             "  exemption flag set:",
@@ -263,25 +260,25 @@ def format_result(result: dict) -> str:
         lines += [
             "",
             "  STRONG RECOMMENDATION: consult qualified legal counsel",
-            "  before relying on the exemption. Until the Commission",
-            "  guidelines publish, the exemption is the user's risk.",
+            "  before recording any exemption decision. The tool leaves the",
+            "  human decision empty.",
             "",
         ]
 
     elif tier == RESULT_NEEDS_REVIEW:
         lines += [
-            "  Result: NEEDS LEGAL REVIEW",
+            "  Review status: INCOMPLETE CONTEXT",
             "",
             "  Your answers indicate ambiguity that this self-assessment",
             "  cannot resolve. Consult qualified legal counsel before",
-            "  classifying the system.",
+            "  recording a legal decision.",
             "",
         ]
         lines += _guidelines_status_block()
 
     lines += [
         f"  {_LINE}",
-        "  This output is a documented self-assessment, not legal advice.",
+        "  This output records declared context, not legal advice or a decision.",
         "  Article 6(3) requires contextual judgement; the Commission",
         "  guidelines that would standardise that judgement are overdue.",
         f"  {_LINE}",
@@ -338,6 +335,62 @@ def evaluate(answers: dict) -> dict:
     return out
 
 
+def public_review_record(result: dict) -> dict:
+    """Expose declared answers without the internal decision-tree branch."""
+    answers = result.get("answers", {})
+    expected = {
+        "annex_iii", "profiling", "narrow_procedural", "improve_human",
+        "detect_patterns", "preparatory",
+    }
+    return {
+        "schema_version": "2.0",
+        "record_type": "article_6_3_context_review",
+        "review_status": "human_review_required",
+        "declared_context": [
+            {
+                "fact_id": key,
+                "state": value,
+                "provenance": {
+                    "source_type": "user_declaration",
+                    "source_ref": f"exempt:{key}",
+                },
+            }
+            for key, value in sorted(answers.items())
+        ],
+        "missing_context": [
+            {"fact_id": key, "reason": "not_asked_or_unanswered"}
+            for key in sorted(expected - set(answers))
+        ],
+        "contradictory_context": [],
+        "condition_observations": [
+            {"condition": item, "status": "declared_yes_requires_review"}
+            for item in result.get("conditions_met", [])
+        ],
+        "potentially_relevant_provisions": [
+            {
+                "reference": "Article 6(3)",
+                "status": "potentially_relevant",
+                "source_version": None,
+                "source_date": None,
+            }
+        ],
+        "reviewer_questions": [
+            "Does evidence support the declared Annex III use and intended purpose?",
+            "Does the actual processing meet the profiling definition?",
+            "Does evidence support each declared Article 6(3) condition?",
+        ],
+        "suggested_human_review_steps": [
+            "Validate each answer against design and deployment evidence.",
+            "Review Article 6 conditions and exceptions with qualified expertise.",
+            "Record the accountable reviewer's decision separately.",
+        ],
+        "explicit_limitations": [
+            "This record does not determine high-risk status, exemption, duties, compliance, or non-applicability."
+        ],
+        "human_decision": None,
+    }
+
+
 # ---------------------------------------------------------------------------
 # Interactive runner
 # ---------------------------------------------------------------------------
@@ -358,9 +411,9 @@ def _ask(prompt_text: str) -> str:
 
 def run_interactive() -> dict:
     print(_header())
-    print("  6 questions. Decision tree for the Article 6(3) exemption.")
-    print("  Tells you whether your Annex III system can be self-assessed")
-    print("  as not-high-risk and what to document if it can.")
+    print("  6 questions that preserve context relevant to Article 6(3).")
+    print("  The result identifies review questions and does not decide")
+    print("  high-risk status, exemption, duties, or compliance.")
     print()
 
     answers: dict[str, str] = {}
@@ -387,7 +440,7 @@ def run_exempt(output_format: str = "text",
 
     If `answers` is provided (non-interactive mode), evaluate it directly.
     Otherwise require an interactive terminal.
-    Exit code: 0 for any classification (it is informational), 2 for usage
+    Exit code: 0 for any review path (it is informational), 2 for usage
     errors.
     """
     if answers is not None:
@@ -409,7 +462,7 @@ def run_exempt(output_format: str = "text",
             return 1
 
     if output_format == "json":
-        print(json.dumps(result, indent=2))
+        print(json.dumps(public_review_record(result), indent=2))
     else:
         print(format_result(result))
     return 0

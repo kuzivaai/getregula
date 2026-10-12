@@ -80,8 +80,10 @@ def test_lifecycle_filter_reduces_findings(tmp_path):
     for f in filtered_findings:
         assert "plan" in f.get("lifecycle_phases", []), \
             f"Finding {f.get('file')} does not have 'plan' phase"
-    assert all_data["decision"]["result_type"] == "insufficient_information"
-    assert filtered_data["decision"]["result_type"] == "insufficient_information"
+    assert all_data["decision"]["review_status"] == "insufficient_information"
+    assert filtered_data["decision"]["review_status"] == "insufficient_information"
+    assert all_data["decision"]["human_decision"] is None
+    assert filtered_data["decision"]["human_decision"] is None
 
 
 def test_lifecycle_filter_retire_empty(tmp_path):
@@ -99,7 +101,8 @@ def test_lifecycle_filter_retire_empty(tmp_path):
     findings = data["detector_findings"]
     assert len(findings) == 0, \
         f"Expected no findings for 'retire' phase, got {len(findings)}"
-    assert data["decision"]["result_type"] == "insufficient_information"
+    assert data["decision"]["review_status"] == "insufficient_information"
+    assert data["decision"]["human_decision"] is None
 
 
 def test_json_output_unaffected(tmp_path):
@@ -120,5 +123,7 @@ def test_json_output_unaffected(tmp_path):
         assert isinstance(f.get("lifecycle_phases"), list), "lifecycle_phases should be a list in JSON"
         assert "tier" not in f, "detector observations must not carry a legal tier"
         assert "confidence_score" not in f, "detector priority must not pose as confidence"
-    assert payload["decision"]["result_type"] == "insufficient_information"
-    assert payload["decision"]["rule_resolution"] == "unresolved"
+    assert payload["decision"]["review_status"] == "insufficient_information"
+    assert payload["decision"]["human_decision"] is None
+    assert "result_type" not in payload["decision"]
+    assert "rule_resolution" not in payload["decision"]

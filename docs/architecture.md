@@ -45,7 +45,7 @@ regula/
 ├── references/                    # Regulatory reference documents
 │   ├── owasp_llm_top10.yaml       # OWASP Top 10 for LLMs → EU AI Act mapping
 │   └── mitre_atlas.yaml           # MITRE ATLAS → EU AI Act mapping
-├── tests/                         # 117 test files, 2,936 tests (pytest --collect-only)
+├── tests/                         # 119 test files, 2,990 tests (pytest --collect-only)
 │   ├── test_classification.py     # Core classification tests (main test file)
 │   └── ...                        # See tests/ for full list
 ├── docs/
@@ -79,7 +79,10 @@ regula/
 - **AST over regex where it matters.** Python `ast` module provides structure-aware analysis: real imports vs string mentions, data flow tracing, human oversight detection. Regex remains for cross-language pattern matching.
 - **Compliance gap assessment, not just risk flagging.** Checks whether Articles 9-15 compliance infrastructure actually exists in the codebase.
 - **AI-specific supply chain security.** Dependency pinning checks focus on AI libraries, not general packages.
-- **Cross-platform.** Unix/macOS (`fcntl`) and Windows (`msvcrt`) file locking. No platform restrictions.
+- **Cross-platform intent with tested limits.** File locking has Unix/macOS
+  (`fcntl`) and Windows (`msvcrt`) implementations. The controlling CI runs on
+  Linux, and Windows lacks the POSIX `O_NOFOLLOW` and `fwalk` protections used
+  by the main walkers. Equivalent platform assurance has not been established.
 - **Multi-framework reference mapping.** 13 framework identifiers have selected
   crosswalk data (EU AI Act, NIST AI RMF, ISO 42001, NIST CSF, SOC 2, ISO
   27001, OWASP LLM Top 10, OWASP Top 10 for Agentic Applications, MITRE ATLAS,

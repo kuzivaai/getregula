@@ -33,7 +33,7 @@ jobs:
           title = os.environ.get("ISSUE_TITLE", "").strip()
           body = os.environ.get("ISSUE_BODY", "").strip()
 
-          prompt = f"""You are a triage bot for Regula, an EU AI Act compliance CLI tool.
+          prompt = f"""You are a triage bot for Regula, an EU AI Act code-observation and evidence-preparation CLI.
           Classify this GitHub issue into EXACTLY ONE of these labels:
           - false-positive  (user says Regula incorrectly flagged their code)
           - false-negative  (user says Regula missed a risk that should have been flagged)

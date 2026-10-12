@@ -74,20 +74,21 @@ Patterns: `real_time_facial_recogn`, `live_biometric_public`, `public_space_biom
 
 ## What a scan actually looks like
 
-Enough theory. Here's what happens when you run `regula check` against a project that contains prohibited patterns. This is Regula's actual output format.
+Enough theory. The following is an illustrative output shape for a project that contains Article 5-related patterns. It is not a captured run of the hypothetical files below.
 
 Say you have a Python file called `hr_analytics.py` that analyses employee sentiment from webcam feeds, and a `scoring.py` that builds a social credit system for a government client:
 
 ```
 $ regula check .
 
-  Regula v1.7.0 -- EU AI Act compliance scanner
+Regula Scan: /home/USER/project
 ============================================================
 
-Decision: insufficient_information
+Review status: insufficient_information
+Model: 2026-08-26.1
 Jurisdiction: eu
-Rule resolution: unresolved
-Facts needed to resolve the next decision: 2
+Human decision: not recorded
+Declared context needed for review: 2
   - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
   - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
 
@@ -105,38 +106,25 @@ Detector observations (not legal facts):
     3. scoring.py:89 -- Social scoring by public authorities or on their behalf
        (Art. 5)
 
-  Files scanned:       14
-  Prohibited:          3
-  Credentials:         0
-  High-risk:           1
-  Agent autonomy:      0
-  Limited-risk:        2
-  Suppressed:          0
-  Block tier:          3
-  Warn tier:           1
-  Info tier:           2
-
   PROHIBITED INDICATORS:
-    [BLOCK] [ 92] hr_analytics.py -- Emotion inference in workplace or educational settings [develop]
-    [BLOCK] [ 88] scoring.py -- Social scoring by public authorities or on their behalf [develop]
-    [BLOCK] [ 85] scoring.py -- Social scoring by public authorities or on their behalf [develop]
+    [BLOCK] hr_analytics.py -- Emotion inference in workplace or educational settings
+    [BLOCK] scoring.py -- Social scoring by public authorities or on their behalf
 
 ============================================================
-  Confidence = pattern match + context analysis (0-100).
+  Detector priority: 0-100 (higher = more code patterns matched; not a correctness probability)
   Tiers: BLOCK (>=80 or prohibited), WARN (50-79), INFO (<50)
   Suppress findings: add '# regula-ignore' to file
 
   ────────────────────────────────────────────────────────
   Next steps:
-    1. regula fix --project .         Remove prohibited practices
-    2. regula gap --project .         See which articles you need to address
-    3. regula roadmap --project .     Get a week-by-week compliance plan
-    4. regula evidence-pack --project . --bundle   Generate auditor-ready evidence
+    1. Review each detector observation in its operational context
+    2. regula gap --project .         Prepare article observations for review
+    3. regula evidence-pack --project . --bundle   Generate a reviewer-completable evidence scaffold
 ```
 
-Three things immediately: your verdict (prohibited), which files caused it, and what to do next. The confidence scores (92, 88, 85) reflect how closely the matched code resembles a real prohibited practice. A score of 92 on an emotion-in-workplace finding means the pattern matched `sentiment.*employee` or `emotion.*workplace` with strong surrounding context.
+The useful evidence is the observed indicator, its source location, and the context that remains unresolved. The output does not decide whether an Article 5 legal test is met.
 
-All prohibited findings are automatically BLOCK tier, regardless of confidence score. There's no scenario where a prohibited pattern gets downgraded to WARN or INFO. The Act doesn't have a "sort of prohibited" category.
+Regula assigns Article 5-related detector matches to its BLOCK scanner tier so that a reviewer does not overlook them. BLOCK is a local scanner response policy, not a legal verdict. Detector priority is not a probability that a prohibited practice exists.
 
 ## False positives are real, and that's fine
 
@@ -158,7 +146,7 @@ Depends on whether the flag is accurate.
 
 **If it's a true positive:** Remove or redesign the functionality before deploying in the EU. Run `regula fix --project .` for guided remediation. Article 5 doesn't have a grace period or a "comply or explain" mechanism. The practice is either prohibited or it isn't. If it is, it must not ship.
 
-**If it's a false positive:** Add a `# regula-ignore` comment to the relevant line or file, with a rationale explaining why this isn't a prohibited practice. Regula tracks suppressed findings and will remind you if a suppression lacks a rationale. The suppression becomes part of your compliance evidence.
+**If contextual review rejects the match:** Add a `# regula-ignore` comment to the relevant line or file, with a rationale explaining why the code indicator does not support the suspected practice. Regula tracks suppressed findings and will remind you if a suppression lacks a rationale. The suppression becomes part of the review record.
 
 A suppression with rationale looks like this in your code:
 

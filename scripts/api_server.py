@@ -23,6 +23,7 @@ Usage:
 """
 
 import argparse
+import ipaddress
 import json
 import os
 import sys
@@ -46,6 +47,26 @@ MAX_REQUEST_SIZE = 10 * 1024 * 1024
 # of open brackets deep can crash the process (a Python try/except cannot catch
 # a C stack overflow). 100 is far above any legitimate Regula request.
 MAX_JSON_DEPTH = 100
+
+
+def _validate_bind_host(host: str, unsafe_network: bool = False) -> None:
+    """Fail closed when an unauthenticated server would leave loopback."""
+    normalised = host.strip().lower().rstrip(".")
+    is_loopback = normalised == "localhost"
+    if not is_loopback:
+        try:
+            address = ipaddress.ip_address(normalised)
+            is_loopback = address.is_loopback
+            if address.version == 6 and address.ipv4_mapped is not None:
+                is_loopback = address.ipv4_mapped.is_loopback
+        except ValueError:
+            is_loopback = False
+    if not is_loopback and not unsafe_network:
+        raise ValueError(
+            "Refusing a non-loopback bind because the built-in server has no "
+            "authentication. If you accept that exposure, repeat the command "
+            "with --unsafe-network."
+        )
 
 
 def _reject_deep_json(raw: str, max_depth: int = MAX_JSON_DEPTH) -> None:
@@ -441,7 +462,12 @@ class RegulaHandler(BaseHTTPRequestHandler):
                 else empty_decision("eu", "rest:/v1/gap")
             )
             evidence = resolved_gap_evidence(assessment, decision)
-            _exit_code = 1 if strict and decision["result_type"] != "indication" else 0
+            overall_score = assessment.get("overall_score")
+            _exit_code = 1 if (
+                strict
+                and isinstance(overall_score, (int, float))
+                and overall_score < 100
+            ) else 0
             envelope = _build_envelope(
                 "gap", {"decision": decision, "evidence": evidence}, _exit_code
             )
@@ -550,7 +576,20 @@ def main():
         default=8487,
         help="Listen port (default: 8487)",
     )
+    parser.add_argument(
+        "--unsafe-network",
+        action="store_true",
+        help=(
+            "Acknowledge that a non-loopback bind exposes an unauthenticated "
+            "development server"
+        ),
+    )
     args = parser.parse_args()
+
+    try:
+        _validate_bind_host(args.host, args.unsafe_network)
+    except ValueError as exc:
+        parser.error(str(exc))
 
     # ThreadingHTTPServer so one slow/stalled connection cannot block the rest
     # (defends the RegulaHandler.timeout against Slowloris). daemon_threads is
@@ -558,7 +597,7 @@ def main():
     server = ThreadingHTTPServer((args.host, args.port), RegulaHandler)
     sys.stderr.write(
         f"Regula API v{VERSION} listening on http://{args.host}:{args.port}\n"
-        f"Security: No authentication — do NOT expose on public networks.\n"
+        f"Security: No authentication. Do not expose on public networks.\n"
         f"Endpoints:\n"
         f"  GET  /health\n"
         f"  POST /v1/check\n"

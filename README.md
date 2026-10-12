@@ -7,7 +7,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE.txt)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://python.org)
 [![CI](https://github.com/kuzivaai/getregula/actions/workflows/ci.yaml/badge.svg)](https://github.com/kuzivaai/getregula/actions)
-[![Tests](https://img.shields.io/badge/tests-2936%20collected-blue.svg)](#verified-numbers)
+[![Tests](https://img.shields.io/badge/tests-2990%20collected-blue.svg)](#verified-numbers)
 [![Accessibility target: WCAG 2.2 AA](https://img.shields.io/badge/accessibility%20target-WCAG%202.2%20AA-blue.svg)](docs/accessibility/README.md)
 
 ---
@@ -32,10 +32,11 @@
 ```console
 $ regula check examples/cv-screening-app --scope all
 
-Decision: insufficient_information
+Review status: insufficient_information
+Model: 2026-08-26.1
 Jurisdiction: eu
-Rule resolution: unresolved
-Facts needed to resolve the next decision: 2
+Human decision: not recorded
+Declared context needed for review: 2
   - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
   - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
 
@@ -86,7 +87,12 @@ In plain English: give Regula a source-code folder and answer questions about ho
 pipx install git+https://github.com/kuzivaai/getregula.git@main
 ```
 
-PyPI distribution is currently unavailable. The command above installs a moving public source reference; pin a reviewed commit hash for reproducible use. See [`docs/installation.md`](docs/installation.md) for the verified status and alternatives.
+PyPI distribution is currently unavailable. The command above uses the mutable
+public `main` branch. It is not a verified release artefact and does not include
+unpublished local audit changes. Pin the exact public commit you reviewed for
+reproducible evaluation. See
+[`docs/installation.md`](docs/installation.md) for the distribution limits and
+alternatives.
 
 **Not sure if the AI Act applies?** No code needed:
 ```bash
@@ -355,7 +361,7 @@ Regula performs **pattern-based risk indication**, not legal risk classification
 | Risk detection patterns (regexes) | 423 |
 | Language families scanned | 8 (Python, JS, TS, Java, Go, Rust, C/C++, Jupyter) |
 | Framework identifiers with selected references | 13 |
-| Tests (pytest --collect-only) | 2,936 |
+| Tests (pytest --collect-only) | 2,990 |
 | Required production dependencies | 0 |
 
 For reproduction commands, version-bounded benchmarks, known exceptions, security posture, and audit-trail design, see [`docs/TRUST.md`](docs/TRUST.md). What version numbers promise, the public API they cover, and the deprecation policy: [`docs/VERSIONING.md`](docs/VERSIONING.md).

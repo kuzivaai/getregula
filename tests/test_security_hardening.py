@@ -467,10 +467,14 @@ def test_regula_self_scan_clean():
     decision = payload.get("decision")
     assert_true(isinstance(decision, dict),
                 "check payload carries no canonical decision")
-    assert_eq(decision.get("result_type"), "insufficient_information",
+    assert_eq(decision.get("review_status"), "insufficient_information",
               "detector observations without legal facts became a determination")
-    assert_true(bool(decision.get("unresolved_predicates")),
+    assert_true(bool(decision.get("missing_context")),
                 "an insufficient-information decision names no resolvable facts")
+    assert_true(decision.get("human_decision") is None,
+                "the detector populated a human legal decision")
+    assert_true("result_type" not in decision,
+                "the public review record exposed the retired outcome schema")
     findings = payload.get("detector_findings")
     assert_true(isinstance(findings, list),
                 "envelope carries no detector-findings list, so there is nothing to "

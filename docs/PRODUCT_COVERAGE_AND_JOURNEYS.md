@@ -1,6 +1,8 @@
 # Product coverage, users, journeys, and information architecture
 
-Status: product contract, reviewed 26 August 2026.
+Status: product contract, reviewed 27 August 2026. The implemented redesign
+and the evidence status of its archetypes are recorded in
+`docs/UX_ARCHETYPES_AND_JOURNEYS_2026-08-27.md`.
 
 This document defines what Regula exposes, who each path serves, and which
 claims the interface may make. It is deliberately narrower than a feature

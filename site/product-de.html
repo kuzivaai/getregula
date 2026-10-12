@@ -7,21 +7,21 @@
          Why: /assets/site.min.css is render-blocking, so Chrome shows a WHITE canvas
          (the browser default) for the entire duration of the CSS fetch on cold
          loads :  measured at ~600ms on simulated 3G, worse on real slow networks.
-         That white→dark snap is what users reported as "the demo flashing": the
+         That canvas shift is what users reported as "the demo flashing": the
          hero terminal sits at the top of the fold and takes the full brunt of it.
          The earlier attempt (93a833b) targeted panel opacity and font preload,
          neither of which is the actual cause :  the cause is that the browser
          cannot paint at all until the external stylesheet arrives.
 
          Fix: establish the brand background + basic tokens inline so first paint
-         is already dark, then load site.css asynchronously via the media="print"
+         already uses the brand canvas, then load site.css asynchronously via the media="print"
          + onload swap trick (well-documented pattern). A <noscript> fallback
          preserves styling for JS-disabled clients. -->
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
@@ -32,7 +32,7 @@
          post-CSS visual. Prevents a vertical stack of all four panels flashing
          briefly before site.css loads. */
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -114,7 +114,7 @@
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/product.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <!-- Stylesheets loaded via media="print" + onload swap so they don't block
-         first paint. The inline critical CSS above already establishes the dark
+         first paint. The inline critical CSS above already establishes the light
          theme; these sheets layer on the full design system once they arrive.
          <noscript> fallback ensures JS-disabled clients still get full styling. -->
     <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
@@ -185,7 +185,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav" aria-label="Hauptnavigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Men&uuml;" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/de.html" title="Einsatzkontext für die Prüfung erfassen">Geltungsbereich prüfen</a>
         <span class="active">Code prüfen</span>
@@ -200,7 +200,7 @@
 
 <!-- HERO -->
 <main id="main">
-<div class="sec" style="padding:80px 0 0;">
+<div class="sec">
     <h1 class="sec-head">Was Regula tut</h1>
     <p class="sec-sub">Die Details hinter den f&uuml;nf Fragen auf der Startseite: wonach der Scanner sucht, was er meldet, wie er l&auml;uft und wo er neben anderen Werkzeugen steht. Nichts davon &auml;ndert, was das Werkzeug feststellen kann. Regula zeigt an, wo Sie hinsehen sollten; es entscheidet nicht &uuml;ber Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformit&auml;t.</p>
     <p class="sec-sub"><a href="/locales/de.html">&larr; Zur&uuml;ck zu den f&uuml;nf Fragen</a></p>
@@ -216,11 +216,11 @@
             <h3>Beginnen Sie mit dem Einsatzkontext</h3>
             <p>Wenn Ihr Team KI entwickelt oder einsetzt, bestimmen Rechtsraum, Verwendungszweck, Rolle und Einsatzkontext, welche Vorschriften gelten k&ouml;nnten. Erfassen Sie diesen Kontext mit <code>regula assess</code> und lassen Sie das Ergebnis von den zust&auml;ndigen technischen und rechtlichen Verantwortlichen pr&uuml;fen.</p>
             <button type="button" class="audience-fwd" onclick="copyPageUrl(this)">
-                <span class="fwd-icon">&#8599;</span>
+                <span class="fwd-icon" aria-hidden="true">&#8599;</span>
                 <span class="fwd-txt">Link kopieren und an Ihren Entwickler senden</span>
             </button>
             <a class="audience-fwd" href="/assess/de.html">
-                <span class="fwd-icon">&#8594;</span>
+                <span class="fwd-icon" aria-hidden="true">&#8594;</span>
                 <span class="fwd-txt">Im Browser bewerten (keine Installation, kein Terminal)</span>
             </a>
         </div>
@@ -238,9 +238,9 @@
         <div class="audience-card audience-audit">
             <div class="audience-label">Wenn Sie Compliance pr&uuml;fen</div>
             <h3>Pr&uuml;fbare Nachweisger&uuml;ste</h3>
-            <p>Regula kann Nachweispaket-Ger&uuml;ste mit SHA-256-Manifesten erzeugen; optionale Befehle erg&auml;nzen Signaturen oder Zeitstempel, wenn deren Voraussetzungen konfiguriert sind. Die Pakete m&uuml;ssen von Menschen vervollst&auml;ndigt werden und belegen keine rechtliche Hinl&auml;nglichkeit. <a href="/sample-report.html" hreflang="en">Beispielbericht ansehen (auf Englisch) &rarr;</a> &middot; <a href="/pricing.html" hreflang="en">Kostenlose Fragen und geplante Beratung (auf Englisch) &rarr;</a></p>
+            <p>Regula kann Nachweispaket-Ger&uuml;ste mit SHA-256-Manifesten erzeugen; optionale Befehle erg&auml;nzen Signaturen oder Zeitstempel, wenn deren Voraussetzungen konfiguriert sind. Die Pakete m&uuml;ssen von Menschen vervollst&auml;ndigt werden und belegen keine rechtliche Hinl&auml;nglichkeit. <a href="/sample-report.html" hreflang="en">Beispielbericht ansehen (auf Englisch) &rarr;</a> &middot; <a href="/pricing.html" hreflang="en">Kostenlose Werkzeuge und Grenzen (auf Englisch) &rarr;</a></p>
             <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula conform --sign .')">
-                <span class="fwd-icon">&#9654;</span>
+                <span class="fwd-icon" aria-hidden="true">&#9654;</span>
                 <span class="fwd-txt">regula conform --sign .</span>
             </button>
         </div>
@@ -295,7 +295,7 @@
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Schritt 1</div>
             <h3>Installieren</h3>
-            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code><br>Funktioniert auf jedem Betriebssystem. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Andere Methoden &#8599;</a></p>
+            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code><br>Funktioniert auf jedem Betriebssystem. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#075f4e;">Andere Methoden &#8599;</a></p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Schritt 2</div>
@@ -345,19 +345,19 @@
             <div class="tag tag-blue">Konformit&auml;tsl&uuml;cken</div>
             <h3>Was fehlt in Ihrer Codebasis?</h3>
             <p>Trennt Codebeobachtungen von rechtlichen Entscheidungen. Bei ungekl&auml;rter Anwendbarkeit nennt das Tool die als N&auml;chstes ben&ouml;tigten Fakten statt Artikelbewertungen oder Aufwandssch&auml;tzungen auszugeben.</p>
-            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+            <code style="font-size:11px;color:#485b51;">regula gap .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Sicherheit</div>
             <h3>Ist Ihr KI-Code sicher?</h3>
             <p>Prompt-Injection, unsicheres Laden von Modellen, unvalidierte KI-Ausgabe, hartcodierte Schl&uuml;ssel und andere KI-spezifische Schwachstellen.</p>
-            <code style="font-size:11px;color:#9898b4;">regula check . &middot; regula guardrails .</code>
+            <code style="font-size:11px;color:#485b51;">regula check . &middot; regula guardrails .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Aufsicht</div>
             <h3>Analyse menschlicher Aufsicht</h3>
             <p>Verfolgt KI-Ausgaben &uuml;ber Dateien hinweg. Pr&uuml;ft, ob jeder Pfad zu einem nutzergerichteten Endpunkt eine menschliche &Uuml;berpr&uuml;fungsstufe durchl&auml;uft.</p>
-            <code style="font-size:11px;color:#9898b4;">regula oversight .</code>
+            <code style="font-size:11px;color:#485b51;">regula oversight .</code>
         </div>
     </div>
 
@@ -367,25 +367,25 @@
             <div class="tag tag-blue">Dokumentation</div>
             <h3>Benötigen Sie Unterlagen für die Prüfung?</h3>
             <p>Anhang-IV-Dokumentation, generiert aus Ihrem tats&auml;chlichen Code. Funktionen, Abh&auml;ngigkeiten und Protokollabdeckung bereits ausgef&uuml;llt.</p>
-            <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform .</code>
+            <code style="font-size:11px;color:#485b51;">regula docs . &middot; regula conform .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Nachweise</div>
             <h3>Konformit&auml;tsbewertungspaket</h3>
             <p>Vom Pr&uuml;fer vervollst&auml;ndigbares Nachweispaket mit Nutzungsschranke, Liste ungekl&auml;rter Fakten und SHA-256-Integrit&auml;ts-Hashes. Artikelpflichten werden erst nach gekl&auml;rter Anwendbarkeit zugeordnet.</p>
-            <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
+            <code style="font-size:11px;color:#485b51;">regula conform . &middot; regula evidence-pack .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Integrit&auml;t</div>
             <h3>Integritätsprüfungen und optionale Signaturen</h3>
             <p>SHA-256-Manifeste, Ed25519-Signaturen und RFC-3161-Zeitstempel helfen Prüfern festzustellen, wann eine Bewertung erstellt wurde und ob Dateien danach geändert wurden.</p>
-            <code style="font-size:11px;color:#9898b4;">regula conform --sign --timestamp .</code>
+            <code style="font-size:11px;color:#485b51;">regula conform --sign --timestamp .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">KI-BOM</div>
             <h3>KI-St&uuml;ckliste</h3>
             <p>CycloneDX 1.7 KI-BOMs mit Modellherkunft, GPAI-Stufen-Annotationen nach Art. 51&ndash;55 und erkannten Trainingsdatens&auml;tzen.</p>
-            <code style="font-size:11px;color:#9898b4;">regula sbom --ai-bom .</code>
+            <code style="font-size:11px;color:#485b51;">regula sbom --ai-bom .</code>
         </div>
     </div>
 
@@ -395,19 +395,19 @@
             <div class="tag tag-blue">Multi-Jurisdiktion</div>
             <h3>3 Rechtsr&auml;ume, ein Scan</h3>
             <p>&Uuml;ber das EU-KI-Gesetz hinaus: Derselbe Scan ordnet Befunde dem s&uuml;dkoreanischen KI-Basisgesetz (Gesetz Nr. 20676, in Kraft seit 22. Januar 2026) und Colorado SB 26-189 (offenlegungsorientiert, Pflichten ab 1. Januar 2027) zu &ndash; jeweils mit eigener Zuordnung von Dom&auml;nen zu Pflichten und eigenem Fragebogen.</p>
-            <code style="font-size:11px;color:#9898b4;">regula check . --jurisdictions eu,korea,colorado</code>
+            <code style="font-size:11px;color:#485b51;">regula check . --jurisdictions eu,korea,colorado</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Regulierungs&uuml;bergreifend</div>
             <h3>13 Framework-Referenzsets</h3>
             <p>Ausgewählte Pflichtenbereiche verweisen auf ausgewählte Referenzen in ISO 42001, NIST AI RMF, SOC 2, OWASP und weiteren Frameworks. Der Crosswalk hilft bei der Navigation; er prüft weder Gleichwertigkeit noch Anwendbarkeit oder Umsetzung.</p>
-            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+            <code style="font-size:11px;color:#485b51;">regula gap .</code>
         </div>
     </div>
 
-    <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
+    <p style="font-size:12px;color:#485b51;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
         62 Befehle insgesamt &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Ausgewählte Referenzen in 13 Framework-Kennungen.
-        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Vollst&auml;ndige CLI-Referenz &rarr;</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#075f4e;margin-left:4px;">Vollst&auml;ndige CLI-Referenz &rarr;</a>
     </p>
 </div>
 

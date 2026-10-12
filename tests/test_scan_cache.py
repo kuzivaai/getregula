@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Tests for scan caching."""
 import json
+import os
+import subprocess
 import sys
 import tempfile
 import shutil
@@ -337,7 +339,7 @@ def test_a_partial_scan_now_writes_entries_of_its_own(monkeypatch, tmp_path):
     cache_file = tmp_path / "cache" / "scan_cache.json"
     scan_files(str(proj), min_tier="limited_risk")
     assert cache_file.exists(), "a partial scan wrote no cache file at all"
-    written = json.loads(cache_file.read_text(encoding="utf-8"))
+    written = json.loads(cache_file.read_text(encoding="utf-8"))["entries"]
     assert written, "a partial scan wrote an empty cache"
     # Substring with delimiters rather than positional parsing: the schema
     # component itself contains colons, so an index into a split is not a
@@ -357,7 +359,7 @@ def test_a_full_scan_writes_a_separate_scope_and_both_survive(monkeypatch, tmp_p
     cache_file = tmp_path / "cache" / "scan_cache.json"
     scan_files(str(proj), min_tier="limited_risk")
     scan_files(str(proj))
-    keys = json.loads(cache_file.read_text(encoding="utf-8"))
+    keys = json.loads(cache_file.read_text(encoding="utf-8"))["entries"]
     assert any(":mintier-2:" in k for k in keys), sorted(keys)[:2]
     assert any(":full:" in k for k in keys), sorted(keys)[:2]
 
@@ -399,7 +401,7 @@ def test_the_schema_bump_invalidates_every_earlier_entry():
     """Nothing migrates: an entry written under the old key cannot be told apart
     from a sound one after the fact, which is why v4 to v5 did the same."""
     import scan_cache as sc
-    assert sc._CACHE_SCHEMA.startswith("v7:"), sc._CACHE_SCHEMA
+    assert sc._CACHE_SCHEMA.startswith("v8:"), sc._CACHE_SCHEMA
 
 
 # --------------------------------------------------------------------------
@@ -585,3 +587,399 @@ def test_every_scan_files_parameter_is_classified_for_the_cache():
         "scan_params_token does not distinguish the two settings of " \
         "respect_ignores, so the key component is inert"
     print("  PASS  test_every_scan_files_parameter_is_classified_for_the_cache")
+
+
+# --------------------------------------------------------------------------
+# F-017: effective custom rules and policy are part of cache identity
+# --------------------------------------------------------------------------
+
+def _scan_with_cache(monkeypatch, cache_dir: Path, project: Path) -> list:
+    """Run the production scanner against one explicit cache directory."""
+    import report
+    from scan_cache import ScanCache
+
+    class _ConfiguredCache(ScanCache):
+        def __init__(self):
+            super().__init__(cache_dir=cache_dir)
+
+    monkeypatch.setattr(report, "ScanCache", _ConfiguredCache)
+    return report.scan_files(str(project), declared_domains={"finance"})
+
+
+def _custom_prohibited_rules(marker: str = "") -> dict:
+    rules = {
+        "prohibited": [],
+        "high_risk": [],
+        "limited_risk": [],
+        "ai_indicators": [],
+    }
+    if marker:
+        rules["prohibited"].append({
+            "name": "custom_cache_marker",
+            "patterns": [marker],
+            "description": "Custom cache marker",
+            "article": "5",
+        })
+    return rules
+
+
+def _indicator_names(findings: list) -> list:
+    return sorted({
+        indicator
+        for finding in findings
+        for indicator in finding.get("indicators", [])
+    })
+
+
+def test_custom_rule_cache_is_order_independent_both_directions(
+        monkeypatch, tmp_path):
+    """Warm A then B and B then A must equal isolated cold controls."""
+    import classify_risk
+
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / "app.py").write_text(
+        "def inspect_record():\n"
+        "    return forbidden_cache_marker_xyz\n",
+        encoding="utf-8",
+    )
+    rules_a = _custom_prohibited_rules("forbidden_cache_marker_xyz")
+    rules_b = _custom_prohibited_rules()
+
+    monkeypatch.setattr(classify_risk, "_CUSTOM_RULES", rules_a)
+    cold_a = _scan_with_cache(monkeypatch, tmp_path / "cold-a", project)
+    monkeypatch.setattr(classify_risk, "_CUSTOM_RULES", rules_b)
+    cold_b = _scan_with_cache(monkeypatch, tmp_path / "cold-b", project)
+    assert "custom_cache_marker" in _indicator_names(cold_a)
+    assert "custom_cache_marker" not in _indicator_names(cold_b)
+
+    monkeypatch.setattr(classify_risk, "_CUSTOM_RULES", rules_a)
+    warm_a_first = _scan_with_cache(monkeypatch, tmp_path / "a-then-b", project)
+    monkeypatch.setattr(classify_risk, "_CUSTOM_RULES", rules_b)
+    warm_b_second = _scan_with_cache(monkeypatch, tmp_path / "a-then-b", project)
+
+    monkeypatch.setattr(classify_risk, "_CUSTOM_RULES", rules_b)
+    warm_b_first = _scan_with_cache(monkeypatch, tmp_path / "b-then-a", project)
+    monkeypatch.setattr(classify_risk, "_CUSTOM_RULES", rules_a)
+    warm_a_second = _scan_with_cache(monkeypatch, tmp_path / "b-then-a", project)
+
+    assert warm_a_first == cold_a
+    assert warm_b_second == cold_b
+    assert warm_b_first == cold_b
+    assert warm_a_second == cold_a
+
+
+def _policy_case(kind: str) -> tuple[str, dict, dict]:
+    if kind == "forced":
+        source = "import openai\ndef run():\n    return custom_policy_model\n"
+        policy_a = {"rules": {"risk_classification": {
+            "force_high_risk": ["custom_policy_model"],
+        }}}
+        policy_b = {}
+    elif kind == "exempt":
+        source = "import sklearn\ndef run():\n    return credit_scoring_model\n"
+        policy_a = {"rules": {"risk_classification": {
+            "exempt": ["credit_scoring_model"],
+        }}}
+        policy_b = {}
+    elif kind == "confidence":
+        source = "import sklearn\ndef run():\n    return credit_scoring_model\n"
+        policy_a = {"thresholds": {"min_confidence": 99}}
+        policy_b = {"thresholds": {"min_confidence": 0}}
+    else:  # pragma: no cover
+        raise AssertionError(kind)
+    return source, policy_a, policy_b
+
+
+def test_policy_cache_is_order_independent_for_every_classification_input(
+        monkeypatch, tmp_path):
+    """Force, exemption and confidence policy changes cannot share entries."""
+    import classify_risk
+    import policy_config
+
+    monkeypatch.setattr(classify_risk, "_CUSTOM_RULES", _custom_prohibited_rules())
+    for kind in ("forced", "exempt", "confidence"):
+        source, policy_a, policy_b = _policy_case(kind)
+        project = tmp_path / kind
+        project.mkdir()
+        (project / "app.py").write_text(source, encoding="utf-8")
+
+        monkeypatch.setattr(policy_config, "_POLICY", policy_a)
+        cold_a = _scan_with_cache(monkeypatch, tmp_path / f"{kind}-cold-a", project)
+        monkeypatch.setattr(policy_config, "_POLICY", policy_b)
+        cold_b = _scan_with_cache(monkeypatch, tmp_path / f"{kind}-cold-b", project)
+        assert cold_a != cold_b, f"{kind} fixture does not discriminate"
+
+        monkeypatch.setattr(policy_config, "_POLICY", policy_a)
+        first_a = _scan_with_cache(monkeypatch, tmp_path / f"{kind}-a-b", project)
+        monkeypatch.setattr(policy_config, "_POLICY", policy_b)
+        second_b = _scan_with_cache(monkeypatch, tmp_path / f"{kind}-a-b", project)
+
+        monkeypatch.setattr(policy_config, "_POLICY", policy_b)
+        first_b = _scan_with_cache(monkeypatch, tmp_path / f"{kind}-b-a", project)
+        monkeypatch.setattr(policy_config, "_POLICY", policy_a)
+        second_a = _scan_with_cache(monkeypatch, tmp_path / f"{kind}-b-a", project)
+
+        assert first_a == cold_a, kind
+        assert second_b == cold_b, kind
+        assert first_b == cold_b, kind
+        assert second_a == cold_a, kind
+
+
+def test_effective_configuration_digest_ignores_mapping_serialisation_order():
+    """Equivalent mapping order must produce one stable cross-process key."""
+    from scan_cache import effective_configuration_digest
+
+    config_a = {
+        "custom_rules": {"prohibited": [{
+            "name": "marker", "patterns": ["xyz"], "article": "5",
+        }]},
+        "policy": {"thresholds": {"min_confidence": 70}, "version": "1"},
+    }
+    config_b = {
+        "policy": {"version": "1", "thresholds": {"min_confidence": 70}},
+        "custom_rules": {"prohibited": [{
+            "article": "5", "patterns": ["xyz"], "name": "marker",
+        }]},
+    }
+    assert effective_configuration_digest(config_a) == effective_configuration_digest(config_b)
+    config_b["policy"]["thresholds"]["min_confidence"] = 71
+    assert effective_configuration_digest(config_a) != effective_configuration_digest(config_b)
+
+
+def _run_cli_rules_scan(repo: Path, cwd: Path, project: Path, cache: Path,
+                        rules_file: Path) -> tuple[int, list]:
+    env = dict(os.environ)
+    env["PYTHONPATH"] = str(repo)
+    env["REGULA_CACHE_DIR"] = str(cache)
+    result = subprocess.run(
+        [sys.executable, "-m", "scripts.cli", "check", str(project),
+         "--format", "json", "--deterministic", "--scope", "all",
+         "--no-skip-tests", "--min-tier", "minimal_risk",
+         "--rules", str(rules_file)],
+        cwd=cwd,
+        env=env,
+        text=True,
+        capture_output=True,
+        timeout=30,
+        check=False,
+    )
+    payload = json.loads(result.stdout)
+    return result.returncode, payload["data"]["detector_findings"]
+
+
+def test_custom_rule_cache_identity_survives_separate_cli_processes(tmp_path):
+    """The production CLI must remain correct when each scan is a new process."""
+    repo = Path(__file__).resolve().parent.parent
+    project = tmp_path / "cli-project"
+    project.mkdir()
+    (project / "app.py").write_text(
+        "def inspect_record():\n"
+        "    return forbidden_process_marker_xyz\n",
+        encoding="utf-8",
+    )
+    rules_a = tmp_path / "rules-a.yaml"
+    rules_b = tmp_path / "rules-b.yaml"
+    rules_a.write_text(
+        "rules:\n"
+        "  prohibited:\n"
+        "    - name: custom_process_marker\n"
+        "      patterns: [forbidden_process_marker_xyz]\n"
+        "      description: Custom process marker\n"
+        "      article: '5'\n",
+        encoding="utf-8",
+    )
+    rules_b.write_text("rules: {}\n", encoding="utf-8")
+
+    cold_a = _run_cli_rules_scan(
+        repo, tmp_path, project, tmp_path / "cold-a-process", rules_a)
+    cold_b = _run_cli_rules_scan(
+        repo, tmp_path, project, tmp_path / "cold-b-process", rules_b)
+    assert cold_a[0] != cold_b[0], "CLI fixture does not change the exit code"
+
+    a_first = _run_cli_rules_scan(
+        repo, tmp_path, project, tmp_path / "process-a-b", rules_a)
+    b_second = _run_cli_rules_scan(
+        repo, tmp_path, project, tmp_path / "process-a-b", rules_b)
+    b_first = _run_cli_rules_scan(
+        repo, tmp_path, project, tmp_path / "process-b-a", rules_b)
+    a_second = _run_cli_rules_scan(
+        repo, tmp_path, project, tmp_path / "process-b-a", rules_a)
+
+    assert a_first == cold_a
+    assert b_second == cold_b
+    assert b_first == cold_b
+    assert a_second == cold_a
+
+
+# --------------------------------------------------------------------------
+# F-022: durable, bounded cache persistence
+# --------------------------------------------------------------------------
+
+def test_corrupted_cache_warns_and_recovers(tmp_path, capsys):
+    """Malformed state is ignored visibly and replaced by a valid envelope."""
+    from scan_cache import ScanCache
+
+    cache_dir = tmp_path / "corrupt"
+    cache_dir.mkdir()
+    cache_file = cache_dir / "scan_cache.json"
+    cache_file.write_text("{not valid json", encoding="utf-8")
+
+    cache = ScanCache(cache_dir=cache_dir)
+    warning = capsys.readouterr().err
+    assert "could not be read and will be rebuilt" in warning
+    assert cache.get("app.py", "content") is None
+
+    cache.put("app.py", "content", [{"tier": "high_risk"}])
+    cache.flush()
+    recovered = ScanCache(cache_dir=cache_dir)
+    assert recovered.get("app.py", "content") == [{"tier": "high_risk"}]
+
+
+def test_atomic_replace_failure_preserves_last_valid_cache(
+        tmp_path, monkeypatch):
+    """An interrupted replacement cannot truncate the last valid cache."""
+    import scan_cache
+
+    cache_dir = tmp_path / "atomic"
+    first = scan_cache.ScanCache(cache_dir=cache_dir)
+    first.put("a.py", "a", [{"id": "a"}])
+    first.flush()
+    before = (cache_dir / "scan_cache.json").read_bytes()
+
+    second = scan_cache.ScanCache(cache_dir=cache_dir)
+    second.put("b.py", "b", [{"id": "b"}])
+
+    def fail_replace(source, destination):
+        raise OSError("simulated interrupted replacement")
+
+    monkeypatch.setattr(scan_cache.os, "replace", fail_replace)
+    try:
+        second.flush()
+    except OSError as exc:
+        assert "simulated interrupted replacement" in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("replacement failure did not propagate")
+
+    assert (cache_dir / "scan_cache.json").read_bytes() == before
+    assert not list(cache_dir.glob(".scan_cache.*.tmp"))
+
+
+def test_stale_cache_instances_merge_without_lost_updates(tmp_path):
+    """Two writers loaded before either flushes must preserve both entries."""
+    from scan_cache import ScanCache
+
+    cache_dir = tmp_path / "merge"
+    initial = ScanCache(cache_dir=cache_dir)
+    initial.put("a.py", "a", [{"id": "a-old"}])
+    initial.put("b.py", "b", [{"id": "b-old"}])
+    initial.flush()
+
+    writer_a = ScanCache(cache_dir=cache_dir)
+    writer_b = ScanCache(cache_dir=cache_dir)
+    writer_a.put("a.py", "a", [{"id": "a-new"}])
+    writer_b.put("b.py", "b", [{"id": "b-new"}])
+
+    writer_a.flush()
+    writer_b.flush()
+
+    final = ScanCache(cache_dir=cache_dir)
+    assert final.get("a.py", "a") == [{"id": "a-new"}]
+    assert final.get("b.py", "b") == [{"id": "b-new"}]
+
+
+def test_competing_processes_preserve_both_cache_updates(tmp_path):
+    """Separate processes flushing together retain both dirty entries."""
+    repo = Path(__file__).resolve().parent.parent
+    cache_dir = tmp_path / "process-merge"
+    gate = tmp_path / "flush-now"
+    script = (
+        "import sys,time\n"
+        "from pathlib import Path\n"
+        "sys.path.insert(0, sys.argv[1])\n"
+        "from scan_cache import ScanCache\n"
+        "cache=ScanCache(cache_dir=Path(sys.argv[2]))\n"
+        "cache.put(sys.argv[3], sys.argv[3], [{'id': sys.argv[3]}])\n"
+        "Path(sys.argv[4]).write_text('ready', encoding='utf-8')\n"
+        "gate=Path(sys.argv[5])\n"
+        "deadline=time.monotonic()+5\n"
+        "while not gate.exists() and time.monotonic()<deadline: time.sleep(0.01)\n"
+        "cache.flush()\n"
+    )
+    ready_a = tmp_path / "ready-a"
+    ready_b = tmp_path / "ready-b"
+    processes = [
+        subprocess.Popen(
+            [sys.executable, "-c", script, str(repo / "scripts"),
+             str(cache_dir), name, str(ready), str(gate)],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        for name, ready in (("a.py", ready_a), ("b.py", ready_b))
+    ]
+    deadline = time.monotonic() + 5
+    while not (ready_a.exists() and ready_b.exists()):
+        if time.monotonic() >= deadline:
+            for process in processes:
+                process.kill()
+            raise AssertionError("cache writers did not reach the flush barrier")
+        time.sleep(0.01)
+    gate.write_text("flush", encoding="utf-8")
+    for process in processes:
+        stdout, stderr = process.communicate(timeout=10)
+        assert process.returncode == 0, (stdout, stderr)
+
+    from scan_cache import ScanCache
+    final = ScanCache(cache_dir=cache_dir)
+    assert final.get("a.py", "a.py") == [{"id": "a.py"}]
+    assert final.get("b.py", "b.py") == [{"id": "b.py"}]
+
+
+def test_cache_evicts_oldest_entries_at_the_declared_bound(tmp_path):
+    """Entry count stays bounded and recently inserted entries survive."""
+    from scan_cache import ScanCache
+
+    cache_dir = tmp_path / "bounded"
+    cache = ScanCache(cache_dir=cache_dir, max_entries=3)
+    for index in range(5):
+        cache.put(f"{index}.py", str(index), [{"id": index}])
+    cache.flush()
+
+    payload = json.loads(
+        (cache_dir / "scan_cache.json").read_text(encoding="utf-8"))
+    assert len(payload["entries"]) == 3
+    reloaded = ScanCache(cache_dir=cache_dir, max_entries=3)
+    assert reloaded.get("0.py", "0") is None
+    assert reloaded.get("1.py", "1") is None
+    for index in range(2, 5):
+        assert reloaded.get(f"{index}.py", str(index)) == [{"id": index}]
+
+
+def test_explicit_cache_disable_bypasses_all_cache_io(
+        tmp_path, monkeypatch):
+    """REGULA_DISABLE_CACHE performs a normal scan without constructing cache."""
+    import classify_risk
+    import report
+
+    project = tmp_path / "disabled-project"
+    project.mkdir()
+    (project / "app.py").write_text(
+        "def inspect_record():\n"
+        "    return forbidden_cache_marker_xyz\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(
+        classify_risk,
+        "_CUSTOM_RULES",
+        _custom_prohibited_rules("forbidden_cache_marker_xyz"),
+    )
+    monkeypatch.setenv("REGULA_DISABLE_CACHE", "1")
+
+    class _CacheMustNotBeConstructed:
+        def __init__(self):  # pragma: no cover
+            raise AssertionError("cache constructed while explicitly disabled")
+
+    monkeypatch.setattr(report, "ScanCache", _CacheMustNotBeConstructed)
+    findings = report.scan_files(str(project))
+    assert "custom_cache_marker" in _indicator_names(findings)

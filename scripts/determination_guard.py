@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Refuse any output or key that asserts a compliance state.
+"""Refuse outputs that assert compliance or an automated legal determination.
 
 Project policy prohibits presenting a scan result as a compliance
 determination or presenting "not flagged" as "compliant". A prior audit found
@@ -107,6 +107,29 @@ EXCLUDED_PREFIXES = (
 # Affirmative shapes. Authored against folded text: entities decoded, accents
 # stripped, casefolded, whitespace collapsed. See fold_for_claim_match.
 DETERMINATION_SHAPES = {
+    "legal tier asserted for a subject":
+        re.compile(r"\b(?:your|this|the)\s+(?:ai\s+)?system\s+"
+                   r"(?:is|was|remains?)\s+(?:an?\s+)?"
+                   r"(?:high[\s-]*risk|prohibited)\b"),
+    "legal outcome heading asserted":
+        re.compile(r"\b(?:result|decision|classification)\s*:\s*"
+                   r"(?:not\s+exempt|exempt|high[\s-]*risk|prohibited|"
+                   r"not\s+in\s+annex\s+iii)\b"),
+    "duties attached to a subject":
+        re.compile(r"\b(?:articles?\s+[0-9]+(?:\s*(?:-|to)\s*[0-9]+)?|"
+                   r"article\s+50)\s+(?:obligations|duties)\s+apply\s+"
+                   r"to\s+(?:your|this|the)\s+(?:ai\s+)?system\b"),
+    "regulatory result asserted complete":
+        re.compile(r"\b(?:the\s+)?(?:regulatory|legal)\s+result\s+"
+                   r"(?:is\s+now|is|has\s+been)\s+"
+                   r"(?:determined|resolved|final)\b"),
+    "product presented as a legal compliance tool":
+        re.compile(r"\b(?:eu\s+ai\s+act|ai\s+act)\s+compliance\s+"
+                   r"(?:tool|cli|scanner)\b"),
+    "non-applicability asserted for user's subject":
+        re.compile(r"\b(?:the\s+)?(?:regulation|act|eu\s+ai\s+act)\s+"
+                   r"does\s+not\s+apply\s+to\s+(?:your|this|the)\s+"
+                   r"(?:product|system|application)\b"),
     "state asserted after a colon":
         re.compile(r":\s*compliant\b"),
     "state asserted as a copula":
@@ -159,6 +182,14 @@ DETERMINATION_SHAPES = {
                    r"[\s-]*konform\w*\b"),
     "German: conformity asserted after a colon":
         re.compile(r":\s*konform\b"),
+    "German: legal tier asserted for a subject":
+        re.compile(r"\b(?:ihr|dieses|das)\s+(?:ki[\s-]*)?system\s+"
+                   r"(?:ist|bleibt|gilt)\s+(?:(?:als|ein)\s+)?hochrisik\w*\b"),
+    "German: regulatory result asserted complete":
+        re.compile(r"\b(?:das\s+)?regulatorische\s+ergebnis\s+"
+                   r"(?:steht\s+(?:nun\s+)?fest|ist\s+bestimmt)\b"),
+    "German: duties attached to a subject":
+        re.compile(r"\bpflichten\s+gelten\s+fur\s+(?:ihr|dieses|das)\s+system\b"),
     # --- Brazilian Portuguese -------------------------------------------------
     # Deliberately NOT matching a bare `conformidade com`, which is legitimate
     # and live: the comparison table's own aria-label reads "ferramentas e
@@ -173,6 +204,15 @@ DETERMINATION_SHAPES = {
                    r"(?:comprovada|confirmada|atingida|garantida)\b"),
     "Portuguese: conformity asserted after a colon":
         re.compile(r":\s*em conformidade\b"),
+    "Portuguese: legal tier asserted for a subject":
+        re.compile(r"\b(?:o\s+seu|este|o)\s+sistema\s+"
+                   r"(?:e|esta|permanece)\s+(?:automaticamente\s+)?"
+                   r"(?:de\s+)?alto\s+risco\b"),
+    "Portuguese: regulatory result asserted complete":
+        re.compile(r"\bo\s+resultado\s+regulatorio\s+"
+                   r"(?:ja\s+)?(?:esta|foi)\s+(?:determinado|resolvido)\b"),
+    "Portuguese: duties attached to a subject":
+        re.compile(r"\bobrigacoes\s+se\s+aplicam\s+ao\s+(?:seu|este|o)\s+sistema\b"),
 }
 
 # A negator this close before a match clears it. 70 characters covers the real
@@ -205,6 +245,23 @@ TECHNICAL_STANDARDS = re.compile(
 )
 TECHNICAL_WINDOW = 40
 
+# Conditional explanations are not tool determinations. The qualifier must be
+# in the same short clause so a distant "if" cannot clear an unrelated result.
+QUALIFIER_WINDOW = 100
+QUALIFIERS = re.compile(
+    r"\b(?:if|when|where|provided\s+that|subject\s+to|assuming|"
+    r"wenn|falls|sofern|sobald|"
+    r"se|caso|quando|sujeit[oa]\s+a)\b"
+)
+
+MENTION_WINDOW = 140
+HISTORICAL_MENTIONS = re.compile(
+    r"\b(?:historical\s+(?:example|wording)|former\s+wording|"
+    r"previous\s+wording|quoted\s+example|forbidden\s+example|"
+    r"(?:the\s+)?(?:report|document|old\s+output)\s+"
+    r"(?:said|stated|read))\b"
+)
+
 
 class StaleExemption(Exception):
     """A declared exemption matched nothing. Its premise is gone."""
@@ -214,6 +271,12 @@ class StaleExemption(Exception):
 # N123: a character window either side lets one declared constant vouch for a
 # claim two lines below, which the fixtures for that mechanism killed at once.
 DECLARED_NOT_A_DETERMINATION = {
+    "AGENTS.md": (
+        (r'^EU AI Act compliance CLI for code\.',
+         "Repository instruction text, not generated or user-facing product output. "
+         "The current remediation brief conflicts with this label, but governing "
+         "instructions prohibit editing AGENTS.md without owner approval."),
+    ),
     "scripts/discover_ai_systems.py": (
         (r'^COMPLIANCE_STATUSES\s*=',
          "The user's own status vocabulary for their own registry. Regula never "
@@ -367,6 +430,16 @@ def _cleared_by_technical_standard(folded: str, start: int, end: int) -> bool:
     return bool(TECHNICAL_STANDARDS.search(folded[lo:hi]))
 
 
+def _cleared_by_qualifier(folded: str, start: int) -> bool:
+    window = folded[max(0, start - QUALIFIER_WINDOW):start]
+    return bool(QUALIFIERS.search(window))
+
+
+def _cleared_by_historical_mention(folded: str, start: int) -> bool:
+    window = folded[max(0, start - MENTION_WINDOW):start]
+    return bool(HISTORICAL_MENTIONS.search(window))
+
+
 def determinations_in_text(text: str) -> list[tuple[str, str]]:
     """Every affirmative compliance-state assertion in one blob of text.
 
@@ -380,6 +453,10 @@ def determinations_in_text(text: str) -> list[tuple[str, str]]:
         for shape, pattern in DETERMINATION_SHAPES.items():
             for m in pattern.finditer(folded):
                 if _cleared_by_negator(folded, m.start()):
+                    continue
+                if _cleared_by_qualifier(folded, m.start()):
+                    continue
+                if _cleared_by_historical_mention(folded, m.start()):
                     continue
                 if _cleared_by_technical_standard(folded, m.start(), m.end()):
                     continue
@@ -523,6 +600,12 @@ def _run_artefact(root: Path) -> int:
 def _control() -> int:
     """Positive proof the predicate discriminates, in both directions."""
     must_fire = [
+        ("legal tier", "Your system is a high-risk AI system."),
+        ("legal outcome heading", "Result: NOT EXEMPT under Article 6(3)"),
+        ("duties attached", "Articles 9-15 obligations apply to your system."),
+        ("automated result", "The regulatory result is now determined."),
+        ("compliance-tool metadata", "Regula: EU AI Act compliance tool for code."),
+        ("legal non-applicability", "The EU AI Act does not apply to your product."),
         ("badge message", 'message = "compliant"'),
         ("printed state", "EU AI Act Transparency (Art 50/52): COMPLIANT"),
         ("json key", '"transparency_compliant": True,'),
@@ -538,6 +621,10 @@ def _control() -> int:
         ("pt copula", "O seu sistema est&aacute; em conformidade."),
         ("pt achieved", "A conformidade foi comprovada."),
         ("pt colon", "Transpar&ecirc;ncia do Regulamento de IA: em conformidade"),
+        ("de legal tier", "Ihr System ist ein Hochrisikosystem."),
+        ("de automated result", "Das regulatorische Ergebnis steht nun fest."),
+        ("pt legal tier", "O seu sistema é automaticamente de alto risco."),
+        ("pt automated result", "O resultado regulatório já está determinado."),
     ]
     must_stay_silent = [
         ("negation", "A clean scan does not mean a system is compliant."),
@@ -547,6 +634,15 @@ def _control() -> int:
         ("technical cyclonedx", "A CycloneDX 1.7 compliant BOM dictionary."),
         ("technical jsonld", "any conformant JSON-LD processor can expand the"),
         ("refusal", "Regula refuses to say your system is compliant."),
+        ("product-boundary negation", "Regula is not an EU AI Act compliance tool."),
+        ("qualified legal tier",
+         "If contextual review establishes that the system is high-risk, review Articles 9 to 15."),
+        ("de qualified legal tier",
+         "Wenn eine Prüfung bestätigt, dass Ihr System ein Hochrisikosystem ist, prüfen Sie Artikel 9."),
+        ("pt qualified legal tier",
+         "Se uma revisão confirmar que o seu sistema é de alto risco, examine o Artigo 9."),
+        ("historical quotation",
+         "Historical example: the old output said ‘Your system is high-risk.’"),
         # Verbatim from the shipped locale pages. If any arm above fires on one
         # of these, the arm is wrong, not the copy.
         ("de live negation",

@@ -32,8 +32,8 @@
 
   function activeQuestions() { return questionsFor(activeJurisdiction); }
 
-  // A question counts as decision-bearing only if the adapter maps it onto a
-  // fact the kernel actually evaluates. Deriving this instead of hardcoding a
+  // A question counts as core context only if the adapter maps it onto a
+  // fact the kernel evaluates internally. Deriving this instead of hardcoding a
   // list means a question that later gains a mapping is promoted automatically,
   // and none can silently become dead weight.
   function isDecisionQuestion(jurisdiction, question) {
@@ -161,10 +161,9 @@
 
   function answeredCount() { return Object.keys(answers).length; }
 
-  // The scope question is decisive on its own: when it resolves false the
-  // kernel returns outside_scope_candidate whatever the remaining answers say,
-  // so continuing cannot change the outcome. Verified against the kernel for
-  // all three jurisdictions before this shortcut was offered.
+  // A no answer to the scope question permits an early partial review. The
+  // public adapter preserves it as declared context and never turns it into a
+  // finding of legal non-applicability.
   function scopeResolvedOut() {
     return answers[scopeQuestionId()] === "no";
   }
@@ -240,9 +239,8 @@
     }
   }
 
-  // A persistent way out with a valid result. Someone who has answered enough
-  // to get an honest answer should never have to click through questions that
-  // cannot change it in order to see one.
+  // A persistent way to inspect a partial review without manufacturing answers
+  // for questions the user chose not to complete.
   function renderEarlyExit() {
     const host = byId("earlyExit");
     if (!host) return;
@@ -332,9 +330,27 @@
       .encodeAnswers(activeJurisdiction, answers, activeQuestions());
   }
 
-  function decodeAnswers(code) {
+  function decodeShare(code) {
     return window.RegulaDecisionAdapters
-      .decodeAnswers(activeJurisdiction, code, activeQuestions());
+      .decodeShare(activeJurisdiction, code, activeQuestions());
+  }
+
+  function showShareMessage(message, isError, host) {
+    const existing = byId("shareRecoveryMessage");
+    if (existing) existing.remove();
+    const notice = document.createElement("div");
+    notice.id = "shareRecoveryMessage";
+    notice.setAttribute("role", isError ? "alert" : "status");
+    notice.setAttribute("tabindex", "-1");
+    notice.style.margin = "0 0 20px";
+    notice.style.padding = "14px 16px";
+    notice.style.border = "1px solid " + (isError ? "var(--red)" : "var(--amber)");
+    notice.style.borderRadius = "var(--radius)";
+    notice.style.background = isError ? "var(--red-dim)" : "var(--amber-dim)";
+    notice.style.color = "var(--text)";
+    notice.textContent = message;
+    host.insertBefore(notice, host.firstChild);
+    notice.focus();
   }
 
   function copyShareLink() {
@@ -429,14 +445,27 @@
       // Strip encoded answers from the address bar once decoded. The payload
       // is user-derived data and should not remain in browser history.
       try { history.replaceState(null, "", location.pathname); } catch (e) { /* ignore */ }
-      const decoded = decodeAnswers(code);
-      if (decoded) {
-        answers = decoded;
+      const decoded = decodeShare(code);
+      if (decoded.ok && !decoded.requires_manual_recovery) {
+        answers = decoded.answers;
         assessmentStarted = true;
         byId("heroSection").style.display = "none";
         showResults();
+        if (decoded.legacy) {
+          showShareMessage(
+            config.copy.shareRecovery.legacy,
+            false,
+            byId("resultsSection"),
+          );
+        }
         return;
       }
+      const errorKey = decoded.requires_manual_recovery
+        ? "contradictory" : decoded.error;
+      const message = config.copy.shareRecovery[errorKey] ||
+        config.copy.shareRecovery.malformed_payload;
+      showShareMessage(message, true, byId("heroSection"));
+      return;
     }
     loadProgress(jurisdictionFromUrl);
   }

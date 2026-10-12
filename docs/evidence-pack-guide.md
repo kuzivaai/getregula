@@ -1,202 +1,154 @@
-# Evidence pack guide — what auditors actually get
+# Evidence packs for contextual review
 
-Regula has two commands that produce structured evidence for audit review:
+Regula generates source-code observations and documentation drafts for a human
+reviewer. A pack is not a compliance decision, legal opinion or conformity
+certificate. Its hashes check file consistency, not whether its contents are
+true or sufficient for an applicable obligation.
 
-- `regula evidence-pack .` — the developer-friendly bundle
-- `regula conform .` — the Article 43 conformity assessment evidence pack
+The layouts below were checked against generated version 2.0.0 output on
+16 September 2026. Optional sections depend on the requested features and the
+available input. The manifest lists the files actually included.
 
-This page documents what each one produces, the format, and how an
-external auditor can verify it came from Regula without trusting the
-Regula project.
+## Choose the handoff
 
-## `regula conform .`
+- `regula evidence-pack . --bundle` creates a review folder and a portable ZIP
+  with a standalone hash verifier.
+- `regula conform . --zip` creates a contextual review handoff. With no sourced
+  decision facts, it keeps applicability unresolved and does not attach article
+  duties or emit a readiness score.
 
-Produces an **Article 43 conformity assessment evidence pack**: a
-directory mapped to Articles 9–15 (and related annexes), with
-per-article readiness scores and SHA-256 integrity hashes. The exact
-generated layout is defined by [`scripts/conformity_pack.py`](../scripts/conformity_pack.py).
-
-This command backs the "26 files mapped to Articles 9-15, per-article
-readiness scores, SHA-256 integrity hashes" claim on the Regula
-landing page. The claim is asserted by the
-`conform: end-to-end pack structure verified` test in
-`tests/test_classification.py`, which is run on every CI build and
-on every `python3 -m scripts.cli self-test`.
-
-### Directory layout
-
-```
-conform-pack-YYYY-MM-DD/
-├── manifest.json                       ← per-file SHA-256 + article map
-├── 01-risk-management.md               ← Art. 9 readiness
-├── 02-data-governance.md               ← Art. 10 readiness
-├── 03-technical-documentation.md       ← Art. 11 readiness (scaffold)
-├── 04-record-keeping.md                ← Art. 12 readiness
-├── 05-transparency.md                  ← Art. 13 readiness
-├── 06-human-oversight.md               ← Art. 14 readiness
-├── 07-accuracy-robustness.md           ← Art. 15 readiness
-├── 08-annex-iv-section-1.md            ← general description
-├── 09-annex-iv-section-2.md            ← system architecture
-├── 10-annex-iv-section-3.md            ← monitoring, functioning, control
-├── 11-annex-iv-section-4.md            ← performance metrics
-├── 12-annex-iv-section-5.md            ← risk management
-├── 13-annex-iv-section-6.md            ← changes to the system
-├── 14-annex-iv-section-7.md            ← harmonised standards list
-├── 15-annex-iv-section-8.md            ← EU declaration of conformity
-├── 16-annex-iv-section-9.md            ← post-market monitoring plan
-├── 17-findings-summary.json            ← all scan findings, de-duplicated
-├── 18-ai-bom.cdx.json                  ← CycloneDX 1.7 AI-BOM
-├── 19-dependency-graph.json            ← third-party dependencies
-├── 20-human-oversight-trace.json       ← cross-file Art. 14 trace
-├── 21-scan-manifest.json               ← tool version, pattern version
-├── 22-framework-crosswalk.json         ← NIST / ISO / OWASP mappings
-├── 23-gap-assessment.json              ← Art. 9-15 readiness scores
-├── 24-prioritised-remediation.json     ← `regula plan` output
-├── 25-policy-snapshot.yaml             ← regula-policy.yaml at scan time
-└── 26-changelog.md                     ← scan history since last pack
-```
-
-Every file is SHA-256 hashed in `manifest.json`. The manifest is itself
-hashed and the hash is stamped into the JSON envelope of the CLI
-output, so downstream auditors can detect post-hoc tampering.
-
-### How an auditor verifies a pack
-
-```bash
-# Re-compute every file's SHA-256 and compare against manifest.json
-cd conform-pack-YYYY-MM-DD
-python3 -c "
-import hashlib, json, sys
-manifest = json.load(open('manifest.json'))
-failures = []
-for entry in manifest['files']:
-    with open(entry['path'], 'rb') as f:
-        got = hashlib.sha256(f.read()).hexdigest()
-    if got != entry['sha256']:
-        failures.append(entry['path'])
-sys.exit(1 if failures else 0)
-print('OK' if not failures else 'TAMPER:', *failures)
-"
-```
-
-This verification runs without installing Regula. Auditors only need
-Python stdlib.
+Read `00-summary.md` or `00-assessment-summary.json` first, resolve the listed
+questions with the accountable owner, and verify each observation against its
+source. The current CLI commands start from an empty decision fact set. A saved
+assessment does not automatically turn either pack into a resolved decision.
 
 ## `regula evidence-pack .`
 
-A lighter-weight bundle intended for developer review and pull-request
-evidence. Uses the same `json_output` envelope format (`format_version`,
-`regula_version`, `command`, `timestamp`, `exit_code`, `data`) and is
-suitable for attachment to code review artefacts. It is **not** a
-substitute for the Article 43 conformity pack when a notified body is
-involved.
+The implemented generator is [`scripts/evidence_pack.py`](../scripts/evidence_pack.py).
+A default run with the optional local evidence available produces:
 
-## What the pack is NOT
-
-Consistent with `docs/what-regula-does-not-do.md`:
-
-- **It is not a conformity certificate.** Only a notified body (for
-  Annex VII routes) or a properly-completed internal control process
-  (for Annex VI routes) can result in conformity. The pack is the
-  evidence that feeds those processes.
-- **It is not a legal opinion.** The scaffolded Annex IV sections are
-  starting points. A human must fill in the organisational details
-  that a scanner cannot know.
-- **It does not replace post-market monitoring.** The pack is a
-  snapshot. Article 72 monitoring is a continuous process.
-
-## Reproducibility
-
-Every pack includes `21-scan-manifest.json` which records:
-
-- `regula_version` — the version of the CLI that produced the pack
-- `pattern_version` — the pattern ruleset version from `regula-policy.yaml`
-- `timestamp` — ISO 8601, UTC
-- `git_sha` — the git commit of the scanned project (if under git)
-- `delta_log_latest_entry` — the most recent EU AI Act change Regula
-  was aware of at scan time
-
-Two auditors who run `regula conform .` on the same git commit with
-the same `regula_version` and `pattern_version` will get byte-identical
-packs. This is the "evidence workflow" gap competitor SaaS platforms
-usually close with a hosted control library — Regula closes it with
-reproducibility plus the delta log.
-
-## Evidence integrity features (v1.7.0)
-
-### `--bundle` — self-verifying ZIP
-
-Packages the evidence pack into a `.regula-evidence.zip` containing all
-evidence files, `manifest.json`, and a standalone `verify.py` script.
-Auditors extract the ZIP and run `python3 verify.py` to check SHA-256
-hashes without needing Regula installed.
-
-```bash
-regula evidence-pack . --bundle
+```text
+evidence-pack-PROJECT-DATE/
+  00-summary.md
+  01-scan-results.json
+  02-gap-assessment.json
+  03-annex-iv-draft.md
+  04-dependency-report.json
+  05-audit-trail.json
+  06-resolvable-facts.md
+  07-risk-decisions.json
+  README.md
+  manifest.json
 ```
 
-### `--runtime <system_id>` — include opt-in application event data
+The summary describes scan coverage and reliance limits. The documentation is
+an unverified draft. The audit trail is project-scoped; it does not establish
+that every relevant action was recorded. Optional dependency and audit sections
+can be absent if their inputs cannot be read.
 
-Includes developer-instrumented event logs for a registered system in the
-evidence pack as `08-runtime-monitor.json`. The logs come from
-`monitor.py`'s hash-chained JSONL storage and contain inference counts,
-error rates, human-oversight rates, and safety-event fields. This is
-self-attesting Article 12 evidence input collected by code the application
-owner chose to instrument, not independent runtime monitoring or proof that
-every relevant event was recorded.
+For a consultant-prepared handoff, the CLI accepts `--client`, `--prepared-by`
+and `--engagement-ref`. These fields identify the engagement; they do not
+establish the preparer's qualifications or approval.
 
-```bash
-regula evidence-pack . --runtime my-system
+## `regula conform .`
+
+The implemented generator is [`scripts/conform.py`](../scripts/conform.py).
+The default unresolved handoff contains:
+
+```text
+conformity-evidence-PROJECT-DATE/
+  00-assessment-summary.json
+  01-detector-observations/findings.json
+  02-unassigned-evidence/evidence.json
+  02-unassigned-evidence/audit-trail.json
+  03-documentation-draft/annex-iv-draft.md
+  04-resolvable-facts.md
+  README.md
+  manifest.json
 ```
 
-### `--sign` — Ed25519 manifest signing
+The name of this command does not establish conformity under Article 43 of
+Regulation (EU) 2024/1689. Applicable duties and assessment routes require
+contextual legal review, including the current status of any Omnibus amendments.
+The pack is a snapshot and does not establish an ongoing Article 72 monitoring
+process.
 
-Signs the conform pack manifest with an Ed25519 key pair. On first use,
-generates a keypair at `~/.regula/signing.key`. The public key and
-signature are embedded in the manifest for independent verification.
-You can supply your own key with `--signing-key PATH` or the
-`REGULA_SIGNING_KEY` environment variable. Requires the
-`regula[signing]` optional extra.
+## Verify file consistency
 
-```bash
-regula conform . --sign
-```
-
-### `--timestamp` — RFC 3161 external timestamping
-
-Requests an RFC 3161 timestamp token from a Time Stamping Authority over
-the signed canonical manifest form, proving the evidence pack existed at
-a specific point in time. Implies `--sign`. The default TSA is
-`https://freetsa.org/tsr`; override with `--tsa-url URL` for any
-RFC 3161-compliant TSA.
+After generation, pass the returned pack path to the verifier:
 
 ```bash
-regula conform . --sign --timestamp
+regula verify ./PACK_DIRECTORY --strict
+regula verify ./PACK_DIRECTORY --strict --format json
 ```
 
-#### What `regula verify` proves about a timestamp
+Exit 0 means the requested integrity checks passed; 1 reports an integrity or
+signer failure; 2 reports an invalid input or a strict verification rejection.
+The JSON envelope's `exit_code` matches the process exit code. Strict mode does
+not require an optional signature or timestamp.
 
-`verify` reports the strongest level it can actually prove, and never
-plain "VERIFIED":
+`regula evidence-pack . --bundle` includes a standalone `verify.py`. Extract
+the ZIP, enter its pack directory, and run `python3 verify.py` to compare file
+hashes without installing Regula. Review the script before executing code
+received from another party. Its hash check does not authenticate a signer.
 
-| `timestamp_status` | Meaning |
+An unsigned pack can be edited together with its manifest. Matching SHA-256
+hashes therefore establish internal consistency, not authenticated provenance.
+For signer continuity, use `--expect-public-key` with a public key obtained
+through a separate trusted channel.
+
+## Repeatability and provenance
+
+Manifests record the tool version, generation time, project name and hashes of
+the included files. Generation timestamps and audit history can change between
+runs, even when the source tree is unchanged. Complete packs are not promised
+to be byte-identical.
+
+Archive the exact reviewed source revision, configuration and rule version
+alongside the handoff when repeatability matters. The default evidence pack
+manifest alone does not record all those inputs. A reproducible run is still
+not validation of a detector finding or legal conclusion.
+
+## Optional runtime evidence
+
+`regula evidence-pack . --runtime my-system` can add `08-runtime-monitor.json`
+from application events recorded through Regula's instrumentation. It includes
+counts, chain status and session summaries. The application owner controls what
+is instrumented, so this is self-attested evidence input relevant to Article 12,
+not independent monitoring or proof of complete event capture.
+
+`regula monitor report my-system` reports the share of consequential inference
+events marked as human-reviewed. Ordinary reviewed calls do not increase that
+share. With no consequential events, the rate is unknown. The metric depends on
+truthful instrumentation and does not measure review quality.
+
+## Optional signing and timestamping
+
+`regula conform . --sign` or `regula evidence-pack . --sign` adds an Ed25519
+manifest signature. Install the optional signing dependencies from the reviewed
+source as described in [installation.md](installation.md). A valid signature
+alone does not identify a trusted reviewer or establish professional approval.
+
+`--signing-key PATH` selects a key. Without it, signing uses the configured
+`REGULA_SIGNING_KEY` location or creates a local key at `~/.regula/signing.key`.
+Keep the private key private and share only the public key for verification.
+
+`--timestamp` implies signing and requests an RFC 3161 timestamp from a remote
+Time Stamping Authority. The default endpoint is `https://freetsa.org/tsr`;
+`--tsa-url URL` overrides it. This option requires network access.
+
+The verifier distinguishes these timestamp results:
+
+| Status | Meaning |
 |---|---|
-| `HASH_MATCHED` | The token's imprint matches this manifest, but its signature was not evaluated — `gen_time` is **not** authenticated. |
-| `SIGNATURE_VERIFIED` | The token's RFC 3161 signature verifies against the certificate embedded in it, and that certificate carries the critical timestamping EKU. The signer's **identity** is still self-asserted. |
-| `CHAIN_VERIFIED` | As above, plus the signer chains to the anchor you supplied and both certificates were valid at `gen_time`. |
-| `INVALID` | The signature is provably bad, or the token violates RFC 3161. `verify` fails. |
-| `UNVERIFIABLE` | No ASN.1 library installed — install `regula[signing]`. |
+| `HASH_MATCHED` | The imprint matches; the timestamp signature was not evaluated. |
+| `SIGNATURE_VERIFIED` | The signature verifies against the embedded certificate; signer identity is not independently anchored. |
+| `CHAIN_VERIFIED` | The signature also chains to the supplied direct issuer anchor and both certificates were valid at the recorded time. |
+| `INVALID` | Verification failed. |
+| `UNVERIFIABLE` | Required verification dependencies are absent. |
 
-To reach `CHAIN_VERIFIED`, pass the TSA's root certificate:
-
-```bash
-regula verify ./pack-dir --tsa-trust-anchor /path/to/tsa-root.pem
-```
-
-**Limits, stated plainly.** No revocation is ever checked — Regula's core
-is zero-network, so CRL/OCSP cannot be consulted offline, and a revoked
-TSA certificate will still reach `CHAIN_VERIFIED`. The chain check is not
-full RFC 5280 path validation: no name constraints, no policy processing,
-and no intermediate chain building (the anchor must be the direct
-issuer). If you need guarantees beyond this, validate the token with a
-dedicated RFC 3161 tool against a maintained trust store.
+Use `--tsa-trust-anchor PATH` to supply the direct issuer certificate. Regula
+performs no revocation checks, intermediate chain building, name-constraint or
+policy validation. A timestamp establishes neither the truth of the evidence
+nor legal conformity. Use dedicated validation against a maintained trust store
+where fuller certificate validation is required.

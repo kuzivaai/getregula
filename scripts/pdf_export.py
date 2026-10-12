@@ -420,7 +420,7 @@ def generate_compliance_html_report(
     model_data: dict | None = None,
     framework_names: list | None = None,
 ) -> str:
-    """Generate a self-contained HTML compliance report for DPOs and auditors.
+    """Generate a self-contained HTML evidence-preparation report.
 
     Args:
         findings: List of finding dicts (from scan_files() or similar).
@@ -436,20 +436,20 @@ def generate_compliance_html_report(
 
     scan_date = datetime.now(timezone.utc).strftime("%d %B %Y, %H:%M UTC")
 
-    # Determine overall risk tier from findings
+    # Summarise detector observations without assigning a legal tier.
     active = [f for f in findings if not f.get("suppressed")]
     tiers = [f.get("tier", "") for f in active]
     if "prohibited" in tiers:
-        tier_label = "PROHIBITED USE DETECTED"
+        tier_label = "ARTICLE 5-RELATED INDICATOR FOUND"
         tier_css = "risk-prohibited"
     elif "high_risk" in tiers:
-        tier_label = "HIGH-RISK AI SYSTEM"
+        tier_label = "ANNEX III-RELATED INDICATOR FOUND"
         tier_css = "risk-high-risk"
     elif "limited_risk" in tiers or "agent_autonomy" in tiers:
-        tier_label = "LIMITED-RISK AI SYSTEM"
+        tier_label = "ARTICLE 50-RELATED INDICATOR FOUND"
         tier_css = "risk-limited"
     else:
-        tier_label = "MINIMAL-RISK AI SYSTEM"
+        tier_label = "NO ELEVATED-PRIORITY INDICATOR FOUND"
         tier_css = "risk-minimal"
 
     prohibited_count = sum(1 for f in active if f.get("tier") == "prohibited")
@@ -465,7 +465,7 @@ def generate_compliance_html_report(
 </div>
 <div class="container">
 <div class="report-header">
-  <h1>EU AI Act Compliance Report</h1>
+  <h1>Regula Evidence-Preparation Report</h1>
   <div class="report-meta">
     Project: {escape(project_name)} &nbsp;|&nbsp;
     Scanned: {escape(scan_date)} &nbsp;|&nbsp;
@@ -481,15 +481,15 @@ def generate_compliance_html_report(
 <div class="summary-grid">
   <div class="summary-card">
     <div class="count">{prohibited_count}</div>
-    <div class="label">Prohibited</div>
+    <div class="label">Article 5 indicators</div>
   </div>
   <div class="summary-card">
     <div class="count">{high_risk_count}</div>
-    <div class="label">High-Risk</div>
+    <div class="label">Annex III indicators</div>
   </div>
   <div class="summary-card">
     <div class="count">{limited_count}</div>
-    <div class="label">Limited-Risk</div>
+    <div class="label">Article 50 indicators</div>
   </div>
   <div class="summary-card">
     <div class="count">{total_files}</div>
@@ -506,12 +506,12 @@ def generate_compliance_html_report(
     # --- SECTION: Findings ---
     tier_order = ["prohibited", "credential_exposure", "high_risk", "agent_autonomy", "limited_risk", "minimal_risk"]
     tier_display = {
-        "prohibited": "Prohibited Use (Article 5)",
+        "prohibited": "Article 5-related indicators",
         "credential_exposure": "Credential Exposure (Article 15)",
-        "high_risk": "High-Risk Indicators (Annex III)",
+        "high_risk": "Annex III-related indicators",
         "agent_autonomy": "Agent Autonomy (OWASP Agentic ASI)",
-        "limited_risk": "Limited-Risk",
-        "minimal_risk": "Minimal-Risk",
+        "limited_risk": "Article 50-related indicators",
+        "minimal_risk": "Other configured indicators",
     }
     tier_css_map = {
         "prohibited": "tier-prohibited",
@@ -524,7 +524,8 @@ def generate_compliance_html_report(
 
     findings_html = '<section id="regula-findings">\n<h2>Findings</h2>\n'
     if not active:
-        findings_html += "<p>No findings detected. This project shows no EU AI Act risk indicators in the scanned files.</p>\n"
+        findings_html += ("<p>No indicator was found by this configured scan. "
+                          "This does not establish legal non-applicability, safety, or compliance.</p>\n")
     else:
         by_tier: dict[str, list] = {}
         for f in active:
@@ -546,8 +547,8 @@ def generate_compliance_html_report(
   <div class="finding-title">{escape(tier_display.get(tier, tier).split('(')[0].strip())}</div>
   <div class="finding-desc">{desc}</div>
   <div class="finding-meta">
-    {escape(file_ref)}:{line_ref} &nbsp;&middot;&nbsp; Confidence: {score}
-    {(' &nbsp;&middot;&nbsp; ' + escape(article_str)) if article_str else ''}
+    {escape(file_ref)}:{line_ref} &nbsp;&middot;&nbsp; Detector priority: {score}
+    {(' &nbsp;&middot;&nbsp; Potentially relevant provision: ' + escape(article_str)) if article_str else ''}
   </div>
 </div>\n"""
     findings_html += "</section>\n"
@@ -559,7 +560,7 @@ def generate_compliance_html_report(
     else:
         s = model_data["summary"]
         inventory_html += f"<p>{s['total']} model identifier(s) detected: {s['frontier']} frontier, {s['open_weight']} open-weight, {s['unknown']} unclassified.</p>\n"
-        inventory_html += '<table><thead><tr><th>Provider</th><th>Model</th><th>GPAI Tier</th><th>Files</th><th>EU AI Act Note</th></tr></thead><tbody>\n'
+        inventory_html += '<table><thead><tr><th>Provider</th><th>Model</th><th>Model detector class</th><th>Files</th><th>Review note</th></tr></thead><tbody>\n'
         for m in model_data["models"]:
             files_count = len(set(o["file"] for o in m["occurrences"]))
             tier = m["gpai_tier"]
@@ -589,21 +590,21 @@ def generate_compliance_html_report(
 
     # --- SECTION: Severity Reference ---
     severity_html = """<section id="regula-severity-ref">
-<h2>Severity Reference</h2>
+<h2>Provision review reference</h2>
 <div class="severity-row">
-  <div class="severity-badge sev-prohibited">PROHIBITED</div>
-  <div class="severity-text"><strong>Article 5 — Prohibited practices.</strong> AI systems deploying manipulation techniques, exploiting vulnerabilities, social scoring by public authorities, or real-time remote biometric identification in public spaces (with narrow exceptions). Prohibited from market placement.</div>
+  <div class="severity-badge sev-prohibited">ARTICLE 5 INDICATOR</div>
+  <div class="severity-text"><strong>Potentially relevant provision: Article 5.</strong> Review the observed indicator against the provision's actor conditions, context, scope, and exceptions.</div>
 </div>
 <div class="severity-row">
-  <div class="severity-badge sev-high-risk">HIGH-RISK</div>
-  <div class="severity-text"><strong>Annex III — High-risk AI systems.</strong> Systems used in critical infrastructure, education, employment, essential services, law enforcement, migration, administration of justice, or democratic processes. Full obligations under Articles 9–15 apply before market placement.</div>
+  <div class="severity-badge sev-high-risk">ANNEX III INDICATOR</div>
+  <div class="severity-text"><strong>Potentially relevant provisions: Article 6 and Annex III.</strong> Intended purpose, actor role, deployment context, exclusions, and other evidence are unresolved by the code observation.</div>
 </div>
 <div class="severity-row">
-  <div class="severity-badge sev-limited">LIMITED-RISK</div>
-  <div class="severity-text"><strong>Articles 50, 52 — Transparency obligations.</strong> Chatbots, AI-generated content, emotion recognition, and biometric categorisation systems must disclose AI involvement to users. No pre-market authorisation required.</div>
+  <div class="severity-badge sev-limited">ARTICLE 50 INDICATOR</div>
+  <div class="severity-text"><strong>Potentially relevant provision: Article 50.</strong> Applicability depends on role, purpose, context, paragraph, conditions, and exceptions. Human review is required.</div>
 </div>
 <div class="severity-row">
-  <div class="severity-badge sev-minimal">MINIMAL-RISK</div>
+  <div class="severity-badge sev-minimal">OTHER INDICATOR</div>
   <div class="severity-text"><strong>No elevated risk-tier path identified.</strong> This is not a legal classification or proof that no duties apply. Review intended purpose, Article 4, Article 5, role-specific duties, and other context-dependent provisions.</div>
 </div>
 <p style="font-size:12px;color:#6B7280;margin-top:16px;">Detector priority (0-100) indicates how many code patterns matched in the scanned file. It is not a correctness probability. Priority &ge;80 or any prohibited-practice pattern = BLOCK tier. 50-79 = WARN. &lt;50 = INFO.</p>
@@ -628,7 +629,7 @@ def generate_compliance_html_report(
   <li><strong>Heuristic ranking.</strong> Detector priority is based on pattern counts, not legal analysis. A high value flags a file for review; it does not constitute a compliance determination.</li>
   <li><strong>Scope.</strong> Only files with extensions .py, .js, .ts, .jsx, .tsx, .mjs, .cjs were scanned. Infrastructure-as-code, notebooks, and binary files are excluded unless explicitly included.</li>
 </ul>
-<p style="font-size:12px;color:#6B7280;">Generated by Regula v{VERSION} — EU AI Act Governance Indication Tool. This report does not constitute legal advice.</p>
+<p style="font-size:12px;color:#6B7280;"><strong>Human review required.</strong> Generated by Regula v{VERSION}. The human decision field is empty. This report does not determine applicability, legal tier, duties, compliance, safety, conformity, certification, or non-applicability.</p>
 </section>
 </div><!-- /container -->
 """
@@ -640,7 +641,7 @@ def generate_compliance_html_report(
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EU AI Act Compliance Report &mdash; {escape(project_name)}</title>
+<title>Regula Evidence-Preparation Report - {escape(project_name)}</title>
 <style>
 {_COMPLIANCE_REPORT_CSS}
 </style>

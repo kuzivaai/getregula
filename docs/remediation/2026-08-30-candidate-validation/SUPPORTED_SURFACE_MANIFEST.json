@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "product_boundary": "Code observations plus declared context plus explicit unknowns or contradictions plus provenance plus accountable human review produce reviewable evidence, not an autonomous legal determination.",
+  "support_classes": [
+    "CORE",
+    "ADVANCED",
+    "EXPERIMENTAL",
+    "DEPRECATED",
+    "HISTORICAL",
+    "REMOVE"
+  ],
+  "required_semantics": [
+    "detector_observations",
+    "source_locations",
+    "detector_limitations",
+    "declared_context_and_provenance",
+    "missing_context",
+    "contradictory_context",
+    "potentially_relevant_references",
+    "reviewer_questions",
+    "suggested_review_steps",
+    "accountable_human_decision"
+  ],
+  "forbidden_automated_conclusions": [
+    "legal_applicability",
+    "legal_classification",
+    "legal_tier",
+    "applicable_duties",
+    "conformity",
+    "compliance",
+    "certification",
+    "safety",
+    "readiness",
+    "legal_non_applicability",
+    "absence_of_obligations"
+  ],
+  "legacy_public_fields": [
+    "result_type",
+    "rule_resolution",
+    "indications",
+    "obligations",
+    "outside_scope_basis",
+    "decision_trace"
+  ],
+  "command_registry": "data/command_capability_disposition.csv",
+  "surfaces": [
+    {
+      "id": "cli.commands",
+      "support_class": "CORE",
+      "user_purpose": "Run local observation, context, evidence, integrity, and review workflows.",
+      "input": "Command arguments, local files, explicit configuration, and declared facts.",
+      "output_representation": "Text or the stable JSON envelope; selected commands also emit files.",
+      "controlling_tests": ["tests/test_cli_integration.py", "tests/test_classification.py", "tests/test_supported_surface_manifest.py"],
+      "authority": {"network": "Command-specific and opt-in", "filesystem": "Selected local project and explicit output paths"},
+      "remaining_limitations": "Legacy command names classify, comply, compliance, exempt, and conform need compatibility-safe migration."
+    },
+    {
+      "id": "cli.text",
+      "support_class": "CORE",
+      "user_purpose": "Read detector observations, context gaps, provenance, and review steps in a terminal.",
+      "input": "Shared observation and review-evidence records.",
+      "output_representation": "Human-readable terminal text.",
+      "controlling_tests": ["tests/test_product_boundary_contract.py", "tests/test_documented_transcripts.py"],
+      "authority": {"network": "None for core scan", "filesystem": "Read-only scan input plus explicit outputs"},
+      "remaining_limitations": "Some advanced commands retain older terminology in compatibility output."
+    },
+    {
+      "id": "cli.json",
+      "support_class": "CORE",
+      "user_purpose": "Consume versioned review evidence in automation.",
+      "input": "Shared observation and review-evidence records.",
+      "output_representation": "Stable JSON envelope with public review schema 2.0 data.",
+      "controlling_tests": ["tests/test_decision_conformance.py", "tests/test_product_boundary_contract.py"],
+      "authority": {"network": "None for core scan", "filesystem": "Read-only scan input"},
+      "remaining_limitations": "Consumers of removed legacy public fields require migration."
+    },
+    {
+      "id": "report.html",
+      "support_class": "CORE",
+      "user_purpose": "Review scan evidence in a portable document.",
+      "input": "Public review schema and renderer metadata.",
+      "output_representation": "Accessible HTML evidence-preparation report.",
+      "controlling_tests": ["tests/test_report.py", "tests/test_product_boundary_contract.py"],
+      "authority": {"network": "None", "filesystem": "Explicit report path"},
+      "remaining_limitations": "Accessibility automation does not establish conformance."
+    },
+    {
+      "id": "report.pdf",
+      "support_class": "ADVANCED",
+      "user_purpose": "Create a portable rendering of review evidence.",
+      "input": "Public review schema and optional PDF dependency.",
+      "output_representation": "PDF evidence-preparation report.",
+      "controlling_tests": ["tests/test_product_boundary_contract.py", "tests/test_installed_artefact.py"],
+      "authority": {"network": "None", "filesystem": "Explicit report path"},
+      "remaining_limitations": "Requires an optional dependency; print and assistive-technology review remains incomplete."
+    },
+    {
+      "id": "report.sarif",
+      "support_class": "ADVANCED",
+      "user_purpose": "Attach code-observable findings to code-review tooling.",
+      "input": "Detector findings and source locations.",
+      "output_representation": "SARIF with observation and limitation properties.",
+      "controlling_tests": ["tests/test_product_boundary_contract.py", "tests/test_decision_conformance.py"],
+      "authority": {"network": "None", "filesystem": "Explicit output path"},
+      "remaining_limitations": "Host platforms may visually overstate SARIF severity."
+    },
+    {
+      "id": "rest.v1",
+      "support_class": "EXPERIMENTAL",
+      "user_purpose": "Exercise local adapters for check, indicator labelling, evidence gaps, and questionnaires.",
+      "input": "Bounded JSON requests to health, check, classify, gap, questionnaire, and dashboard routes.",
+      "output_representation": "JSON envelope or bounded error response.",
+      "controlling_tests": ["tests/test_api_server.py", "tests/test_product_boundary_contract.py"],
+      "authority": {"network": "Loopback by default; explicit unsafe acknowledgement for non-loopback", "filesystem": "Current authorised workspace"},
+      "remaining_limitations": "No authentication; not a production API."
+    },
+    {
+      "id": "mcp.tools",
+      "support_class": "EXPERIMENTAL",
+      "user_purpose": "Allow a local MCP client to request check, indicator labelling, or evidence-gap output.",
+      "input": "regula_check, regula_classify, or regula_gap within an explicit workspace root.",
+      "output_representation": "MCP text content containing bounded JSON.",
+      "controlling_tests": ["tests/test_mcp_server.py", "tests/test_product_boundary_contract.py"],
+      "authority": {"network": "Stdio transport", "filesystem": "Explicit resolved workspace with limits"},
+      "remaining_limitations": "Native Windows containment has not been executed."
+    },
+    {
+      "id": "browser.assessment",
+      "support_class": "CORE",
+      "user_purpose": "Record declared context, unknowns, contradictions, and reviewer questions without uploading source.",
+      "input": "User answers and optional in-browser single-file scan.",
+      "output_representation": "Versioned assessment evidence and recoverable share payload schema 4.",
+      "controlling_tests": ["tests/test_questionnaire_scoring.js", "tests/test_scanner_js.js"],
+      "authority": {"network": "No application backend required", "filesystem": "Browser-selected file only"},
+      "remaining_limitations": "Legacy links are explicitly lossy; fluent legal-language review remains external."
+    },
+    {
+      "id": "evidence.pack",
+      "support_class": "CORE",
+      "user_purpose": "Bundle observations, provenance, limitations, and reviewer-completable decisions.",
+      "input": "Project scan plus declared context.",
+      "output_representation": "Versioned evidence bundle and integrity manifest.",
+      "controlling_tests": ["tests/test_evidence_pack_unit.py", "tests/test_evidence_bundle.py"],
+      "authority": {"network": "Only explicit optional timestamping", "filesystem": "Project input and explicit bundle output"},
+      "remaining_limitations": "Integrity verification does not validate legal meaning or evidence completeness."
+    },
+    {
+      "id": "scaffold.conformity",
+      "support_class": "ADVANCED",
+      "user_purpose": "Prepare Article 43 and Annex IV material for accountable review.",
+      "input": "Code observations, declared facts, and empty reviewer fields.",
+      "output_representation": "Reviewer-completable scaffold, never a certificate.",
+      "controlling_tests": ["tests/test_conform.py", "tests/test_product_boundary_contract.py"],
+      "authority": {"network": "Only explicit optional timestamping", "filesystem": "Project input and explicit output directory"},
+      "remaining_limitations": "Qualified conformity and legal review remains external."
+    },
+    {
+      "id": "scaffold.governance_model_card",
+      "support_class": "ADVANCED",
+      "user_purpose": "Prepare governance and model-card evidence fields.",
+      "input": "Code observations and user declarations.",
+      "output_representation": "Markdown scaffolds with unknown and human-decision fields.",
+      "controlling_tests": ["tests/test_documentation.py", "tests/test_product_boundary_contract.py"],
+      "authority": {"network": "None", "filesystem": "Project input and explicit output directory"},
+      "remaining_limitations": "Generated content does not verify organisational practice or model behaviour."
+    },
+    {
+      "id": "examples.demos",
+      "support_class": "CORE",
+      "user_purpose": "Learn the bounded workflow from tracked illustrative inputs.",
+      "input": "Repository fixtures.",
+      "output_representation": "Reproducible example observations and declared-context flow.",
+      "controlling_tests": ["tests/test_demo_doc.py", "tests/test_documented_transcripts.py"],
+      "authority": {"network": "None", "filesystem": "Tracked example files"},
+      "remaining_limitations": "Synthetic examples are not representative validity evidence."
+    },
+    {
+      "id": "website.metadata",
+      "support_class": "CORE",
+      "user_purpose": "Understand product purpose, limitations, provenance, and navigation before evaluation.",
+      "input": "Generated public facts and locale content.",
+      "output_representation": "HTML metadata, Open Graph data, JSON-LD, llms.txt, and visible copy.",
+      "controlling_tests": ["tests/test_public_claim_integrity.py", "tests/test_source_of_truth.py", "tests/test_locale_link_language.py"],
+      "authority": {"network": "Static delivery only", "filesystem": "None at runtime"},
+      "remaining_limitations": "Deployment state is externally controlled; translated legal wording needs fluent review."
+    },
+    {
+      "id": "state.no_finding",
+      "support_class": "CORE",
+      "user_purpose": "Understand a configured scan that matched no indicator.",
+      "input": "Zero detector matches under the recorded configuration.",
+      "output_representation": "No indicator found, configuration provenance, limitations, and unresolved context.",
+      "controlling_tests": ["tests/test_bare_scan_decision.py", "tests/test_product_boundary_contract.py"],
+      "authority": {"network": "None", "filesystem": "Selected scan input"},
+      "remaining_limitations": "Absence of a match is not absence of legal relevance or risk."
+    },
+    {
+      "id": "state.incomplete",
+      "support_class": "CORE",
+      "user_purpose": "Preserve unanswered or explicitly unknown context.",
+      "input": "Partial assessment or missing declared facts.",
+      "output_representation": "insufficient_information with missing facts and reviewer questions.",
+      "controlling_tests": ["tests/test_fact_loop.py", "tests/test_questionnaire_scoring.js"],
+      "authority": {"network": "None", "filesystem": "Optional local fact store"},
+      "remaining_limitations": "A reviewer must resolve facts outside code."
+    },
+    {
+      "id": "state.contradictory",
+      "support_class": "CORE",
+      "user_purpose": "Expose incompatible declarations rather than manufacture a result.",
+      "input": "Contradictory declared context.",
+      "output_representation": "Contradiction list, provenance, and human-review requirement.",
+      "controlling_tests": ["tests/test_fact_loop.py", "tests/test_questionnaire_scoring.js"],
+      "authority": {"network": "None", "filesystem": "Optional local fact store"},
+      "remaining_limitations": "Conflict resolution is an accountable human task."
+    },
+    {
+      "id": "state.error_recovery",
+      "support_class": "CORE",
+      "user_purpose": "Recover from invalid input, malformed links, corrupt cache, or blocked authority.",
+      "input": "Malformed, unsupported, corrupt, oversized, or out-of-scope input.",
+      "output_representation": "Visible bounded error with no manufactured assessment.",
+      "controlling_tests": ["tests/test_scan_cache.py", "tests/test_questionnaire_scoring.js", "tests/test_mcp_server.py", "tests/test_api_server.py"],
+      "authority": {"network": "No fallback external action", "filesystem": "No out-of-scope reads"},
+      "remaining_limitations": "Some browser error announcements still require manual assistive-technology review."
+    },
+    {
+      "id": "weekly_digest.review_draft",
+      "support_class": "EXPERIMENTAL",
+      "user_purpose": "Summarise untrusted issue text for human review without repository publication authority.",
+      "input": "Bounded issue metadata treated as untrusted data.",
+      "output_representation": "Strict review-only summary in the workflow job summary.",
+      "controlling_tests": ["tests/test_weekly_digest.py"],
+      "authority": {"network": "Read issues and call the explicitly configured model endpoint", "filesystem": "No package or source modification"},
+      "remaining_limitations": "Model privacy and output quality depend on the separately approved endpoint."
+    },
+    {
+      "id": "rating.packet",
+      "support_class": "EXPERIMENTAL",
+      "user_purpose": "Prepare blinded independent detector-rating packets.",
+      "input": "Versioned corpus items and zero or more independent ratings.",
+      "output_representation": "Rating packet schema 1.0 with explicit incomplete state.",
+      "controlling_tests": ["tests/test_annotation_stats.py"],
+      "authority": {"network": "None", "filesystem": "Explicit packet files"},
+      "remaining_limitations": "Two real ratings and adjudication remain external dependencies."
+    }
+  ]
+}

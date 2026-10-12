@@ -223,6 +223,8 @@ def cmd_api_server(args) -> None:
         api_args.extend(['--port', str(args.port)])
     if hasattr(args, 'host') and args.host:
         api_args.extend(['--host', args.host])
+    if getattr(args, 'unsafe_network', False):
+        api_args.append('--unsafe-network')
     sys.argv = ['regula api-server'] + api_args
     run_api()
 
@@ -230,4 +232,4 @@ def cmd_api_server(args) -> None:
 def cmd_mcp_server(args) -> None:
     """Start the Regula MCP server over stdio."""
     from mcp_server import run_server
-    run_server()
+    run_server(args.workspace_root)

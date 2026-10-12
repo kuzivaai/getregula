@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -53,7 +53,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
@@ -87,7 +87,7 @@
 <p>Nothing on this site is legal advice, a compliance determination, a certification, or a conformity assessment. Content and tool output indicate what may need review; whether a law applies to a real system, and what it requires, are questions for a qualified professional with knowledge of your facts. Where a page names a regulatory date or provision, we cite the source, and regulations can change after a page is published.</p>
 
 <h2>No paid services are offered on this site at present</h2>
-<p>The pricing page describes a planned consultant service. Describing it is not an offer for sale: no payment can be made and no booking can be placed through this site at present, and the page says so. If that changes, the service, its provider, its price, and its terms will be published before anything can be bought.</p>
+<p>The pricing page describes the free browser assessment, local CLI and their limits. Regula does not currently offer a paid review, consultancy, checkout or booking service. If that changes, the service, its provider, its price, and its terms will be published before anything can be bought.</p>
 
 <h2>Software licences</h2>
 <p>The Regula software is open source: code under Apache-2.0 / EUPL-1.2 and detection rules under DRL 1.1, as set out in the repository's <a href="https://github.com/kuzivaai/getregula/blob/main/NOTICE" rel="noopener">NOTICE file</a>. The software is provided "as is", without warranties or conditions of any kind, in accordance with those licences. Your use of the software is governed by the licences, not by this page.</p>

@@ -4,21 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Critical inline CSS + non-render-blocking stylesheets; same pattern as
-         blog posts. Inline critical CSS establishes dark theme immediately;
-         color-scheme: dark hints the canvas colour; stylesheets load via
+         blog posts. Inline critical CSS establishes brand canvas immediately;
+         color-scheme: light hints the canvas colour; stylesheets load via
          media="print" + onload swap so they don't block first paint. -->
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -29,7 +29,7 @@
     <meta property="og:title" content="Free and Open Source | Regula">
     <meta property="og:description" content="Use Regula's browser assessment and local CLI for free. No account, checkout or paid consulting service.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula: EU AI Act compliance tool for code">
+    <meta property="og:image:alt" content="Regula: EU AI Act code observations and evidence preparation">
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
@@ -95,6 +95,13 @@
             margin: 0 auto var(--s12);
             padding: 0 var(--s6);
         }
+        .pricing-path-title {
+            margin: 0 auto var(--s6);
+            padding: 0 var(--s6);
+            text-align: center;
+            font-family: var(--font-serif);
+            font-size: 24px;
+        }
 
         .pricing-card {
             background: var(--bg-elev);
@@ -103,6 +110,7 @@
             padding: var(--s7) var(--s6);
             display: flex;
             flex-direction: column;
+            min-width: 0;
         }
         .pricing-card.featured {
             border-color: var(--accent);
@@ -182,7 +190,7 @@
         }
         .pricing-card .cta-btn.free {
             background: var(--accent-soft);
-            color: #bae6fd;
+            color: var(--accent-hover);
             border: 1px solid rgba(59,130,246,0.2);
             cursor: pointer;
         }
@@ -197,18 +205,21 @@
         }
         .pricing-card.featured .cta-btn.coming {
             background: rgba(59,130,246,0.1);
-            color: #bae6fd;
+            color: var(--accent-hover);
             border: 1px solid rgba(59,130,246,0.3);
         }
 
 
         .pricing-card code {
+            display: block;
             font-family: var(--font-mono);
             font-size: 12px;
             color: var(--text-dim);
             background: rgba(255,255,255,0.04);
             padding: 2px 6px;
             border-radius: var(--r-sm);
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .trust-note {
@@ -321,7 +332,7 @@
 
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Record deployment context for review">Assess scope</a>
         <a href="/product.html">Scan code</a>
@@ -342,6 +353,7 @@
     <p class="subtitle">The assessment and scanner are free and open source. Regula does not operate a paid assessment, booking flow or consulting service. When a question needs legal or domain judgment, take the evidence to an appropriately qualified professional you choose.</p>
 </div>
 
+<h2 class="pricing-path-title">Choose the path that matches your task</h2>
 <div class="pricing-cards">
 
     <div class="pricing-card featured">

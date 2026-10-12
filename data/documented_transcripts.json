@@ -13,7 +13,7 @@
         "all"
       ],
       "anchors": [
-        "Decision: insufficient_information",
+        "Review status: insufficient_information",
         "Detector observations (not legal facts):",
         "High-risk:          1",
         "INFO tier:          1",
@@ -29,7 +29,7 @@
       ],
       "anchors": [
         "Article observations emitted: 0; held pending applicability: 8",
-        "Article evidence is attached only where the decision kernel resolved the corresponding obligation."
+        "Code and documentation observations remain held because no accountable human decision is recorded."
       ]
     },
     {
@@ -70,7 +70,7 @@
         "all"
       ],
       "anchors": [
-        "Decision: insufficient_information",
+        "Review status: insufficient_information",
         "Detector summary: ANNEX III OR SECURITY PATTERNS",
         "INFO tier:          1",
         "[INFO] [ 43] app.py — Employment and workers management [plan]"
@@ -87,7 +87,7 @@
         "employment"
       ],
       "anchors": [
-        "Decision: insufficient_information",
+        "Review status: insufficient_information",
         "Resolve the facts listed above before attaching Article 9 to 15 duties.",
         "INFO tier:          1",
         "[INFO] [ 43] app.py — Employment and workers management [plan]"
@@ -113,7 +113,7 @@
         "all"
       ],
       "anchors": [
-        "Decision: insufficient_information",
+        "Review status: insufficient_information",
         "Detector summary: ANNEX III OR SECURITY PATTERNS",
         "Resolve the facts listed above before attaching Article 9 to 15 duties.",
         "High-risk:          1",
@@ -131,7 +131,7 @@
         "all"
       ],
       "anchors": [
-        "Decision: insufficient_information",
+        "Review status: insufficient_information",
         "Detector summary: ANNEX III OR SECURITY PATTERNS",
         "Resolve the facts listed above before attaching Article 9 to 15 duties.",
         "High-risk:          1",

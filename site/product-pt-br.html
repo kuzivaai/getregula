@@ -7,21 +7,21 @@
          Why: /assets/site.min.css is render-blocking, so Chrome shows a WHITE canvas
          (the browser default) for the entire duration of the CSS fetch on cold
          loads :  measured at ~600ms on simulated 3G, worse on real slow networks.
-         That white→dark snap is what users reported as "the demo flashing": the
+         That canvas shift is what users reported as "the demo flashing": the
          hero terminal sits at the top of the fold and takes the full brunt of it.
          The earlier attempt (93a833b) targeted panel opacity and font preload,
          neither of which is the actual cause :  the cause is that the browser
          cannot paint at all until the external stylesheet arrives.
 
          Fix: establish the brand background + basic tokens inline so first paint
-         is already dark, then load site.css asynchronously via the media="print"
+         already uses the brand canvas, then load site.css asynchronously via the media="print"
          + onload swap trick (well-documented pattern). A <noscript> fallback
          preserves styling for JS-disabled clients. -->
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
@@ -32,7 +32,7 @@
          post-CSS visual. Prevents a vertical stack of all four panels flashing
          briefly before site.css loads. */
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -115,7 +115,7 @@
     <link rel="alternate" hreflang="x-default" href="https://getregula.com/product.html">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%233b82f6'/><text x='50' y='72' font-family='system-ui' font-size='64' font-weight='700' fill='white' text-anchor='middle'>R</text></svg>">
     <!-- Stylesheets loaded via media="print" + onload swap so they don't block
-         first paint. The inline critical CSS above already establishes the dark
+         first paint. The inline critical CSS above already establishes the light
          theme; these sheets layer on the full design system once they arrive.
          <noscript> fallback ensures JS-disabled clients still get full styling. -->
     <!-- CSP note: these inline onload handlers require 'unsafe-inline' in script-src.
@@ -186,7 +186,7 @@
 <!-- NAV -->
 <nav class="nav" id="nav" aria-label="Navegacao principal">
     <a href="/" class="nav-brand">Regula</a>
-    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.show();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
+    <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
     <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/pt-br.html" title="Registrar o contexto de uso para revisão">Avaliar escopo</a>
         <span class="active">Revisar código</span>
@@ -201,7 +201,7 @@
 
 <!-- HERO -->
 <main id="main">
-<div class="sec" style="padding:80px 0 0;">
+<div class="sec">
     <h1 class="sec-head">O que o Regula faz</h1>
     <p class="sec-sub">O detalhe por tr&aacute;s das cinco perguntas da p&aacute;gina inicial: o que o scanner procura, o que ele relata, como ele roda e onde fica em rela&ccedil;&atilde;o a outras ferramentas. Nada disso muda o que a ferramenta consegue estabelecer. O Regula indica onde olhar; ele n&atilde;o decide a sua classe de risco, as suas obriga&ccedil;&otilde;es nem se voc&ecirc; est&aacute; em conformidade.</p>
     <p class="sec-sub"><a href="/locales/pt-br.html">&larr; Voltar &agrave;s cinco perguntas</a></p>
@@ -213,35 +213,35 @@
     <p class="sec-sub">Desenvolvedores que enviam produtos de IA, e as empresas que os utilizam.</p>
     <div class="audience-grid">
         <div class="audience-card audience-biz">
-            <div class="audience-label">Se voce dirige o negocio</div>
+            <div class="audience-label">Se você dirige o negócio</div>
             <h3>Comece pelo contexto de uso</h3>
             <p>Se sua equipe desenvolve ou usa IA, jurisdi&ccedil;&atilde;o, finalidade pretendida, papel e contexto de implanta&ccedil;&atilde;o determinam quais regras podem se aplicar. Registre esse contexto em <code>regula assess</code> e encaminhe o resultado aos respons&aacute;veis t&eacute;cnicos e jur&iacute;dicos adequados.</p>
             <button type="button" class="audience-fwd" onclick="copyPageUrl(this)">
-                <span class="fwd-icon">&#8599;</span>
+                <span class="fwd-icon" aria-hidden="true">&#8599;</span>
                 <span class="fwd-txt">Copiar link para enviar ao seu desenvolvedor</span>
             </button>
             <a class="audience-fwd" href="/assess/pt-br.html">
-                <span class="fwd-icon">&#8594;</span>
+                <span class="fwd-icon" aria-hidden="true">&#8594;</span>
                 <span class="fwd-txt">Avalie no navegador (sem instala&ccedil;&atilde;o, sem terminal)</span>
             </a>
         </div>
         <div class="audience-card audience-dev">
-            <div class="audience-label">Se voce escreve o codigo</div>
+            <div class="audience-label">Se você escreve o código</div>
             <h3>Revise os padr&otilde;es encontrados no c&oacute;digo</h3>
             <p>O Artigo 2 inclui situa&ccedil;&otilde;es em que a Lei se aplica fora da UE, mas aplicabilidade e classifica&ccedil;&atilde;o de risco n&atilde;o podem ser determinadas apenas pelo c&oacute;digo-fonte. Use o scan para localizar evid&ecirc;ncias e perguntas para revis&atilde;o contextual.</p>
             <ul>
-                <li>Funciona com codigo gerado por IA (Cursor, Lovable, Bolt, Claude Code)</li>
-                <li>Gera documentacao Anexo IV a partir do seu codigo real</li>
+                <li>Funciona com código gerado por IA (Cursor, Lovable, Bolt, Claude Code)</li>
+                <li>Gera uma estrutura de documentação do Anexo IV a partir do seu código real</li>
                 <li>Integra&ccedil;&atilde;o CI/CD &middot; JSON &middot; SARIF &middot; refer&ecirc;ncias selecionadas em 13 identificadores de frameworks</li>
             </ul>
             <span class="step-cmd" style="margin-top:18px;">regula check .</span>
         </div>
         <div class="audience-card audience-audit">
-            <div class="audience-label">Se voce audita conformidade</div>
+            <div class="audience-label">Se você revisa evidências de governança</div>
             <h3>Estruturas de evid&ecirc;ncia revis&aacute;veis</h3>
-            <p>O Regula pode gerar estruturas de pacotes de evid&ecirc;ncia com manifestos SHA-256; comandos opcionais acrescentam assinaturas ou marcas temporais quando seus pr&eacute;-requisitos est&atilde;o configurados. Os pacotes exigem preenchimento humano e n&atilde;o demonstram sufici&ecirc;ncia jur&iacute;dica. <a href="/sample-report.html" hreflang="en">Ver um relat&oacute;rio de exemplo (em ingl&ecirc;s) &rarr;</a> &middot; <a href="/pricing.html" hreflang="en">Perguntas gratuitas e consultoria planejada (em ingl&ecirc;s) &rarr;</a></p>
+            <p>O Regula pode gerar estruturas de pacotes de evid&ecirc;ncia com manifestos SHA-256; comandos opcionais acrescentam assinaturas ou marcas temporais quando seus pr&eacute;-requisitos est&atilde;o configurados. Os pacotes exigem preenchimento humano e n&atilde;o demonstram sufici&ecirc;ncia jur&iacute;dica. <a href="/sample-report.html" hreflang="en">Ver um relat&oacute;rio de exemplo (em ingl&ecirc;s) &rarr;</a> &middot; <a href="/pricing.html" hreflang="en">Ferramentas gratuitas e limites (em ingl&ecirc;s) &rarr;</a></p>
             <button type="button" class="audience-fwd" onclick="copyPill(this, 'pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula conform --sign .')">
-                <span class="fwd-icon">&#9654;</span>
+                <span class="fwd-icon" aria-hidden="true">&#9654;</span>
                 <span class="fwd-txt">regula conform --sign .</span>
             </button>
         </div>
@@ -273,16 +273,16 @@
         <div class="tier tier-g">
             <div class="tier-badge">Risco minimo</div>
             <div class="tier-examples">Filtros de spam &middot; Jogos com IA &middot; Recomendacoes basicas &middot; Ranking de busca</div>
-            <div class="tier-hint">Sem requisitos obrigatorios &rarr;</div>
+            <div class="tier-hint">Nenhum indicador configurado foi encontrado; isso não é uma conclusão jurídica &rarr;</div>
         </div>
     </div>
-    <p class="tier-cta">O Regula mostra onde seu codigo se encaixa, e exatamente por que.</p>
+    <p class="tier-cta">O Regula mostra quais padrões foram encontrados no seu código e quais perguntas continuam em aberto.</p>
 </div>
 
 <div class="urgency">
     <div class="urgency-box" role="note">
         <div class="date">2026&ndash;27</div>
-        <div class="body"><strong>Obrigacoes de alto risco</strong> para sistemas do Anexo III agora se aplicam a partir de dezembro de 2027, apos o acordo provisorio do Digital Omnibus de 7 de maio de 2026, aprovado pelo Parlamento Europeu em 16 de junho de 2026. Sistemas do Anexo I se aplicam a partir de agosto de 2028. O Conselho aprovou em 29 de junho de 2026; publicado no Jornal Oficial em 24 de julho de 2026 como Regulamento (UE) 2026/1744, em vigor a partir de 27 de julho de 2026. De qualquer forma, os requisitos nao mudam : apenas o prazo. <strong>Voce precisa saber onde esta.</strong></div>
+        <div class="body"><strong>Datas potencialmente relevantes exigem revisão contextual.</strong> Quando uma pessoa qualificada estabelece que uma disposição se aplica, as datas dependem da rota jurídica, do papel do operador e das condições pertinentes. O Regula não decide essa aplicabilidade a partir do código.</div>
     </div>
 </div>
 
@@ -290,7 +290,7 @@
 <div class="urgency">
     <div class="urgency-box" role="note">
         <div class="date">Brasil</div>
-        <div class="body"><strong>LGPD Artigo 20</strong> ja esta em vigor: titulares podem solicitar revisao de decisoes automatizadas. O <strong>Marco Legal da IA (PL 2338/2023)</strong> foi aprovado no Senado em dezembro de 2024 e esta em Comissao Especial na Camara. Se aprovado, criara classificacao de risco semelhante a Lei de IA da UE. O Regula suporta ambos: <code>regula gap --framework lgpd</code> e <code>regula gap --framework marco-legal-ia</code>.</div>
+        <div class="body"><strong>Referências brasileiras selecionadas.</strong> O Regula oferece referências para revisão contra a LGPD e contra o material versionado do Marco Legal da IA. Esses crosswalks ajudam a navegação humana; não determinam aplicabilidade, classificação de risco ou conformidade.</div>
     </div>
 </div>
 
@@ -304,7 +304,7 @@
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Passo 1</div>
             <h3>Instalar</h3>
-            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code><br>Funciona em qualquer SO. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#8888aa;">Outros metodos &#8599;</a></p>
+            <p><code>pipx install git+https://github.com/kuzivaai/getregula.git@main</code><br>Funciona em qualquer SO. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/installation.md" style="color:#075f4e;">Outros metodos &#8599;</a></p>
         </div>
         <div class="card-base art-card" style="text-align:center;">
             <div class="tag tag-blue">Passo 2</div>
@@ -346,55 +346,55 @@
 <!-- FUNCIONALIDADES (antes da comparacao competitiva por pesquisa UX: usuarios devem entender capacidades antes de ver como se comparam) -->
 <div class="sec reveal" id="features">
     <h2 class="sec-head">O que o Regula faz</h2>
-    <p class="sec-sub">O Regula combina escaneamento de codigo com questionarios de governanca. Le seu codigo em busca de padroes de risco e oferece autoavaliacoes estruturadas para obrigacoes organizacionais que o codigo nao pode verificar. Gera artefatos que um auditor pode revisar, nao apenas achados.</p>
+    <p class="sec-sub">O Regula combina escaneamento de código com questionários de governança. Lê o código em busca de padrões configurados, preserva o contexto declarado e gera artefatos que uma pessoa revisora pode completar.</p>
 
     <div class="feature-category">Avaliar</div>
     <div class="art-grid">
         <div class="card-base art-card">
             <div class="tag tag-blue">Lacunas</div>
             <h3>O que esta faltando?</h3>
-            <p>Separa observacoes de codigo de decisoes juridicas. Quando a aplicabilidade nao esta resolvida, informa os fatos necessarios em seguida sem emitir pontuacoes por artigo ou estimativas de esforco.</p>
-            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+            <p>Separa observações de código de decisões jurídicas. Quando a aplicabilidade não está resolvida, informa o contexto necessário sem emitir pontuações por artigo ou estimativas de esforço.</p>
+            <code style="font-size:11px;color:#485b51;">regula gap .</code>
         </div>
         <div class="card-base art-card">
-            <div class="tag tag-purple">Seguranca</div>
-            <h3>Seu codigo de IA e seguro?</h3>
-            <p>Injecao de prompt, carregamento inseguro de modelo, saida de IA nao validada, chaves hardcoded e outras vulnerabilidades especificas de IA.</p>
-            <code style="font-size:11px;color:#9898b4;">regula check . &middot; regula guardrails .</code>
+            <div class="tag tag-purple">Segurança</div>
+            <h3>Quais indicadores de segurança aparecem no código?</h3>
+            <p>Injeção de prompt, carregamento inseguro de modelo, saída de IA não validada, chaves hardcoded e outros indicadores específicos de IA.</p>
+            <code style="font-size:11px;color:#485b51;">regula check . &middot; regula guardrails .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Supervisao</div>
-            <h3>Analise de revisao humana</h3>
-            <p>Rastreia saidas de IA entre arquivos. Verifica se cada caminho ate um endpoint voltado ao usuario passa por um gate de revisao humana.</p>
-            <code style="font-size:11px;color:#9898b4;">regula oversight .</code>
+            <h3>Análise de revisão humana</h3>
+            <p>Rastreia saídas de IA entre arquivos e observa se um caminho até um endpoint voltado ao usuário contém um mecanismo de revisão humana.</p>
+            <code style="font-size:11px;color:#485b51;">regula oversight .</code>
         </div>
     </div>
 
-    <div class="feature-category">Evidencias</div>
+    <div class="feature-category">Evidências</div>
     <div class="art-grid">
         <div class="card-base art-card">
             <div class="tag tag-blue">Documentacao</div>
             <h3>Precisa de evidências para revisão?</h3>
-            <p>Documentacao tecnica Anexo IV gerada a partir do seu codigo real. Funcoes, dependencias e cobertura de logging pre-preenchidos.</p>
-            <code style="font-size:11px;color:#9898b4;">regula docs . &middot; regula conform .</code>
+            <p>Estrutura de documentação técnica do Anexo IV gerada a partir do seu código real. Funções, dependências e observações de logging são pré-preenchidas para revisão.</p>
+            <code style="font-size:11px;color:#485b51;">regula docs . &middot; regula conform .</code>
         </div>
         <div class="card-base art-card">
-            <div class="tag tag-purple">Evidencias</div>
-            <h3>Pacote de avaliacao de conformidade</h3>
-            <p>Pacote de evidencias completavel pelo revisor, com gate de confianca, lista de fatos nao resolvidos e hashes de integridade SHA-256. Os deveres de artigos so sao anexados depois que o kernel resolve a aplicabilidade.</p>
-            <code style="font-size:11px;color:#9898b4;">regula conform . &middot; regula evidence-pack .</code>
+            <div class="tag tag-purple">Evidências</div>
+            <h3>Pacote de preparação de evidências</h3>
+            <p>Pacote de evidências completável por uma pessoa revisora, com lista de contexto não resolvido e hashes de integridade SHA-256. As observações por artigo permanecem retidas até uma decisão humana responsável.</p>
+            <code style="font-size:11px;color:#485b51;">regula conform . &middot; regula evidence-pack .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">Integridade</div>
             <h3>Verificações de integridade e assinaturas opcionais</h3>
             <p>Manifestos SHA-256, assinaturas Ed25519 e carimbos de data e hora RFC 3161 ajudam revisores a verificar quando uma avaliação foi produzida e se os arquivos foram alterados depois.</p>
-            <code style="font-size:11px;color:#9898b4;">regula conform --sign --timestamp .</code>
+            <code style="font-size:11px;color:#485b51;">regula conform --sign --timestamp .</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-purple">AI BOM</div>
             <h3>Lista de materiais de IA</h3>
             <p>AI-BOMs CycloneDX 1.7 com proveniencia de modelo, anotacoes de nivel GPAI por Art 51&ndash;55 e datasets de treinamento detectados.</p>
-            <code style="font-size:11px;color:#9898b4;">regula sbom --ai-bom .</code>
+            <code style="font-size:11px;color:#485b51;">regula sbom --ai-bom .</code>
         </div>
     </div>
 
@@ -403,20 +403,20 @@
         <div class="card-base art-card">
             <div class="tag tag-blue">Multijurisdicional</div>
             <h3>3 jurisdicoes, uma varredura</h3>
-            <p>Alem da Lei de IA da UE: a mesma varredura mapeia achados para a Lei Basica de IA da Coreia do Sul (Lei n. 20676, em vigor desde 22 de janeiro de 2026) e para a Colorado SB 26-189 (focada em divulgacao, obrigacoes a partir de 1 de janeiro de 2027), cada uma com seu proprio mapeamento de dominios para obrigacoes e questionario.</p>
-            <code style="font-size:11px;color:#9898b4;">regula check . --jurisdictions eu,korea,colorado</code>
+            <p>Além da Lei de IA da UE, a mesma varredura aponta achados para conjuntos de referências selecionados. Cada crosswalk ajuda uma pessoa a navegar pelas fontes; não decide quais obrigações se aplicam.</p>
+            <code style="font-size:11px;color:#485b51;">regula check . --jurisdictions eu,korea,colorado</code>
         </div>
         <div class="card-base art-card">
             <div class="tag tag-blue">Regulacao cruzada</div>
             <h3>13 conjuntos de refer&ecirc;ncias</h3>
             <p>&Aacute;reas selecionadas de obriga&ccedil;&otilde;es apontam para refer&ecirc;ncias selecionadas em ISO 42001, NIST AI RMF, SOC 2, OWASP e outros frameworks. O crosswalk ajuda a navega&ccedil;&atilde;o humana; n&atilde;o testa equival&ecirc;ncia, aplicabilidade ou implementa&ccedil;&atilde;o.</p>
-            <code style="font-size:11px;color:#9898b4;">regula gap .</code>
+            <code style="font-size:11px;color:#485b51;">regula gap .</code>
         </div>
     </div>
 
-    <p style="font-size:12px;color:#9898b4;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
+    <p style="font-size:12px;color:#485b51;margin-top:24px;font-family:'JetBrains Mono',monospace;text-align:center;">
         62 comandos no total &middot; Python, JS, TS, Java, Go, Rust, C, C++ &middot; Refer&ecirc;ncias selecionadas em 13 identificadores de frameworks.
-        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#8888aa;margin-left:4px;">Referencia completa da CLI &rarr;</a>
+        <a href="https://github.com/kuzivaai/getregula/blob/main/docs/cli-reference.md" style="color:#075f4e;margin-left:4px;">Referencia completa da CLI &rarr;</a>
     </p>
 </div>
 
@@ -463,14 +463,14 @@
     <p class="sec-sub">Escaneamento de c&oacute;digo mais question&aacute;rios de governan&ccedil;a. Uma de v&aacute;rias ferramentas no ecossistema da Lei de IA da UE. Cada uma resolve uma parte diferente do problema.</p>
     <div class="pricing-grid">
         <div class="price-card">
-            <div class="price-tier">Governanca SaaS</div>
+            <div class="price-tier">Governança SaaS</div>
             <div class="price-amount">Contato comercial</div>
-            <p class="price-desc">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Fluxos de evidencia, bibliotecas de controles, monitoramento continuo, atualizacoes de politicas por advogados especialistas. Feito para departamentos de conformidade, nao para desenvolvedores. Sem precos publicados.</p>
+            <p class="price-desc">Credo AI, Saidot, Enzai, IBM watsonx.governance, Microsoft Purview. Fluxos de evidência, bibliotecas de controles e monitoramento contínuo. Feito para departamentos de governança, não apenas para desenvolvimento. Sem preços publicados.</p>
         </div>
         <div class="price-card">
             <div class="price-tier">Testes em runtime</div>
             <div class="price-amount">Open source</div>
-            <p class="price-desc">Garak, Giskard, Promptfoo. Red-teaming de prompt injection, jailbreak e vies contra modelos em execucao. Complementares ao Regula, nao sobrepostos. Eles testam comportamento; Regula le o codigo.</p>
+            <p class="price-desc">Garak, Giskard, Promptfoo. Red teaming de injeção de prompt, jailbreak e viés contra modelos em execução. São complementares ao Regula: testam comportamento, enquanto o Regula lê o código.</p>
         </div>
         <div class="price-card featured">
             <div class="price-tier price-featured-tier">Regula</div>
@@ -504,7 +504,7 @@
                     <a href="/pricing.html" hreflang="en">Evidence packs</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/GOVERNANCE.md">Governance</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/docs/benchmarks/PRECISION_RECALL_2026_04.md">Benchmarks</a>
-                    <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Seguranca</a>
+                    <a href="https://github.com/kuzivaai/getregula/blob/main/SECURITY.md">Segurança</a>
                     <a href="https://github.com/kuzivaai/getregula/blob/main/CONTRIBUTING.md">Contribuir</a>
                     <a href="/regions/uae.html" hreflang="en">UAE &amp; GCC</a>
                     <a href="/regions/brazil-ai-regulation.html" hreflang="en">Brasil :  LGPD &amp; Marco Legal</a>

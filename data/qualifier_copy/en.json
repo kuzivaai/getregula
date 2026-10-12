@@ -4,6 +4,83 @@
   "h1": "Does AI regulation reach your business?",
   "sub": "Five questions, in plain words. No account, nothing to install, and nothing you type here leaves your browser. At the end you get a list of what your answers point at and what a person still has to settle.",
   "meta": "Regula indicates where to look. It does not decide your risk tier, your obligations, or whether you comply. This is not legal advice.",
+  "home": {
+    "eyebrow": "Local code observation and evidence preparation",
+    "title": "Know what your code can show. Know what still needs judgement.",
+    "lead": "Regula connects declared deployment facts with code-observable indicators, then shows the questions a person still needs to resolve. It is a review path, not an automated compliance verdict.",
+    "primary": {
+      "label": "Record deployment context",
+      "meta": "Five questions · stays in your browser",
+      "href": "#qualifier"
+    },
+    "secondary": {
+      "label": "Scan a repository",
+      "meta": "Runs locally · source stays on your machine",
+      "href": "/product.html"
+    },
+    "proof": [
+      "No account",
+      "Source available",
+      "Human decision stays empty"
+    ],
+    "pathEyebrow": "A review path, not a verdict",
+    "pathTitle": "From source code to a reviewable next step",
+    "pathSteps": [
+      {
+        "label": "01",
+        "title": "Declared facts",
+        "body": "You provide intended purpose, operator role, jurisdiction and deployment context."
+      },
+      {
+        "label": "02",
+        "title": "Code observations",
+        "body": "Regula reports matched patterns, source locations and analysis limits."
+      },
+      {
+        "label": "03",
+        "title": "Open questions",
+        "body": "Unknown, contradictory and unavailable facts remain visible instead of becoming No."
+      },
+      {
+        "label": "04",
+        "title": "Human decision",
+        "body": "An accountable reviewer decides what the evidence means in the real deployment."
+      }
+    ],
+    "journeysEyebrow": "Start with the task in front of you",
+    "journeysTitle": "Four clear ways into Regula",
+    "journeysLead": "Choose the route that matches your responsibility. Each path says what the tool can produce and where human judgement begins.",
+    "journeys": [
+      {
+        "task": "Scope a system",
+        "role": "Founder or product lead",
+        "body": "Record where the system is used, what it does and which operator role may apply.",
+        "cta": "Start the browser assessment",
+        "href": "/assess/"
+      },
+      {
+        "task": "Inspect source code",
+        "role": "Builder or maintainer",
+        "body": "Run the local CLI, review matched indicators and keep proprietary source on your machine.",
+        "cta": "See the code-scanning path",
+        "href": "/product.html"
+      },
+      {
+        "task": "Prepare review material",
+        "role": "Governance or assurance",
+        "body": "Keep declared facts, observations, unresolved questions and evidence scaffolds separate.",
+        "cta": "Review evidence capabilities",
+        "href": "/product.html#features"
+      },
+      {
+        "task": "Evaluate the tool",
+        "role": "Evaluator or adopter",
+        "body": "Inspect coverage levels, methods, benchmark limits, security and accessibility evidence.",
+        "cta": "Read methods and limits",
+        "href": "/coverage.html#methods"
+      }
+    ]
+  },
   "questions": [
     {
       "id": "q1",
@@ -46,7 +123,7 @@
     {
       "id": "q3",
       "legend": "Did you build the AI, or are you using someone else's?",
-      "help": "The rules place different duties on the organisation that puts an AI system on the market and on the organisation that uses one. You can be both.",
+      "help": "Operator role is one fact a reviewer must establish. Building, placing on the market and using a system can point to different provisions, and one organisation can hold more than one role.",
       "options": [
         {
           "value": "built",
@@ -69,7 +146,7 @@
     {
       "id": "q4",
       "legend": "Do people see content your AI produced, or talk to it directly?",
-      "help": "Text, images, audio, video, or a chatbot. There are disclosure duties where someone might not realise they are dealing with AI, or with something AI made.",
+      "help": "Text, images, audio, video, or a chatbot can make Article 50 worth reviewing. The actor, purpose, paragraph, conditions and exceptions still matter.",
       "options": [
         {
           "value": "yes",
@@ -88,7 +165,7 @@
     {
       "id": "q5",
       "legend": "Does AI help decide something about a person?",
-      "help": "Hiring, credit, insurance, a place on a course, access to healthcare, or a benefit. It counts even when a person signs the decision off at the end.",
+      "help": "Hiring, credit, insurance, education, healthcare or benefits can make Annex III worth reviewing. Intended purpose and the Article 6 conditions and exceptions still need evidence.",
       "options": [
         {
           "value": "yes",
@@ -107,6 +184,11 @@
   ],
   "submit": "Show me what this points at",
   "reset": "Start again",
+  "progressPrefix": "Question",
+  "progressOf": "of",
+  "back": "Back",
+  "continue": "Continue",
+  "stepHint": "Choose one answer to continue. You can go back and change it.",
   "nojsTitle": "These five questions need JavaScript to work out what they point at.",
   "nojsLead": "The questions themselves are above and they are worth reading either way. To get the rest without JavaScript:",
   "nojsItems": [
@@ -154,10 +236,14 @@
   "pointsHeading": "Worth reading, based on what you said",
   "unsettledHeading": "What this cannot settle",
   "routesHeading": "What you can do next",
+  "declaredHeading": "Context you declared",
+  "explicitUnknownHeading": "Answers preserved as explicitly unknown",
+  "humanDecisionHeading": "Human decision",
+  "humanDecisionEmpty": "Not recorded. This field stays empty until an accountable reviewer interprets the evidence.",
   "points": {
     "scope": {
-      "title": "The rules can reach you from outside the EU",
-      "body": "You said people in the EU use your product. Article 2 sets out who the Act applies to, and it covers providers and deployers established in a third country where the output produced by the AI system is used in the Union. Where you are registered is not the test.",
+      "title": "An Article 2 scope connection to review",
+      "body": "You said people in the EU use your product. Article 2 is potentially relevant, including its conditions for providers and deployers established in a third country. A reviewer still needs to confirm the operator, territorial facts and exclusions.",
       "cite": "Regulation (EU) 2024/1689, Article 2(1)(c)",
       "href": "/blog/blog-does-ai-act-apply.html",
       "linkText": "Does the EU AI Act apply to your app?"
@@ -191,50 +277,50 @@
       "linkText": "How the definition works"
     },
     "roleProvider": {
-      "title": "You would be reading the provider duties",
-      "body": "You said you built or trained it. The organisation that develops an AI system and places it on the market, or puts it into service under its own name or trademark, carries the heavier set of duties. Whether you are the provider of a given system is a legal question about how it reaches its users, not a description of your engineering.",
+      "title": "The provider-role question to review",
+      "body": "You said you built or trained the system. Article 3(3) may be relevant, but engineering authorship does not establish the legal role. A reviewer must confirm how the system is placed on the market or put into service and under whose name.",
       "cite": "Article 3(3)",
       "href": "/guides/",
       "linkText": "Guides by article"
     },
     "roleDeployer": {
-      "title": "You would be reading the deployer duties",
-      "body": "You said you use someone else's. An organisation using an AI system under its own authority has its own duties, lighter than a provider's but not nothing. Running someone else's model inside a product you offer is not personal, non-professional use.",
+      "title": "The deployer-role question to review",
+      "body": "You said you use someone else's system. Article 3(4) may be relevant, but this answer alone does not establish your role or duties. A reviewer must confirm whose authority governs the use and how the product reaches people.",
       "cite": "Article 3(4)",
       "href": "/guides/",
       "linkText": "Guides by article"
     },
     "roleBoth": {
-      "title": "You may be both, and the line can move",
-      "body": "You said both, and both sets of duties can apply to the same organisation. Article 25 also sets out when a deployer, distributor or importer becomes the provider of a high-risk system: putting your own name or trademark on it, making a substantial modification to it, or modifying the intended purpose of a system so that it becomes high-risk.",
+      "title": "More than one operator role may need review",
+      "body": "You said both. Articles 3(3), 3(4) and 25(1) are potentially relevant to a review of roles, branding, modifications and intended purpose. The answer does not establish that either role or any attached duty applies.",
       "cite": "Articles 3(3), 3(4) and 25(1)",
       "href": "/guides/",
       "linkText": "Guides by article"
     },
     "roleUnsure": {
       "title": "Your role is one of the facts to settle first",
-      "body": "You are not sure. The Act distinguishes the organisation that places an AI system on the market or puts it into service under its own name from the organisation that uses one under its own authority, and it puts different duties on each. Article 25 also sets out when using or modifying someone else's high-risk system makes you its provider.",
+      "body": "You are not sure. Articles 3(3), 3(4) and 25(1) distinguish roles using facts about market placement, authority, branding, modifications and intended purpose. Preserve the uncertainty and ask a reviewer to establish the role from evidence.",
       "cite": "Articles 3(3), 3(4) and 25(1)",
       "href": "/guides/",
       "linkText": "Guides by article"
     },
     "transparency": {
-      "title": "Telling people they are dealing with AI",
-      "body": "You said people see AI-produced content or talk to your system directly. Article 50 sets out several transparency duties with different actors, conditions and exceptions. They have applied since {article50}, and the marking requirements carry a grace period to {marking}. A missing disclosure is something to review, not proof that every Article 50 duty applies to you.",
+      "title": "Article 50 context to review",
+      "body": "You said people see AI-produced content or talk to the system directly. That is a code and context indicator, not an applicability decision. A reviewer must identify the actor, purpose, relevant paragraph, conditions and exceptions before deciding whether any disclosure or marking duty applies.",
       "cite": "Article 50",
       "href": "/guides/article-50-transparency.html",
       "linkText": "Article 50 transparency, in detail"
     },
     "decisions": {
-      "title": "Decisions about people are the strictest part",
-      "body": "You said AI helps decide something about a person. Annex III lists the uses treated as high risk and Article 6 sets out how a system in one of those areas is classified; those obligations apply from {annexIII}. Article 6(3) also sets out conditions under which such a system is not high risk, including a narrow procedural task or improving the result of a previously completed human activity, and it states that a system performing profiling of natural persons is always high risk. Which of these describes you is exactly what this page cannot answer.",
+      "title": "Annex III and Article 6 context to review",
+      "body": "You said AI helps decide something about a person. Annex III and Article 6 may be relevant, but this answer does not determine a legal tier. A reviewer must confirm intended purpose, the listed use, the Article 6(3) conditions, profiling and any exceptions from evidence.",
       "cite": "Article 6(2) and 6(3), Annex III",
       "href": "/guides/article-9-risk-management.html",
       "linkText": "What high-risk actually requires"
     },
     "prohibited": {
-      "title": "A few uses are banned outright",
-      "body": "Some practices are prohibited rather than regulated, and the prohibitions have applied since {prohibited}. This page did not ask about them, so read the list rather than assume it does not touch you.",
+      "title": "Article 5 practices still require a separate review",
+      "body": "This short questionnaire did not collect the purpose, target, safeguards, conditions and exceptions needed to review Article 5. Read the listed practices and preserve unresolved facts rather than infer either prohibition or safety.",
       "cite": "Article 5",
       "href": "/guides/article-5-prohibited-practices.html",
       "linkText": "The prohibited practices, listed"
@@ -274,7 +360,7 @@
       "short": "Human judgment for context Regula cannot observe. Not provided by Regula."
     }
   },
-  "consultantWarranted": "Your answers name a use the Act treats most strictly, or a system you build and cannot yet place. Human review matters here because another automated signal cannot settle the missing context.",
+  "consultantWarranted": "Your answers raise context that warrants careful human review. Another automated signal cannot settle intended purpose, operator role, conditions or exceptions.",
   "limits": [
     "Regula indicates where to look. It does not decide your risk tier, your obligations, or whether you comply. Conformity is determined by regulators and notified bodies, not by a questionnaire, and “not flagged” never means “compliant”.",
     "Nothing here is legal advice. Anything that turns on a legal conclusion needs an appropriately qualified professional."

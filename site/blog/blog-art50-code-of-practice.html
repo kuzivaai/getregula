@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -32,7 +32,7 @@
     <meta property="og:title" content="Art 50 Code of Practice for Your Codebase — Regula">
     <meta property="og:description" content="The EU AI Act Code of Practice on AI content marking was published 10 June 2026. What a code scanner can and cannot evidence against it.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:image:alt" content="Regula: EU AI Act code observations and evidence preparation">
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-06-11T00:00:00+00:00">
@@ -101,7 +101,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
@@ -148,7 +148,7 @@
 <p>Regula can detect the presence of synthetic content generation, chatbot interaction, emotion recognition, and biometric categorisation patterns in your codebase — the four Article 50 transparency categories. It identifies whether your code uses these capabilities, which is useful for scoping your obligations. It cannot verify that marking or disclosure is effective at runtime.</p>
 <p>Regula&rsquo;s <code>limited_risk</code> detection tier includes 23 patterns across four Article 50 categories. Against the Code of Practice provisions:</p>
 
-<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+<table tabindex="0" style="width:100%;border-collapse:collapse;margin:16px 0;">
 <thead>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
     <th style="text-align:left;padding:8px;">Code provision</th>
@@ -160,22 +160,22 @@
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
     <td style="padding:8px;">Synthetic content generation (deepfakes, face-swap, voice cloning, text-to-image)</td>
     <td style="padding:8px;">10 patterns in <code>synthetic_content</code></td>
-    <td style="padding:8px;color:#10b981;"><strong>Detected</strong></td>
+    <td style="padding:8px;color:#056449;"><strong>Detected</strong></td>
 </tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
     <td style="padding:8px;">Chatbot / conversational AI without disclosure</td>
     <td style="padding:8px;">Patterns in <code>chatbots</code></td>
-    <td style="padding:8px;color:#10b981;"><strong>Detected</strong></td>
+    <td style="padding:8px;color:#056449;"><strong>Detected</strong></td>
 </tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
     <td style="padding:8px;">Emotion recognition systems</td>
     <td style="padding:8px;">Patterns in <code>emotion_recognition</code></td>
-    <td style="padding:8px;color:#10b981;"><strong>Detected</strong></td>
+    <td style="padding:8px;color:#056449;"><strong>Detected</strong></td>
 </tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
     <td style="padding:8px;">Biometric categorisation systems</td>
     <td style="padding:8px;">Patterns in <code>biometric_categorisation</code></td>
-    <td style="padding:8px;color:#10b981;"><strong>Detected</strong></td>
+    <td style="padding:8px;color:#056449;"><strong>Detected</strong></td>
 </tr>
 </tbody>
 </table>
@@ -185,7 +185,7 @@
 <p>Regula cannot verify that machine-readable marking is present in generated outputs, that watermarking is effective or robust, that deployer disclosure appears at the interaction layer, or that AI-generated text underwent human editorial review. These are runtime, UI, and editorial workflow questions that static code analysis fundamentally cannot answer.</p>
 <p>This list matters as much as the one above.</p>
 
-<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+<table tabindex="0" style="width:100%;border-collapse:collapse;margin:16px 0;">
 <thead>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
     <th style="text-align:left;padding:8px;">Code provision</th>

@@ -12,7 +12,7 @@ regula --version
 regula self-test
 ```
 
-This is a moving source reference, not an immutable release. For a reproducible evaluation, replace `main` with the exact public commit you reviewed. See [Installing Regula](installation.md) for `uv`, virtual-environment, upgrade, and uninstall instructions.
+The `main` branch is mutable and is not a verified release artefact. Local audit changes are not available until published. For a reproducible evaluation, replace `main` with the exact public commit you reviewed. See [Installing Regula](installation.md) for `uv`, virtual-environment, upgrade, and uninstall instructions.
 
 ## 2. Record the facts code cannot show
 

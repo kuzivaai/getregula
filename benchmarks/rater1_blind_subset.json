@@ -1,4 +1,6 @@
 {
+  "schema_version": "1.0",
+  "item_id_scheme": "corpus-project-file-line-v1",
   "corpus": "blind_subset_existing",
   "source": "/home/USER/getregula/benchmarks/labels.json",
   "total_in_source": 446,

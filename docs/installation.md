@@ -4,7 +4,7 @@ Regula requires Python 3.10 or later. The core has no required third-party runti
 
 ## Current distribution status
 
-As verified on 27 August 2026, `https://pypi.org/pypi/regula-ai/json` returns HTTP 404 and the public GitHub repository has no GitHub Release for version 2.0.0. Do not use the bare registry commands `pip install regula-ai` or `pipx install regula-ai`: they do not currently resolve to a public package.
+As verified on 16 September 2026, `https://pypi.org/pypi/regula-ai/json` returns HTTP 404 and the public GitHub repository has no releases or tags. Do not use the bare registry commands `pip install regula-ai` or `pipx install regula-ai`: they do not currently resolve to a public package.
 
 The supported temporary path is installation from the public GitHub source:
 
@@ -12,7 +12,9 @@ The supported temporary path is installation from the public GitHub source:
 pipx install git+https://github.com/kuzivaai/getregula.git@main
 ```
 
-`main` is a moving source reference. It is convenient for evaluation, but it is not an immutable or signed release artefact. For reproducible use, pin the exact public commit you reviewed:
+The `main` branch is mutable and is not a verified release artefact. Local audit
+changes are not available through this command until published. For reproducible
+evaluation, pin the exact public commit you reviewed:
 
 ```bash
 pipx install git+https://github.com/kuzivaai/getregula.git@COMMIT_SHA
@@ -80,7 +82,7 @@ uv tool install git+https://github.com/kuzivaai/getregula.git@main
 regula --version
 ```
 
-Use a full commit hash instead of `main` when reproducibility matters.
+Use a full reviewed commit hash instead of `main` when reproducibility matters.
 
 ## Alternative: a virtual environment
 

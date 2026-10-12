@@ -7,21 +7,21 @@
          0da1226 on site/index.html for the full diagnosis. TL;DR: external
          CSS is render-blocking, so the browser's default white canvas shows
          for hundreds of ms on cold loads. Inline critical CSS establishes the
-         dark theme immediately; `color-scheme: dark` hints the canvas colour
-         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         brand canvas immediately; `color-scheme: light` hints the canvas colour
+         for browser chrome; stylesheets load via media="print" + onload swap
          so they don't block first paint. <noscript> fallback for JS off. -->
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -205,7 +205,7 @@
     <nav class="nav" id="nav" aria-label="Main navigation">
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
             <a href="/assess/" title="Record deployment context for review">Assess scope</a>
             <a href="/product.html">Scan code</a>
             <a href="/coverage.html">Coverage</a>

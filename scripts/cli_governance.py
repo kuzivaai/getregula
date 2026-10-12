@@ -260,10 +260,10 @@ def cmd_feedback(args) -> None:
     """Open a pre-filled GitHub Issue to report a false positive, false negative, or bug."""
     import os
     from constants import VERSION
-    from telemetry import build_feedback_url
+    from telemetry import build_feedback_fields, build_feedback_url
 
     kind = getattr(args, "feedback_kind", "false-positive") or "false-positive"
-    url = build_feedback_url(
+    feedback_args = dict(
         kind=kind,
         pattern_id=getattr(args, "pattern", None),
         file_path=getattr(args, "file", None),
@@ -271,21 +271,35 @@ def cmd_feedback(args) -> None:
         regula_version=VERSION,
         description=getattr(args, "description", None),
     )
+    fields = build_feedback_fields(**feedback_args)
+    url = build_feedback_url(**feedback_args)
 
     no_browser = getattr(args, "no_browser", False)
     in_ci = not sys.stdin.isatty() or bool(os.environ.get("CI"))
 
-    note = "(Label will apply automatically if it exists in the repo)"
+    print("No data has been sent.")
+    print("Outgoing issue fields:")
+    print(f"Title: {fields['title']}")
+    print(f"Labels: {fields['labels']}")
+    print("Body:")
+    print(fields["body"])
+    print(f"Report URL:\n{url}")
+    print("Loading this URL sends the fields above to GitHub. Submitting the issue is separate.")
 
     if no_browser or in_ci:
-        print(f"Report URL:\n{url}")
-        print(note)
+        print("Browser not opened. Review and open the URL manually if you choose.")
         return
 
     import webbrowser
+    try:
+        answer = input("Open this URL in your browser and send these fields to GitHub? [y/N] ")
+    except (EOFError, KeyboardInterrupt):
+        print("\nCancelled. Browser not opened.")
+        return
+    if answer.strip().lower() not in {"y", "yes"}:
+        print("Cancelled. Browser not opened.")
+        return
     print("Opening GitHub Issue in browser...")
-    print(f"URL: {url}")
-    print(note)
     webbrowser.open(url)
 
 

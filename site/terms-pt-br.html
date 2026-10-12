@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -53,7 +53,7 @@
 <nav class="nav" id="nav" aria-label="Navega&ccedil;&atilde;o principal">
     <a href="/locales/pt-br.html" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Navega&ccedil;&atilde;o do site" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <dialog id="nav-menu" class="nav-right" aria-label="Navega&ccedil;&atilde;o do site" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/pt-br.html" title="Avalia&ccedil;&atilde;o gratuita de risco da Lei de IA da UE">Avaliar</a>
         <a href="/product-pt-br.html">O que ele faz</a>
         <a href="/guides/">Guias</a>
@@ -86,7 +86,7 @@
 <p>Nada neste site &eacute; aconselhamento jur&iacute;dico, determina&ccedil;&atilde;o de conformidade, certifica&ccedil;&atilde;o ou avalia&ccedil;&atilde;o de conformidade. Conte&uacute;dos e sa&iacute;das da ferramenta indicam o que pode exigir revis&atilde;o; se uma lei se aplica a um sistema real, e o que ela exige, s&atilde;o quest&otilde;es para profissionais qualificados que conhe&ccedil;am os seus fatos. Onde uma p&aacute;gina cita uma data ou disposi&ccedil;&atilde;o regulat&oacute;ria, indicamos a fonte, e regula&ccedil;&otilde;es podem mudar depois da publica&ccedil;&atilde;o de uma p&aacute;gina.</p>
 
 <h2>No momento, nenhum servi&ccedil;o pago &eacute; oferecido por este site</h2>
-<p>A p&aacute;gina de pre&ccedil;os descreve um servi&ccedil;o de consultoria planejado. Descrev&ecirc;-lo n&atilde;o &eacute; uma oferta de venda: no momento, nenhum pagamento pode ser feito e nenhuma reserva pode ser realizada por este site, e a p&aacute;gina diz isso expressamente. Se isso mudar, o servi&ccedil;o, o fornecedor, o pre&ccedil;o e os termos ser&atilde;o publicados antes que qualquer compra seja poss&iacute;vel.</p>
+<p>A p&aacute;gina de pre&ccedil;os descreve a avalia&ccedil;&atilde;o gratuita no navegador, a CLI local e seus limites. No momento, o Regula n&atilde;o oferece revis&atilde;o paga, consultoria, pagamento ou reserva. Se isso mudar, o servi&ccedil;o, o fornecedor, o pre&ccedil;o e os termos ser&atilde;o publicados antes que qualquer compra seja poss&iacute;vel.</p>
 
 <h2>Licen&ccedil;as do software</h2>
 <p>O software Regula &eacute; de c&oacute;digo aberto: c&oacute;digo sob Apache-2.0 / EUPL-1.2 e regras de detec&ccedil;&atilde;o sob DRL 1.1, conforme o arquivo <a href="https://github.com/kuzivaai/getregula/blob/main/NOTICE" rel="noopener">NOTICE</a> do reposit&oacute;rio. O software &eacute; fornecido "no estado em que se encontra", sem garantias ou condi&ccedil;&otilde;es de qualquer tipo, nos termos dessas licen&ccedil;as. O seu uso do software &eacute; regido pelas licen&ccedil;as, n&atilde;o por esta p&aacute;gina.</p>

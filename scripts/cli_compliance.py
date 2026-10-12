@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 
 def cmd_comply(args) -> None:
-    """Report evidence only for obligations resolved by the decision kernel."""
+    """Report observations and declared context for accountable review."""
     from cli import json_output
     from compliance_check import ARTICLE_NUMBERS, assess_compliance
     from cli_scan import _declared_facts, _print_fact_catalogue
@@ -49,49 +49,19 @@ def cmd_comply(args) -> None:
         observations = scan_article50(
             project, resolved_fact_ids=resolved_declared_fact_ids
         )
-        scope_trace = next(
-            (trace for trace in decision.get("decision_trace", [])
-             if trace.get("predicate_id") == "eu_scope"),
-            None,
-        )
-        article50_traces = [
-            trace for trace in decision.get("decision_trace", [])
-            if trace.get("predicate_id", "").startswith("eu_transparency_")
-        ]
-        article50_obligations = [
-            obligation for obligation in decision.get("obligations", [])
-            if "Article 50(" in obligation.get("provision", "")
-        ]
-        resolved_outside_scope = bool(
-            scope_trace and scope_trace.get("state") == "false"
-        )
-        all_paths_resolved = (
-            scope_trace is not None
-            and scope_trace.get("state") == "true"
-            and len(article50_traces) == 5
-            and all(trace.get("state") != "unresolved"
-                    for trace in article50_traces)
-        )
-        applicability_resolution = (
-            "resolved_applicable" if article50_obligations
-            else "resolved_not_applicable"
-            if resolved_outside_scope or all_paths_resolved
-            else "unresolved"
-        )
         evidence = {
             "project_path": project,
             "article_observations": {},
-            "not_assessed_article_count": (
-                1 if applicability_resolution == "unresolved" else 0
+            "not_assessed_article_count": 1,
+            "applicability_resolution": "unresolved_human_review",
+            "potentially_relevant_provisions": decision.get(
+                "potentially_relevant_provisions", []
             ),
-            "applicability_resolution": applicability_resolution,
-            "resolved_article50_obligations": article50_obligations,
             "technical_observations": {"50": observations},
             "note": (
-                "Article 50 applicability is evaluated only from declared "
-                "facts. Static trigger and control signals remain separate "
-                "review leads and are not treated as legal facts or a "
-                "compliance score."
+                "Article 50 applicability is not determined by Regula. "
+                "Declared facts and static trigger or control signals remain "
+                "separate review evidence for an accountable human reviewer."
             ),
         }
         if getattr(args, "format", "text") == "json":
@@ -358,7 +328,8 @@ def cmd_conform(args) -> None:
         print(f"Format: regula.evidence.v1 (format_version {fmt_version})")
         print(f"Contains {file_count} files with SHA-256 integrity hashes.")
         decision = result["summary"].get("decision", {})
-        print(f"Decision: {decision.get('result_type', 'unresolved')}")
+        print(f"Review status: {decision.get('review_status', 'unresolved')}")
+        print("Human decision: not recorded")
         print("No readiness percentage or article duty is emitted without resolved applicability.")
         if "signing" in manifest:
             print(f"Signed: Ed25519 signature embedded (verify with "
@@ -398,7 +369,12 @@ def cmd_gap(args) -> None:
     # (DEF-008 class: json_output("gap", ...) previously always hardcoded
     # envelope exit_code=0, contradicting the real process exit code under
     # --strict with a low overall_score).
-    _gap_exit = 1 if (args.strict and decision["result_type"] != "indication") else 0
+    overall_score = assessment.get("overall_score")
+    _gap_exit = 1 if (
+        args.strict
+        and isinstance(overall_score, (int, float))
+        and overall_score < 100
+    ) else 0
     if args.format == "json":
         json_output(
             "gap",

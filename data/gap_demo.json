@@ -3,9 +3,9 @@
   "_why_it_exists": "The block it replaces was invented output shown behind a $ prompt. A visitor reads that as a real scan.",
   "check": {
     "command": "regula check tests/fixtures/sample_high_risk --explain",
+    "human_decision": "not recorded",
     "model_version": "2026-08-26.1",
     "result_type": "insufficient_information",
-    "rule_resolution": "unresolved",
     "unresolved_count": 2,
     "unresolved_fact_ids": [
       "is_ai_system",
@@ -16,9 +16,9 @@
     "article_observations_emitted": 0,
     "article_observations_held": 8,
     "command": "regula comply tests/fixtures/sample_high_risk --all",
+    "human_decision": "not recorded",
     "model_version": "2026-08-26.1",
     "result_type": "insufficient_information",
-    "rule_resolution": "unresolved",
     "unresolved_count": 2,
     "unresolved_fact_ids": [
       "is_ai_system",
@@ -30,21 +30,21 @@
     "article_observations_emitted": 0,
     "article_observations_held": 8,
     "command": "regula gap tests/fixtures/sample_high_risk",
+    "human_decision": "not recorded",
     "model_version": "2026-08-26.1",
     "result_type": "insufficient_information",
-    "rule_resolution": "unresolved",
     "unresolved_count": 2,
     "unresolved_fact_ids": [
       "is_ai_system",
       "jurisdiction_in_scope"
     ]
   },
-  "generated_at": "2026-08-26T16:06:47.786448+00:00",
+  "generated_at": "2026-08-30T18:31:46.403028+00:00",
   "plan": {
     "command": "regula plan --project tests/fixtures/sample_high_risk",
+    "human_decision": "not recorded",
     "model_version": "2026-08-26.1",
     "result_type": "insufficient_information",
-    "rule_resolution": "unresolved",
     "unresolved_count": 2,
     "unresolved_fact_ids": [
       "is_ai_system",

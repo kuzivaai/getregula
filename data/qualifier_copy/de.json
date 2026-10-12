@@ -4,6 +4,31 @@
   "h1": "Erreicht die KI-Regulierung Ihr Unternehmen?",
   "sub": "Fünf Fragen in einfacher Sprache. Kein Konto, keine Installation, und nichts, was Sie hier eingeben, verlässt Ihren Browser. Am Ende erhalten Sie eine Liste dessen, worauf Ihre Antworten hindeuten, und dessen, was ein Mensch noch klären muss.",
   "meta": "Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Dies ist keine Rechtsberatung.",
+  "home": {
+    "eyebrow": "Lokale Code-Beobachtung und Nachweisvorbereitung",
+    "title": "Erkennen Sie, was Ihr Code zeigen kann. Und wo menschliches Urteil nötig bleibt.",
+    "lead": "Regula verbindet erklärte Einsatzfakten mit im Code beobachtbaren Hinweisen und zeigt danach die Fragen, die ein Mensch noch klären muss. Es ist ein Prüfpfad, kein automatisches Konformitätsurteil.",
+    "primary": {"label": "Einsatzkontext erfassen", "meta": "Fünf Fragen · bleibt in Ihrem Browser", "href": "#qualifier"},
+    "secondary": {"label": "Repository scannen", "meta": "Läuft lokal · Quellcode bleibt auf Ihrem Gerät", "href": "/product-de.html"},
+    "proof": ["Kein Konto", "Quellcode bleibt lokal", "Die menschliche Entscheidung bleibt leer"],
+    "pathEyebrow": "Ein Prüfpfad, kein Urteil",
+    "pathTitle": "Vom Quellcode zum überprüfbaren nächsten Schritt",
+    "pathSteps": [
+      {"label": "01", "title": "Erklärte Fakten", "body": "Sie geben Zweckbestimmung, Betreiberrolle, Rechtsraum und Einsatzkontext an."},
+      {"label": "02", "title": "Code-Beobachtungen", "body": "Regula meldet gefundene Muster, Quellstellen und Grenzen der Analyse."},
+      {"label": "03", "title": "Offene Fragen", "body": "Unbekannte, widersprüchliche und nicht verfügbare Fakten bleiben sichtbar, statt zu Nein zu werden."},
+      {"label": "04", "title": "Menschliche Entscheidung", "body": "Eine verantwortliche prüfende Person entscheidet, was die Hinweise im echten Einsatz bedeuten."}
+    ],
+    "journeysEyebrow": "Beginnen Sie mit Ihrer aktuellen Aufgabe",
+    "journeysTitle": "Vier klare Wege zu Regula",
+    "journeysLead": "Wählen Sie den Weg, der zu Ihrer Verantwortung passt. Jeder Weg zeigt, was das Werkzeug liefern kann und wo menschliches Urteil beginnt.",
+    "journeys": [
+      {"task": "System einordnen", "role": "Gründung oder Produktleitung", "body": "Halten Sie fest, wo das System eingesetzt wird, was es tut und welche Betreiberrolle gelten könnte.", "cta": "Browser-Einordnung starten", "href": "/assess/de.html"},
+      {"task": "Quellcode prüfen", "role": "Entwicklung oder Wartung", "body": "Führen Sie die lokale CLI aus, prüfen Sie gefundene Hinweise und behalten Sie geschützten Quellcode auf Ihrem Gerät.", "cta": "Code-Prüfpfad ansehen", "href": "/product-de.html"},
+      {"task": "Prüfmaterial vorbereiten", "role": "Governance oder Assurance", "body": "Trennen Sie erklärte Fakten, Beobachtungen, offene Fragen und Nachweisgerüste voneinander.", "cta": "Nachweisfunktionen prüfen", "href": "/product-de.html#features"},
+      {"task": "Werkzeug evaluieren", "role": "Evaluierung oder Einführung", "body": "Prüfen Sie Abdeckungsstufen, Methoden, Benchmark-Grenzen, Sicherheit und Barrierefreiheitsnachweise.", "cta": "Methoden und Grenzen lesen", "href": "/coverage-de.html#methods"}
+    ]
+  },
   "questions": [
     {
       "id": "q1",
@@ -46,7 +71,7 @@
     {
       "id": "q3",
       "legend": "Haben Sie die KI selbst gebaut, oder nutzen Sie die eines Dritten?",
-      "help": "Die Regeln legen der Organisation, die ein KI-System in Verkehr bringt, andere Pflichten auf als der Organisation, die eines verwendet. Beides zugleich ist möglich.",
+      "help": "Ihre Rolle ist ein Sachverhalt für die Prüfung. Je nach Einsatz können Anbieter-, Betreiber- oder mehrere Rollen und Bestimmungen potenziell relevant sein; diese Antwort entscheidet das nicht.",
       "options": [
         {
           "value": "built",
@@ -69,7 +94,7 @@
     {
       "id": "q4",
       "legend": "Sehen Menschen von Ihrer KI erzeugte Inhalte oder sprechen sie direkt mit ihr?",
-      "help": "Text, Bilder, Audio, Video oder ein Chatbot. Es bestehen Transparenzpflichten, wenn jemand nicht erkennen könnte, dass er es mit KI oder mit etwas von KI Erzeugtem zu tun hat.",
+      "help": "Text, Bilder, Audio, Video oder ein Chatbot können eine Prüfung von Artikel 50 auslösen. Ob eine Bestimmung gilt, hängt von Rolle, Zweck, Absatz, Voraussetzungen und Ausnahmen ab.",
       "options": [
         {
           "value": "yes",
@@ -88,7 +113,7 @@
     {
       "id": "q5",
       "legend": "Hilft KI dabei, etwas über eine Person zu entscheiden?",
-      "help": "Einstellung, Kredit, Versicherung, ein Studienplatz, Zugang zu Gesundheitsversorgung oder eine Sozialleistung. Es zählt auch dann, wenn am Ende ein Mensch die Entscheidung freigibt.",
+      "help": "Einstellung, Kredit, Versicherung, Studienplatz, Gesundheitsversorgung oder Sozialleistung können auf Anhang III verweisen. Zweckbestimmung und die Voraussetzungen des Artikels 6 müssen menschlich geprüft werden.",
       "options": [
         {
           "value": "yes",
@@ -107,6 +132,11 @@
   ],
   "submit": "Zeigen, worauf das hindeutet",
   "reset": "Neu beginnen",
+  "progressPrefix": "Frage",
+  "progressOf": "von",
+  "back": "Zurück",
+  "continue": "Weiter",
+  "stepHint": "Wählen Sie eine Antwort, um fortzufahren. Sie können zurückgehen und sie ändern.",
   "nojsTitle": "Diese fünf Fragen brauchen JavaScript, um auszuwerten, worauf sie hindeuten.",
   "nojsLead": "Die Fragen selbst stehen oben und lohnen das Lesen ohnehin. Ohne JavaScript kommen Sie so weiter:",
   "nojsItems": [
@@ -191,50 +221,50 @@
       "linkText": "Wie die Definition funktioniert (auf Englisch)"
     },
     "roleProvider": {
-      "title": "Sie würden die Anbieterpflichten lesen",
-      "body": "Sie haben angegeben, die KI selbst gebaut oder trainiert zu haben. Die Organisation, die ein KI-System entwickelt und unter eigenem Namen oder eigener Handelsmarke in Verkehr bringt oder in Betrieb nimmt, trägt die schwereren Pflichten. Ob Sie Anbieter eines bestimmten Systems sind, ist eine Rechtsfrage danach, wie es seine Nutzerinnen und Nutzer erreicht, keine Beschreibung Ihrer Entwicklungsarbeit.",
+      "title": "Anbieterrolle als offene Prüffrage",
+      "body": "Sie haben angegeben, die KI selbst gebaut oder trainiert zu haben. Das ist deklarierter Kontext, kein Beleg für eine rechtliche Rolle. Eine verantwortliche prüfende Person muss untersuchen, wie das System angeboten, in Verkehr gebracht oder in Betrieb genommen wird.",
       "cite": "Artikel 3 Nummer 3",
       "href": "/guides/",
       "linkText": "Leitfäden nach Artikel (auf Englisch)"
     },
     "roleDeployer": {
-      "title": "Sie würden die Betreiberpflichten lesen",
-      "body": "Sie haben angegeben, die KI eines Dritten zu nutzen. Eine Organisation, die ein KI-System in eigener Verantwortung verwendet, hat eigene Pflichten. Sie sind leichter als die eines Anbieters, aber sie sind nicht nichts. Das Modell eines Dritten in einem Produkt zu betreiben, das Sie anbieten, ist keine persönliche, nicht berufliche Tätigkeit.",
+      "title": "Betreiberrolle als offene Prüffrage",
+      "body": "Sie haben angegeben, die KI eines Dritten zu nutzen. Das macht Artikel 3 Nummer 4 potenziell relevant, entscheidet Ihre rechtliche Rolle aber nicht. Nutzung, Verantwortungsbereich und Bereitstellungskontext müssen geprüft werden.",
       "cite": "Artikel 3 Nummer 4",
       "href": "/guides/",
       "linkText": "Leitfäden nach Artikel (auf Englisch)"
     },
     "roleBoth": {
-      "title": "Sie können beides sein, und die Grenze kann sich verschieben",
-      "body": "Sie haben beides angegeben, und beide Pflichtenkreise können dieselbe Organisation treffen. Artikel 25 legt zudem fest, wann ein Betreiber, Händler oder Einführer zum Anbieter eines Hochrisiko-Systems wird: wenn er seinen Namen oder seine Handelsmarke darauf anbringt, eine wesentliche Änderung daran vornimmt oder die Zweckbestimmung eines Systems so ändert, dass es zum Hochrisiko-System wird.",
+      "title": "Mehrere Rollen müssen geprüft werden",
+      "body": "Sie haben Entwicklung oder Training und die Nutzung fremder KI angegeben. Artikel 3 Nummern 3 und 4 sowie Artikel 25 sind potenziell relevant. Welche Rolle tatsächlich vorliegt, bleibt eine menschliche Entscheidung auf Grundlage des Einsatzkontexts.",
       "cite": "Artikel 3 Nummern 3 und 4 sowie Artikel 25 Absatz 1",
       "href": "/guides/",
       "linkText": "Leitfäden nach Artikel (auf Englisch)"
     },
     "roleUnsure": {
       "title": "Ihre Rolle gehört zu den zuerst zu klärenden Tatsachen",
-      "body": "Sie sind sich nicht sicher. Die Verordnung unterscheidet die Organisation, die ein KI-System unter eigenem Namen in Verkehr bringt oder in Betrieb nimmt, von der Organisation, die eines in eigener Verantwortung verwendet, und legt beiden unterschiedliche Pflichten auf. Artikel 25 regelt außerdem, wann die Nutzung oder Änderung eines fremden Hochrisiko-Systems Sie zu dessen Anbieter macht.",
+      "body": "Sie sind sich nicht sicher. Diese Ungewissheit bleibt erhalten. Eine verantwortliche prüfende Person muss anhand des Angebots-, Nutzungs- und Änderungskontexts klären, welche Definitionen oder Bestimmungen potenziell relevant sind.",
       "cite": "Artikel 3 Nummern 3 und 4 sowie Artikel 25 Absatz 1",
       "href": "/guides/",
       "linkText": "Leitfäden nach Artikel (auf Englisch)"
     },
     "transparency": {
-      "title": "Den Menschen sagen, dass sie es mit KI zu tun haben",
-      "body": "Sie haben angegeben, dass Menschen von KI erzeugte Inhalte sehen oder direkt mit Ihrem System sprechen. Artikel 50 enthält mehrere Transparenzpflichten mit unterschiedlichen Adressaten, Voraussetzungen und Ausnahmen. Sie gelten seit dem {article50}, und für die Kennzeichnungsanforderungen läuft eine Übergangsfrist bis zum {marking}. Ein fehlender Hinweis ist etwas zu Prüfendes, kein Beleg dafür, dass jede Pflicht aus Artikel 50 für Sie gilt.",
+      "title": "Artikel 50 als potenziell relevante Prüffrage",
+      "body": "Sie haben angegeben, dass Menschen KI-generierte Inhalte sehen oder direkt mit dem System sprechen. Prüfen Sie Rolle, Zweck, betroffenen Absatz, Voraussetzungen, Ausnahmen und die maßgeblichen Daten. Diese Antwort stellt keine Transparenzpflicht fest.",
       "cite": "Artikel 50",
       "href": "/guides/article-50-transparency.html",
       "linkText": "Artikel 50 Transparenz, im Detail (auf Englisch)"
     },
     "decisions": {
-      "title": "Entscheidungen über Menschen sind der strengste Teil",
-      "body": "Sie haben angegeben, dass KI dabei hilft, etwas über eine Person zu entscheiden. Anhang III listet die als hochriskant behandelten Verwendungen auf, und Artikel 6 regelt, wie ein System in einem dieser Bereiche eingestuft wird; diese Pflichten gelten ab dem {annexIII}. Artikel 6 Absatz 3 nennt zudem Voraussetzungen, unter denen ein solches System nicht hochriskant ist, etwa eine eng gefasste verfahrenstechnische Aufgabe oder die Verbesserung des Ergebnisses einer zuvor abgeschlossenen menschlichen Tätigkeit, und bestimmt, dass ein System, das ein Profiling natürlicher Personen vornimmt, stets hochriskant ist. Was davon auf Sie zutrifft, kann diese Seite gerade nicht beantworten.",
+      "title": "Anhang III und Artikel 6 müssen geprüft werden",
+      "body": "Sie haben angegeben, dass KI bei einer Entscheidung über eine Person hilft. Das macht Anhang III und Artikel 6 potenziell relevant. Zweckbestimmung, konkrete Verwendung, Ausnahmen, Profiling und weitere Voraussetzungen fehlen; diese Seite stuft das System nicht ein.",
       "cite": "Artikel 6 Absätze 2 und 3, Anhang III",
       "href": "/guides/article-9-risk-management.html",
       "linkText": "Was hochriskant tatsächlich verlangt (auf Englisch)"
     },
     "prohibited": {
-      "title": "Einige Verwendungen sind vollständig verboten",
-      "body": "Manche Praktiken sind verboten statt reguliert, und die Verbote gelten seit dem {prohibited}. Diese Seite hat nicht danach gefragt; lesen Sie daher die Liste, statt anzunehmen, dass sie Sie nicht betrifft.",
+      "title": "Artikel 5 wurde nicht durch diese Fragen geprüft",
+      "body": "Diese fünf Fragen erfassen nicht die für Artikel 5 nötigen Tatsachen. Eine verantwortliche prüfende Person muss die tatsächliche Verwendung und die Bestimmungen untersuchen; aus dem fehlenden Fragebogenhinweis folgt keine Nichtanwendbarkeit.",
       "cite": "Artikel 5",
       "href": "/guides/article-5-prohibited-practices.html",
       "linkText": "Die verbotenen Praktiken, aufgelistet (auf Englisch)"
@@ -274,7 +304,11 @@
       "short": "Menschliche Beurteilung für Kontext, den Regula nicht beobachten kann. Nicht von Regula angeboten."
     }
   },
-  "consultantWarranted": "Ihre Antworten benennen eine besonders streng behandelte Verwendung oder ein System, das Sie noch nicht einordnen können. Hier ist menschliche Prüfung wichtig, weil ein weiteres automatisiertes Signal den fehlenden Kontext nicht klären kann.",
+  "consultantWarranted": "Ihre Antworten enthalten Kontext, der eine fachkundige menschliche Prüfung rechtfertigt. Regula hält die offenen Fragen fest, entscheidet aber weder Einstufung noch Pflichten.",
+  "declaredHeading": "Von Ihnen deklarierter Kontext",
+  "explicitUnknownHeading": "Als ausdrücklich unbekannt bewahrte Antworten",
+  "humanDecisionHeading": "Menschliche Entscheidung",
+  "humanDecisionEmpty": "Nicht erfasst. Dieses Feld bleibt leer, bis eine verantwortliche prüfende Person die Nachweise auslegt.",
   "limits": [
     "Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Über Konformität entscheiden Behörden und notifizierte Stellen, nicht ein Fragebogen, und „nicht markiert“ bedeutet niemals „rechtskonform“.",
     "Nichts hiervon ist Rechtsberatung. Alles, was von einer rechtlichen Schlussfolgerung abhängt, braucht eine entsprechend qualifizierte Fachperson."

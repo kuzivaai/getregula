@@ -240,14 +240,14 @@ def detect_provider_deployer(text: str) -> dict:
             "role": "provider",
             "confidence": "high" if p_count >= 2 else "medium",
             "evidence": provider_evidence,
-            "note": "Full provider obligations apply (Articles 9-15, conformity assessment, registration).",
+            "note": "Provider-role indicators found. A reviewer must establish the role and applicability before attaching Articles 9 to 15 or other duties.",
         }
     elif d_count > 0 and p_count == 0:
         return {
             "role": "deployer",
             "confidence": "high" if d_count >= 2 else "medium",
             "evidence": deployer_evidence,
-            "note": "Deployer obligations apply (Article 26: use per instructions, human oversight, monitoring, logging; Article 27: fundamental rights impact assessment).",
+            "note": "Deployer-role indicators found. Articles 26 and 27 may be relevant, subject to role, use, conditions and exceptions confirmed in review.",
         }
     elif p_count > 0 and d_count > 0:
         if p_count > d_count:
@@ -255,7 +255,7 @@ def detect_provider_deployer(text: str) -> dict:
                 "role": "provider",
                 "confidence": "low",
                 "evidence": provider_evidence + deployer_evidence,
-                "note": "Mixed signals — training AND inference code detected. Likely provider. Review manually.",
+                "note": "Mixed training and inference indicators found. Do not infer a legal role from code; review deployment evidence.",
             }
         else:
             return {
@@ -409,82 +409,9 @@ def explain_classification(text: str, filepath: str = "<stdin>",
 
 
 def format_explanation(result: dict, filepath: str = "<stdin>") -> str:
-    """Format an explanation result as human-readable text."""
-    cls = result["classification"]
-    lines = []
+    """Format detector observations without emitting legal tiers or duties."""
+    from decision_adapters import detector_explanation, format_detector_explanation
 
-    # Header
-    tier_label = cls.tier.value.upper().replace("_", "-")
-    category = cls.category or ""
-    lines.append(f"Classification: {tier_label}")
-    if category:
-        lines.append(f"  {category}")
-    lines.append("")
-
-    # Pattern matches — WHY
-    matches = result["pattern_matches"]
-    if matches:
-        lines.append("WHY:")
-        for m in matches:
-            lines.append(f"  {filepath}:{m['line']} — {m['pattern_name']}")
-            lines.append(f"    Code: {m['matched_text']}")
-            lines.append(f"    Legal basis: {m['legal_basis']}")
-            if m.get("conditions"):
-                lines.append(f"    Conditions: {m['conditions']}")
-            lines.append(f"    False positive if: {m['false_positive_if']}")
-            lines.append("")
-    elif cls.tier == RiskTier.MINIMAL_RISK:
-        lines.append("WHY: No high-risk or prohibited patterns detected in code.")
-        lines.append("")
-    elif cls.tier == RiskTier.NOT_AI:
-        lines.append("WHY: No AI indicators detected in this file.")
-        lines.append("")
-
-    # Provider / Deployer
-    pd = result["provider_deployer"]
-    role_label = pd["role"].upper()
-    lines.append(f"ROLE: {role_label} (confidence: {pd['confidence']})")
-    if pd["evidence"]:
-        for ev in pd["evidence"][:3]:
-            lines.append(f"  - {ev}")
-    lines.append(f"  {pd['note']}")
-    lines.append("")
-
-    # Obligation roadmap
-    roadmap = result["obligation_roadmap"]
-    if roadmap:
-        lines.append("OBLIGATIONS:")
-        for o in roadmap:
-            status_icon = {
-                "detected": "+",
-                "partial": "~",
-                "not_detected": "-",
-            }.get(o["status"], "?")
-            effort = f"{o['effort_hours'][0]}-{o['effort_hours'][1]}h"
-            lines.append(f"  [{o['priority']:4s}] {o['title']} [{status_icon}] {o['status']} — {effort}")
-        lines.append("")
-
-        # Total effort
-        total = result["total_effort_hours"]
-        lines.append(f"  Total: {total[0]}-{total[1]} hours (indicative — varies by system complexity)")
-
-        # Timeline
-        timeline = result.get("timeline", {})
-        from omnibus import ANNEX_III_PROSE as _a3, ORIGINAL_PROSE as _orig, OMNIBUS_ENACTED as _enacted, OMNIBUS_IN_FORCE_DATE as _in_force
-        current = timeline.get("current_law", _orig)
-        omnibus = timeline.get("omnibus_proposed", {})
-        annex_iii = omnibus.get("annex_iii", _a3) if isinstance(omnibus, dict) else _a3
-        if _enacted:
-            # Date-qualified: flat "in force" would overstate legal status
-            # during the 3 days between OJ publication and effect.
-            lines.append(f"  Deadline: {annex_iii} for Annex III (Omnibus in force from {_in_force})")
-        else:
-            lines.append(f"  Deadline: {current} (Annex III: {annex_iii} under the adopted Omnibus, pending OJ publication)")
-        lines.append("")
-
-    # Disclaimer
-    lines.append("NOTE: This is a risk INDICATION, not a legal determination.")
-    lines.append("The EU AI Act Article 6 requires contextual assessment of intended")
-    lines.append("purpose and deployment context that automated scanning cannot provide.")
-
-    return "\n".join(lines)
+    return format_detector_explanation(
+        detector_explanation(result, filepath)
+    )

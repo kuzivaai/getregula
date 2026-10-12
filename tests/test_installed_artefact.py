@@ -264,7 +264,7 @@ def test_the_retired_marker_check_can_be_pointed_at_another_cli():
         loud = work / "loud.py"
         loud.write_text(f"print({marker!r})\n", encoding="utf-8")
         quiet = work / "quiet.py"
-        quiet.write_text("print('Decision: insufficient_information')\n", encoding="utf-8")
+        quiet.write_text("print('Review status: insufficient_information')\n", encoding="utf-8")
 
         problems = vt.retired_markers_are_unreachable(
             [["ignored"]], cli=[sys.executable, str(loud)], cwd=work)

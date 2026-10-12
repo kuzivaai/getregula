@@ -18,11 +18,11 @@ def test_exec_summary_generates_valid_html():
     assert "</html>" in html
 
 
-def test_exec_summary_title_is_indicator_summary():
-    """Title must say 'Risk Indicator Summary', not 'compliance report'."""
+def test_exec_summary_title_is_evidence_preparation_summary():
+    """Title must describe evidence preparation, not a legal result."""
     from exec_summary import generate_exec_summary
     html = generate_exec_summary([], "test-project")
-    assert "AI Act Risk Indicator Summary" in html
+    assert "AI Act Evidence-Preparation Summary" in html
 
 
 def test_exec_summary_subtitle_says_not_legal():
@@ -41,11 +41,13 @@ def test_exec_summary_article_6_disclaimer():
     assert "contextual determinations" in html
 
 
-def test_exec_summary_data_residency():
-    """Data residency line must state no transmission."""
+def test_exec_summary_data_boundary_is_bounded_and_has_no_hostname():
+    """Data-boundary copy is scoped to the generator and excludes host identity."""
     from exec_summary import generate_exec_summary
     html = generate_exec_summary([], "test-project")
-    assert "No code, findings, or metadata were transmitted" in html
+    assert "does not itself upload source files" in html
+    assert "execution environment" in html
+    assert "This scan ran locally on" not in html
 
 
 def test_exec_summary_no_conformity_language():

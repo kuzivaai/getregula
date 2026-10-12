@@ -12,14 +12,14 @@
   },
   "transport": "stdio",
   "install": {
-    "command": "pipx install git+https://github.com/kuzivaai/getregula.git@main && python3 -c \"import scripts.mcp_server\"",
-    "instructions": "Install via pipx: `pipx install git+https://github.com/kuzivaai/getregula.git@main`. Run: `regula mcp-server` or `python3 scripts/mcp_server.py`."
+    "command": "pipx install git+https://github.com/kuzivaai/getregula.git@v2.0.0",
+    "instructions": "Install via pipx, then run `regula mcp-server --workspace-root /ABSOLUTE/PATH/TO/REPOSITORY`. The explicit workspace root is required and limits readable files."
   },
   "config": {
     "mcpServers": {
       "regula": {
-        "command": "python3",
-        "args": ["-m", "scripts.mcp_server"]
+        "command": "regula",
+        "args": ["mcp-server", "--workspace-root", "/ABSOLUTE/PATH/TO/REPOSITORY"]
       }
     }
   },

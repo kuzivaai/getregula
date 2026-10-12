@@ -208,9 +208,18 @@ def _clone_with_working_tree_scripts(repo, dest):
         ["git", "clone", "--quiet", "--no-hardlinks", str(repo), str(dest)],
         check=True, capture_output=True,
     )
-    for rel in ("scripts/tracked_inputs.py", "scripts/build_gap_demo.py",
-                "scripts/build_recall_artefact.py"):
-        (dest / rel).write_bytes((repo / rel).read_bytes())
+    # Exercise the generator against the current production stack, including
+    # newly added modules. Copying three hand-listed files left the clone's CLI
+    # at HEAD and made a valid output-schema migration look like a generator
+    # failure. The tracked fixture remains untouched, which is the input
+    # boundary these tests are designed to prove.
+    for source in (repo / "scripts").rglob("*.py"):
+        if "__pycache__" in source.parts:
+            continue
+        relative = source.relative_to(repo)
+        target = dest / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes())
     return dest
 
 

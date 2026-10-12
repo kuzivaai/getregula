@@ -7,21 +7,21 @@
          0da1226 on site/index.html for the full diagnosis. TL;DR: external
          CSS is render-blocking, so the browser's default white canvas shows
          for hundreds of ms on cold loads. Inline critical CSS establishes the
-         dark theme immediately; `color-scheme: dark` hints the canvas colour
-         for dark-mode OSes; stylesheets load via media="print" + onload swap
+         brand canvas immediately; `color-scheme: light` hints the canvas colour
+         for browser chrome; stylesheets load via media="print" + onload swap
          so they don't block first paint. <noscript> fallback for JS off. -->
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -82,26 +82,26 @@
         html { scroll-behavior: smooth; }
         body {
             font-family: 'DM Sans', system-ui, sans-serif;
-            background: #070711;
-            color: #e2e2f0;
+            background: #f5f7f3;
+            color: #14231c;
             line-height: 1.65;
             -webkit-font-smoothing: antialiased;
         }
         code, .mono { font-family: 'JetBrains Mono', monospace; }
         h1, h2 { font-family: 'Fraunces', Georgia, serif; }
-        a { color: #3b82f6; text-decoration: none; transition: color 0.15s; }
-        a:hover { color: #60a5fa; }
+        a { color: #075f4e; text-decoration: none; transition: color 0.15s; }
+        a:hover { color: #044b3d; }
 
         .nav {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(7, 7, 17, 0.85);
+            background: rgba(245,247,243,0.94);
             backdrop-filter: saturate(140%) blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid #d8dfd8;
             padding: 14px 32px;
             display: flex; align-items: center; justify-content: space-between;
         }
-        .nav-brand { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 22px; color: #fff; }
-        .nav-brand .pill { font-family: 'DM Sans', sans-serif; font-size: 11px; padding: 2px 8px; background: rgba(59,130,246,0.15); color: #7dd3fc; border-radius: 999px; vertical-align: middle; margin-left: 6px; }
+        .nav-brand { font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 22px; color: #14231c; }
+        .nav-brand .pill { font-family: 'DM Sans', sans-serif; font-size: 11px; padding: 2px 8px; background: #e5f2ed; color: #075f4e; border-radius: 999px; vertical-align: middle; margin-left: 6px; }
 
         .hero {
             max-width: 980px;
@@ -113,34 +113,34 @@
             display: inline-block;
             font-size: 12px;
             padding: 6px 12px;
-            background: rgba(59,130,246,0.12);
-            border: 1px solid rgba(59,130,246,0.3);
+            background: #e5f2ed;
+            border: 1px solid #b9c5bd;
             border-radius: 999px;
-            color: #93c5fd;
+            color: #075f4e;
             margin-bottom: 24px;
         }
         h1 {
             font-size: 48px;
             line-height: 1.1;
             font-weight: 600;
-            color: #fff;
+            color: #14231c;
             margin-bottom: 20px;
         }
-        h1 .hl { color: #3b82f6; }
+        h1 .hl { color: #075f4e; }
         .sub {
             font-size: 19px;
-            color: #aaaac0;
+            color: #3f5047;
             max-width: 680px;
             margin-bottom: 32px;
         }
-        .sub strong { color: #e2e2f0; }
+        .sub strong { color: #14231c; }
         .cta-pill {
             display: inline-flex;
             align-items: center;
             gap: 10px;
             /* White on the former #3b82f6 stop was 3.68:1. Both current
                stops clear WCAG 2.2 AA for normal text. */
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            background: linear-gradient(135deg, #075f4e, #044b3d);
             color: #fff;
             padding: 14px 28px;
             border-radius: 999px;
@@ -156,13 +156,13 @@
         .cta-secondary {
             margin-top: 14px;
             font-size: 13px;
-            color: #888;
+            color: #405349;
         }
-        .cta-secondary a { color: #888; text-decoration: underline; text-underline-offset: 3px; }
+        .cta-secondary a { color: #075f4e; text-decoration: underline; text-underline-offset: 3px; }
         .social-proof {
             margin-top: 28px;
             font-size: 13px;
-            color: #9898b4;  /* WCAG AA: 5.29:1 on #070711 */
+            color: #485b51;
         }
         .social-proof .sp-sep { margin: 0 8px; }
 
@@ -171,8 +171,8 @@
             margin: 0 auto;
             padding: 56px 24px;
         }
-        h2 { font-size: 30px; color: #fff; margin-bottom: 8px; }
-        .sec-sub { font-size: 16px; color: #888; margin-bottom: 32px; }
+        h2 { font-size: 30px; color: #14231c; margin-bottom: 8px; }
+        .sec-sub { font-size: 16px; color: #405349; margin-bottom: 32px; }
 
         .liab-grid {
             display: grid;
@@ -188,12 +188,13 @@
             margin-top: 24px;
         }
         .sector {
-            background: #0f0f1f;
-            border-left: 3px solid #3b82f6;
+            background: #ffffff;
+            border: 1px solid #d8dfd8;
+            border-left: 3px solid #075f4e;
             padding: 16px 18px;
         }
-        .sector strong { color: #fff; display: block; margin-bottom: 4px; font-size: 14px; }
-        .sector span { font-size: 13px; color: #888; }
+        .sector strong { color: #14231c; display: block; margin-bottom: 4px; font-size: 14px; }
+        .sector span { font-size: 13px; color: #405349; }
 
         .terminal {
             background: #050510;
@@ -223,7 +224,14 @@
             font-size: 14px;
         }
         .install-block .dollar { color: #8a8aa8; }
-        .install-block .cmd { color: #7dd3fc; flex: 1; }
+        .install-block .cmd {
+            color: #7dd3fc;
+            flex: 1;
+            min-width: 0;
+            overflow-wrap: anywhere;
+            white-space: normal;
+            word-break: break-word;
+        }
         .install-block button {
             /* Darker blue for WCAG AA 4.5:1 contrast with white text. */
             background: #1d4ed8; border: none; color: #fff;
@@ -276,7 +284,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
         <a href="/" class="nav-brand">Regula</a>
         <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+        <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
             <a href="/assess/">Assess scope</a>
             <a href="/product.html">Scan code</a>
             <a href="/coverage.html">Coverage</a>
@@ -310,7 +318,7 @@
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>zero runtime dependencies</span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
-        <span><a href="https://github.com/kuzivaai/getregula/tree/main/tests" style="color:inherit;text-decoration:underline dotted;">2,936 tests</a></span>
+        <span><a href="https://github.com/kuzivaai/getregula/tree/main/tests" style="color:inherit;text-decoration:underline dotted;">2,990 tests</a></span>
         <span class="sp-sep" aria-hidden="true">&middot;</span>
         <span>Versioned security-alert inventory</span>
     </div>
@@ -371,7 +379,7 @@
         <div class="sector"><strong>Federal layer</strong><span>Federal Decree-Law No. 45 of 2021 governs personal-data processing within its scope. Sector regulators may add requirements. This page does not rely on an unverified secondary claim about a new federal AI authority.</span></div>
     </div>
 
-    <p style="margin-top: 24px; color: #888; font-size: 14px;">The practical takeaway: UAE rules and EU AI Act scope are separate questions. If Article 2 brings a system or actor into EU scope, applicable EU duties may sit alongside local rules. Regula reports local code indicators but cannot decide either legal question.</p>
+    <p style="margin-top: 24px; color: #405349; font-size: 14px;">The practical takeaway: UAE rules and EU AI Act scope are separate questions. If Article 2 brings a system or actor into EU scope, applicable EU duties may sit alongside local rules. Regula reports local code indicators but cannot decide either legal question.</p>
 </section>
 
 <!-- DEMO -->
@@ -428,12 +436,12 @@ Detector observation (not a legal classification):
     <h2>How you verify Regula independently</h2>
     <p class="sec-sub">Use the underlying artefacts to check reproducibility, security boundaries, evaluation limits, and what remains unvalidated.</p>
 
-    <ul style="list-style: none; padding: 0; font-size: 15px; color: #aaaac0;">
-        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Trust Pack</strong> — every claim is paired with the exact shell command anyone can run to verify it. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">docs/TRUST.md</a></li>
-        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Published methodology</strong>: the precision and recall measurements are under review and are not quoted here as current figures. The method, the corpora and their limits are published so the numbers can be reproduced and challenged. <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md">benchmark methodology</a></li>
-        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>SHA-256 tamper-evident audit log</strong> — verify the chain yourself with <code>regula audit verify</code>.</li>
-        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Zero runtime dependencies</strong> — Regula's core only uses Python's standard library. The Software Bill of Materials is empty by design.</li>
-        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06);">&#10003; <strong>Local-first core scanning</strong> — no account or API key is required for the core scan path. Optional network-enabled features have separate boundaries.</li>
+    <ul style="list-style: none; padding: 0; font-size: 15px; color: #405349;">
+        <li style="padding: 10px 0; border-bottom: 1px solid #d8dfd8;">&#10003; <strong>Trust Pack:</strong> every claim is paired with the exact shell command anyone can run to verify it. <a href="https://github.com/kuzivaai/getregula/blob/main/docs/TRUST.md">docs/TRUST.md</a></li>
+        <li style="padding: 10px 0; border-bottom: 1px solid #d8dfd8;">&#10003; <strong>Published methodology</strong>: the precision and recall measurements are under review and are not quoted here as current figures. The method, the corpora and their limits are published so the numbers can be reproduced and challenged. <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md">benchmark methodology</a></li>
+        <li style="padding: 10px 0; border-bottom: 1px solid #d8dfd8;">&#10003; <strong>SHA-256 tamper-evident audit log:</strong> verify the chain yourself with <code>regula audit verify</code>.</li>
+        <li style="padding: 10px 0; border-bottom: 1px solid #d8dfd8;">&#10003; <strong>Zero runtime dependencies:</strong> Regula's core only uses Python's standard library. The Software Bill of Materials is empty by design.</li>
+        <li style="padding: 10px 0; border-bottom: 1px solid #d8dfd8;">&#10003; <strong>Local-first core scanning:</strong> no account or API key is required for the core scan path. Optional network-enabled features have separate boundaries.</li>
         <li style="padding: 10px 0;">&#10003; <strong>Open source under Apache 2.0 / EUPL 1.2</strong> — read every line at <a href="https://github.com/kuzivaai/getregula">github.com/kuzivaai/getregula</a>.</li>
     </ul>
 </section>

@@ -1,0 +1,23 @@
+id,claim,evidence,disposition,remaining_limitation
+CV-001,Candidate is an immutable local commit,"Commit 3b6ca1f7e483ff35838a814c043e6b0361a2d55a; clean candidate worktree; verified complete-history bundle",CONFIRMED,Not pushed or registered in the original read-only Git metadata
+CV-002,Public review schema 2.0 bounds supported outputs,"Decision conformance 160/160; cross-surface product-boundary tests",CONFIRMED,Qualified legal review remains external
+CV-003,Legacy public outcome fields no longer escape supported schema,"Negative public-schema assertions for six former fields",PARTIALLY CONFIRMED,Internal and historical occurrences remain
+CV-004,Generated outputs do not assert legal determinations,"539 tracked files scanned; 0 findings; planted control 39 prohibited and 22 allowed",CONFIRMED,Guard scope is enumerated rather than universal
+CV-005,Cache v8 is configuration-correct and order-independent,"A/B and B/A tests; policy threshold domain parser path corruption concurrency eviction tests",CONFIRMED,Native Windows not run
+CV-006,Share schema 4 preserves assessment evidence,"255 questionnaire assertions including partial unsure contradiction legacy malformed and round-trip cases",CONFIRMED,Browser announcements not exercised
+CV-007,MCP requires and enforces an authorised workspace,"Containment traversal symlink limits and privacy tests",PARTIALLY CONFIRMED,Native Windows not run
+CV-008,REST fails closed for accidental non-loopback binding,"API unit and integration tests",PARTIALLY CONFIRMED,No authentication and not a production API
+CV-009,Feedback requires preview and consent,"Secret path and cancellation tests",CONFIRMED,No actual external URL action was performed
+CV-010,Weekly digest has review-only authority,"Read-only workflow and negative authority tests",CONFIRMED,External model endpoint privacy unverified
+CV-011,Rating tooling shares schema 1.0,"Both utilities and incomplete-rating tests",CONFIRMED,Two real ratings do not exist
+CV-012,CI uses a locked dependency environment,"uv 0.11.0 and uv sync --locked in CI",CONFIRMED,Remote CI not run
+CV-013,Website generators and links are internally consistent,"Five generator round trips; 1609 references; 108 locale links",CONFIRMED,Real-browser and fluent-language review blocked
+CV-014,Public numerical claims match measured counts,"269 fact references across 17 files",CONFIRMED,Future changes still require regeneration
+CV-015,Candidate builds and installs offline,"Wheel and sdist hashes; two clean no-index installs; installed verifier zero findings",CONFIRMED,Not published
+CV-016,The existing local v2.0.0 tag identifies the candidate,"Tag 0b2b1642; candidate 3b6ca1f7",CONTRADICTED,Owner must decide tag and version before release
+CV-017,PyPI is unavailable,"PyPI serves regula-ai 1.9.0",CONTRADICTED,Ownership and control remain unverified
+CV-018,Complete final pytest passes,"2956 passed; 38 skipped; 8 loopback setup errors",BLOCKED,Requires loopback-capable rerun
+CV-019,Representative detector validity is established,"Synthetic label fidelity high-risk 18/30; no representative ratings",BLOCKED,Representative study required
+CV-020,Website meets WCAG 2.2 AA,"Browser and axe execution blocked",NOT CONFIRMED,Manual disabled-user and assistive-technology review required
+CV-021,Publication is permitted,"Publication gate lists four unmet conditions",BLOCKED,Owner and external remediation required
+CV-022,Annex VIII output no longer turns detector labels into legal scope,"Schema 2.0 review scaffold; low-label mutation test; empty human decision",CONFIRMED,Qualified review must select any legal path

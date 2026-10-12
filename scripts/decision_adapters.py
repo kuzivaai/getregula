@@ -15,6 +15,111 @@ from typing import Any, Mapping, Optional
 sys.path.insert(0, str(Path(__file__).parent))
 
 from decision_kernel import DecisionInputError, DecisionKernel
+from evidence_review import (
+    DEFAULT_LIMITATIONS,
+    DEFAULT_REVIEWER_QUESTIONS,
+    DEFAULT_REVIEW_STEPS,
+    review_record_from_finding,
+)
+
+
+PUBLIC_REVIEW_SCHEMA_VERSION = "2.0"
+
+
+def _public_reference_rows(result: Mapping[str, Any]) -> list:
+    rows = []
+    for item in result.get("indications", []) or []:
+        rows.append({
+            "reference": str(item.get("provision", "unspecified provision")),
+            "status": "potentially_relevant",
+            "source_version": None,
+            "source_date": None,
+        })
+    for item in result.get("obligations", []) or []:
+        rows.append({
+            "reference": str(item.get("provision", "unspecified provision")),
+            "status": "potentially_relevant",
+            "source_version": None,
+            "source_date": None,
+        })
+    basis = result.get("outside_scope_basis") or {}
+    if basis.get("provision"):
+        rows.append({
+            "reference": str(basis["provision"]),
+            "status": "unresolved_scope_question",
+            "source_version": None,
+            "source_date": None,
+        })
+    for unresolved in result.get("unresolved_predicates", []) or []:
+        for affected in unresolved.get("would_resolve", []) or []:
+            if affected.get("provision"):
+                rows.append({
+                    "reference": str(affected["provision"]),
+                    "status": "unresolved_question",
+                    "source_version": None,
+                    "source_date": None,
+                })
+
+    deduplicated = []
+    seen = set()
+    for row in rows:
+        key = (row["reference"], row["status"])
+        if key in seen:
+            continue
+        seen.add(key)
+        deduplicated.append(row)
+    return deduplicated
+
+
+def public_review_result(result: Mapping[str, Any]) -> dict:
+    """Remove machine legal outcomes from an internal predicate evaluation."""
+    unresolved = list(result.get("unresolved_predicates", []) or [])
+    missing_context = [
+        {
+            "fact_id": item.get("fact_id"),
+            "reason": item.get("reason"),
+            "question": item.get("question"),
+            "observed_values": list(item.get("observed_values", []) or []),
+        }
+        for item in unresolved
+        if item.get("reason") != "contradictory"
+    ]
+    contradictory_context = [
+        {
+            "fact_id": item.get("fact_id"),
+            "question": item.get("question"),
+            "observed_values": list(item.get("observed_values", []) or []),
+        }
+        for item in unresolved
+        if item.get("reason") == "contradictory"
+    ]
+    review_status = (
+        "insufficient_information"
+        if result.get("result_type") == "insufficient_information"
+        else "human_review_required"
+    )
+    return {
+        "schema_version": PUBLIC_REVIEW_SCHEMA_VERSION,
+        "record_type": "declared_context_review",
+        "review_status": review_status,
+        "model_version": result.get("model_version"),
+        "jurisdiction": result.get("jurisdiction"),
+        "evidence_completeness": dict(result.get("evidence_completeness") or {}),
+        "declared_context": list(result.get("matched_evidence", []) or []),
+        "missing_context": missing_context,
+        "contradictory_context": contradictory_context,
+        "potentially_relevant_provisions": _public_reference_rows(result),
+        "reviewer_questions": [
+            item["question"] for item in missing_context
+            if item.get("question")
+        ] or list(DEFAULT_REVIEWER_QUESTIONS),
+        "suggested_human_review_steps": list(DEFAULT_REVIEW_STEPS),
+        "explicit_limitations": list(DEFAULT_LIMITATIONS),
+        "probability_calibration": dict(
+            result.get("probability_calibration") or {"available": False}
+        ),
+        "human_decision": None,
+    }
 
 
 def empty_decision(
@@ -22,14 +127,15 @@ def empty_decision(
     source_ref: str = "adapter:no-declared-facts",
     kernel: Optional[DecisionKernel] = None,
 ) -> dict:
-    """Evaluate an empty fact map without converting detector output to facts."""
+    """Return a public review result with no declared facts."""
     del source_ref  # Describes the absence at the caller; no fact is fabricated.
     active_kernel = kernel or DecisionKernel()
-    return active_kernel.evaluate({
+    result = active_kernel.evaluate({
         "model_version": active_kernel.model_version,
         "jurisdiction": jurisdiction,
         "facts": {},
     })
+    return public_review_result(result)
 
 
 def evaluate_payload(
@@ -42,7 +148,7 @@ def evaluate_payload(
     active_kernel = kernel or DecisionKernel()
     request = dict(payload)
     request.setdefault("model_version", active_kernel.model_version)
-    return active_kernel.evaluate(request)
+    return public_review_result(active_kernel.evaluate(request))
 
 
 def fact_value(
@@ -66,6 +172,7 @@ def fact_value(
 def detector_finding(finding: Mapping[str, Any]) -> dict:
     """Rename decision-like scanner fields so observations cannot pose as law."""
     output = dict(finding)
+    output["reviewable_evidence"] = review_record_from_finding(finding)
     if "tier" in output:
         output["detector_class"] = output.pop("tier")
     if "confidence_score" in output:
@@ -135,12 +242,13 @@ def detector_explanation(result: Mapping[str, Any], filepath: str) -> dict:
 
 def format_detector_explanation(result: Mapping[str, Any]) -> str:
     """Render explain-mode observations without duties or effort estimates."""
-    lines = [f"Detector explanation: {result.get('file', 'unknown')}"]
+    source = str(result.get("file", "unknown"))
+    lines = [f"Detector explanation: {source}"]
     observation = result.get("classification_observation") or {}
     detector_class = observation.get("detector_class", "unclassified")
     lines.append(f"Detector class: {detector_class}")
     for match in result.get("pattern_matches", []):
-        location = f"line {match.get('line', '?')}"
+        location = f"{source}:{match.get('line', '?')}"
         pattern = match.get("pattern") or match.get("matched_pattern") or "pattern"
         lines.append(f"  - {location}: {pattern}")
         if match.get("suggested_provision"):
@@ -160,62 +268,70 @@ def format_detector_explanation(result: Mapping[str, Any]) -> str:
 
 
 def format_decision_text(result: Mapping[str, Any], command: str = "check") -> str:
-    """Render a compact decision without introducing adapter conclusions."""
+    """Render declared-context review status without adding legal conclusions."""
     lines = [
-        f"Decision: {result['result_type']}",
+        f"Review status: {result['review_status']}",
         f"Model: {result['model_version']}",
         f"Jurisdiction: {result['jurisdiction']}",
-        f"Rule resolution: {result['rule_resolution']}",
+        "Human decision: not recorded",
     ]
-    if result["result_type"] == "insufficient_information":
-        unresolved = result.get("unresolved_predicates", [])
-        lines.append(f"Facts needed to resolve the next decision: {len(unresolved)}")
+    if result["review_status"] == "insufficient_information":
+        unresolved = result.get("missing_context", [])
+        contradictory = result.get("contradictory_context", [])
+        lines.append(f"Declared context needed for review: {len(unresolved)}")
         for item in unresolved[:5]:
-            # The kernel already ranks by leverage; the count was simply never
-            # shown, so a list of 46 read as a wall rather than as an ordering.
-            # Every figure here is the kernel's own (N149).
-            advances = len(item.get("would_resolve", []) or [])
-            suffix = (f"  [answering this advances {advances} provision"
-                      f"{'' if advances == 1 else 's'}]") if advances else ""
             lines.append(
-                f"  - {item['fact_id']}: {item.get('question', 'Resolve this fact.')}{suffix}"
+                f"  - {item['fact_id']}: "
+                f"{item.get('question', 'Resolve this fact.')}"
             )
         if len(unresolved) > 5:
             lines.append(f"  - {len(unresolved) - 5} additional unresolved facts in JSON output")
+        if contradictory:
+            lines.append(f"Contradictory declared facts: {len(contradictory)}")
         if unresolved:
             lines.append(f"  Declare one with: regula {command} . --fact "
                          f"{unresolved[0]['fact_id']}=yes|no|unknown|not_applicable")
-    elif result["result_type"] == "indication":
-        for item in result.get("indications", []):
-            lines.append(
-                f"  - {item['classification']}: {item['provision']}"
-            )
     else:
-        basis = result.get("outside_scope_basis", {})
-        lines.append(f"Basis: {basis.get('provision', 'resolved predicate path')}")
+        lines.append("Potentially relevant provisions for accountable review:")
+        for item in result.get("potentially_relevant_provisions", [])[:10]:
+            lines.append(f"  - {item['reference']} ({item['status']})")
     return "\n".join(lines)
 
 
 def resolved_gap_evidence(assessment: Mapping[str, Any], decision: Mapping[str, Any]) -> dict:
-    """Keep gap observations only for obligations resolved by the kernel."""
-    obligation_articles = {
-        obligation["provision"].split("Article ", 1)[1].split(",", 1)[0]
-        for obligation in decision.get("obligations", [])
-        if "Article " in obligation.get("provision", "")
-    }
+    """Keep gap observations as review leads, never as resolved duties."""
     articles = assessment.get("articles") or {}
-    resolved_articles = {
-        article: data
-        for article, data in articles.items()
-        if str(article) in obligation_articles
+    held_observations = {
+        str(article): {
+            "potentially_relevant_provision": f"Article {article}",
+            "title": details.get("title"),
+            "review_status": "held_for_human_review",
+            "observed_evidence": list(details.get("evidence", []) or []),
+            "not_observed_by_configured_scan": list(
+                details.get("gaps", []) or []
+            ),
+            "explicit_limitation": (
+                "A detected or missing artefact does not establish that the "
+                "provision applies or that any legal duty is met."
+            ),
+        }
+        for article, details in articles.items()
     }
     return {
         "project_path": assessment.get("project_path"),
-        "article_observations": resolved_articles,
-        "not_assessed_article_count": len(articles) - len(resolved_articles),
+        "article_observations": {},
+        "held_article_observations": held_observations,
+        "not_assessed_article_count": len(held_observations),
+        "review_status": (
+            "held_for_human_review" if held_observations else "no_observation"
+        ),
+        "potentially_relevant_provisions": list(
+            decision.get("potentially_relevant_provisions", []) or []
+        ),
         "note": (
-            "Article evidence is attached only where the decision kernel "
-            "resolved the corresponding obligation."
+            "Code and documentation observations remain held because no "
+            "accountable human decision is recorded. They do not establish "
+            "applicability, a legal duty, compliance, or non-compliance."
         ),
     }
 

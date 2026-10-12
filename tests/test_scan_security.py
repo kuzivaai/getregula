@@ -269,10 +269,11 @@ def test_regula_gap_does_not_crash_on_pathological_file():
         # supplies no sourced applicability facts. Its tagged decision and
         # actionable fact list prove the command completed instead of
         # failing silently or manufacturing article gaps.
-        assert "Decision: insufficient_information" in proc.stdout, (
+        assert "Review status: insufficient_information" in proc.stdout, (
             f"expected a real gap-analysis report, got: {proc.stdout[:300]!r}"
         )
-        assert "Facts needed to resolve the next decision" in proc.stdout
+        assert "Human decision: not recorded" in proc.stdout
+        assert "Declared context needed for review" in proc.stdout
         assert "Overall readiness" not in proc.stdout
 
 

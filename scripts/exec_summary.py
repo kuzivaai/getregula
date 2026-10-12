@@ -10,7 +10,6 @@ assessment, legal determination, or compliance certificate.
 """
 
 import sys
-import socket
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -36,7 +35,8 @@ TIER_DESCRIPTIONS = {
     ),
     "limited_risk": (
         "This project contains indicators associated with LIMITED-RISK AI "
-        "systems under EU AI Act Article 50. Transparency obligations apply "
+        "systems under EU AI Act Article 50. Review the actor, purpose, "
+        "paragraph, conditions and exceptions against the application date "
         # Art 50's general applicability date is statutory (Article 113)
         # and unchanged by the Omnibus; the string is still sourced from
         # omnibus.py so no deadline literal lives outside it.
@@ -92,7 +92,6 @@ def generate_exec_summary(findings: list[dict], project_name: str,
             client as-is. When absent, output is unchanged.
     """
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    hostname = socket.gethostname()
     tier = _highest_tier(findings)
     tier_desc = TIER_DESCRIPTIONS.get(tier, TIER_DESCRIPTIONS["minimal_risk"])
 
@@ -145,7 +144,7 @@ def generate_exec_summary(findings: list[dict], project_name: str,
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Act Risk Indicator Summary \u2014 {html_escape(project_name)}</title>
+<title>AI Act Evidence-Preparation Summary \u2014 {html_escape(project_name)}</title>
 <style>
   * {{ margin: 0; padding: 0; box-sizing: border-box; }}
   body {{
@@ -189,7 +188,7 @@ def generate_exec_summary(findings: list[dict], project_name: str,
 </head>
 <body>
 
-<h1>AI Act Risk Indicator Summary</h1>
+<h1>AI Act Evidence-Preparation Summary</h1>
 <p class="subtitle">Technical scan results for review \u2014 not a legal determination</p>
 
 <div class="meta">
@@ -199,15 +198,15 @@ def generate_exec_summary(findings: list[dict], project_name: str,
 </div>
 
 <div class="tier-box">
-  <div class="tier-label">Risk tier: {tier_upper}</div>
+  <div class="tier-label">Highest detector class: {tier_upper}</div>
   <div class="tier-desc">{tier_desc}</div>
 </div>
 
-<h2>Top findings</h2>
-{"<p style='color:#6b7280;font-size:0.9rem;'>No findings detected.</p>" if not top_findings else f'''
+<h2>Code observations</h2>
+{"<p style='color:#6b7280;font-size:0.9rem;'>No indicator was found by this configured scan. This is not evidence of legal non-applicability or safety.</p>" if not top_findings else f'''
 <table>
   <thead>
-    <tr><th>Category</th><th>Article</th><th>Location</th><th>Description</th></tr>
+    <tr><th>Detector class</th><th>Suggested provision</th><th>Location</th><th>Observation</th></tr>
   </thead>
   <tbody>{findings_rows}
   </tbody>
@@ -218,8 +217,8 @@ def generate_exec_summary(findings: list[dict], project_name: str,
   {DISCLAIMER}
 </div>
 
-<h2>Data residency</h2>
-<p style="font-size:0.9rem;">This scan ran locally on <code>{hostname}</code>. No code, findings, or metadata were transmitted.</p>
+<h2>Data boundary</h2>
+<p style="font-size:0.9rem;">This report generator processes the supplied findings locally and does not itself upload source files. Optional integrations and the surrounding execution environment have separate data boundaries that require review.</p>
 
 <h2>Methodology</h2>
 <p style="font-size:0.9rem;">Regula v{VERSION}, {_pattern_count_phrase()}across 8 language families. Detector validity has not been independently established on representative real-world projects. Development measurements and their limitations: <a href="https://github.com/kuzivaai/getregula/blob/main/benchmarks/README.md">benchmarks/README.md</a>.</p>

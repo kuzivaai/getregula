@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -35,7 +35,7 @@
     <meta property="og:title" content="Scanning 5 AI Frameworks for EU AI Act Compliance | Regula">
     <meta property="og:description" content="An evidence-qualified scan of five AI frameworks, with context for interpreting Regula's findings.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:image:alt" content="Regula: EU AI Act code observations and evidence preparation">
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-04-25">
@@ -117,7 +117,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
@@ -179,7 +179,7 @@
 
         <p>We scanned PyTorch, HuggingFace Transformers, LangChain, LlamaIndex, and CrewAI &mdash; five frameworks with a combined 492,717 GitHub stars and 19,426 source files. Together they power most of what ships as AI in production today, from model training and serving to agent orchestration and retrieval-augmented generation.</p>
 
-        <table>
+        <table tabindex="0">
             <thead>
                 <tr>
                     <th>Framework</th>
@@ -244,7 +244,7 @@
 
         <p>562 findings across 19,426 source files. AI security accounted for 54.1%, followed by agent autonomy (18.5%), high risk (14.2%), limited risk (10.1%), and credential exposure (3.0%). No prohibited-practice patterns were found in this scan. <a href="https://github.com/kuzivaai/getregula/tree/main/benchmarks/results/framework_scan_2026_04">Checked-in scan results</a>.</p>
 
-        <table>
+        <table tabindex="0">
             <thead>
                 <tr>
                     <th>Category</th>

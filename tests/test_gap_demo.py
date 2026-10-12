@@ -145,7 +145,7 @@ class TestEveryLocalePanelMatchesTheArtefact(unittest.TestCase):
                 panel = _panel(page, pattern)
                 self.assertIn(art["result_type"], panel)
                 self.assertIn(art["model_version"], panel)
-                self.assertIn(art["rule_resolution"], panel)
+                self.assertIn(art["human_decision"], panel)
                 for fact_id in art["unresolved_fact_ids"]:
                     self.assertIn(fact_id, panel)
 

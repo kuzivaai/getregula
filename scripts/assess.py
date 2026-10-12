@@ -1,11 +1,10 @@
 # regula-ignore — applicability questionnaire prose describes Annex III use cases to ask the user about
 #!/usr/bin/env python3
 """
-Regula Assess -- EU AI Act Applicability Check
+Regula Assess -- EU AI Act Context Review
 
-A standalone, no-code applicability check for founders and developers who
-want to know whether the EU AI Act applies to their product and what their
-actual obligations are.
+A standalone, no-code context recorder for founders and developers who want
+to preserve facts and identify provisions and questions for human review.
 
 This is distinct from the questionnaire (which operates on scan results)
 and from classify (which classifies text input). This is a front-door check
@@ -26,7 +25,7 @@ from typing import Optional
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from omnibus import ANNEX_III_PROSE, ADOPTION_HISTORY, BINDING_NOTE, OMNIBUS_ENACTED, OMNIBUS_IN_FORCE_DATE, OMNIBUS_OJ_DATE, ORIGINAL_PROSE
+from omnibus import ANNEX_III_PROSE, ADOPTION_HISTORY, BINDING_NOTE, LIMITED_PROSE, OMNIBUS_ENACTED, OMNIBUS_IN_FORCE_DATE, OMNIBUS_OJ_DATE, ORIGINAL_PROSE
 
 
 # ---------------------------------------------------------------------------
@@ -111,7 +110,7 @@ _LINE = "-" * 60
 
 
 def _header() -> str:
-    return f"\n{_SEP}\n  Regula -- EU AI Act Applicability Check\n{_SEP}\n"
+    return f"\n{_SEP}\n  Regula -- EU AI Act Context Review\n{_SEP}\n"
 
 
 def _omnibus_deadline_lines() -> list:
@@ -124,7 +123,7 @@ def _omnibus_deadline_lines() -> list:
             # status during the 3 days between OJ publication and effect.
             f"  - The Digital Omnibus is in force from {OMNIBUS_IN_FORCE_DATE} "
             f"(OJ {OMNIBUS_OJ_DATE}).",
-            f"    Annex III obligations apply from {ANNEX_III_PROSE}.",
+            f"    The deferred Annex III application date is {ANNEX_III_PROSE}.",
         ]
     return [
         f"  - Legally binding: {ORIGINAL_PROSE}.",
@@ -181,7 +180,7 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
     elif tier == TIER_HIGH:
         lines += [
             "  Result: CANDIDATE HIGH-RISK INDICATORS (Annex III)\n",
-            "  Your answers place the product in an Annex III use area.",
+            "  Your answers describe an Annex III use-area indicator.",
             "  Confirming high-risk status requires intended-purpose and",
             "  Article 6 assessment, including any applicable exclusion.",
             "",
@@ -200,11 +199,11 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
         ]
         if non_eu_provider:
             lines += [
-                "  You are outside the EU -- additional requirement:",
-                "  Article 22 requires non-EU providers of high-risk systems",
-                "  to appoint an EU-based Authorised Representative before",
-                "  placing the product on the EU market. This is a legal",
-                "  prerequisite, not optional. Typical cost: EUR 2-10K/year.",
+                "  Additional Article 22 question for review:",
+                "  If a reviewer confirms both provider status and the relevant",
+                "  high-risk conditions, Article 22 may require an EU-based",
+                "  Authorised Representative. This questionnaire does not",
+                "  establish either predicate or estimate implementation cost.",
                 "",
             ]
         lines += [
@@ -223,15 +222,21 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
             "  transparency duties. Confirm the exact system and deployment",
             "  context before treating a listed duty as applicable.",
             "",
-            "  What Article 50 requires:",
-            "  - Chatbots / voice: disclose that the user is talking to AI",
-            "    (unless the human is clearly already aware).",
-            "  - AI-generated content: label it as AI-generated in a",
-            "    machine-readable format.",
-            "  - Biometric categorisation: inform affected persons.",
+            "  Article 50 questions to review:",
+            "  - For chat or voice, identify the actor, paragraph, conditions,",
+            "    user awareness and exceptions before deciding on disclosure.",
+            "  - For generated content, establish the content type, purpose,",
+            "    marking conditions and exceptions.",
+            "  - For biometric categorisation, establish the role, context,",
+            "    affected persons, conditions and exceptions.",
             "",
-            f"  Deadline: {ORIGINAL_PROSE}.",
-            "  This deadline is unchanged by the Digital Omnibus.",
+            f"  General Article 50 application: {ORIGINAL_PROSE}.",
+            "  This general date is unchanged by the Digital Omnibus.",
+            "  Specific transition: Article 111(4), inserted by Regulation",
+            "  (EU) 2026/1744, gives providers of Article 50(2) systems",
+            f"  placed on the market before {ORIGINAL_PROSE} until",
+            f"  {LIMITED_PROSE} to comply with that paragraph.",
+            "  This does not defer every Article 50 duty.",
             "",
             "  Next steps:",
             # This step used to describe the generated disclosure text as
@@ -259,7 +264,7 @@ def format_result(tier: str, non_eu_provider: bool) -> str:
             "",
             "  Good practice (not mandatory):",
             "  Run `regula check .` periodically. If your product evolves",
-            "  into a new use case, your classification may change.",
+            "  into a new use case, the review questions may change.",
             "",
         ]
 
@@ -298,8 +303,8 @@ def run_interactive() -> dict:
     """Run the interactive assess flow. Returns result dict."""
     print(_header())
     print("  5 questions. No code required. Takes under 2 minutes.")
-    print("  Tells you whether the EU AI Act applies to your product")
-    print("  and exactly what you need to do.")
+    print("  Records declared context and identifies questions for review.")
+    print("  It does not decide applicability, tier, duties, or compliance.")
     print()
 
     answers: dict = {}
@@ -467,9 +472,74 @@ def save_declared_facts(result: dict, project: str, jurisdiction: str = "eu") ->
             "total_in_store": len(merged)}
 
 
+def public_review_record(result: dict) -> dict:
+    """Render questionnaire answers without exposing the internal tier path."""
+    tier = result.get("tier")
+    reference_map = {
+        TIER_PROHIBITED: ["Article 5"],
+        TIER_HIGH: ["Article 6", "Annex III"],
+        TIER_LIMITED: ["Article 50"],
+    }
+    references = [
+        {
+            "reference": reference,
+            "status": "potentially_relevant",
+            "source_version": None,
+            "source_date": None,
+        }
+        for reference in reference_map.get(tier, [])
+    ]
+    answers = result.get("answers", {})
+    declared = [
+        {
+            "fact_id": key,
+            "state": value,
+            "provenance": {"source_type": "user_declaration",
+                           "source_ref": f"assess:{key}"},
+        }
+        for key, value in sorted(answers.items())
+    ]
+    expected = {
+        "uses_ai", "eu_users", "prohibited", "high_risk_domain",
+        "non_eu_provider", "transparency_trigger",
+    }
+    missing = [
+        {"fact_id": key, "reason": "not_asked_or_unanswered"}
+        for key in sorted(expected - set(answers))
+    ]
+    record = {
+        "schema_version": "2.0",
+        "record_type": "declared_context_review",
+        "review_status": "human_review_required",
+        "jurisdiction": "eu",
+        "declared_context": declared,
+        "missing_context": missing,
+        "contradictory_context": [],
+        "potentially_relevant_provisions": references,
+        "reviewer_questions": [
+            "What is the system's intended purpose and actual deployment context?",
+            "Which operator role or roles are supported by evidence?",
+            "Which paragraph, conditions and exceptions require review?",
+        ],
+        "suggested_human_review_steps": [
+            "Confirm each declared fact against deployment evidence.",
+            "Review potentially relevant provisions with qualified expertise.",
+            "Record the accountable reviewer's decision separately.",
+        ],
+        "explicit_limitations": [
+            "Questionnaire answers do not determine legal applicability, tier, duties, compliance, or non-applicability.",
+            "Unasked and unanswered facts remain unresolved.",
+        ],
+        "human_decision": None,
+    }
+    if result.get("declared_facts") is not None:
+        record["declared_fact_write"] = result["declared_facts"]
+    return record
+
+
 def run_assess(output_format: str = "text", answers: Optional[str] = None,
                save_facts: Optional[str] = None) -> int:
-    """Main entry point. Returns exit code (1 if prohibited, else 0)."""
+    """Main entry point. Review indicators are informational and exit zero."""
     if answers is not None:
         try:
             result = run_from_answers(answers)
@@ -505,7 +575,7 @@ def run_assess(output_format: str = "text", answers: Optional[str] = None,
     tier = result["tier"]
     non_eu = result["non_eu_provider"]
 
-    exit_code = 1 if tier == TIER_PROHIBITED else 0
+    exit_code = 0
 
     saved = None
     if save_facts is not None:
@@ -519,7 +589,7 @@ def run_assess(output_format: str = "text", answers: Optional[str] = None,
     if output_format == "json":
         import json
         from envelope import build_envelope
-        print(json.dumps(build_envelope("assess", result, exit_code),
+        print(json.dumps(build_envelope("assess", public_review_record(result), exit_code),
                          indent=2, sort_keys=True, default=str))
         return exit_code
 

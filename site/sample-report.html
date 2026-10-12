@@ -4,40 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-      :root { color-scheme: dark }
+      :root { color-scheme: light }
       html, body {
-        background: #070711;
-        color: #e2e2f0;
+        background: #f5f7f3;
+        color: #14231c;
         margin: 0;
         font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
         line-height: 1.65;
         -webkit-font-smoothing: antialiased;
       }
     </style>
-    <meta name="theme-color" content="#070711">
+    <meta name="theme-color" content="#f5f7f3">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'none'; base-uri 'self'; form-action 'self'">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Sample Report &mdash; What a Regula Scan Produces | Regula</title>
-    <meta name="description" content="See what Regula produces before installing anything: the terminal verdict, the HTML compliance report, and the executive summary, from the bundled example.">
+    <meta name="description" content="See Regula's code observations, evidence-preparation report, and review summary from the bundled example before installing anything.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://getregula.com/sample-report.html">
     <meta property="og:title" content="Sample Report — What a Regula Scan Produces | Regula">
-    <meta property="og:description" content="The terminal verdict, HTML compliance report, and executive summary Regula generates — shown before you install anything.">
+    <meta property="og:description" content="Code observations, an evidence-preparation report, and a review summary from the bundled example, shown before installation.">
     <meta property="og:image" content="https://getregula.com/assets/og-image.png">
-    <meta property="og:image:alt" content="Regula — EU AI Act compliance tool for code">
+    <meta property="og:image:alt" content="Regula: EU AI Act code observations and evidence preparation">
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Sample Report — What a Regula Scan Produces | Regula">
-    <meta name="twitter:description" content="The terminal verdict, HTML compliance report, and executive summary Regula generates — shown before you install anything.">
+    <meta name="twitter:description" content="Code observations, an evidence-preparation report, and a review summary from the bundled example, shown before installation.">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebPage",
       "name": "Sample Report — What a Regula Scan Produces",
       "url": "https://getregula.com/sample-report.html",
-      "description": "The terminal verdict, HTML compliance report, and executive summary Regula generates, from the bundled example project.",
+      "description": "Code observations, an evidence-preparation report, and a review summary from the bundled example project.",
       "isPartOf": {"@type": "WebSite", "name": "Regula", "url": "https://getregula.com/"},
       "breadcrumb": {
         "@type": "BreadcrumbList",
@@ -66,11 +66,12 @@
         .sample-section { max-width: 860px; margin: 0 auto var(--s10); padding: 0 var(--s6); }
         .sample-section h2 { font-family: var(--font-serif); font-size: 24px; margin-bottom: var(--s4); }
         .sample-section p { color: var(--text-2); font-size: 15px; margin-bottom: var(--s4); }
+        .sample-section code { overflow-wrap: anywhere; word-break: break-word; }
         .artifact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s6); }
         .artifact-card { background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--r-lg); padding: var(--s6); display: flex; flex-direction: column; }
         .artifact-card h3 { font-family: var(--font-serif); font-size: 18px; margin-bottom: var(--s3); }
         .artifact-card p { flex: 1; font-size: 14px; }
-        .artifact-card a.open-btn { display: inline-block; text-align: center; padding: 0 var(--s5); min-height: 44px; line-height: 44px; border-radius: var(--r-md); font-family: var(--font-mono); font-size: 13px; background: var(--accent-soft); color: #93c5fd; border: 1px solid rgba(59,130,246,0.25); text-decoration: none; }
+        .artifact-card a.open-btn { display: inline-block; text-align: center; padding: 0 var(--s5); min-height: 44px; line-height: 44px; border-radius: var(--r-md); font-family: var(--font-mono); font-size: 13px; background: var(--accent-soft); color: var(--accent-hover); border: 1px solid var(--border-strong); text-decoration: none; }
         .provenance { background: rgba(59,130,246,0.06); border-left: 3px solid var(--accent); padding: 14px 18px; border-radius: 0 8px 8px 0; font-size: 14px; color: var(--text-2); }
         .provenance code { font-family: var(--font-mono); font-size: 12px; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; }
     </style>
@@ -84,7 +85,7 @@
 <nav class="nav" id="nav" aria-label="Main navigation">
     <a href="/" class="nav-brand">Regula</a>
     <button type="button" class="nav-toggle" onclick="const d=document.getElementById('nav-menu');if(d.open){d.close();this.setAttribute('aria-expanded','false')}else{d.showModal();this.setAttribute('aria-expanded','true')}" aria-label="Menu" aria-expanded="false">&#9776;</button>
-    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onclose="document.querySelector('#nav .nav-toggle').setAttribute('aria-expanded','false')">
+    <dialog id="nav-menu" class="nav-right" aria-label="Site navigation" onclick="if(event.target===this)this.close()" onkeydown="if(event.key==='Escape'){event.preventDefault();this.close()}" onclose="const b=document.querySelector('#nav .nav-toggle');b.setAttribute('aria-expanded','false');b.focus()">
         <a href="/assess/" title="Free EU AI Act risk assessment">Assess</a>
         <a href="/product.html">What it does</a>
         <a href="/guides/">Guides</a>
@@ -100,12 +101,12 @@
 <main id="main">
 <div class="sample-hero">
     <h1>See the output before you install anything</h1>
-    <p class="subtitle">Everything on this page is real Regula output, generated from the CV-screening example project that ships in the repository &mdash; the same project <code>regula demo</code> scans. Nothing is mocked up.</p>
+    <p class="subtitle">These examples were generated from the bundled CV-screening project using the local Regula v2.0.0 working tree on 16 September 2026. The scan raises review questions; it does not determine legal applicability. The source and display adjustments are recorded below.</p>
 </div>
 
 <div class="sample-section">
-    <h2>1. The terminal verdict</h2>
-    <p>What a developer sees when they run <code>regula check examples/cv-screening-app --scope all</code> against the bundled hiring-system example (an intentionally high-risk fixture under EU AI Act Annex III, Category 4 &mdash; employment; output from Regula v1.7.9, 16 July 2026):</p>
+    <h2>1. Code observations and open questions</h2>
+    <p>What a developer sees when they run <code>regula check examples/cv-screening-app --scope all</code> against the bundled hiring-system example (a synthetic hiring example containing patterns relevant to Annex III, point 4; its real deployment context remains unresolved):</p>
     <div class="term">
         <div class="term-bar">
             <span class="term-dot td-r"></span>
@@ -116,21 +117,20 @@
 Regula Scan: /home/USER/getregula/examples/cv-screening-app
 ============================================================
 
-Decision: insufficient_information
+Review status: insufficient_information
+Model: 2026-08-26.1
 Jurisdiction: eu
-Rule resolution: unresolved
-Facts needed to resolve the next decision: 2
-  - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
-  - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
+Human decision: not recorded
+Declared context needed for review: 2
+  - is_ai_system: Does the subject meet the governing law&#x27;s definition of an AI system or regulated automated technology?
+  - jurisdiction_in_scope: Does this jurisdiction&#x27;s territorial and operator scope apply?
+  Declare one with: regula check . --fact is_ai_system=yes|no|unknown|not_applicable
 
 Detector observations (not legal facts):
 
   Detector summary: ANNEX III OR SECURITY PATTERNS
   The scanner found patterns relevant to Annex III or security review.
   Resolve the facts listed above before attaching Article 9 to 15 duties.
-  Why:
-    1. app.py:1 — Employment and workers management
-       (Art. 9, Art. 10)
   Files scanned:      1
   Prohibited:         0
   Credentials:        0
@@ -168,8 +168,8 @@ Detector observations (not legal facts):
     <p>The same scan feeds the shareable artifacts &mdash; open the actual files:</p>
     <div class="artifact-grid">
         <div class="artifact-card">
-            <h3>HTML compliance report</h3>
-            <p>The full per-finding report (<code>regula report -f html</code>): verdict, findings with file/line references, article mappings, and confidence scores.</p>
+            <h3>HTML evidence-preparation report</h3>
+            <p>The per-observation report (<code>regula report -f html</code>): code indicators with file and line references, potentially relevant provisions, unknowns, and review questions.</p>
             <a class="open-btn" href="/examples/sample-report.html" data-regula-event="Sample Report View" data-regula-property="asset" data-regula-value="html-report">Open sample report &rarr;</a>
         </div>
         <div class="artifact-card">
@@ -182,13 +182,12 @@ Detector observations (not legal facts):
 
 <div class="sample-section">
     <div class="provenance">
-        <strong>Provenance.</strong> Generated from <code>examples/cv-screening-app</code> in the public repository with the employment domain declared (exactly what <code>regula demo</code> does &mdash; employment patterns are opt-in to avoid false positives on unrelated code). Reproduce it yourself: <code>pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula demo</code>. One hostname in the executive summary was replaced with <code>example-host</code>, and a <code>noindex</code> meta tag was added to each artifact so search engines list this page rather than the raw output; everything else is verbatim tool output.
-    </div>
+        <strong>Provenance.</strong> The terminal output uses <code>regula check examples/cv-screening-app --scope all</code>. Generate the linked documents with <code>regula report examples/cv-screening-app --domain employment --scope all --format html -o report.html</code>, then repeat with <code>--format exec-summary -o summary.html</code>. The local working tree includes unreleased changes; the version label alone does not identify those changes. Source installed from <code>@main</code> can differ. Display adjustments replace machine-specific paths with <code>/home/USER</code> and add <code>noindex</code> to the linked documents. The original files and command evidence were retained for review. </div>
 </div>
 
 <div class="sample-section">
     <h2>Next step &mdash; with or without installing</h2>
-    <p>Not sure the EU AI Act even applies to you? The <a href="/assess/">browser-based assessment</a> answers that in about 60 seconds, no install. Ready to scan your own code? <code>pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula check .</code></p>
+    <p>Need to record deployment context? The <a href="/assess/">browser assessment</a> preserves your answers and unresolved questions without deciding applicability. Ready to inspect your own code? <code>pipx install git+https://github.com/kuzivaai/getregula.git@main &amp;&amp; regula check .</code></p>
 </div>
 </main>
 

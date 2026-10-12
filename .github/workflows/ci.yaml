@@ -25,18 +25,19 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install ".[test]"
+      - run: python -m pip install uv==0.11.0
+      - run: uv sync --locked --extra test --python "${{ matrix.python-version }}"
       - name: Complete pytest collection (two workers, no test selection)
         # Two local repetitions on the complete current collection cut
         # wall time by ~49% without changing the pass/skip counts. Four workers
         # saved only ~8 more seconds while using ~70% more CPU and slowing the
         # repository-wide scans through contention. A complete sequential run
         # remains below to retain order/shared-state evidence.
-        run: pytest tests/ -q -n 2 --dist worksteal --durations=50 --durations-min=0.1
+        run: uv run --python "${{ matrix.python-version }}" pytest tests/ -q -n 2 --dist worksteal --durations=50 --durations-min=0.1
       - name: Built-in self-test
-        run: python3 -m scripts.cli self-test
+        run: uv run --python "${{ matrix.python-version }}" python -m scripts.cli self-test
       - name: Doctor health checks
-        run: python3 -m scripts.cli doctor
+        run: uv run --python "${{ matrix.python-version }}" python -m scripts.cli doctor
 
   sequential-order-audit:
     name: Complete sequential pytest (order and shared-state audit)
@@ -48,9 +49,10 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
-      - run: pip install ".[test]"
+      - run: python -m pip install uv==0.11.0
+      - run: uv sync --locked --extra test --python 3.12
       - name: Complete pytest collection in the default sequential order
-        run: pytest tests/ -q --durations=50 --durations-min=0.1
+        run: uv run --python 3.12 pytest tests/ -q --durations=50 --durations-min=0.1
 
   custom-runner-audit:
     name: Custom runner and product-contract audits
@@ -62,27 +64,28 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: "3.12"
-      - run: pip install ".[test]"
+      - run: python -m pip install uv==0.11.0
+      - run: uv sync --locked --extra test --python 3.12
       - name: Complete alternate custom runner
         # Pytest already exercises these assertions on every interpreter. This
         # one run verifies the separate zero-argument harness itself without
         # repeating the same subset four times.
-        run: python3 tests/test_classification.py
+        run: uv run --python 3.12 python tests/test_classification.py
       - name: Security self-check (blocks unexpected findings in Regula's own source)
-        run: python3 -m scripts.cli security-self-check
+        run: uv run --python 3.12 python -m scripts.cli security-self-check
       - name: Quoted regulatory passages are verbatim
         # A quotation is a promise that the source says exactly this. The site
         # shipped one that was not (Article 3(4), "any" for "a", exclusion
         # dropped) and six more were found when this check was first run.
         # Corpora are cached under references/corpora, so this runs offline.
-        run: python3 scripts/verify_quotations.py
+        run: uv run --python 3.12 python scripts/verify_quotations.py
       - name: Published CLI transcripts reproduce
         # Nine tracked surfaces published a `Verdict:` line as CLI output while
         # no command emitted `Verdict:` at all, and two guides published a
         # a retired per-article percentage line from a formatter no CLI path
         # reaches. Both asserted conclusions the tool does not make. This runs
         # the command each page documents and compares.
-        run: python3 scripts/verify_transcripts.py
+        run: uv run --python 3.12 python scripts/verify_transcripts.py
       - name: Browser questionnaire contract test
         # This file existed but no runner executed it, so it drifted from the
         # pages it guards (LEDGER F15). It is wired in here because the browser

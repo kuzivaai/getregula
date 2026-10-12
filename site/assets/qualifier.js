@@ -30,7 +30,9 @@
    * reinterpret an old link under new rules. */
   var ENCODING_VERSION = 'v1';
 
-  var form, resultBox, errorBox, copy, resetBtn;
+  var form, resultBox, errorBox, copy, resetBtn, backBtn, nextBtn;
+  var submitBtn, progressBox, progressLabel, progressBar, progressFill;
+  var currentStep = 0;
 
   function byId(id) { return document.getElementById(id); }
 
@@ -157,6 +159,13 @@
     return card;
   }
 
+  function answerLabel(questionId, value) {
+    var question = copy.questions.find(function (item) { return item.id === questionId; });
+    if (!question) { return value; }
+    var option = question.options.find(function (item) { return item.value === value; });
+    return option ? option.label : value;
+  }
+
   function render(a, recordCompletion) {
     resultBox.textContent = '';
 
@@ -165,6 +174,28 @@
     resultBox.appendChild(h2);
     resultBox.setAttribute('aria-labelledby', 'qual-result-h');
     resultBox.appendChild(el('p', 'qual-lede', copy[ledeKey(a)]));
+
+    resultBox.appendChild(el('h3', null, copy.declaredHeading));
+    var declared = el('ul', 'qual-unsettled');
+    copy.questions.forEach(function (question) {
+      declared.appendChild(el('li', null,
+        question.legend + ': ' + answerLabel(question.id, a[question.id])));
+    });
+    resultBox.appendChild(declared);
+
+    var explicitUnknowns = QIDS.filter(function (id) { return a[id] === 'unsure'; });
+    if (explicitUnknowns.length) {
+      resultBox.appendChild(el('h3', null, copy.explicitUnknownHeading));
+      var unknownList = el('ul', 'qual-unsettled');
+      explicitUnknowns.forEach(function (id) {
+        var question = copy.questions.find(function (item) { return item.id === id; });
+        unknownList.appendChild(el('li', null, question.legend));
+      });
+      resultBox.appendChild(unknownList);
+    }
+
+    resultBox.appendChild(el('h3', null, copy.humanDecisionHeading));
+    resultBox.appendChild(el('p', 'qual-lede', copy.humanDecisionEmpty));
 
     resultBox.appendChild(el('h3', null, copy.pointsHeading));
     var list = el('ul', 'qual-points');
@@ -180,15 +211,13 @@
     var warranted = consultantWarranted(a);
     /* If neither the EU nor AI scope answer is positive, show only the free
      * route and make the uncertainty explicit. */
-    var outsideScopeCandidate = (a.q1 === 'no' && a.q2 === 'no');
+    var scopeAnswersNegative = (a.q1 === 'no' && a.q2 === 'no');
     if (warranted) { resultBox.appendChild(el('p', 'qual-lede', copy.consultantWarranted)); }
-    if (outsideScopeCandidate) { resultBox.appendChild(el('p', 'qual-lede', copy.outsideScopeNote)); }
+    if (scopeAnswersNegative) { resultBox.appendChild(el('p', 'qual-lede', copy.outsideScopeNote)); }
     var routes = el('div', 'qual-routes');
     routes.appendChild(buildRoute('free', true));
-    if (!outsideScopeCandidate) {
-      routes.appendChild(buildRoute('paid', false));
-      routes.appendChild(buildRoute('consultant', warranted));
-    }
+    routes.appendChild(buildRoute('paid', false));
+    routes.appendChild(buildRoute('consultant', warranted));
     resultBox.appendChild(routes);
 
     var limits = el('div', 'qual-limits');
@@ -278,12 +307,68 @@
     });
   }
 
+  function currentAnswered() {
+    var qid = QIDS[currentStep];
+    return Boolean(form.querySelector('input[name="' + qid + '"]:checked'));
+  }
+
+  function showStep(index, moveFocus) {
+    currentStep = Math.max(0, Math.min(QIDS.length - 1, index));
+    QIDS.forEach(function (qid, position) {
+      var block = byId('qual-' + qid);
+      if (!block) { return; }
+      block.hidden = position !== currentStep;
+      if (position === currentStep) {
+        block.setAttribute('aria-current', 'step');
+      } else {
+        block.removeAttribute('aria-current');
+      }
+    });
+
+    var number = currentStep + 1;
+    progressLabel.textContent = copy.progressPrefix + ' ' + number + ' ' + copy.progressOf + ' ' + QIDS.length;
+    progressBar.setAttribute('aria-valuenow', String(number));
+    progressFill.style.width = String((number / QIDS.length) * 100) + '%';
+    backBtn.hidden = currentStep === 0;
+    nextBtn.hidden = currentStep === QIDS.length - 1;
+    submitBtn.hidden = currentStep !== QIDS.length - 1;
+    nextBtn.disabled = !currentAnswered();
+    submitBtn.disabled = !currentAnswered();
+
+    if (moveFocus) {
+      var active = byId('qual-' + QIDS[currentStep]);
+      if (active) {
+        active.setAttribute('tabindex', '-1');
+        active.focus({ preventScroll: true });
+        active.scrollIntoView({ block: 'center', behavior: 'auto' });
+      }
+    }
+  }
+
+  function nextStep() {
+    clearError();
+    if (!currentAnswered()) {
+      showError([QIDS[currentStep]]);
+      return;
+    }
+    showStep(currentStep + 1, true);
+  }
+
+  function previousStep() {
+    clearError();
+    showStep(currentStep - 1, true);
+  }
+
   function submit(event) {
     if (event) { event.preventDefault(); }
     var a = answers();
     var gaps = missing(a);
     if (gaps.length) {
       resultBox.hidden = true;
+      var firstGap = QIDS.indexOf(gaps[0]);
+      if (form.classList.contains('is-stepped') && firstGap !== -1) {
+        showStep(firstGap, false);
+      }
       showError(gaps);
       return;
     }
@@ -301,8 +386,12 @@
     errorBox.hidden = false;
     errorBox.className = 'qual-nojs';
     if (resetBtn) { resetBtn.disabled = true; }
-    var first = form.querySelector('input[name="q1"]');
-    if (first) { first.focus(); }
+    if (form.classList.contains('is-stepped')) {
+      showStep(0, true);
+    } else {
+      var first = form.querySelector('input[name="q1"]');
+      if (first) { first.focus(); }
+    }
   }
 
   function start() {
@@ -310,8 +399,17 @@
     resultBox = byId('qual-result');
     errorBox = byId('qual-error');
     resetBtn = byId('qual-reset');
+    backBtn = byId('qual-back');
+    nextBtn = byId('qual-next');
+    submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+    progressBox = byId('qual-progress');
+    progressLabel = byId('qual-progress-label');
+    progressBar = progressBox ? progressBox.querySelector('[role="progressbar"]') : null;
+    progressFill = byId('qual-progress-fill');
     var copyNode = byId('qual-copy');
-    if (!form || !resultBox || !errorBox || !copyNode) { return; }
+    if (!form || !resultBox || !errorBox || !copyNode || !backBtn ||
+        !nextBtn || !submitBtn || !progressBox || !progressLabel ||
+        !progressBar || !progressFill) { return; }
 
     try { copy = JSON.parse(copyNode.textContent); }
     catch (err) { return; }
@@ -322,6 +420,13 @@
     var nojs = byId('qual-nojs');
     if (nojs) { nojs.hidden = true; }
 
+    form.classList.add('is-stepped');
+    progressBox.hidden = false;
+    byId('qual-step-hint').hidden = false;
+    backBtn.addEventListener('click', previousStep);
+    nextBtn.addEventListener('click', nextStep);
+    showStep(0, false);
+
     form.addEventListener('submit', submit);
     if (resetBtn) {
       resetBtn.disabled = true;
@@ -331,6 +436,8 @@
       clearError();
       errorBox.className = 'qual-err';
       if (resetBtn) { resetBtn.disabled = false; }
+      nextBtn.disabled = !currentAnswered();
+      submitBtn.disabled = !currentAnswered();
     });
 
     var shared = decode(new URLSearchParams(window.location.search).get('qual'));
@@ -340,6 +447,7 @@
         if (input) { input.checked = true; }
       });
       render(shared, false);
+      showStep(QIDS.length - 1, false);
       if (resetBtn) { resetBtn.disabled = false; }
     }
   }

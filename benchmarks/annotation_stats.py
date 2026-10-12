@@ -24,26 +24,14 @@ import random
 import sys
 from pathlib import Path
 
+from rating_packet import load_labels
+
 CATEGORIES = ("tp", "fp")
 
 
-def entry_id(e: dict) -> str:
-    if e.get("id"):
-        return str(e["id"])
-    return f"{e.get('project','?')}::{e.get('file','?')}::{e.get('line','?')}"
-
-
 def load_rater(path: Path) -> dict:
-    """Load {finding_id: label} for one rater, keeping only tp/fp labels."""
-    data = json.load(Path(path).open())
-    entries = data if isinstance(data, list) else data.get(
-        "labels", data.get("candidates", []))
-    out = {}
-    for e in entries:
-        label = (e.get("label") or "").strip().lower()
-        if label in CATEGORIES:
-            out[entry_id(e)] = label
-    return out
+    """Load canonical item identifiers and completed labels."""
+    return load_labels(Path(path))
 
 
 def fleiss_kappa(raters: list) -> dict:
@@ -55,7 +43,7 @@ def fleiss_kappa(raters: list) -> dict:
     (P_bar - P_e) / (1 - P_e) with P_e = sum_j p_j^2.
     """
     if len(raters) < 2:
-        return {"error": "need at least 2 raters", "n_items": 0}
+        return {"status": "incomplete", "error": "need at least 2 raters", "n_items": 0}
     common = set(raters[0])
     for r in raters[1:]:
         common &= set(r)
@@ -63,7 +51,7 @@ def fleiss_kappa(raters: list) -> dict:
     n_items = len(items)
     n_raters = len(raters)
     if n_items == 0:
-        return {"error": "no findings labelled by all raters", "n_items": 0}
+        return {"status": "incomplete", "error": "no findings labelled by all raters", "n_items": 0}
 
     counts = []
     for fid in items:
@@ -89,6 +77,7 @@ def fleiss_kappa(raters: list) -> dict:
         # All raters used one category for everything: agreement is total
         # but kappa is undefined (division by zero); report explicitly.
         return {
+            "status": "complete",
             "n_items": n_items, "n_raters": n_raters,
             "kappa": None, "p_bar": p_bar, "p_e": p_e,
             "note": "kappa undefined: zero label variance (all one category)",
@@ -102,6 +91,7 @@ def fleiss_kappa(raters: list) -> dict:
         if max(row.values()) < n_raters
     ]
     return {
+        "status": "complete",
         "n_items": n_items,
         "n_raters": n_raters,
         "kappa": round(kappa, 4),
@@ -159,7 +149,7 @@ def krippendorff_alpha_nominal(
     ratings, so within-item dependence is preserved.
     """
     if len(raters) < 2:
-        return {"error": "need at least 2 raters", "n_items": 0}
+        return {"status": "incomplete", "error": "need at least 2 raters", "n_items": 0}
     if n_resamples < 0:
         raise ValueError("n_resamples must be non-negative")
 
@@ -175,6 +165,7 @@ def krippendorff_alpha_nominal(
     categories = sorted({label for ratings in pairable for label in ratings})
 
     result = {
+        "status": "complete" if possible_ratings == observed_ratings else "partial",
         "n_items": len(pairable),
         "n_items_total": len(item_ids),
         "n_raters": len(raters),
@@ -192,6 +183,7 @@ def krippendorff_alpha_nominal(
         "bootstrap_seed": seed,
     }
     if not pairable:
+        result["status"] = "incomplete"
         result["error"] = "no findings have at least two ratings"
         return result
     if alpha is None:
@@ -252,12 +244,19 @@ def main() -> int:
     raters = [load_rater(Path(p)) for p in args]
     for path, r in zip(args, raters):
         print(f"  {path}: {len(r)} labelled")
+    alpha_result = krippendorff_alpha_nominal(raters)
+    kappa_result = fleiss_kappa(raters)
     result = {
-        "krippendorff_alpha_nominal": krippendorff_alpha_nominal(raters),
-        "fleiss_kappa_complete_case": fleiss_kappa(raters),
+        "status": (
+            "incomplete"
+            if alpha_result.get("status") == "incomplete"
+            else alpha_result.get("status", "complete")
+        ),
+        "krippendorff_alpha_nominal": alpha_result,
+        "fleiss_kappa_complete_case": kappa_result,
     }
     print(json.dumps(result, indent=2))
-    return 0
+    return 1 if result["status"] == "incomplete" else 0
 
 
 if __name__ == "__main__":

@@ -34,7 +34,12 @@ from log_event import collect_audit_trail
 from credential_check import check_secrets
 from remediation import get_remediation
 from agent_monitor import detect_autonomous_actions
-from scan_cache import FULL_SCOPE, ScanCache
+from scan_cache import (
+    FULL_SCOPE,
+    ScanCache,
+    cache_disabled,
+    effective_configuration_digest,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -297,6 +302,8 @@ CACHE_EXEMPT_SCAN_PARAMS = {
                         "walk has ended and the cache has been flushed, so it "
                         "is applied identically to cached and freshly scanned "
                         "findings and never enters an entry.",
+    "include_config_files": "controls a separate post-cache config-file pass. "
+                            "It cannot change any per-source-file cache entry.",
 }
 
 
@@ -313,6 +320,50 @@ def scan_params_token(respect_ignores: bool = True) -> str:
     the other, which is what  records.
     """
     return f"ri{int(bool(respect_ignores))}"
+
+
+def effective_scan_configuration_token(activated_domains: set) -> str:
+    """Digest effective configuration that changes cached per-file findings.
+
+    Built-in detector and parser implementation versions are carried by the
+    cache schema. Source content, path context, scan scope and ignore handling
+    each have their own key component. This token covers the remaining mutable
+    inputs read through module state or project context.
+    """
+    import classify_risk as classifier
+    from policy_config import get_policy
+
+    policy = get_policy()
+    if not isinstance(policy, dict):
+        policy = {}
+    rules = policy.get("rules", {})
+    if not isinstance(rules, dict):
+        rules = {}
+    risk_rules = rules.get("risk_classification", {})
+    if not isinstance(risk_rules, dict):
+        risk_rules = {}
+    thresholds = policy.get("thresholds", {})
+    if not isinstance(thresholds, dict):
+        thresholds = {}
+    try:
+        min_confidence = int(thresholds.get("min_confidence", 0))
+    except (TypeError, ValueError):
+        min_confidence = 0
+
+    effective = {
+        "custom_rules": getattr(classifier, "_CUSTOM_RULES", {}),
+        "classification_policy": {
+            "exempt": risk_rules.get("exempt", []),
+            "force_high_risk": risk_rules.get("force_high_risk", []),
+            "min_confidence": min_confidence,
+        },
+        "domain_activation": sorted(activated_domains),
+        "parser_mode": "extension-detected-v1",
+        "feature_flags": {
+            "domain_gating": "cached-raw-rechecked-v1",
+        },
+    }
+    return effective_configuration_digest(effective)
 
 
 def _is_open_question(finding: dict) -> bool:
@@ -604,7 +655,8 @@ def _check_domain_gated(f: dict, domain_activated: set, opt_in_categories: set) 
 def scan_files(project_path: str, respect_ignores: bool = True,
                skip_tests: bool = False, min_tier: str = "",
                declared_domains: set = None,
-               enrich_oversight: bool = False) -> list:
+               enrich_oversight: bool = False,
+               include_config_files: bool = True) -> list:
     """Scan project files and return findings with file locations.
 
     Args:
@@ -613,6 +665,9 @@ def scan_files(project_path: str, respect_ignores: bool = True,
         skip_tests: Exclude test files entirely from results.
         min_tier: Minimum tier to include ("prohibited", "high_risk",
                   "limited_risk", "minimal_risk"). Empty string means all.
+        include_config_files: Inspect configuration files for AI service
+                  references. MCP disables this because its workspace boundary
+                  excludes secret-shaped configuration files.
     """
     project = Path(project_path).resolve()
     findings = []
@@ -786,12 +841,13 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     _domain_gated_count = 0
     _domain_gated_categories = set()
 
-    # Initialise scan cache (failures must never block a scan)
+    # Initialise scan cache. An explicit process setting can disable it.
     cache = None
-    try:
-        cache = ScanCache()
-    except Exception as e:
-        print(f"regula: cache init failed, scanning without cache: {e}", file=sys.stderr)
+    if not cache_disabled():
+        try:
+            cache = ScanCache()
+        except Exception as e:
+            print(f"regula: cache init failed, scanning without cache: {e}", file=sys.stderr)
 
     # Detect if we're scanning an AI library's own source code.
     # Scanning openai-python, langchain, etc. from inside their own repo
@@ -835,6 +891,7 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     # Unlike the scope component this has no fallback: a differently
     # parameterised entry is a different answer, not a superset. .
     _cache_params = scan_params_token(respect_ignores=respect_ignores)
+    _cache_configuration = effective_scan_configuration_token(_domain_activated)
 
     def _cache_put(filepath, content: str, file_findings: list) -> None:
         """Write a per-file cache entry under this scan's own scope.
@@ -850,9 +907,13 @@ def scan_files(project_path: str, respect_ignores: bool = True,
             cache.put(str(filepath.relative_to(project)), content,
                       file_findings, context=_cache_ctx,
                       path_context=path_context_token(filepath),
-                      scope=_cache_scope, params=_cache_params)
-        except Exception:
-            pass  # Cache write is best-effort
+                      scope=_cache_scope, params=_cache_params,
+                      configuration=_cache_configuration)
+        except Exception as exc:
+            print(
+                f"regula: cache entry could not be recorded, continuing scan: {exc}",
+                file=sys.stderr,
+            )
 
     # os.fwalk yields a descriptor for each directory it visits. Opening a
     # file relative to that descriptor pins the directory inode, so an
@@ -1083,7 +1144,8 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                     cached_raw = cache.get(
                         rel_path, content, context=_cache_ctx,
                         path_context=path_context_token(filepath),
-                        scopes=_cache_read_scopes, params=_cache_params)
+                        scopes=_cache_read_scopes, params=_cache_params,
+                        configuration=_cache_configuration)
                     if cached_raw is not None:
                         cached = cached_raw
                         if min_tier_level > 0:
@@ -1107,8 +1169,11 @@ def scan_files(project_path: str, respect_ignores: bool = True,
                         if not cached_raw and _is_ai:
                             _ai_files_no_indicators += 1
                         continue
-            except Exception:
-                pass  # Cache read failure — scan file normally
+            except Exception as exc:
+                print(
+                    f"regula: cache entry could not be read, rescanning file: {exc}",
+                    file=sys.stderr,
+                )
 
             # Track per-file findings for caching
             file_findings_start = len(findings)
@@ -1401,16 +1466,20 @@ def scan_files(project_path: str, respect_ignores: bool = True,
     try:
         if cache is not None:
             cache.flush()
-    except Exception:
-        pass  # Cache flush failure must not affect scan results
+    except Exception as exc:
+        print(
+            f"regula: cache flush failed, scan results were not affected: {exc}",
+            file=sys.stderr,
+        )
 
     # Config/env file scanning for AI service references
-    try:
-        config_findings = scan_config_files(project_path)
-        if min_tier_level <= 1:  # only include if minimal_risk tier is in scope
-            findings.extend(config_findings)
-    except Exception as e:
-        print(f"regula: config scanning failed: {e}", file=sys.stderr)
+    if include_config_files:
+        try:
+            config_findings = scan_config_files(project_path)
+            if min_tier_level <= 1:  # only include if minimal_risk tier is in scope
+                findings.extend(config_findings)
+        except Exception as e:
+            print(f"regula: config scanning failed: {e}", file=sys.stderr)
 
     # Enrich each finding with Omnibus-aware enforcement deadline
     _enrich_deadlines(findings)
@@ -1637,7 +1706,13 @@ footer { text-align: center; padding: 24px; font-size: 0.8rem; color: #6c757d; }
 
 
 def _tier_badge(tier: str) -> str:
-    display = tier.upper().replace("_", "-")
+    display = {
+        "prohibited": "ARTICLE 5 INDICATOR",
+        "credential_exposure": "CREDENTIAL INDICATOR",
+        "high_risk": "ANNEX III INDICATOR",
+        "limited_risk": "ARTICLE 50 INDICATOR",
+        "minimal_risk": "OTHER INDICATOR",
+    }.get(tier, tier.upper().replace("_", "-"))
     css_class = tier.replace("_", "-")
     return f'<span class="badge {css_class}">{display}</span>'
 
@@ -1659,11 +1734,14 @@ def generate_html_report(
     dependency_results: Optional[dict] = None,
     framework_mappings: Optional[dict] = None,
 ) -> str:
-    """Generate a single-file HTML report."""
+    """Generate a single-file evidence-preparation report."""
+    from evidence_review import review_records_from_findings
+
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
     # Calculate stats
     active = [f for f in findings if not f.get("suppressed")]
+    review_records = review_records_from_findings(active)
     prohibited_count = sum(1 for f in active if f["tier"] == "prohibited")
     high_risk_count = sum(1 for f in active if f["tier"] == "high_risk")
     limited_count = sum(1 for f in active if f["tier"] == "limited_risk")
@@ -1688,7 +1766,7 @@ def generate_html_report(
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Regula Report — {escape(project_name)}</title>
+<title>Regula Evidence-Preparation Report - {escape(project_name)}</title>
 <style>{_CSS}</style>
 </head>
 <body>
@@ -1696,7 +1774,7 @@ def generate_html_report(
 <header>
 <div class="container">
 <div>
-<h1>Regula — AI Governance Report</h1>
+<h1>Regula Evidence-Preparation Report</h1>
 <div style="margin-top:4px;font-size:0.9rem;">{escape(project_name)}</div>
 </div>
 <div class="meta">
@@ -1709,24 +1787,24 @@ Regula v{VERSION}
 <div class="container">
 
 <div class="disclaimer">
-<strong>Important:</strong> This report contains pattern-based risk <em>indications</em>,
-not legal risk classifications. The EU AI Act (Article 6) requires contextual assessment
-of intended purpose and deployment context. Results should be reviewed by qualified
-personnel. This is not legal advice.
+<strong>Human review required:</strong> This report records Code-observable indicators
+and potentially relevant provisions. It does not determine legal applicability, legal
+risk tier, duties, compliance, safety, conformity, certification, or non-applicability.
+Unknown context remains unresolved and the human decision is not recorded.
 </div>
 
 <div class="summary-grid">
 <div class="card red">
 <div class="number">{prohibited_count}</div>
-<div class="label">Prohibited Patterns</div>
+<div class="label">Article 5 indicators</div>
 </div>
 <div class="card amber">
 <div class="number">{high_risk_count}</div>
-<div class="label">High-Risk Indicators</div>
+<div class="label">Annex III indicators</div>
 </div>
 <div class="card blue">
 <div class="number">{limited_count}</div>
-<div class="label">Limited-Risk</div>
+<div class="label">Article 50 indicators</div>
 </div>
 <div class="card purple">
 <div class="number">{credential_count}</div>
@@ -1741,42 +1819,40 @@ personnel. This is not legal advice.
 
     # Executive summary — plain-English block for non-technical readers
     if total_files == 0:
-        exec_verdict = "No AI-related files detected"
+        exec_verdict = "No code-observable AI indicator found in scanned files"
         exec_colour = "#6b7280"
         exec_detail = (
-            "Regula did not find any AI-related source files in the scanned directory. "
+            "This configured scan did not find an AI-related source indicator in the scanned directory. "
             "This may mean the scan path is incorrect, the project has not yet integrated AI components, "
-            "or all files were excluded by ignore rules. Verify the scan path before treating this as a clean result."
+            "or files were excluded by scan rules. This result does not establish legal non-applicability or absence of risk."
         )
     elif prohibited_count > 0:
-        exec_verdict = "Action required before deployment"
+        exec_verdict = "Human review required: Article 5-related indicator found"
         exec_colour = "#dc2626"
         exec_detail = (
-            f"This codebase contains {prohibited_count} pattern(s) associated with practices "
-            "that are prohibited under EU AI Act Article 5 (e.g. social scoring, real-time biometric surveillance). "
-            "Article 5 carries conditions and exceptions that require human judgement, so these are indicators "
-            "to review with your legal advisers, not a finding that the system is unlawful."
+            f"This configured scan found {prohibited_count} code-observable indicator(s) associated with "
+            "Article 5. Applicability depends on the subject, actor role, intended purpose, context, "
+            "conditions, and exceptions. The observation requires accountable human review."
         )
         if credential_count > 0:
             exec_detail += (
                 f" Additionally, {credential_count} credential finding(s) were detected and should be reviewed."
             )
     elif high_risk_count > 0:
-        exec_verdict = "High-risk indicators detected — compliance review needed"
+        exec_verdict = "Human review required: Annex III-related indicator found"
         exec_colour = "#d97706"
         exec_detail = (
-            f"This codebase contains {high_risk_count} indicator(s) of high-risk AI functionality "
-            "(Article 6). If this system is deployed in the EU in a high-risk context (e.g. credit scoring, "
-            "employment, healthcare), it will be subject to mandatory obligations including risk management, "
-            "data governance, human oversight, and technical documentation. "
-            "A compliance review is recommended before deployment."
+            f"This configured scan found {high_risk_count} code-observable indicator(s) associated with "
+            "Annex III or Article 6 review paths. Source code does not establish intended purpose, "
+            "deployment context, actor role, exclusions, or the legal tier. Review those unknowns before "
+            "recording any human decision."
         )
         if credential_count > 0:
             exec_detail += (
                 f" Additionally, {credential_count} credential finding(s) were detected and should be reviewed."
             )
     elif credential_count > 0:
-        exec_verdict = "Credential exposure detected — security review needed"
+        exec_verdict = "Credential indicator found: security review required"
         exec_colour = "#7c3aed"
         exec_detail = (
             f"No prohibited or high-risk AI patterns were found, but {credential_count} credential "
@@ -1784,14 +1860,15 @@ personnel. This is not legal advice.
             "and should be reviewed and rotated before deployment."
         )
     else:
-        exec_verdict = "No prohibited or high-risk patterns detected"
+        exec_verdict = "No configured elevated-priority indicator found"
         exec_colour = "#16a34a"
         exec_detail = (
-            "This codebase does not show patterns associated with prohibited or high-risk AI under the EU AI Act. "
-            f"{limited_count} limited-risk indicator(s) were found — these carry transparency obligations "
-            "(e.g. disclosing automated decision-making to users) but do not require the full high-risk compliance regime."
+            "This configured scan did not find an Article 5 or Annex III indicator. "
+            f"It found {limited_count} Article 50-related indicator(s) that require contextual review. "
+            "The scan does not determine whether a transparency duty applies or whether other provisions are relevant."
             if limited_count > 0 else
-            "This codebase does not show patterns associated with prohibited, high-risk, or limited-risk AI under the EU AI Act."
+            "No Article 5, Annex III, or Article 50 indicator was found by this configured scan. "
+            "Absence of a configured indicator does not establish legal non-applicability, safety, or compliance."
         )
 
     html += f"""
@@ -1800,15 +1877,15 @@ personnel. This is not legal advice.
 <p style="font-size:1.05rem;font-weight:600;color:#1a1a2e;margin-bottom:8px;">{escape(exec_verdict)}</p>
 <p style="color:#5a5a6e;line-height:1.6;">{escape(exec_detail)}</p>
 <p style="margin-top:12px;font-size:0.85rem;color:#9b9baa;">
-Scanned {total_files} file(s) &middot; {prohibited_count} prohibited &middot; {high_risk_count} high-risk &middot;
-{limited_count} limited-risk &middot; {credential_count} credential finding(s) &middot; Generated {now}
+Scanned {total_files} file(s) &middot; {len(review_records)} review record(s) &middot;
+{credential_count} credential indicator(s) &middot; Generated {now}
 </p>
 </div>
 """
 
     # Top risks section
     if top_risks:
-        html += '<div class="section"><h2>Priority Risk Indicators</h2><ul class="top3">'
+        html += '<div class="section"><h2>Priority code observations</h2><ul class="top3">'
         for r in top_risks:
             html += f'<li>{_tier_badge(r["tier"])} <strong>{escape(r.get("category", ""))}</strong> — {escape(r.get("description", ""))} ({escape(r["file"])})</li>'
         html += '</ul></div>'
@@ -1949,10 +2026,10 @@ Scanned {total_files} file(s) &middot; {prohibited_count} prohibited &middot; {h
     # Findings table
     html += """
 <div class="section">
-<h2>All Findings</h2>
+<h2>Code observations</h2>
 <table>
 <thead>
-<tr><th>File</th><th>Risk Tier</th><th>Category</th><th>Confidence</th><th>Description</th><th>Remediation</th></tr>
+<tr><th>File</th><th>Detector class</th><th>Indicator</th><th>Detector priority</th><th>Observation</th><th>Suggested review step</th></tr>
 </thead>
 <tbody>
 """
@@ -2002,8 +2079,8 @@ Scanned {total_files} file(s) &middot; {prohibited_count} prohibited &middot; {h
 </div>
 
 <footer>
-Generated by Regula v{VERSION} — AI Governance Risk Indication<br>
-Pattern-based analysis only. Not a substitute for legal advice or DPO review.
+Generated by Regula v{VERSION} - reviewable evidence from configured code patterns.<br>
+Human decision not recorded. This report does not replace legal, governance, security, or technical review.
 </footer>
 
 </body>
@@ -2028,7 +2105,8 @@ SARIF_SEVERITY_MAP = {
 
 
 def generate_sarif(findings: list, project_name: str) -> dict:
-    """Generate SARIF v2.1.0 output for CI/CD integration."""
+    """Generate SARIF v2.1.0 code observations for CI/CD review."""
+    from evidence_review import review_record_from_finding
     rules = {}
     results = []
 
@@ -2038,11 +2116,15 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "id": f"regula/prohibited/{rule_id}",
             "name": rule_id.replace("_", " ").title(),
             "shortDescription": {"text": config["description"]},
-            "fullDescription": {"text": f"EU AI Act Article {config['article']}: {config['description']}"},
+            "fullDescription": {"text": (
+                f"Code-observable indicator for review against EU AI Act "
+                f"Article {config['article']}: {config['description']}. "
+                "Applicability, conditions, and exceptions remain unresolved."
+            )},
             "defaultConfiguration": {"level": "error"},
             "helpUri": "https://artificialintelligenceact.eu/article/5/",
             "properties": {
-                "tags": ["eu-ai-act", "article-5", "prohibited-practice", "compliance"],
+                "tags": ["eu-ai-act", "article-5", "code-observation"],
             },
         }
 
@@ -2051,11 +2133,16 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "id": f"regula/high-risk/{rule_id}",
             "name": rule_id.replace("_", " ").title(),
             "shortDescription": {"text": config["description"]},
-            "fullDescription": {"text": f"EU AI Act {config['category']}: {config['description']}. Articles {', '.join(config['articles'])} may apply."},
+            "fullDescription": {"text": (
+                f"Code-observable indicator for review against EU AI Act "
+                f"{config['category']}: {config['description']}. Potentially "
+                f"relevant provisions: {', '.join(config['articles'])}. "
+                "Legal tier and duties remain unresolved."
+            )},
             "defaultConfiguration": {"level": "warning"},
             "helpUri": "https://artificialintelligenceact.eu/annex/3/",
             "properties": {
-                "tags": ["eu-ai-act", "annex-iii", "high-risk", "compliance"],
+                "tags": ["eu-ai-act", "annex-iii", "code-observation"],
             },
         }
 
@@ -2095,7 +2182,11 @@ def generate_sarif(findings: list, project_name: str) -> dict:
             "id": f"regula/limited-risk/{rule_id}",
             "name": rule_id.replace("_", " ").title(),
             "shortDescription": {"text": config["description"]},
-            "fullDescription": {"text": f"EU AI Act Article 50: {config['description']}. Transparency obligation applies."},
+            "fullDescription": {"text": (
+                f"Code-observable indicator for review against EU AI Act "
+                f"Article 50: {config['description']}. Applicability depends "
+                "on role, purpose, context, paragraph, conditions, and exceptions."
+            )},
             "defaultConfiguration": {"level": "note"},
             "helpUri": "https://artificialintelligenceact.eu/article/50/",
             "properties": {
@@ -2166,11 +2257,9 @@ def generate_sarif(findings: list, project_name: str) -> dict:
                 "primaryLocationLineHash": fp_hash,
             },
             "properties": {
-                "confidence_score": f.get("confidence_score", 0),
+                "detector_priority": f.get("confidence_score", 0),
                 "open_question": f.get("open_question", False),
-                "deadline": f.get("deadline"),
-                "deadline_status": f.get("deadline_status"),
-                "omnibus_deadline": f.get("omnibus_deadline"),
+                "reviewable_evidence": review_record_from_finding(f),
             },
         }
         results.append(result)
@@ -2197,11 +2286,7 @@ def generate_sarif(findings: list, project_name: str) -> dict:
 # ---------------------------------------------------------------------------
 
 def generate_sales_report(findings: list, project_name: str) -> str:
-    """Generate a compact, shareable HTML compliance summary.
-
-    Designed to be sent to enterprise buyers who ask for evidence of EU AI Act
-    compliance awareness before signing contracts. Single-file, no external deps.
-    """
+    """Generate a compact HTML evidence-preparation summary."""
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     active = [f for f in findings if not f.get("suppressed")]
     prohibited = [f for f in active if f["tier"] == "prohibited"]
@@ -2211,19 +2296,19 @@ def generate_sales_report(findings: list, project_name: str) -> str:
 
     # Overall status
     if prohibited:
-        status_label = "Action Required — Prohibited Pattern"
+        status_label = "Human review required: Article 5-related indicator"
         status_color = "#dc2626"
         status_bg = "#fef2f2"
     elif high_risk:
-        status_label = "High-Risk Indicators Detected"
+        status_label = "Human review required: Annex III-related indicator"
         status_color = "#d97706"
         status_bg = "#fffbeb"
     elif limited:
-        status_label = "Limited-Risk — Transparency Obligations Apply"
+        status_label = "Human review required: Article 50-related indicator"
         status_color = "#2563eb"
         status_bg = "#eff6ff"
     else:
-        status_label = "No High-Risk Indicators Found"
+        status_label = "No elevated-priority indicator found by this scan"
         status_color = "#16a34a"
         status_bg = "#f0fdf4"
 
@@ -2243,7 +2328,7 @@ def generate_sales_report(findings: list, project_name: str) -> str:
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EU AI Act Compliance Summary — {escape(project_name)}</title>
+<title>Regula Evidence-Preparation Summary - {escape(project_name)}</title>
 <style>
 *{{box-sizing:border-box;margin:0;padding:0}}
 body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;color:#111;background:#f9fafb;padding:32px 16px}}
@@ -2265,29 +2350,30 @@ td{{padding:8px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top}}
 </head>
 <body>
 <div class="card">
-  <h1>EU AI Act Compliance Summary</h1>
+  <h1>Regula Evidence-Preparation Summary</h1>
   <div class="sub">{escape(project_name)} &nbsp;·&nbsp; Scanned {now} &nbsp;·&nbsp; {total_files} files</div>
 
   <div class="status">
     <div class="status-label">{status_label}</div>
     <div style="margin-top:6px;font-size:0.875rem;color:#374151">
-      Pattern-based risk indication. Findings are indicators for human review,
-      not legal determinations. Full report available on request.
+      Human review required. These are code-observable indicators and potentially
+      relevant provisions, not determinations of applicability, legal tier, duties,
+      compliance, safety, conformity, certification, or non-applicability.
     </div>
   </div>
 
   <div class="grid">
     <div class="stat">
       <div class="stat-n" style="color:#dc2626">{len(prohibited)}</div>
-      <div class="stat-l">Prohibited<br>indicators</div>
+      <div class="stat-l">Article 5<br>indicators</div>
     </div>
     <div class="stat">
       <div class="stat-n" style="color:#d97706">{len(high_risk)}</div>
-      <div class="stat-l">High-risk<br>indicators</div>
+      <div class="stat-l">Annex III<br>indicators</div>
     </div>
     <div class="stat">
       <div class="stat-n" style="color:#2563eb">{len(limited)}</div>
-      <div class="stat-l">Limited-risk<br>indicators</div>
+      <div class="stat-l">Article 50<br>indicators</div>
     </div>
     <div class="stat">
       <div class="stat-n" style="color:#374151">{total_files}</div>
@@ -2295,13 +2381,13 @@ td{{padding:8px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top}}
     </div>
   </div>
 
-  <h2>High-Risk Indicators (Annex III)</h2>
+  <h2>Annex III-related code observations</h2>
   <table>
     <thead><tr><th>Category</th><th>Articles</th><th>File</th></tr></thead>
     <tbody>{_rows(high_risk)}</tbody>
   </table>
 
-  <h2>Prohibited Practice Indicators (Article 5)</h2>
+  <h2>Article 5-related code observations</h2>
   <table>
     <thead><tr><th>Category</th><th>Article</th><th>File</th></tr></thead>
     <tbody>{_rows(prohibited)}</tbody>
@@ -2309,9 +2395,9 @@ td{{padding:8px 10px;border-bottom:1px solid #f3f4f6;vertical-align:top}}
 
   <div class="footer">
     Generated by <strong>Regula</strong> (github.com/kuzivaai/getregula) &nbsp;·&nbsp;
-    EU AI Act pattern-based risk indication &nbsp;·&nbsp;
-    This summary does not constitute legal advice. For full compliance
-    assessment, consult qualified legal counsel.
+    Code-observation and evidence-preparation summary &nbsp;·&nbsp;
+    Human decision not recorded. Review source, context, conditions, exceptions,
+    and relevant provisions with an accountable qualified reviewer.
   </div>
 </div>
 </body>

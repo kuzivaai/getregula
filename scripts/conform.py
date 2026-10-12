@@ -164,15 +164,15 @@ def _write_and_record(path: Path, content: str, records: list, pack_dir: Path = 
 
 
 def _make_coverage(article_num: str, auto_detected: list, gap_data: dict) -> dict:
-    """Build coverage.json for an article."""
+    """Build review coverage without a readiness or compliance percentage."""
     meta = ARTICLES[article_num]
-    score = gap_data.get("score", 0) if gap_data else 0
     return {
         "article": int(article_num),
         "title": meta["title"],
-        "auto_detected": auto_detected,
-        "requires_human_input": meta["requires_human"],
-        "readiness": f"{score}%",
+        "code_and_documentation_observations": auto_detected,
+        "reviewer_questions": meta["requires_human"],
+        "review_status": "human_review_required",
+        "human_decision": None,
     }
 
 
@@ -299,7 +299,7 @@ def _generate_unresolved_conformity_pack(
             pack_dir,
         )
 
-    unresolved = decision.get("unresolved_predicates", [])
+    unresolved = decision.get("missing_context", [])
     facts = [
         "# Facts required before conformity duties can be mapped",
         "",
@@ -456,7 +456,13 @@ def generate_conformity_pack(
         if decision_request is not None
         else empty_decision("eu", "conformity-pack:no-declared-facts")
     )
-    if decision["result_type"] != "indication":
+    if (
+        decision.get("review_status") == "insufficient_information"
+        or (
+            "review_status" not in decision
+            and decision.get("result_type") != "indication"
+        )
+    ):
         annex_iv = unresolved_documentation_draft(annex_iv, str(project))
         return _generate_unresolved_conformity_pack(
             pack_dir=pack_dir,
@@ -526,14 +532,15 @@ def generate_conformity_pack(
 
     rc_coverage = {
         "article": "classification",
-        "title": "Risk Classification",
-        "auto_detected": auto_items_rc,
-        "requires_human_input": [
+        "title": "Code-observation summary",
+        "code_and_documentation_observations": auto_items_rc,
+        "reviewer_questions": [
             "Confirmation of intended purpose",
-            "Verification of risk tier assignment",
-            "Determination of Annex III applicability",
+            "Accountable review of any legal tier",
+            "Accountable review of Annex III applicability",
         ],
-        "readiness": "complete" if total > 0 else "not-run",
+        "review_status": "human_review_required",
+        "human_decision": None,
     }
     _write_and_record(rc_dir / "coverage.json", json.dumps(rc_coverage, indent=2), file_records, pack_dir)
 
@@ -547,7 +554,6 @@ def generate_conformity_pack(
 
         auto_detected = []
         if art_gap:
-            auto_detected.append(f"Compliance gap score: {art_gap.get('score', 0)}%")
             for ev in art_gap.get("evidence", []):
                 if isinstance(ev, str):
                     auto_detected.append(ev)
@@ -659,10 +665,14 @@ def generate_conformity_pack(
         evidence = {
             "article": int(art_num),
             "title": meta["title"],
-            "gap_score": art_gap.get("score", 0),
-            "status": art_gap.get("status", "not_found"),
-            "evidence_found": art_gap.get("evidence", []),
-            "gaps_identified": art_gap.get("gaps", []),
+            "review_status": "human_review_required",
+            "human_decision": None,
+            "code_and_documentation_observations": art_gap.get("evidence", []),
+            "unresolved_reviewer_questions": art_gap.get("gaps", []),
+            "explicit_limitation": (
+                "This evidence does not establish applicability, a legal "
+                "duty, compliance, or non-compliance."
+            ),
         }
         _write_and_record(art_dir / "evidence.json", json.dumps(evidence, indent=2, default=str), file_records, pack_dir)
 
@@ -670,16 +680,16 @@ def generate_conformity_pack(
         coverage = _make_coverage(art_num, auto_detected, art_gap)
         _write_and_record(art_dir / "coverage.json", json.dumps(coverage, indent=2, default=str), file_records, pack_dir)
 
-        score = art_gap.get("score", 0)
-        status = art_gap.get("status", "not_found")
         evidence_files = [
             str(Path(meta["folder"]) / "evidence.json"),
             str(Path(meta["folder"]) / "coverage.json"),
         ]
         article_summary[art_num] = {
             "title": meta["title"],
-            "status": status,
-            "auto_coverage": f"{score}%",
+            "review_status": "human_review_required",
+            "human_decision": None,
+            "observation_count": len(art_gap.get("evidence", [])),
+            "unresolved_question_count": len(art_gap.get("gaps", [])),
             "evidence_files": evidence_files,
         }
 
@@ -718,12 +728,12 @@ def generate_conformity_pack(
         "Robustness testing results",
     ]
     auto_generated = [
-        "Risk classification",
+        "Code-observation summary",
         "Technical documentation draft (Annex IV)",
         "Supply chain analysis (SBOM)",
         "Audit trail",
-        "Remediation plan",
-        "Per-article gap assessment",
+        "Human-review worklist",
+        "Per-article evidence observations",
     ]
 
     # --- 00: Assessment Summary ---
@@ -731,10 +741,12 @@ def generate_conformity_pack(
         "regula_version": VERSION,
         "generated_at": now.isoformat(),
         "project": name,
-        "conformity_type": "internal (Annex VI, Module A)",
-        "overall_readiness": f"{overall_score}%",
-        "articles": article_summary,
-        "deadline": _derive_deadline_summary(findings),
+        "pack_purpose": "reviewable_evidence",
+        "decision": decision,
+        "review_status": "human_review_required",
+        "readiness_assessment": None,
+        "article_duties_attached": [],
+        "article_observations": article_summary,
         "human_required": human_required,
         "auto_generated": auto_generated,
     }
@@ -796,10 +808,16 @@ def generate_conformity_pack(
 
 
 def _generate_declaration_template(name: str, now: datetime, score: int, risk_tier: str) -> str:
-    """Generate an Article 47 declaration of conformity template."""
-    return f"""# EU Declaration of Conformity
+    """Generate an uncompleted Article 47 review template."""
+    del score, risk_tier
+    return f"""# Article 47 Declaration Review Template
 
 **Pursuant to Article 47 of Regulation (EU) 2024/1689 (AI Act)**
+
+> **HUMAN DECISION REQUIRED:** Regula has not determined that Article 47
+> applies, that the subject is an AI system, or that it is in conformity.
+> A provider or authorised accountable reviewer must complete and approve any
+> declaration outside this generated evidence pack.
 
 ---
 
@@ -818,9 +836,8 @@ def _generate_declaration_template(name: str, now: datetime, score: int, risk_ti
 
 ## 3. Declaration
 
-This declaration of conformity is issued under the sole responsibility of the provider.
-
-The AI system described above is in conformity with the following provisions of Regulation (EU) 2024/1689:
+If an accountable reviewer determines that a declaration is required, record
+the provider's own conformity decision and supporting evidence below:
 
 - [ ] Article 9 — Risk management system
 - [ ] Article 10 — Data and data governance
@@ -832,9 +849,9 @@ The AI system described above is in conformity with the following provisions of 
 
 ## 4. Conformity Assessment
 
-- **Assessment type:** Internal (Annex VI, Module A)
+- **Assessment type:** [TO BE COMPLETED BY ACCOUNTABLE REVIEWER]
 - **Assessment date:** {now.strftime("%Y-%m-%d")}
-- **Automated readiness score:** {score}% (generated by Regula v{VERSION})
+- **Human conformity decision:** [NOT RECORDED]
 
 ## 5. Standards Applied
 
@@ -853,10 +870,9 @@ Signed at [place], on [date]
 
 ---
 
-_This template was pre-filled by Regula v{VERSION}. All fields marked
-[TO BE COMPLETED] require human input. The automated readiness score
-is an indicator only — it does not constitute a legal determination
-of conformity. The risk tier detected was: {risk_tier}._
+_This review template was generated by Regula v{VERSION}. It records no legal
+applicability, legal tier, duty, compliance, safety, certification, or
+conformity decision._
 """
 
 

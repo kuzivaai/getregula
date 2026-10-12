@@ -37,16 +37,17 @@ cd getregula
 regula check examples/cv-screening-app --scope all
 ```
 
-Expected output (verified against Regula v1.9.0 on 2026-08-14):
+Expected output (verified against Regula v2.0.0 on 2026-08-30):
 
 ```
 Regula Scan: /home/USER/getregula/examples/cv-screening-app
 ============================================================
 
-Decision: insufficient_information
+Review status: insufficient_information
+Model: 2026-08-26.1
 Jurisdiction: eu
-Rule resolution: unresolved
-Facts needed to resolve the next decision: 2
+Human decision: not recorded
+Declared context needed for review: 2
   - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
   - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
 
@@ -165,18 +166,19 @@ Article 17 QMS gap). Use this to populate your own JIRA / Linear backlog.
 regula gap --project examples/cv-screening-app
 ```
 
-Expected output (verified against Regula v1.9.0 on 2026-08-14):
+Expected output (verified against Regula v2.0.0 on 2026-08-30):
 
 ```
-Decision: insufficient_information
+Review status: insufficient_information
+Model: 2026-08-26.1
 Jurisdiction: eu
-Rule resolution: unresolved
-Facts needed to resolve the next decision: 2
+Human decision: not recorded
+Declared context needed for review: 2
   - is_ai_system: Does the subject meet the governing law's definition of an AI system or regulated automated technology?
   - jurisdiction_in_scope: Does this jurisdiction's territorial and operator scope apply?
 
 Evidence scan:
-Article evidence is attached only where the decision kernel resolved the corresponding obligation.
+Code and documentation observations remain held because no accountable human decision is recorded. They do not establish applicability, a legal duty, compliance, or non-compliance.
 Article observations emitted: 0; held pending applicability: 8
 ```
 

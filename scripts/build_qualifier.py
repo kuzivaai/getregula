@@ -97,6 +97,96 @@ def _question(index: int, q: dict) -> str:
     )
 
 
+def _home_intro(copy: dict) -> str:
+    """Render the homepage promise, review model and role-based entry paths."""
+    home = copy["home"]
+    proof = "\n".join(
+        f"        <li>{esc(item)}</li>" for item in home["proof"]
+    )
+    steps = "\n".join(
+        """          <li class="home-path-step">
+            <span class="home-path-n" aria-hidden="true">{label}</span>
+            <div><h3>{title}</h3><p>{body}</p></div>
+          </li>""".format(
+            label=esc(item["label"]),
+            title=esc(item["title"]),
+            body=esc(item["body"]),
+        )
+        for item in home["pathSteps"]
+    )
+    journeys = "\n".join(
+        """        <article class="journey-card">
+          <p class="journey-role">{role}</p>
+          <h3>{task}</h3>
+          <p>{body}</p>
+          <a href="{href}">{cta}<span aria-hidden="true"> →</span></a>
+        </article>""".format(
+            role=esc(item["role"]),
+            task=esc(item["task"]),
+            body=esc(item["body"]),
+            href=esc(item["href"]),
+            cta=esc(item["cta"]),
+        )
+        for item in home["journeys"]
+    )
+    return """<section class="home-hero" aria-labelledby="home-h1">
+  <div class="home-hero-grid">
+    <div class="home-promise">
+      <p class="home-eyebrow">{eyebrow}</p>
+      <h1 id="home-h1">{title}</h1>
+      <p class="home-lead">{lead}</p>
+      <div class="home-actions">
+        <a class="home-cta home-cta-primary" href="{primary_href}">
+          <span>{primary_label}</span><small>{primary_meta}</small>
+        </a>
+        <a class="home-cta home-cta-secondary" href="{secondary_href}">
+          <span>{secondary_label}</span><small>{secondary_meta}</small>
+        </a>
+      </div>
+      <ul class="home-proof" aria-label="Product facts">
+{proof}
+      </ul>
+    </div>
+    <aside class="home-path" aria-labelledby="home-path-title">
+      <p class="home-eyebrow">{path_eyebrow}</p>
+      <h2 id="home-path-title">{path_title}</h2>
+      <ol>
+{steps}
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<section class="journeys" aria-labelledby="journeys-title">
+  <div class="journeys-head">
+    <p class="home-eyebrow">{journeys_eyebrow}</p>
+    <h2 id="journeys-title">{journeys_title}</h2>
+    <p>{journeys_lead}</p>
+  </div>
+  <div class="journey-grid">
+{journeys}
+  </div>
+</section>""".format(
+        eyebrow=esc(home["eyebrow"]),
+        title=esc(home["title"]),
+        lead=esc(home["lead"]),
+        primary_href=esc(home["primary"]["href"]),
+        primary_label=esc(home["primary"]["label"]),
+        primary_meta=esc(home["primary"]["meta"]),
+        secondary_href=esc(home["secondary"]["href"]),
+        secondary_label=esc(home["secondary"]["label"]),
+        secondary_meta=esc(home["secondary"]["meta"]),
+        proof=proof,
+        path_eyebrow=esc(home["pathEyebrow"]),
+        path_title=esc(home["pathTitle"]),
+        steps=steps,
+        journeys_eyebrow=esc(home["journeysEyebrow"]),
+        journeys_title=esc(home["journeysTitle"]),
+        journeys_lead=esc(home["journeysLead"]),
+        journeys=journeys,
+    )
+
+
 def render(key: str, copy: dict) -> str:
     questions = "\n".join(
         _question(i + 1, q) for i, q in enumerate(copy["questions"])
@@ -132,21 +222,35 @@ def render(key: str, copy: dict) -> str:
     # `</` is escaped so the blob can never terminate its own <script>.
     blob = json.dumps(copy, ensure_ascii=False, sort_keys=True).replace("</", "<\\/")
 
+    home_intro = _home_intro(copy)
+
     return f"""{BEGIN}
 {GENERATED_NOTE.format(key=key)}
-<section class="qual-wrap" aria-labelledby="qual-h1">
-  <div class="qual">
+{home_intro}
+
+<section class="qual-wrap" id="qualifier" aria-labelledby="qual-h1">
+  <div class="qual-layout">
+    <div class="qual-intro">
     <p class="qual-audience">{esc(copy["audience"])}</p>
-    <h1 id="qual-h1">{esc(copy["h1"])}</h1>
+    <h2 id="qual-h1">{esc(copy["h1"])}</h2>
     <p class="qual-sub">{esc(copy["sub"])}</p>
     <p class="qual-meta">{esc(copy["meta"])}</p>
+    </div>
 
+    <div class="qual-card">
     <form id="qual-form" novalidate>
+      <div class="qual-progress" id="qual-progress" hidden>
+        <p><span id="qual-progress-label">{esc(copy["progressPrefix"])} 1 {esc(copy["progressOf"])} 5</span></p>
+        <span class="qual-progress-track" role="progressbar" aria-labelledby="qual-progress-label" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1"><span id="qual-progress-fill"></span></span>
+      </div>
       <ol class="qual-qs">
 {questions}
       </ol>
+      <p class="qual-step-hint" id="qual-step-hint" hidden>{esc(copy["stepHint"])}</p>
       <p class="qual-err" id="qual-error" role="alert" hidden></p>
       <div class="qual-actions">
+        <button type="button" class="qual-quiet" id="qual-back" hidden>{esc(copy["back"])}</button>
+        <button type="button" class="qual-go" id="qual-next" hidden>{esc(copy["continue"])}</button>
         <button type="submit" class="qual-go">{esc(copy["submit"])}</button>
         <button type="button" class="qual-quiet" id="qual-reset">{esc(copy["reset"])}</button>
       </div>
@@ -167,6 +271,7 @@ def render(key: str, copy: dict) -> str:
     <ul class="qual-unsettled">
 {shorts}
     </ul>
+    </div>
   </div>
 </section>
 <script type="application/json" id="qual-copy">{blob}</script>

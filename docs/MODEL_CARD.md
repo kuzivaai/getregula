@@ -246,8 +246,8 @@ accuracy. Full available methodology:
 
 ### Continuous validation
 
-- 2,936 pytest-collected tests, produced by collection rather than
-  hand-maintained (measured 2026-08-25). See
+- 2,990 pytest-collected tests, produced by collection rather than
+  hand-maintained (collection timestamp in `data/site_facts.json`). See
   [`data/published_count_manifest.json`](../data/published_count_manifest.json).
 - 48 CLI integration tests (`tests/test_cli_integration.py`), enumerated by
   `data/site_facts.json`.

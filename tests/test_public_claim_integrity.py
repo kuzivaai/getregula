@@ -256,23 +256,22 @@ def test_the_em_dash_page_list_is_not_empty_and_reaches_the_real_pages():
         assert (REPO / rel).is_file(), rel
 
 
-def test_mobile_navigation_supports_pointer_and_escape_close():
-    paths = (
-        "site/index.html",
-        "site/locales/de.html",
-        "site/locales/pt-br.html",
-        "site/assess/index.html",
-        "site/assess/de.html",
-        "site/assess/pt-br.html",
-        "site/pricing.html",
-    )
-    for rel in paths:
-        text = (REPO / rel).read_text(encoding="utf-8", errors="replace")
-        assert ".showModal()" not in text, rel
-        assert ".show()" in text, rel
+def test_mobile_navigation_is_modal_and_restores_focus():
+    paths = sorted((REPO / "site").rglob("*.html"))
+    checked = 0
+    for path in paths:
+        text = path.read_text(encoding="utf-8", errors="replace")
+        if 'id="nav-menu"' not in text:
+            continue
+        checked += 1
+        rel = path.relative_to(REPO).as_posix()
+        assert ".showModal()" in text, rel
+        assert ".show()" not in text, rel
+        assert "if(event.target===this)this.close()" in text, rel
         assert "event.key==='Escape'" in text, rel
         assert "event.preventDefault();this.close()" in text, rel
         assert "b.focus()" in text, rel
+    assert checked >= 50, checked
 
 
 def test_package_description_source_is_readme():
