@@ -96,7 +96,7 @@ runs:
   using: composite
   steps:
     - name: Set up Python 3.12
-      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
       with:
         python-version: "3.12"
 
@@ -617,7 +617,7 @@ runs:
     - name: Upload SARIF to GitHub Code Scanning
       if: inputs.upload-sarif == 'true' && always()
       continue-on-error: true
-      uses: github/codeql-action/upload-sarif@eec0bff2f6c15bf3f1e8a0152f94d17664a06a06 # v4
+      uses: github/codeql-action/upload-sarif@0911ee96d2d6c8def97122c36c5cadd93829a4b4 # v4
       with:
         sarif_file: ${{ steps.run-check.outputs.sarif_file }}
         category: regula-ai-governance
