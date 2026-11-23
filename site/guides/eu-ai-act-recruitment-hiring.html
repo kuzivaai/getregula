@@ -64,7 +64,7 @@
       "description": "Assess recruitment AI under Article 6 and Annex III point 4(a), review conditional high-risk requirements, and understand the limits of code indicators.",
       "image": "https://getregula.com/assets/og-image.png",
       "datePublished": "2026-06-25T00:00:00+00:00",
-      "dateModified": "2026-06-25T00:00:00+00:00",
+      "dateModified": "2026-11-23",
       "author": {
         "@type": "Person",
         "name": "Regula maintainers",
@@ -98,38 +98,6 @@
     }
     </script>
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Is my recruitment AI system high-risk under the EU AI Act?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Software intended to screen CVs, rank candidates, score interviews, or automate hiring decisions may follow the high-risk path under Article 6 and Annex III point 4(a). Intended purpose, Article 6 conditions, and exceptions must be assessed in context. Recruitment-related code is evidence to review, not a legal conclusion by itself."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What are the compliance obligations for high-risk recruitment AI?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "High-risk recruitment AI must comply with Articles 9 through 15 of the EU AI Act. Article 9 requires a risk management system. Article 10 covers data governance, including training data representativeness. Article 11 requires technical documentation following Annex IV. Article 12 mandates record-keeping for every candidate decision. Article 13 requires transparency, meaning candidates must know AI is involved. Article 14 requires human oversight of AI recommendations. Article 15 covers accuracy, robustness, and cybersecurity, including testing for demographic bias."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can Regula check if my recruitment AI complies with the EU AI Act?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Regula can scan your codebase for risk patterns that indicate high-risk classification, generate Annex IV documentation scaffolds, and run a gap analysis against Articles 9-15. It cannot perform actual bias testing on your data, conduct a Fundamental Rights Impact Assessment, or replace operational risk management. For bias testing, Regula provides benchmarks (CrowS-Pairs, BBQ) as a starting point, but testing against your own hiring data is your responsibility."
-          }
-        }
-      ]
-    }
-    </script>
     <script>
     </script>
 </head>
@@ -164,15 +132,15 @@
 
 <div class="blog-body">
 
-<h2>Why recruitment AI is high-risk</h2>
+<h2>When recruitment AI is high-risk</h2>
 
-<p>Annex III of the <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj">EU AI Act (Regulation (EU) 2024/1689)</a> lists eight domains where AI systems are considered high-risk by their intended purpose. Category 4, &ldquo;Employment, workers&rsquo; management and access to self-employment&rdquo; covers the full hiring pipeline: job advertisement targeting, application screening and filtering, candidate evaluation, and interview assessment.</p>
+<p><a href="https://eur-lex.europa.eu/eli/reg/2024/1689/2026-07-27/eng">Article 6 and Annex III of the EU AI Act</a> classify in-scope Annex III systems as high-risk by default. Point 4(a) covers AI intended for recruitment or selection, including targeted job ads, filtering applications and evaluating candidates. The narrow Article 6(3) exception requires no significant risk to health, safety or fundamental rights and at least one of the listed conditions. It does not apply if the system profiles natural persons.</p>
 
 <p>The model type alone does not settle classification. Intended purpose is central, but the complete Article 6 test and Annex III wording still apply. Recruitment-related code is evidence to review, not a legal conclusion by itself.</p>
 
 <p><a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a>, in force since 27 July 2026, sets <strong>2 December 2027</strong> for Annex III high-risk provisions. Whether a recruitment system follows that path depends on the Article 6 test, intended purpose, and the Annex III wording; a code pattern alone does not decide it.</p>
 
-<p>One thing that is already enforceable: Article 5 prohibitions, in force since 2 February 2025. If your recruitment tool uses subliminal manipulation, exploits vulnerabilities, or implements social scoring, that is banned now, not in 2027.</p>
+<p>Do not wait for the high-risk rules to apply before checking prohibited practices. The <a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-5">Article 5</a> prohibitions on certain manipulative practices, exploitation of vulnerabilities and forms of social scoring have applied since 2 February 2025. Each has a specific legal test; for example, the manipulation and vulnerability provisions require material distortion of behaviour and actual or reasonably likely significant harm.</p>
 
 <h2>Code patterns associated with the high-risk path</h2>
 
@@ -222,13 +190,9 @@ applies, and it names the two facts a person still has to establish before any
 Article 9 to 15 duty can be attached. The detector block is evidence for that
 person, not a finding of law, which is why it is labelled "not legal facts".</p>
 
-<p>The number in brackets is a detector priority, not a probability and not a
-compliance score. 63 places this finding in the WARN band (50 to 79). It counts
-how many patterns matched, so a deliberately small example scores lower than a
-production hiring tool with named entity extraction on CVs, interview scoring
-pipelines and applicant tracking integrations. Earlier versions of this page
-labelled it a confidence percentage, which invited reading a pattern count as a
-likelihood; the tool no longer emits that wording.</p>
+<p>The number in brackets is a detector priority, not a probability or a
+compliance score. In this example the detector reports 43 and labels the
+finding INFO. Neither the score nor the label tells you whether the Act applies.</p>
 
 <p>The <code>--domain employment</code> flag activates employment-specific patterns that might not fire under the default scan. If you know your system is used for hiring, pass this flag.</p>
 
@@ -246,16 +210,16 @@ likelihood; the tool no longer emits that wording.</p>
 <p>You must produce technical documentation following the Annex IV template before the system is placed on the market. This covers the system description, intended purpose, hardware and software requirements, design choices, training methodology, validation results, and risk management measures. It is thorough. Regula can generate a scaffold for this with <code>regula docs .</code>, but filling in the substance is your job.</p>
 
 <h3>Article 12: Record-keeping</h3>
-<p>The system must automatically log its operations to a degree that allows traceability. For a recruitment AI, this means logging every candidate decision: which candidates were scored, what scores they received, what features contributed to the score, and what action was taken. Think structured audit logs, not just print statements.</p>
+<p><a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-12">Article 12</a> requires high-risk systems to support automatic event logging over their lifetime. Logs need to support traceability appropriate to the intended purpose, including identifying risks or substantial changes, post-market monitoring and monitoring operation. For a hiring product, work out which events make decisions traceable and limit the personal data collected to what is necessary.</p>
 
 <h3>Article 13: Transparency</h3>
-<p>Candidates must be told that AI is being used in their application process. This is not optional, and it is not buried-in-the-terms-of-service transparency. The obligation is to enable deployers (the companies using your tool) to interpret outputs and use the system appropriately. Your documentation needs to cover capabilities, limitations, and the degree of accuracy tested.</p>
+<p><a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-13">Article 13</a> requires providers of high-risk systems to supply information that lets deployers interpret outputs and use the system appropriately, including its capabilities, limitations and tested accuracy. Separately, <a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-26">Article 26(11)</a> requires deployers of Annex III high-risk systems that make or assist decisions about people to tell those people they are subject to the system, without prejudice to Article 50.</p>
 
 <h3>Article 14: Human oversight</h3>
-<p>A human must be able to understand, intervene in, and override the system. For recruitment, this means a person reviews AI-generated rankings or recommendations before they are acted on. A hiring system where the AI output is the final decision, with no human in the loop, does not meet Article 14. The human must have the competence and authority to override.</p>
+<p><a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-14">Article 14</a> requires effective human oversight during use, with measures proportionate to the risk, level of autonomy and context. In a hiring workflow, the people assigned oversight should be able, as appropriate, to interpret outputs, spot over-reliance, and disregard, override or interrupt the system. Review before acting on a ranking is one possible control, not a universal rule under Article 14.</p>
 
 <h3>Article 15: Accuracy, robustness, and cybersecurity</h3>
-<p>The system must achieve appropriate levels of accuracy for its intended purpose, be resilient to errors and inconsistencies, and be secured against tampering. For hiring AI, the accuracy requirement includes testing for bias across protected characteristics: gender, ethnicity, age, disability. If your model performs differently for different demographic groups, that is an Article 15 problem.</p>
+<p><a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-15">Article 15</a> requires appropriate levels of accuracy, robustness and cybersecurity throughout the system&rsquo;s lifecycle. If a hiring system performs differently across groups, investigate the causes and consequences under the relevant rules, including data governance and risk management. A difference alone does not establish an Article 15 violation.</p>
 
 <h2>What Regula covers and what it does not</h2>
 
@@ -329,9 +293,9 @@ compliance measurement, which is a determination Regula does not make.
 
 <h2>What you need to worry about and what you probably do not</h2>
 
-<p><strong>Worry about:</strong> documentation gaps (Article 11 is the most common zero-score), logging (most hiring tools log nothing useful for Article 12), and transparency notices (Article 13 is rarely implemented in code).</p>
+<p><strong>Where to start:</strong> technical documentation (Article 11), traceable event logging (Article 12), and clear instructions for deployers (Article 13). Review the responsibilities in the context of the system and your role.</p>
 
-<p><strong>Probably do not need to worry about yet:</strong> conformity assessment procedures (those come at deployment, not development), notified body involvement (Annex III systems use self-assessment unless they also fall under Annex I), or post-market monitoring systems (required, but you need a working system first).</p>
+<p><strong>Plan conformity assessment before launch:</strong> under <a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-43">Article 43(2)</a>, providers of high-risk systems in Annex III points 2 to 8, including point 4(a) recruitment systems, follow the Annex VI internal-control procedure without a notified body. If the system is also covered by product legislation in Annex I, Section A, check Article 43(3) and the applicable sector rules. Plan how you will monitor the system once it is in use.</p>
 
 <p><strong>Start now regardless of the deadline:</strong> the distance between a codebase with no documented data governance and one that could survive scrutiny is not closed in a sprint. Data governance and technical documentation take months to get right, and retrofitting logging into an existing system is harder than building it in from the start.</p>
 
@@ -342,8 +306,8 @@ compliance measurement, which is a determination Regula does not make.
 </p>
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Regula maintainers &middot;
-    <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
+    <strong>Classification and selected requirements reviewed:</strong> 23 November 2026 &middot; <strong>Author:</strong> Regula maintainers &middot;
+    <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/2026-07-27/eng" style="color:var(--text-dim);">Regulation (EU) 2024/1689, consolidated text</a>, <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj" style="color:var(--text-dim);">Regulation (EU) 2026/1744</a> &middot;
     <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
 </p>
 
