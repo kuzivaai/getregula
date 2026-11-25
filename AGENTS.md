@@ -36,8 +36,16 @@ python3 tests/test_classification.py && python3 -m pytest tests/ -q && python3 -
 - After code changes: run the verify command (all 4 steps)
 - After writing tests: wire into `test_classification.py` via alias import + globals binding
 - After regulatory content: verify claims against primary legislation before committing
-- Before releases: bump `scripts/constants.py:VERSION` and every current-version declaration. The enforced set is enumerated by `tests/test_source_of_truth.py` (CITATION.cff, mcp-server.json, server.json, site/llms.txt, references/annex_iv_template.md, docs/MODEL_CARD.md, plus schema.org softwareVersion on the site pages) and fails on drift; CLAUDE.md's version line is manual. pyproject.toml is dynamic and must NOT carry a literal version (same test enforces this).
+- Before releases: bump `scripts/constants.py:VERSION` and every current-version declaration. The enforced set is enumerated by `tests/test_source_of_truth.py` (CITATION.cff, mcp-server.json, server.json, site/llms.txt, references/annex_iv_template.md, docs/MODEL_CARD.md, plus schema.org softwareVersion on the site pages) and fails on drift; pyproject.toml is dynamic and must NOT carry a literal version (same test enforces this).
 - After site changes: confirm DE and PT-BR locales updated
+
+
+## Material-change evidence
+
+- Before editing, name the user outcome, the material surfaces and dependencies, and what would count as done. Start from the outcome, not a list of examples; record gaps without expanding permissions.
+- Show a successful check through the actual entry point and an observed negative control for the defect or risk. For a public qualifier change, test failure cases on the shipped form, not only the local core or preview. A skipped check or simulation is not a pass for the live outcome.
+- Before calling work live, match the exact revision or artefact to its release receipt and recheck the public website or distribution people actually use, including affected locales and assets. Do not claim a package or site is published on the basis of a merge or green CI.
+- Have a separate reviewer try to find omitted scope and challenge the acceptance evidence; if unavailable, label the review as a self-check. Record the results and material limits in the existing handover or decision record, not a second tracker.
 
 ## Architecture
 
