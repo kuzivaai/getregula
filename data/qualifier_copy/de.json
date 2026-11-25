@@ -2,7 +2,7 @@
   "lang": "de",
   "audience": "Für Gründerinnen, Gründer und Verantwortliche eines KI-Produkts",
   "h1": "Erreicht die KI-Regulierung Ihr Unternehmen?",
-  "sub": "Fünf Fragen in einfacher Sprache. Kein Konto, keine Installation, und nichts, was Sie hier eingeben, verlässt Ihren Browser. Am Ende erhalten Sie eine Liste dessen, worauf Ihre Antworten hindeuten, und dessen, was ein Mensch noch klären muss.",
+  "sub": "Fünf Fragen in einfacher Sprache. Sie brauchen weder ein Konto noch eine Installation. Ihr Browser berechnet das Ergebnis. Am Ende erhalten Sie eine Liste dessen, worauf Ihre Antworten hindeuten, und dessen, was ein Mensch noch klären muss.",
   "meta": "Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Dies ist keine Rechtsberatung.",
   "questions": [
     {
@@ -279,6 +279,7 @@
     "Regula zeigt an, wo Sie hinsehen sollten. Es entscheidet nicht über Ihre Risikoklasse, Ihre Pflichten oder Ihre Rechtskonformität. Über Konformität entscheiden Behörden und notifizierte Stellen, nicht ein Fragebogen, und „nicht markiert“ bedeutet niemals „rechtskonform“.",
     "Nichts hiervon ist Rechtsberatung. Alles, was von einer rechtlichen Schlussfolgerung abhängt, braucht eine entsprechend qualifizierte Fachperson."
   ],
+  "shareHint": "Wer diesen Link erhält, kann Ihre fünf Antworten lesen.",
   "shareLabel": "Link zu diesen Antworten kopieren",
   "shareDone": "Link kopiert",
   "afterHeading": "Was nach Ihren Antworten passiert",

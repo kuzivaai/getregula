@@ -88,6 +88,8 @@ jobs:
         # pages it guards (LEDGER F15). It is wired in here because the browser
         # assessment has no other regression gate.
         run: node tests/test_questionnaire_scoring.js
+      - name: Qualifier share links keep answers out of HTTP requests
+        run: node tests/test_qualifier_transport.mjs
 
   lint:
     name: Lint (ruff)
