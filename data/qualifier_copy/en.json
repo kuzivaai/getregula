@@ -2,7 +2,7 @@
   "lang": "en",
   "audience": "For founders and people responsible for an AI product",
   "h1": "Does AI regulation reach your business?",
-  "sub": "Five questions, in plain words. No account, nothing to install, and nothing you type here leaves your browser. At the end you get a list of what your answers point at and what a person still has to settle.",
+  "sub": "Five questions, in plain words. No account or installation needed. Your browser works out the result. At the end you get a list of what your answers point at and what a person still has to settle.",
   "meta": "Regula indicates where to look. It does not decide your risk tier, your obligations, or whether you comply. This is not legal advice.",
   "questions": [
     {
@@ -279,6 +279,7 @@
     "Regula indicates where to look. It does not decide your risk tier, your obligations, or whether you comply. Conformity is determined by regulators and notified bodies, not by a questionnaire, and “not flagged” never means “compliant”.",
     "Nothing here is legal advice. Anything that turns on a legal conclusion needs an appropriately qualified professional."
   ],
+  "shareHint": "Anyone you share this link with can read your five answers.",
   "shareLabel": "Copy a link to these answers",
   "shareDone": "Link copied",
   "afterHeading": "What happens after you answer",

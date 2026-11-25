@@ -200,6 +200,7 @@
     var shareBtn = el('button', 'qual-quiet', copy.shareLabel);
     shareBtn.type = 'button';
     shareBtn.addEventListener('click', function () { copyLink(a, shareBtn); });
+    share.appendChild(el('p', 'qual-share-hint', copy.shareHint));
     share.appendChild(shareBtn);
     resultBox.appendChild(share);
 
@@ -228,7 +229,7 @@
   }
 
   function copyLink(a, button) {
-    var url = window.location.origin + window.location.pathname + '?qual=' + encodeURIComponent(encode(a));
+    var url = window.location.origin + window.location.pathname + '#qual=' + encodeURIComponent(encode(a));
     var done = function () { button.textContent = fill(copy.shareDone); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(url).then(done, function () { window.prompt(fill(copy.shareLabel), url); });
@@ -333,7 +334,11 @@
       if (resetBtn) { resetBtn.disabled = false; }
     });
 
-    var shared = decode(new URLSearchParams(window.location.search).get('qual'));
+    // New shares carry answers in a fragment, not the HTTP request target.
+    // Links already shared with the v1 query encoding must keep opening.
+    var fragment = new URLSearchParams(window.location.hash.slice(1));
+    var shared = decode(fragment.has('qual') ? fragment.get('qual') :
+      new URLSearchParams(window.location.search).get('qual'));
     if (shared) {
       QIDS.forEach(function (q) {
         var input = form.querySelector('input[name="' + q + '"][value="' + CSS.escape(shared[q]) + '"]');

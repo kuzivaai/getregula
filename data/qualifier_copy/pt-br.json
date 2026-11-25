@@ -2,7 +2,7 @@
   "lang": "pt-BR",
   "audience": "Para fundadores e responsáveis por um produto de IA",
   "h1": "A regulação de IA alcança o seu negócio?",
-  "sub": "Cinco perguntas, em linguagem simples. Sem conta, sem instalar nada, e nada do que você digitar aqui sai do seu navegador. No final você recebe uma lista do que as suas respostas indicam e do que ainda precisa ser resolvido por uma pessoa.",
+  "sub": "Cinco perguntas em linguagem simples. Não é preciso criar conta nem instalar nada. O resultado é calculado no seu navegador. No final você recebe uma lista do que as suas respostas indicam e do que ainda precisa ser resolvido por uma pessoa.",
   "meta": "O Regula indica onde olhar. Ele não decide a sua classe de risco, as suas obrigações nem se você está em conformidade. Isto não é aconselhamento jurídico.",
   "questions": [
     {
@@ -279,6 +279,7 @@
     "O Regula indica onde olhar. Ele não decide a sua classe de risco, as suas obrigações nem se você está em conformidade. A conformidade é determinada por autoridades reguladoras e organismos notificados, não por um questionário, e “não sinalizado” nunca significa “em conformidade”.",
     "Nada aqui é aconselhamento jurídico. Qualquer coisa que dependa de uma conclusão jurídica precisa de um profissional devidamente qualificado."
   ],
+  "shareHint": "Quem receber este link poderá ler suas cinco respostas.",
   "shareLabel": "Copiar um link para estas respostas",
   "shareDone": "Link copiado",
   "afterHeading": "O que acontece depois que você responde",
