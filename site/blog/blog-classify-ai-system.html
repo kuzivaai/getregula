@@ -37,7 +37,7 @@
     <meta property="og:locale" content="en_GB">
     <meta property="og:site_name" content="Regula">
     <meta property="article:published_time" content="2026-06-11T00:00:00+00:00">
-    <meta property="article:modified_time" content="2026-06-11T00:00:00+00:00">
+    <meta property="article:modified_time" content="2026-11-25T00:00:00+00:00">
     <meta property="article:section" content="AI Governance">
     <meta property="article:tag" content="EU AI Act">
     <meta property="article:tag" content="Risk Classification">
@@ -61,7 +61,7 @@
       "description": "Classification depends on intended purpose and deployment context. A developer guide to Article 6, the four risk tiers, and what code scanning can and cannot tell you.",
       "image": "https://getregula.com/assets/og-image.png",
       "datePublished": "2026-06-11T00:00:00+00:00",
-      "dateModified": "2026-06-11T00:00:00+00:00",
+      "dateModified": "2026-11-25T00:00:00+00:00",
       "author": {
         "@type": "Person",
         "name": "Regula maintainers",
@@ -113,7 +113,7 @@
           "name": "What is the Article 6(3) derogation for high-risk AI?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Article 6(3) allows a system listed in Annex III to be classified as non-high-risk if it performs a narrow procedural task, improves the result of a previously completed human activity, or is used for human decision support where the human decision is not bypassed. You must document this assessment. This is a self-assessment — it is not automatic, and the conditions are narrow."
+            "text": "Annex III systems are high-risk by default. Article 6(3) is a narrow exception that requires no significant risk to health, safety or fundamental rights and at least one listed condition. It does not apply when the system profiles natural persons. A provider relying on the exception must document its assessment and, under Article 49(2), register itself and the system in the EU database before placing it on the market or putting it into service."
           }
         },
         {
@@ -177,34 +177,33 @@
 <h2>The four risk tiers</h2>
 
 <p>The EU AI Act is commonly explained through four practical groupings: practices not permitted (Article 5), high-risk (Annex III use-based or Annex I product-embedded), systems subject to Article 50 transparency duties, and systems without an identified elevated risk-tier path. This shorthand is not a substitute for checking cross-cutting and context-dependent duties.</p>
-<p>The EU AI Act sorts AI systems into four tiers. Your obligations depend entirely on which tier applies.</p>
 <h3>Practices not permitted (Article&nbsp;5)</h3>
-<p>Article&nbsp;5 defines prohibited practices with detailed conditions and exceptions. The original points have applied since 2&nbsp;February&nbsp;2025. <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation (EU) 2026/1744</a> adds points 5(1)(ba) and 5(1)(bb), applying from 2&nbsp;December&nbsp;2026. A code-pattern match is not proof that the legal test is met.</p>
+<p>Article&nbsp;5 defines prohibited practices with detailed conditions and exceptions. The original points have applied since 2&nbsp;February&nbsp;2025. <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng">Regulation (EU) 2026/1744</a> adds points 5(1)(ba) and 5(1)(bb), applying from 2&nbsp;December&nbsp;2026. A code-pattern match is not proof that the legal test is met.</p>
 
 <h3>High-risk: use-based (Annex&nbsp;III)</h3>
 <p>Annex III lists specified intended uses across eight areas. Classification requires the Article 6 test, including applicable exceptions and documentation duties; libraries alone cannot decide it. Regulation (EU) 2026/1744 sets <strong>2&nbsp;December&nbsp;2027</strong> for the Annex III path.</p>
 
 <h3>High-risk: product-embedded (Annex&nbsp;I)</h3>
-<p>AI systems that are safety components of, or are themselves, products covered by EU harmonisation legislation listed in Annex&nbsp;I &mdash; including medical devices, machinery, toys, lifts, and radio equipment. These follow the existing CE marking framework. Compliance deadline: <strong>2&nbsp;August&nbsp;2028</strong> (Digital Omnibus).</p>
+<p>The Article 6(1) route requires both an AI system that is a product or a safety component of a product covered by Annex I legislation and a requirement for third-party conformity assessment under that legislation. Check the qualifications in Article 6(1a) to (1c) before relying on either condition. Compliance deadline: <strong>2&nbsp;August&nbsp;2028</strong> (Digital Omnibus).</p>
 
 <h3>Limited risk (Article&nbsp;50)</h3>
-<p>Systems with transparency obligations: chatbots that interact with people, systems generating synthetic content (deepfakes, AI-generated text or images), emotion recognition systems, and biometric categorisation systems. The obligation is disclosure, not the full high-risk conformity assessment. These obligations apply from <strong>2&nbsp;August&nbsp;2026</strong>.</p>
+<p>Systems with transparency obligations: chatbots that interact with people, systems generating synthetic content (deepfakes, AI-generated text or images), emotion recognition systems, and biometric categorisation systems. Duties vary by use and by who provides or deploys the system. For example, Article 50(2) generally requires providers to mark synthetic output in a machine-readable way. Article 50 duties can also apply to high-risk systems. Article 50 generally applies from <strong>2&nbsp;August&nbsp;2026</strong>. The <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng">amendment</a> gives providers of qualifying Article 50(2) synthetic-content systems placed on the market before that date until <strong>2&nbsp;December&nbsp;2026</strong> to comply with that paragraph.</p>
 
 <h3>Minimal risk</h3>
 <p>This label is commonly used when no prohibited, high-risk, or Article 50 path is identified. It does not prove that the Act is inapplicable: Article 4, Article 5, role-specific duties, and other context-dependent provisions still need review. Article 95 provides for voluntary codes of conduct.</p>
 
 <h2>How Article&nbsp;6 works</h2>
 
-<p>Article&nbsp;6 is the gateway provision. It determines whether your Annex&nbsp;III system is actually high-risk by introducing a <strong>significant risk</strong> threshold. A system listed in Annex&nbsp;III is high-risk only if it poses a significant risk of harm to health, safety, or fundamental rights.</p>
+<p><a href="https://ai-act-service-desk.ec.europa.eu/en/ai-act/article-6">Article 6(2) and (3)</a>: Annex III systems are high-risk by default. Article 6(3) is a narrow exception that requires no significant risk to health, safety or fundamental rights and at least one listed condition. It does not apply when the system profiles natural persons. A provider relying on the exception must document its assessment and, under Article 49(2), register itself and the system in the EU database before placing it on the market or putting it into service.</p>
 
-<p>Article&nbsp;6(3) provides a narrow derogation. An Annex&nbsp;III system is <em>not</em> high-risk if it:</p>
+<p>Consider whether the system materially influences the outcome of a decision when assessing significant risk. The four listed conditions concern the intended purpose of the system:</p>
 <ul>
-    <li>Performs a <strong>narrow procedural task</strong> (e.g. converting unstructured data to structured data);</li>
-    <li><strong>Improves the result</strong> of a previously completed human activity; or</li>
-    <li>Is intended for <strong>human decision support</strong> where the human decision is not bypassed or overridden by the AI output.</li>
+    <li>Performing a narrow procedural task;</li>
+    <li>Improving the result of a human activity that has already finished;</li>
+    <li>Detecting patterns or deviations in prior decisions without replacing or influencing an earlier human assessment without proper human review; or</li>
+    <li>Performing a preparatory task for an Annex III assessment.</li>
 </ul>
-
-<p>This is a self-assessment, not an automatic exemption. You must document why your system qualifies. The conditions are narrow and context-dependent &mdash; the same model used for different purposes can fall on different sides of this line. <strong>Context matters more than code.</strong></p>
+<p>A generic claim that a human makes the final decision is not enough to establish the exception.</p>
 
 <h2>What Regula can and cannot tell you</h2>
 
@@ -224,7 +223,7 @@
     <td style="padding:8px;">Determine if your system meets the Article&nbsp;6 &ldquo;significant risk&rdquo; threshold</td>
 </tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-    <td style="padding:8px;">Classify your risk tier based on code patterns</td>
+    <td style="padding:8px;">Suggest risk indicators for review based on code patterns</td>
     <td style="padding:8px;">Assess your deployment context (who uses it, where, on whom)</td>
 </tr>
 <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
@@ -258,13 +257,13 @@ regula gap .</code></pre>
 
 <h2>Omnibus status</h2>
 
-<p>The dates stated here come from <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj">Regulation&nbsp;(EU)&nbsp;2026/1744</a>, published in the Official Journal on 24&nbsp;July&nbsp;2026 and in force from 27&nbsp;July&nbsp;2026. The provisional agreement of 7&nbsp;May&nbsp;2026 is legislative history, not the current legal basis.</p>
+<p>The dates stated here come from <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng">Regulation&nbsp;(EU)&nbsp;2026/1744</a>, published in the Official Journal on 24&nbsp;July&nbsp;2026 and in force from 27&nbsp;July&nbsp;2026. The provisional agreement of 7&nbsp;May&nbsp;2026 is legislative history, not the current legal basis.</p>
 
 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:32px 0;">
 
 <p style="color:var(--text-dim);font-size:0.85rem;">
-    <strong>Last reviewed:</strong> 14 August 2026 &middot; <strong>Author:</strong> Regula maintainers &middot;
-    <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689</a>, <a href="https://ec.europa.eu/commission/presscorner/detail/en/ip_25_2442" style="color:var(--text-dim);">Digital Omnibus provisional agreement (7 May 2026)</a> &middot;
+    <strong>Last reviewed:</strong> 25 November 2026 &middot; <strong>Author:</strong> Regula maintainers &middot;
+    <strong>Sources:</strong> <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" style="color:var(--text-dim);">Regulation (EU) 2024/1689</a>, <a href="https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng" style="color:var(--text-dim);">Regulation (EU) 2026/1744</a> &middot;
     <em>Not legal advice. Regula identifies risk indicators for developer review.</em>
 </p>
 
